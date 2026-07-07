@@ -30,7 +30,21 @@ type ImportResult = {
     rowNumber: number;
     questionId: string;
     reason: string;
+    code?: string | null;
+    details?: string | null;
+    hint?: string | null;
+    operation?: string;
   }>;
+};
+
+type ImportErrorPayload = {
+  error?: string;
+  message?: string;
+  code?: string | null;
+  details?: string | null;
+  hint?: string | null;
+  operation?: string;
+  batch?: string;
 };
 
 export function TeacherImportQuestions() {
@@ -69,6 +83,10 @@ export function TeacherImportQuestions() {
   const missingFields = REQUIRED_FIELDS.filter((field) =>
     rows.length === 0 ? false : !(field in rows[0])
   );
+  const unexpectedFields =
+    rows.length === 0
+      ? []
+      : Object.keys(rows[0]).filter((field) => !REQUIRED_FIELDS.includes(field));
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -99,8 +117,12 @@ export function TeacherImportQuestions() {
       return;
     }
 
-    if (missingFields.length > 0) {
-      setError(`CSV is missing fields: ${missingFields.join(", ")}`);
+    if (missingFields.length > 0 || unexpectedFields.length > 0) {
+      setError(
+        `CSV headers do not match. Missing: ${missingFields.join(", ") || "none"}. Unexpected: ${
+          unexpectedFields.join(", ") || "none"
+        }.`
+      );
       setLoading(false);
       return;
     }
@@ -120,14 +142,34 @@ export function TeacherImportQuestions() {
         body: JSON.stringify({ rows })
       });
 
-      const payload = await response.json();
-      if (!response.ok) {
-        setError(payload.error ?? "Import failed.");
-      } else {
-        setResult(payload);
+      const responseText = await response.text();
+      let payload: ImportResult | ImportErrorPayload;
+      try {
+        payload = responseText
+          ? JSON.parse(responseText)
+          : { error: "The import API returned an empty response." };
+      } catch {
+        payload = {
+          error: "The import API returned invalid JSON.",
+          details: responseText
+        };
       }
-    } catch {
-      setError("Import failed. Please check the CSV file and try again.");
+
+      if (!response.ok) {
+        console.error("Import questions failed", payload);
+        setError(formatImportError(payload as ImportErrorPayload));
+      } else {
+        const resultPayload = payload as ImportResult;
+        if (resultPayload.failedRows?.length > 0) {
+          console.error("Import questions completed with failed rows", resultPayload);
+        }
+        setResult(resultPayload);
+      }
+    } catch (error) {
+      console.error("Import questions failed before the server returned a response", error);
+      setError(formatImportError({
+        error: error instanceof Error ? error.message : "Import failed before the server returned a response."
+      }));
     } finally {
       setLoading(false);
     }
@@ -177,7 +219,16 @@ export function TeacherImportQuestions() {
             Missing fields: {missingFields.join(", ")}
           </p>
         ) : null}
-        {error ? <p className="mt-4 text-sm font-semibold text-coral">{error}</p> : null}
+        {unexpectedFields.length > 0 ? (
+          <p className="mt-4 text-sm font-semibold text-coral">
+            Unexpected fields: {unexpectedFields.join(", ")}
+          </p>
+        ) : null}
+        {error ? (
+          <pre className="mt-4 whitespace-pre-wrap rounded-md border border-coral bg-coral/10 p-3 text-sm font-semibold text-coral">
+            {error}
+          </pre>
+        ) : null}
       </section>
 
       {result ? (
@@ -198,6 +249,7 @@ export function TeacherImportQuestions() {
                   <tr className="border-b border-line text-ink/60">
                     <th className="py-2 pr-3">CSV row</th>
                     <th className="py-2 pr-3">Question ID</th>
+                    <th className="py-2 pr-3">Operation</th>
                     <th className="py-2 pr-3">Reason</th>
                   </tr>
                 </thead>
@@ -206,7 +258,13 @@ export function TeacherImportQuestions() {
                     <tr className="border-b border-line last:border-0" key={`${row.rowNumber}-${row.questionId}`}>
                       <td className="py-3 pr-3">{row.rowNumber}</td>
                       <td className="py-3 pr-3">{row.questionId || "N/A"}</td>
-                      <td className="py-3 pr-3">{row.reason}</td>
+                      <td className="py-3 pr-3">{row.operation ?? "N/A"}</td>
+                      <td className="py-3 pr-3">
+                        <div>{row.reason}</div>
+                        {row.code ? <div className="text-ink/60">Code: {row.code}</div> : null}
+                        {row.details ? <div className="text-ink/60">Details: {row.details}</div> : null}
+                        {row.hint ? <div className="text-ink/60">Hint: {row.hint}</div> : null}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -245,6 +303,19 @@ export function TeacherImportQuestions() {
       ) : null}
     </div>
   );
+}
+
+function formatImportError(payload: ImportErrorPayload) {
+  return [
+    `Message: ${payload.message ?? payload.error ?? "Import failed."}`,
+    `Code: ${payload.code ?? "N/A"}`,
+    `Details: ${payload.details ?? "N/A"}`,
+    `Hint: ${payload.hint ?? "N/A"}`,
+    payload.operation ? `Operation: ${payload.operation}` : null,
+    payload.batch ? `Batch: ${payload.batch}` : null
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function ResultMetric({ label, value }: { label: string; value: number }) {
