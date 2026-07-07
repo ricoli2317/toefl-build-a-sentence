@@ -22,6 +22,7 @@ const REQUIRED_FIELDS = [
 ];
 
 type ImportResult = {
+  success?: boolean;
   successCount: number;
   insertedCount: number;
   updatedCount: number;
@@ -45,6 +46,7 @@ type ImportResult = {
 };
 
 type ImportErrorPayload = {
+  success?: boolean;
   error?: string;
   message?: string;
   code?: string | null;
@@ -52,6 +54,9 @@ type ImportErrorPayload = {
   hint?: string | null;
   operation?: string;
   batch?: string;
+  requestUrl?: string;
+  requestMethod?: string;
+  origin?: string;
 };
 
 export function TeacherImportQuestions() {
@@ -139,9 +144,12 @@ export function TeacherImportQuestions() {
       const {
         data: { session }
       } = await supabase.auth.getSession();
+      const requestUrl = "/api/teacher/import-questions";
+      const requestMethod = "POST";
+      const origin = window.location.origin;
 
-      const response = await fetch("/api/teacher/import-questions", {
-        method: "POST",
+      const response = await fetch(requestUrl, {
+        method: requestMethod,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token ?? ""}`
@@ -164,7 +172,12 @@ export function TeacherImportQuestions() {
 
       if (!response.ok) {
         console.error("Import questions failed", payload);
-        setError(formatImportError(payload as ImportErrorPayload));
+        setError(formatImportError({
+          ...(payload as ImportErrorPayload),
+          origin,
+          requestMethod,
+          requestUrl
+        }));
       } else {
         const resultPayload = payload as ImportResult;
         if (resultPayload.failedRows?.length > 0) {
@@ -173,9 +186,20 @@ export function TeacherImportQuestions() {
         setResult(resultPayload);
       }
     } catch (error) {
-      console.error("Import questions failed before the server returned a response", error);
+      const requestUrl = "/api/teacher/import-questions";
+      const requestMethod = "POST";
+      const origin = window.location.origin;
+      console.error("Import questions failed before the server returned a response", {
+        error,
+        origin,
+        requestMethod,
+        requestUrl
+      });
       setError(formatImportError({
-        error: error instanceof Error ? error.message : "Import failed before the server returned a response."
+        error: error instanceof Error ? error.message : "Import failed before the server returned a response.",
+        origin,
+        requestMethod,
+        requestUrl
       }));
     } finally {
       setLoading(false);
@@ -331,7 +355,10 @@ function formatImportError(payload: ImportErrorPayload) {
     `Details: ${payload.details ?? "N/A"}`,
     `Hint: ${payload.hint ?? "N/A"}`,
     payload.operation ? `Operation: ${payload.operation}` : null,
-    payload.batch ? `Batch: ${payload.batch}` : null
+    payload.batch ? `Batch: ${payload.batch}` : null,
+    payload.requestUrl ? `Request URL: ${payload.requestUrl}` : null,
+    payload.requestMethod ? `Request method: ${payload.requestMethod}` : null,
+    payload.origin ? `Current origin: ${payload.origin}` : null
   ]
     .filter(Boolean)
     .join("\n");

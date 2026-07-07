@@ -17,6 +17,10 @@ const REQUIRED_FIELDS = [
   "grammar_tags_text"
 ] as const;
 
+const QUESTION_BATCH_SIZE = 100;
+const QUESTION_SETS_SET_ID_TEXT_SQL =
+  "alter table public.question_sets alter column set_id type text using set_id::text;";
+
 type ImportQuestionRow = Record<(typeof REQUIRED_FIELDS)[number], string>;
 
 type FailedRow = {
@@ -44,8 +48,10 @@ type SupabaseLikeError = {
   hint?: string;
 };
 
-const QUESTION_SETS_SET_ID_TEXT_SQL =
-  "alter table public.question_sets alter column set_id type text using set_id::text;";
+type ValidImportRow = {
+  row: ImportQuestionRow;
+  rowNumber: number;
+};
 
 function validateRow(row: Partial<ImportQuestionRow>) {
   for (const field of REQUIRED_FIELDS) {
@@ -99,10 +105,12 @@ function jsonImportError({
 
   return NextResponse.json(
     {
+      ...serialized,
+      success: false,
       error: serialized.message,
+      message: serialized.message,
       operation,
-      batch,
-      ...serialized
+      batch
     },
     { status }
   );
@@ -153,16 +161,57 @@ function questionSetsUuidWarning(error: unknown): ImportWarning {
   };
 }
 
+function chunkRows<T>(rows: T[], size: number) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < rows.length; index += size) {
+    chunks.push(rows.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function questionPayload(row: ImportQuestionRow) {
+  return {
+    question_id: String(row.question_id),
+    set_id: String(row.set_id),
+    set_title: row.set_title,
+    question_order: Number(row.question_order),
+    prompt: row.prompt,
+    sentence_template: row.sentence_template,
+    blank_count: Number(row.blank_count),
+    options_text: row.options_text,
+    correct_order_text: row.correct_order_text,
+    distractors_text: row.distractors_text,
+    final_sentence: row.final_sentence,
+    grammar_tags_text: row.grammar_tags_text
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const auth = await requireUserWithRole(bearerToken(request), "teacher");
     if (auth.error || !auth.userId) {
-      return NextResponse.json({ error: auth.error }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: auth.error,
+          message: auth.error,
+          operation: "authorize teacher import"
+        },
+        { status: 401 }
+      );
     }
 
     const body = (await request.json()) as { rows?: Partial<ImportQuestionRow>[] };
     if (!Array.isArray(body.rows)) {
-      return NextResponse.json({ error: "Invalid import payload" }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid import payload",
+          message: "Invalid import payload",
+          operation: "parse import request"
+        },
+        { status: 400 }
+      );
     }
 
     if (body.rows.length > 0) {
@@ -174,6 +223,7 @@ export async function POST(request: Request) {
         });
         return NextResponse.json(
           {
+            success: false,
             error: headerError.message,
             operation: "validate CSV headers",
             ...headerError
@@ -184,11 +234,30 @@ export async function POST(request: Request) {
     }
 
     const supabase = createServiceSupabase();
-    const questionIds = body.rows
-      .map((row) => String(row.question_id ?? "").trim())
-      .filter((questionId): questionId is string => Boolean(questionId));
+    const failedRows: FailedRow[] = [];
+    const validRows: ValidImportRow[] = [];
+    const warnings: ImportWarning[] = [];
 
+    for (let index = 0; index < body.rows.length; index += 1) {
+      const row = normalizeRow(body.rows[index]);
+      const rowNumber = index + 2;
+      const validationError = validateRow(row);
+
+      if (validationError) {
+        failedRows.push({
+          rowNumber,
+          questionId: row.question_id,
+          reason: validationError,
+          operation: "validate row"
+        });
+      } else {
+        validRows.push({ row, rowNumber });
+      }
+    }
+
+    const questionIds = validRows.map(({ row }) => row.question_id);
     const existingIds = new Set<string>();
+
     if (questionIds.length > 0) {
       const { data, error } = await supabase
         .from("questions")
@@ -208,122 +277,113 @@ export async function POST(request: Request) {
       }
     }
 
-    let insertedCount = 0;
-    let updatedCount = 0;
-    const failedRows: FailedRow[] = [];
-    const warnings: ImportWarning[] = [];
-    let shouldUpsertQuestionSets = true;
-
-    for (let index = 0; index < body.rows.length; index += 1) {
-      const normalized = normalizeRow(body.rows[index]);
-      const rowNumber = index + 2;
-      const validationError = validateRow(normalized);
-
-      if (validationError) {
-        failedRows.push({
-          rowNumber,
-          questionId: normalized.question_id,
-          reason: validationError,
-          operation: "validate row"
-        });
-        continue;
-      }
-
-      const questionOrder = Number(normalized.question_order);
-      const blankCount = Number(normalized.blank_count);
-
-      if (shouldUpsertQuestionSets) {
-        const { error: setError } = await supabase.from("question_sets").upsert(
+    const setRows = Array.from(
+      new Map(
+        validRows.map(({ row }) => [
+          row.set_id,
           {
-            set_id: String(normalized.set_id),
-            set_title: normalized.set_title,
+            set_id: String(row.set_id),
+            set_title: row.set_title,
             is_active: true,
             created_by: auth.userId
-          },
-          { onConflict: "set_id" }
-        );
+          }
+        ])
+      ).values()
+    );
 
-        if (setError) {
-          console.error("Teacher CSV import row failed", {
-            batch: `CSV row ${rowNumber}`,
-            error: setError,
-            operation: "upsert question_sets",
-            questionId: normalized.question_id,
-            rowNumber
-          });
+    if (setRows.length > 0) {
+      const { error: setError } = await supabase
+        .from("question_sets")
+        .upsert(setRows, { onConflict: "set_id" });
 
-          if (isQuestionSetsUuidSetIdError(setError)) {
-            shouldUpsertQuestionSets = false;
-            warnings.push(questionSetsUuidWarning(setError));
-          } else {
-            const serialized = serializeError(setError);
+      if (setError) {
+        console.error("Teacher CSV import batch failed", {
+          batch: `question_sets batch for ${setRows.length} sets`,
+          error: setError,
+          operation: "upsert question_sets"
+        });
+
+        if (isQuestionSetsUuidSetIdError(setError)) {
+          warnings.push(questionSetsUuidWarning(setError));
+        } else {
+          const serialized = serializeError(setError);
+          for (const { row, rowNumber } of validRows) {
             failedRows.push({
               rowNumber,
-              questionId: normalized.question_id,
+              questionId: row.question_id,
               reason: serialized.message,
               operation: "upsert question_sets",
               code: serialized.code,
               details: serialized.details,
               hint: serialized.hint
             });
-            continue;
           }
+
+          return NextResponse.json({
+            success: true,
+            successCount: 0,
+            insertedCount: 0,
+            updatedCount: 0,
+            failedCount: failedRows.length,
+            failedRows,
+            warnings
+          });
         }
       }
+    }
 
-      const wasExisting = existingIds.has(normalized.question_id);
-      const { error: questionError } = await supabase.from("questions").upsert(
-        {
-          question_id: String(normalized.question_id),
-          set_id: String(normalized.set_id),
-          set_title: normalized.set_title,
-          question_order: questionOrder,
-          prompt: normalized.prompt,
-          sentence_template: normalized.sentence_template,
-          blank_count: blankCount,
-          options_text: normalized.options_text,
-          correct_order_text: normalized.correct_order_text,
-          distractors_text: normalized.distractors_text,
-          final_sentence: normalized.final_sentence,
-          grammar_tags_text: normalized.grammar_tags_text
-        },
-        { onConflict: "question_id" }
-      );
+    let insertedCount = 0;
+    let updatedCount = 0;
+    const questionBatches = chunkRows(validRows, QUESTION_BATCH_SIZE);
+
+    for (let batchIndex = 0; batchIndex < questionBatches.length; batchIndex += 1) {
+      const batch = questionBatches[batchIndex];
+      const batchLabel = `questions batch ${batchIndex + 1}/${questionBatches.length}, CSV rows ${
+        batch[0]?.rowNumber ?? "?"
+      }-${batch[batch.length - 1]?.rowNumber ?? "?"}`;
+      const { error: questionError } = await supabase
+        .from("questions")
+        .upsert(batch.map(({ row }) => questionPayload(row)), { onConflict: "question_id" });
 
       if (questionError) {
         const serialized = serializeError(questionError);
-        const uuidSetIdHint =
-          isQuestionSetsUuidSetIdError(questionError)
-            ? `If questions.set_id is also uuid, convert it to text. Required text set_id values look like 202603-0301-1. Related SQL for question_sets: ${QUESTION_SETS_SET_ID_TEXT_SQL}`
-            : serialized.hint;
-        console.error("Teacher CSV import row failed", {
-          batch: `CSV row ${rowNumber}`,
+        const uuidSetIdHint = isQuestionSetsUuidSetIdError(questionError)
+          ? `If questions.set_id is also uuid, convert it to text. Required text set_id values look like 202603-0301-1. Related SQL for question_sets: ${QUESTION_SETS_SET_ID_TEXT_SQL}`
+          : serialized.hint;
+
+        console.error("Teacher CSV import batch failed", {
+          batch: batchLabel,
           error: questionError,
-          operation: "upsert questions",
-          questionId: normalized.question_id,
-          rowNumber
+          operation: "upsert questions"
         });
-        failedRows.push({
-          rowNumber,
-          questionId: normalized.question_id,
-          reason: serialized.message,
-          operation: "upsert questions",
-          code: serialized.code,
-          details: serialized.details,
-          hint: uuidSetIdHint
-        });
+
+        for (const { row, rowNumber } of batch) {
+          failedRows.push({
+            rowNumber,
+            questionId: row.question_id,
+            reason: serialized.message,
+            operation: "upsert questions",
+            code: serialized.code,
+            details: serialized.details,
+            hint: uuidSetIdHint
+          });
+        }
+
         continue;
       }
 
-      if (wasExisting) {
-        updatedCount += 1;
-      } else {
-        insertedCount += 1;
-        existingIds.add(normalized.question_id);
+      for (const { row } of batch) {
+        if (existingIds.has(row.question_id)) {
+          updatedCount += 1;
+        } else {
+          insertedCount += 1;
+          existingIds.add(row.question_id);
+        }
       }
     }
 
     return NextResponse.json({
+      success: true,
       successCount: insertedCount + updatedCount,
       insertedCount,
       updatedCount,
