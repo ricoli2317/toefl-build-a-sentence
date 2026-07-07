@@ -50,8 +50,48 @@ export function formatPlacedChunk(chunk: string, isSentenceStart: boolean) {
 }
 
 function formatWordForMiddle(word: string) {
+  const canonicalWord = formatCanonicalWord(word);
+  if (canonicalWord) return canonicalWord;
   if (shouldPreserveCapitalization(word)) return word;
   return word.toLocaleLowerCase();
+}
+
+const CANONICAL_WORDS: Record<string, string> = {
+  ai: "AI",
+  chinese: "Chinese",
+  english: "English",
+  french: "French",
+  german: "German",
+  i: "I",
+  ielts: "IELTS",
+  japanese: "Japanese",
+  sat: "SAT",
+  spanish: "Spanish",
+  toefl: "TOEFL",
+  uk: "UK",
+  usa: "USA"
+};
+
+const CANONICAL_I_CONTRACTIONS: Record<string, string> = {
+  "i'd": "I'd",
+  "i'll": "I'll",
+  "i'm": "I'm",
+  "i've": "I've",
+  "i’d": "I’d",
+  "i’ll": "I’ll",
+  "i’m": "I’m",
+  "i’ve": "I’ve"
+};
+
+function formatCanonicalWord(word: string) {
+  const match = word.match(/^([^A-Za-z]*)([A-Za-z][A-Za-z'’]*)([^A-Za-z]*)$/);
+  if (!match) return null;
+
+  const [, leading, core, trailing] = match;
+  const lowerCore = core.toLocaleLowerCase();
+  const canonicalCore = CANONICAL_I_CONTRACTIONS[lowerCore] ?? CANONICAL_WORDS[lowerCore];
+
+  return canonicalCore ? `${leading}${canonicalCore}${trailing}` : null;
 }
 
 function shouldPreserveCapitalization(word: string) {
