@@ -26,6 +26,13 @@ type ImportResult = {
   insertedCount: number;
   updatedCount: number;
   failedCount: number;
+  warnings?: Array<{
+    message: string;
+    code?: string | null;
+    details?: string | null;
+    hint?: string | null;
+    operation?: string;
+  }>;
   failedRows: Array<{
     rowNumber: number;
     questionId: string;
@@ -242,6 +249,18 @@ export function TeacherImportQuestions() {
           <p className="mt-3 text-sm text-ink/60">
             New questions: {result.insertedCount}
           </p>
+          {result.warnings && result.warnings.length > 0 ? (
+            <div className="mt-5 grid gap-3">
+              {result.warnings.map((warning, index) => (
+                <pre
+                  className="whitespace-pre-wrap rounded-md border border-gold bg-gold/10 p-3 text-sm font-semibold text-ink"
+                  key={`${warning.operation ?? "warning"}-${index}`}
+                >
+                  {formatImportWarning(warning)}
+                </pre>
+              ))}
+            </div>
+          ) : null}
           {result.failedRows.length > 0 ? (
             <div className="mt-5 overflow-x-auto">
               <table className="w-full min-w-[620px] border-collapse text-left text-sm">
@@ -313,6 +332,18 @@ function formatImportError(payload: ImportErrorPayload) {
     `Hint: ${payload.hint ?? "N/A"}`,
     payload.operation ? `Operation: ${payload.operation}` : null,
     payload.batch ? `Batch: ${payload.batch}` : null
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function formatImportWarning(warning: NonNullable<ImportResult["warnings"]>[number]) {
+  return [
+    `Warning: ${warning.message}`,
+    `Code: ${warning.code ?? "N/A"}`,
+    `Details: ${warning.details ?? "N/A"}`,
+    `Hint: ${warning.hint ?? "N/A"}`,
+    warning.operation ? `Operation: ${warning.operation}` : null
   ]
     .filter(Boolean)
     .join("\n");

@@ -29,12 +29,23 @@ type FailedRow = {
   operation?: string;
 };
 
+type ImportWarning = {
+  message: string;
+  code?: string | null;
+  details?: string | null;
+  hint?: string | null;
+  operation?: string;
+};
+
 type SupabaseLikeError = {
   message?: string;
   code?: string;
   details?: string;
   hint?: string;
 };
+
+const QUESTION_SETS_SET_ID_TEXT_SQL =
+  "alter table public.question_sets alter column set_id type text using set_id::text;";
 
 function validateRow(row: Partial<ImportQuestionRow>) {
   for (const field of REQUIRED_FIELDS) {
@@ -122,6 +133,26 @@ function normalizeRow(row: Partial<ImportQuestionRow>) {
   ) as ImportQuestionRow;
 }
 
+function isQuestionSetsUuidSetIdError(error: unknown) {
+  const serialized = serializeError(error);
+  return (
+    serialized.code === "22P02" &&
+    serialized.message.toLocaleLowerCase().includes("uuid")
+  );
+}
+
+function questionSetsUuidWarning(error: unknown): ImportWarning {
+  const serialized = serializeError(error);
+  return {
+    message:
+      "question_sets.set_id appears to be uuid, so CSV text set_id values cannot be written to question_sets. Questions import will continue using questions.set_id as text.",
+    operation: "upsert question_sets",
+    code: serialized.code,
+    details: serialized.details ?? serialized.message,
+    hint: `Run this Supabase SQL if question_sets.set_id is still uuid: ${QUESTION_SETS_SET_ID_TEXT_SQL}`
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const auth = await requireUserWithRole(bearerToken(request), "teacher");
@@ -180,6 +211,8 @@ export async function POST(request: Request) {
     let insertedCount = 0;
     let updatedCount = 0;
     const failedRows: FailedRow[] = [];
+    const warnings: ImportWarning[] = [];
+    let shouldUpsertQuestionSets = true;
 
     for (let index = 0; index < body.rows.length; index += 1) {
       const normalized = normalizeRow(body.rows[index]);
@@ -199,35 +232,43 @@ export async function POST(request: Request) {
       const questionOrder = Number(normalized.question_order);
       const blankCount = Number(normalized.blank_count);
 
-      const { error: setError } = await supabase.from("question_sets").upsert(
-        {
-          set_id: String(normalized.set_id),
-          set_title: normalized.set_title,
-          is_active: true,
-          created_by: auth.userId
-        },
-        { onConflict: "set_id" }
-      );
+      if (shouldUpsertQuestionSets) {
+        const { error: setError } = await supabase.from("question_sets").upsert(
+          {
+            set_id: String(normalized.set_id),
+            set_title: normalized.set_title,
+            is_active: true,
+            created_by: auth.userId
+          },
+          { onConflict: "set_id" }
+        );
 
-      if (setError) {
-        const serialized = serializeError(setError);
-        console.error("Teacher CSV import row failed", {
-          batch: `CSV row ${rowNumber}`,
-          error: setError,
-          operation: "upsert question_sets",
-          questionId: normalized.question_id,
-          rowNumber
-        });
-        failedRows.push({
-          rowNumber,
-          questionId: normalized.question_id,
-          reason: serialized.message,
-          operation: "upsert question_sets",
-          code: serialized.code,
-          details: serialized.details,
-          hint: serialized.hint
-        });
-        continue;
+        if (setError) {
+          console.error("Teacher CSV import row failed", {
+            batch: `CSV row ${rowNumber}`,
+            error: setError,
+            operation: "upsert question_sets",
+            questionId: normalized.question_id,
+            rowNumber
+          });
+
+          if (isQuestionSetsUuidSetIdError(setError)) {
+            shouldUpsertQuestionSets = false;
+            warnings.push(questionSetsUuidWarning(setError));
+          } else {
+            const serialized = serializeError(setError);
+            failedRows.push({
+              rowNumber,
+              questionId: normalized.question_id,
+              reason: serialized.message,
+              operation: "upsert question_sets",
+              code: serialized.code,
+              details: serialized.details,
+              hint: serialized.hint
+            });
+            continue;
+          }
+        }
       }
 
       const wasExisting = existingIds.has(normalized.question_id);
@@ -251,6 +292,10 @@ export async function POST(request: Request) {
 
       if (questionError) {
         const serialized = serializeError(questionError);
+        const uuidSetIdHint =
+          isQuestionSetsUuidSetIdError(questionError)
+            ? `If questions.set_id is also uuid, convert it to text. Required text set_id values look like 202603-0301-1. Related SQL for question_sets: ${QUESTION_SETS_SET_ID_TEXT_SQL}`
+            : serialized.hint;
         console.error("Teacher CSV import row failed", {
           batch: `CSV row ${rowNumber}`,
           error: questionError,
@@ -265,7 +310,7 @@ export async function POST(request: Request) {
           operation: "upsert questions",
           code: serialized.code,
           details: serialized.details,
-          hint: serialized.hint
+          hint: uuidSetIdHint
         });
         continue;
       }
@@ -283,7 +328,8 @@ export async function POST(request: Request) {
       insertedCount,
       updatedCount,
       failedCount: failedRows.length,
-      failedRows
+      failedRows,
+      warnings
     });
   } catch (error) {
     return jsonImportError({
