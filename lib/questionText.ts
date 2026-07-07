@@ -33,20 +33,108 @@ export function normalizeChunkForCompare(chunk: string) {
 }
 
 export function formatOptionChunk(chunk: string) {
-  return chunk
-    .split(/(\s+)/)
-    .map((part) => (part.trim() ? formatWordForMiddle(part) : part))
-    .join("");
+  return formatSentenceText(chunk);
 }
 
 export function formatPlacedChunk(chunk: string, isSentenceStart: boolean) {
   const formatted = formatOptionChunk(chunk);
   if (!isSentenceStart) return formatted;
 
-  const firstLetterIndex = formatted.search(/[A-Za-z]/);
-  if (firstLetterIndex === -1) return formatted;
+  return capitalizeFirstEnglishLetter(formatted);
+}
 
-  return `${formatted.slice(0, firstLetterIndex)}${formatted[firstLetterIndex].toLocaleUpperCase()}${formatted.slice(firstLetterIndex + 1)}`;
+export function formatTemplateText(part: string, isSentenceStart: boolean) {
+  const formatted = formatSentenceText(part);
+  return isSentenceStart ? capitalizeFirstEnglishLetter(formatted) : formatted;
+}
+
+export function buildSentenceDisplay(
+  template: string | null | undefined,
+  orderText: string | null | undefined,
+  fallbackSentence = ""
+) {
+  const chunks = splitTextItems(orderText);
+  if (chunks.length === 0) return formatSentenceDisplayFromText(fallbackSentence);
+
+  if (!template) {
+    return normalizeSentenceSpacing(
+      chunks.map((chunk, index) => formatPlacedChunk(chunk, index === 0)).join(" ")
+    );
+  }
+
+  const parts = splitSentenceTemplate(template);
+  let blankIndex = 0;
+
+  const sentence = parts
+    .map((part, partIndex) => {
+      if (!isBlankToken(part)) {
+        return formatTemplateText(part, isTemplatePartSentenceStart(parts, partIndex));
+      }
+
+      const chunk = chunks[blankIndex] ?? "";
+      const formatted = formatPlacedChunk(
+        chunk,
+        isTemplatePartSentenceStart(parts, partIndex)
+      );
+      blankIndex += 1;
+      return formatted;
+    })
+    .join("");
+
+  return normalizeSentenceSpacing(sentence) || formatSentenceDisplayFromText(fallbackSentence);
+}
+
+export function splitSentenceTemplate(template: string) {
+  return template.split(/(___+|_{2,}|\[Blank\s*\d+\])/gi);
+}
+
+export function isBlankToken(value: string) {
+  return /^(___+|_{2,}|\[Blank\s*\d+\])$/i.test(value.trim());
+}
+
+export function isTemplatePartSentenceStart(parts: string[], partIndex: number) {
+  return parts.slice(0, partIndex).every((part) => {
+    if (isBlankToken(part)) return false;
+    return !/[A-Za-z]/.test(part);
+  });
+}
+
+function formatSentenceDisplayFromText(sentence: string) {
+  if (!sentence) return "";
+  return normalizeSentenceSpacing(capitalizeFirstEnglishLetter(formatSentenceText(sentence)));
+}
+
+function formatSentenceText(text: string) {
+  let previousWordWasTitle = false;
+
+  return text
+    .split(/(\s+)/)
+    .map((part) => {
+      if (!part.trim()) return part;
+
+      const formatted = previousWordWasTitle && isTitleCaseWord(part)
+        ? part
+        : formatWordForMiddle(part);
+      previousWordWasTitle = isTitleWord(formatted);
+      return formatted;
+    })
+    .join("");
+}
+
+function capitalizeFirstEnglishLetter(value: string) {
+  const firstLetterIndex = value.search(/[A-Za-z]/);
+  if (firstLetterIndex === -1) return value;
+
+  return `${value.slice(0, firstLetterIndex)}${value[firstLetterIndex].toLocaleUpperCase()}${value.slice(
+    firstLetterIndex + 1
+  )}`;
+}
+
+function normalizeSentenceSpacing(sentence: string) {
+  return sentence
+    .replace(/\s+/g, " ")
+    .replace(/\s+([.,!?;:])/g, "$1")
+    .trim();
 }
 
 function formatWordForMiddle(word: string) {
@@ -58,6 +146,15 @@ function formatWordForMiddle(word: string) {
 
 const CANONICAL_WORDS: Record<string, string> = {
   ai: "AI",
+  america: "America",
+  american: "American",
+  australia: "Australia",
+  australian: "Australian",
+  britain: "Britain",
+  british: "British",
+  canada: "Canada",
+  canadian: "Canadian",
+  china: "China",
   chinese: "Chinese",
   english: "English",
   french: "French",
@@ -65,6 +162,9 @@ const CANONICAL_WORDS: Record<string, string> = {
   i: "I",
   ielts: "IELTS",
   japanese: "Japanese",
+  mr: "Mr",
+  ms: "Ms",
+  dr: "Dr",
   sat: "SAT",
   spanish: "Spanish",
   toefl: "TOEFL",
@@ -102,4 +202,13 @@ function shouldPreserveCapitalization(word: string) {
   if (lettersOnly.length > 1 && lettersOnly === lettersOnly.toLocaleUpperCase()) return true;
   if (/[A-Z].*[A-Z]/.test(word) && /[a-z]/.test(word)) return true;
   return false;
+}
+
+function isTitleWord(word: string) {
+  return /^(Mr|Ms|Dr)\.?$/i.test(word.replace(/^[^A-Za-z]*/, "").replace(/[^A-Za-z.]*$/, ""));
+}
+
+function isTitleCaseWord(word: string) {
+  const lettersOnly = word.replace(/[^A-Za-z]/g, "");
+  return /^[A-Z][a-z]+$/.test(lettersOnly);
 }

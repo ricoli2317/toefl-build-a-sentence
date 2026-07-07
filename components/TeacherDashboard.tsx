@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
-import { formatPlacedChunk, splitTextItems } from "@/lib/questionText";
+import { buildSentenceDisplay } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 
 type TeacherStatsPayload = {
@@ -395,9 +395,13 @@ export function TeacherStudentQuestionDetail({ attemptAnswerId }: { attemptAnswe
                   <StatusBadge correct={answer.isCorrect} />
                 </div>
               }
-              correctAnswer={formatFullSentence(answer.sentenceTemplate, answer.correctOrderText, answer.finalSentence)}
+              correctAnswer={buildSentenceDisplay(
+                answer.sentenceTemplate,
+                answer.correctOrderText,
+                answer.finalSentence
+              )}
               prompt={answer.prompt}
-              studentAnswer={formatFullSentence(answer.sentenceTemplate, answer.submittedOrderText)}
+              studentAnswer={buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText)}
             />
           </div>
         );
@@ -545,7 +549,7 @@ export function TeacherSetQuestionDetail({
               ]}
             />
             <QuestionDetailCard
-              correctAnswer={formatFullSentence(
+              correctAnswer={buildSentenceDisplay(
                 question.sentenceTemplate,
                 question.correctOrderText || answers[0]?.correctOrderText || "",
                 question.finalSentence
@@ -566,7 +570,7 @@ export function TeacherSetQuestionDetail({
                   highlight: true,
                   cells: [
                     item.submittedOrderText
-                      ? formatFullSentence(question.sentenceTemplate, item.submittedOrderText)
+                      ? buildSentenceDisplay(question.sentenceTemplate, item.submittedOrderText)
                       : "No answer",
                     item.count
                   ]
@@ -941,42 +945,4 @@ function groupBy<T>(items: T[], getKey: (item: T) => string) {
     groups.set(key, [...(groups.get(key) ?? []), item]);
     return groups;
   }, new Map<string, T[]>());
-}
-
-function formatFullSentence(
-  sentenceTemplate: string,
-  orderText: string,
-  fallbackSentence = ""
-) {
-  const chunks = splitTextItems(orderText);
-  if (chunks.length === 0) return "";
-  if (!sentenceTemplate) return chunks.join(" ");
-
-  const parts = sentenceTemplate.split(/(___+|_{2,}|\[Blank\s*\d+\])/gi);
-  let blankIndex = 0;
-
-  const sentence = parts
-    .map((part, partIndex) => {
-      if (!isBlankToken(part)) return part;
-
-      const chunk = chunks[blankIndex] ?? "";
-      const formatted = formatPlacedChunk(chunk, isSentenceStart(parts, partIndex));
-      blankIndex += 1;
-      return formatted;
-    })
-    .join("")
-    .replace(/\s+([.,!?;:])/g, "$1")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  return sentence || fallbackSentence || chunks.join(" ");
-}
-
-function isBlankToken(value: string) {
-  return /^(___+|_{2,}|\[Blank\s*\d+\])$/i.test(value.trim());
-}
-
-function isSentenceStart(parts: string[], partIndex: number) {
-  const previousText = parts.slice(0, partIndex).join("").trim();
-  return previousText.length === 0;
 }

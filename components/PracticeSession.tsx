@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import {
   formatOptionChunk,
   formatPlacedChunk,
+  formatTemplateText,
+  isBlankToken,
+  isTemplatePartSentenceStart,
   joinTextItems,
+  splitSentenceTemplate,
   splitTextItems
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
@@ -373,13 +377,13 @@ function SentenceTemplate({
   onDropChunk: (blankIndex: number, chunkId: string) => void;
   onRemoveAnswer: (blankIndex: number) => void;
 }) {
-  const parts = template.split(/(___+|_{2,})/g);
+  const parts = splitSentenceTemplate(template);
   let blankIndex = 0;
 
   return (
     <p className="flex flex-wrap items-center gap-x-2 gap-y-3">
       {parts.map((part, index) => {
-        if (/^_{2,}$/.test(part)) {
+        if (isBlankToken(part)) {
           const currentBlankIndex = blankIndex;
           const answer = answers[currentBlankIndex];
           blankIndex += 1;
@@ -407,7 +411,7 @@ function SentenceTemplate({
               {answer
                 ? formatPlacedChunk(
                     answer.text,
-                    currentBlankIndex === 0 && isBlankAtSentenceStart(parts, index)
+                    isTemplatePartSentenceStart(parts, index)
                   )
                 : `Blank ${currentBlankIndex + 1}`}
             </button>
@@ -416,7 +420,7 @@ function SentenceTemplate({
 
         return part ? (
           <span className="whitespace-pre-wrap" key={`${part}-${index}`}>
-            {part}
+            {formatTemplateText(part, isTemplatePartSentenceStart(parts, index))}
           </span>
         ) : null;
       })}
@@ -446,7 +450,7 @@ function SentenceTemplate({
             {answer
               ? formatPlacedChunk(
                   answer.text,
-                  currentBlankIndex === 0 && isExtraBlankAtSentenceStart(parts)
+                  isTemplatePartSentenceStart(parts, parts.length)
                 )
               : `Blank ${currentBlankIndex + 1}`}
           </button>
@@ -454,13 +458,4 @@ function SentenceTemplate({
       })}
     </p>
   );
-}
-
-function isBlankAtSentenceStart(parts: string[], partIndex: number) {
-  const before = parts.slice(0, partIndex).join("");
-  return !/[A-Za-z0-9]/.test(before.trim());
-}
-
-function isExtraBlankAtSentenceStart(parts: string[]) {
-  return !/[A-Za-z0-9]/.test(parts.join("").trim());
 }

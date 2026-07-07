@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatPlacedChunk, splitTextItems } from "@/lib/questionText";
+import { buildSentenceDisplay } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { StudentNavigation } from "@/components/SetList";
 
@@ -150,15 +150,18 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
                 <div>
                   <dt className="font-semibold text-ink/60">Your answer</dt>
                   <dd className="mt-1">
-                    {buildSentence(answer.sentence_template, answer.submitted_order_text) ||
+                    {buildSentenceDisplay(answer.sentence_template, answer.submitted_order_text) ||
                       "No answer"}
                   </dd>
                 </div>
                 <div>
                   <dt className="font-semibold text-ink/60">Correct answer</dt>
                   <dd className="mt-1">
-                    {buildSentence(answer.sentence_template, answer.correct_order_text) ||
-                      answer.final_sentence}
+                    {buildSentenceDisplay(
+                      answer.sentence_template,
+                      answer.correct_order_text,
+                      answer.final_sentence
+                    )}
                   </dd>
                 </div>
               </dl>
@@ -173,42 +176,6 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
       </section>
     </div>
   );
-}
-
-function buildSentence(template: string, orderText: string) {
-  const chunks = splitTextItems(orderText);
-  if (chunks.length === 0) return "";
-  if (!template) return chunks.map((chunk, index) => formatPlacedChunk(chunk, index === 0)).join(" ");
-
-  const parts = template.split(/(___+|_{2,})/g);
-  let blankIndex = 0;
-  const sentence = parts
-    .map((part, partIndex) => {
-      if (!/^_{2,}$/.test(part)) return part;
-
-      const chunk = chunks[blankIndex] ?? "";
-      const formatted = formatPlacedChunk(
-        chunk,
-        blankIndex === 0 && isBlankAtSentenceStart(parts, partIndex)
-      );
-      blankIndex += 1;
-      return formatted;
-    })
-    .join("");
-
-  return normalizeSentenceSpacing(sentence);
-}
-
-function isBlankAtSentenceStart(parts: string[], partIndex: number) {
-  const before = parts.slice(0, partIndex).join("");
-  return !/[A-Za-z0-9]/.test(before.trim());
-}
-
-function normalizeSentenceSpacing(sentence: string) {
-  return sentence
-    .replace(/\s+/g, " ")
-    .replace(/\s+([.,!?;:])/g, "$1")
-    .trim();
 }
 
 function getErrorMessage(value: ResultPayload | { error?: string }, fallback: string) {
