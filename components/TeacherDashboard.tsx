@@ -87,7 +87,7 @@ export function TeacherDashboard() {
   return (
     <TeacherStatsLoader>
       {() => (
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <HomeCard
             description="Review each student's completion history and answer details."
             href="/teacher/students"
@@ -97,6 +97,11 @@ export function TeacherDashboard() {
             description="Review set-level and question-level performance."
             href="/teacher/sets"
             title="Practice Sets"
+          />
+          <HomeCard
+            description="Browse the question bank by month and review each set's prompts, blanks, word blocks, and answers."
+            href="/teacher/question-bank"
+            title="All Practice Sets"
           />
         </div>
       )}
