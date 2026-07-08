@@ -203,7 +203,6 @@ export function PracticeSession({ setId }: { setId: string }) {
   const selectedIds = new Set(
     currentAnswer.flatMap((chunk) => (chunk ? [chunk.id] : []))
   );
-  const availableChunks = optionChunks.filter((chunk) => !selectedIds.has(chunk.id));
   const isCurrentFilled =
     Boolean(currentQuestion) &&
     currentAnswer.length === currentQuestion.blank_count &&
@@ -213,11 +212,15 @@ export function PracticeSession({ setId }: { setId: string }) {
   function dropChunk(blankIndex: number, chunkId: string) {
     if (!currentQuestion || result || submitting) return;
     const chunk = optionChunks.find((item) => item.id === chunkId);
-    if (!chunk || selectedIds.has(chunk.id)) return;
+    if (!chunk) return;
 
     setCurrentAnswer((answer) => {
+      const usedInAnotherBlank = answer.some(
+        (item, index) => index !== blankIndex && item?.id === chunk.id
+      );
+      if (usedInAnotherBlank) return answer;
+
       const next = [...answer];
-      if (next[blankIndex]) return answer;
       next[blankIndex] = chunk;
       return next;
     });
@@ -304,23 +307,33 @@ export function PracticeSession({ setId }: { setId: string }) {
 
         <div className="mt-6">
           <div className="mt-3 flex flex-wrap justify-center gap-3 text-center">
-            {availableChunks.map((chunk) => (
-              <button
-                className="inline-flex min-h-12 items-center justify-center rounded-md border border-line bg-white px-4 py-2 text-base font-semibold hover:border-ocean disabled:cursor-not-allowed disabled:bg-paper disabled:text-ink/35"
-                disabled={result !== null || submitting}
-                draggable={!result && !submitting}
-                key={chunk.id}
-                onDragStart={(event) => event.dataTransfer.setData("text/plain", chunk.id)}
-                type="button"
-              >
-                {formatOptionChunk(chunk.text)}
-              </button>
-            ))}
-            {availableChunks.length === 0 ? (
-              <span className="rounded-md border border-line bg-paper px-3 py-2 text-sm text-ink/50">
-                No options left
-              </span>
-            ) : null}
+            {optionChunks.map((chunk) => {
+              const isUsed = selectedIds.has(chunk.id);
+
+              return (
+                <button
+                  aria-disabled={isUsed || result !== null || submitting}
+                  className={`inline-flex min-h-12 items-center justify-center rounded-md border px-4 py-2 text-base font-semibold ${
+                    isUsed
+                      ? "cursor-not-allowed border-ocean/30 bg-paper text-ink/55 opacity-70 shadow-inner"
+                      : "border-line bg-white hover:border-ocean disabled:cursor-not-allowed disabled:bg-paper disabled:text-ink/35"
+                  }`}
+                  disabled={result !== null || submitting}
+                  draggable={!isUsed && !result && !submitting}
+                  key={chunk.id}
+                  onDragStart={(event) => {
+                    if (isUsed) {
+                      event.preventDefault();
+                      return;
+                    }
+                    event.dataTransfer.setData("text/plain", chunk.id);
+                  }}
+                  type="button"
+                >
+                  {formatOptionChunk(chunk.text)}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -399,11 +412,11 @@ function SentenceTemplate({
               key={`${part}-${index}`}
               onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
               onDragOver={(event) => {
-                if (!disabled && !answer) event.preventDefault();
+                if (!disabled) event.preventDefault();
               }}
               onDrop={(event) => {
                 event.preventDefault();
-                if (disabled || answer) return;
+                if (disabled) return;
                 onDropChunk(currentBlankIndex, event.dataTransfer.getData("text/plain"));
               }}
               type="button"
@@ -438,11 +451,11 @@ function SentenceTemplate({
             key={`extra-blank-${currentBlankIndex}`}
             onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
             onDragOver={(event) => {
-              if (!disabled && !answer) event.preventDefault();
+              if (!disabled) event.preventDefault();
             }}
             onDrop={(event) => {
               event.preventDefault();
-              if (disabled || answer) return;
+              if (disabled) return;
               onDropChunk(currentBlankIndex, event.dataTransfer.getData("text/plain"));
             }}
             type="button"
