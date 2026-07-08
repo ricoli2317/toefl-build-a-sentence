@@ -17,6 +17,8 @@ type AttemptRow = {
 type SetSummary = {
   set_id: string;
   set_title: string;
+  month_key: string;
+  month_label: string;
   question_count: number;
   completed: boolean;
   latest_attempt_id: string | null;
@@ -142,21 +144,23 @@ export async function GET(request: Request) {
       }
     });
 
-    const { data, error } = await readClient
-      .from("questions")
-      .select("set_id,set_title");
+    const [
+      { data, error },
+      { data: attempts, error: attemptsError }
+    ] = await Promise.all([
+      readClient.from("questions").select("set_id,set_title"),
+      readClient
+        .from("attempts")
+        .select("attempt_id,set_id,submitted_at,created_at")
+        .eq("student_id", user.id)
+    ]);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ months: [], sets: [], error: error.message }, { status: 500 });
     }
 
-    const { data: attempts, error: attemptsError } = await readClient
-      .from("attempts")
-      .select("attempt_id,set_id,submitted_at,created_at")
-      .eq("student_id", user.id);
-
     if (attemptsError) {
-      return NextResponse.json({ error: attemptsError.message }, { status: 500 });
+      return NextResponse.json({ months: [], sets: [], error: attemptsError.message }, { status: 500 });
     }
 
     const latestAttemptBySet = new Map<string, AttemptRow>();
@@ -199,6 +203,8 @@ export async function GET(request: Request) {
         setsById.set(setId, {
           set_id: setId,
           set_title: row.set_title,
+          month_key: monthKey,
+          month_label: monthKey ? formatMonthLabel(monthKey) : "",
           question_count: 1,
           completed: Boolean(latestAttempt),
           latest_attempt_id: latestAttempt?.attempt_id ?? null

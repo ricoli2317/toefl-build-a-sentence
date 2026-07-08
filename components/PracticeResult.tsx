@@ -40,6 +40,18 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
   const [showIncorrectOnly, setShowIncorrectOnly] = useState(false);
 
   useEffect(() => {
+    const cached = window.sessionStorage.getItem(resultCacheKey(attemptId));
+    let hasCachedResult = false;
+    if (cached) {
+      try {
+        setPayload(JSON.parse(cached) as ResultPayload);
+        setLoading(false);
+        hasCachedResult = true;
+      } catch {
+        window.sessionStorage.removeItem(resultCacheKey(attemptId));
+      }
+    }
+
     async function loadResult() {
       const supabase = createBrowserSupabase();
       const {
@@ -62,9 +74,12 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
       }
 
       if (!response.ok) {
-        setError(getErrorMessage(data, "Could not load result."));
+        if (!hasCachedResult) {
+          setError(getErrorMessage(data, "Could not load result."));
+        }
       } else {
         setPayload(data as ResultPayload);
+        window.sessionStorage.setItem(resultCacheKey(attemptId), JSON.stringify(data));
       }
 
       setLoading(false);
@@ -176,6 +191,10 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
       </section>
     </div>
   );
+}
+
+function resultCacheKey(attemptId: string) {
+  return `practice-result:${attemptId}`;
 }
 
 function getErrorMessage(value: ResultPayload | { error?: string }, fallback: string) {

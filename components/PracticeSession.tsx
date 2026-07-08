@@ -137,6 +137,18 @@ export function PracticeSession({ setId }: { setId: string }) {
           setError(payload.error ?? "Submit failed.");
         } else if (isSubmitResponse(payload)) {
           setResult(payload);
+          if (payload.attempt && payload.answers) {
+            window.sessionStorage.setItem(
+              resultCacheKey(payload.attemptId),
+              JSON.stringify({
+                attempt: payload.attempt,
+                total_count: payload.total_count ?? payload.total,
+                correct_count: payload.correct_count ?? payload.correctCount,
+                accuracy: payload.accuracy,
+                answers: payload.answers
+              })
+            );
+          }
           router.push(`/student/results/${payload.attemptId}`);
         } else {
           setError("Submit succeeded but no attempt id was returned.");
@@ -442,6 +454,10 @@ function formatTime(totalSeconds: number) {
 
 function elapsedQuestionSeconds(startedAt: number) {
   return Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+}
+
+function resultCacheKey(attemptId: string) {
+  return `practice-result:${attemptId}`;
 }
 
 function isSubmitResponse(value: Partial<SubmitResponse>): value is SubmitResponse {

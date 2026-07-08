@@ -16,7 +16,9 @@ type QuestionForScoring = {
   set_title: string;
   question_order: number;
   prompt: string;
+  sentence_template: string;
   correct_order_text: string;
+  final_sentence: string;
   grammar_tags_text: string | null;
 };
 
@@ -102,7 +104,9 @@ export async function POST(request: Request) {
 
     const { data: questions, error: questionsError } = await db
       .from("questions")
-      .select("question_id,set_id,set_title,question_order,prompt,correct_order_text,grammar_tags_text")
+      .select(
+        "question_id,set_id,set_title,question_order,prompt,sentence_template,correct_order_text,final_sentence,grammar_tags_text"
+      )
       .eq("set_id", body.setId)
       .order("question_order", { ascending: true });
 
@@ -141,6 +145,7 @@ export async function POST(request: Request) {
         ? Math.max(0, Math.round(body.timeSpentSeconds))
         : 0;
     const setTitle = questionRows[0]?.set_title ?? body.setId;
+    const submittedAt = new Date().toISOString();
 
     const { data: attempt, error: attemptError } = await db
       .from("attempts")
@@ -151,7 +156,7 @@ export async function POST(request: Request) {
         correct_count: correctCount,
         total_questions: totalQuestions,
         time_spent_seconds: timeSpentSeconds,
-        submitted_at: new Date().toISOString()
+        submitted_at: submittedAt
       })
       .select("attempt_id")
       .single();
@@ -180,12 +185,39 @@ export async function POST(request: Request) {
       return jsonError(`Failed to save attempt answers: ${answerError.message}`);
     }
 
+    const resultAnswers = results.map((result) => ({
+      attempt_answer_id: `${attempt.attempt_id}-${result.questionId}`,
+      question_id: String(result.questionId),
+      question_order: result.question.question_order,
+      prompt: result.question.prompt,
+      submitted_order_text: result.submittedOrderText,
+      correct_order_text: result.correctOrderText,
+      sentence_template: result.question.sentence_template,
+      final_sentence: result.question.final_sentence,
+      is_correct: result.isCorrect,
+      grammar_tags_text: result.question.grammar_tags_text
+    }));
+
     return NextResponse.json({
       attemptId: attempt.attempt_id,
       correctCount,
       total: totalQuestions,
       accuracy,
       timeSpentSeconds,
+      attempt: {
+        attempt_id: attempt.attempt_id,
+        set_id: String(body.setId),
+        set_title: setTitle,
+        correct_count: correctCount,
+        total_questions: totalQuestions,
+        accuracy,
+        time_spent_seconds: timeSpentSeconds,
+        submitted_at: submittedAt
+      },
+      total_count: totalQuestions,
+      correct_count: correctCount,
+      time_spent_seconds: timeSpentSeconds,
+      answers: resultAnswers,
       results: results.map(({ questionId, submittedOrderText, isCorrect }) => ({
         questionId,
         submittedOrderText,

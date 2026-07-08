@@ -3,6 +3,8 @@ export type UserRole = "student" | "teacher";
 export type PracticeSet = {
   set_id: string;
   set_title: string;
+  month_key?: string;
+  month_label?: string;
   question_count: number;
   completed: boolean;
   latest_attempt_id: string | null;
@@ -48,4 +50,29 @@ export type SubmitResponse = {
   accuracy: number;
   timeSpentSeconds: number;
   results: AnswerResult[];
+  attempt?: {
+    attempt_id: string;
+    set_id: string;
+    set_title: string;
+    correct_count: number;
+    total_questions: number;
+    accuracy: number;
+    time_spent_seconds: number;
+    submitted_at: string;
+  };
+  total_count?: number;
+  correct_count?: number;
+  time_spent_seconds?: number;
+  answers?: Array<{
+    attempt_answer_id: string;
+    question_id: string;
+    question_order: number;
+    prompt: string;
+    submitted_order_text: string;
+    correct_order_text: string;
+    sentence_template: string;
+    final_sentence: string;
+    is_correct: boolean;
+    grammar_tags_text: string | null;
+  }>;
 };

@@ -11,6 +11,8 @@ type SetsPayload = {
   error?: string;
 };
 
+const SETS_CACHE_KEY = "student-practice-sets";
+
 export function MonthList() {
   const { error, loading, months } = useStudentSetsData();
 
@@ -84,6 +86,13 @@ function useStudentSetsData(monthKey?: string) {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const cached = readSetsCache();
+    if (cached) {
+      setMonths(cached.months ?? []);
+      setSets(monthKey ? (cached.sets ?? []).filter((set) => set.month_key === monthKey) : cached.sets ?? []);
+      setLoading(false);
+    }
+
     async function loadSets() {
       const supabase = createBrowserSupabase();
       const {
@@ -111,6 +120,20 @@ function useStudentSetsData(monthKey?: string) {
       } else {
         setMonths(payload.months ?? []);
         setSets(payload.sets ?? []);
+        if (!monthKey) {
+          window.sessionStorage.setItem(SETS_CACHE_KEY, JSON.stringify(payload));
+        } else if (cached) {
+          window.sessionStorage.setItem(
+            SETS_CACHE_KEY,
+            JSON.stringify({
+              months: payload.months ?? cached.months ?? [],
+              sets: [
+                ...(cached.sets ?? []).filter((set) => set.month_key !== monthKey),
+                ...(payload.sets ?? [])
+              ]
+            })
+          );
+        }
       }
 
       setLoading(false);
@@ -120,6 +143,16 @@ function useStudentSetsData(monthKey?: string) {
   }, [monthKey]);
 
   return { error, loading, months, sets };
+}
+
+function readSetsCache() {
+  try {
+    const value = window.sessionStorage.getItem(SETS_CACHE_KEY);
+    return value ? (JSON.parse(value) as SetsPayload) : null;
+  } catch {
+    window.sessionStorage.removeItem(SETS_CACHE_KEY);
+    return null;
+  }
 }
 
 function PracticeSetGrid({ sets }: { sets: PracticeSet[] }) {
