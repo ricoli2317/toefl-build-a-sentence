@@ -23,6 +23,7 @@ type StudentSummary = {
   studentId: string;
   studentEmail: string;
   studentName: string;
+  studentDisplayName: string;
   completedSetCount: number;
   totalAttemptCount: number;
   answeredQuestionCount: number;
@@ -115,10 +116,18 @@ export function TeacherStudentsList() {
               { label: "Students" }
             ]}
           />
+          <div className="flex justify-end">
+            <Link
+              className="rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ocean"
+              href="/teacher/students/new"
+            >
+              Add student
+            </Link>
+          </div>
           <Panel title="Students">
             <ResponsiveTable
               emptyText="No students yet."
-              headers={["Student email", "Completed sets", "Total attempts", "Average accuracy"]}
+              headers={["Student", "Completed sets", "Total attempts", "Average accuracy"]}
               rows={stats.students.map((student) => ({
                 key: student.studentId,
                 cells: [
@@ -127,7 +136,7 @@ export function TeacherStudentsList() {
                     href={`/teacher/students/${student.studentId}`}
                     key="email"
                   >
-                    {student.studentEmail}
+                    {student.studentDisplayName}
                   </Link>,
                   student.completedSetCount,
                   student.totalAttemptCount,
@@ -156,13 +165,13 @@ export function TeacherStudentSummary({ studentId }: { studentId: string }) {
               crumbs={[
                 { label: "Teacher Home", href: "/teacher/dashboard" },
                 { label: "Students", href: "/teacher/students" },
-                { label: student.studentEmail }
+                { label: student.studentDisplayName }
               ]}
             />
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-ink/60">Student</p>
-                <h2 className="text-2xl font-bold">{student.studentEmail}</h2>
+                <h2 className="text-2xl font-bold">{student.studentDisplayName}</h2>
               </div>
               <Link
                 className="rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ocean"
@@ -206,14 +215,14 @@ export function TeacherStudentDetails({ studentId }: { studentId: string }) {
               crumbs={[
                 { label: "Teacher Home", href: "/teacher/dashboard" },
                 { label: "Students", href: "/teacher/students" },
-                { label: student.studentEmail, href: `/teacher/students/${studentId}` },
+                { label: student.studentDisplayName, href: `/teacher/students/${studentId}` },
                 { label: "Details" }
               ]}
             />
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-ink/60">Student details</p>
-                <h2 className="text-2xl font-bold">{student.studentEmail}</h2>
+                <h2 className="text-2xl font-bold">{student.studentDisplayName}</h2>
               </div>
             </div>
             {attempts.length === 0 ? <EmptyState text="No completed practice sets yet." /> : null}
@@ -296,7 +305,7 @@ export function TeacherStudentSetDetails({
               crumbs={[
                 { label: "Teacher Home", href: "/teacher/dashboard" },
                 { label: "Students", href: "/teacher/students" },
-                { label: student.studentEmail, href: `/teacher/students/${studentId}` },
+                { label: student.studentDisplayName, href: `/teacher/students/${studentId}` },
                 { label: "Details", href: `/teacher/students/${studentId}/details` },
                 { label: setTitle }
               ]}
@@ -370,7 +379,7 @@ export function TeacherStudentQuestionDetail({ attemptAnswerId }: { attemptAnswe
         const answer = stats.answers.find((item) => item.attemptAnswerId === attemptAnswerId);
         if (!answer) return <EmptyState text="Question detail not found." />;
         const student = stats.students.find((item) => item.studentId === answer.studentId);
-        const studentLabel = student?.studentEmail ?? "Student";
+        const studentLabel = student?.studentDisplayName ?? "Student";
 
         return (
           <div className="grid gap-5">

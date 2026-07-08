@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
+import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
 type AttemptRow = {
   attempt_id: string;
@@ -33,6 +34,12 @@ type ProfileRow = {
   email: string | null;
   full_name: string | null;
   role: string | null;
+};
+
+type AuthUserRow = {
+  id: string;
+  email?: string | null;
+  user_metadata?: Record<string, unknown> | null;
 };
 
 type QuestionRow = {
@@ -196,6 +203,20 @@ export async function GET(request: Request) {
       ...profile,
       id: String(profile.id)
     }));
+    const authUserById = new Map<string, AuthUserRow>();
+    if (serviceRoleKey) {
+      const { data: authUsers, error: authUsersError } = await db.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000
+      });
+      if (authUsersError) {
+        console.error("Failed to load auth users for display names", authUsersError);
+      } else {
+        for (const authUser of authUsers.users as AuthUserRow[]) {
+          authUserById.set(String(authUser.id), authUser);
+        }
+      }
+    }
     const questionRows = ((questions ?? []) as QuestionRow[]).map((question) => ({
       ...question,
       question_id: String(question.question_id),
@@ -229,6 +250,12 @@ export async function GET(request: Request) {
 
     const studentSummaries = Array.from(studentIds).map((studentId) => {
       const profile = profileRows.find((item) => item.id === studentId);
+      const authUser = authUserById.get(studentId);
+      const studentEmail = authUser?.email ?? profile?.email ?? null;
+      const studentDisplayName = getPreferredUserDisplayName({
+        email: studentEmail,
+        metadata: authUser?.user_metadata ?? null
+      });
       const studentAttempts = attemptRows.filter((attempt) => attempt.student_id === studentId);
       const studentAnswers = answerRows.filter((answer) => answer.student_id === studentId);
       const uniqueAnsweredQuestions = new Set(
@@ -246,8 +273,9 @@ export async function GET(request: Request) {
 
       return {
         studentId,
-        studentEmail: profile?.email ?? "Unknown email",
-        studentName: profile?.full_name ?? profile?.email ?? "Unknown student",
+        studentEmail: studentEmail ?? "Unknown email",
+        studentName: studentDisplayName,
+        studentDisplayName,
         completedSetCount: completedSets.size,
         totalAttemptCount: studentAttempts.length,
         answeredQuestionCount: uniqueAnsweredQuestions.size,
@@ -316,7 +344,7 @@ export async function GET(request: Request) {
         answeredQuestionCount: answerRows.length,
         averageAccuracy: ratio(correctCount, totalQuestions)
       },
-      students: studentSummaries.sort((a, b) => a.studentEmail.localeCompare(b.studentEmail)),
+      students: studentSummaries.sort((a, b) => a.studentDisplayName.localeCompare(b.studentDisplayName)),
       sets: setSummaries.sort((a, b) => compareSetIds(a.setId, b.setId)),
       attempts: attemptRows
         .map((attempt) => ({
