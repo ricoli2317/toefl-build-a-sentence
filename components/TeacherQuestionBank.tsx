@@ -127,11 +127,7 @@ export function TeacherQuestionBankSets({ monthKey }: { monthKey: string }) {
               href={`/teacher/question-bank/${encodeURIComponent(monthKey)}/${encodeURIComponent(set.set_id)}`}
               key={set.set_id}
             >
-              <p className="text-sm font-semibold text-ocean">{set.set_title}</p>
-              <h2 className="mt-1 text-sm font-semibold text-ink/60">{set.set_id}</h2>
-              <p className="mt-4 text-sm text-ink/70">
-                {set.question_count} question{set.question_count === 1 ? "" : "s"}
-              </p>
+              <p className="text-lg font-bold text-ocean">{set.set_title}</p>
             </Link>
           ))}
         </div>
@@ -176,17 +172,11 @@ export function TeacherQuestionBankSetViewer({
         <EmptyPanel text="No questions found for this set." />
       ) : (
         <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
             <div>
-              <p className="text-sm font-semibold text-ocean">{setTitle}</p>
+              <p className="text-sm font-semibold text-gold">Q{currentIndex + 1}</p>
               <h2 className="mt-1 text-xl font-bold">{currentQuestion.prompt}</h2>
-              <p className="mt-1 text-sm text-ink/60">
-                Question {currentIndex + 1}/{questions.length} · {setId}
-              </p>
             </div>
-            <span className="rounded-full bg-paper px-3 py-1 text-xs font-bold text-ink/70">
-              Q{currentQuestion.question_order}
-            </span>
           </div>
 
           <div className="mt-6 text-lg leading-10">
@@ -197,8 +187,7 @@ export function TeacherQuestionBankSetViewer({
           </div>
 
           <div className="mt-6">
-            <p className="text-sm font-semibold uppercase tracking-wide text-ink/50">Word blocks</p>
-            <div className="mt-3 flex flex-wrap justify-center gap-3 text-center">
+            <div className="flex flex-wrap justify-center gap-3 text-center">
               {splitTextItems(currentQuestion.options_text).map((chunk, index) => (
                 <span
                   className="inline-flex min-h-12 items-center justify-center rounded-md border border-line bg-white px-4 py-2 text-base font-semibold"
@@ -378,7 +367,7 @@ function QuestionViewerNav({
             onClick={() => onChange(index)}
             type="button"
           >
-            Question {index + 1}
+            Q{index + 1}
           </button>
         ))}
       </div>
