@@ -27,6 +27,10 @@ type OptionChunk = {
   text: string;
 };
 
+type DraftAnswers = Record<string, Array<OptionChunk | null>>;
+
+type QuestionTimes = Record<string, number>;
+
 const DEFAULT_TIME_SECONDS = 6 * 60 + 50;
 
 export function PracticeSession({ setId }: { setId: string }) {
@@ -34,7 +38,9 @@ export function PracticeSession({ setId }: { setId: string }) {
   const [questions, setQuestions] = useState<PublicQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState<Array<OptionChunk | null>>([]);
-  const [savedAnswers, setSavedAnswers] = useState<SavedAnswers>({});
+  const [draftAnswers, setDraftAnswers] = useState<DraftAnswers>({});
+  const [questionTimes, setQuestionTimes] = useState<QuestionTimes>({});
+  const [showReview, setShowReview] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -159,26 +165,19 @@ export function PracticeSession({ setId }: { setId: string }) {
       return;
     }
 
-    const timeoutAnswers =
-      currentQuestionId && !savedAnswers[currentQuestionId]
-        ? {
-            ...savedAnswers,
-            [currentQuestionId]: {
-              chunks: [],
-              questionTimeSeconds: elapsedQuestionSeconds(questionStartedAt)
-            }
-          }
-        : savedAnswers;
-
-    submitAll(timeoutAnswers, DEFAULT_TIME_SECONDS);
+    const { savedAnswers } = saveCurrentProgress();
+    submitAll(savedAnswers, DEFAULT_TIME_SECONDS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentQuestionId,
+    currentAnswer,
+    draftAnswers,
     loading,
+    questionTimes,
     questions.length,
     questionStartedAt,
     remainingSeconds,
     result,
-    savedAnswers,
     submitting,
     submitAll
   ]);
@@ -196,18 +195,60 @@ export function PracticeSession({ setId }: { setId: string }) {
 
   useEffect(() => {
     if (!currentQuestionId) return;
-    setCurrentAnswer(Array.from({ length: currentBlankCount }, () => null));
+    setCurrentAnswer(
+      normalizeOptionAnswer(draftAnswers[currentQuestionId], currentBlankCount)
+    );
     setQuestionStartedAt(Date.now());
-  }, [currentQuestionId, currentBlankCount]);
+  }, [currentQuestionId, currentBlankCount, draftAnswers]);
 
   const selectedIds = new Set(
     currentAnswer.flatMap((chunk) => (chunk ? [chunk.id] : []))
   );
-  const isCurrentFilled =
-    Boolean(currentQuestion) &&
-    currentAnswer.length === currentQuestion.blank_count &&
-    currentAnswer.every(Boolean);
   const isLastQuestion = currentIndex === questions.length - 1;
+
+  function buildSavedAnswers(nextDraftAnswers: DraftAnswers, nextQuestionTimes: QuestionTimes) {
+    return questions.reduce<SavedAnswers>((answers, question) => {
+      const answer = normalizeOptionAnswer(
+        nextDraftAnswers[question.question_id],
+        question.blank_count
+      );
+      answers[question.question_id] = {
+        chunks: answer.map((chunk) => chunk?.text ?? ""),
+        questionTimeSeconds: nextQuestionTimes[question.question_id] ?? 0
+      };
+      return answers;
+    }, {});
+  }
+
+  function saveCurrentProgress() {
+    if (!currentQuestion) {
+      return {
+        nextDraftAnswers: draftAnswers,
+        nextQuestionTimes: questionTimes,
+        savedAnswers: buildSavedAnswers(draftAnswers, questionTimes)
+      };
+    }
+
+    const questionId = currentQuestion.question_id;
+    const nextDraftAnswers = {
+      ...draftAnswers,
+      [questionId]: normalizeOptionAnswer(currentAnswer, currentQuestion.blank_count)
+    };
+    const nextQuestionTimes = {
+      ...questionTimes,
+      [questionId]: (questionTimes[questionId] ?? 0) + elapsedQuestionSeconds(questionStartedAt)
+    };
+
+    setDraftAnswers(nextDraftAnswers);
+    setQuestionTimes(nextQuestionTimes);
+    setQuestionStartedAt(Date.now());
+
+    return {
+      nextDraftAnswers,
+      nextQuestionTimes,
+      savedAnswers: buildSavedAnswers(nextDraftAnswers, nextQuestionTimes)
+    };
+  }
 
   function dropChunk(blankIndex: number, chunkId: string) {
     if (!currentQuestion || result || submitting) return;
@@ -235,25 +276,39 @@ export function PracticeSession({ setId }: { setId: string }) {
     });
   }
 
-  async function confirmCurrentQuestion() {
-    if (!currentQuestion || !isCurrentFilled) return;
-
-    const nextAnswers = {
-      ...savedAnswers,
-      [currentQuestion.question_id]: {
-        chunks: currentAnswer.map((chunk) => chunk?.text ?? ""),
-        questionTimeSeconds: elapsedQuestionSeconds(questionStartedAt)
-      }
-    };
-
-    setSavedAnswers(nextAnswers);
-
+  async function goNext() {
+    if (!currentQuestion) return;
+    const { savedAnswers } = saveCurrentProgress();
     if (isLastQuestion) {
-      await submitAll(nextAnswers);
+      await submitAll(savedAnswers);
       return;
     }
 
     setCurrentIndex((index) => index + 1);
+  }
+
+  function goBack() {
+    if (currentIndex === 0) return;
+    saveCurrentProgress();
+    setShowReview(false);
+    setCurrentIndex((index) => index - 1);
+  }
+
+  function openReview() {
+    saveCurrentProgress();
+    setShowReview(true);
+  }
+
+  function jumpToQuestion(index: number) {
+    const question = questions[index];
+    if (!question) return;
+
+    setCurrentIndex(index);
+    setCurrentAnswer(
+      normalizeOptionAnswer(draftAnswers[question.question_id], question.blank_count)
+    );
+    setQuestionStartedAt(Date.now());
+    setShowReview(false);
   }
 
   if (loading) {
@@ -289,69 +344,92 @@ export function PracticeSession({ setId }: { setId: string }) {
 
       {error ? <p className="font-semibold text-coral">{error}</p> : null}
 
-      <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
-        <p className="text-sm font-semibold text-gold">
-          Question {currentQuestion.question_order}
-        </p>
-        <h2 className="mt-1 text-xl font-bold">{currentQuestion.prompt}</h2>
+      {showReview ? (
+        <ReviewPanel
+          currentIndex={currentIndex}
+          draftAnswers={draftAnswers}
+          onJumpToQuestion={jumpToQuestion}
+          questions={questions}
+        />
+      ) : (
+        <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
+          <p className="text-sm font-semibold text-gold">
+            Question {currentQuestion.question_order}
+          </p>
+          <h2 className="mt-1 text-xl font-bold">{currentQuestion.prompt}</h2>
 
-        <div className="mt-6 text-lg leading-10">
-          <SentenceTemplate
-            answers={currentAnswer}
-            disabled={Boolean(result) || submitting}
-            onDropChunk={dropChunk}
-            onRemoveAnswer={removeAnswer}
-            template={currentQuestion.sentence_template}
-          />
-        </div>
-
-        <div className="mt-6">
-          <div className="mt-3 flex flex-wrap justify-center gap-3 text-center">
-            {optionChunks.map((chunk) => {
-              const isUsed = selectedIds.has(chunk.id);
-
-              return (
-                <button
-                  aria-disabled={isUsed || result !== null || submitting}
-                  className={`inline-flex min-h-12 items-center justify-center rounded-md border px-4 py-2 text-base font-semibold ${
-                    isUsed
-                      ? "cursor-not-allowed border-ocean/30 bg-paper text-ink/55 opacity-70 shadow-inner"
-                      : "border-line bg-white hover:border-ocean disabled:cursor-not-allowed disabled:bg-paper disabled:text-ink/35"
-                  }`}
-                  disabled={result !== null || submitting}
-                  draggable={!isUsed && !result && !submitting}
-                  key={chunk.id}
-                  onDragStart={(event) => {
-                    if (isUsed) {
-                      event.preventDefault();
-                      return;
-                    }
-                    event.dataTransfer.setData("text/plain", chunk.id);
-                  }}
-                  type="button"
-                >
-                  {formatOptionChunk(chunk.text)}
-                </button>
-              );
-            })}
+          <div className="mt-6 text-lg leading-10">
+            <SentenceTemplate
+              answers={currentAnswer}
+              disabled={Boolean(result) || submitting}
+              onDropChunk={dropChunk}
+              onRemoveAnswer={removeAnswer}
+              template={currentQuestion.sentence_template}
+            />
           </div>
-        </div>
 
-        <div className="mt-7 flex justify-end">
+          <div className="mt-6">
+            <div className="mt-3 flex flex-wrap justify-center gap-3 text-center">
+              {optionChunks.map((chunk) => {
+                const isUsed = selectedIds.has(chunk.id);
+
+                return (
+                  <button
+                    aria-disabled={isUsed || result !== null || submitting}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-md border px-4 py-2 text-base font-semibold ${
+                      isUsed
+                        ? "cursor-not-allowed border-ocean/30 bg-paper text-ink/55 opacity-70 shadow-inner"
+                        : "border-line bg-white hover:border-ocean disabled:cursor-not-allowed disabled:bg-paper disabled:text-ink/35"
+                    }`}
+                    disabled={result !== null || submitting}
+                    draggable={!isUsed && !result && !submitting}
+                    key={chunk.id}
+                    onDragStart={(event) => {
+                      if (isUsed) {
+                        event.preventDefault();
+                        return;
+                      }
+                      event.dataTransfer.setData("text/plain", chunk.id);
+                    }}
+                    type="button"
+                  >
+                    {formatOptionChunk(chunk.text)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </article>
+      )}
+
+      <div className="flex flex-wrap justify-end gap-3">
+        <button
+          className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={submitting || Boolean(result)}
+          onClick={openReview}
+          type="button"
+        >
+          Review
+        </button>
+        {currentIndex > 0 ? (
           <button
             className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={!isCurrentFilled || submitting || Boolean(result)}
-            onClick={confirmCurrentQuestion}
+            disabled={submitting || Boolean(result)}
+            onClick={goBack}
             type="button"
           >
-            {submitting
-              ? "Submitting..."
-              : isLastQuestion
-                ? "Submit set"
-                : "Confirm question"}
+            Back
           </button>
-        </div>
-      </article>
+        ) : null}
+        <button
+          className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={submitting || Boolean(result)}
+          onClick={goNext}
+          type="button"
+        >
+          {submitting ? "Submitting..." : "Next"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -374,6 +452,63 @@ function isSubmitResponse(value: Partial<SubmitResponse>): value is SubmitRespon
     typeof value.accuracy === "number" &&
     typeof value.timeSpentSeconds === "number" &&
     Array.isArray(value.results)
+  );
+}
+
+function normalizeOptionAnswer(
+  answer: Array<OptionChunk | null> | undefined,
+  blankCount: number
+) {
+  return Array.from({ length: blankCount }, (_, index) => answer?.[index] ?? null);
+}
+
+function ReviewPanel({
+  currentIndex,
+  draftAnswers,
+  onJumpToQuestion,
+  questions
+}: {
+  currentIndex: number;
+  draftAnswers: DraftAnswers;
+  onJumpToQuestion: (index: number) => void;
+  questions: PublicQuestion[];
+}) {
+  return (
+    <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
+      <div>
+        <p className="text-sm font-semibold text-gold">Review</p>
+        <h2 className="mt-1 text-xl font-bold">Question status</h2>
+      </div>
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        {questions.map((question, index) => {
+          const answer = normalizeOptionAnswer(
+            draftAnswers[question.question_id],
+            question.blank_count
+          );
+          const completed = answer.length === question.blank_count && answer.every(Boolean);
+
+          return (
+            <button
+              className={`flex items-center justify-between gap-3 rounded-md border px-4 py-3 text-left font-semibold hover:border-ocean ${
+                currentIndex === index ? "border-ocean bg-ocean/10" : "border-line bg-paper"
+              }`}
+              key={question.question_id}
+              onClick={() => onJumpToQuestion(index)}
+              type="button"
+            >
+              <span>Question {index + 1}</span>
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-bold ${
+                  completed ? "bg-green-100 text-green-700" : "bg-coral/15 text-coral"
+                }`}
+              >
+                {completed ? "Completed" : "Incomplete"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </article>
   );
 }
 
