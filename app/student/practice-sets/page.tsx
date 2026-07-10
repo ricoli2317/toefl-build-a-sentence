@@ -1,16 +1,16 @@
 import { AppShell } from "@/components/AppShell";
-import { StudentHome } from "@/components/SetList";
+import { MonthList } from "@/components/SetList";
 import { SignOutButton } from "@/components/SignOutButton";
 
-export default function StudentSetsPage() {
+export default function StudentPracticeSetsPage() {
   return (
     <AppShell
       action={<SignOutButton />}
       brand="Build a Sentence"
       eyebrow="Student"
-      title="Student Home"
+      title="Choose a month"
     >
-      <StudentHome />
+      <MonthList />
     </AppShell>
   );
 }

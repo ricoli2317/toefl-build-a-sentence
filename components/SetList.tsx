@@ -13,6 +13,38 @@ type SetsPayload = {
 
 const SETS_CACHE_KEY = "student-practice-sets";
 
+export function StudentHome() {
+  return (
+    <div className="grid gap-5">
+      <StudentNavigation
+        backHref="/student/sets"
+        crumbs={[
+          { label: "Student Home", href: "/student/sets" },
+          { label: "Practice Sets" }
+        ]}
+      />
+      <div className="grid gap-4 md:grid-cols-2">
+        <Link
+          className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+          href="/student/wrong-questions"
+        >
+          <p className="text-sm font-semibold text-ocean">Review</p>
+          <h2 className="mt-1 text-2xl font-bold">Wrong Questions</h2>
+          <p className="mt-2 text-sm leading-6 text-ink/70">错题集</p>
+        </Link>
+        <Link
+          className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+          href="/student/practice-sets"
+        >
+          <p className="text-sm font-semibold text-ocean">Practice</p>
+          <h2 className="mt-1 text-2xl font-bold">Practice Sets</h2>
+          <p className="mt-2 text-sm leading-6 text-ink/70">按月选择套题</p>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export function MonthList() {
   const { error, loading, months } = useStudentSetsData();
 
@@ -31,7 +63,7 @@ export function MonthList() {
         {months.map((month) => (
           <Link
             className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-            href={`/student/sets/${month.month_key}`}
+            href={`/student/practice-sets/${month.month_key}`}
             key={month.month_key}
           >
             <p className="text-sm font-semibold text-ocean">Practice Month</p>
@@ -68,9 +100,10 @@ export function SetList({ monthKey, monthLabel }: { monthKey: string; monthLabel
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref="/student/sets"
+        backHref="/student/practice-sets"
         crumbs={[
           { label: "Student Home", href: "/student/sets" },
+          { label: "Practice Sets", href: "/student/practice-sets" },
           { label: monthLabel }
         ]}
       />

@@ -86,6 +86,8 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as {
       setId?: string;
+      setTitle?: string;
+      questionIds?: string[];
       answers?: SubmittedAnswer[];
       timeSpentSeconds?: number;
     };
@@ -102,19 +104,34 @@ export async function POST(request: Request) {
       }
     });
 
-    const { data: questions, error: questionsError } = await db
+    const questionIds = Array.isArray(body.questionIds)
+      ? body.questionIds.map((questionId) => String(questionId)).filter(Boolean)
+      : [];
+    const questionQuery = db
       .from("questions")
       .select(
         "question_id,set_id,set_title,question_order,prompt,sentence_template,correct_order_text,final_sentence,grammar_tags_text"
-      )
-      .eq("set_id", body.setId)
-      .order("question_order", { ascending: true });
+      );
+    const { data: questions, error: questionsError } =
+      questionIds.length > 0
+        ? await questionQuery.in("question_id", questionIds)
+        : await questionQuery.eq("set_id", body.setId).order("question_order", { ascending: true });
 
     if (questionsError) {
       return jsonError(`Failed to read questions: ${questionsError.message}`);
     }
 
-    const questionRows = (questions ?? []) as QuestionForScoring[];
+    const questionOrder = new Map(questionIds.map((questionId, index) => [questionId, index]));
+    const questionRows = ((questions ?? []) as QuestionForScoring[]).sort((left, right) => {
+      if (questionIds.length > 0) {
+        return (
+          (questionOrder.get(String(left.question_id)) ?? 0) -
+          (questionOrder.get(String(right.question_id)) ?? 0)
+        );
+      }
+
+      return left.question_order - right.question_order;
+    });
     if (questionRows.length === 0) {
       return jsonError("No questions found for this set.", 404);
     }
@@ -123,12 +140,14 @@ export async function POST(request: Request) {
       body.answers.map((answer) => [String(answer.questionId), answer])
     );
 
-    const results = questionRows.map((question) => {
+    const usesExplicitQuestionOrder = questionIds.length > 0;
+    const results = questionRows.map((question, index) => {
       const questionId = String(question.question_id);
       const submittedAnswer = answerByQuestion.get(questionId);
       const submittedOrderText = submittedAnswer?.submittedOrderText ?? "";
       return {
         questionId,
+        displayQuestionOrder: usesExplicitQuestionOrder ? index + 1 : question.question_order,
         submittedOrderText,
         questionTimeSeconds: safeQuestionTimeSeconds(submittedAnswer),
         correctOrderText: question.correct_order_text,
@@ -144,7 +163,7 @@ export async function POST(request: Request) {
       Number.isFinite(body.timeSpentSeconds) && body.timeSpentSeconds
         ? Math.max(0, Math.round(body.timeSpentSeconds))
         : 0;
-    const setTitle = questionRows[0]?.set_title ?? body.setId;
+    const setTitle = body.setTitle ?? questionRows[0]?.set_title ?? body.setId;
     const submittedAt = new Date().toISOString();
 
     const { data: attempt, error: attemptError } = await db
@@ -169,8 +188,8 @@ export async function POST(request: Request) {
       attempt_id: attempt.attempt_id,
       question_id: String(result.questionId),
       student_id: user.id,
-      set_id: String(body.setId),
-      question_order: result.question.question_order,
+      set_id: String(result.question.set_id),
+      question_order: result.displayQuestionOrder,
       prompt: result.question.prompt,
       submitted_order_text: result.submittedOrderText,
       correct_order_text: result.correctOrderText,
@@ -188,7 +207,7 @@ export async function POST(request: Request) {
     const resultAnswers = results.map((result) => ({
       attempt_answer_id: `${attempt.attempt_id}-${result.questionId}`,
       question_id: String(result.questionId),
-      question_order: result.question.question_order,
+      question_order: result.displayQuestionOrder,
       prompt: result.question.prompt,
       submitted_order_text: result.submittedOrderText,
       correct_order_text: result.correctOrderText,

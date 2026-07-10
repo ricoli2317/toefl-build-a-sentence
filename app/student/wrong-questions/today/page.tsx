@@ -1,16 +1,16 @@
 import { AppShell } from "@/components/AppShell";
-import { StudentHome } from "@/components/SetList";
 import { SignOutButton } from "@/components/SignOutButton";
+import { TodayWrongQuestions } from "@/components/WrongQuestions";
 
-export default function StudentSetsPage() {
+export default function StudentTodayWrongQuestionsPage() {
   return (
     <AppShell
       action={<SignOutButton />}
       brand="Build a Sentence"
       eyebrow="Student"
-      title="Student Home"
+      title="Today's Wrong Questions"
     >
-      <StudentHome />
+      <TodayWrongQuestions />
     </AppShell>
   );
 }

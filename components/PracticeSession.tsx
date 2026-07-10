@@ -33,7 +33,25 @@ type QuestionTimes = Record<string, number>;
 
 const DEFAULT_TIME_SECONDS = 6 * 60 + 50;
 
-export function PracticeSession({ setId }: { setId: string }) {
+export function PracticeSession({
+  allowEndPractice = false,
+  hideQuestionCardNumber = false,
+  initialQuestions,
+  setId,
+  setTitle,
+  submitAnsweredOnly = false,
+  timed = true,
+  totalSeconds = DEFAULT_TIME_SECONDS
+}: {
+  allowEndPractice?: boolean;
+  hideQuestionCardNumber?: boolean;
+  initialQuestions?: PublicQuestion[];
+  setId: string;
+  setTitle?: string;
+  submitAnsweredOnly?: boolean;
+  timed?: boolean;
+  totalSeconds?: number;
+}) {
   const router = useRouter();
   const [questions, setQuestions] = useState<PublicQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -47,14 +65,22 @@ export function PracticeSession({ setId }: { setId: string }) {
   const [result, setResult] = useState<SubmitResponse | null>(null);
   const [startedAt] = useState(() => Date.now());
   const [questionStartedAt, setQuestionStartedAt] = useState(() => Date.now());
-  const [remainingSeconds, setRemainingSeconds] = useState(DEFAULT_TIME_SECONDS);
+  const [remainingSeconds, setRemainingSeconds] = useState(totalSeconds);
+  const [visitedQuestionIds, setVisitedQuestionIds] = useState<Set<string>>(() => new Set());
 
   const currentQuestion = questions[currentIndex];
   const currentQuestionId = currentQuestion?.question_id;
   const currentBlankCount = currentQuestion?.blank_count ?? 0;
+  const usesProvidedQuestions = Boolean(initialQuestions);
 
   useEffect(() => {
     async function loadQuestions() {
+      if (initialQuestions) {
+        setQuestions(initialQuestions);
+        setLoading(false);
+        return;
+      }
+
       const supabase = createBrowserSupabase();
       const {
         data: { session }
@@ -85,14 +111,20 @@ export function PracticeSession({ setId }: { setId: string }) {
     }
 
     loadQuestions();
-  }, [setId]);
+  }, [initialQuestions, setId]);
 
   const submitAll = useCallback(
-    async (answersToSubmit: SavedAnswers, forcedTimeSpentSeconds?: number) => {
+    async (
+      answersToSubmit: SavedAnswers,
+      forcedTimeSpentSeconds?: number,
+      questionIdsToSubmit?: string[]
+    ) => {
       setSubmitting(true);
       setError("");
 
       try {
+        const effectiveQuestionIds =
+          questionIdsToSubmit ?? (usesProvidedQuestions ? questions.map((question) => question.question_id) : undefined);
         const supabase = createBrowserSupabase();
         const {
           data: { session }
@@ -106,7 +138,13 @@ export function PracticeSession({ setId }: { setId: string }) {
           },
           body: JSON.stringify({
             setId,
-            answers: questions.map((question) => ({
+            setTitle,
+            questionIds: effectiveQuestionIds,
+            answers: questions
+              .filter((question) =>
+                effectiveQuestionIds ? effectiveQuestionIds.includes(question.question_id) : true
+              )
+              .map((question) => ({
               questionId: question.question_id,
               submittedOrderText: joinTextItems(
                 answersToSubmit[question.question_id]?.chunks ?? []
@@ -117,7 +155,7 @@ export function PracticeSession({ setId }: { setId: string }) {
             timeSpentSeconds:
               forcedTimeSpentSeconds ??
               Math.min(
-                DEFAULT_TIME_SECONDS,
+                timed ? totalSeconds : Number.MAX_SAFE_INTEGER,
                 Math.max(0, Math.round((Date.now() - startedAt) / 1000))
               )
           })
@@ -159,26 +197,31 @@ export function PracticeSession({ setId }: { setId: string }) {
         setSubmitting(false);
       }
     },
-    [questions, router, setId, startedAt]
+    [questions, router, setId, setTitle, startedAt, timed, totalSeconds, usesProvidedQuestions]
   );
 
   useEffect(() => {
-    if (loading || result || submitting || questions.length === 0) return;
+    if (questions.length === 0) return;
+    setCurrentIndex((index) => Math.min(index, questions.length - 1));
+  }, [questions.length]);
+
+  useEffect(() => {
+    if (!timed || loading || result || submitting || questions.length === 0) return;
 
     const timer = window.setInterval(() => {
       setRemainingSeconds((seconds) => Math.max(0, seconds - 1));
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [loading, questions.length, result, submitting]);
+  }, [loading, questions.length, result, submitting, timed]);
 
   useEffect(() => {
-    if (remainingSeconds !== 0 || loading || result || submitting || questions.length === 0) {
+    if (!timed || remainingSeconds !== 0 || loading || result || submitting || questions.length === 0) {
       return;
     }
 
     const { savedAnswers } = saveCurrentProgress();
-    submitAll(savedAnswers, DEFAULT_TIME_SECONDS);
+    submitAll(savedAnswers, totalSeconds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentQuestionId,
@@ -207,6 +250,7 @@ export function PracticeSession({ setId }: { setId: string }) {
 
   useEffect(() => {
     if (!currentQuestionId) return;
+    setVisitedQuestionIds((ids) => new Set(ids).add(currentQuestionId));
     setCurrentAnswer(
       normalizeOptionAnswer(draftAnswers[currentQuestionId], currentBlankCount)
     );
@@ -299,6 +343,20 @@ export function PracticeSession({ setId }: { setId: string }) {
     setCurrentIndex((index) => index + 1);
   }
 
+  async function endPractice() {
+    const { savedAnswers } = saveCurrentProgress();
+    const practicedQuestionIds = questions
+      .map((question) => question.question_id)
+      .filter((questionId) => visitedQuestionIds.has(questionId));
+
+    if (practicedQuestionIds.length === 0) {
+      setError("No questions practiced yet.");
+      return;
+    }
+
+    await submitAll(savedAnswers, undefined, submitAnsweredOnly ? practicedQuestionIds : undefined);
+  }
+
   function goBack() {
     if (currentIndex === 0) return;
     saveCurrentProgress();
@@ -348,10 +406,12 @@ export function PracticeSession({ setId }: { setId: string }) {
             </p>
           ) : null}
         </div>
-        <div className="rounded-md border border-line bg-paper px-4 py-2 text-right">
-          <p className="text-xs font-semibold uppercase text-ink/50">Time left</p>
-          <p className="font-mono text-xl font-bold">{formatTime(remainingSeconds)}</p>
-        </div>
+        {timed ? (
+          <div className="rounded-md border border-line bg-paper px-4 py-2 text-right">
+            <p className="text-xs font-semibold uppercase text-ink/50">Time left</p>
+            <p className="font-mono text-xl font-bold">{formatTime(remainingSeconds)}</p>
+          </div>
+        ) : null}
       </div>
 
       {error ? <p className="font-semibold text-coral">{error}</p> : null}
@@ -365,9 +425,11 @@ export function PracticeSession({ setId }: { setId: string }) {
         />
       ) : (
         <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
-          <p className="text-sm font-semibold text-gold">
-            Question {currentQuestion.question_order}
-          </p>
+          {!hideQuestionCardNumber ? (
+            <p className="text-sm font-semibold text-gold">
+              Question {currentQuestion.question_order}
+            </p>
+          ) : null}
           <h2 className="mt-1 text-xl font-bold">{currentQuestion.prompt}</h2>
 
           <div className="mt-6 text-lg leading-10">
@@ -415,6 +477,16 @@ export function PracticeSession({ setId }: { setId: string }) {
       )}
 
       <div className="flex flex-wrap justify-end gap-3">
+        {allowEndPractice ? (
+          <button
+            className="rounded-md border border-line bg-white px-5 py-3 font-semibold hover:border-ocean disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={submitting || Boolean(result)}
+            onClick={endPractice}
+            type="button"
+          >
+            End Practice
+          </button>
+        ) : null}
         <button
           className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitting || Boolean(result)}

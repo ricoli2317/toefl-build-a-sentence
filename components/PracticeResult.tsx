@@ -97,6 +97,7 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
   }
 
   const { attempt, answers } = payload;
+  const isWrongQuestionsPractice = attempt.set_id.startsWith("wrongbook-");
   const visibleAnswers = showIncorrectOnly
     ? answers.filter((answer) => !answer.is_correct)
     : answers;
@@ -169,16 +170,18 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
                       "No answer"}
                   </dd>
                 </div>
-                <div>
-                  <dt className="font-semibold text-ink/60">Correct answer</dt>
-                  <dd className="mt-1">
-                    {buildSentenceDisplay(
-                      answer.sentence_template,
-                      answer.correct_order_text,
-                      answer.final_sentence
-                    )}
-                  </dd>
-                </div>
+                {isWrongQuestionsPractice && !answer.is_correct ? (
+                  <div>
+                    <dt className="font-semibold text-ink/60">Correct answer</dt>
+                    <dd className="mt-1">
+                      {buildSentenceDisplay(
+                        answer.sentence_template,
+                        answer.correct_order_text,
+                        answer.final_sentence
+                      )}
+                    </dd>
+                  </div>
+                ) : null}
               </dl>
             </article>
           ))}
