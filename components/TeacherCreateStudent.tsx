@@ -1,8 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  TEACHER_STATS_CACHE_KEY,
+  useTeacherDataCache
+} from "@/components/TeacherDataCache";
 
 type CreateStudentResponse = {
   student?: {
@@ -14,7 +17,7 @@ type CreateStudentResponse = {
 };
 
 export function TeacherCreateStudent() {
-  const router = useRouter();
+  const { invalidate } = useTeacherDataCache();
   const [studentName, setStudentName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -65,7 +68,7 @@ export function TeacherCreateStudent() {
       setStudentName("");
       setEmail("");
       setPassword("");
-      router.refresh();
+      invalidate(TEACHER_STATS_CACHE_KEY);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Could not create student.");
     } finally {

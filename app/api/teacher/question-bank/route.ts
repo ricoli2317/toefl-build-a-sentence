@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
-import { createServiceSupabase } from "@/lib/supabase/server";
+import { createAnonSupabase } from "@/lib/supabase/server";
 
 type QuestionRow = {
   question_id: string;
@@ -148,7 +148,8 @@ function buildQuestionBank(questionRows: QuestionRow[]) {
 
 export async function GET(request: Request) {
   try {
-    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    const token = bearerToken(request);
+    const auth = await requireUserWithRole(token, "teacher");
     if (auth.error) {
       return jsonError(auth.error, auth.error === "Unauthorized" ? 403 : 401);
     }
@@ -157,7 +158,7 @@ export async function GET(request: Request) {
     const month = searchParams.get("month");
     const setId = searchParams.get("setId");
 
-    const supabase = createServiceSupabase();
+    const supabase = createAnonSupabase(token);
     const { data, error } = await supabase
       .from("questions")
       .select(

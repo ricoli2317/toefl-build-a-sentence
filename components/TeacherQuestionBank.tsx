@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   buildSentenceDisplay,
   formatOptionChunk,
@@ -14,6 +14,10 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { QuestionViewerNav } from "@/components/QuestionViewerNav";
 import { TeacherNavigation } from "@/components/TeacherDashboard";
+import {
+  TEACHER_QUESTION_BANK_CACHE_PREFIX,
+  useTeacherCachedData
+} from "@/components/TeacherDataCache";
 
 type QuestionBankPayload = {
   months: MonthSummary[];
@@ -226,82 +230,64 @@ export function TeacherQuestionBankSetViewer({
 }
 
 function useQuestionBank(params?: { month?: string; setId?: string }): LoadState {
-  const [state, setState] = useState<LoadState>({
-    data: null,
-    error: "",
-    loading: true
-  });
-  const query = useMemo(() => {
-    const searchParams = new URLSearchParams();
-    if (params?.month) searchParams.set("month", params.month);
-    if (params?.setId) searchParams.set("setId", params.setId);
-    const queryString = searchParams.toString();
-    return queryString ? `?${queryString}` : "";
-  }, [params?.month, params?.setId]);
+  const state = useTeacherCachedData<QuestionBankPayload>(
+    `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:all`,
+    loadQuestionBank
+  );
+  if (!state.data || (!params?.month && !params?.setId)) return state;
 
-  useEffect(() => {
-    let ignore = false;
+  const sets = params.setId
+    ? state.data.sets.filter((set) => set.set_id === params.setId)
+    : state.data.sets.filter((set) => set.month_key === params.month);
+  const setIds = new Set(sets.map((set) => set.set_id));
 
-    async function loadQuestionBank() {
-      setState({ data: null, error: "", loading: true });
-
-      try {
-        const supabase = createBrowserSupabase();
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
-
-        const response = await fetch(`/api/teacher/question-bank${query}`, {
-          headers: {
-            Authorization: `Bearer ${session?.access_token ?? ""}`
-          }
-        });
-        const responseText = await response.text();
-        let payload: QuestionBankPayload;
-
-        try {
-          payload = responseText
-            ? JSON.parse(responseText)
-            : { error: "The question bank API returned an empty response.", months: [], questions: [], sets: [] };
-        } catch {
-          payload = {
-            error: "The question bank API returned invalid JSON.",
-            months: [],
-            questions: [],
-            sets: []
-          };
-        }
-
-        if (ignore) return;
-
-        if (!response.ok) {
-          setState({
-            data: null,
-            error: payload.error ?? "Could not load question bank.",
-            loading: false
-          });
-        } else {
-          setState({ data: payload, error: "", loading: false });
-        }
-      } catch (error) {
-        if (!ignore) {
-          setState({
-            data: null,
-            error: error instanceof Error ? error.message : "Could not load question bank.",
-            loading: false
-          });
-        }
-      }
+  return {
+    ...state,
+    data: {
+      months: state.data.months,
+      sets,
+      questions: state.data.questions.filter((question) => setIds.has(question.set_id))
     }
+  };
+}
 
-    loadQuestionBank();
+async function loadQuestionBank() {
+  const supabase = createBrowserSupabase();
+  const {
+    data: { session }
+  } = await supabase.auth.getSession();
 
-    return () => {
-      ignore = true;
+  const response = await fetch("/api/teacher/question-bank", {
+    headers: {
+      Authorization: `Bearer ${session?.access_token ?? ""}`
+    }
+  });
+  const responseText = await response.text();
+  let payload: QuestionBankPayload;
+
+  try {
+    payload = responseText
+      ? JSON.parse(responseText)
+      : {
+          error: "The question bank API returned an empty response.",
+          months: [],
+          questions: [],
+          sets: []
+        };
+  } catch {
+    payload = {
+      error: "The question bank API returned invalid JSON.",
+      months: [],
+      questions: [],
+      sets: []
     };
-  }, [query]);
+  }
 
-  return state;
+  if (!response.ok || payload.error) {
+    throw new Error(payload.error ?? "Could not load question bank.");
+  }
+
+  return payload;
 }
 
 function ReadOnlySentenceTemplate({

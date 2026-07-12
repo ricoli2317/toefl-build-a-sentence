@@ -1,4 +1,4 @@
-import { createAnonSupabase, createServiceSupabase } from "@/lib/supabase/server";
+import { createAnonSupabase } from "@/lib/supabase/server";
 import type { UserRole } from "@/lib/types";
 
 export async function requireUserWithRole(token: string | null, role: UserRole) {
@@ -6,7 +6,7 @@ export async function requireUserWithRole(token: string | null, role: UserRole) 
     return { error: "Missing access token", userId: null };
   }
 
-  const anon = createAnonSupabase();
+  const anon = createAnonSupabase(token);
   const {
     data: { user },
     error: userError
@@ -16,8 +16,7 @@ export async function requireUserWithRole(token: string | null, role: UserRole) 
     return { error: "Invalid session", userId: null };
   }
 
-  const service = createServiceSupabase();
-  const { data: profile, error: profileError } = await service
+  const { data: profile, error: profileError } = await anon
     .from("profiles")
     .select("role")
     .eq("id", user.id)

@@ -18,7 +18,7 @@ export function createServiceSupabase() {
   });
 }
 
-export function createAnonSupabase() {
+export function createAnonSupabase(accessToken?: string | null) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anonKey) {
@@ -32,6 +32,13 @@ export function createAnonSupabase() {
   return createClient(url, anonKey, {
     auth: {
       persistSession: false
-    }
+    },
+    global: accessToken
+      ? {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      : undefined
   });
 }

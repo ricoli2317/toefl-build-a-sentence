@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { buildSentenceDisplay } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  TEACHER_STATS_CACHE_KEY,
+  useTeacherCachedData
+} from "@/components/TeacherDataCache";
 
 type TeacherStatsPayload = {
   overview: {
@@ -40,11 +44,14 @@ type SetSummary = {
   averageAccuracy: number;
 };
 
+type PracticeType = "official" | "wrongbook-today" | "wrongbook-history";
+
 type AttemptSummary = {
   attemptId: string;
   studentId: string;
   setId: string;
   setTitle: string;
+  practiceType: PracticeType;
   correctCount: number;
   totalQuestions: number;
   accuracy: number;
@@ -58,6 +65,7 @@ type AnswerSummary = {
   studentId: string;
   setId: string;
   setTitle: string;
+  practiceType: PracticeType | "unknown";
   questionId: string;
   questionOrder: number;
   prompt: string;
@@ -85,27 +93,23 @@ type QuestionSummary = {
 
 export function TeacherDashboard() {
   return (
-    <TeacherStatsLoader>
-      {() => (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <HomeCard
-            description="Review each student's completion history and answer details."
-            href="/teacher/students"
-            title="Students"
-          />
-          <HomeCard
-            description="Review set-level and question-level performance."
-            href="/teacher/sets"
-            title="Practice Sets"
-          />
-          <HomeCard
-            description="Browse the question bank by month and review each set's prompts, blanks, word blocks, and answers."
-            href="/teacher/question-bank"
-            title="All Practice Sets"
-          />
-        </div>
-      )}
-    </TeacherStatsLoader>
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <HomeCard
+        description="Review each student's completion history and answer details."
+        href="/teacher/students"
+        title="Students"
+      />
+      <HomeCard
+        description="Review set-level and question-level performance."
+        href="/teacher/sets"
+        title="Practice Sets"
+      />
+      <HomeCard
+        description="Browse the question bank by month and review each set's prompts, blanks, word blocks, and answers."
+        href="/teacher/question-bank"
+        title="All Practice Sets"
+      />
+    </div>
   );
 }
 
@@ -207,10 +211,14 @@ export function TeacherStudentDetails({ studentId }: { studentId: string }) {
 
         const attempts = stats.attempts
           .filter((attempt) => attempt.studentId === studentId)
-          .sort((a, b) => compareSetIds(a.setId, b.setId) || compareDatesDesc(a.submittedAt, b.submittedAt));
-        const attemptsBySet = groupBy(attempts, (attempt) => attempt.setId);
+          .sort(
+            (a, b) =>
+              compareAttemptGroupIds(getAttemptGroupId(a), getAttemptGroupId(b)) ||
+              compareDatesDesc(a.submittedAt, b.submittedAt)
+          );
+        const attemptsBySet = groupBy(attempts, getAttemptGroupId);
         const setGroups = Array.from(attemptsBySet.entries()).sort(([leftSetId], [rightSetId]) =>
-          compareSetIds(leftSetId, rightSetId)
+          compareAttemptGroupIds(leftSetId, rightSetId)
         );
 
         return (
@@ -232,24 +240,27 @@ export function TeacherStudentDetails({ studentId }: { studentId: string }) {
             </div>
             {attempts.length === 0 ? <EmptyState text="No completed practice sets yet." /> : null}
             <div className="grid gap-4 md:grid-cols-2">
-              {setGroups.map(([setId, setAttempts]) => {
+              {setGroups.map(([groupId, setAttempts]) => {
                 const latestAttempt = [...setAttempts].sort((a, b) =>
                   compareDatesDesc(a.submittedAt, b.submittedAt)
                 )[0];
                 const bestAccuracy = Math.max(...setAttempts.map((attempt) => attempt.accuracy));
-                const setTitle = latestAttempt?.setTitle ?? setId;
-                const href = `/teacher/students/${studentId}/details/${encodeURIComponent(setId)}`;
+                const setTitle = getAttemptGroupTitle(
+                  groupId,
+                  latestAttempt?.setTitle ?? groupId
+                );
+                const href = `/teacher/students/${studentId}/details/${encodeURIComponent(groupId)}`;
 
                 return (
                   <Link
                     className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
                     href={href}
-                    key={setId}
+                    key={groupId}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-sm font-semibold text-ocean">{setTitle}</p>
-                        <h3 className="mt-1 text-sm font-semibold text-ink/60">{setId}</h3>
+                        <h3 className="mt-1 text-sm font-semibold text-ink/60">{groupId}</h3>
                       </div>
                       <span className="rounded-full bg-paper px-3 py-1 text-xs font-semibold">
                         {setAttempts.length} attempt{setAttempts.length === 1 ? "" : "s"}
@@ -298,10 +309,19 @@ export function TeacherStudentSetDetails({
         const student = stats.students.find((item) => item.studentId === studentId);
         if (!student) return <EmptyState text="Student not found." />;
 
+        const groupId = normalizeAttemptGroupId(setId);
         const attempts = stats.attempts
-          .filter((attempt) => attempt.studentId === studentId && attempt.setId === setId)
+          .filter(
+            (attempt) =>
+              attempt.studentId === studentId && getAttemptGroupId(attempt) === groupId
+          )
           .sort((a, b) => compareDatesDesc(a.submittedAt, b.submittedAt));
-        const setTitle = attempts[0]?.setTitle ?? stats.sets.find((set) => set.setId === setId)?.setTitle ?? setId;
+        const setTitle = getAttemptGroupTitle(
+          groupId,
+          attempts[0]?.setTitle ??
+            stats.sets.find((set) => set.setId === groupId)?.setTitle ??
+            groupId
+        );
 
         return (
           <div className="grid gap-5">
@@ -319,7 +339,7 @@ export function TeacherStudentSetDetails({
               <div>
                 <p className="text-sm font-semibold text-ink/60">Set attempts</p>
                 <h2 className="text-2xl font-bold">{setTitle}</h2>
-                <p className="text-sm text-ink/60">{setId}</p>
+                <p className="text-sm text-ink/60">{groupId}</p>
               </div>
               <label className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold">
                 <input
@@ -374,66 +394,130 @@ export function TeacherStudentSetDetails({
 export function TeacherStudentQuestionDetail({ attemptAnswerId }: { attemptAnswerId: string }) {
   return (
     <TeacherStatsLoader>
-      {(stats) => {
-        const answer = stats.answers.find((item) => item.attemptAnswerId === attemptAnswerId);
-        if (!answer) return <EmptyState text="Question detail not found." />;
-        const student = stats.students.find((item) => item.studentId === answer.studentId);
-        const studentLabel = student?.studentDisplayName ?? "Student";
-        const attemptAnswers = stats.answers
+      {(stats) => (
+        <TeacherStudentQuestionDetailContent
+          initialAttemptAnswerId={attemptAnswerId}
+          stats={stats}
+        />
+      )}
+    </TeacherStatsLoader>
+  );
+}
+
+function TeacherStudentQuestionDetailContent({
+  initialAttemptAnswerId,
+  stats
+}: {
+  initialAttemptAnswerId: string;
+  stats: TeacherStatsPayload;
+}) {
+  const initialAnswer = stats.answers.find(
+    (item) => item.attemptAnswerId === initialAttemptAnswerId
+  );
+  const [attemptAnswers] = useState<AnswerSummary[]>(() =>
+    initialAnswer
+      ? stats.answers
           .filter(
             (item) =>
-              item.studentId === answer.studentId &&
-              item.attemptId === answer.attemptId
+              item.studentId === initialAnswer.studentId &&
+              item.attemptId === initialAnswer.attemptId
           )
-          .sort((a, b) => a.questionOrder - b.questionOrder);
+          .sort((a, b) => a.questionOrder - b.questionOrder)
+      : []
+  );
+  const [activeAttemptAnswerId, setActiveAttemptAnswerId] = useState(initialAttemptAnswerId);
 
-        return (
-          <div className="grid gap-5">
-            <TeacherNavigation
-              backHref={`/teacher/students/${answer.studentId}/details/${encodeURIComponent(answer.setId)}`}
-              crumbs={[
-                { label: "Teacher Home", href: "/teacher/dashboard" },
-                { label: "Students", href: "/teacher/students" },
-                { label: studentLabel, href: `/teacher/students/${answer.studentId}` },
-                { label: "Details", href: `/teacher/students/${answer.studentId}/details` },
-                {
-                  label: answer.setTitle,
-                  href: `/teacher/students/${answer.studentId}/details/${encodeURIComponent(answer.setId)}`
-                },
-                { label: `Q${answer.questionOrder}` }
-              ]}
-            />
-            <QuestionDetailCard
-              badge={
-                <div className="flex flex-wrap items-center gap-2">
-                  <TimeSpentBadge seconds={answer.questionTimeSeconds} />
-                  <StatusBadge correct={answer.isCorrect} />
-                </div>
-              }
-              correctAnswer={buildSentenceDisplay(
-                answer.sentenceTemplate,
-                answer.correctOrderText,
-                answer.finalSentence
-              )}
-              prompt={answer.prompt}
-              studentAnswer={buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText)}
-            />
-            {attemptAnswers.length > 1 ? (
-              <div className="flex flex-wrap gap-2">
-                {attemptAnswers.map((item) => (
-                  <AttemptAnswerJumpLink
-                    active={item.attemptAnswerId === attemptAnswerId}
-                    answer={item}
-                    href={`/teacher/students/${answer.studentId}/answers/${item.attemptAnswerId}`}
-                    key={item.attemptAnswerId}
-                  />
-                ))}
-              </div>
-            ) : null}
+  useEffect(() => {
+    function selectAnswerFromUrl() {
+      const hash = new URLSearchParams(window.location.hash.slice(1));
+      const requestedQuestionId = hash.get("question");
+      const requestedAnswer = attemptAnswers.find(
+        (item) => item.questionId === requestedQuestionId
+      );
+      const nextAnswerId = requestedAnswer?.attemptAnswerId ?? initialAttemptAnswerId;
+
+      setActiveAttemptAnswerId(nextAnswerId);
+    }
+
+    selectAnswerFromUrl();
+    window.addEventListener("popstate", selectAnswerFromUrl);
+    window.addEventListener("hashchange", selectAnswerFromUrl);
+    return () => {
+      window.removeEventListener("popstate", selectAnswerFromUrl);
+      window.removeEventListener("hashchange", selectAnswerFromUrl);
+    };
+  }, [attemptAnswers, initialAttemptAnswerId]);
+
+  if (!initialAnswer) return <EmptyState text="Question detail not found." />;
+
+  const answer =
+    attemptAnswers.find((item) => item.attemptAnswerId === activeAttemptAnswerId) ??
+    initialAnswer;
+  const attempt = stats.attempts.find((item) => item.attemptId === answer.attemptId);
+  const groupId = attempt ? getAttemptGroupId(attempt) : answer.setId;
+  const groupTitle = getAttemptGroupTitle(
+    groupId,
+    attempt?.setTitle ?? answer.setTitle
+  );
+  const student = stats.students.find((item) => item.studentId === answer.studentId);
+  const studentLabel = student?.studentDisplayName ?? "Student";
+
+  function selectAnswer(nextAnswer: AnswerSummary) {
+    setActiveAttemptAnswerId(nextAnswer.attemptAnswerId);
+    const hash = new URLSearchParams();
+    hash.set("question", nextAnswer.questionId);
+    window.history.pushState(
+      null,
+      "",
+      `${window.location.pathname}${window.location.search}#${hash}`
+    );
+  }
+
+  return (
+    <div className="grid gap-5">
+      <TeacherNavigation
+        backHref={`/teacher/students/${answer.studentId}/details/${encodeURIComponent(groupId)}`}
+        crumbs={[
+          { label: "Teacher Home", href: "/teacher/dashboard" },
+          { label: "Students", href: "/teacher/students" },
+          { label: studentLabel, href: `/teacher/students/${answer.studentId}` },
+          { label: "Details", href: `/teacher/students/${answer.studentId}/details` },
+          {
+            label: groupTitle,
+            href: `/teacher/students/${answer.studentId}/details/${encodeURIComponent(groupId)}`
+          },
+          { label: `Q${answer.questionOrder}` }
+        ]}
+      />
+      <QuestionDetailCard
+        badge={
+          <div className="flex flex-wrap items-center gap-2">
+            <TimeSpentBadge seconds={answer.questionTimeSeconds} />
+            <StatusBadge correct={answer.isCorrect} />
           </div>
-        );
-      }}
-    </TeacherStatsLoader>
+        }
+        correctAnswer={buildSentenceDisplay(
+          answer.sentenceTemplate,
+          answer.correctOrderText,
+          answer.finalSentence
+        )}
+        prompt={answer.prompt}
+        studentAnswer={buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText)}
+      />
+      {attemptAnswers.length > 1 ? (
+        <div className="flex flex-wrap gap-2">
+          {attemptAnswers.map((item) => (
+            <AttemptAnswerJumpLink
+              active={item.attemptAnswerId === answer.attemptAnswerId}
+              answer={item}
+              href={`/teacher/students/${answer.studentId}/answers/${item.attemptAnswerId}`}
+              key={item.attemptAnswerId}
+              onNavigate={() => selectAnswer(item)}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -550,7 +634,10 @@ export function TeacherSetQuestionDetail({
         );
         if (!question) return <EmptyState text="Question not found." />;
 
-        const answers = stats.answers.filter((answer) => answer.questionId === questionId);
+        const answers = stats.answers.filter(
+          (answer) =>
+            answer.practiceType === "official" && answer.questionId === questionId
+        );
         const wrongAnswers = answers.filter((answer) => !answer.isCorrect);
         const frequentWrong = Array.from(
           groupBy(wrongAnswers, (answer) => answer.submittedOrderText || "__empty__").entries()
@@ -616,58 +703,10 @@ function TeacherStatsLoader({
 }: {
   children: (stats: TeacherStatsPayload) => ReactNode;
 }) {
-  const [stats, setStats] = useState<TeacherStatsPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadStats() {
-      try {
-        const supabase = createBrowserSupabase();
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
-
-        const response = await fetch("/api/teacher/stats", {
-          headers: {
-            Authorization: `Bearer ${session?.access_token ?? ""}`
-          }
-        });
-        const responseText = await response.text();
-        let payload: TeacherStatsPayload | { error?: string };
-
-        try {
-          payload = responseText
-            ? JSON.parse(responseText)
-            : { error: "The teacher stats API returned an empty response." };
-        } catch {
-          payload = { error: "The teacher stats API returned invalid JSON." };
-        }
-
-        if (ignore) return;
-
-        if (!response.ok) {
-          setError(getErrorMessage(payload, "Could not load teacher stats."));
-        } else {
-          setStats(payload as TeacherStatsPayload);
-        }
-      } catch (error) {
-        if (!ignore) {
-          setError(error instanceof Error ? error.message : "Could not load teacher stats.");
-        }
-      } finally {
-        if (!ignore) setLoading(false);
-      }
-    }
-
-    loadStats();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const { data: stats, error, loading } = useTeacherCachedData<TeacherStatsPayload>(
+    TEACHER_STATS_CACHE_KEY,
+    loadTeacherStats
+  );
 
   if (loading) {
     return <p className="text-sm text-ink/70">Loading analytics...</p>;
@@ -682,6 +721,35 @@ function TeacherStatsLoader({
   }
 
   return <>{children(stats)}</>;
+}
+
+async function loadTeacherStats(): Promise<TeacherStatsPayload> {
+  const supabase = createBrowserSupabase();
+  const {
+    data: { session }
+  } = await supabase.auth.getSession();
+
+  const response = await fetch("/api/teacher/stats", {
+    headers: {
+      Authorization: `Bearer ${session?.access_token ?? ""}`
+    }
+  });
+  const responseText = await response.text();
+  let payload: TeacherStatsPayload | { error?: string };
+
+  try {
+    payload = responseText
+      ? JSON.parse(responseText)
+      : { error: "The teacher stats API returned an empty response." };
+  } catch {
+    payload = { error: "The teacher stats API returned invalid JSON." };
+  }
+
+  if (!response.ok || "error" in payload) {
+    throw new Error(getErrorMessage(payload, "Could not load teacher stats."));
+  }
+
+  return payload as TeacherStatsPayload;
 }
 
 function HomeCard({
@@ -862,11 +930,13 @@ function AttemptHeader({ attempt }: { attempt: AttemptSummary }) {
 function AttemptAnswerJumpLink({
   active = false,
   answer,
-  href
+  href,
+  onNavigate
 }: {
   active?: boolean;
   answer: AnswerSummary;
   href: string;
+  onNavigate?: () => void;
 }) {
   const colorClass = answer.isCorrect
     ? "border-green-200 bg-green-50 text-green-700"
@@ -882,6 +952,22 @@ function AttemptAnswerJumpLink({
         active ? activeClass : ""
       }`}
       href={href}
+      onClick={(event) => {
+        if (
+          !onNavigate ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+        onNavigate();
+      }}
+      prefetch={onNavigate ? false : undefined}
     >
       Q{answer.questionOrder} · {formatQuestionDuration(answer.questionTimeSeconds)}
     </Link>
@@ -993,6 +1079,48 @@ function compareSetIds(a: string, b: string) {
   const bk = parseSetSortKey(b);
 
   return ak.datePart - bk.datePart || ak.setNumber - bk.setNumber || a.localeCompare(b);
+}
+
+const WRONGBOOK_TODAY_GROUP_ID = "wrongbook-today";
+const WRONGBOOK_HISTORY_GROUP_ID = "wrongbook-history";
+
+function getAttemptGroupId(attempt: AttemptSummary) {
+  if (attempt.practiceType === "wrongbook-today") return WRONGBOOK_TODAY_GROUP_ID;
+  if (attempt.practiceType === "wrongbook-history") return WRONGBOOK_HISTORY_GROUP_ID;
+  return attempt.setId;
+}
+
+function normalizeAttemptGroupId(setId: string) {
+  if (setId === WRONGBOOK_TODAY_GROUP_ID || setId.startsWith("wrongbook-today-")) {
+    return WRONGBOOK_TODAY_GROUP_ID;
+  }
+  if (
+    setId === WRONGBOOK_HISTORY_GROUP_ID ||
+    setId.startsWith("wrongbook-all-") ||
+    setId.startsWith("wrongbook-random-")
+  ) {
+    return WRONGBOOK_HISTORY_GROUP_ID;
+  }
+  return setId;
+}
+
+function getAttemptGroupTitle(groupId: string, fallback: string) {
+  if (groupId === WRONGBOOK_TODAY_GROUP_ID) return "Today's Wrong Questions";
+  if (groupId === WRONGBOOK_HISTORY_GROUP_ID) return "Historical Wrong Questions";
+  return fallback;
+}
+
+function compareAttemptGroupIds(left: string, right: string) {
+  if (left === right) return 0;
+
+  const leftWrongbook = left === WRONGBOOK_TODAY_GROUP_ID || left === WRONGBOOK_HISTORY_GROUP_ID;
+  const rightWrongbook = right === WRONGBOOK_TODAY_GROUP_ID || right === WRONGBOOK_HISTORY_GROUP_ID;
+
+  if (leftWrongbook !== rightWrongbook) return leftWrongbook ? 1 : -1;
+  if (leftWrongbook && rightWrongbook) {
+    return left === WRONGBOOK_TODAY_GROUP_ID ? -1 : 1;
+  }
+  return compareSetIds(left, right);
 }
 
 function groupBy<T>(items: T[], getKey: (item: T) => string) {

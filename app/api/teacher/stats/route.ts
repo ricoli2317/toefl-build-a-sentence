@@ -78,6 +78,8 @@ type QuestionSummary = {
   accuracy: number;
 };
 
+type PracticeType = "official" | "wrongbook-today" | "wrongbook-history";
+
 function jsonError(message: string, status = 500) {
   return NextResponse.json({ error: message }, { status });
 }
@@ -106,6 +108,14 @@ function compareSetIds(a: string, b: string) {
 
 function submittedTime(attempt: AttemptRow) {
   return attempt.submitted_at ?? attempt.created_at ?? null;
+}
+
+function getPracticeType(setId: string): PracticeType {
+  if (setId.startsWith("wrongbook-today-")) return "wrongbook-today";
+  if (setId.startsWith("wrongbook-all-") || setId.startsWith("wrongbook-random-")) {
+    return "wrongbook-history";
+  }
+  return "official";
 }
 
 export async function GET(request: Request) {
@@ -224,6 +234,11 @@ export async function GET(request: Request) {
     }));
 
     const attemptById = new Map(attemptRows.map((attempt) => [attempt.attempt_id, attempt]));
+    const officialAttemptIds = new Set(
+      attemptRows
+        .filter((attempt) => getPracticeType(attempt.set_id) === "official")
+        .map((attempt) => attempt.attempt_id)
+    );
     const questionById = new Map(questionRows.map((question) => [question.question_id, question]));
     const setTitles = new Map<string, string>();
     const questionsBySet = new Map<string, QuestionRow[]>();
@@ -234,12 +249,6 @@ export async function GET(request: Request) {
       const list = questionsBySet.get(question.set_id) ?? [];
       list.push(question);
       questionsBySet.set(question.set_id, list);
-    }
-
-    for (const attempt of attemptRows) {
-      if (!setTitles.has(attempt.set_id)) {
-        setTitles.set(attempt.set_id, attempt.set_title ?? attempt.set_id);
-      }
     }
 
     const studentProfiles = profileRows.filter((profile) => profile.role === "student");
@@ -262,7 +271,14 @@ export async function GET(request: Request) {
       const uniqueAnsweredQuestions = new Set(
         studentAnswers.map((answer) => `${answer.set_id}::${answer.question_id}`)
       );
-      const completedSets = new Set(studentAttempts.map((attempt) => attempt.set_id));
+      const completedSets = new Set(
+        studentAttempts
+          .filter(
+            (attempt) =>
+              getPracticeType(attempt.set_id) === "official" && setTitles.has(attempt.set_id)
+          )
+          .map((attempt) => attempt.set_id)
+      );
       const totalQuestions = studentAttempts.reduce(
         (sum, attempt) => sum + (attempt.total_questions ?? 0),
         0
@@ -286,7 +302,10 @@ export async function GET(request: Request) {
     });
 
     const setSummaries = Array.from(setTitles.entries()).map(([setId, setTitle]) => {
-      const setAttempts = attemptRows.filter((attempt) => attempt.set_id === setId);
+      const setAttempts = attemptRows.filter(
+        (attempt) =>
+          getPracticeType(attempt.set_id) === "official" && attempt.set_id === setId
+      );
       const questionCount = questionsBySet.get(setId)?.length ?? 0;
       const totalQuestions = setAttempts.reduce(
         (sum, attempt) => sum + (attempt.total_questions ?? 0),
@@ -310,7 +329,11 @@ export async function GET(request: Request) {
     });
 
     const questionSummaries = questionRows.map((question) => {
-      const relatedAnswers = answerRows.filter((answer) => answer.question_id === question.question_id);
+      const relatedAnswers = answerRows.filter(
+        (answer) =>
+          officialAttemptIds.has(answer.attempt_id) &&
+          answer.question_id === question.question_id
+      );
       const correctCount = relatedAnswers.filter((answer) => answer.is_correct).length;
       const setTitle = question.set_title ?? setTitles.get(question.set_id) ?? question.set_id;
 
@@ -353,6 +376,7 @@ export async function GET(request: Request) {
           studentId: attempt.student_id,
           setId: attempt.set_id,
           setTitle: attempt.set_title ?? setTitles.get(attempt.set_id) ?? attempt.set_id,
+          practiceType: getPracticeType(attempt.set_id),
           correctCount: attempt.correct_count ?? 0,
           totalQuestions: attempt.total_questions ?? 0,
           accuracy: ratio(attempt.correct_count ?? 0, attempt.total_questions ?? 0),
@@ -386,6 +410,7 @@ export async function GET(request: Request) {
             submittedOrderText: answer.submitted_order_text ?? "",
             correctOrderText: answer.correct_order_text ?? "",
             isCorrect: Boolean(answer.is_correct),
+            practiceType: attempt ? getPracticeType(attempt.set_id) : "unknown",
             questionTimeSeconds: answer.question_time_seconds
           };
         })

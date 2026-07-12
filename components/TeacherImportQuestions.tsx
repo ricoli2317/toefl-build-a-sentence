@@ -5,6 +5,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { parseCsv, type CsvRecord } from "@/lib/csv";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  TEACHER_ACCESS_CACHE_KEY,
+  TEACHER_QUESTION_BANK_CACHE_PREFIX,
+  TEACHER_STATS_CACHE_KEY,
+  useTeacherDataCache
+} from "@/components/TeacherDataCache";
 
 const REQUIRED_FIELDS = [
   "question_id",
@@ -61,6 +67,7 @@ type ImportErrorPayload = {
 
 export function TeacherImportQuestions() {
   const router = useRouter();
+  const { invalidate, load } = useTeacherDataCache();
   const [rows, setRows] = useState<CsvRecord[]>([]);
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
@@ -69,19 +76,27 @@ export function TeacherImportQuestions() {
   const [result, setResult] = useState<ImportResult | null>(null);
 
   useEffect(() => {
+    let ignore = false;
+
     async function guardTeacher() {
-      const supabase = createBrowserSupabase();
-      const {
-        data: { user }
-      } = await supabase.auth.getUser();
+      const authorized = await load(TEACHER_ACCESS_CACHE_KEY, async () => {
+        const supabase = createBrowserSupabase();
+        const {
+          data: { user }
+        } = await supabase.auth.getUser();
 
-      if (!user) {
-        router.replace("/");
-        return;
-      }
+        if (!user) return false;
 
-      const { data } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-      if (data?.role !== "teacher") {
+        const { data } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        return data?.role === "teacher";
+      });
+
+      if (ignore) return;
+      if (!authorized) {
         router.replace("/");
         return;
       }
@@ -90,7 +105,10 @@ export function TeacherImportQuestions() {
     }
 
     guardTeacher();
-  }, [router]);
+    return () => {
+      ignore = true;
+    };
+  }, [load, router]);
 
   const missingFields = REQUIRED_FIELDS.filter((field) =>
     rows.length === 0 ? false : !(field in rows[0])
@@ -183,6 +201,8 @@ export function TeacherImportQuestions() {
         if (resultPayload.failedRows?.length > 0) {
           console.error("Import questions completed with failed rows", resultPayload);
         }
+        invalidate(TEACHER_STATS_CACHE_KEY);
+        invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
         setResult(resultPayload);
       }
     } catch (error) {
