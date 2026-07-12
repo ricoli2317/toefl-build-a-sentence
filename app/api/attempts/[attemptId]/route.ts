@@ -108,7 +108,6 @@ export async function GET(
         "attempt_answer_id,question_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,grammar_tags_text"
       )
       .eq("attempt_id", params.attemptId)
-      .eq("student_id", user.id)
       .order("question_order", { ascending: true });
 
     if (answersError) {

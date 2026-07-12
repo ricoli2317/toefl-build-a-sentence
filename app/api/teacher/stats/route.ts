@@ -254,7 +254,8 @@ export async function GET(request: Request) {
       const studentEmail = authUser?.email ?? profile?.email ?? null;
       const studentDisplayName = getPreferredUserDisplayName({
         email: studentEmail,
-        metadata: authUser?.user_metadata ?? null
+        metadata: authUser?.user_metadata ?? null,
+        profileFullName: profile?.full_name
       });
       const studentAttempts = attemptRows.filter((attempt) => attempt.student_id === studentId);
       const studentAnswers = answerRows.filter((answer) => answer.student_id === studentId);

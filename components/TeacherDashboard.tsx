@@ -353,17 +353,11 @@ export function TeacherStudentSetDetails({
                     <AttemptHeader attempt={attempt} />
                     <div className="mt-3 flex flex-wrap gap-2">
                       {answers.map((answer) => (
-                        <Link
-                          className={`rounded-md border px-3 py-2 text-sm font-bold ${
-                            answer.isCorrect
-                              ? "border-green-200 bg-green-50 text-green-700"
-                              : "border-red-200 bg-red-50 text-red-700"
-                          }`}
+                        <AttemptAnswerJumpLink
                           href={`/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`}
                           key={answer.attemptAnswerId}
-                        >
-                          Q{answer.questionOrder} · {formatQuestionDuration(answer.questionTimeSeconds)}
-                        </Link>
+                          answer={answer}
+                        />
                       ))}
                     </div>
                   </div>
@@ -385,6 +379,13 @@ export function TeacherStudentQuestionDetail({ attemptAnswerId }: { attemptAnswe
         if (!answer) return <EmptyState text="Question detail not found." />;
         const student = stats.students.find((item) => item.studentId === answer.studentId);
         const studentLabel = student?.studentDisplayName ?? "Student";
+        const attemptAnswers = stats.answers
+          .filter(
+            (item) =>
+              item.studentId === answer.studentId &&
+              item.attemptId === answer.attemptId
+          )
+          .sort((a, b) => a.questionOrder - b.questionOrder);
 
         return (
           <div className="grid gap-5">
@@ -417,6 +418,18 @@ export function TeacherStudentQuestionDetail({ attemptAnswerId }: { attemptAnswe
               prompt={answer.prompt}
               studentAnswer={buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText)}
             />
+            {attemptAnswers.length > 1 ? (
+              <div className="flex flex-wrap gap-2">
+                {attemptAnswers.map((item) => (
+                  <AttemptAnswerJumpLink
+                    active={item.attemptAnswerId === attemptAnswerId}
+                    answer={item}
+                    href={`/teacher/students/${answer.studentId}/answers/${item.attemptAnswerId}`}
+                    key={item.attemptAnswerId}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
         );
       }}
@@ -843,6 +856,35 @@ function AttemptHeader({ attempt }: { attempt: AttemptSummary }) {
         </p>
       </div>
     </div>
+  );
+}
+
+function AttemptAnswerJumpLink({
+  active = false,
+  answer,
+  href
+}: {
+  active?: boolean;
+  answer: AnswerSummary;
+  href: string;
+}) {
+  const colorClass = answer.isCorrect
+    ? "border-green-200 bg-green-50 text-green-700"
+    : "border-red-200 bg-red-50 text-red-700";
+  const activeClass = answer.isCorrect
+    ? "ring-2 ring-green-500 ring-offset-2"
+    : "ring-2 ring-red-500 ring-offset-2";
+
+  return (
+    <Link
+      aria-current={active ? "page" : undefined}
+      className={`rounded-md border px-3 py-2 text-sm font-bold ${colorClass} ${
+        active ? activeClass : ""
+      }`}
+      href={href}
+    >
+      Q{answer.questionOrder} · {formatQuestionDuration(answer.questionTimeSeconds)}
+    </Link>
   );
 }
 

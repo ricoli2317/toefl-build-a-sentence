@@ -6,21 +6,33 @@ type UserMetadata = {
 
 export function getPreferredUserDisplayName({
   email,
-  metadata
+  metadata,
+  profileFullName
 }: {
   email?: string | null;
   metadata?: UserMetadata | null;
+  profileFullName?: string | null;
 }) {
-  const displayName = stringValue(metadata?.display_name);
+  const profileName = nameValue(profileFullName, email);
+  if (profileName) return profileName;
+
+  const displayName = nameValue(metadata?.display_name, email);
   if (displayName) return displayName;
 
-  const fullName = stringValue(metadata?.full_name);
+  const fullName = nameValue(metadata?.full_name, email);
   if (fullName) return fullName;
 
-  const name = stringValue(metadata?.name);
+  const name = nameValue(metadata?.name, email);
   if (name) return name;
 
   return email || "Unknown user";
+}
+
+function nameValue(value: unknown, email?: string | null) {
+  const name = stringValue(value);
+  if (!name) return "";
+
+  return email && name.toLocaleLowerCase() === email.trim().toLocaleLowerCase() ? "" : name;
 }
 
 function stringValue(value: unknown) {

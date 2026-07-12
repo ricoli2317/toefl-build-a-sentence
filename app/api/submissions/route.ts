@@ -201,7 +201,16 @@ export async function POST(request: Request) {
     const { error: answerError } = await db.from("attempt_answers").insert(answerRows);
 
     if (answerError) {
-      return jsonError(`Failed to save attempt answers: ${answerError.message}`);
+      const { error: cleanupError } = await db
+        .from("attempts")
+        .delete()
+        .eq("attempt_id", attempt.attempt_id)
+        .eq("student_id", user.id);
+      const cleanupMessage = cleanupError
+        ? ` Cleanup of the incomplete attempt also failed: ${cleanupError.message}`
+        : " The incomplete attempt was removed.";
+
+      return jsonError(`Failed to save attempt answers: ${answerError.message}.${cleanupMessage}`);
     }
 
     const resultAnswers = results.map((result) => ({
