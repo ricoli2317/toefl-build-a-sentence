@@ -1,0 +1,33 @@
+Question casing fix summary
+===========================
+
+Source CSV files: 4
+Questions before: 860
+Questions after: 860
+Question ID sets identical: yes
+Modified questions: 261
+SQL UPDATE statements: 261
+Modified field cells: 521
+
+Modified questions by CSV:
+- toefl_build_sentence_202601_docx_checked_import.csv: 0
+- toefl_build_sentence_202602_supabase_questions_import.csv: 90
+- toefl_build_sentence_202603_202605_final_docx_checked_import.csv: 171
+- toefl_build_sentence_202606_docx_checked_import.csv: 0
+
+Modified field cells:
+- options_text: 259
+- correct_order_text: 259
+- sentence_template: 1
+- final_sentence: 2
+- distractors_text: 0
+
+Post-fix casing audit:
+- ordinary_chunk_should_be_lowercase: 0
+- sentence_level_error: 0
+- internal_case_error: 0
+- intrinsic capitalization content preserved: yes
+- 202605-0511-2-Q06 with Michael preserved: yes
+
+Unexpected changes: 0
+None

@@ -1,0 +1,256 @@
+source_file	question_id	set_id	set_title	question_order	high_confidence_records
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-1-Q01	202602-0201-1	2.1 - 1	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-1-Q03	202602-0201-1	2.1 - 1	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-1-Q05	202602-0201-1	2.1 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-1-Q06	202602-0201-1	2.1 - 1	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-1-Q09	202602-0201-1	2.1 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-1-Q10	202602-0201-1	2.1 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q01	202602-0201-2	2.1 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q02	202602-0201-2	2.1 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q03	202602-0201-2	2.1 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q04	202602-0201-2	2.1 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q05	202602-0201-2	2.1 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q06	202602-0201-2	2.1 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q07	202602-0201-2	2.1 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q08	202602-0201-2	2.1 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q09	202602-0201-2	2.1 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-2-Q10	202602-0201-2	2.1 - 2	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q01	202602-0201-3	2.1 - 3	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q02	202602-0201-3	2.1 - 3	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q03	202602-0201-3	2.1 - 3	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q05	202602-0201-3	2.1 - 3	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q06	202602-0201-3	2.1 - 3	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q07	202602-0201-3	2.1 - 3	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q08	202602-0201-3	2.1 - 3	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q09	202602-0201-3	2.1 - 3	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0201-3-Q10	202602-0201-3	2.1 - 3	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q01	202602-0202-1	2.2 - 1	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q02	202602-0202-1	2.2 - 1	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q04	202602-0202-1	2.2 - 1	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q05	202602-0202-1	2.2 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q07	202602-0202-1	2.2 - 1	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q08	202602-0202-1	2.2 - 1	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q09	202602-0202-1	2.2 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-1-Q10	202602-0202-1	2.2 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q01	202602-0202-2	2.2 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q02	202602-0202-2	2.2 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q03	202602-0202-2	2.2 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q04	202602-0202-2	2.2 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q05	202602-0202-2	2.2 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q07	202602-0202-2	2.2 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q09	202602-0202-2	2.2 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-2-Q10	202602-0202-2	2.2 - 2	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-3-Q01	202602-0202-3	2.2 - 3	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-3-Q05	202602-0202-3	2.2 - 3	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-3-Q06	202602-0202-3	2.2 - 3	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-3-Q09	202602-0202-3	2.2 - 3	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0202-3-Q10	202602-0202-3	2.2 - 3	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0204-Q05	202602-0204	2.4	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0204-Q09	202602-0204	2.4	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0204-Q10	202602-0204	2.4	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q03	202602-0218-1	2.18 - 1	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q04	202602-0218-1	2.18 - 1	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q05	202602-0218-1	2.18 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q06	202602-0218-1	2.18 - 1	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q07	202602-0218-1	2.18 - 1	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q08	202602-0218-1	2.18 - 1	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q09	202602-0218-1	2.18 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-1-Q10	202602-0218-1	2.18 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q01	202602-0218-2	2.18 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q02	202602-0218-2	2.18 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q03	202602-0218-2	2.18 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q04	202602-0218-2	2.18 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q05	202602-0218-2	2.18 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q06	202602-0218-2	2.18 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q07	202602-0218-2	2.18 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q08	202602-0218-2	2.18 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q09	202602-0218-2	2.18 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0218-2-Q10	202602-0218-2	2.18 - 2	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0223-2-Q01	202602-0223-2	2.23 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0223-2-Q03	202602-0223-2	2.23 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0223-2-Q04	202602-0223-2	2.23 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0223-2-Q06	202602-0223-2	2.23 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0223-2-Q07	202602-0223-2	2.23 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0223-2-Q08	202602-0223-2	2.23 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q01	202602-0225-1	2.25 - 1	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q02	202602-0225-1	2.25 - 1	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q04	202602-0225-1	2.25 - 1	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q05	202602-0225-1	2.25 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q06	202602-0225-1	2.25 - 1	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q08	202602-0225-1	2.25 - 1	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q09	202602-0225-1	2.25 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-1-Q10	202602-0225-1	2.25 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q01	202602-0225-2	2.25 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q02	202602-0225-2	2.25 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q03	202602-0225-2	2.25 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q04	202602-0225-2	2.25 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q05	202602-0225-2	2.25 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q07	202602-0225-2	2.25 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202602_supabase_questions_import.csv	202602-0225-2-Q08	202602-0225-2	2.25 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q01	202603-0301-1	3.1 - 1	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q02	202603-0301-1	3.1 - 1	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q03	202603-0301-1	3.1 - 1	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q05	202603-0301-1	3.1 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q06	202603-0301-1	3.1 - 1	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q07	202603-0301-1	3.1 - 1	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q08	202603-0301-1	3.1 - 1	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q09	202603-0301-1	3.1 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-1-Q10	202603-0301-1	3.1 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q02	202603-0301-2	3.1 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q03	202603-0301-2	3.1 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q05	202603-0301-2	3.1 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q06	202603-0301-2	3.1 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q07	202603-0301-2	3.1 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q09	202603-0301-2	3.1 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0301-2-Q10	202603-0301-2	3.1 - 2	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q01	202603-0302-1	3.2 - 1	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q02	202603-0302-1	3.2 - 1	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q04	202603-0302-1	3.2 - 1	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q05	202603-0302-1	3.2 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q07	202603-0302-1	3.2 - 1	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q08	202603-0302-1	3.2 - 1	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q09	202603-0302-1	3.2 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-1-Q10	202603-0302-1	3.2 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q01	202603-0302-2	3.2 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q02	202603-0302-2	3.2 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q03	202603-0302-2	3.2 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q04	202603-0302-2	3.2 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q05	202603-0302-2	3.2 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q06	202603-0302-2	3.2 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q07	202603-0302-2	3.2 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q08	202603-0302-2	3.2 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0302-2-Q09	202603-0302-2	3.2 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q01	202603-0303-2	3.3 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q02	202603-0303-2	3.3 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q03	202603-0303-2	3.3 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q04	202603-0303-2	3.3 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q06	202603-0303-2	3.3 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q07	202603-0303-2	3.3 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q08	202603-0303-2	3.3 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q09	202603-0303-2	3.3 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0303-2-Q10	202603-0303-2	3.3 - 2	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q01	202603-0308-1	3.8 - 1	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q02	202603-0308-1	3.8 - 1	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q03	202603-0308-1	3.8 - 1	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q04	202603-0308-1	3.8 - 1	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q05	202603-0308-1	3.8 - 1	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q06	202603-0308-1	3.8 - 1	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q07	202603-0308-1	3.8 - 1	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q08	202603-0308-1	3.8 - 1	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q09	202603-0308-1	3.8 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-1-Q10	202603-0308-1	3.8 - 1	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q01	202603-0308-2	3.8 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q02	202603-0308-2	3.8 - 2	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q03	202603-0308-2	3.8 - 2	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q04	202603-0308-2	3.8 - 2	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q05	202603-0308-2	3.8 - 2	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q06	202603-0308-2	3.8 - 2	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q07	202603-0308-2	3.8 - 2	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q08	202603-0308-2	3.8 - 2	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-2-Q09	202603-0308-2	3.8 - 2	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q01	202603-0308-4	3.8 - 4	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q02	202603-0308-4	3.8 - 4	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q03	202603-0308-4	3.8 - 4	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q05	202603-0308-4	3.8 - 4	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q06	202603-0308-4	3.8 - 4	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q07	202603-0308-4	3.8 - 4	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q08	202603-0308-4	3.8 - 4	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q09	202603-0308-4	3.8 - 4	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0308-4-Q10	202603-0308-4	3.8 - 4	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0310-Q01	202603-0310	3.10	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0310-Q03	202603-0310	3.10	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0310-Q04	202603-0310	3.10	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0310-Q06	202603-0310	3.10	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0310-Q07	202603-0310	3.10	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q01	202603-0311	3.11	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q03	202603-0311	3.11	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q05	202603-0311	3.11	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q06	202603-0311	3.11	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q07	202603-0311	3.11	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q08	202603-0311	3.11	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q09	202603-0311	3.11	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0311-Q10	202603-0311	3.11	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q01	202603-0315	3.15	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q02	202603-0315	3.15	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q03	202603-0315	3.15	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q04	202603-0315	3.15	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q05	202603-0315	3.15	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q06	202603-0315	3.15	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q07	202603-0315	3.15	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q08	202603-0315	3.15	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q09	202603-0315	3.15	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0315-Q10	202603-0315	3.15	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q01	202603-0318	3.18	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q02	202603-0318	3.18	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q03	202603-0318	3.18	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q04	202603-0318	3.18	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q05	202603-0318	3.18	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q06	202603-0318	3.18	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q08	202603-0318	3.18	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0318-Q09	202603-0318	3.18	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q01	202603-0323	3.23	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q02	202603-0323	3.23	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q03	202603-0323	3.23	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q05	202603-0323	3.23	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q07	202603-0323	3.23	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q08	202603-0323	3.23	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q09	202603-0323	3.23	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0323-Q10	202603-0323	3.23	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q01	202603-0324	3.24	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q02	202603-0324	3.24	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q03	202603-0324	3.24	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q04	202603-0324	3.24	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q05	202603-0324	3.24	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q06	202603-0324	3.24	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q07	202603-0324	3.24	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q08	202603-0324	3.24	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q09	202603-0324	3.24	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0324-Q10	202603-0324	3.24	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q01	202603-0325	3.25	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q02	202603-0325	3.25	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q03	202603-0325	3.25	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q04	202603-0325	3.25	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q05	202603-0325	3.25	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q06	202603-0325	3.25	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q07	202603-0325	3.25	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q08	202603-0325	3.25	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0325-Q09	202603-0325	3.25	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q01	202603-0329	3.29	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q03	202603-0329	3.29	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q04	202603-0329	3.29	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q05	202603-0329	3.29	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q06	202603-0329	3.29	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q07	202603-0329	3.29	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q08	202603-0329	3.29	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q09	202603-0329	3.29	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0329-Q10	202603-0329	3.29	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q01	202603-0330	3.30	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q03	202603-0330	3.30	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q04	202603-0330	3.30	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q05	202603-0330	3.30	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q08	202603-0330	3.30	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q09	202603-0330	3.30	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202603-0330-Q10	202603-0330	3.30	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0406-1-Q09	202604-0406-1	4.6 - 1	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q01	202604-0407	4.7	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q02	202604-0407	4.7	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q03	202604-0407	4.7	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q05	202604-0407	4.7	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q06	202604-0407	4.7	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q07	202604-0407	4.7	7	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q08	202604-0407	4.7	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q09	202604-0407	4.7	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0407-Q10	202604-0407	4.7	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q01	202604-0408	4.8	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q02	202604-0408	4.8	2	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q03	202604-0408	4.8	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q04	202604-0408	4.8	4	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q05	202604-0408	4.8	5	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q06	202604-0408	4.8	6	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q08	202604-0408	4.8	8	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q09	202604-0408	4.8	9	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0408-Q10	202604-0408	4.8	10	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0412-Q03	202604-0412	4.12	3	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0415-2-Q01	202604-0415-2	4.15 - 2	1	2
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0419-4-Q08	202604-0419-4	4.19 - 4	8	1
+/Users/rico/Documents/下载/组句标准题库/toefl_build_sentence_202603_202605_final_docx_checked_import.csv	202604-0419-4-Q09	202604-0419-4	4.19 - 4	9	2

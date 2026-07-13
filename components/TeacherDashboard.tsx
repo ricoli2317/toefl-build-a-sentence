@@ -70,8 +70,10 @@ type AnswerSummary = {
   questionOrder: number;
   prompt: string;
   sentenceTemplate: string;
+  optionsText: string;
   finalSentence: string;
   submittedOrderText: string;
+  displaySubmittedOrderText: string;
   correctOrderText: string;
   isCorrect: boolean;
   questionTimeSeconds: number | null;
@@ -502,7 +504,10 @@ function TeacherStudentQuestionDetailContent({
           answer.finalSentence
         )}
         prompt={answer.prompt}
-        studentAnswer={buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText)}
+        studentAnswer={buildSentenceDisplay(
+          answer.sentenceTemplate,
+          answer.displaySubmittedOrderText || answer.submittedOrderText
+        )}
       />
       {attemptAnswers.length > 1 ? (
         <div className="flex flex-wrap gap-2">
@@ -640,7 +645,10 @@ export function TeacherSetQuestionDetail({
         );
         const wrongAnswers = answers.filter((answer) => !answer.isCorrect);
         const frequentWrong = Array.from(
-          groupBy(wrongAnswers, (answer) => answer.submittedOrderText || "__empty__").entries()
+          groupBy(
+            wrongAnswers,
+            (answer) => answer.displaySubmittedOrderText || answer.submittedOrderText || "__empty__"
+          ).entries()
         )
           .map(([submittedOrderText, grouped]) => ({
             submittedOrderText: submittedOrderText === "__empty__" ? "" : submittedOrderText,

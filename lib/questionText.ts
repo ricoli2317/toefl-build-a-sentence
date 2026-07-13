@@ -32,6 +32,48 @@ export function normalizeChunkForCompare(chunk: string) {
   return chunk.trim().toLocaleLowerCase();
 }
 
+export function standardizeOrderTextCasing(
+  submittedOrderText: string | null | undefined,
+  optionsText: string | null | undefined,
+  correctOrderText: string | null | undefined
+) {
+  const submittedChunks = splitTextItems(submittedOrderText);
+  if (submittedChunks.length === 0) return "";
+
+  const optionChunks = splitTextItems(optionsText);
+  const correctChunks = splitTextItems(correctOrderText);
+  const canonicalByKey = new Map<string, string[]>();
+
+  for (const chunk of optionChunks) {
+    const key = normalizeChunkForDisplayMatch(chunk);
+    canonicalByKey.set(key, [...(canonicalByKey.get(key) ?? []), chunk]);
+  }
+
+  const correctOccurrenceByKey = new Map<string, number>();
+  for (const chunk of correctChunks) {
+    const key = normalizeChunkForDisplayMatch(chunk);
+    const occurrence = correctOccurrenceByKey.get(key) ?? 0;
+    const canonicalChunks = canonicalByKey.get(key) ?? [];
+    canonicalChunks[occurrence] = chunk;
+    canonicalByKey.set(key, canonicalChunks);
+    correctOccurrenceByKey.set(key, occurrence + 1);
+  }
+
+  const usedOccurrenceByKey = new Map<string, number>();
+  const standardizedChunks = submittedChunks.map((chunk) => {
+    const key = normalizeChunkForDisplayMatch(chunk);
+    const occurrence = usedOccurrenceByKey.get(key) ?? 0;
+    usedOccurrenceByKey.set(key, occurrence + 1);
+    return canonicalByKey.get(key)?.[occurrence] ?? normalizeInlineSpacing(chunk);
+  });
+
+  return joinTextItems(standardizedChunks);
+}
+
+function normalizeChunkForDisplayMatch(chunk: string) {
+  return normalizeInlineSpacing(chunk).toLocaleLowerCase();
+}
+
 export function formatOptionChunk(chunk: string) {
   return normalizeInlineSpacing(chunk);
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
+import { standardizeOrderTextCasing } from "@/lib/questionText";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
 type AttemptRow = {
@@ -49,6 +50,7 @@ type QuestionRow = {
   question_order: number | null;
   prompt: string | null;
   sentence_template: string | null;
+  options_text: string | null;
   correct_order_text: string | null;
   final_sentence: string | null;
 };
@@ -186,7 +188,7 @@ export async function GET(request: Request) {
       db
         .from("questions")
         .select(
-          "question_id,set_id,set_title,question_order,prompt,sentence_template,correct_order_text,final_sentence"
+          "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence"
         )
     ]);
 
@@ -404,11 +406,17 @@ export async function GET(request: Request) {
               answer.set_id,
             questionId: answer.question_id,
             questionOrder: answer.question_order ?? question?.question_order ?? 0,
-            prompt: answer.prompt ?? question?.prompt ?? "",
+            prompt: question?.prompt ?? answer.prompt ?? "",
             sentenceTemplate: question?.sentence_template ?? "",
+            optionsText: question?.options_text ?? "",
             finalSentence: question?.final_sentence ?? "",
             submittedOrderText: answer.submitted_order_text ?? "",
-            correctOrderText: answer.correct_order_text ?? "",
+            displaySubmittedOrderText: standardizeOrderTextCasing(
+              answer.submitted_order_text,
+              question?.options_text,
+              question?.correct_order_text
+            ),
+            correctOrderText: question?.correct_order_text ?? answer.correct_order_text ?? "",
             isCorrect: Boolean(answer.is_correct),
             practiceType: attempt ? getPracticeType(attempt.set_id) : "unknown",
             questionTimeSeconds: answer.question_time_seconds
