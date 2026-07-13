@@ -13,6 +13,15 @@ import {
   splitTextItems
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  STUDENT_SETS_CACHE_PREFIX,
+  STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
+  studentAttemptCacheKey,
+  studentQuestionsCacheKey,
+  useStudentCachedData,
+  useStudentDataCache,
+  type StudentCacheSession
+} from "@/components/StudentDataCache";
 import type { PublicQuestion, SubmitResponse } from "@/lib/types";
 
 type SavedAnswer = {
@@ -30,6 +39,11 @@ type OptionChunk = {
 type DraftAnswers = Record<string, Array<OptionChunk | null>>;
 
 type QuestionTimes = Record<string, number>;
+
+type QuestionsPayload = {
+  error?: string;
+  questions?: PublicQuestion[];
+};
 
 const DEFAULT_TIME_SECONDS = 6 * 60 + 50;
 
@@ -53,13 +67,24 @@ export function PracticeSession({
   totalSeconds?: number;
 }) {
   const router = useRouter();
-  const [questions, setQuestions] = useState<PublicQuestion[]>([]);
+  const { invalidate, setData } = useStudentDataCache();
+  const usesProvidedQuestions = Boolean(initialQuestions);
+  const questionState = useStudentCachedData<QuestionsPayload>(
+    studentQuestionsCacheKey(setId),
+    (session) => loadPracticeQuestions(setId, session),
+    { enabled: !usesProvidedQuestions }
+  );
+  const cachedQuestions = questionState.data?.questions;
+  const questions = useMemo(
+    () => initialQuestions ?? cachedQuestions ?? [],
+    [cachedQuestions, initialQuestions]
+  );
+  const loading = usesProvidedQuestions ? false : questionState.loading;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState<Array<OptionChunk | null>>([]);
   const [draftAnswers, setDraftAnswers] = useState<DraftAnswers>({});
   const [questionTimes, setQuestionTimes] = useState<QuestionTimes>({});
   const [showReview, setShowReview] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<SubmitResponse | null>(null);
@@ -71,47 +96,7 @@ export function PracticeSession({
   const currentQuestion = questions[currentIndex];
   const currentQuestionId = currentQuestion?.question_id;
   const currentBlankCount = currentQuestion?.blank_count ?? 0;
-  const usesProvidedQuestions = Boolean(initialQuestions);
-
-  useEffect(() => {
-    async function loadQuestions() {
-      if (initialQuestions) {
-        setQuestions(initialQuestions);
-        setLoading(false);
-        return;
-      }
-
-      const supabase = createBrowserSupabase();
-      const {
-        data: { session }
-      } = await supabase.auth.getSession();
-
-      const response = await fetch(`/api/sets/${setId}/questions`, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token ?? ""}`
-        }
-      });
-      const responseText = await response.text();
-      let payload: { questions?: PublicQuestion[]; error?: string };
-      try {
-        payload = responseText
-          ? JSON.parse(responseText)
-          : { error: "The questions API returned an empty response." };
-      } catch {
-        payload = { error: "The questions API returned invalid JSON." };
-      }
-
-      if (!response.ok) {
-        setError(payload.error ?? "Could not load questions.");
-      } else {
-        setQuestions((payload.questions ?? []) as PublicQuestion[]);
-      }
-
-      setLoading(false);
-    }
-
-    loadQuestions();
-  }, [initialQuestions, setId]);
+  const displayError = error || questionState.error;
 
   const submitAll = useCallback(
     async (
@@ -176,17 +161,16 @@ export function PracticeSession({
         } else if (isSubmitResponse(payload)) {
           setResult(payload);
           if (payload.attempt && payload.answers) {
-            window.sessionStorage.setItem(
-              resultCacheKey(payload.attemptId),
-              JSON.stringify({
-                attempt: payload.attempt,
-                total_count: payload.total_count ?? payload.total,
-                correct_count: payload.correct_count ?? payload.correctCount,
-                accuracy: payload.accuracy,
-                answers: payload.answers
-              })
-            );
+            setData(studentAttemptCacheKey(payload.attemptId), {
+              attempt: payload.attempt,
+              total_count: payload.total_count ?? payload.total,
+              correct_count: payload.correct_count ?? payload.correctCount,
+              accuracy: payload.accuracy,
+              answers: payload.answers
+            });
           }
+          invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+          if (!setId.startsWith("wrongbook-")) invalidate(STUDENT_SETS_CACHE_PREFIX);
           router.push(`/student/results/${payload.attemptId}`);
         } else {
           setError("Submit succeeded but no attempt id was returned.");
@@ -197,7 +181,18 @@ export function PracticeSession({
         setSubmitting(false);
       }
     },
-    [questions, router, setId, setTitle, startedAt, timed, totalSeconds, usesProvidedQuestions]
+    [
+      invalidate,
+      questions,
+      router,
+      setData,
+      setId,
+      setTitle,
+      startedAt,
+      timed,
+      totalSeconds,
+      usesProvidedQuestions
+    ]
   );
 
   useEffect(() => {
@@ -385,8 +380,8 @@ export function PracticeSession({
     return <p className="text-sm text-ink/70">Loading questions...</p>;
   }
 
-  if (error && questions.length === 0) {
-    return <p className="font-semibold text-coral">{error}</p>;
+  if (displayError && questions.length === 0) {
+    return <p className="font-semibold text-coral">{displayError}</p>;
   }
 
   if (!currentQuestion) {
@@ -414,7 +409,7 @@ export function PracticeSession({
         ) : null}
       </div>
 
-      {error ? <p className="font-semibold text-coral">{error}</p> : null}
+      {displayError ? <p className="font-semibold text-coral">{displayError}</p> : null}
 
       {showReview ? (
         <ReviewPanel
@@ -518,6 +513,30 @@ export function PracticeSession({
   );
 }
 
+async function loadPracticeQuestions(setId: string, session: StudentCacheSession) {
+  const response = await fetch(`/api/sets/${encodeURIComponent(setId)}/questions`, {
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`
+    }
+  });
+  const responseText = await response.text();
+  let payload: QuestionsPayload;
+
+  try {
+    payload = responseText
+      ? JSON.parse(responseText)
+      : { error: "The questions API returned an empty response." };
+  } catch {
+    payload = { error: "The questions API returned invalid JSON." };
+  }
+
+  if (!response.ok || payload.error) {
+    throw new Error(payload.error ?? "Could not load questions.");
+  }
+
+  return payload;
+}
+
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -526,10 +545,6 @@ function formatTime(totalSeconds: number) {
 
 function elapsedQuestionSeconds(startedAt: number) {
   return Math.max(0, Math.round((Date.now() - startedAt) / 1000));
-}
-
-function resultCacheKey(attemptId: string) {
-  return `practice-result:${attemptId}`;
 }
 
 function isSubmitResponse(value: Partial<SubmitResponse>): value is SubmitResponse {

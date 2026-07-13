@@ -8,23 +8,34 @@ import {
   TEACHER_CURRENT_USER_CACHE_KEY,
   useOptionalTeacherDataCache
 } from "@/components/TeacherDataCache";
+import {
+  STUDENT_CURRENT_USER_CACHE_KEY,
+  useOptionalStudentDataCache
+} from "@/components/StudentDataCache";
 
 export function SignOutButton() {
   const router = useRouter();
   const teacherCache = useOptionalTeacherDataCache();
+  const studentCache = useOptionalStudentDataCache();
   const loadTeacherData = teacherCache?.load;
   const clearTeacherData = teacherCache?.clear;
+  const loadStudentData = studentCache?.load;
+  const clearStudentData = studentCache?.clear;
+  const studentSessionReady = studentCache?.sessionReady;
+  const studentId = studentCache?.studentId;
   const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
     let ignore = false;
 
     async function loadDisplayName() {
-      const loader = async () => {
+      if (studentCache && (!studentSessionReady || !studentId)) return;
+
+      const loader = async (accessToken?: string) => {
         const supabase = createBrowserSupabase();
         const {
           data: { user }
-        } = await supabase.auth.getUser();
+        } = await supabase.auth.getUser(accessToken);
 
         return user
           ? getPreferredUserDisplayName({
@@ -34,8 +45,12 @@ export function SignOutButton() {
           : "";
       };
       const name = loadTeacherData
-        ? await loadTeacherData(TEACHER_CURRENT_USER_CACHE_KEY, loader)
-        : await loader();
+        ? await loadTeacherData(TEACHER_CURRENT_USER_CACHE_KEY, () => loader())
+        : loadStudentData
+          ? await loadStudentData(STUDENT_CURRENT_USER_CACHE_KEY, (session) =>
+              loader(session.accessToken)
+            )
+          : await loader();
 
       if (!ignore && name) setDisplayName(name);
     }
@@ -44,12 +59,13 @@ export function SignOutButton() {
     return () => {
       ignore = true;
     };
-  }, [loadTeacherData]);
+  }, [loadStudentData, loadTeacherData, studentCache, studentId, studentSessionReady]);
 
   async function signOut() {
     const supabase = createBrowserSupabase();
     await supabase.auth.signOut();
     clearTeacherData?.();
+    clearStudentData?.();
     router.push("/");
   }
 

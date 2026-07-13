@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { buildSentenceDisplay } from "@/lib/questionText";
-import { createBrowserSupabase } from "@/lib/supabase/client";
 import { StudentNavigation } from "@/components/SetList";
+import {
+  studentAttemptCacheKey,
+  useStudentCachedData,
+  type StudentCacheSession
+} from "@/components/StudentDataCache";
 import {
   getStudentResultNavigation,
   isWrongQuestionsSetId
@@ -38,59 +42,11 @@ type ResultPayload = {
 };
 
 export function PracticeResult({ attemptId }: { attemptId: string }) {
-  const [payload, setPayload] = useState<ResultPayload | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: payload, error, loading } = useStudentCachedData<ResultPayload>(
+    studentAttemptCacheKey(attemptId),
+    (session) => loadResult(attemptId, session)
+  );
   const [showIncorrectOnly, setShowIncorrectOnly] = useState(false);
-
-  useEffect(() => {
-    const cached = window.sessionStorage.getItem(resultCacheKey(attemptId));
-    let hasCachedResult = false;
-    if (cached) {
-      try {
-        setPayload(JSON.parse(cached) as ResultPayload);
-        setLoading(false);
-        hasCachedResult = true;
-      } catch {
-        window.sessionStorage.removeItem(resultCacheKey(attemptId));
-      }
-    }
-
-    async function loadResult() {
-      const supabase = createBrowserSupabase();
-      const {
-        data: { session }
-      } = await supabase.auth.getSession();
-
-      const response = await fetch(`/api/attempts/${attemptId}`, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token ?? ""}`
-        }
-      });
-      const responseText = await response.text();
-      let data: ResultPayload | { error?: string };
-      try {
-        data = responseText
-          ? JSON.parse(responseText)
-          : { error: "The result API returned an empty response." };
-      } catch {
-        data = { error: "The result API returned invalid JSON." };
-      }
-
-      if (!response.ok) {
-        if (!hasCachedResult) {
-          setError(getErrorMessage(data, "Could not load result."));
-        }
-      } else {
-        setPayload(data as ResultPayload);
-        window.sessionStorage.setItem(resultCacheKey(attemptId), JSON.stringify(data));
-      }
-
-      setLoading(false);
-    }
-
-    loadResult();
-  }, [attemptId]);
 
   if (loading) {
     return <p className="text-sm text-ink/70">Loading result...</p>;
@@ -197,12 +153,35 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
   );
 }
 
-function resultCacheKey(attemptId: string) {
-  return `practice-result:${attemptId}`;
-}
-
 function getErrorMessage(value: ResultPayload | { error?: string }, fallback: string) {
   return "error" in value && value.error ? value.error : fallback;
+}
+
+async function loadResult(
+  attemptId: string,
+  session: StudentCacheSession
+): Promise<ResultPayload> {
+  const response = await fetch(`/api/attempts/${attemptId}`, {
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`
+    }
+  });
+  const responseText = await response.text();
+  let data: ResultPayload | { error?: string };
+
+  try {
+    data = responseText
+      ? JSON.parse(responseText)
+      : { error: "The result API returned an empty response." };
+  } catch {
+    data = { error: "The result API returned invalid JSON." };
+  }
+
+  if (!response.ok || "error" in data) {
+    throw new Error(getErrorMessage(data, "Could not load result."));
+  }
+
+  return data as ResultPayload;
 }
 
 function Metric({ label, value }: { label: string; value: string }) {

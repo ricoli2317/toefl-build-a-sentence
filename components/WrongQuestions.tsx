@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { PracticeSession } from "@/components/PracticeSession";
 import { StudentNavigation } from "@/components/SetList";
-import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  studentWrongQuestionsCacheKey,
+  useStudentCachedData,
+  type StudentCacheSession
+} from "@/components/StudentDataCache";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import type { PublicQuestion } from "@/lib/types";
 
@@ -202,68 +206,46 @@ export function WrongQuestionsPractice({
 }
 
 function useWrongQuestions(scope: "history" | "today", randomLimit?: number) {
-  const [questions, setQuestions] = useState<PublicQuestion[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const todayRange = useMemo(() => getTodayRange(), []);
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadWrongQuestions() {
-      try {
-        const supabase = createBrowserSupabase();
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
-        const params = new URLSearchParams({ scope });
-        if (scope === "today") {
-          params.set("todayStart", todayRange.start);
-          params.set("todayEnd", todayRange.end);
-        }
-        if (randomLimit) {
-          params.set("randomLimit", String(randomLimit));
-        }
-
-        const response = await fetch(`/api/wrong-questions?${params.toString()}`, {
-          headers: {
-            Authorization: `Bearer ${session?.access_token ?? ""}`
-          }
-        });
-        const responseText = await response.text();
-        let payload: WrongQuestionsPayload;
-        try {
-          payload = responseText
-            ? JSON.parse(responseText)
-            : { error: "The wrong questions API returned an empty response.", questions: [] };
-        } catch {
-          payload = { error: "The wrong questions API returned invalid JSON.", questions: [] };
-        }
-
-        if (ignore) return;
-
-        if (!response.ok) {
-          setError(payload.error ?? "Could not load wrong questions.");
-        } else {
-          setQuestions(payload.questions ?? []);
-        }
-      } catch (error) {
-        if (!ignore) {
-          setError(error instanceof Error ? error.message : "Could not load wrong questions.");
-        }
-      } finally {
-        if (!ignore) setLoading(false);
-      }
+  const query = useMemo(() => {
+    const params = new URLSearchParams({ scope });
+    if (scope === "today") {
+      params.set("todayStart", todayRange.start);
+      params.set("todayEnd", todayRange.end);
     }
-
-    loadWrongQuestions();
-
-    return () => {
-      ignore = true;
-    };
+    if (randomLimit) params.set("randomLimit", String(randomLimit));
+    return params.toString();
   }, [randomLimit, scope, todayRange.end, todayRange.start]);
+  const { data, error, loading } = useStudentCachedData<WrongQuestionsPayload>(
+    studentWrongQuestionsCacheKey(query),
+    (session) => loadWrongQuestions(query, session)
+  );
 
-  return { error, loading, questions };
+  return { error, loading, questions: data?.questions ?? [] };
+}
+
+async function loadWrongQuestions(query: string, session: StudentCacheSession) {
+  const response = await fetch(`/api/wrong-questions?${query}`, {
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`
+    }
+  });
+  const responseText = await response.text();
+  let payload: WrongQuestionsPayload;
+
+  try {
+    payload = responseText
+      ? JSON.parse(responseText)
+      : { error: "The wrong questions API returned an empty response.", questions: [] };
+  } catch {
+    payload = { error: "The wrong questions API returned invalid JSON.", questions: [] };
+  }
+
+  if (!response.ok || payload.error) {
+    throw new Error(payload.error ?? "Could not load wrong questions.");
+  }
+
+  return payload;
 }
 
 function getTodayRange() {

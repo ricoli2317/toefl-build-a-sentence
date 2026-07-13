@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  STUDENT_SETS_CACHE_KEY,
+  useStudentCachedData,
+  type StudentCacheSession
+} from "@/components/StudentDataCache";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import type { PracticeMonth, PracticeSet } from "@/lib/types";
 
@@ -11,8 +14,6 @@ type SetsPayload = {
   sets?: PracticeSet[];
   error?: string;
 };
-
-const SETS_CACHE_KEY = "student-practice-sets";
 
 export function StudentHome() {
   return (
@@ -111,79 +112,41 @@ export function SetList({ monthKey, monthLabel }: { monthKey: string; monthLabel
 }
 
 function useStudentSetsData(monthKey?: string) {
-  const [months, setMonths] = useState<PracticeMonth[]>([]);
-  const [sets, setSets] = useState<PracticeSet[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const cached = readSetsCache();
-    if (cached) {
-      setMonths(cached.months ?? []);
-      setSets(monthKey ? (cached.sets ?? []).filter((set) => set.month_key === monthKey) : cached.sets ?? []);
-      setLoading(false);
-    }
-
-    async function loadSets() {
-      const supabase = createBrowserSupabase();
-      const {
-        data: { session }
-      } = await supabase.auth.getSession();
-
-      const apiPath = monthKey ? `/api/sets?month=${encodeURIComponent(monthKey)}` : "/api/sets";
-      const response = await fetch(apiPath, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token ?? ""}`
-        }
-      });
-      const responseText = await response.text();
-      let payload: SetsPayload;
-      try {
-        payload = responseText
-          ? JSON.parse(responseText)
-          : { error: "The sets API returned an empty response." };
-      } catch {
-        payload = { error: "The sets API returned invalid JSON." };
-      }
-
-      if (!response.ok) {
-        setError(payload.error ?? "Could not load sets.");
-      } else {
-        setMonths(payload.months ?? []);
-        setSets(payload.sets ?? []);
-        if (!monthKey) {
-          window.sessionStorage.setItem(SETS_CACHE_KEY, JSON.stringify(payload));
-        } else if (cached) {
-          window.sessionStorage.setItem(
-            SETS_CACHE_KEY,
-            JSON.stringify({
-              months: payload.months ?? cached.months ?? [],
-              sets: [
-                ...(cached.sets ?? []).filter((set) => set.month_key !== monthKey),
-                ...(payload.sets ?? [])
-              ]
-            })
-          );
-        }
-      }
-
-      setLoading(false);
-    }
-
-    loadSets();
-  }, [monthKey]);
+  const { data, error, loading } = useStudentCachedData<SetsPayload>(
+    STUDENT_SETS_CACHE_KEY,
+    loadStudentSets
+  );
+  const months = data?.months ?? [];
+  const allSets = data?.sets ?? [];
+  const sets = monthKey
+    ? allSets.filter((set) => set.month_key === monthKey)
+    : allSets;
 
   return { error, loading, months, sets };
 }
 
-function readSetsCache() {
+async function loadStudentSets(session: StudentCacheSession) {
+  const response = await fetch("/api/sets", {
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`
+    }
+  });
+  const responseText = await response.text();
+  let payload: SetsPayload;
+
   try {
-    const value = window.sessionStorage.getItem(SETS_CACHE_KEY);
-    return value ? (JSON.parse(value) as SetsPayload) : null;
+    payload = responseText
+      ? JSON.parse(responseText)
+      : { error: "The sets API returned an empty response." };
   } catch {
-    window.sessionStorage.removeItem(SETS_CACHE_KEY);
-    return null;
+    payload = { error: "The sets API returned invalid JSON." };
   }
+
+  if (!response.ok || payload.error) {
+    throw new Error(payload.error ?? "Could not load sets.");
+  }
+
+  return payload;
 }
 
 function PracticeSetGrid({ sets }: { sets: PracticeSet[] }) {
