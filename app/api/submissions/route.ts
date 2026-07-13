@@ -17,6 +17,7 @@ type QuestionForScoring = {
   question_order: number;
   prompt: string;
   sentence_template: string;
+  options_text: string;
   correct_order_text: string;
   final_sentence: string;
   grammar_tags_text: string | null;
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
     const questionQuery = db
       .from("questions")
       .select(
-        "question_id,set_id,set_title,question_order,prompt,sentence_template,correct_order_text,final_sentence,grammar_tags_text"
+        "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence,grammar_tags_text"
       );
     const { data: questions, error: questionsError } =
       questionIds.length > 0
@@ -221,9 +222,11 @@ export async function POST(request: Request) {
       submitted_order_text: result.submittedOrderText,
       correct_order_text: result.correctOrderText,
       sentence_template: result.question.sentence_template,
+      options_text: result.question.options_text,
       final_sentence: result.question.final_sentence,
       is_correct: result.isCorrect,
-      grammar_tags_text: result.question.grammar_tags_text
+      grammar_tags_text: result.question.grammar_tags_text,
+      question_time_seconds: result.questionTimeSeconds
     }));
 
     return NextResponse.json({

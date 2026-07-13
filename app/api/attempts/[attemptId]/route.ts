@@ -22,11 +22,15 @@ type AnswerRow = {
   correct_order_text: string;
   is_correct: boolean;
   grammar_tags_text: string | null;
+  question_time_seconds: number | null;
 };
 
 type QuestionRow = {
   question_id: string;
+  prompt: string;
   sentence_template: string;
+  options_text: string;
+  correct_order_text: string;
   final_sentence: string;
 };
 
@@ -105,7 +109,7 @@ export async function GET(
     const { data: answers, error: answersError } = await db
       .from("attempt_answers")
       .select(
-        "attempt_answer_id,question_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,grammar_tags_text"
+        "attempt_answer_id,question_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,grammar_tags_text,question_time_seconds"
       )
       .eq("attempt_id", params.attemptId)
       .order("question_order", { ascending: true });
@@ -120,24 +124,20 @@ export async function GET(
       questionIds.length > 0
         ? await db
             .from("questions")
-            .select("question_id,sentence_template,final_sentence")
+            .select(
+              "question_id,prompt,sentence_template,options_text,correct_order_text,final_sentence"
+            )
             .in("question_id", questionIds)
         : { data: [], error: null };
 
     if (questionsError) {
-      return jsonError(`Failed to read final sentences: ${questionsError.message}`);
+      return jsonError(`Failed to read current questions: ${questionsError.message}`);
     }
 
-    const finalSentenceByQuestion = new Map(
+    const questionById = new Map(
       ((questions ?? []) as QuestionRow[]).map((question) => [
         String(question.question_id),
-        question.final_sentence
-      ])
-    );
-    const sentenceTemplateByQuestion = new Map(
-      ((questions ?? []) as QuestionRow[]).map((question) => [
-        String(question.question_id),
-        question.sentence_template
+        question
       ])
     );
 
@@ -150,12 +150,18 @@ export async function GET(
         ...attemptRow,
         accuracy
       },
-      answers: answerRows.map((answer) => ({
-        ...answer,
-        question_id: String(answer.question_id),
-        sentence_template: sentenceTemplateByQuestion.get(String(answer.question_id)) ?? "",
-        final_sentence: finalSentenceByQuestion.get(String(answer.question_id)) ?? ""
-      })),
+      answers: answerRows.map((answer) => {
+        const question = questionById.get(String(answer.question_id));
+        return {
+          ...answer,
+          question_id: String(answer.question_id),
+          prompt: question?.prompt ?? answer.prompt,
+          sentence_template: question?.sentence_template ?? "",
+          options_text: question?.options_text ?? "",
+          correct_order_text: question?.correct_order_text ?? answer.correct_order_text,
+          final_sentence: question?.final_sentence ?? ""
+        };
+      }),
       total_count: totalCount,
       correct_count: correctCount,
       accuracy

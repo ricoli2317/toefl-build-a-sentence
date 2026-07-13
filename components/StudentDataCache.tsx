@@ -22,7 +22,7 @@ export function studentQuestionsCacheKey(setId: string) {
 }
 
 export function studentAttemptCacheKey(attemptId: string) {
-  return `attempt:${attemptId}`;
+  return `attempt:current-question-v2:${attemptId}`;
 }
 
 export function studentWrongQuestionsCacheKey(query: string) {

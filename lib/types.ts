@@ -71,8 +71,10 @@ export type SubmitResponse = {
     submitted_order_text: string;
     correct_order_text: string;
     sentence_template: string;
+    options_text: string;
     final_sentence: string;
     is_correct: boolean;
     grammar_tags_text: string | null;
+    question_time_seconds: number | null;
   }>;
 };
