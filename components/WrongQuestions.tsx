@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PracticeSession } from "@/components/PracticeSession";
 import { StudentNavigation } from "@/components/SetList";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import type { PublicQuestion } from "@/lib/types";
 
 type WrongQuestionsPayload = {
@@ -19,16 +20,16 @@ export function WrongQuestionsHome() {
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref="/student/sets"
+        backHref={STUDENT_ROUTES.home}
         crumbs={[
-          { label: "Student Home", href: "/student/sets" },
+          { label: "Student Home", href: STUDENT_ROUTES.home },
           { label: "Wrong Questions" }
         ]}
       />
       <div className="grid gap-4 md:grid-cols-2">
         <Link
           className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-          href="/student/wrong-questions/today"
+          href={STUDENT_ROUTES.wrongQuestionsToday}
         >
           <p className="text-sm font-semibold text-ocean">Today</p>
           <h2 className="mt-1 text-2xl font-bold">Today&apos;s Wrong Questions</h2>
@@ -36,7 +37,7 @@ export function WrongQuestionsHome() {
         </Link>
         <Link
           className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-          href="/student/wrong-questions/history"
+          href={STUDENT_ROUTES.wrongQuestionsHistory}
         >
           <p className="text-sm font-semibold text-ocean">History</p>
           <h2 className="mt-1 text-2xl font-bold">History Wrong Questions</h2>
@@ -56,10 +57,10 @@ export function TodayWrongQuestions() {
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref="/student/wrong-questions"
+        backHref={STUDENT_ROUTES.wrongQuestions}
         crumbs={[
-          { label: "Student Home", href: "/student/sets" },
-          { label: "Wrong Questions", href: "/student/wrong-questions" },
+          { label: "Student Home", href: STUDENT_ROUTES.home },
+          { label: "Wrong Questions", href: STUDENT_ROUTES.wrongQuestions },
           { label: "Today's Wrong Questions" }
         ]}
       />
@@ -94,10 +95,10 @@ export function HistoryWrongQuestions() {
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref="/student/wrong-questions"
+        backHref={STUDENT_ROUTES.wrongQuestions}
         crumbs={[
-          { label: "Student Home", href: "/student/sets" },
-          { label: "Wrong Questions", href: "/student/wrong-questions" },
+          { label: "Student Home", href: STUDENT_ROUTES.home },
+          { label: "Wrong Questions", href: STUDENT_ROUTES.wrongQuestions },
           { label: "History Wrong Questions" }
         ]}
       />
@@ -160,12 +161,24 @@ export function WrongQuestionsPractice({
     return (
       <div className="grid gap-5">
         <StudentNavigation
-          backHref={mode === "today" ? "/student/wrong-questions/today" : "/student/wrong-questions/history"}
-          crumbs={[
-            { label: "Student Home", href: "/student/sets" },
-            { label: "Wrong Questions", href: "/student/wrong-questions" },
-            { label: title }
-          ]}
+          backHref={
+            mode === "today"
+              ? STUDENT_ROUTES.wrongQuestionsToday
+              : STUDENT_ROUTES.wrongQuestionsHistory
+          }
+          crumbs={
+            mode === "today"
+              ? [
+                  { label: "Student Home", href: STUDENT_ROUTES.home },
+                  { label: "Wrong Questions", href: STUDENT_ROUTES.wrongQuestions },
+                  { label: "Today's Wrong Questions" }
+                ]
+              : [
+                  { label: "Student Home", href: STUDENT_ROUTES.home },
+                  { label: "Wrong Questions", href: STUDENT_ROUTES.wrongQuestions },
+                  { label: "History Wrong Questions" }
+                ]
+          }
         />
         <p className="rounded-lg border border-line bg-white p-5">
           {mode === "today" ? "今日无错题" : "暂无历史错题"}

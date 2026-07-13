@@ -9,7 +9,12 @@ export default function StudentHistoryWrongQuestionsPracticePage({
   const mode = searchParams.mode === "random" ? "history-random" : "history-all";
 
   return (
-    <AppShell brand="Build a Sentence" eyebrow="Practice" title="Build a Sentence">
+    <AppShell
+      brand="Build a Sentence"
+      brandHref={null}
+      eyebrow="Practice"
+      title="Build a Sentence"
+    >
       <WrongQuestionsPractice mode={mode} />
     </AppShell>
   );

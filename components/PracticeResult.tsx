@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { buildSentenceDisplay } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { StudentNavigation } from "@/components/SetList";
+import {
+  getStudentResultNavigation,
+  isWrongQuestionsSetId
+} from "@/lib/studentNavigation";
 
 type ResultPayload = {
   attempt: {
@@ -97,7 +101,8 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
   }
 
   const { attempt, answers } = payload;
-  const isWrongQuestionsPractice = attempt.set_id.startsWith("wrongbook-");
+  const isWrongQuestionsPractice = isWrongQuestionsSetId(attempt.set_id);
+  const navigation = getStudentResultNavigation(attempt.set_id);
   const visibleAnswers = showIncorrectOnly
     ? answers.filter((answer) => !answer.is_correct)
     : answers;
@@ -105,12 +110,8 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
   return (
     <div className="space-y-5">
       <StudentNavigation
-        backHref="/student/sets"
-        crumbs={[
-          { label: "Student Home", href: "/student/sets" },
-          { label: attempt.set_title, href: "/student/sets" },
-          { label: "Result" }
-        ]}
+        backHref={navigation.backHref}
+        crumbs={navigation.crumbs}
       />
 
       <section className="rounded-lg border border-line bg-white p-5 shadow-sm">

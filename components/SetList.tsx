@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import type { PracticeMonth, PracticeSet } from "@/lib/types";
 
 type SetsPayload = {
@@ -15,32 +16,23 @@ const SETS_CACHE_KEY = "student-practice-sets";
 
 export function StudentHome() {
   return (
-    <div className="grid gap-5">
-      <StudentNavigation
-        backHref="/student/sets"
-        crumbs={[
-          { label: "Student Home", href: "/student/sets" },
-          { label: "Practice Sets" }
-        ]}
-      />
-      <div className="grid gap-4 md:grid-cols-2">
-        <Link
-          className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-          href="/student/wrong-questions"
-        >
-          <p className="text-sm font-semibold text-ocean">Review</p>
-          <h2 className="mt-1 text-2xl font-bold">Wrong Questions</h2>
-          <p className="mt-2 text-sm leading-6 text-ink/70">错题集</p>
-        </Link>
-        <Link
-          className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-          href="/student/practice-sets"
-        >
-          <p className="text-sm font-semibold text-ocean">Practice</p>
-          <h2 className="mt-1 text-2xl font-bold">Practice Sets</h2>
-          <p className="mt-2 text-sm leading-6 text-ink/70">按月选择套题</p>
-        </Link>
-      </div>
+    <div className="grid gap-4 md:grid-cols-2">
+      <Link
+        className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+        href={STUDENT_ROUTES.wrongQuestions}
+      >
+        <p className="text-sm font-semibold text-ocean">Review</p>
+        <h2 className="mt-1 text-2xl font-bold">Wrong Questions</h2>
+        <p className="mt-2 text-sm leading-6 text-ink/70">错题集</p>
+      </Link>
+      <Link
+        className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+        href={STUDENT_ROUTES.practiceSets}
+      >
+        <p className="text-sm font-semibold text-ocean">Practice</p>
+        <h2 className="mt-1 text-2xl font-bold">Practice Sets</h2>
+        <p className="mt-2 text-sm leading-6 text-ink/70">按月选择套题</p>
+      </Link>
     </div>
   );
 }
@@ -58,12 +50,18 @@ export function MonthList() {
 
   return (
     <div className="grid gap-5">
-      <StudentNavigation crumbs={[{ label: "Student Home" }]} showBack={false} />
+      <StudentNavigation
+        backHref={STUDENT_ROUTES.home}
+        crumbs={[
+          { label: "Student Home", href: STUDENT_ROUTES.home },
+          { label: "Practice Sets" }
+        ]}
+      />
       <div className="grid gap-4 md:grid-cols-2">
         {months.map((month) => (
           <Link
             className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-            href={`/student/practice-sets/${month.month_key}`}
+            href={`${STUDENT_ROUTES.practiceSets}/${month.month_key}`}
             key={month.month_key}
           >
             <p className="text-sm font-semibold text-ocean">Practice Month</p>
@@ -100,10 +98,10 @@ export function SetList({ monthKey, monthLabel }: { monthKey: string; monthLabel
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref="/student/practice-sets"
+        backHref={STUDENT_ROUTES.practiceSets}
         crumbs={[
-          { label: "Student Home", href: "/student/sets" },
-          { label: "Practice Sets", href: "/student/practice-sets" },
+          { label: "Student Home", href: STUDENT_ROUTES.home },
+          { label: "Practice Sets", href: STUDENT_ROUTES.practiceSets },
           { label: monthLabel }
         ]}
       />
@@ -235,7 +233,7 @@ function PracticeSetGrid({ sets }: { sets: PracticeSet[] }) {
 }
 
 export function StudentNavigation({
-  backHref = "/student/sets",
+  backHref = STUDENT_ROUTES.home,
   crumbs,
   showBack = true
 }: {
@@ -259,7 +257,7 @@ export function StudentNavigation({
         ) : null}
         <Link
           className="rounded-md bg-ink px-3 py-2 text-sm font-semibold text-white hover:bg-ocean"
-          href="/student/sets"
+          href={STUDENT_ROUTES.home}
         >
           Student Home
         </Link>

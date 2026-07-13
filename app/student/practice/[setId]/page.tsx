@@ -7,6 +7,7 @@ export default function PracticePage({ params }: { params: { setId: string } }) 
     <AppShell
       action={<SignOutButton />}
       brand="Build a Sentence"
+      brandHref={null}
       eyebrow="Practice"
       title="Build a Sentence"
     >

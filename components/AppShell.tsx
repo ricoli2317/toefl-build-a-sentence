@@ -3,19 +3,31 @@ import Link from "next/link";
 type AppShellProps = {
   title: string;
   brand?: string;
+  brandHref?: string | null;
   eyebrow?: string;
   action?: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function AppShell({ title, brand = "Build a Sentence", eyebrow, action, children }: AppShellProps) {
+export function AppShell({
+  title,
+  brand = "Build a Sentence",
+  brandHref = "/",
+  eyebrow,
+  action,
+  children
+}: AppShellProps) {
   return (
     <main className="min-h-screen">
       <header className="border-b border-line bg-white/80">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
-          <Link href="/" className="font-semibold tracking-wide text-ocean">
-            {brand}
-          </Link>
+          {brandHref ? (
+            <Link href={brandHref} className="font-semibold tracking-wide text-ocean">
+              {brand}
+            </Link>
+          ) : (
+            <span className="font-semibold tracking-wide text-ocean">{brand}</span>
+          )}
           {action}
         </div>
       </header>
