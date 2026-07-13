@@ -33,6 +33,7 @@ type Finding = {
   set_id: string;
   set_title: string;
   question_order: number;
+  category: "casing_issue" | "distractor_case_review";
   field: AuditedField;
   stored_value: string;
   reference_value: string;
@@ -84,6 +85,11 @@ async function main() {
   console.log(`CSV files read: ${sourceFiles.length}`);
   console.log(`Audited questions: ${questions.length}`);
   console.log(`Suspicious records: ${findings.length}`);
+  console.log(
+    `distractor_case_review: ${
+      findings.filter((finding) => finding.category === "distractor_case_review").length
+    }`
+  );
   console.log(`CSV report: ${OUTPUT_PATH}`);
   printStorageFormats(questions);
   console.log(
@@ -162,9 +168,11 @@ function auditQuestion(question: QuestionRow) {
     field: AuditedField,
     storedValue: string,
     referenceValue: string,
-    reason: string
+    reason: string,
+    category: Finding["category"] = "casing_issue",
+    suggestedValue = referenceValue
   ) {
-    const key = [field, storedValue, referenceValue].join("\u0000");
+    const key = [category, field, storedValue, referenceValue].join("\u0000");
     if (findingKeys.has(key)) return;
     findingKeys.add(key);
     findings.push({
@@ -173,11 +181,12 @@ function auditQuestion(question: QuestionRow) {
       set_id: String(question.set_id),
       set_title: question.set_title ?? "",
       question_order: question.question_order ?? 0,
+      category,
       field,
       stored_value: storedValue,
       reference_value: referenceValue,
       reason,
-      suggested_value: referenceValue
+      suggested_value: suggestedValue
     });
   }
 
@@ -200,6 +209,8 @@ function auditQuestion(question: QuestionRow) {
     auditLowercaseI(occurrence, addFinding);
     auditLowercaseNameAfterTitle(occurrence, addFinding);
   }
+
+  auditDistractorCaseReview(distractors, addFinding);
 
   compareCorrectChunksWithFinal(
     correct,
@@ -236,6 +247,38 @@ function auditQuestion(question: QuestionRow) {
   auditTemplateAndFinalWordCasing(question, addFinding);
 
   return findings;
+}
+
+function auditDistractorCaseReview(
+  distractors: string[],
+  addFinding: (
+    field: AuditedField,
+    storedValue: string,
+    referenceValue: string,
+    reason: string,
+    category?: Finding["category"],
+    suggestedValue?: string
+  ) => void
+) {
+  for (const distractor of distractors) {
+    const firstWord = distractor.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/)?.[0] ?? "";
+    if (!/^[A-Z]/.test(firstWord) || hasIntrinsicLeadingCapitalization(firstWord)) continue;
+
+    addFinding(
+      "distractors_text",
+      distractor,
+      "",
+      "Distractor starts with an uppercase word but has no correct-answer sentence context; review neutral casing manually",
+      "distractor_case_review",
+      ""
+    );
+  }
+}
+
+function hasIntrinsicLeadingCapitalization(word: string) {
+  if (/^I(?:['’](?:m|ve|ll|d))?$/i.test(word)) return true;
+  if (/^[A-Z]{2,}$/.test(word)) return true;
+  return /^(?:Mr|Ms|Mrs|Dr)\.?$/i.test(word);
 }
 
 function buildTextOccurrences(
@@ -580,6 +623,7 @@ function toCsv(findings: Finding[]) {
     "set_id",
     "set_title",
     "question_order",
+    "category",
     "field",
     "stored_value",
     "reference_value",
