@@ -16,6 +16,7 @@ type TeacherStatsPayload = {
     answeredQuestionCount: number;
     averageAccuracy: number;
   };
+  missingAnswerAttemptIds: string[];
   students: StudentSummary[];
   sets: SetSummary[];
   attempts: AttemptSummary[];
@@ -356,10 +357,29 @@ export function TeacherStudentSetDetails({
             {attempts.length === 0 ? <EmptyState text="No attempts found for this set." /> : null}
             <div className="grid gap-4">
               {attempts.map((attempt) => {
-                const answers = stats.answers
+                const attemptAnswers = stats.answers
                   .filter((answer) => answer.attemptId === attempt.attemptId)
-                  .filter((answer) => (incorrectOnly ? !answer.isCorrect : true))
                   .sort((a, b) => a.questionOrder - b.questionOrder);
+                const answers = attemptAnswers.filter((answer) =>
+                  incorrectOnly ? !answer.isCorrect : true
+                );
+
+                if (
+                  attemptAnswers.length === 0 &&
+                  stats.missingAnswerAttemptIds.includes(attempt.attemptId)
+                ) {
+                  return (
+                    <div
+                      className="rounded-md border border-coral bg-coral/10 p-4"
+                      key={attempt.attemptId}
+                    >
+                      <AttemptHeader attempt={attempt} />
+                      <p className="mt-3 text-sm font-semibold text-coral">
+                        No answer records were saved for attempt {attempt.attemptId}.
+                      </p>
+                    </div>
+                  );
+                }
 
                 if (incorrectOnly && answers.length === 0) {
                   return (

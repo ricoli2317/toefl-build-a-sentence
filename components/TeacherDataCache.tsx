@@ -11,7 +11,7 @@ import {
   type ReactNode
 } from "react";
 
-export const TEACHER_STATS_CACHE_KEY = "teacher:stats";
+export const TEACHER_STATS_CACHE_KEY = "teacher:stats:complete-answers-v2";
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
 export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";

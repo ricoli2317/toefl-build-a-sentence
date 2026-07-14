@@ -82,6 +82,28 @@ type QuestionSummary = {
 
 type PracticeType = "official" | "wrongbook-today" | "wrongbook-history";
 
+const DATABASE_PAGE_SIZE = 500;
+
+type PageError = { message: string };
+
+async function fetchAllRows<T>(
+  loadPage: (
+    from: number,
+    to: number
+  ) => PromiseLike<{ data: unknown[] | null; error: PageError | null }>
+) {
+  const rows: T[] = [];
+
+  for (let from = 0; ; from += DATABASE_PAGE_SIZE) {
+    const { data, error } = await loadPage(from, from + DATABASE_PAGE_SIZE - 1);
+    if (error) return { data: null, error };
+
+    const page = (data ?? []) as T[];
+    rows.push(...page);
+    if (page.length < DATABASE_PAGE_SIZE) return { data: rows, error: null };
+  }
+}
+
 function jsonError(message: string, status = 500) {
   return NextResponse.json({ error: message }, { status });
 }
@@ -174,22 +196,40 @@ export async function GET(request: Request) {
       { data: profiles, error: profilesError },
       { data: questions, error: questionsError }
     ] = await Promise.all([
-      db
-        .from("attempts")
-        .select(
-          "attempt_id,student_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
-        ),
-      db
-        .from("attempt_answers")
-        .select(
-          "attempt_answer_id,attempt_id,question_id,student_id,set_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,question_time_seconds"
-        ),
-      db.from("profiles").select("id,email,full_name,role"),
-      db
-        .from("questions")
-        .select(
-          "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence"
-        )
+      fetchAllRows<AttemptRow>((from, to) =>
+        db
+          .from("attempts")
+          .select(
+            "attempt_id,student_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
+          )
+          .order("attempt_id", { ascending: true })
+          .range(from, to)
+      ),
+      fetchAllRows<AnswerRow>((from, to) =>
+        db
+          .from("attempt_answers")
+          .select(
+            "attempt_answer_id,attempt_id,question_id,student_id,set_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,question_time_seconds"
+          )
+          .order("attempt_answer_id", { ascending: true })
+          .range(from, to)
+      ),
+      fetchAllRows<ProfileRow>((from, to) =>
+        db
+          .from("profiles")
+          .select("id,email,full_name,role")
+          .order("id", { ascending: true })
+          .range(from, to)
+      ),
+      fetchAllRows<QuestionRow>((from, to) =>
+        db
+          .from("questions")
+          .select(
+            "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence"
+          )
+          .order("question_id", { ascending: true })
+          .range(from, to)
+      )
     ]);
 
     const queryError = attemptsError ?? answersError ?? profilesError ?? questionsError;
@@ -236,6 +276,10 @@ export async function GET(request: Request) {
     }));
 
     const attemptById = new Map(attemptRows.map((attempt) => [attempt.attempt_id, attempt]));
+    const attemptIdsWithAnswers = new Set(answerRows.map((answer) => answer.attempt_id));
+    const missingAnswerAttemptIds = attemptRows
+      .filter((attempt) => !attemptIdsWithAnswers.has(attempt.attempt_id))
+      .map((attempt) => attempt.attempt_id);
     const officialAttemptIds = new Set(
       attemptRows
         .filter((attempt) => getPracticeType(attempt.set_id) === "official")
@@ -370,6 +414,7 @@ export async function GET(request: Request) {
         answeredQuestionCount: answerRows.length,
         averageAccuracy: ratio(correctCount, totalQuestions)
       },
+      missingAnswerAttemptIds,
       students: studentSummaries.sort((a, b) => a.studentDisplayName.localeCompare(b.studentDisplayName)),
       sets: setSummaries.sort((a, b) => compareSetIds(a.setId, b.setId)),
       attempts: attemptRows
