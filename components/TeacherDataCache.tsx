@@ -10,6 +10,7 @@ import {
   useState,
   type ReactNode
 } from "react";
+import { subscribeToQuestionBankUpdates } from "@/lib/questionBankCacheEvents";
 
 export const TEACHER_STATS_CACHE_KEY = "teacher:stats:complete-answers-v2";
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
@@ -90,6 +91,15 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
       }
     },
     [notify]
+  );
+
+  useEffect(
+    () =>
+      subscribeToQuestionBankUpdates(() => {
+        invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
+        invalidate(TEACHER_STATS_CACHE_KEY);
+      }),
+    [invalidate]
   );
 
   const value = useMemo(

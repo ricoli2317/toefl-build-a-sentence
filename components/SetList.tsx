@@ -127,6 +127,7 @@ function useStudentSetsData(monthKey?: string) {
 
 async function loadStudentSets(session: StudentCacheSession) {
   const response = await fetch("/api/sets", {
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${session.accessToken}`
     }

@@ -11,6 +11,7 @@ import {
   type ReactNode
 } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { subscribeToQuestionBankUpdates } from "@/lib/questionBankCacheEvents";
 
 export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
@@ -182,6 +183,11 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       subscription.unsubscribe();
     };
   }, [notify]);
+
+  useEffect(
+    () => subscribeToQuestionBankUpdates(() => invalidate(STUDENT_SETS_CACHE_PREFIX)),
+    [invalidate]
+  );
 
   const value = useMemo(
     () => ({

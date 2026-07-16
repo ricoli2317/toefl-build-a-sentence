@@ -5,6 +5,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { parseCsv, type CsvRecord } from "@/lib/csv";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { broadcastQuestionBankUpdated } from "@/lib/questionBankCacheEvents";
 import {
   TEACHER_ACCESS_CACHE_KEY,
   TEACHER_QUESTION_BANK_CACHE_PREFIX,
@@ -203,6 +204,9 @@ export function TeacherImportQuestions() {
         }
         invalidate(TEACHER_STATS_CACHE_KEY);
         invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
+        if (resultPayload.successCount > 0) {
+          broadcastQuestionBankUpdated();
+        }
         setResult(resultPayload);
       }
     } catch (error) {

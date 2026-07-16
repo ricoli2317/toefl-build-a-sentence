@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createAnonSupabase } from "@/lib/supabase/server";
+import { readAllSupabaseRows } from "@/lib/supabasePagination";
 
 type QuestionRow = {
   question_id: string;
@@ -32,8 +33,20 @@ type SetSummary = {
   question_count: number;
 };
 
+export const dynamic = "force-dynamic";
+
+function json(data: unknown, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: {
+      ...init?.headers,
+      "Cache-Control": "no-store"
+    }
+  });
+}
+
 function jsonError(message: string, status = 500) {
-  return NextResponse.json(
+  return json(
     {
       error: message,
       months: [],
@@ -159,21 +172,32 @@ export async function GET(request: Request) {
     const setId = searchParams.get("setId");
 
     const supabase = createAnonSupabase(token);
-    const { data, error } = await supabase
-      .from("questions")
-      .select(
-        "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text"
-      );
+    const { data, error } = await readAllSupabaseRows<QuestionRow>((from, to) =>
+      supabase
+        .from("questions")
+        .select(
+          "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text"
+        )
+        .order("set_id", { ascending: true })
+        .order("question_order", { ascending: true })
+        .order("question_id", { ascending: true })
+        .range(from, to)
+    );
 
     if (error) {
       return jsonError(`Failed to load question bank: ${error.message}`);
     }
 
-    const allRows = ((data ?? []) as QuestionRow[]).map((question) => ({
-      ...question,
-      question_id: String(question.question_id),
-      set_id: String(question.set_id)
-    }));
+    const rowsByQuestionId = new Map<string, QuestionRow>();
+    for (const question of data ?? []) {
+      const questionId = String(question.question_id);
+      rowsByQuestionId.set(questionId, {
+        ...question,
+        question_id: questionId,
+        set_id: String(question.set_id)
+      });
+    }
+    const allRows = Array.from(rowsByQuestionId.values());
     const allBank = buildQuestionBank(allRows);
     const filteredRows = allRows.filter((question) => {
       if (setId) return question.set_id === setId;
@@ -182,7 +206,7 @@ export async function GET(request: Request) {
     });
     const filteredBank = buildQuestionBank(filteredRows);
 
-    return NextResponse.json({
+    return json({
       months: allBank.months,
       questions: filteredBank.questions,
       sets: filteredBank.sets

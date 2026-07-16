@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
+import { readAllSupabaseRows } from "@/lib/supabasePagination";
 
 type QuestionSetRow = {
+  question_id: string;
+  question_order: number | null;
   set_id: string;
-  set_title: string;
+  set_title: string | null;
 };
 
 type AttemptRow = {
@@ -51,6 +54,18 @@ const MONTH_NAMES = [
   "November",
   "December"
 ];
+
+export const dynamic = "force-dynamic";
+
+function json(data: unknown, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: {
+      ...init?.headers,
+      "Cache-Control": "no-store"
+    }
+  });
+}
 
 function parseSetSortKey(setId: string): SortKey {
   const parts = setId.split("-");
@@ -100,7 +115,7 @@ export async function GET(request: Request) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      return NextResponse.json(
+      return json(
         { error: "Missing Supabase environment variables." },
         { status: 500 }
       );
@@ -114,7 +129,7 @@ export async function GET(request: Request) {
     });
 
     if (!token) {
-      return NextResponse.json({ error: "Missing access token" }, { status: 401 });
+      return json({ error: "Missing access token" }, { status: 401 });
     }
 
     const {
@@ -123,7 +138,7 @@ export async function GET(request: Request) {
     } = await authClient.auth.getUser(token);
 
     if (userError || !user) {
-      return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+      return json({ error: "Invalid session" }, { status: 401 });
     }
 
     const { data: profile, error: profileError } = await authClient
@@ -133,7 +148,7 @@ export async function GET(request: Request) {
       .single();
 
     if (profileError || profile?.role !== "student") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -144,24 +159,46 @@ export async function GET(request: Request) {
       }
     });
 
-    const [
-      { data, error },
-      { data: attempts, error: attemptsError }
-    ] = await Promise.all([
-      readClient.from("questions").select("set_id,set_title"),
-      readClient
-        .from("attempts")
-        .select("attempt_id,set_id,submitted_at,created_at")
-        .eq("student_id", user.id)
+    const [questionResult, attemptResult] = await Promise.all([
+      readAllSupabaseRows<QuestionSetRow>((from, to) =>
+        readClient
+          .from("questions")
+          .select("question_id,set_id,set_title,question_order")
+          .order("set_id", { ascending: true })
+          .order("question_order", { ascending: true })
+          .order("question_id", { ascending: true })
+          .range(from, to)
+      ),
+      readAllSupabaseRows<AttemptRow>((from, to) =>
+        readClient
+          .from("attempts")
+          .select("attempt_id,set_id,submitted_at,created_at")
+          .eq("student_id", user.id)
+          .order("attempt_id", { ascending: true })
+          .range(from, to)
+      )
     ]);
 
-    if (error) {
-      return NextResponse.json({ months: [], sets: [], error: error.message }, { status: 500 });
+    if (questionResult.error) {
+      return json(
+        { months: [], sets: [], error: questionResult.error.message },
+        { status: 500 }
+      );
     }
 
-    if (attemptsError) {
-      return NextResponse.json({ months: [], sets: [], error: attemptsError.message }, { status: 500 });
+    if (attemptResult.error) {
+      return json(
+        { months: [], sets: [], error: attemptResult.error.message },
+        { status: 500 }
+      );
     }
+
+    const questionsById = new Map<string, QuestionSetRow>();
+    for (const question of questionResult.data ?? []) {
+      questionsById.set(String(question.question_id), question);
+    }
+    const questions = Array.from(questionsById.values());
+    const attempts = attemptResult.data ?? [];
 
     const latestAttemptBySet = new Map<string, AttemptRow>();
     for (const attempt of (attempts ?? []) as AttemptRow[]) {
@@ -181,7 +218,7 @@ export async function GET(request: Request) {
     const monthSetIds = new Map<string, Set<string>>();
     const monthQuestionCounts = new Map<string, number>();
 
-    for (const row of (data ?? []) as QuestionSetRow[]) {
+    for (const row of questions) {
       const setId = String(row.set_id);
       const monthKey = parseMonthKey(setId);
       if (monthKey) {
@@ -202,7 +239,7 @@ export async function GET(request: Request) {
         const latestAttempt = latestAttemptBySet.get(setId);
         setsById.set(setId, {
           set_id: setId,
-          set_title: row.set_title,
+          set_title: row.set_title ?? setId,
           month_key: monthKey,
           month_label: monthKey ? formatMonthLabel(monthKey) : "",
           question_count: 1,
@@ -221,12 +258,12 @@ export async function GET(request: Request) {
       }))
       .sort(compareMonths);
 
-    return NextResponse.json({
+    return json({
       months,
       sets: Array.from(setsById.values()).sort(compareSets)
     });
   } catch (error) {
-    return NextResponse.json(
+    return json(
       { error: error instanceof Error ? error.message : "Could not load sets." },
       { status: 500 }
     );

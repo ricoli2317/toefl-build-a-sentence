@@ -258,6 +258,7 @@ async function loadQuestionBank() {
   } = await supabase.auth.getSession();
 
   const response = await fetch("/api/teacher/question-bank", {
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${session?.access_token ?? ""}`
     }
