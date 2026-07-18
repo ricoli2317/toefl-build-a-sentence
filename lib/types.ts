@@ -8,6 +8,9 @@ export type PracticeSet = {
   question_count: number;
   completed: boolean;
   latest_attempt_id: string | null;
+  latest_correct_count?: number | null;
+  latest_total_questions?: number | null;
+  latest_accuracy?: number | null;
   description?: string | null;
   level?: string | null;
   is_active?: boolean;

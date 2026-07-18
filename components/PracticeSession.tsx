@@ -14,6 +14,7 @@ import {
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
+  STUDENT_SETS_CACHE_KEY,
   STUDENT_SETS_CACHE_PREFIX,
   STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
   studentAttemptCacheKey,
@@ -22,7 +23,9 @@ import {
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
-import type { PublicQuestion, SubmitResponse } from "@/lib/types";
+import { isWrongQuestionsSetId } from "@/lib/studentNavigation";
+import { broadcastStudentPracticeCompleted } from "@/lib/studentCacheEvents";
+import type { PracticeMonth, PracticeSet, PublicQuestion, SubmitResponse } from "@/lib/types";
 
 type SavedAnswer = {
   chunks: string[];
@@ -43,6 +46,11 @@ type QuestionTimes = Record<string, number>;
 type QuestionsPayload = {
   error?: string;
   questions?: PublicQuestion[];
+};
+
+type CachedSetsPayload = {
+  months?: PracticeMonth[];
+  sets?: PracticeSet[];
 };
 
 const DEFAULT_TIME_SECONDS = 6 * 60 + 50;
@@ -67,7 +75,7 @@ export function PracticeSession({
   totalSeconds?: number;
 }) {
   const router = useRouter();
-  const { invalidate, setData } = useStudentDataCache();
+  const { invalidate, setData, updateData } = useStudentDataCache();
   const usesProvidedQuestions = Boolean(initialQuestions);
   const questionState = useStudentCachedData<QuestionsPayload>(
     studentQuestionsCacheKey(setId),
@@ -170,7 +178,39 @@ export function PracticeSession({
             });
           }
           invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
-          if (!setId.startsWith("wrongbook-")) invalidate(STUDENT_SETS_CACHE_PREFIX);
+          const isWrongQuestionsPractice = isWrongQuestionsSetId(setId.trim());
+          if (!isWrongQuestionsPractice) {
+            let matchingSetUpdated = false;
+            const cacheUpdated = updateData<CachedSetsPayload>(
+              STUDENT_SETS_CACHE_KEY,
+              (cached) => ({
+                ...cached,
+                sets: cached.sets?.map((set) => {
+                  if (set.set_id.trim() !== setId.trim()) return set;
+
+                  matchingSetUpdated = true;
+                  return {
+                    ...set,
+                    completed: true,
+                    latest_attempt_id: payload.attemptId,
+                    latest_correct_count: payload.correct_count ?? payload.correctCount,
+                    latest_total_questions: payload.total_count ?? payload.total,
+                    latest_accuracy: payload.accuracy
+                  };
+                })
+              })
+            );
+
+            if (!cacheUpdated || !matchingSetUpdated) {
+              invalidate(STUDENT_SETS_CACHE_PREFIX);
+            }
+          }
+          if (session?.user.id) {
+            broadcastStudentPracticeCompleted({
+              studentId: session.user.id,
+              isWrongQuestionsPractice
+            });
+          }
           router.push(`/student/results/${payload.attemptId}`);
         } else {
           setError("Submit succeeded but no attempt id was returned.");
@@ -191,6 +231,7 @@ export function PracticeSession({
       startedAt,
       timed,
       totalSeconds,
+      updateData,
       usesProvidedQuestions
     ]
   );

@@ -12,6 +12,7 @@ import {
 } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { subscribeToQuestionBankUpdates } from "@/lib/questionBankCacheEvents";
+import { subscribeToStudentPracticeCompleted } from "@/lib/studentCacheEvents";
 
 export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
@@ -50,6 +51,7 @@ type StudentDataCacheValue = {
   ) => Promise<T | undefined>;
   sessionReady: boolean;
   setData: <T>(key: string, data: T) => void;
+  updateData: <T>(key: string, updater: (data: T) => T) => boolean;
   studentId: string | null;
   version: number;
 };
@@ -106,6 +108,24 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       if (!keyWithStudent) return;
       entries.current.set(keyWithStudent, { status: "success", data });
       notify();
+    },
+    [notify, scopedKey]
+  );
+
+  const updateData = useCallback(
+    <T,>(key: string, updater: (data: T) => T) => {
+      const keyWithStudent = scopedKey(key);
+      if (!keyWithStudent) return false;
+
+      const current = entries.current.get(keyWithStudent);
+      if (current?.status !== "success") return false;
+
+      entries.current.set(keyWithStudent, {
+        status: "success",
+        data: updater(current.data as T)
+      });
+      notify();
+      return true;
     },
     [notify, scopedKey]
   );
@@ -189,6 +209,17 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
     [invalidate]
   );
 
+  useEffect(
+    () =>
+      subscribeToStudentPracticeCompleted((event) => {
+        if (event.studentId !== sessionRef.current?.studentId) return;
+
+        invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+        if (!event.isWrongQuestionsPractice) invalidate(STUDENT_SETS_CACHE_PREFIX);
+      }),
+    [invalidate]
+  );
+
   const value = useMemo(
     () => ({
       clear,
@@ -198,9 +229,20 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       sessionReady,
       setData,
       studentId,
+      updateData,
       version
     }),
-    [clear, getEntry, invalidate, load, sessionReady, setData, studentId, version]
+    [
+      clear,
+      getEntry,
+      invalidate,
+      load,
+      sessionReady,
+      setData,
+      studentId,
+      updateData,
+      version
+    ]
   );
 
   return (

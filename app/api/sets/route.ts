@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
+import { isWrongQuestionsSetId } from "@/lib/studentNavigation";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 
 type QuestionSetRow = {
@@ -15,6 +16,8 @@ type AttemptRow = {
   set_id: string;
   submitted_at: string | null;
   created_at: string | null;
+  correct_count: number | null;
+  total_questions: number | null;
 };
 
 type SetSummary = {
@@ -25,6 +28,9 @@ type SetSummary = {
   question_count: number;
   completed: boolean;
   latest_attempt_id: string | null;
+  latest_correct_count: number | null;
+  latest_total_questions: number | null;
+  latest_accuracy: number | null;
 };
 
 type MonthSummary = {
@@ -106,6 +112,20 @@ function compareSets(a: SetSummary, b: SetSummary) {
   );
 }
 
+function normalizeSetId(setId: unknown) {
+  return String(setId ?? "").trim();
+}
+
+function attemptTimestamp(attempt: AttemptRow) {
+  const timestamp = Date.parse(attempt.submitted_at ?? attempt.created_at ?? "");
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function isLaterAttempt(candidate: AttemptRow, current: AttemptRow) {
+  const timeDifference = attemptTimestamp(candidate) - attemptTimestamp(current);
+  return timeDifference > 0 || (timeDifference === 0 && candidate.attempt_id > current.attempt_id);
+}
+
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
@@ -172,8 +192,12 @@ export async function GET(request: Request) {
       readAllSupabaseRows<AttemptRow>((from, to) =>
         readClient
           .from("attempts")
-          .select("attempt_id,set_id,submitted_at,created_at")
+          .select(
+            "attempt_id,set_id,submitted_at,created_at,correct_count,total_questions"
+          )
           .eq("student_id", user.id)
+          .order("set_id", { ascending: true })
+          .order("submitted_at", { ascending: true, nullsFirst: true })
           .order("attempt_id", { ascending: true })
           .range(from, to)
       )
@@ -198,18 +222,19 @@ export async function GET(request: Request) {
       questionsById.set(String(question.question_id), question);
     }
     const questions = Array.from(questionsById.values());
-    const attempts = attemptResult.data ?? [];
+    const attemptsById = new Map<string, AttemptRow>();
+    for (const attempt of attemptResult.data ?? []) {
+      attemptsById.set(String(attempt.attempt_id), attempt);
+    }
+    const attempts = Array.from(attemptsById.values());
 
     const latestAttemptBySet = new Map<string, AttemptRow>();
-    for (const attempt of (attempts ?? []) as AttemptRow[]) {
-      const setId = String(attempt.set_id);
-      const existing = latestAttemptBySet.get(setId);
-      const attemptTime = new Date(attempt.submitted_at ?? attempt.created_at ?? 0).getTime();
-      const existingTime = existing
-        ? new Date(existing.submitted_at ?? existing.created_at ?? 0).getTime()
-        : -1;
+    for (const attempt of attempts) {
+      const setId = normalizeSetId(attempt.set_id);
+      if (!setId || isWrongQuestionsSetId(setId)) continue;
 
-      if (!existing || attemptTime > existingTime) {
+      const existing = latestAttemptBySet.get(setId);
+      if (!existing || isLaterAttempt(attempt, existing)) {
         latestAttemptBySet.set(setId, attempt);
       }
     }
@@ -219,7 +244,7 @@ export async function GET(request: Request) {
     const monthQuestionCounts = new Map<string, number>();
 
     for (const row of questions) {
-      const setId = String(row.set_id);
+      const setId = normalizeSetId(row.set_id);
       const monthKey = parseMonthKey(setId);
       if (monthKey) {
         const setIds = monthSetIds.get(monthKey) ?? new Set<string>();
@@ -244,7 +269,14 @@ export async function GET(request: Request) {
           month_label: monthKey ? formatMonthLabel(monthKey) : "",
           question_count: 1,
           completed: Boolean(latestAttempt),
-          latest_attempt_id: latestAttempt?.attempt_id ?? null
+          latest_attempt_id: latestAttempt?.attempt_id ?? null,
+          latest_correct_count: latestAttempt?.correct_count ?? null,
+          latest_total_questions: latestAttempt?.total_questions ?? null,
+          latest_accuracy:
+            latestAttempt && Number(latestAttempt.total_questions) > 0
+              ? Number(latestAttempt.correct_count ?? 0) /
+                Number(latestAttempt.total_questions)
+              : null
         });
       }
     }
