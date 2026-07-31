@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
-import { isWrongQuestionsSetId } from "@/lib/studentNavigation";
+import { buildLatestOfficialAttemptMap } from "@/lib/studentSetStatus";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 
 type QuestionSetRow = {
@@ -31,6 +31,7 @@ type SetSummary = {
   latest_correct_count: number | null;
   latest_total_questions: number | null;
   latest_accuracy: number | null;
+  latest_submitted_at: string | null;
 };
 
 type MonthSummary = {
@@ -114,16 +115,6 @@ function compareSets(a: SetSummary, b: SetSummary) {
 
 function normalizeSetId(setId: unknown) {
   return String(setId ?? "").trim();
-}
-
-function attemptTimestamp(attempt: AttemptRow) {
-  const timestamp = Date.parse(attempt.submitted_at ?? attempt.created_at ?? "");
-  return Number.isFinite(timestamp) ? timestamp : 0;
-}
-
-function isLaterAttempt(candidate: AttemptRow, current: AttemptRow) {
-  const timeDifference = attemptTimestamp(candidate) - attemptTimestamp(current);
-  return timeDifference > 0 || (timeDifference === 0 && candidate.attempt_id > current.attempt_id);
 }
 
 export async function GET(request: Request) {
@@ -228,16 +219,7 @@ export async function GET(request: Request) {
     }
     const attempts = Array.from(attemptsById.values());
 
-    const latestAttemptBySet = new Map<string, AttemptRow>();
-    for (const attempt of attempts) {
-      const setId = normalizeSetId(attempt.set_id);
-      if (!setId || isWrongQuestionsSetId(setId)) continue;
-
-      const existing = latestAttemptBySet.get(setId);
-      if (!existing || isLaterAttempt(attempt, existing)) {
-        latestAttemptBySet.set(setId, attempt);
-      }
-    }
+    const latestAttemptBySet = buildLatestOfficialAttemptMap(attempts);
 
     const setsById = new Map<string, SetSummary>();
     const monthSetIds = new Map<string, Set<string>>();
@@ -272,6 +254,8 @@ export async function GET(request: Request) {
           latest_attempt_id: latestAttempt?.attempt_id ?? null,
           latest_correct_count: latestAttempt?.correct_count ?? null,
           latest_total_questions: latestAttempt?.total_questions ?? null,
+          latest_submitted_at:
+            latestAttempt?.submitted_at ?? latestAttempt?.created_at ?? null,
           latest_accuracy:
             latestAttempt && Number(latestAttempt.total_questions) > 0
               ? Number(latestAttempt.correct_count ?? 0) /

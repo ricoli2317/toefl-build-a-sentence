@@ -13,6 +13,12 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { subscribeToQuestionBankUpdates } from "@/lib/questionBankCacheEvents";
 import { subscribeToStudentPracticeCompleted } from "@/lib/studentCacheEvents";
+import {
+  mergeOfficialAttemptIntoSetsPayload,
+  isLaterOfficialAttempt,
+  normalizeSetId,
+  type OfficialAttemptStatus
+} from "@/lib/studentSetStatus";
 
 export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
@@ -37,9 +43,21 @@ export type StudentCacheSession = {
 };
 
 type CacheEntry =
-  | { status: "loading"; promise: Promise<unknown> }
+  | { status: "loading"; promise: Promise<unknown>; generation: number }
   | { status: "success"; data: unknown }
   | { status: "error"; error: string };
+
+type CachedSetsPayload = {
+  sets?: Array<{
+    set_id: string;
+    completed?: boolean;
+    latest_attempt_id?: string | null;
+    latest_correct_count?: number | null;
+    latest_total_questions?: number | null;
+    latest_accuracy?: number | null;
+    latest_submitted_at?: string | null;
+  }>;
+};
 
 type StudentDataCacheValue = {
   clear: () => void;
@@ -52,6 +70,7 @@ type StudentDataCacheValue = {
   sessionReady: boolean;
   setData: <T>(key: string, data: T) => void;
   updateData: <T>(key: string, updater: (data: T) => T) => boolean;
+  recordOfficialAttempt: (attempt: OfficialAttemptStatus) => void;
   studentId: string | null;
   version: number;
 };
@@ -60,6 +79,10 @@ const StudentDataCacheContext = createContext<StudentDataCacheValue | null>(null
 
 export function StudentDataCacheProvider({ children }: { children: ReactNode }) {
   const entries = useRef(new Map<string, CacheEntry>());
+  const generations = useRef(new Map<string, number>());
+  const officialAttemptOverrides = useRef(
+    new Map<string, OfficialAttemptStatus>()
+  );
   const sessionRef = useRef<StudentCacheSession | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
   const [studentId, setStudentId] = useState<string | null>(null);
@@ -69,6 +92,8 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
   const clear = useCallback(() => {
     entries.current.clear();
+    generations.current.clear();
+    officialAttemptOverrides.current.clear();
     notify();
   }, [notify]);
 
@@ -94,6 +119,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       entries.current.forEach((_entry, key) => {
         if (key === prefixWithStudent || key.startsWith(`${prefixWithStudent}:`)) {
           entries.current.delete(key);
+          generations.current.set(key, (generations.current.get(key) ?? 0) + 1);
           changed = true;
         }
       });
@@ -107,6 +133,10 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       const keyWithStudent = scopedKey(key);
       if (!keyWithStudent) return;
       entries.current.set(keyWithStudent, { status: "success", data });
+      generations.current.set(
+        keyWithStudent,
+        (generations.current.get(keyWithStudent) ?? 0) + 1
+      );
       notify();
     },
     [notify, scopedKey]
@@ -124,6 +154,10 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
         status: "success",
         data: updater(current.data as T)
       });
+      generations.current.set(
+        keyWithStudent,
+        (generations.current.get(keyWithStudent) ?? 0) + 1
+      );
       notify();
       return true;
     },
@@ -144,16 +178,43 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       if (existing?.status === "loading") return existing.promise as Promise<T>;
       if (existing?.status === "error") return undefined;
 
+      const generation = generations.current.get(keyWithStudent) ?? 0;
       const promise = loader(session);
-      entries.current.set(keyWithStudent, { status: "loading", promise });
+      entries.current.set(keyWithStudent, {
+        status: "loading",
+        promise,
+        generation
+      });
       notify();
 
       try {
         const data = await promise;
         const current = entries.current.get(keyWithStudent);
-        if (current?.status === "loading" && current.promise === promise) {
-          entries.current.set(keyWithStudent, { status: "success", data });
+        if (
+          current?.status === "loading" &&
+          current.promise === promise &&
+          current.generation === generation &&
+          (generations.current.get(keyWithStudent) ?? 0) === generation
+        ) {
+          let resolvedData = data as T;
+
+          if (key === STUDENT_SETS_CACHE_KEY) {
+            for (const attempt of Array.from(
+              officialAttemptOverrides.current.values()
+            )) {
+              resolvedData = mergeOfficialAttemptIntoSetsPayload(
+                resolvedData as CachedSetsPayload,
+                attempt
+              ).payload as T;
+            }
+          }
+
+          entries.current.set(keyWithStudent, {
+            status: "success",
+            data: resolvedData
+          });
           notify();
+          return resolvedData;
         }
         return data;
       } catch (error) {
@@ -166,6 +227,57 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
           notify();
         }
         return undefined;
+      }
+    },
+    [notify, scopedKey]
+  );
+
+  const recordOfficialAttempt = useCallback(
+    (attempt: OfficialAttemptStatus) => {
+      const setId = normalizeSetId(attempt.set_id);
+      const keyWithStudent = scopedKey(STUDENT_SETS_CACHE_KEY);
+      if (!setId || !keyWithStudent) return;
+
+      const normalizedAttempt = {
+        ...attempt,
+        set_id: setId
+      };
+      const existingOverride = officialAttemptOverrides.current.get(setId);
+      const effectiveAttempt =
+        existingOverride &&
+        isLaterOfficialAttempt(existingOverride, normalizedAttempt)
+          ? existingOverride
+          : normalizedAttempt;
+      officialAttemptOverrides.current.set(setId, effectiveAttempt);
+
+      const current = entries.current.get(keyWithStudent);
+      if (current?.status === "success") {
+        const result = mergeOfficialAttemptIntoSetsPayload(
+          current.data as CachedSetsPayload,
+          effectiveAttempt
+        );
+
+        if (result.matched) {
+          entries.current.set(keyWithStudent, {
+            status: "success",
+            data: result.payload
+          });
+          generations.current.set(
+            keyWithStudent,
+            (generations.current.get(keyWithStudent) ?? 0) + 1
+          );
+          notify();
+          return;
+        }
+      }
+
+      if (current?.status !== "loading") {
+        entries.current.delete(keyWithStudent);
+        generations.current.set(
+          keyWithStudent,
+          (generations.current.get(keyWithStudent) ?? 0) + 1
+        );
+        notify();
       }
     },
     [notify, scopedKey]
@@ -186,6 +298,8 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
       if (previousStudentId !== nextSession?.studentId) {
         entries.current.clear();
+        generations.current.clear();
+        officialAttemptOverrides.current.clear();
         notify();
       }
       sessionRef.current = nextSession;
@@ -215,9 +329,15 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
         if (event.studentId !== sessionRef.current?.studentId) return;
 
         invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
-        if (!event.isWrongQuestionsPractice) invalidate(STUDENT_SETS_CACHE_PREFIX);
+        if (!event.isWrongQuestionsPractice) {
+          if (event.attempt) {
+            recordOfficialAttempt(event.attempt);
+          } else {
+            invalidate(STUDENT_SETS_CACHE_PREFIX);
+          }
+        }
       }),
-    [invalidate]
+    [invalidate, recordOfficialAttempt]
   );
 
   const value = useMemo(
@@ -230,6 +350,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       setData,
       studentId,
       updateData,
+      recordOfficialAttempt,
       version
     }),
     [
@@ -241,6 +362,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       setData,
       studentId,
       updateData,
+      recordOfficialAttempt,
       version
     ]
   );

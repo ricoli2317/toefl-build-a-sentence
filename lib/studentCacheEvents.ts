@@ -1,8 +1,11 @@
+import type { OfficialAttemptStatus } from "@/lib/studentSetStatus";
+
 const STUDENT_PRACTICE_COMPLETED_CHANNEL = "student-practice-completed";
 
 export type StudentPracticeCompletedEvent = {
   studentId: string;
   isWrongQuestionsPractice: boolean;
+  attempt?: OfficialAttemptStatus;
 };
 
 export function broadcastStudentPracticeCompleted(event: StudentPracticeCompletedEvent) {
@@ -10,7 +13,7 @@ export function broadcastStudentPracticeCompleted(event: StudentPracticeComplete
 
   const channel = new BroadcastChannel(STUDENT_PRACTICE_COMPLETED_CHANNEL);
   channel.postMessage(event);
-  channel.close();
+  window.setTimeout(() => channel.close(), 0);
 }
 
 export function subscribeToStudentPracticeCompleted(

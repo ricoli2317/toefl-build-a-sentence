@@ -11,6 +11,7 @@ export type PracticeSet = {
   latest_correct_count?: number | null;
   latest_total_questions?: number | null;
   latest_accuracy?: number | null;
+  latest_submitted_at?: string | null;
   description?: string | null;
   level?: string | null;
   is_active?: boolean;
