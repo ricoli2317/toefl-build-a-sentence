@@ -8,6 +8,7 @@ import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
+import { AttemptHistoryList } from "@/components/AttemptHistoryList";
 
 type TeacherStatsPayload = {
   overview: {
@@ -304,8 +305,6 @@ export function TeacherStudentSetDetails({
   setId: string;
   studentId: string;
 }) {
-  const [incorrectOnly, setIncorrectOnly] = useState(false);
-
   return (
     <TeacherStatsLoader>
       {(stats) => {
@@ -325,6 +324,7 @@ export function TeacherStudentSetDetails({
             stats.sets.find((set) => set.setId === groupId)?.setTitle ??
             groupId
         );
+        const attemptIds = new Set(attempts.map((attempt) => attempt.attemptId));
 
         return (
           <div className="grid gap-5">
@@ -338,74 +338,23 @@ export function TeacherStudentSetDetails({
                 { label: setTitle }
               ]}
             />
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
               <div>
                 <p className="text-sm font-semibold text-ink/60">Set attempts</p>
                 <h2 className="text-2xl font-bold">{setTitle}</h2>
                 <p className="text-sm text-ink/60">{groupId}</p>
               </div>
-              <label className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold">
-                <input
-                  checked={incorrectOnly}
-                  className="h-4 w-4 accent-ocean"
-                  onChange={(event) => setIncorrectOnly(event.target.checked)}
-                  type="checkbox"
-                />
-                Show incorrect only
-              </label>
             </div>
-            {attempts.length === 0 ? <EmptyState text="No attempts found for this set." /> : null}
-            <div className="grid gap-4">
-              {attempts.map((attempt) => {
-                const attemptAnswers = stats.answers
-                  .filter((answer) => answer.attemptId === attempt.attemptId)
-                  .sort((a, b) => a.questionOrder - b.questionOrder);
-                const answers = attemptAnswers.filter((answer) =>
-                  incorrectOnly ? !answer.isCorrect : true
-                );
-
-                if (
-                  attemptAnswers.length === 0 &&
-                  stats.missingAnswerAttemptIds.includes(attempt.attemptId)
-                ) {
-                  return (
-                    <div
-                      className="rounded-md border border-coral bg-coral/10 p-4"
-                      key={attempt.attemptId}
-                    >
-                      <AttemptHeader attempt={attempt} />
-                      <p className="mt-3 text-sm font-semibold text-coral">
-                        No answer records were saved for attempt {attempt.attemptId}.
-                      </p>
-                    </div>
-                  );
-                }
-
-                if (incorrectOnly && answers.length === 0) {
-                  return (
-                    <div className="rounded-md border border-line bg-paper p-4" key={attempt.attemptId}>
-                      <AttemptHeader attempt={attempt} />
-                      <p className="mt-3 text-sm text-ink/60">No incorrect answers.</p>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="rounded-md border border-line bg-paper p-4" key={attempt.attemptId}>
-                    <AttemptHeader attempt={attempt} />
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {answers.map((answer) => (
-                        <AttemptAnswerJumpLink
-                          href={`/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`}
-                          key={answer.attemptAnswerId}
-                          answer={answer}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <AttemptHistoryList
+              answers={stats.answers.filter((answer) =>
+                attemptIds.has(answer.attemptId)
+              )}
+              attempts={attempts}
+              getAnswerHref={(answer) =>
+                `/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`
+              }
+              missingAnswerAttemptIds={stats.missingAnswerAttemptIds}
+            />
           </div>
         );
       }}
@@ -938,19 +887,6 @@ function AnswerBlock({ label, value }: { label: string; value: string }) {
     <div className="rounded-md border border-line bg-paper p-4">
       <p className="text-sm font-semibold text-ink/60">{label}</p>
       <p className="mt-1 text-lg leading-7">{value}</p>
-    </div>
-  );
-}
-
-function AttemptHeader({ attempt }: { attempt: AttemptSummary }) {
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <p className="font-semibold">{formatDateTime(attempt.submittedAt)}</p>
-        <p className="text-sm text-ink/60">
-          Accuracy {formatPercent(attempt.accuracy)} · Time {formatDuration(attempt.timeSpentSeconds)}
-        </p>
-      </div>
     </div>
   );
 }

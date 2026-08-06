@@ -1,6 +1,8 @@
 export const STUDENT_ROUTES = {
   home: "/student/sets",
   practiceSets: "/student/practice-sets",
+  practiceHistory: "/student/practice-history",
+  grammarPractice: "/student/grammar-practice",
   wrongQuestions: "/student/wrong-questions",
   wrongQuestionsHistory: "/student/wrong-questions/history",
   wrongQuestionsToday: "/student/wrong-questions/today"
@@ -10,6 +12,10 @@ export type StudentBreadcrumbItem = {
   href?: string;
   label: string;
 };
+
+export type StudentResultSource =
+  | "practice-history-history"
+  | "practice-history-today";
 
 const MONTH_NAMES = [
   "January",
@@ -41,7 +47,10 @@ export function isWrongQuestionsSetId(setId: string) {
   return setId.startsWith("wrongbook-");
 }
 
-export function getStudentResultNavigation(setId: string): {
+export function getStudentResultNavigation(
+  setId: string,
+  options?: { historySetId?: string; source?: StudentResultSource }
+): {
   backHref: string;
   crumbs: StudentBreadcrumbItem[];
 } {
@@ -50,6 +59,29 @@ export function getStudentResultNavigation(setId: string): {
     label: "Wrong Questions",
     href: STUDENT_ROUTES.wrongQuestions
   };
+
+  if (options?.source) {
+    const scope = options.source === "practice-history-today" ? "today" : "history";
+    const scopeLabel = scope === "today" ? "今日练习套题" : "历史练习套题";
+    const historyHomeHref = `${STUDENT_ROUTES.practiceHistory}?tab=${scope}`;
+    const historySetsHref = `${STUDENT_ROUTES.practiceHistory}/sets?scope=${scope}`;
+    const reliableSetId =
+      options.historySetId?.trim() === setId ? options.historySetId.trim() : setId;
+    const setAttemptsHref = `${STUDENT_ROUTES.practiceHistory}/sets/${encodeURIComponent(
+      reliableSetId
+    )}?scope=${scope}`;
+
+    return {
+      backHref: setAttemptsHref,
+      crumbs: [
+        rootCrumb,
+        { label: "Practice History", href: historyHomeHref },
+        { label: scopeLabel, href: historySetsHref },
+        { label: reliableSetId, href: setAttemptsHref },
+        { label: "View Result" }
+      ]
+    };
+  }
 
   if (setId.startsWith("wrongbook-today-")) {
     return {

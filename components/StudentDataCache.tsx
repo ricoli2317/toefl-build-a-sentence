@@ -23,6 +23,7 @@ import {
 export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
 export const STUDENT_WRONG_QUESTIONS_CACHE_PREFIX = "wrong-questions";
+export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
 export const STUDENT_CURRENT_USER_CACHE_KEY = "current-user";
 
 export function studentQuestionsCacheKey(setId: string) {
@@ -329,6 +330,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
         if (event.studentId !== sessionRef.current?.studentId) return;
 
         invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+        invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
         if (!event.isWrongQuestionsPractice) {
           if (event.attempt) {
             recordOfficialAttempt(event.attempt);

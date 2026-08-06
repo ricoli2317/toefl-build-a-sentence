@@ -166,6 +166,7 @@ export async function GET(request: Request) {
     const readClient = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });

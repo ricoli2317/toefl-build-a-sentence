@@ -10,7 +10,8 @@ import {
 } from "@/components/StudentDataCache";
 import {
   getStudentResultNavigation,
-  isWrongQuestionsSetId
+  isWrongQuestionsSetId,
+  type StudentResultSource
 } from "@/lib/studentNavigation";
 
 type ResultPayload = {
@@ -43,7 +44,15 @@ type ResultPayload = {
   }>;
 };
 
-export function PracticeResult({ attemptId }: { attemptId: string }) {
+export function PracticeResult({
+  attemptId,
+  historySetId,
+  source
+}: {
+  attemptId: string;
+  historySetId?: string;
+  source?: StudentResultSource;
+}) {
   const { data: payload, error, loading } = useStudentCachedData<ResultPayload>(
     studentAttemptCacheKey(attemptId),
     (session) => loadResult(attemptId, session)
@@ -60,7 +69,10 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
 
   const { attempt, answers } = payload;
   const isWrongQuestionsPractice = isWrongQuestionsSetId(attempt.set_id);
-  const navigation = getStudentResultNavigation(attempt.set_id);
+  const navigation = getStudentResultNavigation(attempt.set_id, {
+    historySetId,
+    source
+  });
   const visibleAnswers = showIncorrectOnly
     ? answers.filter((answer) => !answer.is_correct)
     : answers;
@@ -105,6 +117,7 @@ export function PracticeResult({ attemptId }: { attemptId: string }) {
                   : "border-coral bg-coral/10 shadow-sm"
               }`}
               key={answer.attempt_answer_id}
+              id={`question-${answer.question_id}`}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>

@@ -15,6 +15,7 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
+  STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   studentAttemptCacheKey,
   studentQuestionsCacheKey,
   useStudentCachedData,
@@ -171,6 +172,7 @@ export function PracticeSession({
             });
           }
           invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+          invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
           const isWrongQuestionsPractice = isWrongQuestionsSetId(setId.trim());
           const officialAttempt = isWrongQuestionsPractice
             ? undefined

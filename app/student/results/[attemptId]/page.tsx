@@ -3,7 +3,18 @@ import { PracticeResult } from "@/components/PracticeResult";
 import { SignOutButton } from "@/components/SignOutButton";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 
-export default function StudentResultPage({ params }: { params: { attemptId: string } }) {
+export default function StudentResultPage({
+  params,
+  searchParams
+}: {
+  params: { attemptId: string };
+  searchParams: { setId?: string; source?: string };
+}) {
+  const source =
+    searchParams.source === "practice-history-today" ||
+    searchParams.source === "practice-history-history"
+      ? searchParams.source
+      : undefined;
   return (
     <AppShell
       action={<SignOutButton />}
@@ -12,7 +23,11 @@ export default function StudentResultPage({ params }: { params: { attemptId: str
       eyebrow="Result"
       title="Practice result"
     >
-      <PracticeResult attemptId={params.attemptId} />
+      <PracticeResult
+        attemptId={params.attemptId}
+        historySetId={searchParams.setId}
+        source={source}
+      />
     </AppShell>
   );
 }

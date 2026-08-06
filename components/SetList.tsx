@@ -34,6 +34,22 @@ export function StudentHome() {
         <h2 className="mt-1 text-2xl font-bold">Practice Sets</h2>
         <p className="mt-2 text-sm leading-6 text-ink/70">按月选择套题</p>
       </Link>
+      <Link
+        className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+        href={STUDENT_ROUTES.grammarPractice}
+      >
+        <p className="text-sm font-semibold text-ocean">Grammar</p>
+        <h2 className="mt-1 text-2xl font-bold">Grammar Practice</h2>
+        <p className="mt-2 text-sm leading-6 text-ink/70">按语法分类练习</p>
+      </Link>
+      <Link
+        className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+        href={STUDENT_ROUTES.practiceHistory}
+      >
+        <p className="text-sm font-semibold text-ocean">History</p>
+        <h2 className="mt-1 text-2xl font-bold">Practice History</h2>
+        <p className="mt-2 text-sm leading-6 text-ink/70">练习历史</p>
+      </Link>
     </div>
   );
 }
