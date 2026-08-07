@@ -10,6 +10,7 @@ import {
 } from "@/components/StudentDataCache";
 import {
   getStudentResultNavigation,
+  isGrammarPracticeSetId,
   isWrongQuestionsSetId,
   type StudentResultSource
 } from "@/lib/studentNavigation";
@@ -69,6 +70,7 @@ export function PracticeResult({
 
   const { attempt, answers } = payload;
   const isWrongQuestionsPractice = isWrongQuestionsSetId(attempt.set_id);
+  const isGrammarPractice = isGrammarPracticeSetId(attempt.set_id);
   const navigation = getStudentResultNavigation(attempt.set_id, {
     historySetId,
     source
@@ -142,7 +144,7 @@ export function PracticeResult({
                       "No answer"}
                   </dd>
                 </div>
-                {isWrongQuestionsPractice && !answer.is_correct ? (
+                {(isWrongQuestionsPractice && !answer.is_correct) || isGrammarPractice ? (
                   <div>
                     <dt className="font-semibold text-ink/60">Correct answer</dt>
                     <dd className="mt-1">

@@ -47,6 +47,14 @@ export function isWrongQuestionsSetId(setId: string) {
   return setId.startsWith("wrongbook-");
 }
 
+export function isGrammarPracticeSetId(setId: string) {
+  return setId.startsWith("grammar-all-") || setId.startsWith("grammar-random-");
+}
+
+export function isVirtualPracticeSetId(setId: string) {
+  return isWrongQuestionsSetId(setId) || isGrammarPracticeSetId(setId);
+}
+
 export function getStudentResultNavigation(
   setId: string,
   options?: { historySetId?: string; source?: StudentResultSource }
@@ -117,6 +125,17 @@ export function getStudentResultNavigation(
     return {
       backHref: STUDENT_ROUTES.wrongQuestions,
       crumbs: [rootCrumb, wrongQuestionsCrumb, { label: "Result" }]
+    };
+  }
+
+  if (isGrammarPracticeSetId(setId)) {
+    return {
+      backHref: STUDENT_ROUTES.grammarPractice,
+      crumbs: [
+        rootCrumb,
+        { label: "Grammar Practice", href: STUDENT_ROUTES.grammarPractice },
+        { label: "Result" }
+      ]
     };
   }
 

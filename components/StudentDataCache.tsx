@@ -24,6 +24,7 @@ export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
 export const STUDENT_WRONG_QUESTIONS_CACHE_PREFIX = "wrong-questions";
 export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
+export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_CURRENT_USER_CACHE_KEY = "current-user";
 
 export function studentQuestionsCacheKey(setId: string) {
@@ -320,7 +321,11 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
   }, [notify]);
 
   useEffect(
-    () => subscribeToQuestionBankUpdates(() => invalidate(STUDENT_SETS_CACHE_PREFIX)),
+    () =>
+      subscribeToQuestionBankUpdates(() => {
+        invalidate(STUDENT_SETS_CACHE_PREFIX);
+        invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
+      }),
     [invalidate]
   );
 

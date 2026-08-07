@@ -22,7 +22,7 @@ import {
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
-import { isWrongQuestionsSetId } from "@/lib/studentNavigation";
+import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import { broadcastStudentPracticeCompleted } from "@/lib/studentCacheEvents";
 import type { PublicQuestion, SubmitResponse } from "@/lib/types";
 
@@ -173,8 +173,8 @@ export function PracticeSession({
           }
           invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
           invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
-          const isWrongQuestionsPractice = isWrongQuestionsSetId(setId.trim());
-          const officialAttempt = isWrongQuestionsPractice
+          const isVirtualPractice = isVirtualPracticeSetId(setId.trim());
+          const officialAttempt = isVirtualPractice
             ? undefined
             : {
                 attempt_id: payload.attemptId,
@@ -186,13 +186,13 @@ export function PracticeSession({
                 accuracy: payload.accuracy
               };
 
-          if (!isWrongQuestionsPractice) {
+          if (!isVirtualPractice) {
             recordOfficialAttempt(officialAttempt!);
           }
           if (session?.user.id) {
             broadcastStudentPracticeCompleted({
               studentId: session.user.id,
-              isWrongQuestionsPractice,
+              isWrongQuestionsPractice: isVirtualPractice,
               attempt: officialAttempt
             });
           }

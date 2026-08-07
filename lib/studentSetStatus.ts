@@ -1,4 +1,4 @@
-import { isWrongQuestionsSetId } from "./studentNavigation";
+import { isVirtualPracticeSetId } from "./studentNavigation";
 
 export type OfficialAttemptStatus = {
   attempt_id: string;
@@ -51,7 +51,7 @@ export function buildLatestOfficialAttemptMap<
 
   for (const attempt of attempts) {
     const setId = normalizeSetId(attempt.set_id);
-    if (!setId || isWrongQuestionsSetId(setId)) continue;
+    if (!setId || isVirtualPracticeSetId(setId)) continue;
 
     const current = latestBySet.get(setId);
     if (!current || isLaterOfficialAttempt(attempt, current)) {
@@ -86,7 +86,7 @@ export function mergeOfficialAttemptIntoSetsPayload<
   TPayload extends SetsPayload<TSet>
 >(payload: TPayload, attempt: OfficialAttemptStatus) {
   const attemptSetId = normalizeSetId(attempt.set_id);
-  if (!attemptSetId || isWrongQuestionsSetId(attemptSetId)) {
+  if (!attemptSetId || isVirtualPracticeSetId(attemptSetId)) {
     return { matched: false, payload };
   }
 
