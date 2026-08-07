@@ -1,7 +1,5 @@
-import { AppShell } from "@/components/AppShell";
 import { PracticeResult } from "@/components/PracticeResult";
-import { SignOutButton } from "@/components/SignOutButton";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentResultPage({
   params,
@@ -16,18 +14,12 @@ export default function StudentResultPage({
       ? searchParams.source
       : undefined;
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      brandHref={STUDENT_ROUTES.home}
-      eyebrow="Result"
-      title="Practice result"
-    >
+    <StudentPage title="查看结果">
       <PracticeResult
         attemptId={params.attemptId}
         historySetId={searchParams.setId}
         source={source}
       />
-    </AppShell>
+    </StudentPage>
   );
 }

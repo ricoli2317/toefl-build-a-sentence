@@ -1,11 +1,11 @@
+import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
+
 export const STUDENT_ROUTES = {
   home: "/student/sets",
   practiceSets: "/student/practice-sets",
   practiceHistory: "/student/practice-history",
   grammarPractice: "/student/grammar-practice",
-  wrongQuestions: "/student/wrong-questions",
-  wrongQuestionsHistory: "/student/wrong-questions/history",
-  wrongQuestionsToday: "/student/wrong-questions/today"
+  wrongQuestions: "/student/wrong-questions"
 } as const;
 
 export type StudentBreadcrumbItem = {
@@ -17,25 +17,10 @@ export type StudentResultSource =
   | "practice-history-history"
   | "practice-history-today";
 
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-];
-
 export function formatPracticeMonthLabel(monthKey: string) {
   const month = Number(monthKey.slice(4, 6));
   if (!/^\d{6}$/.test(monthKey) || month < 1 || month > 12) return monthKey;
-  return MONTH_NAMES[month - 1];
+  return `${monthKey.slice(0, 4)}年${month}月`;
 }
 
 export function getPracticeMonthKey(setId: string) {
@@ -62,11 +47,22 @@ export function getStudentResultNavigation(
   backHref: string;
   crumbs: StudentBreadcrumbItem[];
 } {
-  const rootCrumb = { label: "Student Home", href: STUDENT_ROUTES.home };
+  const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   const wrongQuestionsCrumb = {
-    label: "Wrong Questions",
+    label: STUDENT_UI_TEXT.wrongQuestions,
     href: STUDENT_ROUTES.wrongQuestions
   };
+
+  if (isWrongQuestionsSetId(setId)) {
+    return {
+      backHref: STUDENT_ROUTES.wrongQuestions,
+      crumbs: [
+        { label: STUDENT_UI_TEXT.studentHome, href: "/student" },
+        wrongQuestionsCrumb,
+        { label: STUDENT_UI_TEXT.result }
+      ]
+    };
+  }
 
   if (options?.source) {
     const scope = options.source === "practice-history-today" ? "today" : "history";
@@ -83,48 +79,11 @@ export function getStudentResultNavigation(
       backHref: setAttemptsHref,
       crumbs: [
         rootCrumb,
-        { label: "Practice History", href: historyHomeHref },
+        { label: STUDENT_UI_TEXT.practiceHistory, href: historyHomeHref },
         { label: scopeLabel, href: historySetsHref },
         { label: reliableSetId, href: setAttemptsHref },
-        { label: "View Result" }
+        { label: "查看结果" }
       ]
-    };
-  }
-
-  if (setId.startsWith("wrongbook-today-")) {
-    return {
-      backHref: STUDENT_ROUTES.wrongQuestionsToday,
-      crumbs: [
-        rootCrumb,
-        wrongQuestionsCrumb,
-        {
-          label: "Today's Wrong Questions",
-          href: STUDENT_ROUTES.wrongQuestionsToday
-        },
-        { label: "Result" }
-      ]
-    };
-  }
-
-  if (setId.startsWith("wrongbook-all-") || setId.startsWith("wrongbook-random-")) {
-    return {
-      backHref: STUDENT_ROUTES.wrongQuestionsHistory,
-      crumbs: [
-        rootCrumb,
-        wrongQuestionsCrumb,
-        {
-          label: "History Wrong Questions",
-          href: STUDENT_ROUTES.wrongQuestionsHistory
-        },
-        { label: "Result" }
-      ]
-    };
-  }
-
-  if (setId.startsWith("wrongbook-")) {
-    return {
-      backHref: STUDENT_ROUTES.wrongQuestions,
-      crumbs: [rootCrumb, wrongQuestionsCrumb, { label: "Result" }]
     };
   }
 
@@ -133,21 +92,21 @@ export function getStudentResultNavigation(
       backHref: STUDENT_ROUTES.grammarPractice,
       crumbs: [
         rootCrumb,
-        { label: "Grammar Practice", href: STUDENT_ROUTES.grammarPractice },
-        { label: "Result" }
+        { label: STUDENT_UI_TEXT.grammarPractice, href: STUDENT_ROUTES.grammarPractice },
+        { label: STUDENT_UI_TEXT.result }
       ]
     };
   }
 
   const monthKey = getPracticeMonthKey(setId);
   const practiceSetsCrumb = {
-    label: "Practice Sets",
+    label: STUDENT_UI_TEXT.practiceSets,
     href: STUDENT_ROUTES.practiceSets
   };
   if (!monthKey) {
     return {
       backHref: STUDENT_ROUTES.practiceSets,
-      crumbs: [rootCrumb, practiceSetsCrumb, { label: "Result" }]
+      crumbs: [rootCrumb, practiceSetsCrumb, { label: STUDENT_UI_TEXT.result }]
     };
   }
 
@@ -158,7 +117,7 @@ export function getStudentResultNavigation(
       rootCrumb,
       practiceSetsCrumb,
       { label: formatPracticeMonthLabel(monthKey), href: monthHref },
-      { label: "Result" }
+      { label: STUDENT_UI_TEXT.result }
     ]
   };
 }

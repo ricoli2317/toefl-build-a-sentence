@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
+import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
+import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 
 type AttemptRow = {
   attempt_id: string;
@@ -27,6 +29,7 @@ type AnswerRow = {
 
 type QuestionRow = {
   question_id: string;
+  set_id: string;
   prompt: string;
   sentence_template: string;
   options_text: string;
@@ -125,7 +128,7 @@ export async function GET(
         ? await db
             .from("questions")
             .select(
-              "question_id,prompt,sentence_template,options_text,correct_order_text,final_sentence"
+              "question_id,set_id,prompt,sentence_template,options_text,correct_order_text,final_sentence"
             )
             .in("question_id", questionIds)
         : { data: [], error: null };
@@ -134,8 +137,9 @@ export async function GET(
       return jsonError(`Failed to read current questions: ${questionsError.message}`);
     }
 
+    const questionRows = (questions ?? []) as QuestionRow[];
     const questionById = new Map(
-      ((questions ?? []) as QuestionRow[]).map((question) => [
+      questionRows.map((question) => [
         String(question.question_id),
         question
       ])
@@ -144,6 +148,22 @@ export async function GET(
     const totalCount = attemptRow.total_questions;
     const correctCount = attemptRow.correct_count;
     const accuracy = totalCount === 0 ? 0 : correctCount / totalCount;
+    const comparableOfficialSet =
+      !isVirtualPracticeSetId(attemptRow.set_id) &&
+      questionRows.length > 0 &&
+      questionRows.every((question) => String(question.set_id) === attemptRow.set_id);
+    const peerComparison = await loadResultPeerComparison({
+      comparable: comparableOfficialSet,
+      currentAttempt: {
+        attemptId: attemptRow.attempt_id,
+        correctCount,
+        totalQuestions: totalCount,
+        timeSpentSeconds: attemptRow.time_spent_seconds
+      },
+      db,
+      setId: attemptRow.set_id,
+      studentId: user.id
+    });
 
     return NextResponse.json({
       attempt: {
@@ -164,7 +184,8 @@ export async function GET(
       }),
       total_count: totalCount,
       correct_count: correctCount,
-      accuracy
+      accuracy,
+      peer_comparison: peerComparison
     });
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not load result.");

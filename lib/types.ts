@@ -53,6 +53,7 @@ export type SubmitResponse = {
   total: number;
   accuracy: number;
   timeSpentSeconds: number;
+  peer_comparison?: import("@/lib/resultPeerComparison").ResultPeerComparison;
   results: AnswerResult[];
   attempt?: {
     attempt_id: string;

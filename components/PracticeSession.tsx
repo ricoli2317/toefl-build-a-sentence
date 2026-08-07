@@ -168,6 +168,7 @@ export function PracticeSession({
               total_count: payload.total_count ?? payload.total,
               correct_count: payload.correct_count ?? payload.correctCount,
               accuracy: payload.accuracy,
+              peer_comparison: payload.peer_comparison,
               answers: payload.answers
             });
           }
@@ -403,22 +404,22 @@ export function PracticeSession({
   }
 
   if (loading) {
-    return <p className="text-sm text-ink/70">Loading questions...</p>;
+    return <p className="student-loading">Loading questions...</p>;
   }
 
   if (displayError && questions.length === 0) {
-    return <p className="font-semibold text-coral">{displayError}</p>;
+    return <p className="student-error-state">{displayError}</p>;
   }
 
   if (!currentQuestion) {
-    return <p className="rounded-lg border border-line bg-white p-5">No questions found.</p>;
+    return <p className="student-empty">No questions found.</p>;
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 border border-line bg-white px-4 py-3 shadow-sm">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-student-border bg-white px-4 py-3">
         <div>
-          <p className="text-sm font-semibold text-ocean">
+          <p className="text-sm font-semibold text-student-primary">
             Question {currentIndex + 1}/{questions.length}
           </p>
           {result ? (
@@ -428,14 +429,14 @@ export function PracticeSession({
           ) : null}
         </div>
         {timed ? (
-          <div className="rounded-md border border-line bg-paper px-4 py-2 text-right">
-            <p className="text-xs font-semibold uppercase text-ink/50">Time left</p>
+          <div className="rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-2 text-right">
+            <p className="text-xs font-semibold uppercase text-student-muted">Time left</p>
             <p className="font-mono text-xl font-bold">{formatTime(remainingSeconds)}</p>
           </div>
         ) : null}
       </div>
 
-      {displayError ? <p className="font-semibold text-coral">{displayError}</p> : null}
+      {displayError ? <p className="student-error-state">{displayError}</p> : null}
 
       {showReview ? (
         <ReviewPanel
@@ -445,9 +446,9 @@ export function PracticeSession({
           questions={questions}
         />
       ) : (
-        <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
+        <article className="student-card">
           {!hideQuestionCardNumber ? (
-            <p className="text-sm font-semibold text-gold">
+            <p className="text-sm font-semibold text-student-primary">
               Question {currentQuestion.question_order}
             </p>
           ) : null}
@@ -471,10 +472,10 @@ export function PracticeSession({
                 return (
                   <button
                     aria-disabled={isUsed || result !== null || submitting}
-                    className={`inline-flex min-h-12 items-center justify-center rounded-md border px-4 py-2 text-base font-semibold ${
+                    className={`inline-flex min-h-12 items-center justify-center rounded-[10px] border px-4 py-2 text-base font-semibold transition ${
                       isUsed
-                        ? "cursor-not-allowed border-ocean/30 bg-paper text-ink/55 opacity-70 shadow-inner"
-                        : "border-line bg-white hover:border-ocean disabled:cursor-not-allowed disabled:bg-paper disabled:text-ink/35"
+                        ? "cursor-not-allowed border-student-primary-border bg-student-primary-soft text-student-muted opacity-70"
+                        : "border-student-border bg-white hover:border-student-primary disabled:cursor-not-allowed disabled:bg-student-bg disabled:text-student-muted"
                     }`}
                     disabled={result !== null || submitting}
                     draggable={!isUsed && !result && !submitting}
@@ -500,7 +501,7 @@ export function PracticeSession({
       <div className="flex flex-wrap justify-end gap-3">
         {allowEndPractice ? (
           <button
-            className="rounded-md border border-line bg-white px-5 py-3 font-semibold hover:border-ocean disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex min-h-11 items-center justify-center rounded-[10px] border border-student-error-border bg-white px-5 py-3 font-semibold text-student-error transition hover:border-student-error hover:bg-student-error-soft disabled:cursor-not-allowed disabled:opacity-60"
             disabled={submitting || Boolean(result)}
             onClick={endPractice}
             type="button"
@@ -509,7 +510,7 @@ export function PracticeSession({
           </button>
         ) : null}
         <button
-          className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
+          className="student-button-secondary min-h-11 px-5 py-3 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitting || Boolean(result)}
           onClick={openReview}
           type="button"
@@ -518,7 +519,7 @@ export function PracticeSession({
         </button>
         {currentIndex > 0 ? (
           <button
-            className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
+            className="student-button-secondary min-h-11 px-5 py-3 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={submitting || Boolean(result)}
             onClick={goBack}
             type="button"
@@ -527,7 +528,7 @@ export function PracticeSession({
           </button>
         ) : null}
         <button
-          className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
+          className="student-button-primary min-h-11 px-5 py-3 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitting || Boolean(result)}
           onClick={goNext}
           type="button"
@@ -603,9 +604,9 @@ function ReviewPanel({
   questions: PublicQuestion[];
 }) {
   return (
-    <article className="rounded-lg border border-line bg-white p-5 shadow-sm">
+    <article className="student-card">
       <div>
-        <p className="text-sm font-semibold text-gold">Review</p>
+        <p className="text-sm font-semibold text-student-primary">Review</p>
         <h2 className="mt-1 text-xl font-bold">Question status</h2>
       </div>
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -618,8 +619,8 @@ function ReviewPanel({
 
           return (
             <button
-              className={`flex items-center justify-between gap-3 rounded-md border px-4 py-3 text-left font-semibold hover:border-ocean ${
-                currentIndex === index ? "border-ocean bg-ocean/10" : "border-line bg-paper"
+              className={`flex items-center justify-between gap-3 rounded-[10px] border px-4 py-3 text-left font-semibold transition hover:border-student-primary ${
+                currentIndex === index ? "border-student-primary bg-student-primary-soft" : "border-student-border bg-student-bg"
               }`}
               key={question.question_id}
               onClick={() => onJumpToQuestion(index)}
@@ -628,7 +629,7 @@ function ReviewPanel({
               <span>Question {index + 1}</span>
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold ${
-                  completed ? "bg-green-100 text-green-700" : "bg-coral/15 text-coral"
+                  completed ? "bg-student-primary-soft text-student-primary" : "bg-student-error-soft text-student-error"
                 }`}
               >
                 {completed ? "Completed" : "Incomplete"}
@@ -668,10 +669,10 @@ function SentenceTemplate({
           return (
             <button
               aria-disabled={disabled}
-              className={`inline-flex min-h-11 min-w-32 items-center justify-center rounded-md border px-4 text-base font-semibold ${
+              className={`inline-flex min-h-11 min-w-32 items-center justify-center rounded-[10px] border px-4 text-base font-semibold ${
                 answer
-                  ? "border-ocean bg-ocean/10 text-ink"
-                  : "border-dashed border-ink/40 bg-paper text-ink/40"
+                  ? "border-student-primary bg-student-primary-soft text-student-text"
+                  : "border-dashed border-student-muted bg-student-bg text-student-muted"
               }`}
               key={`${part}-${index}`}
               onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
@@ -707,10 +708,10 @@ function SentenceTemplate({
         return (
           <button
             aria-disabled={disabled}
-            className={`inline-flex min-h-11 min-w-32 items-center justify-center rounded-md border px-4 text-base font-semibold ${
+            className={`inline-flex min-h-11 min-w-32 items-center justify-center rounded-[10px] border px-4 text-base font-semibold ${
               answer
-                ? "border-ocean bg-ocean/10 text-ink"
-                : "border-dashed border-ink/40 bg-paper text-ink/40"
+                ? "border-student-primary bg-student-primary-soft text-student-text"
+                : "border-dashed border-student-muted bg-student-bg text-student-muted"
             }`}
             key={`extra-blank-${currentBlankIndex}`}
             onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}

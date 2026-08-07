@@ -42,6 +42,7 @@ export type PracticeHistoryScopeSummary = {
   setCount: number;
   averageAccuracy: number | null;
   errorCount: number;
+  correctedCount: number;
   sets: PracticeHistorySetSummary[];
   errors: PracticeHistoryAnswer[];
   grammarPoints: PracticeHistoryGrammarSummary[];
@@ -80,11 +81,13 @@ export function wrongAnswerDedupeKey(answer: Pick<PracticeHistoryAnswer, "finalS
 export function buildPracticeHistoryPayload({
   answers,
   attempts,
+  correctionAnswers = [],
   todayEnd,
   todayStart
 }: {
   answers: AnswerInput[];
   attempts: AttemptInput[];
+  correctionAnswers?: AnswerInput[];
   todayEnd: number;
   todayStart: number;
 }): PracticeHistoryPayload {
@@ -107,8 +110,8 @@ export function buildPracticeHistoryPayload({
   });
 
   return {
-    today: summarizeScope(todayAttempts, normalizedAnswers),
-    history: summarizeScope(normalizedAttempts, normalizedAnswers),
+    today: summarizeScope(todayAttempts, normalizedAnswers, correctionAnswers),
+    history: summarizeScope(normalizedAttempts, normalizedAnswers, correctionAnswers),
     attempts: normalizedAttempts,
     answers: normalizedAnswers,
     missingAnswerAttemptIds: normalizedAttempts
@@ -119,7 +122,8 @@ export function buildPracticeHistoryPayload({
 
 function summarizeScope(
   attempts: PracticeHistoryAttempt[],
-  allAnswers: PracticeHistoryAnswer[]
+  allAnswers: PracticeHistoryAnswer[],
+  correctionAnswers: PracticeHistoryAnswer[]
 ): PracticeHistoryScopeSummary {
   const attemptIds = new Set(attempts.map((attempt) => attempt.attemptId));
   const answers = allAnswers.filter((answer) => attemptIds.has(answer.attemptId));
@@ -139,12 +143,44 @@ function summarizeScope(
         ? null
         : sets.reduce((sum, set) => sum + set.averageAccuracy, 0) / sets.length,
     errorCount: errors.length,
+    correctedCount: countCorrectedWrongAnswers(
+      answers.filter((answer) => !answer.isCorrect),
+      correctionAnswers,
+      attempts
+    ),
     sets,
     errors,
     grammarPoints: Array.from(grammarCounts, ([tag, count]) => ({ tag, count })).sort(
       (left, right) => right.count - left.count || left.tag.localeCompare(right.tag)
     )
   };
+}
+
+function countCorrectedWrongAnswers(
+  wrongAnswers: PracticeHistoryAnswer[],
+  correctionAnswers: PracticeHistoryAnswer[],
+  attempts: PracticeHistoryAttempt[]
+) {
+  const attemptById = new Map(attempts.map((attempt) => [attempt.attemptId, attempt]));
+  const firstWrongTimeByKey = new Map<string, number>();
+
+  for (const answer of wrongAnswers) {
+    const key = wrongAnswerDedupeKey(answer);
+    const time = answerEventTime(answer, attemptById);
+    const existing = firstWrongTimeByKey.get(key);
+    if (existing === undefined || time < existing) firstWrongTimeByKey.set(key, time);
+  }
+
+  const correctedKeys = new Set<string>();
+  for (const answer of correctionAnswers) {
+    if (!answer.isCorrect) continue;
+    const key = wrongAnswerDedupeKey(answer);
+    const wrongTime = firstWrongTimeByKey.get(key);
+    if (wrongTime === undefined) continue;
+    if (dateTime(answer.answeredAt) > wrongTime) correctedKeys.add(key);
+  }
+
+  return correctedKeys.size;
 }
 
 function summarizeSets(attempts: PracticeHistoryAttempt[]) {
@@ -196,6 +232,13 @@ function compareAnswerDatesDesc(
   const leftTime = dateTime(left.answeredAt ?? attemptById.get(left.attemptId)?.submittedAt ?? null);
   const rightTime = dateTime(right.answeredAt ?? attemptById.get(right.attemptId)?.submittedAt ?? null);
   return rightTime - leftTime;
+}
+
+function answerEventTime(
+  answer: Pick<PracticeHistoryAnswer, "answeredAt" | "attemptId">,
+  attemptById: Map<string, Pick<PracticeHistoryAttempt, "submittedAt">>
+) {
+  return dateTime(answer.answeredAt ?? attemptById.get(answer.attemptId)?.submittedAt ?? null);
 }
 
 function compareDatesDesc(left: string | null, right: string | null) {

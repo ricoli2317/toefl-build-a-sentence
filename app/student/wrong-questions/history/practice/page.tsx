@@ -1,5 +1,5 @@
-import { AppShell } from "@/components/AppShell";
 import { WrongQuestionsPractice } from "@/components/WrongQuestions";
+import { StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentHistoryWrongQuestionsPracticePage({
   searchParams
@@ -9,13 +9,8 @@ export default function StudentHistoryWrongQuestionsPracticePage({
   const mode = searchParams.mode === "random" ? "history-random" : "history-all";
 
   return (
-    <AppShell
-      brand="Build a Sentence"
-      brandHref={null}
-      eyebrow="Practice"
-      title="Build a Sentence"
-    >
+    <StudentPage title="Build a Sentence">
       <WrongQuestionsPractice mode={mode} />
-    </AppShell>
+    </StudentPage>
   );
 }

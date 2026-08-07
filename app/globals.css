@@ -5,6 +5,19 @@
 :root {
   color: #18212f;
   background: #f7f4ee;
+  --student-bg: #faf9f7;
+  --student-surface: #ffffff;
+  --student-text: #172033;
+  --student-muted: #6f7583;
+  --student-border: #e4e3ea;
+  --student-primary: #6b5cf6;
+  --student-primary-hover: #5748e8;
+  --student-primary-soft: #f2f0ff;
+  --student-primary-border: #ddd8ff;
+  --student-error: #ff6849;
+  --student-error-hover: #ef5638;
+  --student-error-soft: #fff1ec;
+  --student-error-border: #ffd6c9;
 }
 
 * {
@@ -25,4 +38,111 @@ select {
 .sentence-blank {
   min-width: 9rem;
   border-bottom: 2px solid #18212f;
+}
+
+@layer components {
+  .student-shell {
+    color: var(--student-text);
+    background: var(--student-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Segoe UI", sans-serif;
+  }
+
+  .student-page {
+    @apply mx-auto grid w-full max-w-[1240px] gap-5 px-5 py-6 sm:px-7 lg:px-8 lg:py-7;
+  }
+
+  .student-page-title {
+    @apply text-[1.85rem] font-bold leading-tight tracking-[-0.025em] text-student-text sm:text-[2rem];
+  }
+
+  .student-card {
+    @apply rounded-2xl border border-student-border bg-student-surface p-4 shadow-[0_1px_2px_rgba(23,32,51,0.035)] transition duration-200 sm:p-5;
+  }
+
+  .student-card-interactive {
+    @apply hover:-translate-y-px hover:border-student-primary-border hover:shadow-[0_8px_24px_rgba(23,32,51,0.055)];
+  }
+
+  .student-button-primary,
+  .student-button-secondary,
+  .student-button-error {
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .student-button-primary {
+    @apply bg-student-primary text-white hover:bg-student-primary-hover;
+  }
+
+  .student-button-secondary {
+    @apply border border-student-primary-border bg-white text-student-primary hover:border-student-primary hover:bg-student-primary-soft;
+  }
+
+  .student-button-error {
+    @apply bg-student-error text-white hover:bg-student-error-hover;
+  }
+
+  .student-chip {
+    @apply inline-flex items-center rounded-full bg-student-primary-soft px-3 py-1 text-xs font-semibold text-student-primary;
+  }
+
+  .student-chip-error {
+    @apply inline-flex items-center rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error;
+  }
+
+  .student-empty,
+  .student-loading,
+  .student-error-state {
+    @apply rounded-2xl border bg-student-surface p-5 text-sm;
+  }
+
+  .student-empty,
+  .student-loading {
+    @apply border-student-border text-student-muted;
+  }
+
+  .student-error-state {
+    @apply border-student-error-border bg-student-error-soft font-semibold text-student-error;
+  }
+
+  .student-shell :where(a, button, input, select):focus,
+  .login-page :where(a, button, input, select):focus {
+    outline: none;
+  }
+
+  .student-shell :where(a, button, input, select):focus-visible,
+  .login-page :where(a, button, input, select):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(107, 92, 246, 0.16);
+  }
+
+  .login-page {
+    color: var(--student-text);
+    background: var(--student-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Segoe UI", sans-serif;
+  }
+
+  .login-visual-panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 16% 14%, rgba(255, 255, 255, 0.72) 0 24%, transparent 24.2%),
+      radial-gradient(circle at 91% 86%, rgba(255, 255, 255, 0.32) 0 27%, transparent 27.2%),
+      linear-gradient(135deg, #f3f1ff 0%, #ddd9ff 48%, #a9a3ff 100%);
+  }
+
+  .login-visual-panel::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 26px;
+    right: 22px;
+    width: 178px;
+    height: 178px;
+    opacity: 0.42;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.95) 1.5px, transparent 1.6px);
+    background-size: 18px 18px;
+  }
 }

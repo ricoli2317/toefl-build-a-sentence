@@ -1,9 +1,6 @@
-import { AppShell } from "@/components/AppShell";
-import {
-  GrammarPracticeHome,
-  GrammarPracticeModeSelect
-} from "@/components/GrammarPractice";
-import { SignOutButton } from "@/components/SignOutButton";
+import { redirect } from "next/navigation";
+import { GrammarPracticeHome } from "@/components/GrammarPractice";
+import { StudentPage } from "@/components/student/StudentUI";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 
 export default function StudentGrammarPracticePage({
@@ -12,15 +9,11 @@ export default function StudentGrammarPracticePage({
   searchParams: { tag?: string };
 }) {
   const tag = searchParams.tag?.trim() ?? "";
+  if (tag) redirect(STUDENT_ROUTES.grammarPractice);
+
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      brandHref={STUDENT_ROUTES.home}
-      eyebrow="Student"
-      title="Grammar Practice"
-    >
-      {tag ? <GrammarPracticeModeSelect tag={tag} /> : <GrammarPracticeHome />}
-    </AppShell>
+    <StudentPage title="按语法分类练习">
+      <GrammarPracticeHome />
+    </StudentPage>
   );
 }

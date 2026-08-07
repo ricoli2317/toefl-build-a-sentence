@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
+import { ArrowRight, CircleCheckBig, CircleX, LibraryBig, Target, type LucideIcon } from "lucide-react";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   useStudentCachedData,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
-import { StudentNavigation } from "@/components/SetList";
+import {
+  StudentEmptyState,
+  StudentErrorGrammarPanel,
+  StudentErrorState,
+  StudentLoadingState,
+  StudentNavigation
+} from "@/components/student/StudentUI";
 import {
   buildSentenceDisplay,
   formatOptionChunk,
@@ -24,41 +31,56 @@ import type {
   PracticeHistoryScopeSummary
 } from "@/lib/practiceHistory";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 
 export type HistoryScope = "history" | "today";
 
-export function PracticeHistoryDashboard({ scope }: { scope: HistoryScope }) {
+export function PracticeHistoryDashboard() {
   const { data, error, loading } = usePracticeHistory();
 
-  if (loading) return <LoadingText text="Loading practice history..." />;
-  if (error || !data) return <ErrorText text={error || "Practice history is unavailable."} />;
+  if (loading) return <StudentLoadingState text="正在加载练习历史..." />;
+  if (error || !data) return <StudentErrorState text="加载练习历史失败，请稍后重试。" />;
 
-  const summary = data[scope];
   return (
-    <div className="grid gap-5">
+    <div>
       <HistoryNavigation backHref={STUDENT_ROUTES.home} />
-      <div className="flex flex-wrap gap-2 border-b border-line">
-        <ScopeTab
-          active={scope === "today"}
-          href={`${STUDENT_ROUTES.practiceHistory}?tab=today`}
-          label="今日套题练习情况"
-        />
-        <ScopeTab
-          active={scope === "history"}
-          href={`${STUDENT_ROUTES.practiceHistory}?tab=history`}
-          label="历史套题练习情况"
-        />
+      <HistorySection className="mt-7" title="今日练习情况">
+        <ScopeMetrics scope="today" summary={data.today} />
+      </HistorySection>
+      <HistorySection className="mt-6" title="历史练习情况">
+        <ScopeMetrics scope="history" summary={data.history} />
+      </HistorySection>
+      <div className="mt-5">
+        <StudentErrorGrammarPanel items={data.history.grammarPoints} />
       </div>
-      <ScopeMetrics scope={scope} summary={summary} />
-      {scope === "history" ? <GrammarPoints summary={summary} /> : null}
     </div>
+  );
+}
+
+function HistorySection({
+  children,
+  className,
+  title
+}: {
+  children: React.ReactNode;
+  className?: string;
+  title: string;
+}) {
+  return (
+    <section className={className}>
+      <div className="flex items-center gap-3">
+        <span aria-hidden="true" className="h-5 w-1 rounded-full bg-student-primary" />
+        <h2 className="text-lg font-bold leading-6 text-student-text">{title}</h2>
+      </div>
+      <div className="mt-4">{children}</div>
+    </section>
   );
 }
 
 export function PracticeHistorySetList({ scope }: { scope: HistoryScope }) {
   const { data, error, loading } = usePracticeHistory();
-  if (loading) return <LoadingText text="Loading practice sets..." />;
-  if (error || !data) return <ErrorText text={error || "Practice sets are unavailable."} />;
+  if (loading) return <StudentLoadingState text="正在加载练习套题..." />;
+  if (error || !data) return <StudentErrorState text="加载练习套题失败，请稍后重试。" />;
 
   const title = scope === "today" ? "今日练习套题" : "历史练习套题";
   return (
@@ -66,30 +88,31 @@ export function PracticeHistorySetList({ scope }: { scope: HistoryScope }) {
       <HistoryNavigation
         backHref={practiceHistoryHomeHref(scope)}
         crumbs={[
-          { label: "Student Home", href: STUDENT_ROUTES.home },
-          { label: "Practice History", href: practiceHistoryHomeHref(scope) },
+          { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+          { label: STUDENT_UI_TEXT.practiceHistory, href: practiceHistoryHomeHref(scope) },
           { label: title }
         ]}
       />
       <div className="grid gap-4 md:grid-cols-2">
         {data[scope].sets.map((set) => (
           <Link
-            className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
+            className="student-card student-card-interactive group"
             href={`${STUDENT_ROUTES.practiceHistory}/sets/${encodeURIComponent(set.setId)}?scope=${scope}`}
             key={set.setId}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-ocean">{set.setId}</p>
-                <h2 className="mt-1 text-xl font-bold">{set.setTitle}</h2>
+                <h2 className="text-xl font-bold text-student-text">{set.setTitle}</h2>
+                <p className="mt-1 text-sm text-student-muted">{set.setId}</p>
               </div>
-              <span className="rounded-full bg-paper px-3 py-1 text-xs font-semibold">
-                {set.attemptCount} attempt{set.attemptCount === 1 ? "" : "s"}
+              <span className="student-chip shrink-0">
+                练习 {set.attemptCount} 次
               </span>
             </div>
-            <p className="mt-4 text-sm text-ink/60">
-              Average accuracy {formatPercent(set.averageAccuracy)}
-            </p>
+            <div className="mt-5 flex items-center justify-between gap-3 text-sm">
+              <p className="font-semibold text-student-primary">平均正确率 {formatPercent(set.averageAccuracy)}</p>
+              <ArrowRight aria-hidden="true" className="text-student-primary transition group-hover:translate-x-0.5" size={18} />
+            </div>
           </Link>
         ))}
         {data[scope].sets.length === 0 ? (
@@ -108,8 +131,8 @@ export function PracticeHistorySetAttempts({
   setId: string;
 }) {
   const { data, error, loading } = usePracticeHistory();
-  if (loading) return <LoadingText text="Loading attempts..." />;
-  if (error || !data) return <ErrorText text={error || "Attempts are unavailable."} />;
+  if (loading) return <StudentLoadingState text="正在加载练习记录..." />;
+  if (error || !data) return <StudentErrorState text="加载练习记录失败，请稍后重试。" />;
 
   const attempts = data.attempts.filter((attempt) => attempt.setId === setId);
   const attemptIds = new Set(attempts.map((attempt) => attempt.attemptId));
@@ -121,8 +144,8 @@ export function PracticeHistorySetAttempts({
       <HistoryNavigation
         backHref={practiceHistorySetsHref(scope)}
         crumbs={[
-          { label: "Student Home", href: STUDENT_ROUTES.home },
-          { label: "Practice History", href: practiceHistoryHomeHref(scope) },
+          { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+          { label: STUDENT_UI_TEXT.practiceHistory, href: practiceHistoryHomeHref(scope) },
           {
             label: scope === "today" ? "今日练习套题" : "历史练习套题",
             href: practiceHistorySetsHref(scope)
@@ -130,10 +153,9 @@ export function PracticeHistorySetAttempts({
           { label: setId }
         ]}
       />
-      <div>
-        <p className="text-sm font-semibold text-ink/60">Set attempts</p>
-        <h2 className="text-2xl font-bold">{title}</h2>
-        <p className="text-sm text-ink/60">{setId}</p>
+      <div className="student-card">
+        <h2 className="text-xl font-bold text-student-text">{title}</h2>
+        <p className="mt-1 text-sm text-student-muted">{setId}</p>
       </div>
       <AttemptHistoryList
         answers={answers}
@@ -145,9 +167,11 @@ export function PracticeHistorySetAttempts({
           });
           return `/student/results/${encodeURIComponent(answer.attemptId)}?${params.toString()}#question-${encodeURIComponent(answer.questionId)}`;
         }}
+        locale="zh-CN"
         missingAnswerAttemptIds={data.missingAnswerAttemptIds.filter((attemptId) =>
           attemptIds.has(attemptId)
         )}
+        variant="student"
       />
     </div>
   );
@@ -159,8 +183,8 @@ export function PracticeHistoryErrorSummary({ scope }: { scope: HistoryScope }) 
   const listTopRef = useRef<HTMLDivElement>(null);
   const pageSize = 10;
 
-  if (loading) return <LoadingText text="Loading wrong question summary..." />;
-  if (error || !data) return <ErrorText text={error || "Wrong questions are unavailable."} />;
+  if (loading) return <StudentLoadingState text="正在加载错题汇总..." />;
+  if (error || !data) return <StudentErrorState text="加载错题汇总失败，请稍后重试。" />;
 
   const errors = data[scope].errors;
   const pageCount = Math.max(1, Math.ceil(errors.length / pageSize));
@@ -181,18 +205,14 @@ export function PracticeHistoryErrorSummary({ scope }: { scope: HistoryScope }) 
       <HistoryNavigation
         backHref={practiceHistoryHomeHref(scope)}
         crumbs={[
-          { label: "Student Home", href: STUDENT_ROUTES.home },
-          { label: "Practice History", href: practiceHistoryHomeHref(scope) },
+          { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+          { label: STUDENT_UI_TEXT.practiceHistory, href: practiceHistoryHomeHref(scope) },
           { label: title }
         ]}
       />
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold text-ocean">Read-only review</p>
-          <h2 className="text-2xl font-bold">{title}</h2>
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <Link
-          className="rounded-md bg-ocean px-4 py-2 font-semibold text-white hover:bg-ink"
+          className="student-button-error"
           href={STUDENT_ROUTES.wrongQuestions}
         >
           订正错题
@@ -220,14 +240,14 @@ export function PracticeHistoryErrorSummary({ scope }: { scope: HistoryScope }) 
           </div>
         )}
       </div>
-      <nav aria-label="Wrong question pages" className="flex flex-wrap justify-center gap-2">
+      <nav aria-label="错题分页" className="flex flex-wrap justify-center gap-2">
         {Array.from({ length: pageCount }, (_, index) => index + 1).map((pageNumber) => (
           <button
             aria-current={pageNumber === safePage ? "page" : undefined}
-            className={`min-w-10 rounded-md border px-3 py-2 font-semibold ${
+            className={`min-w-10 rounded-[10px] border px-3 py-2 font-semibold transition ${
               pageNumber === safePage
-                ? "border-ocean bg-ocean text-white"
-                : "border-line bg-white hover:border-ocean"
+                ? "border-student-primary bg-student-primary text-white"
+                : "border-student-primary-border bg-white text-student-primary hover:border-student-primary"
             }`}
             key={pageNumber}
             onClick={() => goToPage(pageNumber)}
@@ -248,74 +268,86 @@ function ScopeMetrics({
   scope: HistoryScope;
   summary: PracticeHistoryScopeSummary;
 }) {
-  const prefix = scope === "today" ? "今日" : "";
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      <MetricLink
-        disabled={summary.setCount === 0}
-        href={`${STUDENT_ROUTES.practiceHistory}/sets?scope=${scope}`}
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <HistoryMetricCard
+        href={summary.setCount === 0 ? undefined : `${STUDENT_ROUTES.practiceHistory}/sets?scope=${scope}`}
+        icon={LibraryBig}
         label={scope === "today" ? "今日练习套题数" : "总练习套题数"}
+        unit="套"
         value={String(summary.setCount)}
       />
-      <MetricCard
+      <HistoryMetricCard
+        icon={Target}
         label={scope === "today" ? "今日平均正确率" : "历史平均正确率"}
-        value={summary.averageAccuracy === null ? "—" : formatPercent(summary.averageAccuracy)}
+        unit={summary.averageAccuracy === null ? "" : "%"}
+        value={summary.averageAccuracy === null ? "—" : String(Math.round(summary.averageAccuracy * 100))}
       />
-      <MetricLink
-        disabled={summary.errorCount === 0}
-        href={`${STUDENT_ROUTES.practiceHistory}/errors?scope=${scope}`}
-        label={`${prefix || "历史"}错误题数`}
+      <HistoryMetricCard
+        href={summary.errorCount === 0 ? undefined : `${STUDENT_ROUTES.practiceHistory}/errors?scope=${scope}`}
+        icon={CircleX}
+        label={scope === "today" ? "今日错题数" : "历史错题数"}
+        tone="error"
+        unit="题"
         value={String(summary.errorCount)}
+      />
+      <HistoryMetricCard
+        icon={CircleCheckBig}
+        label={scope === "today" ? "今日已订正" : "历史已订正"}
+        unit="题"
+        value={String(summary.correctedCount)}
       />
     </div>
   );
 }
 
-function GrammarPoints({ summary }: { summary: PracticeHistoryScopeSummary }) {
-  const highestCount = summary.grammarPoints[0]?.count ?? 0;
-  return (
-    <section className="rounded-lg border border-line bg-white p-5 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-bold">高频错误语法点</h2>
-        <Link
-          className="rounded-md bg-ocean px-4 py-2 text-sm font-semibold text-white hover:bg-ink"
-          href={STUDENT_ROUTES.grammarPractice}
-        >
-          按语法分类练习
-        </Link>
+function HistoryMetricCard({
+  href,
+  icon: Icon,
+  label,
+  tone = "primary",
+  unit,
+  value
+}: {
+  href?: string;
+  icon: LucideIcon;
+  label: string;
+  tone?: "primary" | "error";
+  unit: string;
+  value: string;
+}) {
+  const error = tone === "error";
+  const cardClass = `h-[124px] rounded-xl border p-4 shadow-[0_1px_2px_rgba(23,32,51,0.025)] transition ${
+    error
+      ? "border-student-error-border bg-student-error-soft"
+      : "border-student-primary-border bg-student-primary-soft"
+  }`;
+  const content = (
+    <div className="flex h-full flex-col justify-between">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-[17px] font-semibold leading-6 text-student-text">{label}</p>
+        <Icon
+          aria-hidden="true"
+          className={error ? "shrink-0 text-student-error" : "shrink-0 text-student-primary"}
+          size={32}
+          strokeWidth={1.85}
+        />
       </div>
-      <div className="mt-4 border-t border-line" />
-      {summary.grammarPoints.length === 0 ? (
-        <p className="pt-4 text-sm text-ink/60">暂无高频错误语法点。</p>
-      ) : (
-        <ol>
-          {summary.grammarPoints.map((item, index) => (
-            <li
-              className="grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-b border-line/70 py-3 last:border-b-0 sm:grid-cols-[2rem_minmax(12rem,1fr)_minmax(10rem,2fr)]"
-              key={item.tag}
-            >
-              <span
-                className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${rankBadgeClass(index)}`}
-              >
-                {index + 1}
-              </span>
-              <span className="min-w-0 font-semibold leading-6">{item.tag}</span>
-              <div
-                aria-label={`${item.tag} relative error frequency`}
-                className="col-start-2 h-2.5 overflow-hidden rounded-full bg-paper sm:col-start-3"
-              >
-                <div
-                  className="h-full rounded-full bg-ocean"
-                  style={{
-                    width: `${Math.max(10, highestCount > 0 ? (item.count / highestCount) * 100 : 0)}%`
-                  }}
-                />
-              </div>
-            </li>
-          ))}
-        </ol>
-      )}
-    </section>
+      <div className="mt-3 flex items-baseline gap-1.5">
+        <p className={error ? "text-[2.625rem] font-bold leading-none tracking-tight text-student-error" : "text-[2.625rem] font-bold leading-none tracking-tight text-student-primary"}>
+          {value}
+        </p>
+        {unit ? <span className="text-[15px] font-medium text-student-muted">{unit}</span> : null}
+      </div>
+    </div>
+  );
+
+  return href ? (
+    <Link className={`${cardClass} hover:-translate-y-px hover:shadow-[0_6px_18px_rgba(23,32,51,0.045)]`} href={href}>
+      {content}
+    </Link>
+  ) : (
+    <div className={cardClass}>{content}</div>
   );
 }
 
@@ -329,9 +361,9 @@ function QuestionRangeBar({
   total: number;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border border-line bg-white px-4 py-3 shadow-sm">
-      <p className="text-sm font-semibold text-ocean">
-        Questions {start}–{end}/{total}
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-student-border bg-white px-4 py-3">
+      <p className="text-sm font-semibold text-student-primary">
+        第 {start}–{end} 题，共 {total} 题
       </p>
     </div>
   );
@@ -345,26 +377,26 @@ function WrongAnswerCard({
   number: number;
 }) {
   return (
-    <article className="rounded-lg border border-line bg-white p-4 shadow-sm">
-      <p className="text-sm font-bold text-gold">Q{number}</p>
-      <p className="mt-2 text-lg font-bold">{answer.prompt || "No prompt"}</p>
+    <article className="student-card p-4 sm:p-5">
+      <p className="text-sm font-bold text-student-error">第 {number} 题</p>
+      <p className="mt-2 text-lg font-bold text-student-text">{answer.prompt || "无题目内容"}</p>
       <div className="mt-3 text-base leading-8">
         <ReadOnlySentenceTemplate template={answer.sentenceTemplate} />
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {splitTextItems(answer.optionsText).map((chunk, index) => (
           <span
-            className="inline-flex min-h-9 items-center justify-center rounded-md border border-line bg-paper px-3 py-1.5 text-sm font-semibold"
+            className="inline-flex min-h-9 items-center justify-center rounded-[10px] border border-student-border bg-student-bg px-3 py-1.5 text-sm font-semibold"
             key={`${chunk}-${index}`}
           >
             {formatOptionChunk(chunk)}
           </span>
         ))}
       </div>
-      <div className="mt-3 rounded-md border border-line bg-paper p-3">
-        <p className="text-sm font-semibold text-ink/60">Student Answer</p>
+      <div className="mt-3 rounded-xl border border-student-error-border bg-student-error-soft p-3">
+        <p className="text-sm font-semibold text-student-error">学生答案</p>
         <p className="mt-1 leading-7">
-          {buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText) || "No answer"}
+          {buildSentenceDisplay(answer.sentenceTemplate, answer.submittedOrderText) || "未作答"}
         </p>
       </div>
     </article>
@@ -381,8 +413,8 @@ function ReadOnlySentenceTemplate({ template }: { template: string }) {
           blankIndex += 1;
           return (
             <span
-              aria-label={`Blank ${blankIndex}`}
-              className="inline-block min-w-24 border-b-2 border-ink/50"
+              aria-label={`空格 ${blankIndex}`}
+              className="inline-block min-w-24 border-b-2 border-student-muted"
               key={`${part}-${index}`}
             >
               &nbsp;
@@ -410,89 +442,30 @@ function HistoryNavigation({
     <StudentNavigation
       backHref={backHref}
       crumbs={crumbs ?? [
-        { label: "Student Home", href: STUDENT_ROUTES.home },
-        { label: "Practice History" }
+        { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+        { label: STUDENT_UI_TEXT.practiceHistory }
       ]}
     />
   );
 }
 
-function ScopeTab({ active, href, label }: { active: boolean; href: string; label: string }) {
-  return (
-    <Link
-      aria-selected={active}
-      className={`border-b-2 px-4 py-3 font-semibold ${
-        active ? "border-ocean text-ocean" : "border-transparent text-ink/60 hover:text-ink"
-      }`}
-      href={href}
-      role="tab"
-    >
-      {label}
-    </Link>
-  );
-}
-
-function practiceHistoryHomeHref(scope: HistoryScope) {
-  return `${STUDENT_ROUTES.practiceHistory}?tab=${scope}`;
+function practiceHistoryHomeHref(_scope: HistoryScope) {
+  return STUDENT_ROUTES.practiceHistory;
 }
 
 function practiceHistorySetsHref(scope: HistoryScope) {
   return `${STUDENT_ROUTES.practiceHistory}/sets?scope=${scope}`;
 }
 
-function rankBadgeClass(index: number) {
-  if (index === 0) return "bg-gold/30 text-amber-900 ring-1 ring-gold/60";
-  if (index === 1) return "bg-slate-200 text-slate-700 ring-1 ring-slate-300";
-  if (index === 2) return "bg-orange-100 text-orange-900 ring-1 ring-orange-300";
-  return "bg-paper text-ink/60 ring-1 ring-line";
-}
-
-function MetricCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-md border border-line bg-white p-4 shadow-sm">
-      <p className="text-sm font-semibold text-ink/60">{label}</p>
-      <p className="mt-1 text-2xl font-bold">{value}</p>
-    </div>
-  );
-}
-
-function MetricLink({
-  disabled,
-  href,
-  label,
-  value
-}: {
-  disabled: boolean;
-  href: string;
-  label: string;
-  value: string;
-}) {
-  if (disabled) return <MetricCard label={label} value={value} />;
-  return (
-    <Link className="rounded-md border border-line bg-white p-4 shadow-sm hover:border-ocean" href={href}>
-      <p className="text-sm font-semibold text-ink/60">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-ocean underline decoration-ocean/30 underline-offset-4">{value}</p>
-    </Link>
-  );
-}
-
 function EmptyState({ text }: { text: string }) {
-  return <p className="rounded-lg border border-line bg-white p-5 text-ink/60">{text}</p>;
-}
-
-function LoadingText({ text }: { text: string }) {
-  return <p className="text-sm text-ink/70">{text}</p>;
-}
-
-function ErrorText({ text }: { text: string }) {
-  return <p className="font-semibold text-coral">{text}</p>;
+  return <StudentEmptyState text={text} />;
 }
 
 function formatPercent(value: number) {
   return `${Math.round(value * 100)}%`;
 }
 
-function usePracticeHistory() {
+export function usePracticeHistory() {
   const range = useMemo(getTodayRange, []);
   const query = useMemo(() => {
     const params = new URLSearchParams({ todayStart: range.start, todayEnd: range.end });
@@ -512,12 +485,12 @@ async function loadPracticeHistory(query: string, session: StudentCacheSession) 
   const text = await response.text();
   let payload: PracticeHistoryPayload | { error?: string };
   try {
-    payload = text ? JSON.parse(text) : { error: "The practice history API returned an empty response." };
+    payload = text ? JSON.parse(text) : { error: "练习历史服务返回了空响应。" };
   } catch {
-    payload = { error: "The practice history API returned invalid JSON." };
+    payload = { error: "练习历史服务返回的数据格式无效。" };
   }
   if (!response.ok || "error" in payload) {
-    throw new Error(("error" in payload && payload.error) || "Could not load practice history.");
+    throw new Error(("error" in payload && payload.error) || "无法加载练习历史。");
   }
   return payload as PracticeHistoryPayload;
 }

@@ -1,5 +1,5 @@
-import { AppShell } from "@/components/AppShell";
 import { GrammarQuestionsPractice } from "@/components/GrammarPractice";
+import { StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentGrammarQuestionsPracticePage({
   searchParams
@@ -10,13 +10,8 @@ export default function StudentGrammarQuestionsPracticePage({
   const tag = searchParams.tag?.trim() ?? "";
 
   return (
-    <AppShell
-      brand="Build a Sentence"
-      brandHref={null}
-      eyebrow="Practice"
-      title="Build a Sentence"
-    >
+    <StudentPage title="Build a Sentence">
       <GrammarQuestionsPractice mode={mode} tag={tag} />
-    </AppShell>
+    </StudentPage>
   );
 }

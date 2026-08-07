@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
+import { parseGrammarTags } from "@/lib/grammarPractice";
 
 type AttemptRow = {
   attempt_id: string;
@@ -13,6 +14,8 @@ type AnswerRow = {
   attempt_id: string;
   question_id: string;
   is_correct: boolean | null;
+  answered_at: string | null;
+  created_at: string | null;
 };
 
 type QuestionRow = {
@@ -41,6 +44,13 @@ function questionTime(answer: AnswerRow, attemptById: Map<string, AttemptRow>) {
 
 function attemptTime(attempt: AttemptRow) {
   return new Date(attempt.submitted_at ?? attempt.created_at ?? 0).getTime();
+}
+
+function answerEventTime(answer: AnswerRow, attemptById: Map<string, AttemptRow>) {
+  const answerTime = new Date(answer.answered_at ?? answer.created_at ?? 0).getTime();
+  return Number.isFinite(answerTime) && answerTime > 0
+    ? answerTime
+    : questionTime(answer, attemptById);
 }
 
 function isWrongBookAttempt(attempt: AttemptRow | undefined) {
@@ -193,7 +203,7 @@ export async function GET(request: Request) {
         .eq("student_id", user.id),
       db
         .from("attempt_answers")
-        .select("attempt_id,question_id,is_correct")
+        .select("attempt_id,question_id,is_correct,answered_at,created_at")
         .eq("student_id", user.id)
     ]);
 
@@ -285,8 +295,43 @@ export async function GET(request: Request) {
       selectedIds = shuffle(selectedIds).slice(0, randomLimit);
     }
 
+    const selectedIdSet = new Set(selectedIds);
+    const statsStartTime = scope === "today"
+      ? todayStart
+        ? new Date(todayStart).getTime()
+        : startOfLocalDay().getTime()
+      : Number.NEGATIVE_INFINITY;
+    const statsEndTime = scope === "today"
+      ? todayEnd
+        ? new Date(todayEnd).getTime()
+        : statsStartTime + 24 * 60 * 60 * 1000
+      : Number.POSITIVE_INFINITY;
+    const relevantWrongAnswers = answerRows.filter((answer) => {
+      if (answer.is_correct || !selectedIdSet.has(answer.question_id)) return false;
+      const time = answerEventTime(answer, attemptById);
+      return time >= statsStartTime && time < statsEndTime;
+    });
+    const latestWrongTime = relevantWrongAnswers.reduce(
+      (latest, answer) => Math.max(latest, answerEventTime(answer, attemptById)),
+      0
+    );
+    const masteryQuestionIds = scope === "history" ? wrongIds : selectedIds;
+    const masteredQuestionCount = masteryQuestionIds.filter(
+      (questionId) => latestByQuestion.get(questionId)?.is_correct === true
+    ).length;
+    const baseStats = {
+      knowledgePointCount: 0,
+      latestWrongAt: latestWrongTime > 0 ? new Date(latestWrongTime).toISOString() : null,
+      masteredQuestionCount,
+      masteryRate:
+        masteryQuestionIds.length > 0
+          ? Math.round((masteredQuestionCount / masteryQuestionIds.length) * 100)
+          : null,
+      totalWrongOccurrences: relevantWrongAnswers.length
+    };
+
     if (selectedIds.length === 0) {
-      return NextResponse.json({ count: 0, questions: [] });
+      return NextResponse.json({ count: 0, questions: [], stats: baseStats });
     }
 
     const { data: questions, error: questionsError } = await db
@@ -314,7 +359,15 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       count: normalizedQuestions.length,
-      questions: normalizedQuestions
+      questions: normalizedQuestions,
+      stats: {
+        ...baseStats,
+        knowledgePointCount: new Set(
+          normalizedQuestions.flatMap((question) =>
+            parseGrammarTags(question.grammar_tags_text)
+          )
+        ).size
+      }
     });
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not load wrong questions.");

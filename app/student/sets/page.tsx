@@ -1,18 +1,10 @@
-import { AppShell } from "@/components/AppShell";
 import { StudentHome } from "@/components/SetList";
-import { SignOutButton } from "@/components/SignOutButton";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentSetsPage() {
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      brandHref={STUDENT_ROUTES.home}
-      eyebrow="Student"
-      title="Student Home"
-    >
+    <StudentPage title="学生首页">
       <StudentHome />
-    </AppShell>
+    </StudentPage>
   );
 }

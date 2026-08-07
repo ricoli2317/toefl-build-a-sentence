@@ -1,7 +1,6 @@
-import { AppShell } from "@/components/AppShell";
 import { SetList } from "@/components/SetList";
-import { SignOutButton } from "@/components/SignOutButton";
-import { formatPracticeMonthLabel, STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { StudentPage } from "@/components/student/StudentUI";
+import { formatPracticeMonthLabel } from "@/lib/studentNavigation";
 
 export default function StudentPracticeMonthSetsPage({
   params
@@ -11,14 +10,8 @@ export default function StudentPracticeMonthSetsPage({
   const monthLabel = formatPracticeMonthLabel(params.monthKey);
 
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      brandHref={STUDENT_ROUTES.home}
-      eyebrow="Student"
-      title={`${monthLabel} Practice Sets`}
-    >
+    <StudentPage title={`${monthLabel}套题练习`}>
       <SetList monthKey={params.monthKey} monthLabel={monthLabel} />
-    </AppShell>
+    </StudentPage>
   );
 }

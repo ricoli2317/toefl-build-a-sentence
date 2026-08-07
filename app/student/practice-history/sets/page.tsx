@@ -1,7 +1,5 @@
-import { AppShell } from "@/components/AppShell";
 import { PracticeHistorySetList } from "@/components/PracticeHistory";
-import { SignOutButton } from "@/components/SignOutButton";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentPracticeHistorySetsPage({
   searchParams
@@ -10,14 +8,8 @@ export default function StudentPracticeHistorySetsPage({
 }) {
   const scope = searchParams.scope === "today" ? "today" : "history";
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      brandHref={STUDENT_ROUTES.home}
-      eyebrow="Student"
-      title={scope === "today" ? "Today's Practice Sets" : "Practice Set History"}
-    >
+    <StudentPage title={scope === "today" ? "今日练习套题" : "历史练习套题"}>
       <PracticeHistorySetList scope={scope} />
-    </AppShell>
+    </StudentPage>
   );
 }

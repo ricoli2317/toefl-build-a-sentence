@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
+import { BookOpen, Clock3, ListChecks } from "lucide-react";
 import { PracticeSession } from "@/components/PracticeSession";
-import { StudentNavigation } from "@/components/SetList";
+import {
+  StudentEmptyState,
+  StudentErrorState,
+  StudentInfoStrip,
+  StudentLoadingState,
+  StudentNavigation
+} from "@/components/student/StudentUI";
 import {
   STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX,
   useStudentCachedData,
@@ -11,9 +18,10 @@ import {
 } from "@/components/StudentDataCache";
 import type { GrammarTagSummary } from "@/lib/grammarPractice";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import type { PublicQuestion } from "@/lib/types";
 
-type GrammarTagsPayload = {
+export type GrammarTagsPayload = {
   error?: string;
   tags?: GrammarTagSummary[];
 };
@@ -26,101 +34,138 @@ type GrammarQuestionsPayload = {
 };
 
 const GRAMMAR_RANDOM_TIME_SECONDS = 6 * 60 + 50;
+const GRAMMAR_TAG_ORDER = [
+  "简单句－陈述句",
+  "简单句－疑问句",
+  "复杂句－陈述句－宾语从句",
+  "复杂句－陈述句－定语从句",
+  "复杂句－陈述句－状语从句",
+  "复杂句－陈述句－表语从句",
+  "复杂句－疑问句－宾语从句",
+  "复杂句－疑问句－定语从句",
+  "复杂句－疑问句－状语从句",
+  "复杂句－疑问句－表语从句",
+  "其他－并列句",
+  "其他－后置定语",
+  "其他－混合从句",
+  "省略句"
+] as const;
+
+const GRAMMAR_TAG_PRIORITY: ReadonlyMap<string, number> = new Map(
+  GRAMMAR_TAG_ORDER.map((tag, index) => [tag, index])
+);
 
 export function GrammarPracticeHome() {
-  const { data, error, loading } = useStudentCachedData<GrammarTagsPayload>(
-    `${STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX}:tags`,
-    (session) => loadGrammarPractice("", session)
-  );
-  const tags = data?.tags ?? [];
+  const { data, error, loading } = useGrammarTags();
+  const sortedTags = useMemo(() => sortGrammarTags(data?.tags ?? []), [data?.tags]);
 
   return (
     <div className="grid gap-5">
       <GrammarNavigation />
-      {loading ? <LoadingText text="Loading grammar points..." /> : null}
-      {error ? <ErrorText text={error} /> : null}
+      <StudentInfoStrip>选择语法点开始练习，系统会使用该分类下的题目生成练习。</StudentInfoStrip>
+      {loading ? <StudentLoadingState text="正在加载语法点..." /> : null}
+      {error ? <StudentErrorState text="加载语法点失败，请稍后重试。" /> : null}
       {!loading && !error ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {tags.map((item) => (
-            <Link
-              className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-              href={`${STUDENT_ROUTES.grammarPractice}?tag=${encodeURIComponent(item.tag)}`}
-              key={item.tag}
-            >
-              <p className="text-sm font-semibold text-ocean">Grammar Point</p>
-              <h2 className="mt-1 text-xl font-bold">{item.tag}</h2>
-              <span className="mt-4 inline-flex rounded-full bg-paper px-3 py-1 text-xs font-semibold">
-                {item.questionCount} question{item.questionCount === 1 ? "" : "s"}
-              </span>
-            </Link>
-          ))}
-          {tags.length === 0 ? (
-            <p className="rounded-lg border border-line bg-white p-5 shadow-sm">
-              暂无可练习的语法标签。
-            </p>
-          ) : null}
-        </div>
+        sortedTags.length === 0 ? (
+          <StudentEmptyState text="暂无可练习的语法标签。" />
+        ) : (
+          <div className="grid gap-2">
+            {sortedTags.map((item) => (
+              <GrammarPracticeRow
+                key={item.tag}
+                label={item.tag}
+                questionCount={item.questionCount}
+              />
+            ))}
+          </div>
+        )
       ) : null}
     </div>
   );
 }
 
-export function GrammarPracticeModeSelect({ tag }: { tag: string }) {
-  const { data, error, loading } = useStudentCachedData<GrammarTagsPayload>(
-    `${STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX}:tags`,
-    (session) => loadGrammarPractice("", session)
-  );
-  const summary = data?.tags?.find((item) => item.tag === tag);
-  const practiceHref = (mode: "all" | "random") => {
-    const params = new URLSearchParams({ mode, tag });
-    return `${STUDENT_ROUTES.grammarPractice}/practice?${params.toString()}`;
-  };
-
+function GrammarPracticeRow({
+  label,
+  questionCount
+}: {
+  label: string;
+  questionCount: number;
+}) {
   return (
-    <div className="grid gap-5">
-      <GrammarNavigation tag={tag} />
-      {loading ? <LoadingText text="Loading grammar point..." /> : null}
-      {error ? <ErrorText text={error} /> : null}
-      {!loading && !error && !summary ? (
-        <p className="rounded-lg border border-line bg-white p-5 shadow-sm">
-          该语法标签暂无可练习题目。
-        </p>
-      ) : null}
-      {summary ? (
-        <>
-          <section className="rounded-lg border border-line bg-white p-5 shadow-sm">
-            <p className="text-sm font-semibold text-ocean">Selected Grammar Point</p>
-            <h2 className="mt-1 text-2xl font-bold">{summary.tag}</h2>
-            <p className="mt-2 text-sm text-ink/60">
-              {summary.questionCount} unique question{summary.questionCount === 1 ? "" : "s"}
-            </p>
-          </section>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Link
-              className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-              href={practiceHref("all")}
-            >
-              <p className="text-sm font-semibold text-ocean">全部练习</p>
-              <h2 className="mt-1 text-2xl font-bold">Practice All</h2>
-              <p className="mt-2 text-sm leading-6 text-ink/70">
-                不计时，练习该语法点的全部去重题目。
-              </p>
-            </Link>
-            <Link
-              className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-              href={practiceHref("random")}
-            >
-              <p className="text-sm font-semibold text-ocean">随机计时练习</p>
-              <h2 className="mt-1 text-2xl font-bold">Random Timed Practice</h2>
-              <p className="mt-2 text-sm leading-6 text-ink/70">
-                随机最多 10 题，固定倒计时 6:50。
-              </p>
-            </Link>
-          </div>
-        </>
-      ) : null}
-    </div>
+    <article className="grid min-h-[58px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 rounded-xl border border-student-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)] sm:px-5 lg:grid-cols-[minmax(0,1fr)_5.5rem_10rem_12rem] lg:gap-x-3 lg:py-2">
+      <div className="flex min-w-0 items-center gap-3">
+        <BookOpen
+          aria-hidden="true"
+          className="shrink-0 text-student-primary"
+          size={23}
+          strokeWidth={1.9}
+        />
+        <h2 className="min-w-0 text-[16px] font-semibold leading-6 text-student-text sm:text-[17px]">
+          {label}
+        </h2>
+      </div>
+      <p className="text-right text-[15px] font-medium tabular-nums text-student-muted lg:pr-2">
+        {questionCount}题
+      </p>
+      <div className="col-span-2 grid grid-cols-2 gap-2 lg:contents">
+        <GrammarAction href={practiceHref(label, "all")} icon={ListChecks} label="全部练习" />
+        <GrammarAction href={practiceHref(label, "random")} icon={Clock3} label="随机计时练习" />
+      </div>
+    </article>
   );
+}
+
+function GrammarAction({
+  href,
+  icon: Icon,
+  label
+}: {
+  href: string;
+  icon: typeof ListChecks;
+  label: string;
+}) {
+  return (
+    <Link
+      className="inline-flex min-h-9 min-w-0 items-center justify-center gap-2 rounded-[10px] bg-student-primary-soft px-3 py-1.5 text-sm font-semibold text-student-primary transition hover:bg-student-primary-border"
+      href={href}
+    >
+      <Icon aria-hidden="true" className="shrink-0" size={19} strokeWidth={1.9} />
+      <span className="whitespace-nowrap">{label}</span>
+    </Link>
+  );
+}
+
+function practiceHref(tag: string, mode: "all" | "random") {
+  const params = new URLSearchParams({ mode, tag });
+  return `${STUDENT_ROUTES.grammarPractice}/practice?${params.toString()}`;
+}
+
+function sortGrammarTags(tags: GrammarTagSummary[]) {
+  return tags
+    .map((tag, index) => ({ tag, index }))
+    .sort((left, right) => {
+      const leftPriority = grammarTagPriority(left.tag.tag);
+      const rightPriority = grammarTagPriority(right.tag.tag);
+      return (
+        leftPriority - rightPriority ||
+        (leftPriority === GRAMMAR_TAG_ORDER.length
+          ? left.tag.tag.localeCompare(right.tag.tag, "zh-CN")
+          : left.index - right.index)
+      );
+    })
+    .map(({ tag }) => tag);
+}
+
+function grammarTagPriority(tag: string) {
+  return GRAMMAR_TAG_PRIORITY.get(normalizeGrammarTagForSort(tag)) ?? GRAMMAR_TAG_ORDER.length;
+}
+
+function normalizeGrammarTagForSort(tag: string) {
+  return tag
+    .trim()
+    .replace(/[\-‐‑‒–—―−]/g, "－")
+    .replace(/\s*－\s*/g, "－")
+    .replace(/\s+/g, " ");
 }
 
 export function GrammarQuestionsPractice({
@@ -145,15 +190,13 @@ export function GrammarQuestionsPractice({
     [mode]
   );
 
-  if (loading) return <LoadingText text="Loading grammar practice..." />;
-  if (error) return <ErrorText text={error} />;
+  if (loading) return <StudentLoadingState text="正在加载语法练习..." />;
+  if (error) return <StudentErrorState text="加载语法练习失败，请稍后重试。" />;
   if (!tag || questions.length === 0) {
     return (
       <div className="grid gap-5">
         <GrammarNavigation tag={tag || undefined} />
-        <p className="rounded-lg border border-line bg-white p-5 shadow-sm">
-          该语法标签暂无可练习题目，无法开始练习。
-        </p>
+        <StudentEmptyState text="该语法标签暂无可练习题目，无法开始练习。" />
       </div>
     );
   }
@@ -177,13 +220,20 @@ function GrammarNavigation({ tag }: { tag?: string }) {
     <StudentNavigation
       backHref={tag ? STUDENT_ROUTES.grammarPractice : STUDENT_ROUTES.home}
       crumbs={[
-        { label: "Student Home", href: STUDENT_ROUTES.home },
+        { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
         ...(tag
-          ? [{ label: "Grammar Practice", href: STUDENT_ROUTES.grammarPractice }]
-          : [{ label: "Grammar Practice" }]),
+          ? [{ label: STUDENT_UI_TEXT.grammarPractice, href: STUDENT_ROUTES.grammarPractice }]
+          : [{ label: STUDENT_UI_TEXT.grammarPractice }]),
         ...(tag ? [{ label: tag }] : [])
       ]}
     />
+  );
+}
+
+export function useGrammarTags() {
+  return useStudentCachedData<GrammarTagsPayload>(
+    `${STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX}:tags`,
+    (session) => loadGrammarPractice("", session)
   );
 }
 
@@ -198,13 +248,13 @@ async function loadGrammarPractice(query: string, session: StudentCacheSession) 
   try {
     payload = responseText
       ? JSON.parse(responseText)
-      : { error: "The grammar practice API returned an empty response." };
+      : { error: "语法练习服务返回了空响应。" };
   } catch {
-    payload = { error: "The grammar practice API returned invalid JSON." };
+    payload = { error: "语法练习服务返回的数据格式无效。" };
   }
 
   if (!response.ok || payload.error) {
-    throw new Error(payload.error ?? "Could not load grammar practice.");
+    throw new Error(payload.error ?? "无法加载语法练习。");
   }
   return payload;
 }
@@ -217,12 +267,4 @@ function formatTimestamp(date: Date) {
   const minutes = String(date.getMinutes()).padStart(2, "0");
   const seconds = String(date.getSeconds()).padStart(2, "0");
   return `${year}${month}${day}-${hours}${minutes}${seconds}`;
-}
-
-function LoadingText({ text }: { text: string }) {
-  return <p className="text-sm text-ink/70">{text}</p>;
-}
-
-function ErrorText({ text }: { text: string }) {
-  return <p className="font-semibold text-coral">{text}</p>;
 }

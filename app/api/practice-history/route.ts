@@ -140,15 +140,23 @@ export async function GET(request: Request) {
     const questionById = new Map(
       questionRows.map((question) => [question.question_id, question])
     );
-    const officialAttempts = (attemptResult.data ?? [])
+    const allAttempts = (attemptResult.data ?? [])
       .map((attempt) => ({
         ...attempt,
         attempt_id: String(attempt.attempt_id),
         set_id: String(attempt.set_id).trim()
-      }))
-      .filter((attempt) => isOfficialPracticeSetId(attempt.set_id, realSetIds));
+      }));
+    const attemptById = new Map(allAttempts.map((attempt) => [attempt.attempt_id, attempt]));
+    const officialAttempts = allAttempts.filter((attempt) =>
+      isOfficialPracticeSetId(attempt.set_id, realSetIds)
+    );
     const officialAttemptIds = new Set(
       officialAttempts.map((attempt) => attempt.attempt_id)
+    );
+    const correctionAttemptIds = new Set(
+      allAttempts
+        .filter((attempt) => attempt.set_id.startsWith("wrongbook-"))
+        .map((attempt) => attempt.attempt_id)
     );
     const attempts = officialAttempts.map((attempt) => ({
       attemptId: attempt.attempt_id,
@@ -159,32 +167,45 @@ export async function GET(request: Request) {
       timeSpentSeconds: attempt.time_spent_seconds ?? 0,
       submittedAt: attempt.submitted_at ?? attempt.created_at ?? null
     }));
-    const answers = (answerResult.data ?? [])
+    const allAnswers = (answerResult.data ?? [])
       .map((answer) => ({
         ...answer,
         attempt_answer_id: String(answer.attempt_answer_id),
         attempt_id: String(answer.attempt_id),
         question_id: String(answer.question_id)
-      }))
+      }));
+    const normalizeAnswer = (answer: (typeof allAnswers)[number]) => {
+      const question = questionById.get(answer.question_id);
+      const attempt = attemptById.get(answer.attempt_id);
+      return {
+        attemptAnswerId: answer.attempt_answer_id,
+        attemptId: answer.attempt_id,
+        questionId: answer.question_id,
+        questionOrder: answer.question_order ?? question?.question_order ?? 0,
+        prompt: question?.prompt ?? answer.prompt ?? "",
+        sentenceTemplate: question?.sentence_template ?? "",
+        optionsText: question?.options_text ?? "",
+        finalSentence: question?.final_sentence ?? "",
+        grammarTag: question?.grammar_tags_text ?? "",
+        submittedOrderText: answer.submitted_order_text ?? "",
+        isCorrect: Boolean(answer.is_correct),
+        questionTimeSeconds: answer.question_time_seconds,
+        answeredAt:
+          answer.answered_at ??
+          answer.created_at ??
+          attempt?.submitted_at ??
+          attempt?.created_at ??
+          null
+      };
+    };
+    const answers = allAnswers
       .filter((answer) => officialAttemptIds.has(answer.attempt_id))
-      .map((answer) => {
-        const question = questionById.get(answer.question_id);
-        return {
-          attemptAnswerId: answer.attempt_answer_id,
-          attemptId: answer.attempt_id,
-          questionId: answer.question_id,
-          questionOrder: answer.question_order ?? question?.question_order ?? 0,
-          prompt: question?.prompt ?? answer.prompt ?? "",
-          sentenceTemplate: question?.sentence_template ?? "",
-          optionsText: question?.options_text ?? "",
-          finalSentence: question?.final_sentence ?? "",
-          grammarTag: question?.grammar_tags_text ?? "",
-          submittedOrderText: answer.submitted_order_text ?? "",
-          isCorrect: Boolean(answer.is_correct),
-          questionTimeSeconds: answer.question_time_seconds,
-          answeredAt: answer.answered_at ?? answer.created_at ?? null
-        };
-      });
+      .map(normalizeAnswer);
+    const correctionAnswers = allAnswers
+      .filter(
+        (answer) => correctionAttemptIds.has(answer.attempt_id) && Boolean(answer.is_correct)
+      )
+      .map(normalizeAnswer);
 
     const url = new URL(request.url);
     const requestedStart = Date.parse(url.searchParams.get("todayStart") ?? "");
@@ -195,7 +216,15 @@ export async function GET(request: Request) {
       ? requestedEnd
       : fallbackStart + 24 * 60 * 60 * 1000;
 
-    return json(buildPracticeHistoryPayload({ answers, attempts, todayStart, todayEnd }));
+    return json(
+      buildPracticeHistoryPayload({
+        answers,
+        attempts,
+        correctionAnswers,
+        todayStart,
+        todayEnd
+      })
+    );
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not load practice history.");
   }

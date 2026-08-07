@@ -13,7 +13,13 @@ import {
   useOptionalStudentDataCache
 } from "@/components/StudentDataCache";
 
-export function SignOutButton() {
+export function SignOutButton({
+  locale = "en",
+  variant = "default"
+}: {
+  locale?: "en" | "zh-CN";
+  variant?: "default" | "student";
+}) {
   const router = useRouter();
   const teacherCache = useOptionalTeacherDataCache();
   const studentCache = useOptionalStudentDataCache();
@@ -37,12 +43,12 @@ export function SignOutButton() {
           data: { user }
         } = await supabase.auth.getUser(accessToken);
 
-        return user
-          ? getPreferredUserDisplayName({
-              email: user.email,
-              metadata: user.user_metadata
-            })
-          : "";
+        if (!user) return "";
+        if (variant === "student") return user.email ?? "";
+        return getPreferredUserDisplayName({
+          email: user.email,
+          metadata: user.user_metadata
+        });
       };
       const name = loadTeacherData
         ? await loadTeacherData(TEACHER_CURRENT_USER_CACHE_KEY, () => loader())
@@ -59,7 +65,7 @@ export function SignOutButton() {
     return () => {
       ignore = true;
     };
-  }, [loadStudentData, loadTeacherData, studentCache, studentId, studentSessionReady]);
+  }, [loadStudentData, loadTeacherData, studentCache, studentId, studentSessionReady, variant]);
 
   async function signOut() {
     const supabase = createBrowserSupabase();
@@ -72,14 +78,26 @@ export function SignOutButton() {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {displayName ? (
-        <span className="text-sm font-semibold text-ink/70">{displayName}</span>
+        <span
+          className={
+            variant === "student"
+              ? "hidden text-sm font-medium text-student-muted sm:inline"
+              : "text-sm font-semibold text-ink/70"
+          }
+        >
+          {displayName}
+        </span>
       ) : null}
       <button
-        className="rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold hover:border-ocean"
+        className={
+          variant === "student"
+            ? "student-button-secondary"
+            : "rounded-md border border-line bg-white px-3 py-2 text-sm font-semibold hover:border-ocean"
+        }
         onClick={signOut}
         type="button"
       >
-        Sign out
+        {locale === "zh-CN" ? "退出登录" : "Sign out"}
       </button>
     </div>
   );

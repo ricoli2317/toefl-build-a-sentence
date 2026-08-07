@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
+import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
+import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 
 type SubmittedAnswer = {
   questionId: string;
@@ -228,6 +230,22 @@ export async function POST(request: Request) {
       grammar_tags_text: result.question.grammar_tags_text,
       question_time_seconds: result.questionTimeSeconds
     }));
+    const normalizedSetId = String(body.setId);
+    const comparableOfficialSet =
+      !isVirtualPracticeSetId(normalizedSetId) &&
+      questionRows.every((question) => String(question.set_id) === normalizedSetId);
+    const peerComparison = await loadResultPeerComparison({
+      comparable: comparableOfficialSet,
+      currentAttempt: {
+        attemptId: String(attempt.attempt_id),
+        correctCount,
+        totalQuestions,
+        timeSpentSeconds
+      },
+      db,
+      setId: normalizedSetId,
+      studentId: user.id
+    });
 
     return NextResponse.json({
       attemptId: attempt.attempt_id,
@@ -235,6 +253,7 @@ export async function POST(request: Request) {
       total: totalQuestions,
       accuracy,
       timeSpentSeconds,
+      peer_comparison: peerComparison,
       attempt: {
         attempt_id: attempt.attempt_id,
         set_id: String(body.setId),
