@@ -40,6 +40,61 @@ select {
   border-bottom: 2px solid #18212f;
 }
 
+.practice-sentence-template {
+  display: block;
+  margin: 0;
+}
+
+.practice-sentence-template__blank {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  border: 0;
+  border-bottom: 2px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: var(--student-text);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.practice-sentence-template__blank::after {
+  position: absolute;
+  inset: -0.5rem -0.2rem;
+  content: "";
+}
+
+.practice-sentence-template__blank--empty {
+  width: max-content;
+  min-width: 0;
+  padding-inline: 0.375rem;
+  color: var(--student-muted);
+}
+
+.practice-sentence-template__blank-sizer {
+  display: inline-grid;
+  grid-template-areas: "blank-sizer";
+}
+
+.practice-sentence-template__blank-sizer-text {
+  grid-area: blank-sizer;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.practice-sentence-template__blank--filled {
+  width: fit-content;
+  min-width: 0;
+  color: var(--student-text);
+}
+
 @layer components {
   .student-shell {
     color: var(--student-text);

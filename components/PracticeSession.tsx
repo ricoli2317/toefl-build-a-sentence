@@ -460,6 +460,7 @@ export function PracticeSession({
               disabled={Boolean(result) || submitting}
               onDropChunk={dropChunk}
               onRemoveAnswer={removeAnswer}
+              sizingChunks={optionChunks}
               template={currentQuestion.sentence_template}
             />
           </div>
@@ -647,19 +648,25 @@ function SentenceTemplate({
   answers,
   disabled,
   onDropChunk,
-  onRemoveAnswer
+  onRemoveAnswer,
+  sizingChunks
 }: {
   template: string;
   answers: Array<OptionChunk | null>;
   disabled: boolean;
   onDropChunk: (blankIndex: number, chunkId: string) => void;
   onRemoveAnswer: (blankIndex: number) => void;
+  sizingChunks: OptionChunk[];
 }) {
   const parts = splitSentenceTemplate(template);
+  const blankSizingTexts = sizingChunks.flatMap((chunk) => [
+    formatPlacedChunk(chunk.text, false),
+    formatPlacedChunk(chunk.text, true)
+  ]);
   let blankIndex = 0;
 
   return (
-    <p className="flex flex-wrap items-center gap-x-2 gap-y-3">
+    <p className="practice-sentence-template">
       {parts.map((part, index) => {
         if (isBlankToken(part)) {
           const currentBlankIndex = blankIndex;
@@ -669,10 +676,11 @@ function SentenceTemplate({
           return (
             <button
               aria-disabled={disabled}
-              className={`inline-flex min-h-11 min-w-32 items-center justify-center rounded-[10px] border px-4 text-base font-semibold ${
+              aria-label={answer ? undefined : `Blank ${currentBlankIndex + 1}`}
+              className={`practice-sentence-template__blank ${
                 answer
-                  ? "border-student-primary bg-student-primary-soft text-student-text"
-                  : "border-dashed border-student-muted bg-student-bg text-student-muted"
+                  ? "practice-sentence-template__blank--filled"
+                  : "practice-sentence-template__blank--empty"
               }`}
               key={`${part}-${index}`}
               onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
@@ -686,18 +694,20 @@ function SentenceTemplate({
               }}
               type="button"
             >
-              {answer
-                ? formatPlacedChunk(
-                    answer.text,
-                    isTemplatePartSentenceStart(parts, index)
-                  )
-                : `Blank ${currentBlankIndex + 1}`}
+              {answer ? (
+                formatPlacedChunk(
+                  answer.text,
+                  isTemplatePartSentenceStart(parts, index)
+                )
+              ) : (
+                <BlankWidthSizer texts={blankSizingTexts} />
+              )}
             </button>
           );
         }
 
         return part ? (
-          <span className="whitespace-pre-wrap" key={`${part}-${index}`}>
+          <span key={`${part}-${index}`}>
             {formatTemplateText(part, isTemplatePartSentenceStart(parts, index))}
           </span>
         ) : null;
@@ -708,10 +718,11 @@ function SentenceTemplate({
         return (
           <button
             aria-disabled={disabled}
-            className={`inline-flex min-h-11 min-w-32 items-center justify-center rounded-[10px] border px-4 text-base font-semibold ${
+            aria-label={answer ? undefined : `Blank ${currentBlankIndex + 1}`}
+            className={`practice-sentence-template__blank ${
               answer
-                ? "border-student-primary bg-student-primary-soft text-student-text"
-                : "border-dashed border-student-muted bg-student-bg text-student-muted"
+                ? "practice-sentence-template__blank--filled"
+                : "practice-sentence-template__blank--empty"
             }`}
             key={`extra-blank-${currentBlankIndex}`}
             onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
@@ -725,15 +736,32 @@ function SentenceTemplate({
             }}
             type="button"
           >
-            {answer
-              ? formatPlacedChunk(
-                  answer.text,
-                  isTemplatePartSentenceStart(parts, parts.length)
-                )
-              : `Blank ${currentBlankIndex + 1}`}
+            {answer ? (
+              formatPlacedChunk(
+                answer.text,
+                isTemplatePartSentenceStart(parts, parts.length)
+              )
+            ) : (
+              <BlankWidthSizer texts={blankSizingTexts} />
+            )}
           </button>
         );
       })}
     </p>
+  );
+}
+
+function BlankWidthSizer({ texts }: { texts: string[] }) {
+  return (
+    <span aria-hidden="true" className="practice-sentence-template__blank-sizer">
+      {(texts.length > 0 ? texts : ["\u00a0"]).map((text, index) => (
+        <span
+          className="practice-sentence-template__blank-sizer-text"
+          key={`${text}-${index}`}
+        >
+          {text}
+        </span>
+      ))}
+    </span>
   );
 }
