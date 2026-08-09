@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   TEACHER_STATS_CACHE_KEY,
@@ -77,56 +78,60 @@ export function TeacherCreateStudent() {
   }
 
   return (
-    <form className="rounded-lg border border-line bg-white p-5 shadow-sm" onSubmit={onSubmit}>
-      <h2 className="text-xl font-bold">Create student account</h2>
-      <div className="mt-5 grid gap-4">
-        <label className="block text-sm font-semibold" htmlFor="student-name">
-          Student name
+    <form className="teacher-card p-6 sm:p-8" onSubmit={onSubmit}>
+      <h2 className="text-xl font-bold text-student-text">创建学生账号</h2>
+      <div className="mt-7 grid gap-6">
+        <label className="grid gap-2.5 text-sm font-semibold text-student-text" htmlFor="student-name">
+          学生姓名
+          <input
+            className="h-14 w-full rounded-xl border border-student-border bg-white px-4 font-normal text-student-text placeholder:text-student-muted focus:border-student-primary"
+            id="student-name"
+            onChange={(event) => setStudentName(event.target.value)}
+            placeholder="请输入学生姓名"
+            required
+            value={studentName}
+          />
         </label>
-        <input
-          className="w-full rounded-md border border-line px-3 py-2 outline-none focus:border-ocean"
-          id="student-name"
-          onChange={(event) => setStudentName(event.target.value)}
-          required
-          value={studentName}
-        />
 
-        <label className="block text-sm font-semibold" htmlFor="student-email">
-          Email
+        <label className="grid gap-2.5 text-sm font-semibold text-student-text" htmlFor="student-email">
+          邮箱
+          <input
+            className="h-14 w-full rounded-xl border border-student-border bg-white px-4 font-normal text-student-text placeholder:text-student-muted focus:border-student-primary"
+            id="student-email"
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="请输入邮箱地址"
+            required
+            type="email"
+            value={email}
+          />
         </label>
-        <input
-          className="w-full rounded-md border border-line px-3 py-2 outline-none focus:border-ocean"
-          id="student-email"
-          onChange={(event) => setEmail(event.target.value)}
-          required
-          type="email"
-          value={email}
-        />
 
-        <label className="block text-sm font-semibold" htmlFor="student-password">
-          Password
+        <label className="grid gap-2.5 text-sm font-semibold text-student-text" htmlFor="student-password">
+          密码
+          <input
+            className="h-14 w-full rounded-xl border border-student-border bg-white px-4 font-normal text-student-text placeholder:text-student-muted focus:border-student-primary"
+            id="student-password"
+            minLength={6}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="请输入初始密码"
+            required
+            type="password"
+            value={password}
+          />
         </label>
-        <input
-          className="w-full rounded-md border border-line px-3 py-2 outline-none focus:border-ocean"
-          id="student-password"
-          minLength={6}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-          type="password"
-          value={password}
-        />
       </div>
 
-      {error ? <p className="mt-4 text-sm font-semibold text-coral">{error}</p> : null}
-      {success ? <p className="mt-4 text-sm font-semibold text-ocean">{success}</p> : null}
+      {error ? <p className="teacher-error mt-5">{error}</p> : null}
+      {success ? <p className="mt-5 rounded-xl border border-student-primary-border bg-student-primary-soft p-4 text-sm font-semibold text-student-primary">{success}</p> : null}
 
-      <button
-        className="mt-6 rounded-md bg-ink px-4 py-2 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-60"
-        disabled={loading}
-        type="submit"
-      >
-        {loading ? "Creating..." : "Create student"}
-      </button>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <button className="teacher-button-primary min-w-36" disabled={loading} type="submit">
+          {loading ? "正在创建..." : "创建学生"}
+        </button>
+        <Link className="teacher-button-secondary min-w-32" href="/teacher/students">
+          取消
+        </Link>
+      </div>
     </form>
   );
 }

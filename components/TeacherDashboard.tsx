@@ -1,14 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
-import { buildSentenceDisplay } from "@/lib/questionText";
+import { useRef, useState, type ReactNode } from "react";
+import {
+  ArrowRight,
+  BarChart3,
+  BookOpenCheck,
+  CircleX,
+  Clock3,
+  FileText,
+  GraduationCap,
+  Search,
+  Target,
+  TrendingUp,
+  UserRound,
+  Users,
+  type LucideIcon
+} from "lucide-react";
+import { pinyin } from "pinyin-pro";
+import {
+  buildSentenceDisplay,
+  isBlankToken,
+  splitSentenceTemplate,
+  splitTextItems
+} from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
+import { PracticeResultView, type ResultPayload } from "@/components/PracticeResult";
+import { PracticeHistoryCompactList } from "@/components/shared/PracticeHistoryCards";
+import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
+import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
+import {
+  TeacherAccuracyBar,
+  TeacherCard,
+  TeacherEmptyState,
+  TeacherIconTile,
+  TeacherMetricCard,
+  TeacherSectionTitle,
+  TeacherTextLink
+} from "@/components/teacher/TeacherUI";
 
 type TeacherStatsPayload = {
   overview: {
@@ -95,71 +129,231 @@ type QuestionSummary = {
   accuracy: number;
 };
 
+type StudentSearchEntry = {
+  compactPinyin: string;
+  directText: string;
+  fullPinyin: string;
+  group: string;
+  initials: string;
+  student: StudentSummary;
+  surnamePinyin: string;
+};
+
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const LOW_ACCURACY_THRESHOLD = 0.5;
+
 export function TeacherDashboard() {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      <HomeCard
-        description="Review each student's completion history and answer details."
-        href="/teacher/students"
-        title="Students"
-      />
-      <HomeCard
-        description="Review set-level and question-level performance."
-        href="/teacher/sets"
-        title="Practice Sets"
-      />
-      <HomeCard
-        description="Browse the question bank by month and review each set's prompts, blanks, word blocks, and answers."
-        href="/teacher/question-bank"
-        title="All Practice Sets"
-      />
-    </div>
+    <TeacherStatsLoader>
+      {(stats) => {
+        const todayAttempts = stats.attempts.filter((attempt) => isToday(attempt.submittedAt));
+        const recentAttempts = [...stats.attempts]
+          .filter((attempt) => attempt.submittedAt)
+          .sort((left, right) => compareDatesDesc(left.submittedAt, right.submittedAt))
+          .slice(0, 4);
+
+        return (
+          <div className="grid gap-8">
+            <section>
+              <TeacherSectionTitle>管理入口</TeacherSectionTitle>
+              <div className="mt-4 grid gap-5 md:grid-cols-3">
+                <TeacherFeatureCard
+                  description="管理学生账号与学习情况"
+                  href="/teacher/students"
+                  icon={Users}
+                  metric={`${stats.students.length} 名学生`}
+                  title="学生"
+                />
+                <TeacherFeatureCard
+                  description="查看学生表现与套题分析"
+                  href="/teacher/sets"
+                  icon={BarChart3}
+                  metric={`${stats.sets.length} 套`}
+                  title="套题统计"
+                />
+                <TeacherFeatureCard
+                  description="浏览与管理所有题库内容"
+                  href="/teacher/question-bank"
+                  icon={FileText}
+                  metric={`${stats.questions.length} 题`}
+                  title="查看所有套题"
+                />
+              </div>
+            </section>
+
+            <section>
+              <TeacherSectionTitle>数据概览</TeacherSectionTitle>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <TeacherMetricCard icon={Users} label="总学生数" value={String(stats.students.length)} />
+                <TeacherMetricCard icon={BookOpenCheck} label="总套题数" value={String(stats.sets.length)} />
+                <TeacherMetricCard icon={FileText} label="总题目数" value={String(stats.questions.length)} />
+                <TeacherMetricCard icon={TrendingUp} label="今日新增练习" value={String(todayAttempts.length)} />
+              </div>
+            </section>
+
+            {recentAttempts.length > 0 ? (
+              <TeacherCard className="p-5 sm:p-6">
+                <TeacherSectionTitle>近期动态</TeacherSectionTitle>
+                <div className="mt-4 divide-y divide-student-border">
+                  {recentAttempts.map((attempt) => {
+                    const student = stats.students.find((item) => item.studentId === attempt.studentId);
+                    return (
+                      <div className="flex items-center justify-between gap-4 py-3 first:pt-1 last:pb-0" key={attempt.attemptId}>
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
+                            <GraduationCap aria-hidden="true" size={19} strokeWidth={1.9} />
+                          </span>
+                          <p className="truncate text-sm text-student-text">
+                            <span className="font-semibold">{student?.studentDisplayName ?? "学生"}</span>
+                            {" 完成了 "}
+                            <span className="font-medium">{attempt.setTitle}</span>
+                          </p>
+                        </div>
+                        <time className="shrink-0 text-xs text-student-muted">
+                          {formatActivityTime(attempt.submittedAt)}
+                        </time>
+                      </div>
+                    );
+                  })}
+                </div>
+              </TeacherCard>
+            ) : null}
+          </div>
+        );
+      }}
+    </TeacherStatsLoader>
   );
 }
 
 export function TeacherStudentsList() {
+  const [query, setQuery] = useState("");
+  const sectionRefs = useRef(new Map<string, HTMLTableRowElement>());
+
   return (
     <TeacherStatsLoader>
-      {(stats) => (
-        <div className="grid gap-5">
-          <TeacherNavigation
-            backHref="/teacher/dashboard"
-            crumbs={[
-              { label: "Teacher Home", href: "/teacher/dashboard" },
-              { label: "Students" }
-            ]}
-          />
-          <div className="flex justify-end">
-            <Link
-              className="rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ocean"
-              href="/teacher/students/new"
-            >
-              Add student
-            </Link>
+      {(stats) => {
+        const entries = stats.students.map(createStudentSearchEntry);
+        const filtered = filterStudentEntries(entries, query);
+        const sections = groupStudentEntries(filtered);
+        const availableLetters = new Set(sections.map(([letter]) => letter));
+
+        return (
+          <div className="grid gap-6">
+            <TeacherCard className="p-5 sm:p-6">
+              <div className="flex flex-wrap items-end justify-between gap-5">
+                <div className="w-full max-w-[560px]">
+                  <label className="relative block">
+                    <Search
+                      aria-hidden="true"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
+                      size={20}
+                      strokeWidth={1.9}
+                    />
+                    <input
+                      className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
+                      onChange={(event) => setQuery(event.target.value)}
+                      placeholder="搜索学生姓名 / 拼音"
+                      type="search"
+                      value={query}
+                    />
+                  </label>
+                  <p className="mt-3 text-sm text-student-muted">
+                    支持中文精确搜索，例如：丁煊航；支持拼音模糊搜索，例如：ding / zhang
+                  </p>
+                </div>
+                <p className="text-sm font-medium text-student-text">按姓氏首字母排序</p>
+              </div>
+            </TeacherCard>
+
+            <div className="flex items-start gap-3">
+              <TeacherCard className="min-w-0 flex-1 overflow-hidden p-0">
+                <div className="px-6 pt-6">
+                  <TeacherSectionTitle>学生列表</TeacherSectionTitle>
+                </div>
+                {filtered.length === 0 ? (
+                  <div className="p-6">
+                    <TeacherEmptyState text={query.trim() ? "没有找到匹配的学生。" : "暂无学生。"} />
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto px-6 pb-6 pt-4">
+                    <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-student-border text-student-muted">
+                          <th className="px-3 py-3 font-medium">学生</th>
+                          <th className="px-3 py-3 font-medium">完成套题数</th>
+                          <th className="px-3 py-3 font-medium">总练习次数</th>
+                          <th className="px-3 py-3 font-medium">平均正确率</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sections.flatMap(([letter, students]) => [
+                          <tr
+                            className="scroll-mt-28"
+                            id={`student-letter-${letter}`}
+                            key={`group-${letter}`}
+                            ref={(node) => {
+                              if (node) sectionRefs.current.set(letter, node);
+                              else sectionRefs.current.delete(letter);
+                            }}
+                          >
+                            <td className="bg-student-primary-soft px-3 py-2 font-bold text-student-primary" colSpan={4}>
+                              {letter}
+                            </td>
+                          </tr>,
+                          ...students.map((entry) => (
+                            <tr
+                              className="border-b border-student-border transition last:border-b-0 hover:bg-student-primary-soft/45"
+                              key={entry.student.studentId}
+                            >
+                              <td className="px-3 py-3">
+                                <div className="flex items-center gap-3">
+                                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
+                                    <UserRound aria-hidden="true" size={20} strokeWidth={1.9} />
+                                  </span>
+                                  <TeacherTextLink href={`/teacher/students/${entry.student.studentId}`}>
+                                    {entry.student.studentDisplayName}
+                                  </TeacherTextLink>
+                                </div>
+                              </td>
+                              <td className="px-3 py-3 tabular-nums">{entry.student.completedSetCount}</td>
+                              <td className="px-3 py-3 tabular-nums">{entry.student.totalAttemptCount}</td>
+                              <td className="px-3 py-3">
+                                <TeacherAccuracyBar value={entry.student.averageAccuracy} />
+                              </td>
+                            </tr>
+                          ))
+                        ])}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </TeacherCard>
+
+              <nav aria-label="学生姓氏首字母索引" className="sticky top-[96px] hidden w-7 shrink-0 flex-col items-center gap-0.5 py-1 xl:flex">
+                {ALPHABET.map((letter) => {
+                  const available = availableLetters.has(letter);
+                  return (
+                    <button
+                      aria-label={`跳转到 ${letter} 组`}
+                      className={`h-[22px] w-7 rounded-md text-[11px] font-semibold transition ${
+                        available
+                          ? "text-student-primary hover:bg-student-primary hover:text-white"
+                          : "cursor-default text-student-muted/35"
+                      }`}
+                      disabled={!available}
+                      key={letter}
+                      onClick={() => sectionRefs.current.get(letter)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                      type="button"
+                    >
+                      {letter}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
           </div>
-          <Panel title="Students">
-            <ResponsiveTable
-              emptyText="No students yet."
-              headers={["Student", "Completed sets", "Total attempts", "Average accuracy"]}
-              rows={stats.students.map((student) => ({
-                key: student.studentId,
-                cells: [
-                  <Link
-                    className="font-semibold text-ocean hover:underline"
-                    href={`/teacher/students/${student.studentId}`}
-                    key="email"
-                  >
-                    {student.studentDisplayName}
-                  </Link>,
-                  student.completedSetCount,
-                  student.totalAttemptCount,
-                  <Accuracy value={student.averageAccuracy} key="accuracy" />
-                ]
-              }))}
-            />
-          </Panel>
-        </div>
-      )}
+        );
+      }}
     </TeacherStatsLoader>
   );
 }
@@ -169,36 +363,76 @@ export function TeacherStudentSummary({ studentId }: { studentId: string }) {
     <TeacherStatsLoader>
       {(stats) => {
         const student = stats.students.find((item) => item.studentId === studentId);
-        if (!student) return <EmptyState text="Student not found." />;
+        if (!student) return <EmptyState text="未找到学生。" />;
+        const attempts = stats.attempts.filter((attempt) => attempt.studentId === studentId);
+        const attemptsBySet = groupBy(attempts, getAttemptGroupId);
+        const setGroups = Array.from(attemptsBySet.entries())
+          .map(([groupId, setAttempts], stableIndex) => {
+            const latestAttempt = setAttempts
+              .map((attempt, index) => ({
+                attempt,
+                index,
+                timestamp: completedAttemptTimestamp(attempt.submittedAt)
+              }))
+              .sort((left, right) => {
+                if (left.timestamp === null && right.timestamp === null) return left.index - right.index;
+                if (left.timestamp === null) return 1;
+                if (right.timestamp === null) return -1;
+                return right.timestamp - left.timestamp || left.index - right.index;
+              })[0]?.attempt;
+
+            return {
+              bestAccuracy: Math.max(...setAttempts.map((attempt) => attempt.accuracy)),
+              groupId,
+              latestAttempt,
+              latestTimestamp: completedAttemptTimestamp(latestAttempt?.submittedAt ?? null),
+              setAttempts,
+              stableIndex
+            };
+          })
+          .sort((left, right) => {
+            if (left.latestTimestamp === null && right.latestTimestamp === null) {
+              return left.stableIndex - right.stableIndex;
+            }
+            if (left.latestTimestamp === null) return 1;
+            if (right.latestTimestamp === null) return -1;
+            return right.latestTimestamp - left.latestTimestamp || left.stableIndex - right.stableIndex;
+          });
 
         return (
           <div className="grid gap-5">
-            <TeacherNavigation
-              backHref="/teacher/students"
-              crumbs={[
-                { label: "Teacher Home", href: "/teacher/dashboard" },
-                { label: "Students", href: "/teacher/students" },
-                { label: student.studentDisplayName }
-              ]}
-            />
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-ink/60">Student</p>
-                <h2 className="text-2xl font-bold">{student.studentDisplayName}</h2>
+            <TeacherBreadcrumbs crumbs={[
+              { label: "首页", href: "/teacher/dashboard" },
+              { label: "学生", href: "/teacher/students" },
+              { label: student.studentDisplayName }
+            ]} />
+            <TeacherCard className="flex min-h-[96px] items-center p-5">
+              <div className="flex min-w-0 items-center gap-4">
+                <TeacherIconTile icon={UserRound} />
+                <div className="min-w-0">
+                  <h2 className="truncate text-2xl font-bold text-student-text">{student.studentDisplayName}</h2>
+                  <p className="mt-1 truncate text-sm text-student-muted">{student.studentEmail}</p>
+                </div>
               </div>
-              <Link
-                className="rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ocean"
-                href={`/teacher/students/${studentId}/details`}
-              >
-                View details
-              </Link>
-            </div>
+            </TeacherCard>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <Metric label="Completed sets" value={String(student.completedSetCount)} />
-              <Metric label="Total attempts" value={String(student.totalAttemptCount)} />
-              <Metric label="Average accuracy" value={formatPercent(student.averageAccuracy)} />
-              <Metric label="Answered questions" value={String(student.answeredQuestionCount)} />
+              <StudentOverviewMetricCard icon={BookOpenCheck} label="完成套题数" value={String(student.completedSetCount)} />
+              <StudentOverviewMetricCard icon={Clock3} label="总练习次数" value={String(student.totalAttemptCount)} />
+              <StudentOverviewMetricCard icon={Target} label="平均正确率" value={formatPercent(student.averageAccuracy)} />
+              <StudentOverviewMetricCard icon={FileText} label="答题数" value={String(student.answeredQuestionCount)} />
             </div>
+            <PracticeHistoryCompactList
+              emptyState={<TeacherEmptyState text="该学生还没有完成练习。" />}
+              items={setGroups.map(({ bestAccuracy, groupId, latestAttempt, setAttempts }) => ({
+                attemptCount: setAttempts.length,
+                bestAccuracy: formatPercent(bestAccuracy),
+                href: `/teacher/students/${studentId}/details/${encodeURIComponent(groupId)}`,
+                latestAccuracy: formatPercent(latestAttempt?.accuracy ?? 0),
+                latestCompleted: formatCompactDateTime(latestAttempt?.submittedAt ?? null),
+                setId: groupId,
+                setTitle: getAttemptGroupTitle(groupId, latestAttempt?.setTitle ?? groupId)
+              }))}
+            />
           </div>
         );
       }}
@@ -206,95 +440,25 @@ export function TeacherStudentSummary({ studentId }: { studentId: string }) {
   );
 }
 
-export function TeacherStudentDetails({ studentId }: { studentId: string }) {
+function StudentOverviewMetricCard({
+  icon: Icon,
+  label,
+  value
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}) {
   return (
-    <TeacherStatsLoader>
-      {(stats) => {
-        const student = stats.students.find((item) => item.studentId === studentId);
-        if (!student) return <EmptyState text="Student not found." />;
-
-        const attempts = stats.attempts
-          .filter((attempt) => attempt.studentId === studentId)
-          .sort(
-            (a, b) =>
-              compareAttemptGroupIds(getAttemptGroupId(a), getAttemptGroupId(b)) ||
-              compareDatesDesc(a.submittedAt, b.submittedAt)
-          );
-        const attemptsBySet = groupBy(attempts, getAttemptGroupId);
-        const setGroups = Array.from(attemptsBySet.entries()).sort(([leftSetId], [rightSetId]) =>
-          compareAttemptGroupIds(leftSetId, rightSetId)
-        );
-
-        return (
-          <div className="grid gap-5">
-            <TeacherNavigation
-              backHref={`/teacher/students/${studentId}`}
-              crumbs={[
-                { label: "Teacher Home", href: "/teacher/dashboard" },
-                { label: "Students", href: "/teacher/students" },
-                { label: student.studentDisplayName, href: `/teacher/students/${studentId}` },
-                { label: "Details" }
-              ]}
-            />
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-ink/60">Student details</p>
-                <h2 className="text-2xl font-bold">{student.studentDisplayName}</h2>
-              </div>
-            </div>
-            {attempts.length === 0 ? <EmptyState text="No completed practice sets yet." /> : null}
-            <div className="grid gap-4 md:grid-cols-2">
-              {setGroups.map(([groupId, setAttempts]) => {
-                const latestAttempt = [...setAttempts].sort((a, b) =>
-                  compareDatesDesc(a.submittedAt, b.submittedAt)
-                )[0];
-                const bestAccuracy = Math.max(...setAttempts.map((attempt) => attempt.accuracy));
-                const setTitle = getAttemptGroupTitle(
-                  groupId,
-                  latestAttempt?.setTitle ?? groupId
-                );
-                const href = `/teacher/students/${studentId}/details/${encodeURIComponent(groupId)}`;
-
-                return (
-                  <Link
-                    className="rounded-lg border border-line bg-white p-5 shadow-sm hover:border-ocean"
-                    href={href}
-                    key={groupId}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-ocean">{setTitle}</p>
-                        <h3 className="mt-1 text-sm font-semibold text-ink/60">{groupId}</h3>
-                      </div>
-                      <span className="rounded-full bg-paper px-3 py-1 text-xs font-semibold">
-                        {setAttempts.length} attempt{setAttempts.length === 1 ? "" : "s"}
-                      </span>
-                    </div>
-                    <div className="mt-4 grid gap-2 text-sm">
-                      <p>
-                        <span className="font-semibold text-ink/60">Latest completed:</span>{" "}
-                        {formatDateTime(latestAttempt?.submittedAt ?? null)}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-ink/60">Latest accuracy:</span>{" "}
-                        {formatPercent(latestAttempt?.accuracy ?? 0)}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-ink/60">Best accuracy:</span>{" "}
-                        {formatPercent(bestAccuracy)}
-                      </p>
-                    </div>
-                    <span className="mt-5 inline-flex rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white">
-                      View attempts
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        );
-      }}
-    </TeacherStatsLoader>
+    <div className="teacher-card flex min-h-[94px] items-center gap-4 p-5">
+      <span className="inline-flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] bg-student-primary-soft text-student-primary">
+        <Icon aria-hidden="true" size={28} strokeWidth={1.9} />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[2rem] font-bold leading-none tracking-tight tabular-nums text-student-primary">{value}</p>
+        <p className="mt-2 truncate text-sm font-medium text-student-muted">{label}</p>
+      </div>
+    </div>
   );
 }
 
@@ -309,7 +473,7 @@ export function TeacherStudentSetDetails({
     <TeacherStatsLoader>
       {(stats) => {
         const student = stats.students.find((item) => item.studentId === studentId);
-        if (!student) return <EmptyState text="Student not found." />;
+        if (!student) return <EmptyState text="未找到学生。" />;
 
         const groupId = normalizeAttemptGroupId(setId);
         const attempts = stats.attempts
@@ -328,23 +492,17 @@ export function TeacherStudentSetDetails({
 
         return (
           <div className="grid gap-5">
-            <TeacherNavigation
-              backHref={`/teacher/students/${studentId}/details`}
-              crumbs={[
-                { label: "Teacher Home", href: "/teacher/dashboard" },
-                { label: "Students", href: "/teacher/students" },
-                { label: student.studentDisplayName, href: `/teacher/students/${studentId}` },
-                { label: "Details", href: `/teacher/students/${studentId}/details` },
-                { label: setTitle }
-              ]}
-            />
-            <div>
-              <div>
-                <p className="text-sm font-semibold text-ink/60">Set attempts</p>
-                <h2 className="text-2xl font-bold">{setTitle}</h2>
-                <p className="text-sm text-ink/60">{groupId}</p>
-              </div>
-            </div>
+            <TeacherBreadcrumbs crumbs={[
+              { label: "首页", href: "/teacher/dashboard" },
+              { label: "学生", href: "/teacher/students" },
+              { label: student.studentDisplayName, href: `/teacher/students/${studentId}` },
+              { label: "练习记录", href: `/teacher/students/${studentId}` },
+              { label: setTitle }
+            ]} />
+            <TeacherCard className="p-5">
+              <h2 className="text-xl font-bold text-student-text">{setTitle}</h2>
+              <p className="mt-1 text-sm text-student-muted">{groupId}</p>
+            </TeacherCard>
             <AttemptHistoryList
               answers={stats.answers.filter((answer) =>
                 attemptIds.has(answer.attemptId)
@@ -353,7 +511,9 @@ export function TeacherStudentSetDetails({
               getAnswerHref={(answer) =>
                 `/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`
               }
+              locale="zh-CN"
               missingAnswerAttemptIds={stats.missingAnswerAttemptIds}
+              variant="student"
             />
           </div>
         );
@@ -385,113 +545,65 @@ function TeacherStudentQuestionDetailContent({
   const initialAnswer = stats.answers.find(
     (item) => item.attemptAnswerId === initialAttemptAnswerId
   );
-  const [attemptAnswers] = useState<AnswerSummary[]>(() =>
-    initialAnswer
-      ? stats.answers
-          .filter(
-            (item) =>
-              item.studentId === initialAnswer.studentId &&
-              item.attemptId === initialAnswer.attemptId
-          )
-          .sort((a, b) => a.questionOrder - b.questionOrder)
-      : []
-  );
-  const [activeAttemptAnswerId, setActiveAttemptAnswerId] = useState(initialAttemptAnswerId);
-
-  useEffect(() => {
-    function selectAnswerFromUrl() {
-      const hash = new URLSearchParams(window.location.hash.slice(1));
-      const requestedQuestionId = hash.get("question");
-      const requestedAnswer = attemptAnswers.find(
-        (item) => item.questionId === requestedQuestionId
-      );
-      const nextAnswerId = requestedAnswer?.attemptAnswerId ?? initialAttemptAnswerId;
-
-      setActiveAttemptAnswerId(nextAnswerId);
-    }
-
-    selectAnswerFromUrl();
-    window.addEventListener("popstate", selectAnswerFromUrl);
-    window.addEventListener("hashchange", selectAnswerFromUrl);
-    return () => {
-      window.removeEventListener("popstate", selectAnswerFromUrl);
-      window.removeEventListener("hashchange", selectAnswerFromUrl);
-    };
-  }, [attemptAnswers, initialAttemptAnswerId]);
-
-  if (!initialAnswer) return <EmptyState text="Question detail not found." />;
-
-  const answer =
-    attemptAnswers.find((item) => item.attemptAnswerId === activeAttemptAnswerId) ??
-    initialAnswer;
-  const attempt = stats.attempts.find((item) => item.attemptId === answer.attemptId);
-  const groupId = attempt ? getAttemptGroupId(attempt) : answer.setId;
+  if (!initialAnswer) return <TeacherEmptyState text="未找到答题记录。" />;
+  const attempt = stats.attempts.find((item) => item.attemptId === initialAnswer.attemptId);
+  if (!attempt) return <TeacherEmptyState text="未找到对应的练习结果。" />;
+  const attemptAnswers = stats.answers
+    .filter((item) => item.studentId === initialAnswer.studentId && item.attemptId === initialAnswer.attemptId)
+    .sort((a, b) => a.questionOrder - b.questionOrder);
+  const groupId = getAttemptGroupId(attempt);
   const groupTitle = getAttemptGroupTitle(
     groupId,
-    attempt?.setTitle ?? answer.setTitle
+    attempt.setTitle || initialAnswer.setTitle
   );
-  const student = stats.students.find((item) => item.studentId === answer.studentId);
-  const studentLabel = student?.studentDisplayName ?? "Student";
-
-  function selectAnswer(nextAnswer: AnswerSummary) {
-    setActiveAttemptAnswerId(nextAnswer.attemptAnswerId);
-    const hash = new URLSearchParams();
-    hash.set("question", nextAnswer.questionId);
-    window.history.pushState(
-      null,
-      "",
-      `${window.location.pathname}${window.location.search}#${hash}`
-    );
-  }
+  const student = stats.students.find((item) => item.studentId === initialAnswer.studentId);
+  const studentLabel = student?.studentDisplayName ?? "学生";
+  const payload: ResultPayload = {
+    attempt: {
+      attempt_id: attempt.attemptId,
+      set_id: attempt.setId,
+      set_title: groupTitle,
+      correct_count: attempt.correctCount,
+      total_questions: attempt.totalQuestions,
+      accuracy: attempt.accuracy,
+      time_spent_seconds: attempt.timeSpentSeconds,
+      submitted_at: attempt.submittedAt ?? ""
+    },
+    total_count: attempt.totalQuestions,
+    correct_count: attempt.correctCount,
+    accuracy: attempt.accuracy,
+    answers: attemptAnswers.map((answer) => ({
+      attempt_answer_id: answer.attemptAnswerId,
+      question_id: answer.questionId,
+      question_order: answer.questionOrder,
+      prompt: answer.prompt,
+      submitted_order_text: answer.displaySubmittedOrderText || answer.submittedOrderText,
+      correct_order_text: answer.correctOrderText,
+      sentence_template: answer.sentenceTemplate,
+      options_text: answer.optionsText,
+      final_sentence: answer.finalSentence,
+      is_correct: answer.isCorrect,
+      grammar_tags_text: null,
+      question_time_seconds: answer.questionTimeSeconds
+    }))
+  };
 
   return (
-    <div className="grid gap-5">
-      <TeacherNavigation
-        backHref={`/teacher/students/${answer.studentId}/details/${encodeURIComponent(groupId)}`}
-        crumbs={[
-          { label: "Teacher Home", href: "/teacher/dashboard" },
-          { label: "Students", href: "/teacher/students" },
-          { label: studentLabel, href: `/teacher/students/${answer.studentId}` },
-          { label: "Details", href: `/teacher/students/${answer.studentId}/details` },
-          {
-            label: groupTitle,
-            href: `/teacher/students/${answer.studentId}/details/${encodeURIComponent(groupId)}`
-          },
-          { label: `Q${answer.questionOrder}` }
-        ]}
-      />
-      <QuestionDetailCard
-        badge={
-          <div className="flex flex-wrap items-center gap-2">
-            <TimeSpentBadge seconds={answer.questionTimeSeconds} />
-            <StatusBadge correct={answer.isCorrect} />
-          </div>
-        }
-        correctAnswer={buildSentenceDisplay(
-          answer.sentenceTemplate,
-          answer.correctOrderText,
-          answer.finalSentence
-        )}
-        prompt={answer.prompt}
-        studentAnswer={buildSentenceDisplay(
-          answer.sentenceTemplate,
-          answer.displaySubmittedOrderText || answer.submittedOrderText
-        )}
-      />
-      {attemptAnswers.length > 1 ? (
-        <div className="flex flex-wrap gap-2">
-          {attemptAnswers.map((item) => (
-            <AttemptAnswerJumpLink
-              active={item.attemptAnswerId === answer.attemptAnswerId}
-              answer={item}
-              href={`/teacher/students/${answer.studentId}/answers/${item.attemptAnswerId}`}
-              key={item.attemptAnswerId}
-              onNavigate={() => selectAnswer(item)}
-            />
-          ))}
-        </div>
-      ) : null}
-    </div>
+    <PracticeResultView
+      answerLabel="学生答案"
+      correctAnswerVisibility="always"
+      initialQuestionId={initialAnswer.questionId}
+      navigation={<TeacherBreadcrumbs crumbs={[
+        { label: "首页", href: "/teacher/dashboard" },
+        { label: "学生", href: "/teacher/students" },
+        { label: studentLabel, href: `/teacher/students/${initialAnswer.studentId}` },
+        { label: "练习记录", href: `/teacher/students/${initialAnswer.studentId}` },
+        { label: groupTitle, href: `/teacher/students/${initialAnswer.studentId}/details/${encodeURIComponent(groupId)}` },
+        { label: `第 ${initialAnswer.questionOrder} 题` }
+      ]} />}
+      payload={payload}
+      showQuestionTime
+    />
   );
 }
 
@@ -499,37 +611,41 @@ export function TeacherSetsList() {
   return (
     <TeacherStatsLoader>
       {(stats) => (
-        <div className="grid gap-5">
-          <TeacherNavigation
-            backHref="/teacher/dashboard"
-            crumbs={[
-              { label: "Teacher Home", href: "/teacher/dashboard" },
-              { label: "Practice Sets" }
-            ]}
-          />
-          <Panel title="Practice Sets">
-            <ResponsiveTable
-              emptyText="No practice sets yet."
-              headers={["Set", "Set ID", "Questions", "Total attempts", "Average accuracy"]}
-              rows={stats.sets.map((set) => ({
-                key: set.setId,
-                cells: [
-                  <Link
-                    className="font-semibold text-ocean hover:underline"
-                    href={`/teacher/sets/${encodeURIComponent(set.setId)}`}
-                    key="set"
-                  >
-                    {set.setTitle}
-                  </Link>,
-                  <code className="text-xs" key="id">{set.setId}</code>,
-                  set.questionCount,
-                  set.totalAttemptCount,
-                  <Accuracy value={set.averageAccuracy} key="accuracy" />
-                ]
-              }))}
-            />
-          </Panel>
-        </div>
+        <TeacherCard className="overflow-hidden p-0">
+          <div className="px-6 pt-6">
+            <TeacherSectionTitle>套题列表</TeacherSectionTitle>
+          </div>
+          {stats.sets.length === 0 ? (
+            <div className="p-6"><TeacherEmptyState text="暂无套题。" /></div>
+          ) : (
+            <div className="overflow-x-auto px-6 pb-6 pt-4">
+              <table className="w-full min-w-[880px] border-separate border-spacing-0 overflow-hidden rounded-xl border border-student-border text-left text-sm">
+                <thead className="bg-student-primary-soft/55">
+                  <tr className="text-student-text">
+                    <th className="px-4 py-4 font-semibold">套题</th>
+                    <th className="px-4 py-4 font-semibold">Set ID</th>
+                    <th className="px-4 py-4 font-semibold">题目数</th>
+                    <th className="px-4 py-4 font-semibold">总练习次数</th>
+                    <th className="px-4 py-4 font-semibold">平均正确率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.sets.map((set) => (
+                    <tr className="border-t border-student-border transition hover:bg-student-primary-soft/45" key={set.setId}>
+                      <td className="border-t border-student-border px-4 py-4">
+                        <TeacherTextLink href={`/teacher/sets/${encodeURIComponent(set.setId)}`}>{set.setTitle}</TeacherTextLink>
+                      </td>
+                      <td className="border-t border-student-border px-4 py-4 font-mono text-xs text-student-muted">{set.setId}</td>
+                      <td className="border-t border-student-border px-4 py-4 tabular-nums">{set.questionCount}</td>
+                      <td className="border-t border-student-border px-4 py-4 tabular-nums">{set.totalAttemptCount}</td>
+                      <td className="border-t border-student-border px-4 py-4"><TeacherAccuracyBar value={set.averageAccuracy} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </TeacherCard>
       )}
     </TeacherStatsLoader>
   );
@@ -547,45 +663,40 @@ export function TeacherSetSummary({ setId }: { setId: string }) {
           .sort((a, b) => a.questionOrder - b.questionOrder);
 
         return (
-          <div className="grid gap-5">
-            <TeacherNavigation
-              backHref="/teacher/sets"
-              crumbs={[
-                { label: "Teacher Home", href: "/teacher/dashboard" },
-                { label: "Practice Sets", href: "/teacher/sets" },
-                { label: set.setTitle }
-              ]}
-            />
-            <div>
-              <p className="text-sm font-semibold text-ink/60">Practice set</p>
-              <h2 className="text-2xl font-bold">{set.setTitle}</h2>
-              <p className="text-sm text-ink/60">{set.setId}</p>
+          <div className="grid gap-8">
+            <p className="-mt-3 text-base font-medium text-student-muted">
+              {set.setTitle} · {set.setId}
+            </p>
+            <div className="grid gap-5 md:grid-cols-3">
+              <TeacherMetricCard icon={BookOpenCheck} label="总练习次数" value={String(set.totalAttemptCount)} />
+              <TeacherMetricCard icon={Users} label="完成学生数" value={String(set.completedStudentCount)} />
+              <TeacherMetricCard icon={TrendingUp} label="平均正确率" value={formatPercent(set.averageAccuracy)} />
             </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Metric label="Total attempts" value={String(set.totalAttemptCount)} />
-              <Metric label="Completed students" value={String(set.completedStudentCount)} />
-              <Metric label="Average accuracy" value={formatPercent(set.averageAccuracy)} />
-            </div>
-            <Panel title="Question accuracy">
+            <TeacherCard className="p-5 sm:p-7">
+              <TeacherSectionTitle>单题正确率</TeacherSectionTitle>
               {questions.length === 0 ? (
-                <EmptyState text="No questions in this set." />
+                <div className="mt-5"><TeacherEmptyState text="该套题暂无题目。" /></div>
               ) : (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
                   {questions.map((question) => (
                     <Link
-                      className="rounded-md border border-line bg-paper p-4 hover:border-ocean"
+                      className={`flex min-h-[140px] flex-col items-center justify-center rounded-2xl border p-5 text-center transition hover:-translate-y-px hover:shadow-md ${
+                        question.accuracy < LOW_ACCURACY_THRESHOLD
+                          ? "border-student-error-border bg-student-error-soft"
+                          : "border-student-primary-border bg-student-primary-soft/65"
+                      }`}
                       href={`/teacher/sets/${encodeURIComponent(setId)}/questions/${encodeURIComponent(question.questionId)}`}
                       key={question.questionId}
                     >
-                      <p className="text-lg font-bold">Q{question.questionOrder}</p>
-                      <p className="mt-1 text-2xl font-bold text-ocean">
+                      <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "text-base font-semibold text-student-error" : "text-base font-semibold text-student-primary"}>Q{question.questionOrder}</p>
+                      <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "mt-3 text-[2.35rem] font-bold leading-none text-student-error" : "mt-3 text-[2.35rem] font-bold leading-none text-student-text"}>
                         {formatPercent(question.accuracy)}
                       </p>
                     </Link>
                   ))}
                 </div>
               )}
-            </Panel>
+            </TeacherCard>
           </div>
         );
       }}
@@ -624,14 +735,17 @@ export function TeacherSetQuestionDetail({
             count: grouped.length
           }))
           .sort((a, b) => b.count - a.count);
+        const optionChunks = splitTextItems(answers[0]?.optionsText ?? "").map((text, index) => ({
+          id: `${question.questionId}-${index}`,
+          text
+        }));
+        const blankCount = splitSentenceTemplate(question.sentenceTemplate).filter(isBlankToken).length;
 
         return (
           <div className="grid gap-5">
-            <TeacherNavigation
-              backHref={`/teacher/sets/${encodeURIComponent(setId)}`}
-              crumbs={[
-                { label: "Teacher Home", href: "/teacher/dashboard" },
-                { label: "Practice Sets", href: "/teacher/sets" },
+            <TeacherBreadcrumbs crumbs={[
+                { label: "首页", href: "/teacher/dashboard" },
+                { label: "套题统计", href: "/teacher/sets" },
                 {
                   label: question.setTitle,
                   href: `/teacher/sets/${encodeURIComponent(setId)}`
@@ -639,35 +753,49 @@ export function TeacherSetQuestionDetail({
                 { label: `Q${question.questionOrder}` }
               ]}
             />
-            <QuestionDetailCard
-              correctAnswer={buildSentenceDisplay(
+            <QuestionDisplay
+              answers={Array.from({ length: blankCount }, () => null)}
+              options={optionChunks}
+              prompt={question.prompt}
+              questionNumber={question.questionOrder}
+              readOnly
+              template={question.sentenceTemplate}
+            />
+            <TeacherCard className="border-student-primary-border bg-student-primary-soft/55 p-5">
+              <p className="text-sm font-semibold text-student-primary">正确答案</p>
+              <p className="mt-2 text-lg font-semibold leading-7 text-student-text">
+                {buildSentenceDisplay(
                 question.sentenceTemplate,
                 question.correctOrderText || answers[0]?.correctOrderText || "",
                 question.finalSentence
-              )}
-              prompt={question.prompt}
-            />
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Metric label="Average accuracy" value={formatPercent(question.accuracy)} />
-              <Metric label="Total answers" value={String(question.answerCount)} />
-              <Metric label="Incorrect answers" value={String(wrongAnswers.length)} />
+                )}
+              </p>
+            </TeacherCard>
+            <div className="grid gap-5 sm:grid-cols-3">
+              <TeacherMetricCard icon={Target} label="平均正确率" value={formatPercent(question.accuracy)} />
+              <TeacherMetricCard icon={FileText} label="总作答次数" value={String(question.answerCount)} />
+              <TeacherMetricCard icon={CircleX} label="错误次数" tone="warning" value={String(wrongAnswers.length)} />
             </div>
-            <Panel title="Frequent incorrect answers">
-              <ResponsiveTable
-                emptyText="No incorrect answers yet."
-                headers={["Student answer", "Count"]}
-                rows={frequentWrong.map((item) => ({
-                  key: item.submittedOrderText || "empty",
-                  highlight: true,
-                  cells: [
-                    item.submittedOrderText
-                      ? buildSentenceDisplay(question.sentenceTemplate, item.submittedOrderText)
-                      : "No answer",
-                    item.count
-                  ]
-                }))}
-              />
-            </Panel>
+            <TeacherCard className="overflow-hidden p-0">
+              <div className="px-6 pt-6"><TeacherSectionTitle>常见错误答案</TeacherSectionTitle></div>
+              {frequentWrong.length === 0 ? (
+                <div className="p-6"><TeacherEmptyState text="暂时没有错误答案。" /></div>
+              ) : (
+                <div className="overflow-x-auto px-6 pb-6 pt-4">
+                  <table className="w-full min-w-[560px] overflow-hidden rounded-xl border border-student-border text-left text-sm">
+                    <thead className="bg-student-primary-soft/55"><tr><th className="px-4 py-3 font-semibold">学生答案</th><th className="w-28 px-4 py-3 text-right font-semibold">次数</th></tr></thead>
+                    <tbody>
+                      {frequentWrong.map((item) => (
+                        <tr className="border-t border-student-error-border bg-student-error-soft/45" key={item.submittedOrderText || "empty"}>
+                          <td className="px-4 py-3 leading-6 text-student-text">{item.submittedOrderText ? buildSentenceDisplay(question.sentenceTemplate, item.submittedOrderText) : "未作答"}</td>
+                          <td className="px-4 py-3 text-right font-semibold tabular-nums text-student-error">{item.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </TeacherCard>
           </div>
         );
       }}
@@ -686,15 +814,15 @@ function TeacherStatsLoader({
   );
 
   if (loading) {
-    return <p className="text-sm text-ink/70">Loading analytics...</p>;
+    return <p className="teacher-loading">正在加载统计数据...</p>;
   }
 
   if (error) {
-    return <p className="font-semibold text-coral">{error}</p>;
+    return <p className="teacher-error">{error}</p>;
   }
 
   if (!stats) {
-    return <EmptyState text="No analytics yet." />;
+    return <EmptyState text="暂无统计数据。" />;
   }
 
   return <>{children(stats)}</>;
@@ -729,257 +857,160 @@ async function loadTeacherStats(): Promise<TeacherStatsPayload> {
   return payload as TeacherStatsPayload;
 }
 
-function HomeCard({
+function TeacherFeatureCard({
   description,
   href,
+  icon,
+  metric,
   title
 }: {
   description: string;
   href: string;
+  icon: typeof Users;
+  metric: string;
   title: string;
 }) {
-  return (
-    <Link className="rounded-lg border border-line bg-white p-6 shadow-sm hover:border-ocean" href={href}>
-      <h2 className="text-2xl font-bold">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-ink/70">{description}</p>
-    </Link>
-  );
-}
-
-export function TeacherNavigation({
-  backHref,
-  crumbs
-}: {
-  backHref: string;
-  crumbs: Array<{
-    href?: string;
-    label: string;
-  }>;
-}) {
-  return (
-    <nav className="rounded-lg border border-line bg-white p-4 shadow-sm" aria-label="Teacher navigation">
-      <div className="flex flex-wrap gap-2">
-        <Link className="rounded-md border border-line px-3 py-2 text-sm font-semibold hover:border-ocean" href={backHref}>
-          Back
-        </Link>
-        <Link className="rounded-md bg-ink px-3 py-2 text-sm font-semibold text-white hover:bg-ocean" href="/teacher/dashboard">
-          Teacher Home
-        </Link>
-      </div>
-      <ol className="mt-3 flex flex-wrap items-center gap-2 text-sm text-ink/60">
-        {crumbs.map((crumb, index) => (
-          <li className="flex items-center gap-2" key={`${crumb.label}-${index}`}>
-            {index > 0 ? <span aria-hidden="true">/</span> : null}
-            {crumb.href ? (
-              <Link className="font-semibold text-ocean hover:underline" href={crumb.href}>
-                {crumb.label}
-              </Link>
-            ) : (
-              <span className="font-semibold text-ink">{crumb.label}</span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
-
-function Panel({
-  children,
-  subtitle,
-  title
-}: {
-  children: ReactNode;
-  subtitle?: string;
-  title: string;
-}) {
-  return (
-    <section className="rounded-lg border border-line bg-white p-5 shadow-sm">
-      <div>
-        <h2 className="text-xl font-bold">{title}</h2>
-        {subtitle ? <p className="mt-1 text-sm text-ink/60">{subtitle}</p> : null}
-      </div>
-      <div className="mt-4">{children}</div>
-    </section>
-  );
-}
-
-function ResponsiveTable({
-  emptyText,
-  headers,
-  rows
-}: {
-  emptyText: string;
-  headers: string[];
-  rows: Array<{
-    key: string;
-    highlight?: boolean;
-    cells: ReactNode[];
-  }>;
-}) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[720px] border-collapse text-left text-sm">
-        <thead>
-          <tr className="border-b border-line text-ink/60">
-            {headers.map((header) => (
-              <th className="py-2 pr-3 align-top" key={header}>
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr className={`border-b border-line last:border-0 ${row.highlight ? "bg-red-50" : ""}`} key={row.key}>
-              {row.cells.map((cell, index) => (
-                <td className="max-w-xl py-3 pr-3 align-top leading-6" key={index}>
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-          {rows.length === 0 ? (
-            <tr>
-              <td className="py-4 text-ink/60" colSpan={headers.length}>
-                {emptyText}
-              </td>
-            </tr>
-          ) : null}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function QuestionDetailCard({
-  badge,
-  correctAnswer,
-  prompt,
-  studentAnswer
-}: {
-  badge?: ReactNode;
-  correctAnswer: string;
-  prompt: string;
-  studentAnswer?: string;
-}) {
-  return (
-    <Panel title="Question detail">
-      <div className="grid gap-4">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-ink/60">Prompt</p>
-            <p className="mt-1 text-lg font-semibold">{prompt || "No prompt"}</p>
-          </div>
-          {badge}
-        </div>
-        {studentAnswer !== undefined ? (
-          <AnswerBlock label="Student answer" value={studentAnswer || "No answer"} />
-        ) : null}
-        <AnswerBlock label="Correct answer" value={correctAnswer || "No correct answer"} />
-      </div>
-    </Panel>
-  );
-}
-
-function AnswerBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-md border border-line bg-paper p-4">
-      <p className="text-sm font-semibold text-ink/60">{label}</p>
-      <p className="mt-1 text-lg leading-7">{value}</p>
-    </div>
-  );
-}
-
-function AttemptAnswerJumpLink({
-  active = false,
-  answer,
-  href,
-  onNavigate
-}: {
-  active?: boolean;
-  answer: AnswerSummary;
-  href: string;
-  onNavigate?: () => void;
-}) {
-  const colorClass = answer.isCorrect
-    ? "border-green-200 bg-green-50 text-green-700"
-    : "border-red-200 bg-red-50 text-red-700";
-  const activeClass = answer.isCorrect
-    ? "ring-2 ring-green-500 ring-offset-2"
-    : "ring-2 ring-red-500 ring-offset-2";
-
   return (
     <Link
-      aria-current={active ? "page" : undefined}
-      className={`rounded-md border px-3 py-2 text-sm font-bold ${colorClass} ${
-        active ? activeClass : ""
-      }`}
+      className="group flex min-h-[142px] items-center gap-5 rounded-2xl border border-student-primary-border bg-gradient-to-br from-white to-student-primary-soft/65 p-5 shadow-[0_2px_10px_rgba(88,65,170,0.05)] transition hover:-translate-y-px hover:shadow-[0_10px_28px_rgba(88,65,170,0.09)]"
       href={href}
-      onClick={(event) => {
-        if (
-          !onNavigate ||
-          event.button !== 0 ||
-          event.metaKey ||
-          event.ctrlKey ||
-          event.shiftKey ||
-          event.altKey
-        ) {
-          return;
-        }
-
-        event.preventDefault();
-        onNavigate();
-      }}
-      prefetch={onNavigate ? false : undefined}
     >
-      Q{answer.questionOrder} · {formatQuestionDuration(answer.questionTimeSeconds)}
+      <TeacherIconTile icon={icon} />
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <h3 className="text-xl font-bold text-student-text">{title}</h3>
+          <span className="rounded-full border border-student-primary-border bg-white/70 px-3 py-1 text-xs font-semibold text-student-primary">
+            {metric}
+          </span>
+        </div>
+        <p className="mt-2 text-sm leading-6 text-student-muted">{description}</p>
+      </div>
+      <ArrowRight
+        aria-hidden="true"
+        className="shrink-0 text-student-primary transition group-hover:translate-x-1"
+        size={21}
+        strokeWidth={2}
+      />
     </Link>
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function createStudentSearchEntry(student: StudentSummary): StudentSearchEntry {
+  const displayName = student.studentDisplayName.trim();
+  const syllables = pinyin(displayName, {
+    mode: "surname",
+    surname: "head",
+    toneType: "none",
+    type: "array"
+  }).map((part) => part.toLocaleLowerCase());
+  const fullPinyin = syllables.join(" ");
+  const compactPinyin = normalizeSearchText(fullPinyin);
+  const directText = normalizeSearchText(displayName);
+  const surnamePinyin = normalizeSearchText(syllables[0] ?? "");
+  const initials = syllables.map((part) => part.match(/[a-z]/)?.[0] ?? "").join("");
+  const firstLetter = (surnamePinyin || directText).match(/[a-z]/i)?.[0]?.toUpperCase() ?? "#";
+
+  return {
+    compactPinyin,
+    directText,
+    fullPinyin,
+    group: ALPHABET.includes(firstLetter) ? firstLetter : "#",
+    initials,
+    student,
+    surnamePinyin
+  };
+}
+
+function filterStudentEntries(entries: StudentSearchEntry[], query: string) {
+  const rawQuery = query.trim().toLocaleLowerCase();
+  const normalizedQuery = normalizeSearchText(rawQuery);
+  const sorted = [...entries].sort(compareStudentEntries);
+  if (!normalizedQuery) return sorted;
+
+  return sorted
+    .map((entry) => {
+      const displayName = entry.student.studentDisplayName.trim().toLocaleLowerCase();
+      let rank = Number.POSITIVE_INFINITY;
+      if (displayName === rawQuery) rank = 0;
+      else if (entry.directText === normalizedQuery) rank = 1;
+      else if (entry.directText.includes(normalizedQuery)) rank = 2;
+      else if (entry.compactPinyin.startsWith(normalizedQuery)) rank = 3;
+      else if (entry.compactPinyin.includes(normalizedQuery)) rank = 4;
+      else if (entry.initials.includes(normalizedQuery)) rank = 5;
+      return { entry, rank };
+    })
+    .filter((item) => Number.isFinite(item.rank))
+    .sort((left, right) => left.rank - right.rank || compareStudentEntries(left.entry, right.entry))
+    .map((item) => item.entry);
+}
+
+function groupStudentEntries(entries: StudentSearchEntry[]) {
+  const groups = new Map<string, StudentSearchEntry[]>();
+  for (const entry of entries) {
+    groups.set(entry.group, [...(groups.get(entry.group) ?? []), entry]);
+  }
+  return Array.from(groups.entries()).sort(([left], [right]) => compareStudentGroups(left, right));
+}
+
+function compareStudentEntries(left: StudentSearchEntry, right: StudentSearchEntry) {
   return (
-    <div className="rounded-md border border-line bg-white p-4 shadow-sm">
-      <p className="text-sm font-semibold text-ink/60">{label}</p>
-      <p className="mt-1 text-2xl font-bold">{value}</p>
-    </div>
+    compareStudentGroups(left.group, right.group) ||
+    left.surnamePinyin.localeCompare(right.surnamePinyin, "en") ||
+    left.compactPinyin.localeCompare(right.compactPinyin, "en") ||
+    left.student.studentDisplayName.localeCompare(right.student.studentDisplayName, "zh-CN") ||
+    left.student.studentId.localeCompare(right.student.studentId)
   );
 }
 
-function Accuracy({ value }: { value: number }) {
+function compareStudentGroups(left: string, right: string) {
+  if (left === right) return 0;
+  if (left === "#") return 1;
+  if (right === "#") return -1;
+  return left.localeCompare(right, "en");
+}
+
+function normalizeSearchText(value: string) {
+  return value.normalize("NFKC").toLocaleLowerCase().replace(/[^a-z0-9\u3400-\u9fff]+/g, "");
+}
+
+function isToday(value: string | null) {
+  if (!value) return false;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return false;
+  const now = new Date();
   return (
-    <div className="flex items-center gap-3">
-      <div className="h-2 w-28 overflow-hidden rounded-full bg-paper">
-        <div className="h-full bg-ocean" style={{ width: formatPercent(value) }} />
-      </div>
-      <span className="font-semibold">{formatPercent(value)}</span>
-    </div>
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
   );
 }
 
-function StatusBadge({ correct }: { correct: boolean }) {
-  return (
-    <span
-      className={`rounded-full px-3 py-1 text-sm font-bold ${
-        correct ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-      }`}
-    >
-      {correct ? "Correct" : "Incorrect"}
-    </span>
-  );
-}
-
-function TimeSpentBadge({ seconds }: { seconds: number | null }) {
-  return (
-    <span className="rounded-full bg-paper px-3 py-1 text-sm font-bold text-ink">
-      Time spent: {formatNullableQuestionDuration(seconds)}
-    </span>
-  );
+function formatActivityTime(value: string | null) {
+  if (!value) return "时间未知";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "时间未知";
+  const now = new Date();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const time = date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+  if (isToday(value)) return `今天 ${time}`;
+  if (
+    date.getFullYear() === yesterday.getFullYear() &&
+    date.getMonth() === yesterday.getMonth() &&
+    date.getDate() === yesterday.getDate()
+  ) {
+    return `昨天 ${time}`;
+  }
+  return date.toLocaleString("zh-CN", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 }
 
 function EmptyState({ text }: { text: string }) {
-  return <p className="rounded-lg border border-line bg-white p-5 text-ink/60">{text}</p>;
+  return <TeacherEmptyState text={text} />;
 }
 
 function getErrorMessage(value: TeacherStatsPayload | { error?: string }, fallback: string) {
@@ -990,59 +1021,33 @@ function formatPercent(value: number) {
   return `${Math.round(value * 100)}%`;
 }
 
-function formatDateTime(value: string | null) {
-  if (!value) return "Unknown date";
+function completedAttemptTimestamp(value: string | null) {
+  if (!value) return null;
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Unknown date";
-
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short"
-  }).format(date);
+  const timestamp = date.getTime();
+  return Number.isFinite(timestamp) ? timestamp : null;
 }
 
-function formatDuration(seconds: number | null) {
-  if (seconds === null || !Number.isFinite(seconds)) return "N/A";
-  const minutes = Math.floor(seconds / 60);
-  const remaining = Math.max(0, Math.round(seconds % 60));
-  return `${minutes}:${String(remaining).padStart(2, "0")}`;
-}
+function formatCompactDateTime(value: string | null) {
+  if (!value) return "时间未知";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "时间未知";
 
-function formatQuestionDuration(seconds: number | null) {
-  if (seconds === null || !Number.isFinite(seconds)) return "0s";
-  const safeSeconds = Math.max(0, Math.round(seconds));
-  if (safeSeconds < 60) return `${safeSeconds}s`;
+  const now = new Date();
+  const dateLabel = date.getFullYear() === now.getFullYear()
+    ? `${date.getMonth() + 1}月${date.getDate()}日`
+    : `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+  const timeLabel = date.toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    hour12: false,
+    minute: "2-digit"
+  });
 
-  const minutes = Math.floor(safeSeconds / 60);
-  const remaining = safeSeconds % 60;
-  return `${minutes}m ${String(remaining).padStart(2, "0")}s`;
-}
-
-function formatNullableQuestionDuration(seconds: number | null) {
-  if (seconds === null || !Number.isFinite(seconds)) return "N/A";
-  return formatQuestionDuration(seconds);
+  return `${dateLabel} ${timeLabel}`;
 }
 
 function compareDatesDesc(a: string | null, b: string | null) {
   return new Date(b ?? 0).getTime() - new Date(a ?? 0).getTime();
-}
-
-function parseSetSortKey(setId: string) {
-  const parts = setId.split("-");
-  const datePart = Number(parts[1] ?? 0);
-  const setNumber = Number(parts[2] ?? 1);
-
-  return {
-    datePart: Number.isFinite(datePart) ? datePart : 0,
-    setNumber: Number.isFinite(setNumber) ? setNumber : 1
-  };
-}
-
-function compareSetIds(a: string, b: string) {
-  const ak = parseSetSortKey(a);
-  const bk = parseSetSortKey(b);
-
-  return ak.datePart - bk.datePart || ak.setNumber - bk.setNumber || a.localeCompare(b);
 }
 
 const WRONGBOOK_TODAY_GROUP_ID = "wrongbook-today";
@@ -1072,19 +1077,6 @@ function getAttemptGroupTitle(groupId: string, fallback: string) {
   if (groupId === WRONGBOOK_TODAY_GROUP_ID) return "Today's Wrong Questions";
   if (groupId === WRONGBOOK_HISTORY_GROUP_ID) return "Historical Wrong Questions";
   return fallback;
-}
-
-function compareAttemptGroupIds(left: string, right: string) {
-  if (left === right) return 0;
-
-  const leftWrongbook = left === WRONGBOOK_TODAY_GROUP_ID || left === WRONGBOOK_HISTORY_GROUP_ID;
-  const rightWrongbook = right === WRONGBOOK_TODAY_GROUP_ID || right === WRONGBOOK_HISTORY_GROUP_ID;
-
-  if (leftWrongbook !== rightWrongbook) return leftWrongbook ? 1 : -1;
-  if (leftWrongbook && rightWrongbook) {
-    return left === WRONGBOOK_TODAY_GROUP_ID ? -1 : 1;
-  }
-  return compareSetIds(left, right);
 }
 
 function groupBy<T>(items: T[], getKey: (item: T) => string) {

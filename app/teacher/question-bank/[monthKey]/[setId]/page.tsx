@@ -1,6 +1,5 @@
-import { AppShell } from "@/components/AppShell";
-import { SignOutButton } from "@/components/SignOutButton";
 import { TeacherQuestionBankSetViewer } from "@/components/TeacherQuestionBank";
+import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherQuestionBankSetPage({
   params
@@ -11,13 +10,11 @@ export default function TeacherQuestionBankSetPage({
   const setId = decodeURIComponent(params.setId);
 
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      eyebrow="Teacher"
-      title="Question Preview"
+    <TeacherAppShell
+      subtitle="以学生端相同的题目样式预览题目"
+      title="题目预览"
     >
       <TeacherQuestionBankSetViewer monthKey={monthKey} setId={setId} />
-    </AppShell>
+    </TeacherAppShell>
   );
 }

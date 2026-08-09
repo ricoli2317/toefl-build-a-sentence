@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Clock3,
   ListFilter,
@@ -30,7 +30,7 @@ import {
   type ResultPeerComparison
 } from "@/lib/resultPeerComparison";
 
-type ResultAttempt = {
+export type ResultAttempt = {
   attempt_id: string;
   set_id: string;
   set_title: string;
@@ -41,7 +41,7 @@ type ResultAttempt = {
   submitted_at: string;
 };
 
-type ResultAnswer = {
+export type ResultAnswer = {
   attempt_answer_id: string;
   question_id: string;
   question_order: number;
@@ -56,7 +56,7 @@ type ResultAnswer = {
   question_time_seconds: number | null;
 };
 
-type ResultPayload = {
+export type ResultPayload = {
   attempt: ResultAttempt;
   total_count: number;
   correct_count: number;
@@ -78,8 +78,6 @@ export function PracticeResult({
     studentAttemptCacheKey(attemptId),
     (session) => loadResult(attemptId, session)
   );
-  const [showIncorrectOnly, setShowIncorrectOnly] = useState(false);
-
   if (loading) {
     return <StudentLoadingState text="正在加载练习结果..." />;
   }
@@ -88,22 +86,56 @@ export function PracticeResult({
     return <StudentErrorState text="未找到练习结果或加载失败。" />;
   }
 
-  const { attempt, answers } = payload;
-  const peerComparison = payload.peer_comparison ?? EMPTY_RESULT_PEER_COMPARISON;
+  const { attempt } = payload;
   const navigation = getStudentResultNavigation(attempt.set_id, {
     historySetId,
     source
   });
-  const visibleAnswers = showIncorrectOnly
-    ? answers.filter((answer) => !answer.is_correct)
-    : answers;
+  return (
+    <PracticeResultView
+      navigation={<StudentNavigation
+        backHref={navigation.backHref}
+        crumbs={navigation.crumbs}
+      />}
+      payload={payload}
+    />
+  );
+}
+
+export function PracticeResultView({
+  answerLabel = "你的答案",
+  correctAnswerVisibility = "policy",
+  initialQuestionId,
+  navigation,
+  payload,
+  showQuestionTime = false
+}: {
+  answerLabel?: string;
+  correctAnswerVisibility?: "always" | "policy";
+  initialQuestionId?: string;
+  navigation?: React.ReactNode;
+  payload: ResultPayload;
+  showQuestionTime?: boolean;
+}) {
+  const [showIncorrectOnly, setShowIncorrectOnly] = useState(false);
+  const { answers, attempt } = payload;
+  const peerComparison = payload.peer_comparison ?? EMPTY_RESULT_PEER_COMPARISON;
+  const visibleAnswers = showIncorrectOnly ? answers.filter((answer) => !answer.is_correct) : answers;
+
+  useEffect(() => {
+    if (!initialQuestionId) return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(`question-${initialQuestionId}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [initialQuestionId]);
 
   return (
     <div className="space-y-6">
-      <StudentNavigation
-        backHref={navigation.backHref}
-        crumbs={navigation.crumbs}
-      />
+      {navigation}
 
       <ResultSummary attempt={attempt} peerComparison={peerComparison} />
 
@@ -127,9 +159,12 @@ export function PracticeResult({
         <div className="mt-4 grid gap-3">
           {visibleAnswers.map((answer) => (
             <ResultQuestionCard
+              answerLabel={answerLabel}
               answer={answer}
+              correctAnswerVisibility={correctAnswerVisibility}
               key={answer.attempt_answer_id}
               setId={attempt.set_id}
+              showQuestionTime={showQuestionTime}
             />
           ))}
           {visibleAnswers.length === 0 && showIncorrectOnly ? (
@@ -181,16 +216,19 @@ function ResultSummary({
 }
 
 function ResultQuestionCard({
+  answerLabel,
   answer,
-  setId
+  correctAnswerVisibility,
+  setId,
+  showQuestionTime
 }: {
+  answerLabel: string;
   answer: ResultAnswer;
+  correctAnswerVisibility: "always" | "policy";
   setId: string;
+  showQuestionTime: boolean;
 }) {
-  const showCorrectAnswer = shouldShowCorrectAnswer({
-    isCorrect: answer.is_correct,
-    setId
-  });
+  const showCorrectAnswer = correctAnswerVisibility === "always" || shouldShowCorrectAnswer({ isCorrect: answer.is_correct, setId });
 
   return (
     <article
@@ -208,13 +246,20 @@ function ResultQuestionCard({
           </p>
           <h3 className="mt-1 font-bold leading-6 text-student-text">{answer.prompt}</h3>
         </div>
-        <span
-          className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold text-white ${
-            answer.is_correct ? "bg-student-primary" : "bg-student-error"
-          }`}
-        >
-          {answer.is_correct ? "正确" : "错误"}
-        </span>
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+          {showQuestionTime && answer.question_time_seconds !== null ? (
+            <span className="rounded-full border border-student-border bg-white px-3 py-1 text-xs font-semibold text-student-muted">
+              用时 {formatDuration(answer.question_time_seconds)}
+            </span>
+          ) : null}
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold text-white ${
+              answer.is_correct ? "bg-student-primary" : "bg-student-error"
+            }`}
+          >
+            {answer.is_correct ? "正确" : "错误"}
+          </span>
+        </div>
       </div>
       <dl
         className={`mt-4 grid gap-4 text-sm ${
@@ -222,7 +267,7 @@ function ResultQuestionCard({
         }`}
       >
         <div className={showCorrectAnswer ? "md:pr-5" : ""}>
-          <dt className="font-semibold text-student-muted">你的答案</dt>
+          <dt className="font-semibold text-student-muted">{answerLabel}</dt>
           <dd className="mt-1 leading-6 text-student-text">
             {buildSentenceDisplay(answer.sentence_template, answer.submitted_order_text) ||
               "未作答"}

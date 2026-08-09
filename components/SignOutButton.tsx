@@ -15,9 +15,11 @@ import {
 
 export function SignOutButton({
   locale = "en",
+  showIdentity = true,
   variant = "default"
 }: {
   locale?: "en" | "zh-CN";
+  showIdentity?: boolean;
   variant?: "default" | "student";
 }) {
   const router = useRouter();
@@ -35,6 +37,7 @@ export function SignOutButton({
     let ignore = false;
 
     async function loadDisplayName() {
+      if (!showIdentity) return;
       if (studentCache && (!studentSessionReady || !studentId)) return;
 
       const loader = async (accessToken?: string) => {
@@ -65,7 +68,7 @@ export function SignOutButton({
     return () => {
       ignore = true;
     };
-  }, [loadStudentData, loadTeacherData, studentCache, studentId, studentSessionReady, variant]);
+  }, [loadStudentData, loadTeacherData, showIdentity, studentCache, studentId, studentSessionReady, variant]);
 
   async function signOut() {
     const supabase = createBrowserSupabase();
@@ -77,7 +80,7 @@ export function SignOutButton({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {displayName ? (
+      {showIdentity && displayName ? (
         <span
           className={
             variant === "student"

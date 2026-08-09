@@ -1,27 +1,18 @@
-import { AppShell } from "@/components/AppShell";
-import { SignOutButton } from "@/components/SignOutButton";
 import { TeacherCreateStudent } from "@/components/TeacherCreateStudent";
-import { TeacherNavigation } from "@/components/TeacherDashboard";
+import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherNewStudentPage() {
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      eyebrow="Teacher"
-      title="Add Student"
+    <TeacherAppShell
+      crumbs={[
+        { label: "首页", href: "/teacher/dashboard" },
+        { label: "学生", href: "/teacher/students" },
+        { label: "新增学生" }
+      ]}
+      subtitle="创建学生账号并分配登录信息"
+      title="新增学生"
     >
-      <div className="grid gap-5">
-        <TeacherNavigation
-          backHref="/teacher/students"
-          crumbs={[
-            { label: "Teacher Home", href: "/teacher/dashboard" },
-            { label: "Students", href: "/teacher/students" },
-            { label: "Add Student" }
-          ]}
-        />
-        <TeacherCreateStudent />
-      </div>
-    </AppShell>
+      <TeacherCreateStudent />
+    </TeacherAppShell>
   );
 }

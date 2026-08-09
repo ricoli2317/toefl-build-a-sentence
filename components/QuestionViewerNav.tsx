@@ -14,10 +14,10 @@ export function QuestionViewerNav({
       <div className="flex flex-wrap justify-center gap-2">
         {Array.from({ length: questionCount }, (_, index) => (
           <button
-            className={`rounded-md border px-3 py-2 text-sm font-bold ${
+            className={`rounded-[10px] border px-3 py-2 text-sm font-bold transition ${
               currentIndex === index
-                ? "border-ocean bg-ocean/10 text-ocean"
-                : "border-line bg-white hover:border-ocean"
+                ? "border-student-primary bg-student-primary-soft text-student-primary"
+                : "border-student-border bg-white text-student-text hover:border-student-primary"
             }`}
             key={index}
             onClick={() => onChange(index)}
@@ -29,20 +29,20 @@ export function QuestionViewerNav({
       </div>
       <div className="flex flex-wrap justify-end gap-3">
         <button
-          className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-50"
+          className="teacher-button-secondary min-h-11 px-5 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={currentIndex === 0}
           onClick={() => onChange(currentIndex - 1)}
           type="button"
         >
-          Previous
+          上一题
         </button>
         <button
-          className="rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ocean disabled:cursor-not-allowed disabled:opacity-50"
+          className="teacher-button-primary min-h-11 px-5 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={currentIndex === questionCount - 1}
           onClick={() => onChange(currentIndex + 1)}
           type="button"
         >
-          Next
+          下一题
         </button>
       </div>
     </div>

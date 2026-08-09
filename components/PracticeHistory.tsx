@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { ArrowRight, CircleCheckBig, CircleX, LibraryBig, Target, type LucideIcon } from "lucide-react";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
+import { PracticeHistorySetCard } from "@/components/shared/PracticeHistoryCards";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   useStudentCachedData,
@@ -95,25 +96,14 @@ export function PracticeHistorySetList({ scope }: { scope: HistoryScope }) {
       />
       <div className="grid gap-4 md:grid-cols-2">
         {data[scope].sets.map((set) => (
-          <Link
-            className="student-card student-card-interactive group"
+          <PracticeHistorySetCard
+            attemptCount={set.attemptCount}
             href={`${STUDENT_ROUTES.practiceHistory}/sets/${encodeURIComponent(set.setId)}?scope=${scope}`}
             key={set.setId}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-bold text-student-text">{set.setTitle}</h2>
-                <p className="mt-1 text-sm text-student-muted">{set.setId}</p>
-              </div>
-              <span className="student-chip shrink-0">
-                练习 {set.attemptCount} 次
-              </span>
-            </div>
-            <div className="mt-5 flex items-center justify-between gap-3 text-sm">
-              <p className="font-semibold text-student-primary">平均正确率 {formatPercent(set.averageAccuracy)}</p>
-              <ArrowRight aria-hidden="true" className="text-student-primary transition group-hover:translate-x-0.5" size={18} />
-            </div>
-          </Link>
+            primaryMetric={<>平均正确率 {formatPercent(set.averageAccuracy)}</>}
+            setId={set.setId}
+            setTitle={set.setTitle}
+          />
         ))}
         {data[scope].sets.length === 0 ? (
           <EmptyState text={scope === "today" ? "今日暂无普通套题练习。" : "暂无普通套题练习历史。"} />

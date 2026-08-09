@@ -3,15 +3,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  formatOptionChunk,
-  formatPlacedChunk,
-  formatTemplateText,
-  isBlankToken,
-  isTemplatePartSentenceStart,
   joinTextItems,
-  splitSentenceTemplate,
   splitTextItems
 } from "@/lib/questionText";
+import {
+  QuestionDisplay,
+  type QuestionWordBlock
+} from "@/components/shared/QuestionDisplay";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
@@ -33,10 +31,7 @@ type SavedAnswer = {
 
 type SavedAnswers = Record<string, SavedAnswer>;
 
-type OptionChunk = {
-  id: string;
-  text: string;
-};
+type OptionChunk = QuestionWordBlock;
 
 type DraftAnswers = Record<string, Array<OptionChunk | null>>;
 
@@ -279,9 +274,6 @@ export function PracticeSession({
     setQuestionStartedAt(Date.now());
   }, [currentQuestionId, currentBlankCount, draftAnswers]);
 
-  const selectedIds = new Set(
-    currentAnswer.flatMap((chunk) => (chunk ? [chunk.id] : []))
-  );
   const isLastQuestion = currentIndex === questions.length - 1;
 
   function buildSavedAnswers(nextDraftAnswers: DraftAnswers, nextQuestionTimes: QuestionTimes) {
@@ -446,57 +438,17 @@ export function PracticeSession({
           questions={questions}
         />
       ) : (
-        <article className="student-card">
-          {!hideQuestionCardNumber ? (
-            <p className="text-sm font-semibold text-student-primary">
-              Question {currentQuestion.question_order}
-            </p>
-          ) : null}
-          <h2 className="mt-1 text-xl font-bold">{currentQuestion.prompt}</h2>
-
-          <div className="mt-6 text-lg leading-10">
-            <SentenceTemplate
-              answers={currentAnswer}
-              disabled={Boolean(result) || submitting}
-              onDropChunk={dropChunk}
-              onRemoveAnswer={removeAnswer}
-              sizingChunks={optionChunks}
-              template={currentQuestion.sentence_template}
-            />
-          </div>
-
-          <div className="mt-6">
-            <div className="mt-3 flex flex-wrap justify-center gap-3 text-center">
-              {optionChunks.map((chunk) => {
-                const isUsed = selectedIds.has(chunk.id);
-
-                return (
-                  <button
-                    aria-disabled={isUsed || result !== null || submitting}
-                    className={`inline-flex min-h-12 items-center justify-center rounded-[10px] border px-4 py-2 text-base font-semibold transition ${
-                      isUsed
-                        ? "cursor-not-allowed border-student-primary-border bg-student-primary-soft text-student-muted opacity-70"
-                        : "border-student-border bg-white hover:border-student-primary disabled:cursor-not-allowed disabled:bg-student-bg disabled:text-student-muted"
-                    }`}
-                    disabled={result !== null || submitting}
-                    draggable={!isUsed && !result && !submitting}
-                    key={chunk.id}
-                    onDragStart={(event) => {
-                      if (isUsed) {
-                        event.preventDefault();
-                        return;
-                      }
-                      event.dataTransfer.setData("text/plain", chunk.id);
-                    }}
-                    type="button"
-                  >
-                    {formatOptionChunk(chunk.text)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </article>
+        <QuestionDisplay
+          answers={currentAnswer}
+          disabled={Boolean(result) || submitting}
+          hideQuestionNumber={hideQuestionCardNumber}
+          onDropChunk={dropChunk}
+          onRemoveAnswer={removeAnswer}
+          options={optionChunks}
+          prompt={currentQuestion.prompt}
+          questionNumber={currentQuestion.question_order}
+          template={currentQuestion.sentence_template}
+        />
       )}
 
       <div className="flex flex-wrap justify-end gap-3">
@@ -640,128 +592,5 @@ function ReviewPanel({
         })}
       </div>
     </article>
-  );
-}
-
-function SentenceTemplate({
-  template,
-  answers,
-  disabled,
-  onDropChunk,
-  onRemoveAnswer,
-  sizingChunks
-}: {
-  template: string;
-  answers: Array<OptionChunk | null>;
-  disabled: boolean;
-  onDropChunk: (blankIndex: number, chunkId: string) => void;
-  onRemoveAnswer: (blankIndex: number) => void;
-  sizingChunks: OptionChunk[];
-}) {
-  const parts = splitSentenceTemplate(template);
-  const blankSizingTexts = sizingChunks.flatMap((chunk) => [
-    formatPlacedChunk(chunk.text, false),
-    formatPlacedChunk(chunk.text, true)
-  ]);
-  let blankIndex = 0;
-
-  return (
-    <p className="practice-sentence-template">
-      {parts.map((part, index) => {
-        if (isBlankToken(part)) {
-          const currentBlankIndex = blankIndex;
-          const answer = answers[currentBlankIndex];
-          blankIndex += 1;
-
-          return (
-            <button
-              aria-disabled={disabled}
-              aria-label={answer ? undefined : `Blank ${currentBlankIndex + 1}`}
-              className={`practice-sentence-template__blank ${
-                answer
-                  ? "practice-sentence-template__blank--filled"
-                  : "practice-sentence-template__blank--empty"
-              }`}
-              key={`${part}-${index}`}
-              onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
-              onDragOver={(event) => {
-                if (!disabled) event.preventDefault();
-              }}
-              onDrop={(event) => {
-                event.preventDefault();
-                if (disabled) return;
-                onDropChunk(currentBlankIndex, event.dataTransfer.getData("text/plain"));
-              }}
-              type="button"
-            >
-              {answer ? (
-                formatPlacedChunk(
-                  answer.text,
-                  isTemplatePartSentenceStart(parts, index)
-                )
-              ) : (
-                <BlankWidthSizer texts={blankSizingTexts} />
-              )}
-            </button>
-          );
-        }
-
-        return part ? (
-          <span key={`${part}-${index}`}>
-            {formatTemplateText(part, isTemplatePartSentenceStart(parts, index))}
-          </span>
-        ) : null;
-      })}
-      {answers.slice(blankIndex).map((answer, index) => {
-        const currentBlankIndex = blankIndex + index;
-
-        return (
-          <button
-            aria-disabled={disabled}
-            aria-label={answer ? undefined : `Blank ${currentBlankIndex + 1}`}
-            className={`practice-sentence-template__blank ${
-              answer
-                ? "practice-sentence-template__blank--filled"
-                : "practice-sentence-template__blank--empty"
-            }`}
-            key={`extra-blank-${currentBlankIndex}`}
-            onDoubleClick={() => onRemoveAnswer(currentBlankIndex)}
-            onDragOver={(event) => {
-              if (!disabled) event.preventDefault();
-            }}
-            onDrop={(event) => {
-              event.preventDefault();
-              if (disabled) return;
-              onDropChunk(currentBlankIndex, event.dataTransfer.getData("text/plain"));
-            }}
-            type="button"
-          >
-            {answer ? (
-              formatPlacedChunk(
-                answer.text,
-                isTemplatePartSentenceStart(parts, parts.length)
-              )
-            ) : (
-              <BlankWidthSizer texts={blankSizingTexts} />
-            )}
-          </button>
-        );
-      })}
-    </p>
-  );
-}
-
-function BlankWidthSizer({ texts }: { texts: string[] }) {
-  return (
-    <span aria-hidden="true" className="practice-sentence-template__blank-sizer">
-      {(texts.length > 0 ? texts : ["\u00a0"]).map((text, index) => (
-        <span
-          className="practice-sentence-template__blank-sizer-text"
-          key={`${text}-${index}`}
-        >
-          {text}
-        </span>
-      ))}
-    </span>
   );
 }

@@ -103,6 +103,62 @@ select {
       "Microsoft YaHei", "Segoe UI", sans-serif;
   }
 
+  .teacher-shell {
+    color: var(--student-text);
+    background: #fbfaff;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Segoe UI", sans-serif;
+  }
+
+  .teacher-page {
+    @apply mx-auto grid w-full max-w-[1380px] gap-5 px-5 py-7 sm:px-7 lg:px-10 lg:py-9;
+  }
+
+  .teacher-page-title {
+    @apply text-[2rem] font-bold leading-tight tracking-[-0.025em] text-student-text sm:text-[2.25rem];
+  }
+
+  .teacher-card {
+    @apply rounded-2xl border border-student-border bg-white shadow-[0_2px_12px_rgba(60,47,119,0.045)];
+  }
+
+  .teacher-button-primary,
+  .teacher-button-secondary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .teacher-button-primary {
+    @apply bg-student-primary text-white shadow-[0_5px_14px_rgba(107,92,246,0.18)] hover:bg-student-primary-hover;
+  }
+
+  .teacher-button-secondary {
+    @apply border border-student-primary-border bg-white text-student-primary hover:border-student-primary hover:bg-student-primary-soft;
+  }
+
+  .teacher-empty,
+  .teacher-loading,
+  .teacher-error {
+    @apply rounded-xl border p-5 text-sm;
+  }
+
+  .teacher-empty,
+  .teacher-loading {
+    @apply border-student-border bg-white text-student-muted;
+  }
+
+  .teacher-error {
+    @apply border-student-error-border bg-student-error-soft font-semibold text-student-error;
+  }
+
+  .teacher-shell :where(a, button, input, select):focus {
+    outline: none;
+  }
+
+  .teacher-shell :where(a, button, input, select):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(107, 92, 246, 0.16);
+  }
+
   .student-page {
     @apply mx-auto grid w-full max-w-[1240px] gap-5 px-5 py-6 sm:px-7 lg:px-8 lg:py-7;
   }

@@ -1,6 +1,5 @@
-import { AppShell } from "@/components/AppShell";
-import { SignOutButton } from "@/components/SignOutButton";
 import { TeacherSetQuestionDetail } from "@/components/TeacherDashboard";
+import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherSetQuestionPage({
   params
@@ -11,13 +10,11 @@ export default function TeacherSetQuestionPage({
   const questionId = decodeURIComponent(params.questionId);
 
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      eyebrow="Teacher"
-      title="Question Statistics"
+    <TeacherAppShell
+      subtitle="结合题目原貌查看作答统计"
+      title="单题统计"
     >
       <TeacherSetQuestionDetail questionId={questionId} setId={setId} />
-    </AppShell>
+    </TeacherAppShell>
   );
 }

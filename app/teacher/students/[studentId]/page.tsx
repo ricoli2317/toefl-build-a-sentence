@@ -1,16 +1,13 @@
-import { AppShell } from "@/components/AppShell";
-import { SignOutButton } from "@/components/SignOutButton";
 import { TeacherStudentSummary } from "@/components/TeacherDashboard";
+import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherStudentPage({ params }: { params: { studentId: string } }) {
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      eyebrow="Teacher"
-      title="Student Summary"
+    <TeacherAppShell
+      subtitle="查看学生的练习概览"
+      title="学生概览"
     >
       <TeacherStudentSummary studentId={params.studentId} />
-    </AppShell>
+    </TeacherAppShell>
   );
 }

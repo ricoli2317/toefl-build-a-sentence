@@ -1,16 +1,13 @@
-import { AppShell } from "@/components/AppShell";
-import { SignOutButton } from "@/components/SignOutButton";
 import { TeacherQuestionBankMonths } from "@/components/TeacherQuestionBank";
+import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherQuestionBankPage() {
   return (
-    <AppShell
-      action={<SignOutButton />}
-      brand="Build a Sentence"
-      eyebrow="Teacher"
-      title="All Practice Sets"
+    <TeacherAppShell
+      subtitle="按月份浏览题库中的全部套题"
+      title="查看所有套题"
     >
       <TeacherQuestionBankMonths />
-    </AppShell>
+    </TeacherAppShell>
   );
 }

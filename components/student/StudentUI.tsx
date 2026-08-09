@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
+import { PracticeMonthCard } from "@/components/shared/PracticeCatalog";
 
 export function StudentPage({
   children,
@@ -128,16 +129,7 @@ export function StudentMonthCard({
   questionCount: number;
   setCount: number;
 }) {
-  return (
-    <Link className="student-card student-card-interactive group flex min-h-[88px] items-center gap-3.5 px-4 py-3 sm:p-3.5" href={href}>
-      <StudentIconTile icon={CalendarDays} />
-      <div className="min-w-0 flex-1">
-        <h2 className="text-lg font-bold text-student-text">{month}</h2>
-        <p className="mt-0.5 text-sm text-student-muted">{setCount}套 · {questionCount}题</p>
-      </div>
-      <ArrowRight aria-hidden="true" className="shrink-0 text-student-primary transition group-hover:translate-x-0.5" size={20} strokeWidth={1.9} />
-    </Link>
-  );
+  return <PracticeMonthCard href={href} month={month} questionCount={questionCount} setCount={setCount} />;
 }
 
 export function StudentGrammarCard({ href, label, questionCount }: { href: string; label: string; questionCount: number }) {
