@@ -143,7 +143,7 @@ export function TeacherImportQuestions() {
     setRows(parsedRows);
 
     if (parsedRows.length === 0) {
-      setError("CSV has no data rows.");
+      setError("CSV 中没有数据行。");
     }
   }
 
@@ -160,15 +160,15 @@ export function TeacherImportQuestions() {
     setResult(null);
 
     if (rows.length === 0) {
-      setError("Please choose a CSV file first.");
+      setError("请先选择 CSV 文件。");
       setLoading(false);
       return;
     }
 
     if (missingFields.length > 0 || unexpectedFields.length > 0) {
       setError(
-        `CSV headers do not match. Missing: ${missingFields.join(", ") || "none"}. Unexpected: ${
-          unexpectedFields.join(", ") || "none"
+        `CSV 表头不匹配。缺少字段：${missingFields.join(", ") || "无"}。非预期字段：${
+          unexpectedFields.join(", ") || "无"
         }.`
       );
       setLoading(false);
@@ -198,10 +198,10 @@ export function TeacherImportQuestions() {
       try {
         payload = responseText
           ? JSON.parse(responseText)
-          : { error: "The import API returned an empty response." };
+          : { error: "导入服务返回了空响应。" };
       } catch {
         payload = {
-          error: "The import API returned invalid JSON.",
+          error: "导入服务返回的数据格式无效。",
           details: responseText
         };
       }
@@ -237,7 +237,7 @@ export function TeacherImportQuestions() {
         requestUrl
       });
       setError(formatImportError({
-        error: error instanceof Error ? error.message : "Import failed before the server returned a response.",
+        error: error instanceof Error ? error.message : "服务器返回响应前导入失败。",
         origin,
         requestMethod,
         requestUrl
@@ -247,12 +247,9 @@ export function TeacherImportQuestions() {
     }
   }
 
-  if (checkingRole) {
-    return <p className="teacher-loading">正在检查教师权限...</p>;
-  }
-
   return (
     <div className="grid gap-5">
+      {checkingRole ? <span className="sr-only" role="status">正在检查教师权限</span> : null}
       <section className="teacher-card overflow-hidden">
         <div className="p-6 sm:p-8">
           <h2 className="text-xl font-bold text-student-text">上传文件</h2>
@@ -277,6 +274,7 @@ export function TeacherImportQuestions() {
             <p className="mt-2 text-sm text-student-muted">仅支持 .csv 文件</p>
             <button
               className="teacher-button-secondary mt-5 min-w-32"
+              disabled={checkingRole}
               onClick={() => fileInputRef.current?.click()}
               type="button"
             >
@@ -308,12 +306,13 @@ export function TeacherImportQuestions() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <button
               className="teacher-button-primary min-w-52"
-              disabled={loading || rows.length === 0 || missingFields.length > 0 || unexpectedFields.length > 0}
+              disabled={checkingRole || loading || rows.length === 0 || missingFields.length > 0 || unexpectedFields.length > 0}
               onClick={importRows}
               type="button"
             >
               {loading ? "正在导入..." : "开始导入"}
             </button>
+            {checkingRole ? <span className="text-sm font-semibold text-student-muted">正在检查教师权限...</span> : null}
             {rows.length > 0 ? (
               <span className="text-sm font-semibold text-student-primary">检测到 {rows.length} 行数据</span>
             ) : null}
@@ -366,13 +365,13 @@ export function TeacherImportQuestions() {
                   {result.failedRows.map((row) => (
                     <tr className="border-b border-student-border last:border-0" key={`${row.rowNumber}-${row.questionId}`}>
                       <td className="px-4 py-3">{row.rowNumber}</td>
-                      <td className="px-4 py-3">{row.questionId || "N/A"}</td>
-                      <td className="px-4 py-3">{row.operation ?? "N/A"}</td>
+                      <td className="px-4 py-3">{row.questionId || "无"}</td>
+                      <td className="px-4 py-3">{localizeImportOperation(row.operation) ?? "无"}</td>
                       <td className="px-4 py-3">
-                        <div>{row.reason}</div>
-                        {row.code ? <div className="text-student-muted">Code: {row.code}</div> : null}
-                        {row.details ? <div className="text-student-muted">Details: {row.details}</div> : null}
-                        {row.hint ? <div className="text-student-muted">Hint: {row.hint}</div> : null}
+                        <div>{localizeImportMessage(row.reason)}</div>
+                        {row.code ? <div className="text-student-muted">错误代码：{row.code}</div> : null}
+                        {row.details ? <div className="text-student-muted">详细信息：{localizeImportDetails(row.details)}</div> : null}
+                        {row.hint ? <div className="text-student-muted">建议：{localizeImportHint(row.hint)}</div> : null}
                       </td>
                     </tr>
                   ))}
@@ -416,15 +415,15 @@ export function TeacherImportQuestions() {
 
 function formatImportError(payload: ImportErrorPayload) {
   return [
-    `Message: ${payload.message ?? payload.error ?? "Import failed."}`,
-    `Code: ${payload.code ?? "N/A"}`,
-    `Details: ${payload.details ?? "N/A"}`,
-    `Hint: ${payload.hint ?? "N/A"}`,
-    payload.operation ? `Operation: ${payload.operation}` : null,
-    payload.batch ? `Batch: ${payload.batch}` : null,
-    payload.requestUrl ? `Request URL: ${payload.requestUrl}` : null,
-    payload.requestMethod ? `Request method: ${payload.requestMethod}` : null,
-    payload.origin ? `Current origin: ${payload.origin}` : null
+    `错误信息：${localizeImportMessage(payload.message ?? payload.error ?? "导入失败。")}`,
+    `错误代码：${payload.code ?? "无"}`,
+    `详细信息：${payload.details ? localizeImportDetails(payload.details) : "无"}`,
+    `建议：${payload.hint ? localizeImportHint(payload.hint) : "无"}`,
+    payload.operation ? `操作：${localizeImportOperation(payload.operation)}` : null,
+    payload.batch ? `批次：${localizeImportBatch(payload.batch)}` : null,
+    payload.requestUrl ? `请求地址：${payload.requestUrl}` : null,
+    payload.requestMethod ? `请求方式：${payload.requestMethod}` : null,
+    payload.origin ? `当前来源：${payload.origin}` : null
   ]
     .filter(Boolean)
     .join("\n");
@@ -432,14 +431,67 @@ function formatImportError(payload: ImportErrorPayload) {
 
 function formatImportWarning(warning: NonNullable<ImportResult["warnings"]>[number]) {
   return [
-    `Warning: ${warning.message}`,
-    `Code: ${warning.code ?? "N/A"}`,
-    `Details: ${warning.details ?? "N/A"}`,
-    `Hint: ${warning.hint ?? "N/A"}`,
-    warning.operation ? `Operation: ${warning.operation}` : null
+    `警告：${localizeImportMessage(warning.message)}`,
+    `错误代码：${warning.code ?? "无"}`,
+    `详细信息：${warning.details ? localizeImportDetails(warning.details) : "无"}`,
+    `建议：${warning.hint ? localizeImportHint(warning.hint) : "无"}`,
+    warning.operation ? `操作：${localizeImportOperation(warning.operation)}` : null
   ]
     .filter(Boolean)
     .join("\n");
+}
+
+function localizeImportMessage(message: string) {
+  if (/unauthorized|not authenticated/i.test(message)) return "登录状态已失效，请重新登录。";
+  if (/invalid import payload/i.test(message)) return "导入请求内容无效。";
+  if (/csv headers do not match/i.test(message)) return "CSV 表头与所需模板不匹配。";
+  const missingField = message.match(/^Missing (.+)$/i);
+  if (missingField) return `缺少字段：${missingField[1]}`;
+  if (/question_order must be an integer from 1 to 10/i.test(message)) return "question_order 必须是 1 到 10 之间的整数。";
+  if (/blank_count must be a positive integer/i.test(message)) return "blank_count 必须是正整数。";
+  if (/question_sets\.set_id appears to be uuid/i.test(message)) return "question_sets.set_id 当前似乎是 uuid 类型，因此无法写入 CSV 中的文本 set_id；题目仍会按文本形式写入 questions.set_id。";
+  if (/[\u3400-\u9fff]/.test(message)) return message;
+  return "导入过程中发生错误，请根据错误代码排查。";
+}
+
+function localizeImportOperation(operation?: string) {
+  if (!operation) return undefined;
+  const labels: Record<string, string> = {
+    "authorize teacher import": "验证教师导入权限",
+    "parse import request": "解析导入请求",
+    "validate CSV headers": "校验 CSV 表头",
+    "validate row": "校验数据行",
+    "read existing question IDs": "读取现有题目 ID",
+    "upsert question_sets": "写入套题数据",
+    "upsert questions": "写入题目数据",
+    "import CSV questions": "导入 CSV 题目"
+  };
+  return labels[operation] ?? (/[\u3400-\u9fff]/.test(operation) ? operation : "执行导入操作");
+}
+
+function localizeImportDetails(details: string) {
+  if (/Missing fields:/i.test(details)) {
+    return details
+      .replace(/Missing fields:/i, "缺少字段：")
+      .replace(/Unexpected fields:/i, "非预期字段：")
+      .replace(/Required header:/i, "所需表头：")
+      .replace(/\bnone\b/gi, "无");
+  }
+  return /[\u3400-\u9fff]/.test(details) ? details : "请根据错误代码检查数据库配置或数据内容。";
+}
+
+function localizeImportHint(hint: string) {
+  if (/Use the exact required header names/i.test(hint)) return "请在 CSV 第一行使用完全一致的必填字段名。";
+  if (/Run this Supabase SQL/i.test(hint)) return hint.replace(/Run this Supabase SQL[^:]*:/i, "如需调整字段类型，请执行以下 Supabase SQL：");
+  if (/If questions\.set_id is also uuid/i.test(hint)) return "如果 questions.set_id 也是 uuid 类型，请将其改为 text；CSV 中的 set_id 应为文本格式。";
+  return /[\u3400-\u9fff]/.test(hint) ? hint : "请根据错误代码检查数据库配置或数据内容。";
+}
+
+function localizeImportBatch(batch: string) {
+  return batch
+    .replace(/preflight question_id lookup for (\d+) rows/i, "预检查 $1 行 question_id")
+    .replace(/question_sets batch for (\d+) sets/i, "question_sets 批次（$1 套）")
+    .replace(/questions batch (\d+)\/(\d+), CSV rows (.+)/i, "题目批次 $1/$2，CSV 行 $3");
 }
 
 function ImportStep({

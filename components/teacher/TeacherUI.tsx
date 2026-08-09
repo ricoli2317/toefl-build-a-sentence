@@ -46,7 +46,7 @@ export function TeacherMetricCard({
   icon: LucideIcon;
   label: string;
   tone?: "primary" | "warning";
-  value: string;
+  value: React.ReactNode;
 }) {
   return (
     <div className="teacher-card flex min-h-[108px] items-center gap-4 p-5">
@@ -64,6 +64,26 @@ export function TeacherMetricCard({
       </div>
     </div>
   );
+}
+
+export function TeacherSkeleton({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={clsx(
+        "block animate-pulse rounded-md bg-student-primary-soft",
+        className
+      )}
+    />
+  );
+}
+
+export function TeacherLoadingRegion({ label }: { label: string }) {
+  return <span className="sr-only" role="status">{label}</span>;
+}
+
+export function TeacherDataError({ text }: { text: string }) {
+  return <p className="teacher-error">{text}</p>;
 }
 
 export function TeacherAccuracyBar({ value }: { value: number }) {

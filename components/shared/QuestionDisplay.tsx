@@ -18,6 +18,7 @@ export function QuestionDisplay({
   answers,
   disabled = false,
   hideQuestionNumber = false,
+  locale = "en",
   onDropChunk,
   onRemoveAnswer,
   options,
@@ -29,6 +30,7 @@ export function QuestionDisplay({
   answers: Array<QuestionWordBlock | null>;
   disabled?: boolean;
   hideQuestionNumber?: boolean;
+  locale?: "en" | "zh-CN";
   onDropChunk?: (blankIndex: number, chunkId: string) => void;
   onRemoveAnswer?: (blankIndex: number) => void;
   options: QuestionWordBlock[];
@@ -42,13 +44,16 @@ export function QuestionDisplay({
   return (
     <article className="student-card">
       {!hideQuestionNumber ? (
-        <p className="text-sm font-semibold text-student-primary">Question {questionNumber}</p>
+        <p className="text-sm font-semibold text-student-primary">
+          {locale === "zh-CN" ? `第 ${questionNumber} 题` : `Question ${questionNumber}`}
+        </p>
       ) : null}
       <h2 className="mt-1 text-xl font-bold">{prompt}</h2>
       <div className="mt-6 text-lg leading-10">
         <SentenceTemplateDisplay
           answers={answers}
           disabled={disabled}
+          locale={locale}
           onDropChunk={onDropChunk}
           onRemoveAnswer={onRemoveAnswer}
           readOnly={readOnly}
@@ -99,6 +104,7 @@ export function QuestionDisplay({
 export function SentenceTemplateDisplay({
   answers,
   disabled,
+  locale = "en",
   onDropChunk,
   onRemoveAnswer,
   readOnly = false,
@@ -107,6 +113,7 @@ export function SentenceTemplateDisplay({
 }: {
   answers: Array<QuestionWordBlock | null>;
   disabled: boolean;
+  locale?: "en" | "zh-CN";
   onDropChunk?: (blankIndex: number, chunkId: string) => void;
   onRemoveAnswer?: (blankIndex: number) => void;
   readOnly?: boolean;
@@ -133,7 +140,13 @@ export function SentenceTemplateDisplay({
     return (
       <button
         aria-disabled={disabled}
-        aria-label={answer ? undefined : `Blank ${currentBlankIndex + 1}`}
+        aria-label={
+          answer
+            ? undefined
+            : locale === "zh-CN"
+              ? `第 ${currentBlankIndex + 1} 个空格`
+              : `Blank ${currentBlankIndex + 1}`
+        }
         className={className}
         key={key}
         onDoubleClick={() => onRemoveAnswer?.(currentBlankIndex)}

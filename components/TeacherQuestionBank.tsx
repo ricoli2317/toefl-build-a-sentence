@@ -6,7 +6,13 @@ import { buildSentenceDisplay, splitTextItems } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { QuestionViewerNav } from "@/components/QuestionViewerNav";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
-import { TeacherCard, TeacherEmptyState } from "@/components/teacher/TeacherUI";
+import {
+  TeacherCard,
+  TeacherDataError,
+  TeacherEmptyState,
+  TeacherLoadingRegion,
+  TeacherSkeleton
+} from "@/components/teacher/TeacherUI";
 import {
   PracticeMonthCard,
   PracticeSetAction,
@@ -63,10 +69,6 @@ type LoadState = {
 
 export function TeacherQuestionBankMonths() {
   const { data, error, loading } = useQuestionBank();
-
-  if (loading) return <LoadingText text="正在加载练习月份..." />;
-  if (error) return <ErrorText text={error} />;
-
   const months = data?.months ?? [];
 
   return (
@@ -74,15 +76,20 @@ export function TeacherQuestionBankMonths() {
       <TeacherBreadcrumbs
         crumbs={[{ label: "首页", href: "/teacher/dashboard" }, { label: "查看所有套题" }]}
       />
-      {months.length === 0 ? (
-          <TeacherEmptyState text="暂无练习月份。" />
+      {loading ? <TeacherLoadingRegion label="正在加载练习月份" /> : null}
+      {loading ? (
+        <MonthCardsSkeleton />
+      ) : error ? (
+        <TeacherDataError text={toQuestionBankErrorMessage(error)} />
+      ) : months.length === 0 ? (
+        <TeacherEmptyState text="暂无练习月份。" />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {months.map((month) => (
             <PracticeMonthCard
               href={`/teacher/question-bank/${encodeURIComponent(month.month_key)}`}
               key={month.month_key}
-              month={month.month_label}
+              month={formatMonthLabel(month.month_key, month.month_label)}
               questionCount={month.question_count}
               setCount={month.set_count}
             />
@@ -96,10 +103,6 @@ export function TeacherQuestionBankMonths() {
 export function TeacherQuestionBankSets({ monthKey }: { monthKey: string }) {
   const { data, error, loading } = useQuestionBank({ month: monthKey });
   const monthLabel = getMonthLabel(data, monthKey);
-
-  if (loading) return <LoadingText text="正在加载套题..." />;
-  if (error) return <ErrorText text={error} />;
-
   const sets = data?.sets ?? [];
 
   return (
@@ -111,7 +114,10 @@ export function TeacherQuestionBankSets({ monthKey }: { monthKey: string }) {
           { label: monthLabel }
         ]}
       />
-      <PracticeSetCatalogList
+      {loading ? <TeacherLoadingRegion label="正在加载月份套题" /> : null}
+      {loading ? <SetListSkeleton /> : error ? (
+        <TeacherDataError text={toQuestionBankErrorMessage(error)} />
+      ) : <PracticeSetCatalogList
         emptyState={<TeacherEmptyState text="该月份暂无套题。" />}
         renderActions={(set) => (
           <PracticeSetAction
@@ -121,7 +127,7 @@ export function TeacherQuestionBankSets({ monthKey }: { monthKey: string }) {
           />
         )}
         sets={sets.map((set) => ({ setId: set.set_id, setTitle: set.set_title, questionCount: set.question_count }))}
-      />
+      />}
     </div>
   );
 }
@@ -144,9 +150,6 @@ export function TeacherQuestionBankSetViewer({
     setCurrentIndex(0);
   }, [setId]);
 
-  if (loading) return <LoadingText text="正在加载题目..." />;
-  if (error) return <ErrorText text={error} />;
-
   return (
     <div className="grid gap-5">
       <TeacherBreadcrumbs
@@ -157,12 +160,18 @@ export function TeacherQuestionBankSetViewer({
           { label: setTitle }
         ]}
       />
-      {questions.length === 0 || !currentQuestion ? (
+      {loading ? <TeacherLoadingRegion label="正在加载题目预览" /> : null}
+      {loading ? (
+        <QuestionViewerSkeleton />
+      ) : error ? (
+        <TeacherDataError text={toQuestionBankErrorMessage(error)} />
+      ) : questions.length === 0 || !currentQuestion ? (
         <TeacherEmptyState text="该套题暂无题目。" />
       ) : (
         <div className="grid gap-4">
           <QuestionDisplay
             answers={Array.from({ length: currentQuestion.blank_count }, () => null)}
+            locale="zh-CN"
             options={splitTextItems(currentQuestion.options_text).map((text, index) => ({ id: `${currentQuestion.question_id}-${index}`, text }))}
             prompt={currentQuestion.prompt}
             questionNumber={currentQuestion.question_order}
@@ -227,14 +236,14 @@ async function loadQuestionBank() {
     payload = responseText
       ? JSON.parse(responseText)
       : {
-          error: "The question bank API returned an empty response.",
+          error: "题库服务返回了空响应。",
           months: [],
           questions: [],
           sets: []
         };
   } catch {
     payload = {
-      error: "The question bank API returned invalid JSON.",
+      error: "题库服务返回的数据格式无效。",
       months: [],
       questions: [],
       sets: []
@@ -242,20 +251,44 @@ async function loadQuestionBank() {
   }
 
   if (!response.ok || payload.error) {
-    throw new Error(payload.error ?? "Could not load question bank.");
+    throw new Error(payload.error ?? "无法加载题库。" );
   }
 
   return payload;
 }
 
 function getMonthLabel(data: QuestionBankPayload | null, monthKey: string) {
-  return data?.months.find((month) => month.month_key === monthKey)?.month_label ?? monthKey;
+  const storedLabel = data?.months.find((month) => month.month_key === monthKey)?.month_label;
+  return formatMonthLabel(monthKey, storedLabel);
 }
 
-function LoadingText({ text }: { text: string }) {
-  return <p className="teacher-loading">{text}</p>;
+function formatMonthLabel(monthKey: string, fallback?: string) {
+  if (!/^\d{6}$/.test(monthKey)) return fallback === "Unknown Month" ? "未知月份" : fallback ?? monthKey;
+  const year = Number(monthKey.slice(0, 4));
+  const month = Number(monthKey.slice(4, 6));
+  return `${year} 年 ${month} 月`;
 }
 
-function ErrorText({ text }: { text: string }) {
-  return <p className="teacher-error">{text}</p>;
+function toQuestionBankErrorMessage(message: string) {
+  if (/unauthorized|not authenticated/i.test(message)) return "登录状态已失效，请重新登录。";
+  if (/forbidden|teacher role required/i.test(message)) return "当前账号没有教师端访问权限。";
+  return /[\u3400-\u9fff]/.test(message) ? message : "题库加载失败，请稍后重试。";
+}
+
+function MonthCardsSkeleton() {
+  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{Array.from({ length: 6 }, (_, index) => <TeacherSkeleton className="h-[88px] w-full rounded-2xl" key={index} />)}</div>;
+}
+
+function SetListSkeleton() {
+  return <div className="grid gap-2.5">{Array.from({ length: 5 }, (_, index) => <TeacherSkeleton className="h-[86px] w-full rounded-2xl" key={index} />)}</div>;
+}
+
+function QuestionViewerSkeleton() {
+  return (
+    <div className="grid gap-4">
+      <TeacherCard className="p-5"><TeacherSkeleton className="h-5 w-20" /><TeacherSkeleton className="mt-3 h-7 w-64" /><TeacherSkeleton className="mt-6 h-28 w-full" /></TeacherCard>
+      <TeacherCard className="border-student-primary-border bg-student-primary-soft/55 p-5"><p className="text-sm font-semibold text-student-primary">正确答案</p><TeacherSkeleton className="mt-3 h-6 w-3/4" /></TeacherCard>
+      <div className="flex justify-end gap-3"><TeacherSkeleton className="h-11 w-24" /><TeacherSkeleton className="h-11 w-24" /></div>
+    </div>
+  );
 }

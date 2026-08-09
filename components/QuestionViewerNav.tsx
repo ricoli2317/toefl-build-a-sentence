@@ -23,7 +23,7 @@ export function QuestionViewerNav({
             onClick={() => onChange(index)}
             type="button"
           >
-            Q{index + 1}
+            第 {index + 1} 题
           </button>
         ))}
       </div>

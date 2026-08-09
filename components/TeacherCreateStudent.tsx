@@ -55,23 +55,23 @@ export function TeacherCreateStudent() {
       try {
         payload = responseText
           ? JSON.parse(responseText)
-          : { error: "The create student API returned an empty response." };
+          : { error: "创建学生服务返回了空响应。" };
       } catch {
-        payload = { error: "The create student API returned invalid JSON." };
+        payload = { error: "创建学生服务返回的数据格式无效。" };
       }
 
       if (!response.ok) {
-        setError(payload.error ?? "Could not create student.");
+        setError(localizeCreateStudentError(payload.error));
         return;
       }
 
-      setSuccess(`Created student: ${payload.student?.displayName ?? studentName}`);
+      setSuccess(`已创建学生：${payload.student?.displayName ?? studentName}`);
       setStudentName("");
       setEmail("");
       setPassword("");
       invalidate(TEACHER_STATS_CACHE_KEY);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Could not create student.");
+      setError(localizeCreateStudentError(error instanceof Error ? error.message : undefined));
     } finally {
       setLoading(false);
     }
@@ -134,4 +134,14 @@ export function TeacherCreateStudent() {
       </div>
     </form>
   );
+}
+
+function localizeCreateStudentError(message?: string) {
+  if (!message) return "无法创建学生。";
+  if (/unauthorized|not authenticated/i.test(message)) return "登录状态已失效，请重新登录。";
+  if (/already (been )?registered|already exists/i.test(message)) return "该邮箱已注册。";
+  if (/password must be at least 6 characters/i.test(message)) return "密码至少需要 6 个字符。";
+  if (/email, password, and student name are required/i.test(message)) return "请填写邮箱、密码和学生姓名。";
+  if (/profile save failed/i.test(message)) return "学生账号已创建，但学生资料保存失败。";
+  return /[\u3400-\u9fff]/.test(message) ? message : "无法创建学生，请稍后重试。";
 }

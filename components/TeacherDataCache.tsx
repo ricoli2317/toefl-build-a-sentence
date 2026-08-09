@@ -83,7 +83,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
         if (current?.status === "loading" && current.promise === promise) {
           entries.current.set(key, {
             status: "error",
-            error: error instanceof Error ? error.message : "Could not load teacher data."
+            error: error instanceof Error ? error.message : "无法加载教师端数据。"
           });
           notify();
         }
