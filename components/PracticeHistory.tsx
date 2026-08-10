@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { ArrowRight, CircleCheckBig, CircleX, LibraryBig, Target, type LucideIcon } from "lucide-react";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
-import { PracticeHistorySetCard } from "@/components/shared/PracticeHistoryCards";
+import { PracticeHistoryCompactList } from "@/components/shared/PracticeHistoryCards";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   useStudentCachedData,
@@ -94,21 +94,20 @@ export function PracticeHistorySetList({ scope }: { scope: HistoryScope }) {
           { label: title }
         ]}
       />
-      <div className="grid gap-4 md:grid-cols-2">
-        {data[scope].sets.map((set) => (
-          <PracticeHistorySetCard
-            attemptCount={set.attemptCount}
-            href={`${STUDENT_ROUTES.practiceHistory}/sets/${encodeURIComponent(set.setId)}?scope=${scope}`}
-            key={set.setId}
-            primaryMetric={<>平均正确率 {formatPercent(set.averageAccuracy)}</>}
-            setId={set.setId}
-            setTitle={set.setTitle}
-          />
-        ))}
-        {data[scope].sets.length === 0 ? (
+      <PracticeHistoryCompactList
+        emptyState={(
           <EmptyState text={scope === "today" ? "今日暂无普通套题练习。" : "暂无普通套题练习历史。"} />
-        ) : null}
-      </div>
+        )}
+        items={data[scope].sets.map((set) => ({
+          attemptCount: set.attemptCount,
+          bestAccuracy: formatPercent(set.bestAccuracy),
+          href: `${STUDENT_ROUTES.practiceHistory}/sets/${encodeURIComponent(set.setId)}?scope=${scope}`,
+          latestAccuracy: formatPercent(set.latestAccuracy),
+          latestCompleted: formatCompactDateTime(set.latestSubmittedAt),
+          setId: set.setId,
+          setTitle: set.setTitle
+        }))}
+      />
     </div>
   );
 }
@@ -453,6 +452,24 @@ function EmptyState({ text }: { text: string }) {
 
 function formatPercent(value: number) {
   return `${Math.round(value * 100)}%`;
+}
+
+function formatCompactDateTime(value: string | null) {
+  if (!value) return "时间未知";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "时间未知";
+
+  const now = new Date();
+  const dateLabel = date.getFullYear() === now.getFullYear()
+    ? `${date.getMonth() + 1}月${date.getDate()}日`
+    : `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+  const timeLabel = date.toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    hour12: false,
+    minute: "2-digit"
+  });
+
+  return `${dateLabel} ${timeLabel}`;
 }
 
 export function usePracticeHistory() {

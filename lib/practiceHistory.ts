@@ -30,6 +30,8 @@ export type PracticeHistorySetSummary = {
   setTitle: string;
   attemptCount: number;
   averageAccuracy: number;
+  bestAccuracy: number;
+  latestAccuracy: number;
   latestSubmittedAt: string | null;
 };
 
@@ -199,6 +201,8 @@ function summarizeSets(attempts: PracticeHistoryAttempt[]) {
       attemptCount: sorted.length,
       averageAccuracy:
         sorted.reduce((sum, attempt) => sum + attempt.accuracy, 0) / sorted.length,
+      bestAccuracy: Math.max(...sorted.map((attempt) => attempt.accuracy)),
+      latestAccuracy: sorted[0]?.accuracy ?? 0,
       latestSubmittedAt: sorted[0]?.submittedAt ?? null
     };
   }).sort((left, right) => compareDatesDesc(left.latestSubmittedAt, right.latestSubmittedAt));
