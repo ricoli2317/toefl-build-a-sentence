@@ -20,5 +20,18 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# local writing-review benchmark output
+/tmp/writing-review-reasoning-benchmark/
+/tmp/writing-review-provider-benchmark/
+/tmp/writing-review-reasoning-stability/
+/tmp/writing-review-candidate-models/
+/tmp/writing-review-deepseek-comparison/
+/tmp/writing-review-deepseek-stability/
+/tmp/writing-review-kimi-current-prompt/
+/tmp/writing-review-kimi-weak-retest/
+/tmp/writing-review-kimi-medium-weak/
+/tmp/writing-review-kimi-hedged-weak/
+/tmp/writing-review-production-export/
+
 # system files
 .DS_Store

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BarChart3,
+  ClipboardPenLine,
   CloudUpload,
   FileText,
   Home,
@@ -39,6 +40,12 @@ const navigation = [
     match: (path: string) => path.startsWith("/teacher/sets")
   },
   {
+    href: "/teacher/writing/reviews",
+    icon: ClipboardPenLine,
+    label: "写作批改",
+    match: (path: string) => path.startsWith("/teacher/writing/reviews")
+  },
+  {
     href: "/teacher/question-bank",
     icon: FileText,
     label: "查看所有套题",
@@ -51,24 +58,78 @@ export function TeacherAppShell({
   children,
   crumbs,
   subtitle,
-  title
+  title,
+  workspace = false
 }: {
   action?: React.ReactNode;
   children: React.ReactNode;
   crumbs?: TeacherCrumb[];
   subtitle?: string;
   title: string;
+  workspace?: boolean;
 }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [headerOverlayOpen, setHeaderOverlayOpen] = useState(false);
+  const [sidebarOverlayOpen, setSidebarOverlayOpen] = useState(false);
+  const headerCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sidebarCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { data: teacherEmail } = useTeacherCachedData<string>(
     "teacher:current-user-email",
     loadTeacherEmail
   );
 
+  useEffect(
+    () => () => {
+      if (headerCloseTimer.current) clearTimeout(headerCloseTimer.current);
+      if (sidebarCloseTimer.current) clearTimeout(sidebarCloseTimer.current);
+    },
+    []
+  );
+
+  function showHeaderOverlay() {
+    if (headerCloseTimer.current) clearTimeout(headerCloseTimer.current);
+    setHeaderOverlayOpen(true);
+  }
+
+  function hideHeaderOverlaySoon() {
+    if (headerCloseTimer.current) clearTimeout(headerCloseTimer.current);
+    headerCloseTimer.current = setTimeout(() => setHeaderOverlayOpen(false), 450);
+  }
+
+  function showSidebarOverlay() {
+    if (sidebarCloseTimer.current) clearTimeout(sidebarCloseTimer.current);
+    setSidebarOverlayOpen(true);
+  }
+
+  function hideSidebarOverlaySoon() {
+    if (sidebarCloseTimer.current) clearTimeout(sidebarCloseTimer.current);
+    sidebarCloseTimer.current = setTimeout(() => setSidebarOverlayOpen(false), 450);
+  }
+
   return (
-    <div className="teacher-shell min-h-screen">
-      <header className="sticky top-0 z-50 h-[74px] border-b border-student-border bg-white">
+    <div className={clsx("teacher-shell", workspace ? "h-dvh overflow-hidden" : "min-h-screen")}>
+      {workspace ? (
+        <div
+          aria-hidden="true"
+          className="fixed inset-x-0 top-0 z-[80] h-3"
+          data-immersive-trigger="header"
+          onMouseEnter={showHeaderOverlay}
+          onMouseLeave={hideHeaderOverlaySoon}
+        />
+      ) : null}
+      <header
+        className={clsx(
+          "z-[70] h-[74px] border-b border-student-border bg-white transition-transform duration-200",
+          workspace
+            ? "fixed inset-x-0 top-0 shadow-[0_8px_24px_rgba(23,32,51,0.12)]"
+            : "sticky top-0 z-50",
+          workspace && !headerOverlayOpen && "-translate-y-full"
+        )}
+        data-immersive-overlay={workspace ? "header" : undefined}
+        onMouseEnter={workspace ? showHeaderOverlay : undefined}
+        onMouseLeave={workspace ? hideHeaderOverlaySoon : undefined}
+      >
         <div className="flex h-full items-center justify-between gap-4 px-5 sm:px-7 lg:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -101,7 +162,7 @@ export function TeacherAppShell({
         </div>
       </header>
 
-      <div className="flex min-h-[calc(100vh-74px)]">
+      <div className={clsx("flex", workspace ? "h-dvh" : "min-h-[calc(100vh-74px)]")}>
         {menuOpen ? (
           <button
             aria-label="关闭导航"
@@ -110,11 +171,32 @@ export function TeacherAppShell({
             type="button"
           />
         ) : null}
+        {workspace ? (
+          <div
+            aria-hidden="true"
+            className="fixed inset-y-0 left-0 z-[65] w-3"
+            data-immersive-trigger="sidebar"
+            onMouseEnter={showSidebarOverlay}
+            onMouseLeave={hideSidebarOverlaySoon}
+          />
+        ) : null}
         <aside
           className={clsx(
-            "fixed bottom-0 left-0 top-[74px] z-40 w-[252px] border-r border-student-border bg-white px-5 py-7 transition-transform lg:sticky lg:top-[74px] lg:h-[calc(100vh-74px)] lg:translate-x-0",
-            menuOpen ? "translate-x-0" : "-translate-x-full"
+            "fixed bottom-0 left-0 z-[68] w-[252px] border-r border-student-border bg-white px-5 py-7 transition-transform duration-200",
+            workspace
+              ? "top-0 h-dvh shadow-[8px_0_24px_rgba(23,32,51,0.12)]"
+              : "top-[74px] lg:sticky lg:top-[74px] lg:h-[calc(100vh-74px)] lg:translate-x-0",
+            workspace
+              ? sidebarOverlayOpen
+                ? "translate-x-0"
+                : "-translate-x-full"
+              : menuOpen
+                ? "translate-x-0"
+                : "-translate-x-full"
           )}
+          data-immersive-overlay={workspace ? "sidebar" : undefined}
+          onMouseEnter={workspace ? showSidebarOverlay : undefined}
+          onMouseLeave={workspace ? hideSidebarOverlaySoon : undefined}
         >
           <nav aria-label="教师端主导航" className="grid gap-2">
             {navigation.map((item) => {
@@ -142,15 +224,15 @@ export function TeacherAppShell({
         </aside>
 
         <main className="min-w-0 flex-1">
-          <div className="teacher-page">
-            <header className="flex flex-wrap items-end justify-between gap-4">
+          <div className={clsx("teacher-page", workspace && "!max-w-none !gap-0 !p-3")}>
+            <header className={clsx("flex flex-wrap items-end justify-between gap-4", workspace && "sr-only")}>
               <div>
                 <h1 className="teacher-page-title">{title}</h1>
                 {subtitle ? <p className="mt-2 text-base text-student-muted">{subtitle}</p> : null}
               </div>
               {action}
             </header>
-            {crumbs && crumbs.length > 0 ? <TeacherBreadcrumbs crumbs={crumbs} /> : null}
+            {!workspace && crumbs && crumbs.length > 0 ? <TeacherBreadcrumbs crumbs={crumbs} /> : null}
             {children}
           </div>
         </main>

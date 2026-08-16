@@ -3,7 +3,13 @@
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ClipboardCheck, FileSearch, TableProperties, Upload } from "lucide-react";
-import { parseCsv, type CsvRecord } from "@/lib/csv";
+import { parseCsvDocument, type CsvRecord } from "@/lib/csv";
+import {
+  QUESTION_TYPE_LABELS,
+  closestQuestionSchema,
+  detectQuestionType,
+  type QuestionType
+} from "@/lib/questionCsvSchemas";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { broadcastQuestionBankUpdated } from "@/lib/questionBankCacheEvents";
 import {
@@ -12,21 +18,6 @@ import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
-
-const REQUIRED_FIELDS = [
-  "question_id",
-  "set_id",
-  "set_title",
-  "question_order",
-  "prompt",
-  "sentence_template",
-  "blank_count",
-  "options_text",
-  "correct_order_text",
-  "distractors_text",
-  "final_sentence",
-  "grammar_tags_text"
-];
 
 type ImportResult = {
   success?: boolean;
@@ -44,6 +35,7 @@ type ImportResult = {
   failedRows: Array<{
     rowNumber: number;
     questionId: string;
+    setId?: string;
     reason: string;
     code?: string | null;
     details?: string | null;
@@ -70,6 +62,8 @@ export function TeacherImportQuestions() {
   const router = useRouter();
   const { invalidate, load } = useTeacherDataCache();
   const [rows, setRows] = useState<CsvRecord[]>([]);
+  const [headers, setHeaders] = useState<string[]>([]);
+  const [questionType, setQuestionType] = useState<QuestionType>("unknown");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -113,13 +107,11 @@ export function TeacherImportQuestions() {
     };
   }, [load, router]);
 
-  const missingFields = REQUIRED_FIELDS.filter((field) =>
-    rows.length === 0 ? false : !(field in rows[0])
-  );
+  const closestSchema = headers.length > 0 ? closestQuestionSchema(headers) : null;
+  const missingFields =
+    questionType === "unknown" ? closestSchema?.difference.missingFields ?? [] : [];
   const unexpectedFields =
-    rows.length === 0
-      ? []
-      : Object.keys(rows[0]).filter((field) => !REQUIRED_FIELDS.includes(field));
+    questionType === "unknown" ? closestSchema?.difference.unexpectedFields ?? [] : [];
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -130,6 +122,8 @@ export function TeacherImportQuestions() {
     setResult(null);
     setError("");
     setRows([]);
+    setHeaders([]);
+    setQuestionType("unknown");
 
     if (!file.name.toLocaleLowerCase().endsWith(".csv")) {
       setFileName(file.name);
@@ -139,10 +133,23 @@ export function TeacherImportQuestions() {
 
     setFileName(file.name);
     const text = await file.text();
-    const parsedRows = parseCsv(text);
+    const parsed = parseCsvDocument(text, { trimValues: false });
+    const detectedQuestionType = detectQuestionType(parsed.headers);
+    const parsedRows =
+      detectedQuestionType === "build_a_sentence"
+        ? parsed.rows.map((row) =>
+            Object.fromEntries(
+              Object.entries(row).map(([field, value]) => [field, value.trim()])
+            )
+          )
+        : parsed.rows;
+    setHeaders(parsed.headers);
+    setQuestionType(detectedQuestionType);
     setRows(parsedRows);
 
-    if (parsedRows.length === 0) {
+    if (detectedQuestionType === "unknown") {
+      setError("无法识别题型：CSV 表头与现有题型格式不匹配");
+    } else if (parsedRows.length === 0) {
       setError("CSV 中没有数据行。");
     }
   }
@@ -165,11 +172,11 @@ export function TeacherImportQuestions() {
       return;
     }
 
-    if (missingFields.length > 0 || unexpectedFields.length > 0) {
+    if (questionType === "unknown") {
       setError(
-        `CSV 表头不匹配。缺少字段：${missingFields.join(", ") || "无"}。非预期字段：${
-          unexpectedFields.join(", ") || "无"
-        }.`
+        `无法识别题型：CSV 表头与现有题型格式不匹配。缺少字段：${
+          missingFields.join(", ") || "无"
+        }。非预期字段：${unexpectedFields.join(", ") || "无"}。`
       );
       setLoading(false);
       return;
@@ -190,7 +197,7 @@ export function TeacherImportQuestions() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token ?? ""}`
         },
-        body: JSON.stringify({ rows })
+        body: JSON.stringify({ headers, rows })
       });
 
       const responseText = await response.text();
@@ -281,9 +288,20 @@ export function TeacherImportQuestions() {
               选择文件
             </button>
             {fileName ? (
-              <p className="mt-4 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-student-primary shadow-sm">
-                {fileName}
-              </p>
+              <div className="mt-4 grid gap-2 text-sm font-semibold">
+                <p className="rounded-full bg-white px-4 py-1.5 text-student-primary shadow-sm">
+                  文件：{fileName}
+                </p>
+                {questionType !== "unknown" ? (
+                  <p className="text-student-primary">
+                    已识别题型：{QUESTION_TYPE_LABELS[questionType]}
+                  </p>
+                ) : (
+                  <p className="text-student-error">
+                    无法识别题型：CSV 表头与现有题型格式不匹配
+                  </p>
+                )}
+              </div>
             ) : null}
           </div>
         </div>
@@ -306,7 +324,7 @@ export function TeacherImportQuestions() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <button
               className="teacher-button-primary min-w-52"
-              disabled={checkingRole || loading || rows.length === 0 || missingFields.length > 0 || unexpectedFields.length > 0}
+              disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown"}
               onClick={importRows}
               type="button"
             >
@@ -323,6 +341,12 @@ export function TeacherImportQuestions() {
           {unexpectedFields.length > 0 ? (
             <p className="teacher-error mt-4">存在非预期字段：{unexpectedFields.join(", ")}</p>
           ) : null}
+          {questionType === "unknown" && closestSchema ? (
+            <p className="teacher-error mt-4 break-words">
+              最接近的格式：{QUESTION_TYPE_LABELS[closestSchema.questionType]}；所需表头：
+              {closestSchema.schema.join(",")}
+            </p>
+          ) : null}
           {error ? <pre className="teacher-error mt-4 whitespace-pre-wrap">{error}</pre> : null}
         </div>
       </section>
@@ -330,14 +354,12 @@ export function TeacherImportQuestions() {
       {result ? (
         <section className="teacher-card p-6">
           <h2 className="text-xl font-bold text-student-text">导入结果</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <ResultMetric label="成功" value={result.successCount} />
+            <ResultMetric label="新增" value={result.insertedCount} />
             <ResultMetric label="更新" value={result.updatedCount} />
             <ResultMetric label="失败" tone="error" value={result.failedCount} />
           </div>
-          <p className="mt-3 text-sm text-student-muted">
-            新增题目：{result.insertedCount}
-          </p>
           {result.warnings && result.warnings.length > 0 ? (
             <div className="mt-5 grid gap-3">
               {result.warnings.map((warning, index) => (
@@ -352,11 +374,12 @@ export function TeacherImportQuestions() {
           ) : null}
           {result.failedRows.length > 0 ? (
             <div className="mt-5 overflow-x-auto rounded-xl border border-student-border">
-              <table className="w-full min-w-[620px] border-collapse text-left text-sm">
+              <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-student-border bg-student-primary-soft/45 text-student-muted">
                     <th className="px-4 py-3">CSV 行</th>
                     <th className="px-4 py-3">题目 ID</th>
+                    <th className="px-4 py-3">套题 ID</th>
                     <th className="px-4 py-3">操作</th>
                     <th className="px-4 py-3">原因</th>
                   </tr>
@@ -366,6 +389,7 @@ export function TeacherImportQuestions() {
                     <tr className="border-b border-student-border last:border-0" key={`${row.rowNumber}-${row.questionId}`}>
                       <td className="px-4 py-3">{row.rowNumber}</td>
                       <td className="px-4 py-3">{row.questionId || "无"}</td>
+                      <td className="px-4 py-3">{row.setId || "无"}</td>
                       <td className="px-4 py-3">{localizeImportOperation(row.operation) ?? "无"}</td>
                       <td className="px-4 py-3">
                         <div>{localizeImportMessage(row.reason)}</div>
@@ -389,19 +413,19 @@ export function TeacherImportQuestions() {
             <table className="w-full min-w-[760px] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-student-border bg-student-primary-soft/45 text-student-muted">
-                  <th className="px-4 py-3">顺序</th>
-                  <th className="px-4 py-3">套题</th>
-                  <th className="px-4 py-3">题目</th>
-                  <th className="px-4 py-3">选项</th>
+                  {getPreviewColumns(questionType).map((column) => (
+                    <th className="px-4 py-3" key={column.field}>{column.label}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {rows.slice(0, 10).map((row, index) => (
                   <tr className="border-b border-student-border transition last:border-0 hover:bg-student-primary-soft/35" key={`${row.question_id}-${index}`}>
-                    <td className="px-4 py-3">{row.question_order}</td>
-                    <td className="px-4 py-3 font-semibold">{row.set_title}</td>
-                    <td className="px-4 py-3">{row.prompt}</td>
-                    <td className="px-4 py-3">{row.options_text}</td>
+                    {getPreviewColumns(questionType).map((column) => (
+                      <td className="max-w-md px-4 py-3" key={column.field}>
+                        {row[column.field]}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -411,6 +435,33 @@ export function TeacherImportQuestions() {
       ) : null}
     </div>
   );
+}
+
+function getPreviewColumns(questionType: QuestionType) {
+  if (questionType === "email") {
+    return [
+      { field: "question_id", label: "题目 ID" },
+      { field: "set_title", label: "套题" },
+      { field: "scenario", label: "情境" },
+      { field: "subject", label: "主题" }
+    ];
+  }
+
+  if (questionType === "academic_discussion") {
+    return [
+      { field: "question_id", label: "题目 ID" },
+      { field: "set_title", label: "套题" },
+      { field: "professor_name", label: "教授" },
+      { field: "professor_prompt", label: "讨论题目" }
+    ];
+  }
+
+  return [
+    { field: "question_order", label: "顺序" },
+    { field: "set_title", label: "套题" },
+    { field: "prompt", label: "题目" },
+    { field: "options_text", label: "选项" }
+  ];
 }
 
 function formatImportError(payload: ImportErrorPayload) {
@@ -459,11 +510,17 @@ function localizeImportOperation(operation?: string) {
   const labels: Record<string, string> = {
     "authorize teacher import": "验证教师导入权限",
     "parse import request": "解析导入请求",
+    "detect question type": "识别 CSV 题型",
     "validate CSV headers": "校验 CSV 表头",
     "validate row": "校验数据行",
+    "validate set_id uniqueness": "校验 set_id 唯一性",
     "read existing question IDs": "读取现有题目 ID",
+    "read existing writing question IDs": "读取现有写作题目 ID",
+    "read existing writing set IDs": "读取现有写作套题 ID",
     "upsert question_sets": "写入套题数据",
     "upsert questions": "写入题目数据",
+    "upsert email questions": "写入 Write an Email 题目",
+    "upsert academic discussion questions": "写入 Academic Discussion 题目",
     "import CSV questions": "导入 CSV 题目"
   };
   return labels[operation] ?? (/[\u3400-\u9fff]/.test(operation) ? operation : "执行导入操作");
@@ -475,6 +532,8 @@ function localizeImportDetails(details: string) {
       .replace(/Missing fields:/i, "缺少字段：")
       .replace(/Unexpected fields:/i, "非预期字段：")
       .replace(/Required header:/i, "所需表头：")
+      .replace(/Received header:/i, "收到的表头：")
+      .replace(/Closest required header:/i, "最接近的所需表头：")
       .replace(/\bnone\b/gi, "无");
   }
   return /[\u3400-\u9fff]/.test(details) ? details : "请根据错误代码检查数据库配置或数据内容。";
@@ -482,6 +541,7 @@ function localizeImportDetails(details: string) {
 
 function localizeImportHint(hint: string) {
   if (/Use the exact required header names/i.test(hint)) return "请在 CSV 第一行使用完全一致的必填字段名。";
+  if (/Use one of the exact supported CSV headers/i.test(hint)) return "请使用任一受支持题型的完整固定表头，并保持规定的列顺序。";
   if (/Run this Supabase SQL/i.test(hint)) return hint.replace(/Run this Supabase SQL[^:]*:/i, "如需调整字段类型，请执行以下 Supabase SQL：");
   if (/If questions\.set_id is also uuid/i.test(hint)) return "如果 questions.set_id 也是 uuid 类型，请将其改为 text；CSV 中的 set_id 应为文本格式。";
   return /[\u3400-\u9fff]/.test(hint) ? hint : "请根据错误代码检查数据库配置或数据内容。";

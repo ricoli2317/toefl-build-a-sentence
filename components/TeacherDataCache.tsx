@@ -16,6 +16,9 @@ export const TEACHER_STATS_CACHE_KEY = "teacher:stats:complete-answers-v2";
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
 export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";
+export const TEACHER_WRITING_REVIEWS_CACHE_KEY = "teacher:writing-reviews";
+export const TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX =
+  "teacher:writing-review-workspace";
 
 type CacheEntry =
   | { status: "loading"; promise: Promise<unknown> }
@@ -27,6 +30,7 @@ type TeacherDataCacheValue = {
   getEntry: (key: string) => CacheEntry | undefined;
   invalidate: (keyPrefix: string) => void;
   load: <T>(key: string, loader: () => Promise<T>) => Promise<T | undefined>;
+  set: <T>(key: string, data: T) => void;
   version: number;
 };
 
@@ -58,6 +62,14 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
   );
 
   const getEntry = useCallback((key: string) => entries.current.get(key), []);
+
+  const set = useCallback(
+    <T,>(key: string, data: T) => {
+      entries.current.set(key, { status: "success", data });
+      notify();
+    },
+    [notify]
+  );
 
   const load = useCallback(
     async <T,>(key: string, loader: () => Promise<T>) => {
@@ -103,8 +115,8 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
   );
 
   const value = useMemo(
-    () => ({ clear, getEntry, invalidate, load, version }),
-    [clear, getEntry, invalidate, load, version]
+    () => ({ clear, getEntry, invalidate, load, set, version }),
+    [clear, getEntry, invalidate, load, set, version]
   );
 
   return (

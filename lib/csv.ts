@@ -1,16 +1,37 @@
 export type CsvRecord = Record<string, string>;
 
-export function parseCsv(text: string): CsvRecord[] {
-  const rows = parseCsvRows(text);
-  if (rows.length === 0) return [];
+export type ParsedCsv = {
+  headers: string[];
+  rows: CsvRecord[];
+};
 
-  const headers = rows[0].map((header) => header.trim());
-  return rows
+export function parseCsv(text: string): CsvRecord[] {
+  return parseCsvDocument(text).rows;
+}
+
+export function parseCsvDocument(
+  text: string,
+  { trimValues = true }: { trimValues?: boolean } = {}
+): ParsedCsv {
+  const rows = parseCsvRows(text);
+  if (rows.length === 0) return { headers: [], rows: [] };
+
+  const headers = rows[0].map((header, index) =>
+    (index === 0 ? header.replace(/^\uFEFF/, "") : header).trim()
+  );
+  const records = rows
     .slice(1)
     .filter((row) => row.some((cell) => cell.trim() !== ""))
     .map((row) =>
-      Object.fromEntries(headers.map((header, index) => [header, row[index]?.trim() ?? ""]))
+      Object.fromEntries(
+        headers.map((header, index) => {
+          const value = row[index] ?? "";
+          return [header, trimValues ? value.trim() : value];
+        })
+      )
     );
+
+  return { headers, rows: records };
 }
 
 function parseCsvRows(text: string) {

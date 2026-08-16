@@ -17,15 +17,17 @@ import { PracticeMonthCard } from "@/components/shared/PracticeCatalog";
 
 export function StudentPage({
   children,
+  compact = false,
   subtitle,
   title
 }: {
   children: React.ReactNode;
+  compact?: boolean;
   subtitle?: string;
   title: string;
 }) {
   return (
-    <section className="student-page">
+    <section className={clsx("student-page", compact && "student-dashboard-page")}>
       <header>
         <h1 className="student-page-title">{title}</h1>
         {subtitle ? <p className="mt-2 max-w-2xl text-sm leading-6 text-student-muted">{subtitle}</p> : null}

@@ -1,7 +1,11 @@
-import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
+import { STUDENT_UI_TEXT } from "./studentUiText.ts";
 
 export const STUDENT_ROUTES = {
   home: "/student/sets",
+  buildASentence: "/student/practice-sets",
+  writeEmail: "/student/write-email",
+  academicDiscussion: "/student/academic-discussion",
+  writingReviews: "/student/writing-reviews",
   practiceSets: "/student/practice-sets",
   practiceHistory: "/student/practice-history",
   grammarPractice: "/student/grammar-practice",
@@ -12,6 +16,33 @@ export type StudentBreadcrumbItem = {
   href?: string;
   label: string;
 };
+
+export function writingReviewResultHref(attemptId: string, returnTo: string) {
+  const params = new URLSearchParams({ returnTo: safeWritingReviewReturnTo(returnTo) });
+  return `${STUDENT_ROUTES.writingReviews}/${encodeURIComponent(attemptId)}?${params}`;
+}
+
+export function safeWritingReviewReturnTo(value: string | string[] | undefined) {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  if (!candidate || candidate.includes("\\")) return STUDENT_ROUTES.writingReviews;
+  try {
+    const base = "https://tps.local";
+    const parsed = new URL(candidate, base);
+    return parsed.origin === base && parsed.pathname.startsWith("/student/")
+      ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+      : STUDENT_ROUTES.writingReviews;
+  } catch {
+    return STUDENT_ROUTES.writingReviews;
+  }
+}
+
+export function writingSubmissionHistoryHref(
+  taskType: "email" | "academic_discussion",
+  questionId: string
+) {
+  const section = taskType === "email" ? "write-email" : "academic-discussion";
+  return `/student/${section}/submissions/${encodeURIComponent(questionId)}`;
+}
 
 export type StudentResultSource =
   | "practice-history-history"

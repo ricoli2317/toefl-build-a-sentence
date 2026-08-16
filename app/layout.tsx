@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TOEFL Build a Sentence",
-  description: "TOEFL sentence-building practice system"
+  title: "TPS · TOEFL Practice System",
+  description: "TOEFL writing and language practice system"
 };
 
 export default function RootLayout({

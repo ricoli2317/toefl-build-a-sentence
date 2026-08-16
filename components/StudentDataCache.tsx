@@ -25,7 +25,15 @@ export const STUDENT_SETS_CACHE_KEY = "sets:all";
 export const STUDENT_WRONG_QUESTIONS_CACHE_PREFIX = "wrong-questions";
 export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
+export const STUDENT_WRITING_CACHE_PREFIX = "writing";
+export const STUDENT_WRITING_OVERVIEW_CACHE_KEY = "writing:overview";
+export const STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY =
+  "writing:academic-discussion-avatars";
 export const STUDENT_CURRENT_USER_CACHE_KEY = "current-user";
+
+export function studentWritingCatalogCacheKey(taskType: "email" | "academic_discussion") {
+  return `${STUDENT_WRITING_CACHE_PREFIX}:catalog:${taskType}`;
+}
 
 export function studentQuestionsCacheKey(setId: string) {
   return `questions:${setId}`;
@@ -325,6 +333,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       subscribeToQuestionBankUpdates(() => {
         invalidate(STUDENT_SETS_CACHE_PREFIX);
         invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
+        invalidate(STUDENT_WRITING_CACHE_PREFIX);
       }),
     [invalidate]
   );

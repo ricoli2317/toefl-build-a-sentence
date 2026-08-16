@@ -103,6 +103,49 @@ select {
       "Microsoft YaHei", "Segoe UI", sans-serif;
   }
 
+  .writing-practice {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Segoe UI", sans-serif;
+  }
+
+  .writing-practice :where(button, textarea):focus {
+    outline: none;
+  }
+
+  .writing-practice :where(button, textarea):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(107, 92, 246, 0.16);
+  }
+
+  .writing-header-back {
+    @apply inline-flex min-h-11 items-center gap-2 rounded-xl px-2 text-sm font-bold text-student-primary transition hover:bg-student-primary-soft;
+  }
+
+  .writing-exit-button {
+    @apply inline-flex min-h-[54px] items-center justify-center gap-2 rounded-xl border border-student-primary-border bg-white px-4 text-sm font-bold text-student-primary transition hover:border-student-primary hover:bg-student-primary-soft;
+  }
+
+  .writing-prompt-panel {
+    @apply h-full min-h-[520px] rounded-2xl border border-student-border bg-white px-6 py-7 text-[15px] leading-7 shadow-[0_1px_2px_rgba(23,32,51,0.025)] lg:min-h-0;
+  }
+
+  .writing-response-panel {
+    @apply flex h-full min-h-[650px] flex-col rounded-2xl border border-student-border bg-white shadow-[0_1px_2px_rgba(23,32,51,0.025)] lg:min-h-0;
+  }
+
+  .writing-action-primary,
+  .writing-action-secondary {
+    @apply inline-flex min-h-[52px] min-w-[150px] items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold transition disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .writing-action-primary {
+    @apply bg-student-primary text-white shadow-[0_7px_18px_rgba(107,92,246,0.2)] hover:bg-student-primary-hover active:translate-y-px;
+  }
+
+  .writing-action-secondary {
+    @apply border border-student-primary-border bg-white text-student-primary hover:border-student-primary hover:bg-student-primary-soft active:translate-y-px;
+  }
+
   .teacher-shell {
     color: var(--student-text);
     background: #fbfaff;
@@ -116,6 +159,53 @@ select {
 
   .teacher-page-title {
     @apply text-[2rem] font-bold leading-tight tracking-[-0.025em] text-student-text sm:text-[2.25rem];
+  }
+
+  .writing-review-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, 280px) minmax(600px, 1.4fr) minmax(420px, 0.9fr);
+    gap: 0.5rem;
+    overflow: hidden;
+  }
+
+  .writing-review-column {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--student-border);
+    border-radius: 0.75rem;
+  }
+
+  .writing-review-column .writing-prompt-panel {
+    min-height: 0;
+    height: auto;
+    overflow: visible;
+    border-radius: 0.625rem;
+    padding: 0.75rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.55 !important;
+    box-shadow: none;
+  }
+
+  .writing-review-column .writing-prompt-panel :where(.mt-4) {
+    margin-top: 0.65rem;
+  }
+
+  .writing-review-column .writing-prompt-panel :where(.gap-2\.5) {
+    gap: 0.35rem;
+  }
+
+  .writing-review-column article.grid-cols-\[96px_minmax\(0\,1fr\)\] {
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 0.5rem;
+    padding-block: 0.65rem;
+    font-size: 0.7rem;
+  }
+
+  .writing-review-column article.grid-cols-\[96px_minmax\(0\,1fr\)\] span.relative {
+    width: 48px;
+    height: 48px;
   }
 
   .teacher-card {
@@ -154,6 +244,25 @@ select {
     outline: none;
   }
 
+  @media (max-width: 1399px) and (min-width: 1100px) {
+    .writing-review-grid {
+      grid-template-columns: minmax(190px, 230px) minmax(430px, 1.35fr) minmax(330px, 0.9fr);
+    }
+  }
+
+  @media (max-width: 1099px) {
+    .writing-review-grid {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .writing-review-column {
+      min-height: 560px;
+      overflow: visible;
+    }
+  }
+
   .teacher-shell :where(a, button, input, select):focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(107, 92, 246, 0.16);
@@ -161,6 +270,10 @@ select {
 
   .student-page {
     @apply mx-auto grid w-full max-w-[1240px] gap-5 px-5 py-6 sm:px-7 lg:px-8 lg:py-7;
+  }
+
+  .student-dashboard-page {
+    @apply gap-2.5 py-2.5;
   }
 
   .student-page-title {
