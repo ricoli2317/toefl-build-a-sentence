@@ -339,6 +339,12 @@ test("manual-only review accepts every score reference left blank", () => {
       .published_scores.official_score.rationale,
     ""
   );
+  assert.equal(draft.content_feedback.overall_feedback, "");
+  assert.equal(
+    buildWritingReviewPublishUpdate(draft, "2026-08-16T10:00:00.000Z")
+      .published_content_feedback.overall_feedback,
+    ""
+  );
 });
 
 test("v2.2 teacher items keep exact selected spans, source, and optional fields", () => {
@@ -710,7 +716,7 @@ test("review-less submitted attempt opens a pending manual workspace without AI 
 test("first manual Save inserts a reviewing row with null AI metadata", async () => {
   const supabase = workspaceSupabase({ review: null });
   const manual = buildManualWritingReviewDraft("email");
-  manual.teacher_comment = "教师纯手动总体反馈。";
+  manual.content_feedback.overall_feedback = "教师纯手动总体评价。";
   manual.scores.official_score.teacher_score = 4;
   manual.scores.official_score.rationale = "手动总分参考";
   manual.scores.dimension_scores.social_conventions.ai_basis = "手动单项依据";
@@ -722,7 +728,8 @@ test("first manual Save inserts a reviewing row with null AI metadata", async ()
   assert.equal(supabase.inserts[0].ai_review_raw, null);
   assert.equal(review.status, "reviewing");
   assert.equal(review.has_ai_review, false);
-  assert.equal(review.teacher_comment, "教师纯手动总体反馈。");
+  assert.equal(review.content_feedback.overall_feedback, "教师纯手动总体评价。");
+  assert.equal(review.teacher_comment, "");
   assert.equal(review.scores.official_score.rationale, "手动总分参考");
   assert.equal(
     review.scores.dimension_scores.social_conventions.ai_basis,
@@ -734,12 +741,16 @@ test("first manual Save inserts a reviewing row with null AI metadata", async ()
     reloaded.review.scores.dimension_scores.social_conventions.ai_basis,
     "手动单项依据"
   );
+  assert.equal(
+    reloaded.review.content_feedback.overall_feedback,
+    "教师纯手动总体评价。"
+  );
 });
 
 test("first manual Publish inserts the current draft and published snapshot", async () => {
   const supabase = workspaceSupabase({ review: null });
   const manual = buildManualWritingReviewDraft("email");
-  manual.teacher_comment = "无需 AI 的最终反馈。";
+  manual.content_feedback.overall_feedback = "无需 AI 的最终总体评价。";
   manual.scores.official_score.rationale = "最终总分参考";
   manual.scores.dimension_scores.lexical_and_grammatical_control.ai_basis =
     "最终单项依据";
@@ -748,7 +759,11 @@ test("first manual Publish inserts the current draft and published snapshot", as
     now: () => new Date("2026-08-16T08:00:00.000Z")
   });
   assert.equal(supabase.inserts[0].status, "published");
-  assert.equal(supabase.inserts[0].published_teacher_comment, "无需 AI 的最终反馈。");
+  assert.equal(supabase.inserts[0].published_teacher_comment, "");
+  assert.equal(
+    supabase.inserts[0].published_content_feedback.overall_feedback,
+    "无需 AI 的最终总体评价。"
+  );
   assert.equal(
     supabase.inserts[0].published_scores.official_score.rationale,
     "最终总分参考"
@@ -780,6 +795,8 @@ test("manual Save and Publish both accept all score references blank", async () 
     { publish: true, now: () => new Date("2026-08-16T11:00:00.000Z") }
   );
   assert.equal(published.status, "published");
+  assert.equal(published.content_feedback.overall_feedback, "");
+  assert.equal(published.published_content_feedback.overall_feedback, "");
   assert.equal(published.published_scores.official_score.rationale, "");
   assert.equal(
     Object.values(published.published_scores.dimension_scores).every(
@@ -787,6 +804,26 @@ test("manual Save and Publish both accept all score references blank", async () 
     ),
     true
   );
+});
+
+test("legacy teacher overall feedback loads into the single final overall field", async () => {
+  const payload = await loadWritingReviewWorkspace(
+    workspaceSupabase({
+      review: reviewRow({
+        teacher_comment: "历史教师总体评价。",
+        content_feedback: {
+          ...contentFeedback(),
+          overall_feedback: "历史 AI 总体评价。"
+        }
+      })
+    }),
+    "attempt-1"
+  );
+  assert.equal(
+    payload.review.content_feedback.overall_feedback,
+    "历史教师总体评价。"
+  );
+  assert.equal(payload.review.teacher_comment, "");
 });
 
 test("non-teacher access is rejected before workspace data is read", () => {

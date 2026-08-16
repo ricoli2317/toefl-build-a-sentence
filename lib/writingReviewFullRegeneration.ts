@@ -92,7 +92,8 @@ export class WritingReviewFullRegenerationError extends Error {
 
 export async function regenerateFullWritingReview(
   attemptId: string,
-  dependencies: WritingReviewFullRegenerationDependencies
+  dependencies: WritingReviewFullRegenerationDependencies,
+  options?: { preserveTeacherContent?: boolean }
 ) {
   const attempt = await dependencies.repository.findAttempt(attemptId);
   if (!attempt) throw failure("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
@@ -134,16 +135,35 @@ export async function regenerateFullWritingReview(
   }
 
   const aiGeneratedAt = (dependencies.now ?? (() => new Date()))().toISOString();
-  const mergedItems = mergeRegeneratedWritingReviewItems(
-    attempt.response_text,
-    review.language_edits,
-    review.content_feedback,
-    existing
-  );
-  const teacherState = mergeRegeneratedWritingReviewTeacherState(
-    review.scores,
-    existing
-  );
+  const preserveTeacherContent = options?.preserveTeacherContent !== false;
+  const mergedItems = preserveTeacherContent
+    ? mergeRegeneratedWritingReviewItems(
+        attempt.response_text,
+        review.language_edits,
+        review.content_feedback,
+        existing
+      )
+    : {
+        language_edits: review.language_edits.map((edit) => ({
+          ...edit,
+          source: "ai" as const
+        })),
+        content_feedback: review.content_feedback.map((item) => ({
+          ...item,
+          source: "ai" as const
+        }))
+      };
+  const teacherState = preserveTeacherContent
+    ? mergeRegeneratedWritingReviewTeacherState(
+        review.scores,
+        existing,
+        review.overall_feedback
+      )
+    : {
+        scores: structuredClone(review.scores),
+        overall_feedback: review.overall_feedback,
+        teacher_comment: ""
+      };
   const update: FullRegenerationUpdate = {
     ai_model: aiResponse.model,
     ai_review_raw: structuredClone(raw) as AIReviewRawResultV22,
@@ -152,7 +172,7 @@ export async function regenerateFullWritingReview(
     scores: teacherState.scores,
     content_feedback: {
       items: mergedItems.content_feedback,
-      overall_feedback: review.overall_feedback
+      overall_feedback: teacherState.overall_feedback
     },
     teacher_comment: teacherState.teacher_comment
   };
@@ -179,8 +199,9 @@ export function mergeRegeneratedWritingReviewTeacherState(
   newScores: AIReviewResultV22["scores"],
   existing: Pick<
     FullRegenerationReview,
-    "ai_review_raw" | "scores" | "teacher_comment"
-  >
+    "ai_review_raw" | "scores" | "content_feedback" | "teacher_comment"
+  >,
+  newOverallFeedback: string
 ) {
   const scores = structuredClone(newScores);
   const existingScores = isRecord(existing.scores) ? existing.scores : null;
@@ -221,10 +242,33 @@ export function mergeRegeneratedWritingReviewTeacherState(
         existing.ai_review_raw !== null && existing.ai_review_raw !== undefined
     });
   });
+  const existingContentFeedback = isRecord(existing.content_feedback)
+    ? existing.content_feedback
+    : null;
+  const legacyTeacherOverall =
+    typeof existing.teacher_comment === "string" &&
+    existing.teacher_comment.length > 0
+      ? existing.teacher_comment
+      : null;
+  const currentOverall = legacyTeacherOverall ?? (
+    typeof existingContentFeedback?.overall_feedback === "string"
+      ? existingContentFeedback.overall_feedback
+      : null
+  );
+  const originalOverall = isRecord(existing.ai_review_raw) &&
+    typeof existing.ai_review_raw.overall_feedback === "string"
+      ? existing.ai_review_raw.overall_feedback
+      : null;
   return {
     scores,
-    teacher_comment:
-      typeof existing.teacher_comment === "string" ? existing.teacher_comment : ""
+    overall_feedback: mergeFinalScoreReference({
+      current: currentOverall,
+      original: originalOverall,
+      regenerated: newOverallFeedback,
+      reviewHasAi:
+        existing.ai_review_raw !== null && existing.ai_review_raw !== undefined
+    }),
+    teacher_comment: ""
   };
 }
 

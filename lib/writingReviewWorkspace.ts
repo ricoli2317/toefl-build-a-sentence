@@ -86,8 +86,8 @@ export class WritingReviewWorkspaceValidationError extends Error {
   }
 }
 
-const NO_AI_REVIEW_TEXT = "尚无 AI 初批。";
 const EMPTY_SCORE_REFERENCE_VALIDATION_TEXT = "评分依据留空。";
+const EMPTY_OVERALL_FEEDBACK_VALIDATION_TEXT = "总体评价留空。";
 
 export function buildManualWritingReviewDraft(
   taskType: WritingTaskType
@@ -118,7 +118,7 @@ export function buildManualWritingReviewDraft(
     content_feedback: {
       rubric_analysis: {},
       items: [],
-      overall_feedback: NO_AI_REVIEW_TEXT
+      overall_feedback: ""
     },
     teacher_comment: ""
   };
@@ -132,6 +132,9 @@ export function normalizeWritingReviewWorkingDraft(
   }
   if (!isRecord(input.contentFeedback) || !Array.isArray(input.contentFeedback.items)) {
     throw invalid("content_feedback 格式无效。");
+  }
+  if (typeof input.contentFeedback.overall_feedback !== "string") {
+    throw invalid("content_feedback.overall_feedback 必须是字符串。");
   }
   if (typeof input.teacherComment !== "string") {
     throw invalid("teacher_comment 必须是字符串。");
@@ -183,6 +186,7 @@ function normalizeLegacyV1WorkingDraft(
   const languageEdits = input.languageEdits as unknown[];
   const contentFeedback = input.contentFeedback as Record<string, unknown> & {
     items: unknown[];
+    overall_feedback: string;
   };
   const legacyScores = isLegacyV1Scores(input.scores)
     ? {
@@ -215,7 +219,9 @@ function normalizeLegacyV1WorkingDraft(
         },
         rubric_analysis: contentFeedback.rubric_analysis,
         content_feedback: aiFeedbackItems.map(stripWorkingFeedbackItem),
-        overall_feedback: contentFeedback.overall_feedback
+        overall_feedback: overallFeedbackForValidation(
+          contentFeedback.overall_feedback
+        )
       },
       input.responseText
     );
@@ -266,7 +272,7 @@ function normalizeLegacyV1WorkingDraft(
     content_feedback: {
       rubric_analysis: validated.rubric_analysis,
       items: normalizedFeedback,
-      overall_feedback: validated.overall_feedback
+      overall_feedback: contentFeedback.overall_feedback as string
     },
     teacher_comment: input.teacherComment as string
   };
@@ -283,6 +289,7 @@ function normalizeV2WorkingDraft(
   const languageEdits = input.languageEdits as unknown[];
   const contentFeedback = input.contentFeedback as Record<string, unknown> & {
     items: unknown[];
+    overall_feedback: string;
   };
   const aiFeedbackItems = contentFeedback.items.filter(
     (_item, index) => feedbackSources[index] === "ai"
@@ -315,7 +322,9 @@ function normalizeV2WorkingDraft(
           ? stripWorkingFeedbackItemV21
           : stripWorkingFeedbackItemV2
     ),
-    overall_feedback: contentFeedback.overall_feedback
+    overall_feedback: overallFeedbackForValidation(
+      contentFeedback.overall_feedback
+    )
   };
 
   let validated;
@@ -408,7 +417,7 @@ function normalizeV2WorkingDraft(
     content_feedback: {
       rubric_analysis: {},
       items: normalizedItems,
-      overall_feedback: validated.overall_feedback
+      overall_feedback: contentFeedback.overall_feedback as string
     },
     teacher_comment: input.teacherComment as string
   };
@@ -693,6 +702,12 @@ function normalizeLegacyCompatibleScores(value: unknown): CompatibleWorkingRevie
 
 function scoreReferenceForValidation(value: string) {
   return value.trim().length > 0 ? value : EMPTY_SCORE_REFERENCE_VALIDATION_TEXT;
+}
+
+function overallFeedbackForValidation(value: string) {
+  return value.trim().length > 0
+    ? value
+    : EMPTY_OVERALL_FEEDBACK_VALIDATION_TEXT;
 }
 
 export function workingReviewItemSource(value: { source?: unknown }) {

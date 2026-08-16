@@ -417,6 +417,108 @@ export function countTeacherEditedLanguageEdits(
   ).length;
 }
 
+export function hasWritingReviewTeacherContent(
+  draft: WritingReviewWorkingDraft,
+  aiReviewRaw: unknown,
+  hasAiReview: boolean
+) {
+  if (
+    draft.language_edits.some(
+      (edit) => workingReviewItemSource(edit) === "teacher" || edit.restored
+    ) ||
+    draft.content_feedback.items.some(
+      (item) =>
+        workingReviewItemSource(item) === "teacher" || item.included === false
+    )
+  ) {
+    return true;
+  }
+
+  const editedAiLanguageCount = countTeacherEditedLanguageEdits(
+    aiReviewRaw,
+    draft.language_edits
+  );
+  if (editedAiLanguageCount !== null && editedAiLanguageCount > 0) return true;
+
+  const official = draft.scores.official_score;
+  if (official.teacher_score !== official.ai_score) return true;
+  if (
+    draft.scores.dimension_scores &&
+    Object.values(draft.scores.dimension_scores).some(
+      (dimension) => dimension.teacher_score !== dimension.ai_score
+    )
+  ) {
+    return true;
+  }
+
+  const rawFinalFields = readAiFinalFields(aiReviewRaw);
+  if (!hasAiReview) {
+    return (
+      official.rationale.length > 0 ||
+      (draft.scores.dimension_scores !== null &&
+        Object.values(draft.scores.dimension_scores).some(
+          (dimension) => dimension.ai_basis.length > 0
+        )) ||
+      draft.content_feedback.overall_feedback.length > 0 ||
+      draft.teacher_comment.length > 0
+    );
+  }
+
+  if (
+    rawFinalFields.officialReference === null ||
+    official.rationale !== rawFinalFields.officialReference
+  ) {
+    return true;
+  }
+  if (
+    draft.scores.dimension_scores &&
+    Object.entries(draft.scores.dimension_scores).some(
+      ([key, dimension]) =>
+        rawFinalFields.dimensionReferences[key] === undefined ||
+        dimension.ai_basis !== rawFinalFields.dimensionReferences[key]
+    )
+  ) {
+    return true;
+  }
+  return (
+    rawFinalFields.overallFeedback === null ||
+    draft.content_feedback.overall_feedback !== rawFinalFields.overallFeedback ||
+    draft.teacher_comment.length > 0
+  );
+}
+
+function readAiFinalFields(value: unknown) {
+  if (!isRecord(value)) {
+    return {
+      officialReference: null,
+      dimensionReferences: {} as Record<string, string>,
+      overallFeedback: null
+    };
+  }
+  const scores = isRecord(value.scores) ? value.scores : null;
+  const official = isRecord(scores?.official_score)
+    ? scores.official_score
+    : isRecord(value.score)
+      ? value.score
+      : null;
+  const dimensions = isRecord(scores?.dimension_scores)
+    ? Object.fromEntries(
+        Object.entries(scores.dimension_scores).flatMap(([key, dimension]) =>
+          isRecord(dimension) && typeof dimension.ai_basis === "string"
+            ? [[key, dimension.ai_basis]]
+            : []
+        )
+      )
+    : {};
+  return {
+    officialReference:
+      typeof official?.rationale === "string" ? official.rationale : null,
+    dimensionReferences: dimensions as Record<string, string>,
+    overallFeedback:
+      typeof value.overall_feedback === "string" ? value.overall_feedback : null
+  };
+}
+
 export function updateDimensionTeacherScore(
   scores: CompatibleWorkingReviewScores,
   key: string,

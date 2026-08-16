@@ -235,6 +235,21 @@ function normalizeReviewRow(
     );
   }
 
+  const legacyTeacherOverall =
+    typeof row.teacher_comment === "string" && row.teacher_comment.length > 0
+      ? row.teacher_comment
+      : null;
+  const finalDraft: WritingReviewWorkingDraft = {
+    ...draft,
+    content_feedback: legacyTeacherOverall === null
+      ? draft.content_feedback
+      : {
+          ...draft.content_feedback,
+          overall_feedback: legacyTeacherOverall
+        },
+    teacher_comment: ""
+  };
+
   return {
     review_id: String(row.review_id),
     status: row.status === "published" ? "published" : "reviewing",
@@ -244,7 +259,7 @@ function normalizeReviewRow(
     ai_generated_at:
       typeof row.ai_generated_at === "string" ? row.ai_generated_at : null,
     ai_review_raw: row.ai_review_raw,
-    ...draft,
+    ...finalDraft,
     published_language_edits: row.published_language_edits ?? null,
     published_scores: row.published_scores ?? null,
     published_content_feedback: row.published_content_feedback ?? null,

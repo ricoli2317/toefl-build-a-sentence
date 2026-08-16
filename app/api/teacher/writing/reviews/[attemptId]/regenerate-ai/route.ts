@@ -126,6 +126,8 @@ export async function POST(
     const supabase = createServiceSupabase();
     aiLogClient = supabase;
     operationStartedAt = Date.now();
+    const overwriteTeacherContent =
+      new URL(request.url).searchParams.get("teacher_content") === "overwrite";
     await regenerateFullWritingReview(params.attemptId, {
       repository: createRepository(supabase),
       requestAI: async (input) => {
@@ -182,6 +184,8 @@ export async function POST(
       },
       parseReview: (value, responseText) =>
         parseAIReviewRawResultV22ForResponse(value, responseText)
+    }, {
+      preserveTeacherContent: !overwriteTeacherContent
     });
     const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId);
     await logPipeline();

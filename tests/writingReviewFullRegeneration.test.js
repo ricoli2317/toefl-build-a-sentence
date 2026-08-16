@@ -1,5 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const {
   mergeRegeneratedWritingReviewItems,
   mergeRegeneratedWritingReviewTeacherState,
@@ -109,7 +111,8 @@ for (const status of ["reviewing", "published"]) {
     assert.equal(result.update.language_edits[0].source, "ai");
     assert.equal(result.update.content_feedback.items[0].proposed_revision.length > 0, true);
     assert.equal(result.update.content_feedback.items[0].source, "ai");
-    assert.equal(result.update.teacher_comment, "教师旧评语");
+    assert.equal(result.update.content_feedback.overall_feedback, "教师旧评语");
+    assert.equal(result.update.teacher_comment, "");
     assert.equal(result.update.ai_model, "moonshotai/kimi-k3");
   });
 }
@@ -142,7 +145,85 @@ test("full regeneration keeps teacher scores and final feedback while refreshing
     result.update.scores.dimension_scores.syntactic_range_and_word_choice.teacher_score,
     2
   );
-  assert.equal(result.update.teacher_comment, "保留最终反馈");
+  assert.equal(result.update.content_feedback.overall_feedback, "保留最终反馈");
+  assert.equal(result.update.teacher_comment, "");
+});
+
+test("overwrite regeneration starts from only the new AI working review", async () => {
+  const originalRaw = raw();
+  originalRaw.overall_feedback = "旧 AI 总体评价。";
+  const existingScores = parseAIReviewRawResultV22ForResponse(
+    originalRaw,
+    responseText
+  ).scores;
+  existingScores.official_score.teacher_score = 5;
+  existingScores.official_score.rationale = "教师总分参考";
+  existingScores.dimension_scores.social_conventions.teacher_score = 5;
+  existingScores.dimension_scores.social_conventions.ai_basis = "教师单项依据";
+  const testHarness = harness({
+    aiReviewRaw: originalRaw,
+    existingScores,
+    existingLanguageEdits: [{
+      edit_id: "teacher-edit",
+      source: "teacher",
+      start: 0,
+      end: 1,
+      original_text: "I",
+      replacement_text: "We",
+      category: "word_choice",
+      severity: "moderate",
+      explanation: "教师修改。",
+      restored: false
+    }],
+    existingFeedback: {
+      items: [{ feedback_id: "teacher-feedback", source: "teacher" }],
+      overall_feedback: "教师总体评价。"
+    },
+    teacherComment: "历史教师总体评价。"
+  });
+  const result = await regenerateFullWritingReview(
+    "a1",
+    testHarness.dependencies,
+    { preserveTeacherContent: false }
+  );
+  assert.deepEqual(
+    result.update.language_edits.map((item) => [item.edit_id, item.source]),
+    [["new-edit", "ai"]]
+  );
+  assert.deepEqual(
+    result.update.content_feedback.items.map((item) => [item.feedback_id, item.source]),
+    [["new-feedback", "ai"]]
+  );
+  assert.equal(result.update.scores.official_score.teacher_score, 3);
+  assert.equal(result.update.scores.official_score.rationale, "中文整体依据。");
+  assert.equal(
+    result.update.scores.dimension_scores.social_conventions.teacher_score,
+    3
+  );
+  assert.equal(
+    result.update.scores.dimension_scores.social_conventions.ai_basis,
+    "中文依据。"
+  );
+  assert.equal(result.update.content_feedback.overall_feedback, "中文总体评价。");
+  assert.equal(result.update.teacher_comment, "");
+});
+
+test("both AI routes expose the same explicit preserve or overwrite mode", () => {
+  const generate = fs.readFileSync(
+    path.join(process.cwd(), "app/api/teacher/writing/reviews/[attemptId]/generate-ai/route.ts"),
+    "utf8"
+  );
+  const regenerate = fs.readFileSync(
+    path.join(process.cwd(), "app/api/teacher/writing/reviews/[attemptId]/regenerate-ai/route.ts"),
+    "utf8"
+  );
+  for (const source of [generate, regenerate]) {
+    assert.match(source, /teacher_content/);
+    assert.match(source, /=== "overwrite"/);
+  }
+  assert.match(generate, /overwriteTeacherContent[\s\S]*language_edits: input\.language_edits/);
+  assert.match(generate, /overall_feedback: input\.content_feedback\.overall_feedback/);
+  assert.match(regenerate, /preserveTeacherContent: !overwriteTeacherContent/);
 });
 
 test("full regeneration preserves edited final references but refreshes untouched AI references", () => {
@@ -177,8 +258,10 @@ test("full regeneration preserves edited final references but refreshes untouche
     {
       ai_review_raw: originalRaw,
       scores: existingScores,
+      content_feedback: { overall_feedback: originalRaw.overall_feedback },
       teacher_comment: ""
-    }
+    },
+    regenerated.overall_feedback
   );
   assert.equal(
     merged.scores.official_score.rationale,
@@ -202,8 +285,10 @@ test("first AI generation preserves filled manual references and initializes bla
     {
       ai_review_raw: null,
       scores: manualScores,
+      content_feedback: { overall_feedback: "" },
       teacher_comment: ""
-    }
+    },
+    regenerated.overall_feedback
   );
   assert.equal(merged.scores.official_score.rationale, "教师手动总分参考");
   assert.equal(
@@ -214,6 +299,62 @@ test("first AI generation preserves filled manual references and initializes bla
     merged.scores.dimension_scores.syntactic_range_and_word_choice.ai_basis,
     "中文依据。"
   );
+});
+
+test("full regeneration updates untouched AI overall feedback", () => {
+  const originalRaw = raw();
+  originalRaw.overall_feedback = "原 AI 总体评价。";
+  const regenerated = parseAIReviewRawResultV22ForResponse(raw(), responseText);
+  const merged = mergeRegeneratedWritingReviewTeacherState(
+    regenerated.scores,
+    {
+      ai_review_raw: originalRaw,
+      scores: regenerated.scores,
+      content_feedback: { overall_feedback: "原 AI 总体评价。" },
+      teacher_comment: ""
+    },
+    "新 AI 总体评价。"
+  );
+  assert.equal(merged.overall_feedback, "新 AI 总体评价。");
+});
+
+for (const teacherOverall of ["教师修改后的总体评价。", ""]) {
+  test(`full regeneration preserves teacher overall feedback ${JSON.stringify(teacherOverall)}`, () => {
+    const originalRaw = raw();
+    originalRaw.overall_feedback = "原 AI 总体评价。";
+    const regenerated = parseAIReviewRawResultV22ForResponse(raw(), responseText);
+    const merged = mergeRegeneratedWritingReviewTeacherState(
+      regenerated.scores,
+      {
+        ai_review_raw: originalRaw,
+        scores: regenerated.scores,
+        content_feedback: { overall_feedback: teacherOverall },
+        teacher_comment: ""
+      },
+      "新 AI 总体评价。"
+    );
+    assert.equal(merged.overall_feedback, teacherOverall);
+  });
+}
+
+test("first AI generation preserves manual overall feedback and initializes a blank one", () => {
+  const regenerated = parseAIReviewRawResultV22ForResponse(raw(), responseText);
+  for (const [current, expected] of [
+    ["首次 AI 前的教师总体评价。", "首次 AI 前的教师总体评价。"],
+    ["", regenerated.overall_feedback]
+  ]) {
+    const merged = mergeRegeneratedWritingReviewTeacherState(
+      regenerated.scores,
+      {
+        ai_review_raw: null,
+        scores: regenerated.scores,
+        content_feedback: { overall_feedback: current },
+        teacher_comment: ""
+      },
+      regenerated.overall_feedback
+    );
+    assert.equal(merged.overall_feedback, expected);
+  }
 });
 
 test("full regeneration replaces legacy and AI-source items but preserves teacher items", async () => {

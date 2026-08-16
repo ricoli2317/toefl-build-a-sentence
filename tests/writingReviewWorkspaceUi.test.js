@@ -10,6 +10,7 @@ const {
   createTeacherContentFeedback,
   createTeacherLanguageEdit,
   filterLanguageEdits,
+  hasWritingReviewTeacherContent,
   isLocatedContentFeedback,
   languageEditDisplayRange,
   mergeRegeneratedDraftPreservingTeacherItems,
@@ -86,6 +87,44 @@ function emailScores() {
   };
 }
 
+function cleanAiDraft() {
+  const current = draft();
+  current.teacher_comment = "";
+  current.scores.official_score.teacher_score =
+    current.scores.official_score.ai_score;
+  Object.values(current.scores.dimension_scores).forEach((dimension) => {
+    dimension.teacher_score = dimension.ai_score;
+  });
+  current.content_feedback.items = current.content_feedback.items.map((item) => ({
+    ...item,
+    included: true
+  }));
+  return current;
+}
+
+function aiRawForDraft(current = cleanAiDraft()) {
+  return {
+    schema_version: "2.2",
+    language_edits: current.language_edits.map((item) => ({
+      edit_id: item.edit_id,
+      replacement_text: item.replacement_text
+    })),
+    scores: {
+      official_score: {
+        ai_score: current.scores.official_score.ai_score,
+        rationale: current.scores.official_score.rationale
+      },
+      dimension_scores: Object.fromEntries(
+        Object.entries(current.scores.dimension_scores).map(([key, dimension]) => [
+          key,
+          { ai_score: dimension.ai_score, ai_basis: dimension.ai_basis }
+        ])
+      )
+    },
+    overall_feedback: current.content_feedback.overall_feedback
+  };
+}
+
 test("Email v2 exposes exactly the four Email diagnostic dimensions", () => {
   assert.deepEqual(
     writingDimensionDefinitions("email").map((item) => item.key),
@@ -149,6 +188,78 @@ test("dimension basis and official reference update the existing final fields", 
     officialUpdated.official_score.teacher_score,
     before.official_score.teacher_score
   );
+});
+
+test("teacher-content detection stays false for an untouched AI draft", () => {
+  const current = cleanAiDraft();
+  assert.equal(
+    hasWritingReviewTeacherContent(current, aiRawForDraft(current), true),
+    false
+  );
+});
+
+test("teacher-content detection includes teacher-source edits and feedback", () => {
+  const teacherEditDraft = cleanAiDraft();
+  teacherEditDraft.language_edits.push(edit({
+    edit_id: "teacher-edit",
+    source: "teacher"
+  }));
+  assert.equal(
+    hasWritingReviewTeacherContent(
+      teacherEditDraft,
+      aiRawForDraft(cleanAiDraft()),
+      true
+    ),
+    true
+  );
+
+  const teacherFeedbackDraft = cleanAiDraft();
+  teacherFeedbackDraft.content_feedback.items.push(
+    locatedFeedback({ feedback_id: "teacher-feedback", source: "teacher" })
+  );
+  assert.equal(
+    hasWritingReviewTeacherContent(
+      teacherFeedbackDraft,
+      aiRawForDraft(cleanAiDraft()),
+      true
+    ),
+    true
+  );
+});
+
+test("teacher-content detection includes scores, references, and overall evaluation", () => {
+  const baseline = cleanAiDraft();
+  const raw = aiRawForDraft(baseline);
+  const variants = [
+    (value) => { value.scores.official_score.teacher_score = 5; },
+    (value) => { value.scores.dimension_scores.social_conventions.teacher_score = 2; },
+    (value) => { value.scores.official_score.rationale = "教师总分参考"; },
+    (value) => { value.scores.dimension_scores.social_conventions.ai_basis = "教师单项依据"; },
+    (value) => { value.content_feedback.overall_feedback = "教师总体评价"; }
+  ];
+  variants.forEach((mutate) => {
+    const current = structuredClone(baseline);
+    mutate(current);
+    assert.equal(hasWritingReviewTeacherContent(current, raw, true), true);
+  });
+});
+
+test("manual drafts detect filled scoring and overall fields without AI raw data", () => {
+  const current = cleanAiDraft();
+  current.language_edits = [];
+  current.content_feedback.items = [];
+  current.scores.official_score.ai_score = 0;
+  current.scores.official_score.teacher_score = 0;
+  Object.values(current.scores.dimension_scores).forEach((dimension) => {
+    dimension.ai_score = 0;
+    dimension.teacher_score = 0;
+    dimension.ai_basis = "";
+  });
+  current.scores.official_score.rationale = "";
+  current.content_feedback.overall_feedback = "";
+  assert.equal(hasWritingReviewTeacherContent(current, null, false), false);
+  current.content_feedback.overall_feedback = "首次 AI 前的教师总体评价";
+  assert.equal(hasWritingReviewTeacherContent(current, null, false), true);
 });
 
 test("major, moderate, and minor filters classify edits correctly", () => {
@@ -683,14 +794,47 @@ test("score bases and official reference use compact editable final fields", () 
   assert.match(scorePanel, /h-16[\s\S]*resize-none/);
 });
 
-test("full AI regeneration requires confirmation and resets local selection state", () => {
+test("official score restores read-only AI total beside editable teacher total", () => {
   const source = fs.readFileSync(
     path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
     "utf8"
   );
-  assert.match(source, /重新生成 AI 初批/);
-  assert.match(source, /当前有尚未保存的修改/);
-  assert.match(source, /教师手动新增的批改和已发布版本不会改变/);
+  const scorePanel = source.slice(
+    source.indexOf("function ScorePanel"),
+    source.indexOf("function FeedbackPanel")
+  );
+  assert.match(
+    scorePanel,
+    /AI：\{hasAiReview \? scores\.official_score\.ai_score : "—"\}/
+  );
+  assert.match(scorePanel, /教师最终[\s\S]*<ScoreSelect/);
+  assert.match(scorePanel, /value=\{scores\.official_score\.teacher_score\}/);
+});
+
+test("workspace uses one editable overall evaluation field", () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  assert.equal((source.match(/title="总体评价"/g) ?? []).length, 1);
+  assert.doesNotMatch(source, /title="AI 总体评价"|title="总体反馈"/);
+  assert.match(source, /overall_feedback: event\.target\.value/);
+  assert.match(source, /value=\{draft\.content_feedback\.overall_feedback\}/);
+  assert.doesNotMatch(source, /value=\{draft\.teacher_comment\}/);
+});
+
+test("AI generation asks only when current or dirty teacher content exists", () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  assert.match(source, /dirty \|\|[\s\S]*hasWritingReviewTeacherContent/);
+  assert.match(source, /void regenerateAll\("preserve"\)/);
+  assert.match(source, /当前批改中已有教师输入内容。生成 AI 初批时如何处理？/);
+  assert.match(source, /保留教师内容并生成/);
+  assert.match(source, /覆盖教师内容并生成/);
+  assert.match(source, />\s*取消\s*</);
+  assert.match(source, /onCancel=\{\(\) => setTeacherContentConfirmOpen\(false\)\}/);
   assert.match(source, /mergeRegeneratedDraftPreservingTeacherItems/);
   assert.match(source, /setSelectedEditId\(null\)/);
   assert.match(source, /setSelectedFeedbackId\(null\)/);
@@ -718,7 +862,7 @@ test("review list only opens the workspace and the workspace owns initial AI gen
   assert.match(workspace, /generateInitialReview[\s\S]*\/generate-ai/);
 });
 
-test("initial AI saves dirty manual work first and pending state remains explicit", () => {
+test("preserve saves dirty work first while overwrite discards local merge", () => {
   const source = fs.readFileSync(
     path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
     "utf8"
@@ -727,12 +871,17 @@ test("initial AI saves dirty manual work first and pending state remains explici
     source.indexOf("async function regenerateAll"),
     source.indexOf("async function persist")
   );
-  assert.match(regenerate, /if \(dirty\)[\s\S]*mutateWorkspace\(attemptId, draft, false\)[\s\S]*generateInitialReview/);
+  assert.match(regenerate, /teacherContentMode === "preserve" && dirty[\s\S]*mutateWorkspace\(attemptId, draft, false\)/);
+  assert.match(regenerate, /teacherContentMode === "preserve"[\s\S]*mergeRegeneratedDraftPreservingTeacherItems[\s\S]*: regeneratedDraft/);
+  assert.match(regenerate, /regenerateFullReview\(attemptId, teacherContentMode\)/);
+  assert.match(regenerate, /generateInitialReview\(attemptId, teacherContentMode\)/);
   assert.match(regenerate, /catch \(regenerationError\)[\s\S]*setRequestError/);
   assert.doesNotMatch(regenerate, /setDraft\(null\)|cache\.invalidate\(cacheKey\)/);
   assert.match(source, /data\.review\.status === "pending"[\s\S]*"待批改"/);
   assert.match(source, /data\.review\.status === "pending"[\s\S]*"尚未保存"/);
   assert.match(source, /value=\{scores\.official_score\.rationale\}/);
+  assert.match(source, /regenerate-ai\?teacher_content=\$\{teacherContentMode\}/);
+  assert.match(source, /generate-ai\?teacher_content=\$\{teacherContentMode\}/);
 });
 
 test("feedback tabs explicitly scroll the right column and synchronize selection", () => {

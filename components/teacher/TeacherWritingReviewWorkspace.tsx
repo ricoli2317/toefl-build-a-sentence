@@ -70,6 +70,7 @@ import {
   createTeacherContentFeedback,
   createTeacherLanguageEdit,
   filterLanguageEdits,
+  hasWritingReviewTeacherContent,
   isLocatedContentFeedback,
   languageEditDisplayRange,
   languageEditSeverityLabel,
@@ -136,6 +137,7 @@ type WorkspacePayload = {
 
 type ErrorPayload = { code?: string; message?: string };
 type WorkspaceMode = "workspace" | "original" | "revised";
+type AiGenerationTeacherContentMode = "preserve" | "overwrite";
 type InspectorPosition = { left: number; top: number };
 type PositionedSourceSelection = SourceTextSelection & InspectorPosition;
 
@@ -170,7 +172,7 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
   const [addReviewOpen, setAddReviewOpen] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [operation, setOperation] = useState<"save" | "publish" | "regenerate" | null>(null);
-  const [regenerateConfirmOpen, setRegenerateConfirmOpen] = useState(false);
+  const [teacherContentConfirmOpen, setTeacherContentConfirmOpen] = useState(false);
   const [highlightedEssayFeedbackId, setHighlightedEssayFeedbackId] = useState<string | null>(null);
   const essayHighlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [message, setMessage] = useState("");
@@ -442,17 +444,33 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
     });
   }
 
-  async function regenerateAll() {
+  function requestAiGeneration() {
+    if (!data || !draft || operation) return;
+    if (
+      dirty ||
+      hasWritingReviewTeacherContent(
+        draft,
+        data.review.ai_review_raw,
+        data.review.has_ai_review
+      )
+    ) {
+      setTeacherContentConfirmOpen(true);
+      return;
+    }
+    void regenerateAll("preserve");
+  }
+
+  async function regenerateAll(teacherContentMode: AiGenerationTeacherContentMode) {
     if (!data || !draft || operation) return;
     const hadAiReview = data.review.has_ai_review;
-    setRegenerateConfirmOpen(false);
+    setTeacherContentConfirmOpen(false);
     setOperation("regenerate");
     setMessage("");
     setRequestError("");
     try {
       let currentPayload = data;
       let currentDraft = draft;
-      if (dirty) {
+      if (teacherContentMode === "preserve" && dirty) {
         const savedReview = await mutateWorkspace(attemptId, draft, false);
         currentPayload = { ...data, review: savedReview };
         currentDraft = toDraft(savedReview);
@@ -462,22 +480,27 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
         setDirty(false);
       }
       const review = hadAiReview
-        ? await regenerateFullReview(attemptId)
-        : await generateInitialReview(attemptId);
+        ? await regenerateFullReview(attemptId, teacherContentMode)
+        : await generateInitialReview(attemptId, teacherContentMode);
       const nextPayload = { ...currentPayload, review };
       cache.set(cacheKey, nextPayload);
       updateCachedListStatus(cache, attemptId, review.status);
       const regeneratedDraft = toDraft(review);
-      const nextDraft = mergeRegeneratedDraftPreservingTeacherItems(
-        data.attempt.response_text,
-        regeneratedDraft,
-        currentDraft
-      );
+      const nextDraft = teacherContentMode === "preserve"
+        ? mergeRegeneratedDraftPreservingTeacherItems(
+            data.attempt.response_text,
+            regeneratedDraft,
+            currentDraft
+          )
+        : regeneratedDraft;
       const preservedLocalTeacherItems =
-        JSON.stringify(nextDraft.language_edits) !==
-          JSON.stringify(regeneratedDraft.language_edits) ||
-        JSON.stringify(nextDraft.content_feedback.items) !==
-          JSON.stringify(regeneratedDraft.content_feedback.items);
+        teacherContentMode === "preserve" &&
+        (
+          JSON.stringify(nextDraft.language_edits) !==
+            JSON.stringify(regeneratedDraft.language_edits) ||
+          JSON.stringify(nextDraft.content_feedback.items) !==
+            JSON.stringify(regeneratedDraft.content_feedback.items)
+        );
       setDraft(nextDraft);
       setSelectedEditId(null);
       setSelectedFeedbackId(null);
@@ -563,11 +586,7 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
         setMode={changeMode}
         setShowRevisionMarks={setShowRevisionMarks}
         onPersist={persist}
-        onRegenerate={() =>
-          data.review.has_ai_review
-            ? setRegenerateConfirmOpen(true)
-            : void regenerateAll()
-        }
+        onRegenerate={requestAiGeneration}
       />
       <StudentInfoBar data={data} />
 
@@ -655,24 +674,20 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
               selectedFeedbackId={selectedFeedbackId}
               taskType={data.attempt.task_type}
             />
-            <CompactSection title="AI 总体评价">
-              <p className="text-xs leading-5 text-student-text">
-                {data.review.has_ai_review
-                  ? draft.content_feedback.overall_feedback
-                  : "尚无 AI 初批"}
-              </p>
-            </CompactSection>
-            <CompactSection title="总体反馈">
+            <CompactSection title="总体评价">
               <textarea
                 className="min-h-24 w-full resize-y rounded-lg border border-student-border bg-white p-2.5 text-xs leading-5 focus:border-student-primary"
                 onChange={(event) =>
                   changeDraft((current) => ({
                     ...current,
-                    teacher_comment: event.target.value
+                    content_feedback: {
+                      ...current.content_feedback,
+                      overall_feedback: event.target.value
+                    }
                   }))
                 }
-                placeholder="输入给学生的教师评语"
-                value={draft.teacher_comment}
+                placeholder="输入总体评价（选填）"
+                value={draft.content_feedback.overall_feedback}
               />
             </CompactSection>
           </aside>
@@ -773,17 +788,11 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
           replacementText={replacementText}
         />
       ) : null}
-      {regenerateConfirmOpen ? (
-        <ConfirmationDialog
-          body={
-            dirty
-              ? "当前有尚未保存的修改。重新生成只会替换 AI 批改，教师手动新增的批改会保留。"
-              : "重新生成只会替换当前 AI 批改；教师手动新增的批改和已发布版本不会改变。"
-          }
-          confirmLabel={dirty ? "继续重新生成" : "重新生成"}
-          onCancel={() => setRegenerateConfirmOpen(false)}
-          onConfirm={() => void regenerateAll()}
-          title="重新生成 AI 初批"
+      {teacherContentConfirmOpen ? (
+        <AiGenerationTeacherContentDialog
+          onCancel={() => setTeacherContentConfirmOpen(false)}
+          onOverwrite={() => void regenerateAll("overwrite")}
+          onPreserve={() => void regenerateAll("preserve")}
         />
       ) : null}
     </div>
@@ -1661,7 +1670,12 @@ function ScorePanel({
       )}
       <div className="mt-2 rounded-lg border border-student-primary-border bg-student-primary-soft/30 p-2.5">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-bold">官方整体评分</p>
+          <div>
+            <p className="text-xs font-bold">官方整体评分</p>
+            <p className="mt-1 text-[10px] font-semibold text-student-primary">
+              AI：{hasAiReview ? scores.official_score.ai_score : "—"}
+            </p>
+          </div>
           <label className="flex items-center gap-1 text-[10px] font-semibold">
             教师最终
             <ScoreSelect
@@ -2042,30 +2056,31 @@ function CompactSection({
   );
 }
 
-function ConfirmationDialog({
-  body,
-  confirmLabel,
+function AiGenerationTeacherContentDialog({
   onCancel,
-  onConfirm,
-  title
+  onOverwrite,
+  onPreserve
 }: {
-  body: string;
-  confirmLabel: string;
   onCancel: () => void;
-  onConfirm: () => void;
-  title: string;
+  onOverwrite: () => void;
+  onPreserve: () => void;
 }) {
   return (
     <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-950/30 p-4">
       <section className="w-full max-w-md rounded-xl border border-student-border bg-white p-5 shadow-2xl">
-        <h2 className="text-base font-bold">{title}</h2>
-        <p className="mt-2 text-sm leading-6 text-student-muted">{body}</p>
-        <div className="mt-5 flex justify-end gap-2">
+        <h2 className="text-base font-bold">生成 AI 初批</h2>
+        <p className="mt-2 text-sm leading-6 text-student-muted">
+          当前批改中已有教师输入内容。生成 AI 初批时如何处理？
+        </p>
+        <div className="mt-5 flex flex-wrap justify-end gap-2">
           <button className="teacher-button-secondary" onClick={onCancel} type="button">
             取消
           </button>
-          <button className="teacher-button-primary" onClick={onConfirm} type="button">
-            {confirmLabel}
+          <button className="teacher-button-secondary text-red-700" onClick={onOverwrite} type="button">
+            覆盖教师内容并生成
+          </button>
+          <button className="teacher-button-primary" onClick={onPreserve} type="button">
+            保留教师内容并生成
           </button>
         </div>
       </section>
@@ -2233,9 +2248,12 @@ async function mutateWorkspace(
   return payload.review;
 }
 
-async function regenerateFullReview(attemptId: string): Promise<WorkspaceReview> {
+async function regenerateFullReview(
+  attemptId: string,
+  teacherContentMode: AiGenerationTeacherContentMode
+): Promise<WorkspaceReview> {
   const response = await teacherFetch(
-    `/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/regenerate-ai`,
+    `/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/regenerate-ai?teacher_content=${teacherContentMode}`,
     { method: "POST" }
   );
   const payload = await readJson<{ review?: WorkspaceReview } & ErrorPayload>(response);
@@ -2247,9 +2265,12 @@ async function regenerateFullReview(attemptId: string): Promise<WorkspaceReview>
   return payload.review;
 }
 
-async function generateInitialReview(attemptId: string): Promise<WorkspaceReview> {
+async function generateInitialReview(
+  attemptId: string,
+  teacherContentMode: AiGenerationTeacherContentMode
+): Promise<WorkspaceReview> {
   const response = await teacherFetch(
-    `/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/generate-ai`,
+    `/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/generate-ai?teacher_content=${teacherContentMode}`,
     { method: "POST" }
   );
   const payload = await readJson<{ review?: WorkspaceReview } & ErrorPayload>(response);

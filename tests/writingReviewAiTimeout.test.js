@@ -243,7 +243,7 @@ test("frontends restore loading state and preserve local content after timeout",
   const list = fs.readFileSync(path.join(root, "components/teacher/TeacherWritingReviewList.tsx"), "utf8");
   const workspace = fs.readFileSync(path.join(root, "components/teacher/TeacherWritingReviewWorkspace.tsx"), "utf8");
   assert.doesNotMatch(list, /generate-ai|AI_REQUEST_TIMEOUT|setStatusOverrides/);
-  assert.match(workspace, /async function regenerateAll\(\)[\s\S]*finally[\s\S]*setOperation\(null\)/);
+  assert.match(workspace, /async function regenerateAll\(teacherContentMode:[\s\S]*finally[\s\S]*setOperation\(null\)/);
   assert.match(workspace, /generateInitialReview/);
   assert.match(workspace, /const result = await regenerateFeedback[\s\S]*catch[\s\S]*finally[\s\S]*setRegenerating\(false\)/);
   assert.doesNotMatch(workspace, /catch \(error\)[\s\S]{0,180}setPrompt\(""\)/);

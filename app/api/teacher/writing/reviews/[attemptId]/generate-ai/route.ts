@@ -73,7 +73,8 @@ function json(data: unknown, init?: ResponseInit) {
 }
 
 function createWritingReviewRepository(
-  supabase: ReturnType<typeof createServiceSupabase>
+  supabase: ReturnType<typeof createServiceSupabase>,
+  overwriteTeacherContent: boolean
 ): WritingReviewRepository {
   let reviewResponseText = "";
   let manualReview: {
@@ -127,16 +128,28 @@ function createWritingReviewRepository(
     async insertReview(input: WritingReviewInsert) {
       if (manualReview) {
         const aiScores = input.scores as AIReviewResultV22["scores"];
-        const mergedItems = mergeRegeneratedWritingReviewItems(
-          reviewResponseText,
-          input.language_edits as AIReviewResultV22["language_edits"],
-          input.content_feedback.items as AIReviewResultV22["content_feedback"],
-          manualReview
-        );
-        const teacherState = mergeRegeneratedWritingReviewTeacherState(
-          aiScores,
-          manualReview
-        );
+        const mergedItems = overwriteTeacherContent
+          ? {
+              language_edits: input.language_edits,
+              content_feedback: input.content_feedback.items
+            }
+          : mergeRegeneratedWritingReviewItems(
+              reviewResponseText,
+              input.language_edits as AIReviewResultV22["language_edits"],
+              input.content_feedback.items as AIReviewResultV22["content_feedback"],
+              manualReview
+            );
+        const teacherState = overwriteTeacherContent
+          ? {
+              scores: structuredClone(aiScores),
+              overall_feedback: input.content_feedback.overall_feedback,
+              teacher_comment: ""
+            }
+          : mergeRegeneratedWritingReviewTeacherState(
+              aiScores,
+              manualReview,
+              input.content_feedback.overall_feedback
+            );
         const { data, error } = await supabase
           .from("writing_reviews")
           .update({
@@ -147,7 +160,7 @@ function createWritingReviewRepository(
             scores: teacherState.scores,
             content_feedback: {
               items: mergedItems.content_feedback,
-              overall_feedback: input.content_feedback.overall_feedback
+              overall_feedback: teacherState.overall_feedback
             },
             teacher_comment: teacherState.teacher_comment
           })
@@ -218,8 +231,13 @@ export async function POST(
     const supabase = createServiceSupabase();
     aiLogClient = supabase;
     operationStartedAt = Date.now();
+    const overwriteTeacherContent =
+      new URL(request.url).searchParams.get("teacher_content") === "overwrite";
     await generateAndSaveWritingReview(params.attemptId, {
-      repository: createWritingReviewRepository(supabase),
+      repository: createWritingReviewRepository(
+        supabase,
+        overwriteTeacherContent
+      ),
       requestAI: async (input) => {
         aiStartedAt = Date.now();
         aiTaskType = input.taskType;
