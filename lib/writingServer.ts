@@ -8,6 +8,7 @@ import {
   type WritingQuestion,
   type WritingTaskType
 } from "@/lib/writing";
+import { isWritingQuestionSnapshot } from "./writingAssignments.ts";
 
 export function writingJson(data: unknown, init?: ResponseInit) {
   return NextResponse.json(data, {
@@ -44,8 +45,20 @@ export function parseWritingTaskType(value: unknown) {
 export async function readWritingQuestion(
   supabase: ReturnType<typeof createAnonSupabase>,
   taskType: WritingTaskType,
-  questionId: string
+  questionId: string,
+  assignmentId?: string | null
 ) {
+  if (assignmentId) {
+    const { data, error } = await supabase
+      .from("writing_assignments")
+      .select("task_type,question_snapshot")
+      .eq("assignment_id", assignmentId)
+      .maybeSingle();
+    if (error) return { data: null, error };
+    if (data?.task_type === taskType && isWritingQuestionSnapshot(taskType, data.question_snapshot)) {
+      return { data: data.question_snapshot, error: null };
+    }
+  }
   const { data, error } = await supabase
     .from(WRITING_TASK_CONFIG[taskType].questionTable)
     .select("*")

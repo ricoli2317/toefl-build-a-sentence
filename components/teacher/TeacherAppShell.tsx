@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   BarChart3,
   ClipboardPenLine,
+  ClipboardList,
   CloudUpload,
   FileText,
   Home,
@@ -38,6 +39,12 @@ const navigation = [
     icon: BarChart3,
     label: "套题统计",
     match: (path: string) => path.startsWith("/teacher/sets")
+  },
+  {
+    href: "/teacher/writing/assignments",
+    icon: ClipboardList,
+    label: "作业管理",
+    match: (path: string) => path.startsWith("/teacher/writing/assignments")
   },
   {
     href: "/teacher/writing/reviews",

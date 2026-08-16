@@ -21,7 +21,7 @@ import type {
 export type ReviewableWritingAttempt = Pick<
   WritingAttempt,
   "attempt_id" | "task_type" | "question_id" | "response_text" | "status"
->;
+> & { assignment_id?: string | null };
 
 export type ReviewQuestion = EmailQuestion | AcademicDiscussionQuestion;
 
@@ -56,7 +56,8 @@ export type WritingReviewRepository = {
   findExistingReview(attemptId: string): Promise<{ review_id: string } | null>;
   findQuestion(
     taskType: WritingTaskType,
-    questionId: string
+    questionId: string,
+    assignmentId?: string | null
   ): Promise<ReviewQuestion | null>;
   insertReview(input: WritingReviewInsert): Promise<{ review_id: string }>;
 };
@@ -138,7 +139,8 @@ export async function generateAndSaveWritingReview(
 
   const question = await dependencies.repository.findQuestion(
     attempt.task_type,
-    attempt.question_id
+    attempt.question_id,
+    attempt.assignment_id
   );
   if (!question) {
     throw new WritingReviewGenerationError(

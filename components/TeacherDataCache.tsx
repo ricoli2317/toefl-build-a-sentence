@@ -17,6 +17,12 @@ export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
 export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";
 export const TEACHER_WRITING_REVIEWS_CACHE_KEY = "teacher:writing-reviews";
+export const TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX = "teacher:writing-assignments";
+export const TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY = "teacher:writing-assignments:list";
+export const TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY =
+  "teacher:writing-assignments:students";
+export const TEACHER_WRITING_ASSIGNMENT_AVATARS_CACHE_KEY =
+  "teacher:writing-assignments:academic-discussion-avatars";
 export const TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX =
   "teacher:writing-review-workspace";
 

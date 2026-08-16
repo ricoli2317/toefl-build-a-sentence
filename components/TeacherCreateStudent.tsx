@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
+  TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY,
   TEACHER_STATS_CACHE_KEY,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
@@ -70,6 +71,7 @@ export function TeacherCreateStudent() {
       setEmail("");
       setPassword("");
       invalidate(TEACHER_STATS_CACHE_KEY);
+      invalidate(TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY);
     } catch (error) {
       setError(localizeCreateStudentError(error instanceof Error ? error.message : undefined));
     } finally {

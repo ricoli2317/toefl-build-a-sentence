@@ -73,7 +73,12 @@ export async function loadWritingReviewWorkspace(
   }
 
   const [questionResult, profileResult, reviewResult] = await Promise.all([
-    readWritingQuestionForReview(supabase, attempt.task_type, attempt.question_id),
+    readWritingQuestionForReview(
+      supabase,
+      attempt.task_type,
+      attempt.question_id,
+      attempt.assignment_id
+    ),
     supabase
       .from("profiles")
       .select("id,email,full_name")

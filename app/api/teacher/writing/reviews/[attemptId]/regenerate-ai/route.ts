@@ -79,11 +79,12 @@ function createRepository(
         teacher_comment: data.teacher_comment
       };
     },
-    async findQuestion(taskType, questionId) {
+    async findQuestion(taskType, questionId, assignmentId) {
       const { data, error } = await readWritingQuestionForReview(
         supabase,
         taskType,
-        questionId
+        questionId,
+        assignmentId
       );
       if (error) throw error;
       return data;

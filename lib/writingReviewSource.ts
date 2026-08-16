@@ -5,10 +5,12 @@ import type {
   WritingAttempt,
   WritingTaskType
 } from "@/lib/writing";
+import { isWritingQuestionSnapshot } from "./writingAssignments.ts";
 
 export type WritingReviewSourceAttempt = Pick<
   WritingAttempt,
   | "attempt_id"
+  | "assignment_id"
   | "user_id"
   | "task_type"
   | "question_id"
@@ -26,6 +28,7 @@ export type WritingReviewSourceQuestion = EmailQuestion | AcademicDiscussionQues
 
 export type WritingReviewSourceStage =
   | "writing_attempt"
+  | "writing_assignment"
   | "email_question"
   | "academic_discussion_question";
 
@@ -50,7 +53,7 @@ export class WritingReviewSourceLoadError extends Error {
 }
 
 const WRITING_REVIEW_ATTEMPT_FIELDS =
-  "attempt_id,user_id,task_type,question_id,set_id,response_text,word_count,status,writing_mode,elapsed_seconds,overtime_ranges,submitted_at";
+  "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,writing_mode,elapsed_seconds,overtime_ranges,submitted_at";
 
 export function writingReviewQuestionFields(taskType: WritingTaskType) {
   return taskType === "email"
@@ -74,8 +77,20 @@ export async function readWritingAttemptForReview(
 export async function readWritingQuestionForReview(
   supabase: SupabaseClient,
   taskType: WritingTaskType,
-  questionId: string
+  questionId: string,
+  assignmentId?: string | null
 ) {
+  if (assignmentId) {
+    const { data, error } = await supabase
+      .from("writing_assignments")
+      .select("task_type,question_snapshot")
+      .eq("assignment_id", assignmentId)
+      .maybeSingle();
+    if (error) return { data: null, error };
+    if (data?.task_type === taskType && isWritingQuestionSnapshot(taskType, data.question_snapshot)) {
+      return { data: data.question_snapshot as WritingReviewSourceQuestion, error: null };
+    }
+  }
   const table =
     taskType === "email" ? "email_questions" : "academic_discussion_questions";
   const { data, error } = await supabase
@@ -112,7 +127,8 @@ export async function loadWritingReviewComparisonSource(
   const questionResult = await readWritingQuestionForReview(
     supabase,
     attempt.task_type,
-    attempt.question_id
+    attempt.question_id,
+    attempt.assignment_id
   );
   if (questionResult.error) {
     throw new WritingReviewSourceLoadError(

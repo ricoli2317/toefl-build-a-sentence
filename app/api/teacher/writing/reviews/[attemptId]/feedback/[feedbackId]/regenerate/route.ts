@@ -58,11 +58,12 @@ function createRepository(
       return data as { content_feedback: unknown } | null;
     },
 
-    async findQuestion(taskType, questionId) {
+    async findQuestion(taskType, questionId, assignmentId) {
       const { data, error } = await readWritingQuestionForReview(
         supabase,
         taskType,
-        questionId
+        questionId,
+        assignmentId
       );
       if (error) throw databaseReadFailure();
       return data;

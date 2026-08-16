@@ -225,6 +225,10 @@ select {
     @apply border border-student-primary-border bg-white text-student-primary hover:border-student-primary hover:bg-student-primary-soft;
   }
 
+  .teacher-input {
+    @apply min-h-11 rounded-[10px] border border-student-border bg-white px-3 py-2 text-sm font-medium text-student-text placeholder:text-student-muted focus:border-student-primary;
+  }
+
   .teacher-empty,
   .teacher-loading,
   .teacher-error {
@@ -240,7 +244,7 @@ select {
     @apply border-student-error-border bg-student-error-soft font-semibold text-student-error;
   }
 
-  .teacher-shell :where(a, button, input, select):focus {
+  .teacher-shell :where(a, button, input, select, textarea):focus {
     outline: none;
   }
 
@@ -263,7 +267,7 @@ select {
     }
   }
 
-  .teacher-shell :where(a, button, input, select):focus-visible {
+  .teacher-shell :where(a, button, input, select, textarea):focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(107, 92, 246, 0.16);
   }

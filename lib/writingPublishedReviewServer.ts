@@ -1,12 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { WRITING_TASK_CONFIG, type WritingQuestion } from "./writing.ts";
+import type { WritingQuestion } from "./writing.ts";
 import {
   hydratePublishedWritingReviewSnapshot,
   toStudentPublishedWritingReview
 } from "./writingPublishedReview.ts";
+import { readWritingQuestionForReview } from "./writingReviewSource.ts";
 
 const ATTEMPT_FIELDS =
-  "attempt_id,user_id,task_type,question_id,set_id,response_text,word_count,status,overtime_ranges,submitted_at";
+  "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,overtime_ranges,submitted_at";
 const PUBLISHED_REVIEW_FIELDS =
   "attempt_id,status,published_language_edits,published_scores,published_content_feedback,published_teacher_comment,published_at";
 
@@ -62,11 +63,12 @@ export async function loadStudentPublishedWritingReview(
       .eq("attempt_id", attemptId)
       .eq("status", "published")
       .maybeSingle(),
-    supabase
-      .from(WRITING_TASK_CONFIG[attempt.task_type as "email" | "academic_discussion"].questionTable)
-      .select("*")
-      .eq("question_id", attempt.question_id)
-      .maybeSingle()
+    readWritingQuestionForReview(
+      supabase,
+      attempt.task_type,
+      attempt.question_id,
+      attempt.assignment_id
+    )
   ]);
   if (reviewResult.error || questionResult.error) throw databaseError();
   if (!reviewResult.data) {

@@ -12,6 +12,16 @@ export type AcademicDiscussionAvatarsPayload = {
   error?: string;
 };
 
+export const CUSTOM_ACADEMIC_DISCUSSION_AVATAR_PATHS = {
+  male_professor: "/avatars/academic-discussion/custom/professor-male.webp",
+  female_professor: "/avatars/academic-discussion/custom/professor-female.webp",
+  male_student: "/avatars/academic-discussion/custom/student-male.webp",
+  female_student: "/avatars/academic-discussion/custom/student-female.webp"
+} as const satisfies Record<
+  AcademicDiscussionProfessorAvatarType | AcademicDiscussionStudentAvatarType,
+  string
+>;
+
 export function buildAcademicDiscussionAvatarMap(
   rows: AcademicDiscussionAvatarRow[]
 ): AcademicDiscussionAvatarMap {
@@ -33,6 +43,31 @@ export function resolveAcademicDiscussionAvatar(
   return Object.prototype.hasOwnProperty.call(avatarMap, key)
     ? avatarMap[key]
     : null;
+}
+
+export function resolveCustomAcademicDiscussionAvatar(
+  avatarType: unknown,
+  participantType: AcademicDiscussionParticipantType
+) {
+  if (participantType === "professor" && isProfessorAvatarType(avatarType)) {
+    return CUSTOM_ACADEMIC_DISCUSSION_AVATAR_PATHS[avatarType];
+  }
+  if (participantType === "student" && isStudentAvatarType(avatarType)) {
+    return CUSTOM_ACADEMIC_DISCUSSION_AVATAR_PATHS[avatarType];
+  }
+  return null;
+}
+
+export function isProfessorAvatarType(
+  value: unknown
+): value is AcademicDiscussionProfessorAvatarType {
+  return value === "male_professor" || value === "female_professor";
+}
+
+export function isStudentAvatarType(
+  value: unknown
+): value is AcademicDiscussionStudentAvatarType {
+  return value === "male_student" || value === "female_student";
 }
 
 export async function loadAcademicDiscussionAvatars(session: {
@@ -65,3 +100,7 @@ function normalizeParticipantType(
   if (normalized === "professor" || normalized === "student") return normalized;
   return null;
 }
+import type {
+  AcademicDiscussionProfessorAvatarType,
+  AcademicDiscussionStudentAvatarType
+} from "./writing.ts";

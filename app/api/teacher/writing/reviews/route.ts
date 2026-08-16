@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 type AttemptRow = {
   attempt_id: string;
+  assignment_id: string | null;
   user_id: string;
   task_type: string;
   question_id: string;
@@ -31,6 +32,11 @@ type QuestionRow = {
 type ReviewRow = {
   attempt_id: string;
   status: string | null;
+};
+
+type AssignmentRow = {
+  assignment_id: string;
+  question_snapshot: { set_title?: unknown } | null;
 };
 
 type PageError = { message: string };
@@ -62,7 +68,7 @@ export async function GET(request: Request) {
       let query = supabase
         .from("writing_attempts")
         .select(
-          "attempt_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
+          "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
         )
         .eq("status", "submitted");
       if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
@@ -85,6 +91,9 @@ export async function GET(request: Request) {
     if (attempts.length === 0) return json({ attempts: [] });
 
     const attemptIds = unique(attempts.map((attempt) => String(attempt.attempt_id)));
+    const assignmentIds = unique(
+      attempts.map((attempt) => attempt.assignment_id ?? "").filter(Boolean)
+    );
     const userIds = unique(attempts.map((attempt) => String(attempt.user_id)));
     const emailQuestionIds = unique(
       attempts
@@ -97,7 +106,7 @@ export async function GET(request: Request) {
         .map((attempt) => String(attempt.question_id))
     );
 
-    const [profiles, emailQuestions, discussionQuestions, reviews] = await Promise.all([
+    const [profiles, emailQuestions, discussionQuestions, reviews, assignments] = await Promise.all([
       readRowsByIds<ProfileRow>(userIds, (batch, from, to) =>
         supabase
           .from("profiles")
@@ -129,11 +138,19 @@ export async function GET(request: Request) {
           .in("attempt_id", batch)
           .order("attempt_id", { ascending: true })
           .range(from, to)
+      ),
+      readRowsByIds<AssignmentRow>(assignmentIds, (batch, from, to) =>
+        supabase
+          .from("writing_assignments")
+          .select("assignment_id,question_snapshot")
+          .in("assignment_id", batch)
+          .order("assignment_id", { ascending: true })
+          .range(from, to)
       )
     ]);
 
     const relatedError =
-      profiles.error ?? emailQuestions.error ?? discussionQuestions.error ?? reviews.error;
+      profiles.error ?? emailQuestions.error ?? discussionQuestions.error ?? reviews.error ?? assignments.error;
     if (relatedError) {
       return json(
         { code: "WRITING_REVIEWS_LOAD_FAILED", message: "无法加载写作批改列表。" },
@@ -156,6 +173,9 @@ export async function GET(request: Request) {
     const reviewByAttemptId = new Map(
       (reviews.data ?? []).map((review) => [String(review.attempt_id), review])
     );
+    const assignmentById = new Map(
+      (assignments.data ?? []).map((assignment) => [String(assignment.assignment_id), assignment])
+    );
 
     return json({
       attempts: attempts.map((attempt) => {
@@ -166,6 +186,12 @@ export async function GET(request: Request) {
             ? emailQuestionById.get(String(attempt.question_id))
             : discussionQuestionById.get(String(attempt.question_id));
         const review = reviewByAttemptId.get(String(attempt.attempt_id));
+        const assignment = attempt.assignment_id
+          ? assignmentById.get(String(attempt.assignment_id))
+          : undefined;
+        const assignmentTitle = typeof assignment?.question_snapshot?.set_title === "string"
+          ? assignment.question_snapshot.set_title.trim()
+          : "";
 
         return {
           attemptId: String(attempt.attempt_id),
@@ -176,7 +202,7 @@ export async function GET(request: Request) {
           }),
           taskType,
           setId: String(attempt.set_id),
-          setTitle: question?.set_title?.trim() || String(attempt.set_id),
+          setTitle: assignmentTitle || question?.set_title?.trim() || String(attempt.set_id),
           wordCount: Math.max(0, Number(attempt.word_count) || 0),
           submittedAt: attempt.submitted_at,
           reviewStatus: toReviewStatus(review)

@@ -35,6 +35,7 @@ export type WritingFeedbackRegenerationResult = {
 
 export type RegenerationAttempt = {
   attempt_id: string;
+  assignment_id?: string | null;
   task_type: WritingTaskType;
   question_id: string;
   response_text: string;
@@ -50,7 +51,8 @@ export type WritingFeedbackRegenerationRepository = {
   findReview(attemptId: string): Promise<RegenerationReview | null>;
   findQuestion(
     taskType: WritingTaskType,
-    questionId: string
+    questionId: string,
+    assignmentId?: string | null
   ): Promise<WritingQuestion | null>;
   updateContentFeedback(
     attemptId: string,
@@ -124,7 +126,8 @@ export async function regenerateWritingContentFeedback(
   );
   const question = await dependencies.repository.findQuestion(
     attempt.task_type,
-    attempt.question_id
+    attempt.question_id,
+    attempt.assignment_id
   );
   if (!question) throw failure("QUESTION_NOT_FOUND", "未找到对应的写作原题。", 404);
 

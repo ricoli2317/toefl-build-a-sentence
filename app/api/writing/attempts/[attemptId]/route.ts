@@ -32,11 +32,21 @@ export async function GET(
     if (submissionOnly && attemptResult.data.status !== "submitted") {
       return writingJson({ error: "Submitted writing attempt not found" }, { status: 404 });
     }
+    if (attemptResult.data.status === "draft" && attemptResult.data.assignment_id) {
+      const assignmentAvailable = await isAssignmentAvailable(
+        auth.supabase,
+        attemptResult.data.assignment_id
+      );
+      if (!assignmentAvailable) {
+        return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
+      }
+    }
 
     const questionResult = await readWritingQuestion(
       auth.supabase,
       attemptResult.data.task_type,
-      attemptResult.data.question_id
+      attemptResult.data.question_id,
+      attemptResult.data.assignment_id
     );
     if (questionResult.error) return writingJson({ error: questionResult.error.message }, { status: 500 });
     if (!questionResult.data) return writingJson({ error: "Writing question not found" }, { status: 404 });
@@ -103,6 +113,12 @@ export async function PATCH(
       if (action === "submit") return writingJson({ attempt, alreadySubmitted: true });
       return writingJson({ error: "Submitted writing attempts cannot be modified." }, { status: 409 });
     }
+    if (attempt.assignment_id) {
+      const assignmentAvailable = await isAssignmentAvailable(auth.supabase, attempt.assignment_id);
+      if (!assignmentAvailable) {
+        return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
+      }
+    }
 
     const requestedRemaining = clampRemainingSeconds(
       body.remainingSeconds,
@@ -149,4 +165,19 @@ export async function PATCH(
       { status: 500 }
     );
   }
+}
+
+async function isAssignmentAvailable(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingStudent>>["supabase"]>,
+  assignmentId: string
+) {
+  const { data, error } = await supabase
+    .from("writing_assignments")
+    .select("assignment_id")
+    .eq("assignment_id", assignmentId)
+    .eq("status", "active")
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (error) throw error;
+  return Boolean(data);
 }

@@ -10,6 +10,7 @@ import type {
 
 export type FullRegenerationAttempt = {
   attempt_id: string;
+  assignment_id?: string | null;
   task_type: WritingTaskType;
   question_id: string;
   response_text: string;
@@ -44,7 +45,8 @@ export type WritingReviewFullRegenerationRepository = {
   findReview(attemptId: string): Promise<FullRegenerationReview | null>;
   findQuestion(
     taskType: WritingTaskType,
-    questionId: string
+    questionId: string,
+    assignmentId?: string | null
   ): Promise<WritingQuestion | null>;
   updateWorkingReview(
     attemptId: string,
@@ -104,7 +106,8 @@ export async function regenerateFullWritingReview(
   if (!existing) throw failure("REVIEW_NOT_FOUND", "未找到这条写作批改。", 404);
   const question = await dependencies.repository.findQuestion(
     attempt.task_type,
-    attempt.question_id
+    attempt.question_id,
+    attempt.assignment_id
   );
   if (!question) throw failure("QUESTION_NOT_FOUND", "未找到对应的写作原题。", 404);
 

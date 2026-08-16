@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect } from "react";
 import {
   resolveAcademicDiscussionAvatar,
+  resolveCustomAcademicDiscussionAvatar,
   type AcademicDiscussionAvatarMap
 } from "@/lib/academicDiscussionAvatars";
 import type {
@@ -15,11 +16,13 @@ import type {
 } from "@/lib/writing";
 
 export function WritingQuestionReview({
+  academicDiscussionAvatarSource,
   avatarMap,
   avatarMapReady,
   question,
   taskType
 }: {
+  academicDiscussionAvatarSource?: "question_bank" | "custom";
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
   question: WritingQuestion;
@@ -30,23 +33,35 @@ export function WritingQuestionReview({
   }
 
   const academicQuestion = question as AcademicDiscussionQuestion;
+  const customQuestion = academicDiscussionAvatarSource
+    ? academicDiscussionAvatarSource === "custom"
+    : academicQuestion.source_labels === "custom";
   return (
     <div className="grid gap-3">
       <AcademicPrompt
         avatarMap={avatarMap}
         avatarMapReady={avatarMapReady}
+        avatarPathOverride={customQuestion
+          ? resolveCustomAcademicDiscussionAvatar(academicQuestion.professor_avatar_type, "professor")
+          : undefined}
         question={academicQuestion}
       />
       <section className="divide-y divide-student-border rounded-xl border border-student-border px-4">
         <AcademicStudentPost
           avatarMap={avatarMap}
           avatarMapReady={avatarMapReady}
+          avatarPathOverride={customQuestion
+            ? resolveCustomAcademicDiscussionAvatar(academicQuestion.student_1_avatar_type, "student")
+            : undefined}
           name={academicQuestion.student_1_name}
           response={academicQuestion.student_1_response}
         />
         <AcademicStudentPost
           avatarMap={avatarMap}
           avatarMapReady={avatarMapReady}
+          avatarPathOverride={customQuestion
+            ? resolveCustomAcademicDiscussionAvatar(academicQuestion.student_2_avatar_type, "student")
+            : undefined}
           name={academicQuestion.student_2_name}
           response={academicQuestion.student_2_response}
         />
@@ -80,12 +95,17 @@ export function EmailPrompt({ question }: { question: EmailQuestion }) {
 export function AcademicPrompt({
   avatarMap,
   avatarMapReady,
+  avatarPathOverride,
   question
 }: {
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
+  avatarPathOverride?: string | null;
   question: AcademicDiscussionQuestion;
 }) {
+  const avatarPath = avatarPathOverride !== undefined
+    ? avatarPathOverride
+    : resolveAcademicDiscussionAvatar(avatarMap, question.professor_name, "professor");
   return (
     <section className="writing-prompt-panel flex min-h-0 flex-col overflow-hidden !px-5 !py-4 !text-[15px] !leading-[1.45]">
       <div className="shrink-0">
@@ -102,12 +122,8 @@ export function AcademicPrompt({
         <div className="my-3 h-px bg-student-border" />
       </div>
       <AcademicAvatar
-        avatarMapReady={avatarMapReady}
-        avatarPath={resolveAcademicDiscussionAvatar(
-          avatarMap,
-          question.professor_name,
-          "professor"
-        )}
+        avatarMapReady={avatarPathOverride !== undefined ? Boolean(avatarPath) : avatarMapReady}
+        avatarPath={avatarPath}
         label={question.professor_name}
         professor
       />
@@ -121,19 +137,24 @@ export function AcademicPrompt({
 export function AcademicStudentPost({
   avatarMap,
   avatarMapReady,
+  avatarPathOverride,
   name,
   response
 }: {
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
+  avatarPathOverride?: string | null;
   name: string;
   response: string;
 }) {
+  const avatarPath = avatarPathOverride !== undefined
+    ? avatarPathOverride
+    : resolveAcademicDiscussionAvatar(avatarMap, name, "student");
   return (
     <article className="grid grid-cols-[96px_minmax(0,1fr)] items-center gap-3 py-[15px] text-[15px] leading-[1.45]">
       <AcademicAvatar
-        avatarMapReady={avatarMapReady}
-        avatarPath={resolveAcademicDiscussionAvatar(avatarMap, name, "student")}
+        avatarMapReady={avatarPathOverride !== undefined ? Boolean(avatarPath) : avatarMapReady}
+        avatarPath={avatarPath}
         label={name}
       />
       <p className="whitespace-pre-wrap">{response}</p>

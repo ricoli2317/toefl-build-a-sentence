@@ -17,7 +17,6 @@ import {
   Users,
   type LucideIcon
 } from "lucide-react";
-import { pinyin } from "pinyin-pro";
 import {
   buildSentenceDisplay,
   isBlankToken,
@@ -25,6 +24,12 @@ import {
   splitTextItems
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import {
+  compareStudentSearchGroups,
+  compareStudentSearchMetadata,
+  createStudentSearchMetadata,
+  studentSearchRank
+} from "@/lib/studentSearch";
 import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherCachedData
@@ -892,48 +897,21 @@ function TeacherFeatureCard({
 
 function createStudentSearchEntry(student: StudentSummary): StudentSearchEntry {
   const displayName = student.studentDisplayName.trim();
-  const syllables = pinyin(displayName, {
-    mode: "surname",
-    surname: "head",
-    toneType: "none",
-    type: "array"
-  }).map((part) => part.toLocaleLowerCase());
-  const fullPinyin = syllables.join(" ");
-  const compactPinyin = normalizeSearchText(fullPinyin);
-  const directText = normalizeSearchText(displayName);
-  const surnamePinyin = normalizeSearchText(syllables[0] ?? "");
-  const initials = syllables.map((part) => part.match(/[a-z]/)?.[0] ?? "").join("");
-  const firstLetter = (surnamePinyin || directText).match(/[a-z]/i)?.[0]?.toUpperCase() ?? "#";
-
   return {
-    compactPinyin,
-    directText,
-    fullPinyin,
-    group: ALPHABET.includes(firstLetter) ? firstLetter : "#",
-    initials,
+    ...createStudentSearchMetadata(displayName),
     student,
-    surnamePinyin
   };
 }
 
 function filterStudentEntries(entries: StudentSearchEntry[], query: string) {
-  const rawQuery = query.trim().toLocaleLowerCase();
-  const normalizedQuery = normalizeSearchText(rawQuery);
   const sorted = [...entries].sort(compareStudentEntries);
-  if (!normalizedQuery) return sorted;
+  if (!query.trim()) return sorted;
 
   return sorted
-    .map((entry) => {
-      const displayName = entry.student.studentDisplayName.trim().toLocaleLowerCase();
-      let rank = Number.POSITIVE_INFINITY;
-      if (displayName === rawQuery) rank = 0;
-      else if (entry.directText === normalizedQuery) rank = 1;
-      else if (entry.directText.includes(normalizedQuery)) rank = 2;
-      else if (entry.compactPinyin.startsWith(normalizedQuery)) rank = 3;
-      else if (entry.compactPinyin.includes(normalizedQuery)) rank = 4;
-      else if (entry.initials.includes(normalizedQuery)) rank = 5;
-      return { entry, rank };
-    })
+    .map((entry) => ({
+      entry,
+      rank: studentSearchRank(entry, entry.student.studentDisplayName, query)
+    }))
     .filter((item) => Number.isFinite(item.rank))
     .sort((left, right) => left.rank - right.rank || compareStudentEntries(left.entry, right.entry))
     .map((item) => item.entry);
@@ -948,24 +926,14 @@ function groupStudentEntries(entries: StudentSearchEntry[]) {
 }
 
 function compareStudentEntries(left: StudentSearchEntry, right: StudentSearchEntry) {
-  return (
-    compareStudentGroups(left.group, right.group) ||
-    left.surnamePinyin.localeCompare(right.surnamePinyin, "en") ||
-    left.compactPinyin.localeCompare(right.compactPinyin, "en") ||
-    left.student.studentDisplayName.localeCompare(right.student.studentDisplayName, "zh-CN") ||
-    left.student.studentId.localeCompare(right.student.studentId)
+  return compareStudentSearchMetadata(
+    { ...left, displayName: left.student.studentDisplayName, id: left.student.studentId },
+    { ...right, displayName: right.student.studentDisplayName, id: right.student.studentId }
   );
 }
 
 function compareStudentGroups(left: string, right: string) {
-  if (left === right) return 0;
-  if (left === "#") return 1;
-  if (right === "#") return -1;
-  return left.localeCompare(right, "en");
-}
-
-function normalizeSearchText(value: string) {
-  return value.normalize("NFKC").toLocaleLowerCase().replace(/[^a-z0-9\u3400-\u9fff]+/g, "");
+  return compareStudentSearchGroups(left, right);
 }
 
 function isToday(value: string | null) {

@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 type AttemptRow = {
   attempt_id: string;
+  assignment_id: string | null;
   task_type: WritingTaskType;
   question_id: string;
   set_id: string;
@@ -15,6 +16,10 @@ type AttemptRow = {
 
 type ReviewRow = { attempt_id: string; published_at: string };
 type QuestionRow = { question_id: string; set_title: string; year_month: string };
+type AssignmentRow = {
+  assignment_id: string;
+  question_snapshot: { set_title?: unknown; year_month?: unknown } | null;
+};
 
 export async function GET(request: Request) {
   try {
@@ -27,7 +32,7 @@ export async function GET(request: Request) {
     const attemptResult = await readAllSupabaseRows<AttemptRow>((from, to) =>
       supabase
         .from("writing_attempts")
-        .select("attempt_id,task_type,question_id,set_id,submitted_at")
+        .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
         .eq("user_id", auth.userId!)
         .eq("status", "submitted")
         .order("submitted_at", { ascending: false })
@@ -85,16 +90,42 @@ export async function GET(request: Request) {
       })
     );
     const questionByType = new Map(questionMaps);
+    const assignmentIds = Array.from(new Set(
+      publishedAttempts.map((attempt) => attempt.assignment_id ?? "").filter(Boolean)
+    ));
+    const assignmentResult = assignmentIds.length
+      ? await readAllSupabaseRows<AssignmentRow>((from, to) =>
+          supabase
+            .from("writing_assignments")
+            .select("assignment_id,question_snapshot")
+            .in("assignment_id", assignmentIds)
+            .order("assignment_id", { ascending: true })
+            .range(from, to)
+        )
+      : { data: [] as AssignmentRow[], error: null };
+    if (assignmentResult.error) throw new Error("assignment read failed");
+    const assignmentById = new Map(
+      (assignmentResult.data ?? []).map((assignment) => [assignment.assignment_id, assignment])
+    );
     const reviews = publishedAttempts
       .map((attempt) => {
         const question = questionByType.get(attempt.task_type)?.get(attempt.question_id);
-        if (!question) return null;
+        const snapshot = attempt.assignment_id
+          ? assignmentById.get(attempt.assignment_id)?.question_snapshot
+          : null;
+        const setTitle = typeof snapshot?.set_title === "string"
+          ? snapshot.set_title
+          : question?.set_title;
+        const yearMonth = typeof snapshot?.year_month === "string"
+          ? snapshot.year_month
+          : question?.year_month;
+        if (!setTitle || !yearMonth) return null;
         return {
           attempt_id: attempt.attempt_id,
           task_type: attempt.task_type,
           set_id: attempt.set_id,
-          set_title: question.set_title,
-          year_month: question.year_month,
+          set_title: setTitle,
+          year_month: yearMonth,
           submitted_at: attempt.submitted_at,
           published_at: publishedByAttempt.get(attempt.attempt_id)
         };

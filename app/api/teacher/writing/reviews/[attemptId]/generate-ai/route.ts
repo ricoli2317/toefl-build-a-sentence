@@ -115,11 +115,12 @@ function createWritingReviewRepository(
       return null;
     },
 
-    async findQuestion(taskType, questionId) {
+    async findQuestion(taskType, questionId, assignmentId) {
       const { data, error } = await readWritingQuestionForReview(
         supabase,
         taskType,
-        questionId
+        questionId,
+        assignmentId
       );
       throwReadError(error, "original writing question");
       return data as ReviewQuestion | null;

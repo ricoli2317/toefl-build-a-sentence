@@ -2,6 +2,12 @@ export type WritingTaskType = "email" | "academic_discussion";
 export type WritingAttemptStatus = "draft" | "submitted";
 export type WritingMode = "exam" | "practice";
 export type WritingOvertimeRange = { start: number; end: number };
+export type AcademicDiscussionProfessorAvatarType =
+  | "male_professor"
+  | "female_professor";
+export type AcademicDiscussionStudentAvatarType =
+  | "male_student"
+  | "female_student";
 
 export const WRITING_TASK_CONFIG = {
   email: {
@@ -50,12 +56,16 @@ export type AcademicDiscussionQuestion = {
   student_1_response: string;
   student_2_name: string;
   student_2_response: string;
+  professor_avatar_type?: AcademicDiscussionProfessorAvatarType;
+  student_1_avatar_type?: AcademicDiscussionStudentAvatarType;
+  student_2_avatar_type?: AcademicDiscussionStudentAvatarType;
 };
 
 export type WritingQuestion = EmailQuestion | AcademicDiscussionQuestion;
 
 export type WritingAttempt = {
   attempt_id: string;
+  assignment_id?: string | null;
   user_id: string;
   task_type: WritingTaskType;
   question_id: string;
