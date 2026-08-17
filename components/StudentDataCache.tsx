@@ -27,6 +27,8 @@ export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
 export const STUDENT_WRITING_OVERVIEW_CACHE_KEY = "writing:overview";
+export const STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY = "writing:assignments";
+export const STUDENT_WRITING_MODE_POLICY_CACHE_KEY = "writing:mode-policy";
 export const STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY =
   "writing:academic-discussion-avatars";
 export const STUDENT_CURRENT_USER_CACHE_KEY = "current-user";
@@ -54,6 +56,7 @@ export type StudentCacheSession = {
 
 type CacheEntry =
   | { status: "loading"; promise: Promise<unknown>; generation: number }
+  | { status: "refreshing"; data: unknown; promise: Promise<unknown>; generation: number }
   | { status: "success"; data: unknown }
   | { status: "error"; error: string };
 
@@ -74,6 +77,10 @@ type StudentDataCacheValue = {
   getEntry: (key: string) => CacheEntry | undefined;
   invalidate: (keyPrefix: string) => void;
   load: <T>(
+    key: string,
+    loader: (session: StudentCacheSession) => Promise<T>
+  ) => Promise<T | undefined>;
+  refresh: <T>(
     key: string,
     loader: (session: StudentCacheSession) => Promise<T>
   ) => Promise<T | undefined>;
@@ -158,7 +165,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       if (!keyWithStudent) return false;
 
       const current = entries.current.get(keyWithStudent);
-      if (current?.status !== "success") return false;
+      if (current?.status !== "success" && current?.status !== "refreshing") return false;
 
       entries.current.set(keyWithStudent, {
         status: "success",
@@ -186,6 +193,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       const existing = entries.current.get(keyWithStudent);
       if (existing?.status === "success") return existing.data as T;
       if (existing?.status === "loading") return existing.promise as Promise<T>;
+      if (existing?.status === "refreshing") return existing.promise as Promise<T>;
       if (existing?.status === "error") return undefined;
 
       const generation = generations.current.get(keyWithStudent) ?? 0;
@@ -240,6 +248,62 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       }
     },
     [notify, scopedKey]
+  );
+
+  const refresh = useCallback(
+    async <T,>(
+      key: string,
+      loader: (session: StudentCacheSession) => Promise<T>
+    ) => {
+      const session = sessionRef.current;
+      const keyWithStudent = scopedKey(key);
+      if (!session || !keyWithStudent) return undefined;
+
+      const existing = entries.current.get(keyWithStudent);
+      if (existing?.status === "loading" || existing?.status === "refreshing") {
+        return existing.promise as Promise<T>;
+      }
+      if (existing?.status !== "success") {
+        return load(key, loader);
+      }
+
+      const generation = generations.current.get(keyWithStudent) ?? 0;
+      const previousData = existing.data as T;
+      const promise = loader(session);
+      entries.current.set(keyWithStudent, {
+        status: "refreshing",
+        data: previousData,
+        promise,
+        generation
+      });
+      notify();
+
+      try {
+        const data = await promise;
+        const current = entries.current.get(keyWithStudent);
+        if (
+          current?.status === "refreshing" &&
+          current.promise === promise &&
+          current.generation === generation &&
+          (generations.current.get(keyWithStudent) ?? 0) === generation
+        ) {
+          entries.current.set(keyWithStudent, { status: "success", data });
+          notify();
+        }
+        return data;
+      } catch {
+        const current = entries.current.get(keyWithStudent);
+        if (current?.status === "refreshing" && current.promise === promise) {
+          entries.current.set(keyWithStudent, {
+            status: "success",
+            data: previousData
+          });
+          notify();
+        }
+        return undefined;
+      }
+    },
+    [load, notify, scopedKey]
   );
 
   const recordOfficialAttempt = useCallback(
@@ -362,6 +426,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       getEntry,
       invalidate,
       load,
+      refresh,
       sessionReady,
       setData,
       studentId,
@@ -374,6 +439,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       getEntry,
       invalidate,
       load,
+      refresh,
       sessionReady,
       setData,
       studentId,
@@ -419,7 +485,10 @@ export function useStudentCachedData<T>(
   if (!enabled) return { data: null, error: "", loading: false };
 
   return {
-    data: entry?.status === "success" ? (entry.data as T) : null,
+    data:
+      entry?.status === "success" || entry?.status === "refreshing"
+        ? (entry.data as T)
+        : null,
     error:
       entry?.status === "error"
         ? entry.error
@@ -428,7 +497,8 @@ export function useStudentCachedData<T>(
           : "",
     loading:
       !cache.sessionReady ||
-      Boolean(cache.studentId && (!entry || entry.status === "loading"))
+      Boolean(cache.studentId && (!entry || entry.status === "loading")),
+    refreshing: entry?.status === "refreshing"
   };
 }
 

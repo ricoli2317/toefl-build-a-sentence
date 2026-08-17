@@ -60,6 +60,7 @@ type ReviewPayload = {
     submitted_at: string | null;
   };
   question: WritingQuestion;
+  question_source?: "question_bank" | "custom";
   review: StudentPublishedWritingReview;
   error?: string;
 };
@@ -245,6 +246,7 @@ export function StudentWritingReviewResult({
                 </p>
               ) : (
                 <WritingQuestionReview
+                  academicDiscussionAvatarSource={state.data.question_source}
                   avatarMap={avatarState.data?.avatars ?? EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP}
                   avatarMapReady={Boolean(avatarState.data)}
                   question={question}

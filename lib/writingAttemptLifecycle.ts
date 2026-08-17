@@ -19,11 +19,13 @@ export type WritingAttemptDatabaseError = {
 
 export type WritingDraftRepository = {
   findDraft(input: {
+    assignmentId?: string | null;
     userId: string;
     taskType: WritingTaskType;
     questionId: string;
   }): Promise<WritingDraftLookup>;
   insertDraft(input: {
+    assignmentId?: string | null;
     userId: string;
     taskType: WritingTaskType;
     question: WritingQuestion;
@@ -55,6 +57,7 @@ export class WritingAttemptLifecycleError extends Error {
  */
 export async function getOrCreateWritingDraft(
   input: {
+    assignmentId?: string | null;
     userId: string;
     taskType: WritingTaskType;
     questionId: string;
@@ -75,6 +78,7 @@ export async function getOrCreateWritingDraft(
   }
 
   const inserted = await repository.insertDraft({
+    assignmentId: input.assignmentId,
     userId: input.userId,
     taskType: input.taskType,
     question: input.question,
@@ -110,7 +114,10 @@ export function isUniqueConstraintError(
   if (!error) return false;
   if (error.code === "23505") return true;
   const description = `${error.constraint ?? ""} ${error.message} ${error.details ?? ""}`;
-  return description.includes("writing_attempts_one_draft_per_question");
+  return (
+    description.includes("writing_attempts_one_draft_per_question") ||
+    description.includes("writing_attempts_one_assignment_draft")
+  );
 }
 
 function safeDraftError(error: WritingAttemptDatabaseError | null | undefined) {

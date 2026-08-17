@@ -82,13 +82,36 @@ create index if not exists writing_attempts_assignment_student_submitted_idx
   on public.writing_attempts(assignment_id, user_id, submitted_at)
   where assignment_id is not null and status = 'submitted';
 
+-- Ordinary question-bank drafts and assignment drafts have independent identities.
+-- The old index treated two assignments using the same bank question as one draft.
+do $$
+begin
+  if exists (
+    select 1 from pg_constraint
+    where conname = 'writing_attempts_one_draft_per_question'
+      and conrelid = 'public.writing_attempts'::regclass
+  ) then
+    alter table public.writing_attempts
+      drop constraint writing_attempts_one_draft_per_question;
+  end if;
+end $$;
+drop index if exists public.writing_attempts_one_draft_per_question;
+create unique index if not exists writing_attempts_one_draft_per_question
+  on public.writing_attempts(user_id, task_type, question_id)
+  where status = 'draft' and assignment_id is null;
+create unique index if not exists writing_attempts_one_assignment_draft
+  on public.writing_attempts(user_id, assignment_id)
+  where status = 'draft' and assignment_id is not null;
+
 create or replace function public.enforce_active_writing_assignment_attempt()
 returns trigger
 language plpgsql
+security definer
 set search_path = public
 as $$
 declare
   must_check_assignment boolean := false;
+  assignment_is_active boolean;
 begin
   if new.assignment_id is null then
     return new;
@@ -98,18 +121,39 @@ begin
   elsif old.status = 'draft' then
     must_check_assignment := true;
   end if;
-  if must_check_assignment and not exists (
-    select 1
-    from public.writing_assignments assignment
-    where assignment.assignment_id = new.assignment_id
-      and assignment.status = 'active'
+  if must_check_assignment then
+    select (
+      assignment.status = 'active'
       and assignment.deleted_at is null
-  ) then
-    raise exception 'WRITING_ASSIGNMENT_NOT_ACTIVE';
+      and assignment.task_type = new.task_type
+      and assignment.question_snapshot ->> 'question_id' = new.question_id
+    ) into assignment_is_active
+      from public.writing_assignments assignment
+      where assignment.assignment_id = new.assignment_id
+      for key share;
+    if assignment_is_active is distinct from true then
+      raise exception 'WRITING_ASSIGNMENT_NOT_ACTIVE';
+    end if;
+    if not exists (
+      select 1
+      from public.writing_assignment_students assignment_student
+      where assignment_student.assignment_id = new.assignment_id
+        and assignment_student.student_id = new.user_id
+    ) then
+      raise exception 'WRITING_ASSIGNMENT_NOT_ASSIGNED';
+    end if;
   end if;
   return new;
 end;
 $$;
+
+-- The trigger uses FOR KEY SHARE so assignment lifecycle changes cannot race
+-- with draft creation. Run the locked lookup as the function owner: students
+-- have SELECT access to assigned work, but row-locking reads also invoke the
+-- teacher-only UPDATE RLS policy and would otherwise hide the active row.
+revoke all on function public.enforce_active_writing_assignment_attempt() from public;
+revoke all on function public.enforce_active_writing_assignment_attempt() from anon;
+revoke all on function public.enforce_active_writing_assignment_attempt() from authenticated;
 
 drop trigger if exists writing_attempts_require_active_assignment on public.writing_attempts;
 create trigger writing_attempts_require_active_assignment
@@ -120,6 +164,50 @@ drop trigger if exists writing_assignments_set_updated_at on public.writing_assi
 create trigger writing_assignments_set_updated_at
 before update on public.writing_assignments
 for each row execute function public.set_updated_at();
+
+create or replace function public.withdraw_writing_assignment(
+  p_assignment_id uuid,
+  p_teacher_id uuid
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_assignment public.writing_assignments%rowtype;
+begin
+  select * into current_assignment
+  from public.writing_assignments
+  where assignment_id = p_assignment_id
+    and teacher_id = p_teacher_id
+    and deleted_at is null
+  for update;
+
+  if not found then
+    raise exception 'ASSIGNMENT_NOT_FOUND';
+  end if;
+  if current_assignment.status <> 'active' then
+    raise exception 'ASSIGNMENT_NOT_ACTIVE';
+  end if;
+  if exists (
+    select 1
+    from public.writing_attempts
+    where assignment_id = p_assignment_id
+  ) then
+    raise exception 'ASSIGNMENT_HAS_ATTEMPT';
+  end if;
+
+  update public.writing_assignments
+  set status = 'withdrawn'
+  where assignment_id = p_assignment_id;
+end;
+$$;
+
+revoke all on function public.withdraw_writing_assignment(uuid, uuid) from public;
+revoke all on function public.withdraw_writing_assignment(uuid, uuid) from anon;
+revoke all on function public.withdraw_writing_assignment(uuid, uuid) from authenticated;
+grant execute on function public.withdraw_writing_assignment(uuid, uuid) to service_role;
 
 alter table public.writing_assignments enable row level security;
 alter table public.writing_assignment_students enable row level security;

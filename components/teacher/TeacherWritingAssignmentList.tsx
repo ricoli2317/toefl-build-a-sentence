@@ -19,9 +19,12 @@ import {
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import { WRITING_TASK_CONFIG } from "@/lib/writing";
 import {
+  getWritingAssignmentReviewAction,
+  getWritingAssignmentProgress,
   writingAssignmentTitle,
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
+import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
 
 const WITHDRAW_CONFIRM = "确认撤回这项作业？\n\n撤回后，学生将不能再通过该作业开始或继续未提交的练习。\n已经提交的作业和批改记录不会受到影响。";
 const DELETE_CONFIRM = "确认删除这项作业？\n\n删除后，该作业将不再显示在正常作业列表中。\n学生已有提交和批改记录不会被删除。";
@@ -48,6 +51,7 @@ export function TeacherWritingAssignmentList() {
       cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
     } catch (mutation) {
       setMutationError(mutation instanceof Error ? mutation.message : "作业操作失败。");
+      cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
     } finally {
       setPendingId("");
     }
@@ -67,25 +71,50 @@ export function TeacherWritingAssignmentList() {
       {data.assignments.map((assignment) => {
         const pending = pendingId === assignment.assignment_id;
         const detailHref = `/teacher/writing/assignments/${assignment.assignment_id}`;
+        const reviewAction = assignment.assigned_count === 1
+          ? getWritingAssignmentReviewAction({
+              latestSubmittedAttemptId:
+                assignment.single_student_latest_submitted_attempt_id,
+              latestReviewStatus: assignment.single_student_latest_review_status
+            })
+          : null;
         return (
           <article className="teacher-card flex flex-wrap items-center gap-5 p-5" key={assignment.assignment_id}>
             <Link className="group min-w-0 flex-1" href={detailHref}>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[assignment.task_type].label}</span>
                 <span className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-muted">{assignment.question_source === "custom" ? "自定义" : "题库"}</span>
-                <LifecycleBadge status={assignment.status} />
+                <AssignmentProgressBadge assignment={assignment} />
                 {assignment.has_overdue_students ? <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error"><AlertTriangle aria-hidden="true" size={13} />存在逾期未完成</span> : null}
               </div>
               <h2 className="mt-3 truncate text-lg font-bold text-student-text">{writingAssignmentTitle(assignment.question_snapshot)}</h2>
               <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
-                <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} />{assignment.assigned_count} 名学生 · {assignment.completed_count} 人已完成</span>
+                <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} />{assignment.assigned_count} 名学生 · {assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
                 <span className="inline-flex items-center gap-2"><CalendarClock aria-hidden="true" size={16} />截止：{formatDateTime(assignment.due_at, "无")}</span>
                 <span>布置：{formatDateTime(assignment.created_at, "—")}</span>
               </div>
             </Link>
             <div className="flex flex-wrap items-center justify-end gap-2">
+              {reviewAction ? (
+                <Link
+                  className="teacher-button-secondary"
+                  href={teacherWritingReviewWorkspaceHref(
+                    reviewAction.attemptId,
+                    "/teacher/writing/assignments"
+                  )}
+                >
+                  {reviewAction.label}
+                </Link>
+              ) : null}
               {assignment.status === "active" ? (
-                <button className="teacher-button-secondary" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "withdraw")} type="button"><Undo2 aria-hidden="true" size={16} />撤回</button>
+                !assignment.has_attempts ? (
+                  <button
+                    className="teacher-button-secondary"
+                    disabled={pending}
+                    onClick={() => void mutate(assignment.assignment_id, "withdraw")}
+                    type="button"
+                  ><Undo2 aria-hidden="true" size={16} />撤回</button>
+                ) : null
               ) : (
                 <>
                   <Link className="teacher-button-secondary" href={`${detailHref}/edit`}><Pencil aria-hidden="true" size={16} />编辑作业</Link>
@@ -102,8 +131,21 @@ export function TeacherWritingAssignmentList() {
   );
 }
 
-function LifecycleBadge({ status }: { status: WritingAssignmentSummary["status"] }) {
-  return <span className={`rounded-full px-3 py-1 text-xs font-bold ${status === "active" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{status === "active" ? "进行中" : "已撤回"}</span>;
+function AssignmentProgressBadge({ assignment }: { assignment: WritingAssignmentSummary }) {
+  const progress = getWritingAssignmentProgress({
+    assignedCount: assignment.assigned_count,
+    lifecycleStatus: assignment.status,
+    publishedCount: assignment.published_count,
+    submittedCount: assignment.completed_count
+  });
+  const className = progress.progress === "completed"
+    ? "bg-emerald-50 text-emerald-700"
+    : progress.progress === "withdrawn"
+      ? "bg-slate-100 text-slate-600"
+      : progress.progress === "ongoing"
+        ? "bg-student-primary-soft text-student-primary"
+        : "bg-amber-50 text-amber-700";
+  return <span className={`rounded-full px-3 py-1 text-xs font-bold ${className}`}>{progress.label}</span>;
 }
 
 function formatDateTime(value: string | null, fallback: string) {

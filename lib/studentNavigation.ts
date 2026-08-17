@@ -5,6 +5,7 @@ export const STUDENT_ROUTES = {
   buildASentence: "/student/practice-sets",
   writeEmail: "/student/write-email",
   academicDiscussion: "/student/academic-discussion",
+  assignments: "/student/assignments",
   writingReviews: "/student/writing-reviews",
   practiceSets: "/student/practice-sets",
   practiceHistory: "/student/practice-history",

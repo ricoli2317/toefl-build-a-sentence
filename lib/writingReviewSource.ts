@@ -83,13 +83,18 @@ export async function readWritingQuestionForReview(
   if (assignmentId) {
     const { data, error } = await supabase
       .from("writing_assignments")
-      .select("task_type,question_snapshot")
+      .select("task_type,question_source,question_snapshot")
       .eq("assignment_id", assignmentId)
       .maybeSingle();
-    if (error) return { data: null, error };
+    if (error) return { data: null, error, questionSource: null };
     if (data?.task_type === taskType && isWritingQuestionSnapshot(taskType, data.question_snapshot)) {
-      return { data: data.question_snapshot as WritingReviewSourceQuestion, error: null };
+      return {
+        data: data.question_snapshot as WritingReviewSourceQuestion,
+        error: null,
+        questionSource: data.question_source === "custom" ? "custom" as const : "question_bank" as const
+      };
     }
+    return { data: null, error: null, questionSource: null };
   }
   const table =
     taskType === "email" ? "email_questions" : "academic_discussion_questions";
@@ -99,7 +104,11 @@ export async function readWritingQuestionForReview(
     .eq("question_id", questionId)
     .maybeSingle();
 
-  return { data: data as WritingReviewSourceQuestion | null, error };
+  return {
+    data: data as WritingReviewSourceQuestion | null,
+    error,
+    questionSource: "question_bank" as const
+  };
 }
 
 /** Loads the read-only source shared by local comparison tooling. */

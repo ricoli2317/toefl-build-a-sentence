@@ -198,7 +198,7 @@ test("teacher UI exposes list, filters, friendly status/detail, overlap actions,
   const workspace = read("components/teacher/TeacherWritingReviewWorkspace.tsx");
   const logs = read("components/teacher/TeacherWritingAiLogs.tsx");
   assert.match(page, />\s*AI 调用日志\s*</);
-  assert.match(list, /reviews\/\$\{encodeURIComponent\(attempt\.attemptId\)\}/);
+  assert.match(list, /teacherWritingReviewWorkspaceHref\([\s\S]*attempt\.attemptId/);
   assert.match(list, />\s*查看\s*</);
   assert.doesNotMatch(list, /generate-ai/);
   assert.match(workspace, /查看 AI 日志/);

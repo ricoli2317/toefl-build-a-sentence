@@ -129,6 +129,17 @@ select {
     @apply h-full min-h-[520px] rounded-2xl border border-student-border bg-white px-6 py-7 text-[15px] leading-7 shadow-[0_1px_2px_rgba(23,32,51,0.025)] lg:min-h-0;
   }
 
+  .writing-assignment-question-preview .writing-prompt-panel {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .writing-assignment-question-preview .writing-prompt-panel > .flex-1 {
+    flex: none;
+    overflow: visible;
+  }
+
   .writing-response-panel {
     @apply flex h-full min-h-[650px] flex-col rounded-2xl border border-student-border bg-white shadow-[0_1px_2px_rgba(23,32,51,0.025)] lg:min-h-0;
   }

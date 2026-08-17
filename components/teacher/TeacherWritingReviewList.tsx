@@ -15,6 +15,7 @@ import {
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
 import type { WritingTaskType } from "@/lib/writing";
 
 type ReviewStatus = "pending" | "reviewing" | "published";
@@ -145,7 +146,10 @@ export function TeacherWritingReviewList() {
                       <td className="border-t border-student-border px-4 py-4">
                         <Link
                           className="teacher-button-secondary min-w-[104px]"
-                          href={`/teacher/writing/reviews/${encodeURIComponent(attempt.attemptId)}`}
+                          href={teacherWritingReviewWorkspaceHref(
+                            attempt.attemptId,
+                            "/teacher/writing/reviews"
+                          )}
                         >
                           查看
                         </Link>

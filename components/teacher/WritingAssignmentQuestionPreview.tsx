@@ -24,7 +24,7 @@ export function WritingAssignmentQuestionPreview({
     () => teacherApiFetch("/api/teacher/writing/assignments/avatars")
   );
   return (
-    <div className="overflow-hidden rounded-xl border border-student-border bg-white p-3">
+    <div className="writing-assignment-question-preview overflow-hidden rounded-xl border border-student-border bg-white p-3">
       <WritingQuestionReview
         academicDiscussionAvatarSource={questionSource}
         avatarMap={avatarState.data?.avatars ?? {}}

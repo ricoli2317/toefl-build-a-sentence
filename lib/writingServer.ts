@@ -51,13 +51,19 @@ export async function readWritingQuestion(
   if (assignmentId) {
     const { data, error } = await supabase
       .from("writing_assignments")
-      .select("task_type,question_snapshot")
+      .select("task_type,question_source,question_snapshot,status,deleted_at")
       .eq("assignment_id", assignmentId)
       .maybeSingle();
-    if (error) return { data: null, error };
+    if (error) return { data: null, error, questionSource: null };
     if (data?.task_type === taskType && isWritingQuestionSnapshot(taskType, data.question_snapshot)) {
-      return { data: data.question_snapshot, error: null };
+      return {
+        assignmentAvailable: data.status === "active" && data.deleted_at === null,
+        data: data.question_snapshot,
+        error: null,
+        questionSource: data.question_source === "custom" ? "custom" as const : "question_bank" as const
+      };
     }
+    return { data: null, error: null, questionSource: null };
   }
   const { data, error } = await supabase
     .from(WRITING_TASK_CONFIG[taskType].questionTable)
@@ -65,7 +71,12 @@ export async function readWritingQuestion(
     .eq("question_id", questionId)
     .maybeSingle();
 
-  return { data: data as WritingQuestion | null, error };
+  return {
+    assignmentAvailable: true,
+    data: data as WritingQuestion | null,
+    error,
+    questionSource: "question_bank" as const
+  };
 }
 
 export async function readOwnedWritingAttempt(

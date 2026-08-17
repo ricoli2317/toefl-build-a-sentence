@@ -8,11 +8,14 @@ const {
   buildCustomWritingQuestionSnapshot,
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
+  getWritingAssignmentReviewAction,
+  isLaterWritingAssignmentSubmission,
   isWritingQuestionSnapshot,
   normalizeAssignmentText,
   parseEmailRequirements,
   suggestAcademicDiscussionAvatarType,
-  writingAssignmentTitle
+  writingAssignmentTitle,
+  writingAssignmentWithdrawBlockedMessage
 } = require("../lib/writingAssignments.ts");
 const {
   createStudentSearchMetadata,
@@ -268,6 +271,53 @@ test("assignment status is dynamic and uses the earliest submitted retake", () =
   assert.equal(calculateWritingAssignmentStudentStatus({ dueAt: null, firstSubmittedAt: null }), "pending");
 });
 
+test("assignment review action selects the latest submitted attempt state", () => {
+  assert.equal(getWritingAssignmentReviewAction({
+    latestSubmittedAttemptId: null,
+    latestReviewStatus: null
+  }), null);
+  assert.deepEqual(getWritingAssignmentReviewAction({
+    latestSubmittedAttemptId: "attempt-2",
+    latestReviewStatus: null
+  }), { attemptId: "attempt-2", label: "批改" });
+  assert.deepEqual(getWritingAssignmentReviewAction({
+    latestSubmittedAttemptId: "attempt-2",
+    latestReviewStatus: "reviewing"
+  }), { attemptId: "attempt-2", label: "继续批改" });
+  assert.deepEqual(getWritingAssignmentReviewAction({
+    latestSubmittedAttemptId: "attempt-2",
+    latestReviewStatus: "published"
+  }), { attemptId: "attempt-2", label: "查看批改" });
+});
+
+test("latest review target uses submitted time then attempt ID without changing earliest completion", () => {
+  const older = { attempt_id: "attempt-1", submitted_at: "2026-08-19T09:00:00.000Z" };
+  const newer = { attempt_id: "attempt-2", submitted_at: "2026-08-21T09:00:00.000Z" };
+  const sameTimeHigherId = { attempt_id: "attempt-3", submitted_at: newer.submitted_at };
+  assert.equal(isLaterWritingAssignmentSubmission(newer, older), true);
+  assert.equal(isLaterWritingAssignmentSubmission(older, newer), false);
+  assert.equal(isLaterWritingAssignmentSubmission(sameTimeHigherId, newer), true);
+  assert.equal(
+    earliestWritingAssignmentSubmission([newer.submitted_at, older.submitted_at]),
+    older.submitted_at
+  );
+});
+
+test("withdraw is available only before any student attempt exists", () => {
+  assert.equal(writingAssignmentWithdrawBlockedMessage({
+    hasAttempts: false,
+    submittedCount: 0
+  }), null);
+  assert.equal(writingAssignmentWithdrawBlockedMessage({
+    hasAttempts: true,
+    submittedCount: 0
+  }), "已有学生开始作答，不能撤回");
+  assert.equal(writingAssignmentWithdrawBlockedMessage({
+    hasAttempts: true,
+    submittedCount: 1
+  }), "已有学生提交，不能撤回");
+});
+
 test("assignment student search reuses Chinese and pinyin matching", () => {
   const metadata = createStudentSearchMetadata("王小明");
   assert.equal(Number.isFinite(studentSearchRank(metadata, "王小明", "王小明")), true);
@@ -303,10 +353,44 @@ test("assignment lifecycle SQL is rerunnable, transactional, and never deletes a
   assert.match(sql, /STUDENT_HAS_ATTEMPT/);
   assert.match(sql, /create or replace function public\.enforce_active_writing_assignment_attempt/);
   assert.match(sql, /writing_attempts_require_active_assignment/);
+  assert.match(sql, /for key share/);
   assert.match(sql, /assignment\.status = 'active'[\s\S]*assignment\.deleted_at is null/);
   assert.match(sql, /revoke delete on public\.writing_assignments from authenticated/);
   assert.match(sql, /where attempt\.assignment_id = p_assignment_id[\s\S]*attempt\.user_id = assignment_student\.student_id/);
   assert.doesNotMatch(sql, /delete\s+from\s+public\.writing_assignments\s/i);
+});
+
+test("withdraw RPC locks the assignment and rejects draft or submitted attempts", () => {
+  const sql = fs.readFileSync(path.join(projectRoot, "supabase/writing_assignments.sql"), "utf8");
+  const withdrawFunction = sql.match(
+    /create or replace function public\.withdraw_writing_assignment[\s\S]*?\n\$\$;/
+  )?.[0] ?? "";
+  assert.match(withdrawFunction, /for update/);
+  const attemptCheck = withdrawFunction.match(
+    /if exists \([\s\S]*?from public\.writing_attempts[\s\S]*?\) then/
+  )?.[0] ?? "";
+  assert.match(attemptCheck, /where assignment_id = p_assignment_id/);
+  assert.match(withdrawFunction, /ASSIGNMENT_HAS_ATTEMPT/);
+  assert.doesNotMatch(attemptCheck, /status\s*=/);
+  assert.match(sql, /grant execute on function public\.withdraw_writing_assignment\(uuid, uuid\) to service_role/);
+});
+
+test("assignment attempt trigger locks rows without student UPDATE RLS hiding them", () => {
+  const sql = fs.readFileSync(
+    path.join(projectRoot, "supabase/writing_assignments.sql"),
+    "utf8"
+  );
+  const triggerFunction = sql.match(
+    /create or replace function public\.enforce_active_writing_assignment_attempt\(\)[\s\S]*?(?=drop trigger if exists writing_attempts_require_active_assignment)/
+  )?.[0] ?? "";
+  assert.match(triggerFunction, /language plpgsql\s+security definer\s+set search_path = public/);
+  assert.match(triggerFunction, /for key share/);
+  assert.match(triggerFunction, /assignment\.status = 'active'/);
+  assert.match(triggerFunction, /assignment\.deleted_at is null/);
+  assert.match(triggerFunction, /assignment\.task_type = new\.task_type/);
+  assert.match(triggerFunction, /assignment\.question_snapshot ->> 'question_id' = new\.question_id/);
+  assert.match(triggerFunction, /assignment_student\.student_id = new\.user_id/);
+  assert.match(triggerFunction, /revoke all on function public\.enforce_active_writing_assignment_attempt\(\) from authenticated/);
 });
 
 test("teacher assignment lifecycle API soft deletes and enforces withdrawn editing", () => {
@@ -315,6 +399,9 @@ test("teacher assignment lifecycle API soft deletes and enforces withdrawn editi
     "utf8"
   );
   assert.match(route, /action === "withdraw"/);
+  assert.match(route, /\.rpc\(\s*"withdraw_writing_assignment"/);
+  assert.match(route, /ASSIGNMENT_HAS_ATTEMPT/);
+  assert.match(route, /已有学生开始作答，该作业不能撤回/);
   assert.match(route, /action === "reactivate"/);
   assert.match(route, /action === "soft_delete"/);
   assert.match(route, /deleted_at: new Date\(\)\.toISOString\(\)/);
@@ -329,6 +416,100 @@ test("teacher assignment lifecycle API soft deletes and enforces withdrawn editi
     "utf8"
   );
   assert.match(listRoute, /\.is\("deleted_at", null\)/);
+});
+
+test("assignment list and detail hide withdrawal as soon as any attempt exists", () => {
+  const listRoute = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/route.ts"),
+    "utf8"
+  );
+  const list = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentList.tsx"),
+    "utf8"
+  );
+  const detail = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailView.tsx"),
+    "utf8"
+  );
+  assert.match(listRoute, /assignmentsWithAttempts\.add\(attempt\.assignment_id\)/);
+  assert.match(listRoute, /has_attempts: assignmentsWithAttempts\.has/);
+  for (const source of [list, detail]) {
+    assert.match(source, /assignment\.status === "active"[\s\S]{0,120}!assignment\.has_attempts/);
+    assert.doesNotMatch(source, /withdrawBlockedMessage|不能撤回<\/span>/);
+  }
+});
+
+test("assignment student rows link latest submissions to the existing review workspace", () => {
+  const route = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/[assignmentId]/route.ts"),
+    "utf8"
+  );
+  const detail = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailView.tsx"),
+    "utf8"
+  );
+  const workspace = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  assert.match(route, /latestSubmissionByStudent/);
+  assert.match(route, /isLaterWritingAssignmentSubmission/);
+  assert.match(route, /\.select\("attempt_id,status,published_at"\)/);
+  assert.match(route, /latest_submitted_attempt_id:/);
+  assert.match(route, /latest_review_status:/);
+  assert.match(detail, /getWritingAssignmentReviewAction/);
+  assert.match(detail, /teacherWritingReviewWorkspaceHref\(action\.attemptId, returnTo\)/);
+  assert.match(detail, /text-sm font-semibold leading-6 text-student-primary/);
+  const reviewAction = detail.match(
+    /function StudentReviewAction[\s\S]*?(?=\nfunction StatusBadge)/
+  )?.[0] ?? "";
+  assert.doesNotMatch(reviewAction, /teacher-button-primary|teacher-button-secondary/);
+  assert.match(workspace, /cache\.invalidate\(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
+});
+
+test("only single-student assignment cards expose the latest review action", () => {
+  const route = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/route.ts"),
+    "utf8"
+  );
+  const list = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentList.tsx"),
+    "utf8"
+  );
+  assert.match(route, /students\.size === 1/);
+  assert.match(route, /single_student_latest_submitted_attempt_id:/);
+  assert.match(route, /single_student_latest_review_status:/);
+  assert.match(list, /assignment\.assigned_count === 1/);
+  assert.match(list, /getWritingAssignmentReviewAction/);
+  assert.match(list, /teacherWritingReviewWorkspaceHref\([\s\S]*"\/teacher\/writing\/assignments"/);
+  assert.match(list, /reviewAction \? \([\s\S]*className="teacher-button-secondary"/);
+  assert.match(list, /aria-label="查看作业详情" className="teacher-button-secondary px-3"/);
+});
+
+test("assignment question preview is content-height while detail review actions stay textual", () => {
+  const preview = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/WritingAssignmentQuestionPreview.tsx"),
+    "utf8"
+  );
+  const globals = fs.readFileSync(path.join(projectRoot, "app/globals.css"), "utf8");
+  const detail = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailView.tsx"),
+    "utf8"
+  );
+  assert.match(preview, /writing-assignment-question-preview/);
+  assert.match(
+    globals,
+    /\.writing-assignment-question-preview \.writing-prompt-panel \{\s*height: auto;\s*min-height: 0;\s*overflow: visible;/
+  );
+  assert.match(
+    globals,
+    /\.writing-assignment-question-preview \.writing-prompt-panel > \.flex-1 \{\s*flex: none;\s*overflow: visible;/
+  );
+  const reviewAction = detail.match(
+    /function StudentReviewAction[\s\S]*?(?=\nfunction StatusBadge)/
+  )?.[0] ?? "";
+  assert.match(reviewAction, /text-sm font-semibold leading-6 text-student-primary/);
+  assert.doesNotMatch(reviewAction, /teacher-button-secondary/);
 });
 
 test("withdrawn assignment UI reuses the form and exposes lifecycle actions", () => {
@@ -348,20 +529,25 @@ test("withdrawn assignment UI reuses the form and exposes lifecycle actions", ()
     path.join(projectRoot, "components/teacher/TeacherWritingAssignmentEditForm.tsx"),
     "utf8"
   );
+  const assignmentDomain = fs.readFileSync(
+    path.join(projectRoot, "lib/writingAssignments.ts"),
+    "utf8"
+  );
   assert.match(form, /initialAssignment\?: WritingAssignmentDetail/);
   assert.match(form, /questionLocked/);
   assert.match(form, /lockedStudentIds/);
   assert.match(form, /保存并重新布置/);
   assert.match(editWrapper, /TeacherWritingAssignmentForm initialAssignment=/);
   for (const source of [list, detail]) {
-    assert.match(source, /进行中/);
-    assert.match(source, /已撤回/);
+    assert.match(source, /getWritingAssignmentProgress/);
     assert.match(source, /编辑作业/);
     assert.match(source, /重新布置/);
     assert.match(source, /删除作业/);
     assert.match(source, /撤回后，学生将不能再通过该作业开始或继续未提交的练习/);
     assert.match(source, /学生已有提交和批改记录不会被删除/);
   }
+  assert.match(assignmentDomain, /label: "进行中"/);
+  assert.match(assignmentDomain, /label: "已撤回"/);
 });
 
 test("deleted or withdrawn assignment snapshots remain readable by review pipelines", () => {

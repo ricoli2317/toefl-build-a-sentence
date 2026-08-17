@@ -856,7 +856,7 @@ test("review list only opens the workspace and the workspace owns initial AI gen
   );
   assert.match(page, /action=\{[\s\S]*AI 调用日志/);
   assert.doesNotMatch(list, /generate-ai|generateAI|AI 初批失败/);
-  assert.match(list, /href=\{`\/teacher\/writing\/reviews\/\$\{encodeURIComponent\(attempt\.attemptId\)\}`\}/);
+  assert.match(list, /href=\{teacherWritingReviewWorkspaceHref\([\s\S]*attempt\.attemptId,[\s\S]*"\/teacher\/writing\/reviews"/);
   assert.match(list, />\s*查看\s*</);
   assert.match(workspace, /data\.review\.has_ai_review[\s\S]*重新生成 AI 初批[\s\S]*AI 初批/);
   assert.match(workspace, /generateInitialReview[\s\S]*\/generate-ai/);

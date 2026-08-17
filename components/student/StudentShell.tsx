@@ -7,6 +7,7 @@ import {
   BookOpen,
   BookText,
   Clock3,
+  ClipboardList,
   ClipboardX,
   FileText,
   Home,
@@ -82,6 +83,12 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string }> = [
         icon: Clock3,
         label: STUDENT_UI_TEXT.practiceHistory,
         match: (path) => path.startsWith(STUDENT_ROUTES.practiceHistory) || path.startsWith("/student/results/")
+      },
+      {
+        href: STUDENT_ROUTES.assignments,
+        icon: ClipboardList,
+        label: "我的作业",
+        match: (path) => path.startsWith(STUDENT_ROUTES.assignments)
       }
     ]
   }
@@ -95,6 +102,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/student/write-email/submission/") ||
     pathname.startsWith("/student/academic-discussion/practice/") ||
     pathname.startsWith("/student/academic-discussion/submission/") ||
+    /^\/student\/assignments\/[^/]+/.test(pathname) ||
     pathname.startsWith("/student/writing-reviews/");
 
   if (immersive) return <main>{children}</main>;

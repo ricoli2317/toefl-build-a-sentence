@@ -4,6 +4,7 @@ import {
   buildCustomWritingQuestionSnapshot,
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
+  isLaterWritingAssignmentSubmission,
   type WritingAssignmentDetail
 } from "@/lib/writingAssignments";
 import {
@@ -18,7 +19,8 @@ export const dynamic = "force-dynamic";
 
 type MemberRow = { student_id: string; assigned_at: string };
 type ProfileRow = { id: string; email: string | null; full_name: string | null };
-type AttemptRow = { user_id: string; status: string; submitted_at: string | null };
+type AttemptRow = { attempt_id: string; user_id: string; status: string; submitted_at: string | null };
+type ReviewRow = { attempt_id: string; status: string; published_at: string | null };
 
 const ASSIGNMENT_FIELDS =
   "assignment_id,task_type,question_source,question_id,question_snapshot,status,deleted_at,due_at,created_at,updated_at";
@@ -58,7 +60,7 @@ export async function GET(
       readAllSupabaseRows<AttemptRow>((from, to) =>
         auth.supabase!
           .from("writing_attempts")
-          .select("user_id,status,submitted_at")
+          .select("attempt_id,user_id,status,submitted_at")
           .eq("assignment_id", params.assignmentId)
           .order("submitted_at", { ascending: true, nullsFirst: false })
           .order("attempt_id", { ascending: true })
@@ -69,6 +71,7 @@ export async function GET(
     const profileById = new Map(profiles.map((profile) => [profile.id, profile]));
     const attemptStudents = new Set<string>();
     const submissionsByStudent = new Map<string, string[]>();
+    const latestSubmissionByStudent = new Map<string, AttemptRow>();
     for (const attempt of attempts.data ?? []) {
       attemptStudents.add(attempt.user_id);
       if (attempt.status !== "submitted" || !attempt.submitted_at) continue;
@@ -76,7 +79,66 @@ export async function GET(
         ...(submissionsByStudent.get(attempt.user_id) ?? []),
         attempt.submitted_at
       ]);
+      const current = latestSubmissionByStudent.get(attempt.user_id);
+      if (!current || isLaterWritingAssignmentSubmission(attempt, current)) {
+        latestSubmissionByStudent.set(attempt.user_id, attempt);
+      }
     }
+
+    const latestAttemptIds = Array.from(
+      latestSubmissionByStudent.values(),
+      (attempt) => attempt.attempt_id
+    );
+    const reviewStatusByAttemptId = new Map<string, "reviewing" | "published">();
+    if (latestAttemptIds.length > 0) {
+      const reviews = await readAllSupabaseRows<ReviewRow>((from, to) =>
+        auth.supabase!
+          .from("writing_reviews")
+          .select("attempt_id,status,published_at")
+          .in("attempt_id", latestAttemptIds)
+          .range(from, to)
+      );
+      if (reviews.error) throw reviews.error;
+      for (const review of reviews.data ?? []) {
+        reviewStatusByAttemptId.set(
+          review.attempt_id,
+          review.status === "published" && review.published_at
+            ? "published"
+            : "reviewing"
+        );
+      }
+    }
+
+    const students = members.map((member) => {
+      const profile = profileById.get(member.student_id);
+      const firstSubmittedAt = earliestWritingAssignmentSubmission(
+        submissionsByStudent.get(member.student_id) ?? []
+      );
+      const latestSubmission = latestSubmissionByStudent.get(member.student_id);
+      return {
+        student_id: member.student_id,
+        student_name: getPreferredUserDisplayName({
+          email: profile?.email,
+          profileFullName: profile?.full_name
+        }),
+        student_email: profile?.email ?? "",
+        assigned_at: member.assigned_at,
+        first_submitted_at: firstSubmittedAt,
+        has_attempt: attemptStudents.has(member.student_id),
+        latest_submitted_attempt_id: latestSubmission?.attempt_id ?? null,
+        latest_review_status: latestSubmission
+          ? reviewStatusByAttemptId.get(latestSubmission.attempt_id) ?? null
+          : null,
+        status: calculateWritingAssignmentStudentStatus({
+          dueAt: assignment.due_at,
+          firstSubmittedAt
+        })
+      };
+    });
+    const completedCount = students.filter((student) => student.first_submitted_at).length;
+    const publishedCount = students.filter(
+      (student) => student.latest_review_status === "published"
+    ).length;
 
     const detail: WritingAssignmentDetail = {
       assignment_id: String(assignment.assignment_id),
@@ -88,30 +150,14 @@ export async function GET(
       due_at: assignment.due_at,
       created_at: assignment.created_at,
       updated_at: assignment.updated_at,
+      assigned_count: members.length,
+      completed_count: completedCount,
+      published_count: publishedCount,
+      has_attempts: attemptStudents.size > 0,
       has_submitted_attempts: Array.from(submissionsByStudent.values()).some(
         (values) => values.length > 0
       ),
-      students: members.map((member) => {
-        const profile = profileById.get(member.student_id);
-        const firstSubmittedAt = earliestWritingAssignmentSubmission(
-          submissionsByStudent.get(member.student_id) ?? []
-        );
-        return {
-          student_id: member.student_id,
-          student_name: getPreferredUserDisplayName({
-            email: profile?.email,
-            profileFullName: profile?.full_name
-          }),
-          student_email: profile?.email ?? "",
-          assigned_at: member.assigned_at,
-          first_submitted_at: firstSubmittedAt,
-          has_attempt: attemptStudents.has(member.student_id),
-          status: calculateWritingAssignmentStudentStatus({
-            dueAt: assignment.due_at,
-            firstSubmittedAt
-          })
-        };
-      })
+      students
     };
     return writingAssignmentJson({ assignment: detail });
   } catch (error) {
@@ -145,7 +191,25 @@ export async function PATCH(
 
     if (action === "withdraw") {
       if (assignment.status !== "active") return invalidState("只有进行中的作业可以撤回。");
-      return await updateLifecycle(auth.supabase, params.assignmentId, auth.teacherId, "active", {
+      const { error: withdrawError } = await auth.supabase.rpc(
+        "withdraw_writing_assignment",
+        {
+          p_assignment_id: params.assignmentId,
+          p_teacher_id: auth.teacherId
+        }
+      );
+      if (withdrawError) {
+        const withdrawMessage = errorMessage(withdrawError);
+        if (withdrawMessage.includes("ASSIGNMENT_HAS_ATTEMPT")) {
+          return invalidState("已有学生开始作答，该作业不能撤回。");
+        }
+        if (withdrawMessage.includes("ASSIGNMENT_NOT_ACTIVE")) {
+          return invalidState("作业状态已经发生变化，请刷新后重试。");
+        }
+        throw withdrawError;
+      }
+      return writingAssignmentJson({
+        assignmentId: params.assignmentId,
         status: "withdrawn"
       });
     }

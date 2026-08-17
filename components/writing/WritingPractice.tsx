@@ -29,12 +29,15 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
+  STUDENT_WRITING_OVERVIEW_CACHE_KEY,
+  STUDENT_WRITING_MODE_POLICY_CACHE_KEY,
   STUDENT_WRITING_CACHE_PREFIX,
   useStudentCachedData,
   useStudentDataCache,
 } from "@/components/StudentDataCache";
 import {
   loadAcademicDiscussionAvatars,
+  resolveCustomAcademicDiscussionAvatar,
   type AcademicDiscussionAvatarMap,
   type AcademicDiscussionAvatarsPayload
 } from "@/lib/academicDiscussionAvatars";
@@ -47,7 +50,6 @@ import {
   WRITING_TASK_CONFIG,
   countEnglishWords,
   formatWritingTimer,
-  writingElapsedSeconds,
   type AcademicDiscussionQuestion,
   type EmailQuestion,
   type WritingAttempt,
@@ -63,23 +65,29 @@ import {
   applyExternalWritingPaste,
   canUseExternalWritingPaste
 } from "@/lib/writingEditorPaste";
+import type { StudentWritingModeAvailability } from "@/lib/writingModePolicy";
+import { calculateActiveWritingTimer } from "@/lib/writingTimer";
 
 type PracticePayload = {
+  assignment_available?: boolean;
   attempt?: WritingAttempt;
   question?: WritingQuestion;
   has_published_review?: boolean;
+  question_source?: "question_bank" | "custom";
   error?: string;
 };
 
 const EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP: AcademicDiscussionAvatarMap = {};
 
 export function WritingPractice({
+  assignmentId,
   attemptId,
   forceNew,
   mode = "practice",
   questionId,
   taskType
 }: {
+  assignmentId?: string;
   attemptId?: string;
   forceNew?: boolean;
   mode?: "practice" | "readonly";
@@ -96,6 +104,11 @@ export function WritingPractice({
     STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
     loadAcademicDiscussionAvatars,
     { enabled: taskType === "academic_discussion" }
+  );
+  const modePolicyState = useStudentCachedData<StudentWritingModeAvailability>(
+    STUDENT_WRITING_MODE_POLICY_CACHE_KEY,
+    loadWritingModePolicy,
+    { enabled: mode === "practice" && !attemptId }
   );
 
   useEffect(() => {
@@ -139,6 +152,7 @@ export function WritingPractice({
                 Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
+                assignmentId,
                 forceNew: Boolean(forceNew),
                 questionId,
                 taskType,
@@ -151,7 +165,8 @@ export function WritingPractice({
         }
         if (
           result.attempt.task_type !== taskType ||
-          (questionId && result.attempt.question_id !== questionId)
+          (questionId && result.attempt.question_id !== questionId) ||
+          (assignmentId && result.attempt.assignment_id !== assignmentId)
         ) {
           throw new Error("写作记录与当前题目不匹配。");
         }
@@ -166,9 +181,11 @@ export function WritingPractice({
           setPayload(result);
           if (!attemptId && result.attempt.status === "draft") {
             router.replace(
-              `${WRITING_TASK_CONFIG[taskType].practiceHref}/${encodeURIComponent(
-                result.attempt.question_id
-              )}?attempt=${encodeURIComponent(result.attempt.attempt_id)}`
+              assignmentId
+                ? `/student/assignments/${encodeURIComponent(assignmentId)}?attempt=${encodeURIComponent(result.attempt.attempt_id)}`
+                : `${WRITING_TASK_CONFIG[taskType].practiceHref}/${encodeURIComponent(
+                    result.attempt.question_id
+                  )}?attempt=${encodeURIComponent(result.attempt.attempt_id)}`
             );
           }
         }
@@ -180,11 +197,18 @@ export function WritingPractice({
     return () => {
       ignore = true;
     };
-  }, [attemptId, forceNew, mode, questionId, router, selectedWritingMode, taskType]);
+  }, [assignmentId, attemptId, forceNew, mode, questionId, router, selectedWritingMode, taskType]);
 
   if (mode === "practice" && !attemptId && !selectedWritingMode) {
+    if (modePolicyState.loading) {
+      return <PracticeMessage title="正在准备练习" description="正在加载可用写作模式..." />;
+    }
+    if (modePolicyState.error || !modePolicyState.data) {
+      return <PracticeMessage title="无法进入练习" description={modePolicyState.error || "无法加载可用写作模式。"} />;
+    }
     return (
       <WritingModeChoice
+        availability={modePolicyState.data}
         onCancel={() => router.back()}
         onSelect={setSelectedWritingMode}
         taskType={taskType}
@@ -207,6 +231,8 @@ export function WritingPractice({
         avatarState.data?.avatars ?? EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP
       }
       avatarMapReady={Boolean(avatarState.data)}
+      assignmentAvailable={payload.assignment_available !== false}
+      assignmentQuestionSource={payload.question_source}
       attempt={payload.attempt}
       readOnly={mode === "readonly"}
       reviewPublished={payload.has_published_review === true}
@@ -221,6 +247,8 @@ function WritingPracticeSession({
   allowExternalPaste,
   avatarMap,
   avatarMapReady,
+  assignmentAvailable,
+  assignmentQuestionSource,
   attempt: initialAttempt,
   readOnly: requestedReadOnly,
   reviewPublished,
@@ -231,6 +259,8 @@ function WritingPracticeSession({
   allowExternalPaste: boolean;
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
+  assignmentAvailable: boolean;
+  assignmentQuestionSource?: "question_bank" | "custom";
   attempt: WritingAttempt;
   readOnly: boolean;
   reviewPublished: boolean;
@@ -238,18 +268,14 @@ function WritingPracticeSession({
   taskType: WritingTaskType;
 }) {
   const router = useRouter();
-  const cache = useStudentDataCache();
+  const { invalidate } = useStudentDataCache();
   const [attempt, setAttempt] = useState(initialAttempt);
   const [remainingSeconds, setRemainingSeconds] = useState(() =>
-    requestedReadOnly || initialAttempt.status === "submitted"
-      ? initialAttempt.remaining_seconds
-      : initialRemainingSeconds(initialAttempt)
+    initialAttempt.remaining_seconds
   );
   const answerMode: WritingMode = initialAttempt.writing_mode === "practice" ? "practice" : "exam";
   const [elapsedSeconds, setElapsedSeconds] = useState(() =>
-    initialAttempt.status === "submitted"
-      ? initialAttempt.elapsed_seconds ?? 0
-      : writingElapsedSeconds(initialAttempt.started_at)
+    initialAttempt.elapsed_seconds ?? 0
   );
   const [lastSavedText, setLastSavedText] = useState(initialAttempt.response_text);
   const [lastSavedRanges, setLastSavedRanges] = useState(() =>
@@ -263,6 +289,7 @@ function WritingPracticeSession({
   const submitStartedRef = useRef(false);
   const remainingRef = useRef(remainingSeconds);
   const elapsedRef = useRef(elapsedSeconds);
+  const sessionStartedAtRef = useRef(Date.now());
   const textRef = useRef(initialAttempt.response_text);
   const overtimeRangesRef = useRef(lastSavedRanges);
   const editor = useWritingEditor(
@@ -274,15 +301,20 @@ function WritingPracticeSession({
     },
     () =>
       answerMode === "practice" &&
-      writingElapsedSeconds(initialAttempt.started_at) >=
-        initialAttempt.time_limit_seconds,
+      elapsedRef.current >= initialAttempt.time_limit_seconds,
     allowExternalPaste
   );
   const dirty = editor.text !== lastSavedText || JSON.stringify(editor.overtimeRanges) !== JSON.stringify(lastSavedRanges);
-  const listHref = `${WRITING_TASK_CONFIG[taskType].listHref}/${question.year_month}`;
-  const retakeHref = `${WRITING_TASK_CONFIG[taskType].practiceHref}/${encodeURIComponent(
-    question.question_id
-  )}?new=1`;
+  const listHref = initialAttempt.assignment_id
+    ? "/student/assignments"
+    : `${WRITING_TASK_CONFIG[taskType].listHref}/${question.year_month}`;
+  const retakeHref = initialAttempt.assignment_id
+    ? assignmentAvailable
+      ? `/student/assignments/${encodeURIComponent(initialAttempt.assignment_id)}?new=1`
+      : undefined
+    : `${WRITING_TASK_CONFIG[taskType].practiceHref}/${encodeURIComponent(
+        question.question_id
+      )}?new=1`;
   const readOnly = requestedReadOnly || attempt.status === "submitted";
   const reviewHref = reviewPublished
     ? writingReviewResultHref(
@@ -291,35 +323,43 @@ function WritingPracticeSession({
       )
     : undefined;
 
-  useEffect(() => {
-    remainingRef.current = remainingSeconds;
-  }, [remainingSeconds]);
-
-  useEffect(() => {
-    elapsedRef.current = elapsedSeconds;
-  }, [elapsedSeconds]);
+  const readActiveTimer = useCallback(() => {
+    if (readOnly || attempt.status !== "draft") {
+      return {
+        elapsedSeconds: elapsedRef.current,
+        remainingSeconds: remainingRef.current
+      };
+    }
+    const snapshot = calculateActiveWritingTimer({
+      persistedElapsedSeconds: initialAttempt.elapsed_seconds,
+      persistedRemainingSeconds: initialAttempt.remaining_seconds,
+      sessionStartedAtMs: sessionStartedAtRef.current,
+      writingMode: answerMode
+    });
+    elapsedRef.current = snapshot.elapsedSeconds;
+    remainingRef.current = snapshot.remainingSeconds;
+    return snapshot;
+  }, [answerMode, attempt.status, initialAttempt.elapsed_seconds, initialAttempt.remaining_seconds, readOnly]);
+  const updateActiveTimer = useCallback(() => {
+    const snapshot = readActiveTimer();
+    setElapsedSeconds(snapshot.elapsedSeconds);
+    setRemainingSeconds(snapshot.remainingSeconds);
+    return snapshot;
+  }, [readActiveTimer]);
 
   useEffect(() => {
     if (readOnly || attempt.status !== "draft") return;
-    const updateTimer = () => {
-      const elapsed = writingElapsedSeconds(attempt.started_at);
-      setElapsedSeconds(elapsed);
-      if (answerMode === "exam") {
-        setRemainingSeconds(
-          Math.min(attempt.remaining_seconds, Math.max(0, attempt.time_limit_seconds - elapsed))
-        );
-      }
-    };
-    updateTimer();
-    const timer = window.setInterval(updateTimer, 250);
+    updateActiveTimer();
+    const timer = window.setInterval(updateActiveTimer, 250);
     return () => window.clearInterval(timer);
-  }, [answerMode, attempt.remaining_seconds, attempt.started_at, attempt.status, attempt.time_limit_seconds, readOnly]);
+  }, [attempt.status, readOnly, updateActiveTimer]);
 
   const requestUpdate = useCallback(
     async (
       action: "sync" | "save" | "submit",
       options?: { keepalive?: boolean; responseText?: string }
     ) => {
+      const timerSnapshot = readActiveTimer();
       const response = await fetch(`/api/writing/attempts/${encodeURIComponent(attempt.attempt_id)}`, {
         method: "PATCH",
         cache: "no-store",
@@ -330,9 +370,9 @@ function WritingPracticeSession({
         },
         body: JSON.stringify({
           action,
-          elapsedSeconds: elapsedRef.current,
+          elapsedSeconds: timerSnapshot.elapsedSeconds,
           overtimeRanges: overtimeRangesRef.current,
-          remainingSeconds: remainingRef.current,
+          remainingSeconds: timerSnapshot.remainingSeconds,
           responseText: options?.responseText ?? textRef.current
         })
       });
@@ -342,7 +382,7 @@ function WritingPracticeSession({
       }
       return result.attempt;
     },
-    [accessToken, attempt.attempt_id]
+    [accessToken, attempt.attempt_id, readActiveTimer]
   );
 
   useEffect(() => {
@@ -371,10 +411,28 @@ function WritingPracticeSession({
     };
   }, [attempt.status, dirty, readOnly, requestUpdate]);
 
+  const persistOnUnmountRef = useRef(!readOnly && attempt.status === "draft");
+  const requestUpdateRef = useRef(requestUpdate);
+  useEffect(() => {
+    persistOnUnmountRef.current = !readOnly && attempt.status === "draft";
+    requestUpdateRef.current = requestUpdate;
+  }, [attempt.status, readOnly, requestUpdate]);
+  useEffect(
+    () => () => {
+      if (!persistOnUnmountRef.current) return;
+      void requestUpdateRef.current("sync", { keepalive: true }).catch(() => undefined);
+    },
+    []
+  );
+
   const invalidateWritingData = useCallback(() => {
-    cache.invalidate(STUDENT_WRITING_CACHE_PREFIX);
-    cache.invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
-  }, [cache]);
+    if (initialAttempt.assignment_id) {
+      invalidate(STUDENT_WRITING_OVERVIEW_CACHE_KEY);
+    } else {
+      invalidate(STUDENT_WRITING_CACHE_PREFIX);
+    }
+    invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
+  }, [initialAttempt.assignment_id, invalidate]);
 
   const saveDraft = useCallback(async () => {
     setSaving(true);
@@ -404,6 +462,7 @@ function WritingPracticeSession({
       setError("");
       try {
         const submittedAttempt = await requestUpdate("submit", { responseText: textRef.current });
+        persistOnUnmountRef.current = false;
         setAttempt(submittedAttempt);
         setLastSavedText(textRef.current);
         setLastSavedRanges([...overtimeRangesRef.current]);
@@ -479,6 +538,12 @@ function WritingPracticeSession({
             <AcademicPrompt
               avatarMap={avatarMap}
               avatarMapReady={avatarMapReady}
+              avatarPathOverride={assignmentQuestionSource === "custom"
+                ? resolveCustomAcademicDiscussionAvatar(
+                    (question as AcademicDiscussionQuestion).professor_avatar_type,
+                    "professor"
+                  )
+                : undefined}
               question={question as AcademicDiscussionQuestion}
             />
           )}
@@ -501,6 +566,7 @@ function WritingPracticeSession({
                 actions={editor}
                 avatarMap={avatarMap}
                 avatarMapReady={avatarMapReady}
+                customAvatars={assignmentQuestionSource === "custom"}
                 disabled={saving || submitting}
                 listHref={listHref}
                 onSave={() => void saveDraft()}
@@ -605,7 +671,7 @@ function EmailResponsePanel({
   question: EmailQuestion;
   readOnly: boolean;
   reviewHref?: string;
-  retakeHref: string;
+  retakeHref?: string;
   wordCount?: number;
 }) {
   return (
@@ -635,6 +701,7 @@ function AcademicResponsePanel({
   actions,
   avatarMap,
   avatarMapReady,
+  customAvatars,
   disabled,
   listHref,
   onSave,
@@ -648,6 +715,7 @@ function AcademicResponsePanel({
   actions: EditorActions;
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
+  customAvatars: boolean;
   disabled: boolean;
   listHref: string;
   onSave: () => void;
@@ -655,7 +723,7 @@ function AcademicResponsePanel({
   question: AcademicDiscussionQuestion;
   readOnly: boolean;
   reviewHref?: string;
-  retakeHref: string;
+  retakeHref?: string;
   wordCount?: number;
 }) {
   return (
@@ -664,6 +732,9 @@ function AcademicResponsePanel({
         <AcademicStudentPost
           avatarMap={avatarMap}
           avatarMapReady={avatarMapReady}
+          avatarPathOverride={customAvatars
+            ? resolveCustomAcademicDiscussionAvatar(question.student_1_avatar_type, "student")
+            : undefined}
           name={question.student_1_name}
           response={question.student_1_response}
         />
@@ -671,6 +742,9 @@ function AcademicResponsePanel({
         <AcademicStudentPost
           avatarMap={avatarMap}
           avatarMapReady={avatarMapReady}
+          avatarPathOverride={customAvatars
+            ? resolveCustomAcademicDiscussionAvatar(question.student_2_avatar_type, "student")
+            : undefined}
           name={question.student_2_name}
           response={question.student_2_response}
         />
@@ -864,7 +938,7 @@ function WritingReadonlyActions({
   reviewHref
 }: {
   listHref: string;
-  retakeHref: string;
+  retakeHref?: string;
   reviewHref?: string;
 }) {
   const router = useRouter();
@@ -888,14 +962,16 @@ function WritingReadonlyActions({
         <List aria-hidden="true" size={19} />
         返回题目列表
       </button>
-      <button
-        className={reviewHref ? "writing-action-secondary" : "writing-action-primary"}
-        onClick={() => router.push(retakeHref)}
-        type="button"
-      >
-        <RotateCcw aria-hidden="true" size={19} />
-        重新练习
-      </button>
+      {retakeHref ? (
+        <button
+          className={reviewHref ? "writing-action-secondary" : "writing-action-primary"}
+          onClick={() => router.push(retakeHref)}
+          type="button"
+        >
+          <RotateCcw aria-hidden="true" size={19} />
+          重新练习
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -1176,10 +1252,12 @@ function PracticeMessage({ description, title }: { description: string; title: s
 }
 
 function WritingModeChoice({
+  availability,
   onCancel,
   onSelect,
   taskType
 }: {
+  availability: StudentWritingModeAvailability;
   onCancel: () => void;
   onSelect: (mode: WritingMode) => void;
   taskType: WritingTaskType;
@@ -1196,16 +1274,20 @@ function WritingModeChoice({
           <button aria-label="取消" className="rounded-lg px-2 py-1 text-student-muted hover:bg-student-primary-soft" onClick={onCancel} type="button">×</button>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <button className="rounded-2xl border border-student-primary-border p-5 text-left transition hover:border-student-primary hover:bg-student-primary-soft/45" onClick={() => onSelect("exam")} type="button">
-            <span className="block font-bold text-student-primary">模考模式</span>
-            <span className="mt-2 block text-lg font-bold text-student-text">{minutes} 分钟</span>
-            <span className="mt-1 block text-sm text-student-muted">按正式考试时间作答</span>
-          </button>
-          <button className="rounded-2xl border border-student-primary-border p-5 text-left transition hover:border-student-primary hover:bg-student-primary-soft/45" onClick={() => onSelect("practice")} type="button">
-            <span className="block font-bold text-student-primary">练习模式</span>
-            <span className="mt-2 block text-lg font-bold text-student-text">不限时</span>
-            <span className="mt-1 block text-sm leading-6 text-student-muted">正计时 · {minutes} 分钟后新增内容标红</span>
-          </button>
+          {availability.mockModeEnabled ? (
+            <button className="rounded-2xl border border-student-primary-border p-5 text-left transition hover:border-student-primary hover:bg-student-primary-soft/45" onClick={() => onSelect("exam")} type="button">
+              <span className="block font-bold text-student-primary">模考模式</span>
+              <span className="mt-2 block text-lg font-bold text-student-text">{minutes} 分钟</span>
+              <span className="mt-1 block text-sm text-student-muted">按正式考试时间作答</span>
+            </button>
+          ) : null}
+          {availability.practiceModeEnabled ? (
+            <button className="rounded-2xl border border-student-primary-border p-5 text-left transition hover:border-student-primary hover:bg-student-primary-soft/45" onClick={() => onSelect("practice")} type="button">
+              <span className="block font-bold text-student-primary">练习模式</span>
+              <span className="mt-2 block text-lg font-bold text-student-text">不限时</span>
+              <span className="mt-1 block text-sm leading-6 text-student-muted">正计时 · {minutes} 分钟后新增内容标红</span>
+            </button>
+          ) : null}
         </div>
         <button className="student-button-secondary mt-5 w-full justify-center" onClick={onCancel} type="button">取消</button>
       </div>
@@ -1213,9 +1295,16 @@ function WritingModeChoice({
   );
 }
 
-function initialRemainingSeconds(attempt: WritingAttempt) {
-  return Math.min(
-    attempt.remaining_seconds,
-    Math.max(0, attempt.time_limit_seconds - writingElapsedSeconds(attempt.started_at))
-  );
+async function loadWritingModePolicy(session: { accessToken: string }) {
+  const response = await fetch("/api/writing/mode-policy", {
+    cache: "no-store",
+    headers: { Authorization: `Bearer ${session.accessToken}` }
+  });
+  const payload = (await response.json()) as StudentWritingModeAvailability & {
+    error?: string;
+  };
+  if (!response.ok || payload.error) {
+    throw new Error(payload.error ?? "无法加载可用写作模式。");
+  }
+  return payload;
 }

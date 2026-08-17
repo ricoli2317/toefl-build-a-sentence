@@ -15,6 +15,7 @@ function question(taskType = "email") {
 }
 
 function attempt({
+  assignmentId = null,
   id = "attempt-1",
   taskType = "email",
   status = "draft",
@@ -24,6 +25,7 @@ function attempt({
   const sourceQuestion = question(taskType);
   return {
     attempt_id: id,
+    assignment_id: assignmentId,
     user_id: "student-1",
     task_type: taskType,
     question_id: sourceQuestion.question_id,
@@ -52,12 +54,13 @@ function createMemoryRepository(initialAttempts = []) {
     get insertCount() {
       return insertCount;
     },
-    async findDraft({ userId, taskType, questionId }) {
+    async findDraft({ assignmentId = null, userId, taskType, questionId }) {
       return {
         data:
           attempts.find(
             (item) =>
               item.user_id === userId &&
+              item.assignment_id === assignmentId &&
               item.task_type === taskType &&
               item.question_id === questionId &&
               item.status === "draft"
@@ -65,11 +68,12 @@ function createMemoryRepository(initialAttempts = []) {
         error: null
       };
     },
-    async insertDraft({ userId, taskType, question: sourceQuestion, now, writingMode }) {
+    async insertDraft({ assignmentId = null, userId, taskType, question: sourceQuestion, now, writingMode }) {
       insertCount += 1;
       const existingDraft = attempts.find(
         (item) =>
           item.user_id === userId &&
+          item.assignment_id === assignmentId &&
           item.task_type === taskType &&
           item.question_id === sourceQuestion.question_id &&
           item.status === "draft"
@@ -86,6 +90,7 @@ function createMemoryRepository(initialAttempts = []) {
       }
       const created = {
         ...attempt({
+          assignmentId,
           id: `attempt-${attempts.length + 1}`,
           taskType,
           responseText: "",
@@ -153,6 +158,37 @@ test("mode belongs to a new attempt and an existing draft keeps its original mod
   const resumed = await getOrCreateWritingDraft(createInput(), repository);
   assert.equal(resumed.resumed, true);
   assert.equal(resumed.attempt.writing_mode, "practice");
+});
+
+test("assignment draft preserves every database identity field and stays isolated", async () => {
+  for (const [taskType, writingMode, assignmentId] of [
+    ["email", "practice", "assignment-email"],
+    ["academic_discussion", "exam", "assignment-discussion"]
+  ]) {
+    const repository = createMemoryRepository();
+    const input = { ...createInput(taskType), assignmentId, writingMode };
+    const created = await getOrCreateWritingDraft(input, repository);
+    assert.equal(created.attempt.assignment_id, assignmentId);
+    assert.equal(created.attempt.task_type, taskType);
+    assert.equal(created.attempt.question_id, input.questionId);
+    assert.equal(created.attempt.user_id, input.userId);
+    assert.equal(created.attempt.writing_mode, writingMode);
+    const resumed = await getOrCreateWritingDraft(input, repository);
+    assert.equal(resumed.resumed, true);
+    assert.equal(resumed.attempt.attempt_id, created.attempt.attempt_id);
+  }
+});
+
+test("ordinary and assignment drafts for the same bank question never resume each other", async () => {
+  const repository = createMemoryRepository();
+  const ordinary = await getOrCreateWritingDraft(createInput(), repository);
+  const assigned = await getOrCreateWritingDraft(
+    { ...createInput(), assignmentId: "assignment-1" },
+    repository
+  );
+  assert.notEqual(ordinary.attempt.attempt_id, assigned.attempt.attempt_id);
+  assert.equal(ordinary.attempt.assignment_id, null);
+  assert.equal(assigned.attempt.assignment_id, "assignment-1");
 });
 
 test("submit mutation transitions the current draft to submitted", () => {

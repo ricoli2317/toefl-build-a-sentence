@@ -106,6 +106,7 @@ export async function loadStudentPublishedWritingReview(
         submitted_at: attempt.submitted_at
       },
       question: questionResult.data as WritingQuestion,
+      question_source: questionResult.questionSource,
       review: toStudentPublishedWritingReview(snapshot)
     };
   } catch (error) {

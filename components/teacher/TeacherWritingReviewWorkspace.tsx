@@ -25,6 +25,7 @@ import {
   type MutableRefObject
 } from "react";
 import {
+  TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX,
   TEACHER_WRITING_REVIEWS_CACHE_KEY,
   TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX,
   useTeacherCachedData,
@@ -149,7 +150,13 @@ const FILTERS: Array<{ value: LanguageEditFilter; label: string }> = [
   { value: "minor", label: "轻微" }
 ];
 
-export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string }) {
+export function TeacherWritingReviewWorkspace({
+  attemptId,
+  returnTo
+}: {
+  attemptId: string;
+  returnTo: string;
+}) {
   const cacheKey = `${TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX}:${attemptId}`;
   const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<WorkspacePayload>(
@@ -582,6 +589,7 @@ export function TeacherWritingReviewWorkspace({ attemptId }: { attemptId: string
         operation={operation}
         publishedWithLaterChanges={publishedWithLaterChanges}
         requestError={requestError}
+        returnTo={returnTo}
         showRevisionMarks={showRevisionMarks}
         setMode={changeMode}
         setShowRevisionMarks={setShowRevisionMarks}
@@ -807,6 +815,7 @@ function WorkspaceToolbar({
   operation,
   publishedWithLaterChanges,
   requestError,
+  returnTo,
   showRevisionMarks,
   setMode,
   setShowRevisionMarks,
@@ -820,6 +829,7 @@ function WorkspaceToolbar({
   operation: "save" | "publish" | "regenerate" | null;
   publishedWithLaterChanges: boolean;
   requestError: string;
+  returnTo: string;
   showRevisionMarks: boolean;
   setMode: (mode: WorkspaceMode) => void;
   setShowRevisionMarks: (show: boolean) => void;
@@ -830,9 +840,9 @@ function WorkspaceToolbar({
     <header className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-student-border bg-white px-3 py-2.5">
       <div className="flex min-w-0 items-center gap-2 text-xs">
         <Link
-          aria-label="返回写作批改列表"
+          aria-label="返回来源页面"
           className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-student-primary hover:bg-student-primary-soft"
-          href="/teacher/writing/reviews"
+          href={returnTo}
         >
           <ArrowLeft aria-hidden="true" size={17} />
         </Link>
@@ -2375,6 +2385,7 @@ function updateCachedListStatus(
   attemptId: string,
   reviewStatus: WorkspaceReview["status"]
 ) {
+  cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
   const entry = cache.getEntry(TEACHER_WRITING_REVIEWS_CACHE_KEY);
   if (entry?.status !== "success") {
     cache.invalidate(TEACHER_WRITING_REVIEWS_CACHE_KEY);

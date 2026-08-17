@@ -45,10 +45,11 @@ export async function GET(request: Request) {
         auth.supabase!
           .from("writing_attempts")
           .select(
-            "attempt_id,user_id,task_type,question_id,set_id,response_text,word_count,status,time_limit_seconds,remaining_seconds,writing_mode,elapsed_seconds,overtime_ranges,started_at,saved_at,submitted_at,created_at,updated_at"
+            "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,time_limit_seconds,remaining_seconds,writing_mode,elapsed_seconds,overtime_ranges,started_at,saved_at,submitted_at,created_at,updated_at"
           )
           .eq("user_id", auth.userId!)
           .eq("task_type", taskType)
+          .is("assignment_id", null)
           .order("updated_at", { ascending: false })
           .range(from, to)
       )

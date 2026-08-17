@@ -1,11 +1,17 @@
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 import { TeacherWritingReviewWorkspace } from "@/components/teacher/TeacherWritingReviewWorkspace";
+import { safeWritingReviewReturnTo } from "@/lib/teacherWritingReviewNavigation";
 
 export default function TeacherWritingReviewWorkspacePage({
-  params
+  params,
+  searchParams
 }: {
   params: { attemptId: string };
+  searchParams: { returnTo?: string | string[] };
 }) {
+  const returnTo = safeWritingReviewReturnTo(
+    Array.isArray(searchParams.returnTo) ? searchParams.returnTo[0] : searchParams.returnTo
+  );
   return (
     <TeacherAppShell
       crumbs={[
@@ -16,7 +22,7 @@ export default function TeacherWritingReviewWorkspacePage({
       title="写作批改"
       workspace
     >
-      <TeacherWritingReviewWorkspace attemptId={params.attemptId} />
+      <TeacherWritingReviewWorkspace attemptId={params.attemptId} returnTo={returnTo} />
     </TeacherAppShell>
   );
 }

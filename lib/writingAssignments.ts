@@ -30,6 +30,10 @@ export type WritingAssignmentSummary = {
   created_at: string;
   assigned_count: number;
   completed_count: number;
+  published_count: number;
+  has_attempts: boolean;
+  single_student_latest_submitted_attempt_id: string | null;
+  single_student_latest_review_status: "reviewing" | "published" | null;
   has_overdue_students: boolean;
 };
 
@@ -40,17 +44,53 @@ export type WritingAssignmentStudentDetail = {
   assigned_at: string;
   first_submitted_at: string | null;
   has_attempt: boolean;
+  latest_submitted_attempt_id: string | null;
+  latest_review_status: "reviewing" | "published" | null;
   status: WritingAssignmentStudentStatus;
+};
+
+export type StudentWritingAssignmentSummary = {
+  assignment_id: string;
+  assigned_at: string;
+  created_at: string;
+  draft_attempt_id: string | null;
+  draft_writing_mode: "exam" | "practice" | null;
+  due_at: string | null;
+  first_submitted_at: string | null;
+  latest_submitted_attempt_id: string | null;
+  published_review_attempt_id: string | null;
+  question_id: string;
+  question_snapshot: WritingQuestion;
+  question_source: WritingAssignmentQuestionSource;
+  status: WritingAssignmentLifecycleStatus;
+  student_status: WritingAssignmentStudentStatus;
+  submitted_attempt_count: number;
+  task_type: WritingTaskType;
+};
+
+export type StudentWritingAssignmentsPayload = {
+  assignments: StudentWritingAssignmentSummary[];
+  error?: string;
 };
 
 export type WritingAssignmentDetail = Omit<
   WritingAssignmentSummary,
-  "assigned_count" | "completed_count" | "has_overdue_students"
+  | "has_overdue_students"
+  | "single_student_latest_submitted_attempt_id"
+  | "single_student_latest_review_status"
 > & {
   has_submitted_attempts: boolean;
   updated_at: string;
   students: WritingAssignmentStudentDetail[];
 };
+
+export type WritingAssignmentProgress =
+  | "ongoing"
+  | "submitted"
+  | "partial_submitted"
+  | "all_submitted"
+  | "completed"
+  | "withdrawn";
 
 export const CUSTOM_EMAIL_CLOSING_INSTRUCTION =
   "Write as much as you can and in complete sentences.";
@@ -232,6 +272,81 @@ export function writingAssignmentStatusLabel(status: WritingAssignmentStudentSta
       : status === "overdue"
         ? "已逾期未完成"
         : "未完成";
+}
+
+export function getWritingAssignmentProgress(input: {
+  assignedCount: number;
+  lifecycleStatus: WritingAssignmentLifecycleStatus;
+  publishedCount: number;
+  submittedCount: number;
+}): { label: string; progress: WritingAssignmentProgress } {
+  if (input.lifecycleStatus === "withdrawn") {
+    return { label: "已撤回", progress: "withdrawn" };
+  }
+  if (input.assignedCount > 0 && input.publishedCount >= input.assignedCount) {
+    return { label: "已完成", progress: "completed" };
+  }
+  if (input.assignedCount === 1 && input.submittedCount >= 1) {
+    return { label: "已提交", progress: "submitted" };
+  }
+  if (input.assignedCount > 1 && input.submittedCount >= input.assignedCount) {
+    return { label: "全部已提交", progress: "all_submitted" };
+  }
+  if (input.submittedCount > 0) {
+    return {
+      label: `${input.submittedCount} 人已提交`,
+      progress: "partial_submitted"
+    };
+  }
+  return { label: "进行中", progress: "ongoing" };
+}
+
+export function writingAssignmentWithdrawBlockedMessage(input: {
+  hasAttempts: boolean;
+  submittedCount: number;
+}) {
+  if (!input.hasAttempts) return null;
+  return input.submittedCount > 0
+    ? "已有学生提交，不能撤回"
+    : "已有学生开始作答，不能撤回";
+}
+
+export function getWritingAssignmentReviewAction(input: {
+  latestSubmittedAttemptId: string | null;
+  latestReviewStatus: "reviewing" | "published" | null;
+}) {
+  if (!input.latestSubmittedAttemptId) return null;
+  return {
+    attemptId: input.latestSubmittedAttemptId,
+    label: input.latestReviewStatus === "published"
+      ? "查看批改"
+      : input.latestReviewStatus === "reviewing"
+        ? "继续批改"
+        : "批改"
+  };
+}
+
+export function isLaterWritingAssignmentSubmission(
+  candidate: { attempt_id: string; submitted_at: string | null },
+  current: { attempt_id: string; submitted_at: string | null }
+) {
+  const candidateTime = Date.parse(candidate.submitted_at ?? "");
+  const currentTime = Date.parse(current.submitted_at ?? "");
+  return candidateTime > currentTime ||
+    (candidateTime === currentTime && candidate.attempt_id > current.attempt_id);
+}
+
+export function compareStudentWritingAssignments(
+  left: Pick<StudentWritingAssignmentSummary, "assigned_at" | "created_at" | "student_status">,
+  right: Pick<StudentWritingAssignmentSummary, "assigned_at" | "created_at" | "student_status">
+) {
+  const rank = (status: WritingAssignmentStudentStatus) =>
+    status === "overdue" ? 0 : status === "pending" ? 1 : 2;
+  return (
+    rank(left.student_status) - rank(right.student_status) ||
+    Date.parse(right.assigned_at || right.created_at) -
+      Date.parse(left.assigned_at || left.created_at)
+  );
 }
 
 export function writingAssignmentTitle(question: WritingQuestion) {

@@ -1,4 +1,4 @@
-import { buildWritingAttemptUpdate, writingElapsedSeconds } from "@/lib/writing";
+import { buildWritingAttemptUpdate } from "@/lib/writing";
 import { normalizeWritingOvertimeRanges } from "@/lib/writingOvertime";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
@@ -8,6 +8,11 @@ import {
   requireWritingStudent,
   writingJson
 } from "@/lib/writingServer";
+import {
+  getStudentWritingModeAvailability,
+  isStudentWritingModeAllowed,
+  writingModeUnavailableMessage
+} from "@/lib/writingModePolicy";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +46,19 @@ export async function GET(
         return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
+    if (attemptResult.data.status === "draft") {
+      const modeAvailability = await getStudentWritingModeAvailability(
+        auth.supabase,
+        auth.userId
+      );
+      if (modeAvailability.error || !modeAvailability.data) {
+        return writingJson({ error: "暂时无法验证写作模式，请稍后重试。" }, { status: 500 });
+      }
+      if (!isStudentWritingModeAllowed(modeAvailability.data, attemptResult.data.writing_mode)) {
+        const mode = attemptResult.data.writing_mode === "practice" ? "practice" : "exam";
+        return writingJson({ error: writingModeUnavailableMessage(mode) }, { status: 403 });
+      }
+    }
 
     const questionResult = await readWritingQuestion(
       auth.supabase,
@@ -69,6 +87,8 @@ export async function GET(
     return writingJson({
       attempt: attemptResult.data,
       question: questionResult.data,
+      question_source: questionResult.questionSource,
+      assignment_available: questionResult.assignmentAvailable ?? true,
       has_published_review: hasPublishedReview
     });
   } catch (error) {
@@ -119,15 +139,32 @@ export async function PATCH(
         return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
+    const modeAvailability = await getStudentWritingModeAvailability(
+      auth.supabase,
+      auth.userId
+    );
+    if (modeAvailability.error || !modeAvailability.data) {
+      return writingJson({ error: "暂时无法验证写作模式，请稍后重试。" }, { status: 500 });
+    }
+    if (!isStudentWritingModeAllowed(modeAvailability.data, attempt.writing_mode)) {
+      const mode = attempt.writing_mode === "practice" ? "practice" : "exam";
+      return writingJson({ error: writingModeUnavailableMessage(mode) }, { status: 403 });
+    }
 
     const requestedRemaining = clampRemainingSeconds(
       body.remainingSeconds,
       attempt.time_limit_seconds
     );
-    const elapsedSeconds = writingElapsedSeconds(attempt.started_at);
+    const requestedElapsed = Number(body.elapsedSeconds);
+    const elapsedSeconds = Math.max(
+      attempt.elapsed_seconds ?? 0,
+      Number.isFinite(requestedElapsed) && requestedElapsed >= 0
+        ? Math.floor(requestedElapsed)
+        : attempt.elapsed_seconds ?? 0
+    );
     const practiceMode = attempt.writing_mode === "practice";
     const remainingSeconds = practiceMode
-      ? attempt.time_limit_seconds
+      ? attempt.remaining_seconds
       : Math.min(attempt.remaining_seconds, requestedRemaining);
     const responseText = typeof body.responseText === "string" ? body.responseText : attempt.response_text;
     const overtimeRanges = practiceMode
