@@ -5,6 +5,7 @@ export type PracticeCatalogSet = {
   setId: string;
   setTitle: string;
   questionCount: number;
+  metadata?: React.ReactNode;
 };
 
 export function PracticeMonthCard({
@@ -46,31 +47,39 @@ export function PracticeSetCatalogList({
   if (sets.length === 0) return <>{emptyState ?? null}</>;
 
   return (
-    <div className="grid gap-2.5">
+    <div className="grid gap-1.5">
       {sets.map((set) => (
         <article
-          className="grid min-h-[86px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-3 rounded-2xl border border-student-border bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(23,32,51,0.025)] sm:px-5 md:grid-cols-[minmax(0,1fr)_5rem_6rem_18rem] md:gap-x-3 lg:grid-cols-[minmax(0,35fr)_minmax(5rem,12fr)_minmax(6rem,15fr)_minmax(20rem,38fr)] lg:gap-x-4"
+          className="grid min-h-[64px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 rounded-2xl border border-student-border bg-white px-4 py-2.5 shadow-[0_1px_2px_rgba(23,32,51,0.025)] sm:px-5 md:grid-cols-[minmax(0,1fr)_5rem_auto] md:gap-x-5"
           key={set.setId}
         >
-          <div className="col-start-1 row-start-1 flex min-w-0 items-center gap-3.5">
-            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-student-primary-soft text-student-primary">
-              <CalendarDays aria-hidden="true" size={24} strokeWidth={1.9} />
+          <div className="col-span-2 row-start-1 flex min-w-0 items-center gap-3.5 md:col-span-1">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-student-primary-soft text-student-primary">
+              <CalendarDays aria-hidden="true" size={20} strokeWidth={1.9} />
             </span>
-            <h2 className="min-w-0 text-lg font-bold leading-6 text-student-text sm:text-xl">
-              {set.setTitle}
-            </h2>
+            <div className="min-w-0 flex-1">
+              <h2 className="min-w-0 break-words text-base font-bold leading-5 text-student-text sm:text-[17px]">
+                {set.setTitle}
+              </h2>
+              {set.metadata ? (
+                <div className="mt-0.5 break-words text-xs leading-4 text-student-muted sm:text-[13px]">
+                  {set.metadata}
+                </div>
+              ) : null}
+            </div>
           </div>
 
-          <p className="col-start-1 row-start-2 text-[14px] font-medium tabular-nums text-student-muted md:col-start-2 md:row-start-1 md:text-right md:text-[15px]">
+          <p className="col-start-1 row-start-2 pl-[3.25rem] text-xs font-medium tabular-nums text-student-muted sm:text-[13px] md:col-start-2 md:row-start-1 md:p-0 md:text-center">
             {set.questionCount}题
           </p>
 
-          <div className="col-start-2 row-start-1 flex min-h-7 items-center justify-end md:col-start-3">
-            {renderStatus?.(set) ?? <span aria-hidden="true" />}
-          </div>
-
-          <div className="col-start-2 row-start-2 flex min-w-0 items-center justify-end gap-2 md:col-start-4 md:row-start-1">
-            {renderActions(set)}
+          <div className="col-span-2 row-start-3 flex min-w-0 flex-wrap items-center justify-end gap-2 md:col-span-1 md:col-start-3 md:row-start-1 md:flex-nowrap">
+            <div className="flex min-h-6 shrink-0 items-center">
+              {renderStatus?.(set) ?? null}
+            </div>
+            <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+              {renderActions(set)}
+            </div>
           </div>
         </article>
       ))}
@@ -81,18 +90,22 @@ export function PracticeSetCatalogList({
 export function PracticeSetAction({
   href,
   icon: Icon,
-  label
+  label,
+  primary = false
 }: {
   href: string;
   icon: LucideIcon;
   label: string;
+  primary?: boolean;
 }) {
   return (
     <Link
-      className="inline-flex min-h-9 min-w-0 items-center justify-center gap-1.5 rounded-[10px] bg-student-primary-soft px-2 py-1.5 text-[12px] font-semibold text-student-primary transition hover:bg-student-primary-border sm:gap-2 sm:px-3.5 sm:text-sm"
+      className={primary
+        ? "student-button-primary min-h-8 px-3 py-1 text-xs sm:text-[13px]"
+        : "inline-flex min-h-8 min-w-0 items-center justify-center gap-1.5 rounded-[9px] bg-student-primary-soft px-2.5 py-1 text-xs font-semibold text-student-primary transition hover:bg-student-primary-border sm:gap-2 sm:px-3 sm:text-[13px]"}
       href={href}
     >
-      <Icon aria-hidden="true" className="shrink-0" size={18} strokeWidth={1.9} />
+      <Icon aria-hidden="true" className="shrink-0" size={16} strokeWidth={1.9} />
       <span className="whitespace-nowrap">{label}</span>
     </Link>
   );

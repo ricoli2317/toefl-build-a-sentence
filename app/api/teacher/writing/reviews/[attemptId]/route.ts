@@ -7,6 +7,10 @@ import {
   saveWritingReviewWorkspace,
   WritingReviewWorkspaceServerError
 } from "@/lib/writingReviewWorkspaceServer";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -25,9 +29,40 @@ export async function GET(
     assertWritingReviewTeacher(
       await requireUserWithRole(bearerToken(request), "teacher")
     );
-    return json(
-      await loadWritingReviewWorkspace(createServiceSupabase(), params.attemptId)
-    );
+    const supabase = createServiceSupabase();
+    const [workspace, historicalDisplayResolver] = await Promise.all([
+      loadWritingReviewWorkspace(supabase, params.attemptId),
+      loadHistoricalPracticeDisplayResolver(supabase)
+    ]);
+    const display = historicalDisplayResolver.resolveWritingAttempt({
+      assignmentId: workspace.attempt.assignment_id,
+      assignmentDisplayName: workspace.question.set_title,
+      fallbackDisplayName:
+        workspace.question.set_title ||
+        workspace.attempt.set_id ||
+        workspace.attempt.question_id,
+      questionSource: workspace.question_source,
+      rawQuestionId: workspace.attempt.question_id,
+      taskType: workspace.attempt.task_type
+    });
+    logHistoricalPracticeDisplayWarnings([display]);
+    return json({
+      ...workspace,
+      displayName: display.displayName,
+      reviewContext: workspace.attempt.assignment_id
+        ? workspace.question_source === "custom"
+          ? "assignment_custom"
+          : "assignment_question_bank"
+        : "free_practice",
+      logicalDisplay: display.logicalDisplayName
+        ? {
+            itemId: display.itemId,
+            displayNumber: display.displayNumber,
+            displayTitle: display.displayTitle,
+            displayName: display.logicalDisplayName
+          }
+        : null
+    });
   } catch (error) {
     return workspaceError(error, params.attemptId, "load");
   }

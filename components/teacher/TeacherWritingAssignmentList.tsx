@@ -25,6 +25,7 @@ import {
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 
 const WITHDRAW_CONFIRM = "确认撤回这项作业？\n\n撤回后，学生将不能再通过该作业开始或继续未提交的练习。\n已经提交的作业和批改记录不会受到影响。";
 const DELETE_CONFIRM = "确认删除这项作业？\n\n删除后，该作业将不再显示在正常作业列表中。\n学生已有提交和批改记录不会被删除。";
@@ -49,9 +50,9 @@ export function TeacherWritingAssignmentList() {
         body: JSON.stringify({ action })
       });
       cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+      publishCacheInvalidation({ type: "ASSIGNMENT_UPDATED", assignmentId });
     } catch (mutation) {
       setMutationError(mutation instanceof Error ? mutation.message : "作业操作失败。");
-      cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
     } finally {
       setPendingId("");
     }

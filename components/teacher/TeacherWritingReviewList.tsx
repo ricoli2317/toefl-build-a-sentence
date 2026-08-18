@@ -24,11 +24,21 @@ type TaskFilter = "all" | WritingTaskType;
 
 type WritingReviewListItem = {
   attemptId: string;
+  assignmentId: string | null;
   studentId: string;
   studentName: string;
   taskType: WritingTaskType;
+  questionId: string;
   setId: string;
   setTitle: string;
+  displayName: string;
+  reviewContext: "free_practice" | "assignment_question_bank" | "assignment_custom";
+  logicalDisplay: {
+    itemId: string | null;
+    displayNumber: string | null;
+    displayTitle: string | null;
+    displayName: string;
+  } | null;
   wordCount: number;
   submittedAt: string | null;
   reviewStatus: ReviewStatus;
@@ -47,7 +57,8 @@ const STATUS_FILTERS: Array<{ value: StatusFilter; label: string }> = [
 export function TeacherWritingReviewList() {
   const { data, error, loading } = useTeacherCachedData<WritingReviewListPayload>(
     TEACHER_WRITING_REVIEWS_CACHE_KEY,
-    () => loadWritingReviews()
+    () => loadWritingReviews(),
+    { refreshOnMount: true }
   );
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [taskFilter, setTaskFilter] = useState<TaskFilter>("all");
@@ -108,7 +119,7 @@ export function TeacherWritingReviewList() {
               <tr className="text-student-text">
                 <th className="px-4 py-4 font-semibold">学生姓名</th>
                 <th className="px-4 py-4 font-semibold">题型</th>
-                <th className="px-4 py-4 font-semibold">套题名称</th>
+                <th className="px-4 py-4 font-semibold">题目名称</th>
                 <th className="px-4 py-4 font-semibold">字数</th>
                 <th className="px-4 py-4 font-semibold">提交时间</th>
                 <th className="px-4 py-4 font-semibold">批改状态</th>
@@ -132,7 +143,7 @@ export function TeacherWritingReviewList() {
                         {taskTypeLabel(attempt.taskType)}
                       </td>
                       <td className="border-t border-student-border px-4 py-4 text-student-text">
-                        {attempt.setTitle}
+                        {attempt.displayName}
                       </td>
                       <td className="border-t border-student-border px-4 py-4 tabular-nums text-student-text">
                         {attempt.wordCount}

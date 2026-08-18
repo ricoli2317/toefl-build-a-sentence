@@ -130,25 +130,15 @@ export function getStudentResultNavigation(
     };
   }
 
-  const monthKey = getPracticeMonthKey(setId);
   const practiceSetsCrumb = {
     label: STUDENT_UI_TEXT.practiceSets,
     href: STUDENT_ROUTES.practiceSets
   };
-  if (!monthKey) {
-    return {
-      backHref: STUDENT_ROUTES.practiceSets,
-      crumbs: [rootCrumb, practiceSetsCrumb, { label: STUDENT_UI_TEXT.result }]
-    };
-  }
-
-  const monthHref = `${STUDENT_ROUTES.practiceSets}/${encodeURIComponent(monthKey)}`;
   return {
-    backHref: monthHref,
+    backHref: STUDENT_ROUTES.practiceSets,
     crumbs: [
       rootCrumb,
       practiceSetsCrumb,
-      { label: formatPracticeMonthLabel(monthKey), href: monthHref },
       { label: STUDENT_UI_TEXT.result }
     ]
   };

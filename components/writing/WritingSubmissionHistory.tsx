@@ -3,6 +3,7 @@
 import { Clock3, Eye, FileCheck2 } from "lucide-react";
 import Link from "next/link";
 import {
+  STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX,
   useStudentCachedData,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
@@ -41,8 +42,9 @@ export function WritingSubmissionHistory({
   taskType: WritingTaskType;
 }) {
   const state = useStudentCachedData<SubmissionHistoryPayload>(
-    `writing:submission-history:${taskType}:${questionId}`,
-    (session) => loadSubmissionHistory(taskType, questionId, session)
+    `${STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX}:${taskType}:${questionId}`,
+    (session) => loadSubmissionHistory(taskType, questionId, session),
+    { refreshOnMount: true }
   );
   if (state.loading) return <StudentLoadingState text="正在加载提交记录..." />;
   if (state.error || !state.data) {
@@ -50,23 +52,24 @@ export function WritingSubmissionHistory({
   }
   const { attempts, question } = state.data;
   const config = WRITING_TASK_CONFIG[taskType];
-  const monthHref = `${config.listHref}/${encodeURIComponent(question.year_month)}`;
+  const listHref = config.listHref;
   const historyHref = writingSubmissionHistoryHref(taskType, questionId);
+  const questionDisplayName = question.display_name ?? question.set_title;
 
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref={monthHref}
+        backHref={listHref}
         crumbs={[
           { label: "学生首页", href: STUDENT_ROUTES.home },
           { label: config.label, href: config.listHref },
-          { label: question.set_title, href: monthHref },
+          { label: questionDisplayName, href: listHref },
           { label: "提交记录" }
         ]}
       />
       <header className="student-card">
         <p className="text-sm font-bold text-student-primary">{config.label}</p>
-        <h2 className="mt-1 text-xl font-bold text-student-text">{question.set_title}</h2>
+        <h2 className="mt-1 text-xl font-bold text-student-text">{questionDisplayName}</h2>
         <p className="mt-2 text-sm text-student-muted">
           共 {attempts.length} 次提交，最新提交显示在最上方。
         </p>

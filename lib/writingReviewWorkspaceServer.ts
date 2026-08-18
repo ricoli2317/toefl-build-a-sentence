@@ -116,6 +116,7 @@ export async function loadWritingReviewWorkspace(
   return {
     attempt: {
       attempt_id: attempt.attempt_id,
+      assignment_id: attempt.assignment_id ?? null,
       user_id: attempt.user_id,
       student_name: getPreferredUserDisplayName({
         email: profile?.email,
@@ -132,6 +133,7 @@ export async function loadWritingReviewWorkspace(
       submitted_at: attempt.submitted_at
     },
     question: questionResult.data,
+    question_source: questionResult.questionSource,
     review
   };
 }

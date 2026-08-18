@@ -29,6 +29,7 @@ import {
   type WritingAssignmentStudentStatus
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 
 export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmentId: string }) {
   const router = useRouter();
@@ -65,13 +66,17 @@ export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmen
         body: JSON.stringify({ action })
       });
       cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+      publishCacheInvalidation({
+        type: "ASSIGNMENT_UPDATED",
+        assignmentId,
+        assignmentQuestionSource: assignment.question_source
+      });
       if (action === "soft_delete") {
         router.push("/teacher/writing/assignments");
         router.refresh();
       }
     } catch (mutation) {
       setMutationError(mutation instanceof Error ? mutation.message : "作业操作失败。");
-      cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
     } finally {
       setMutating(false);
     }

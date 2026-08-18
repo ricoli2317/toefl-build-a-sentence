@@ -5,6 +5,8 @@ import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
 import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
 import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 
+export const dynamic = "force-dynamic";
+
 type SubmittedAnswer = {
   questionId: string;
   submittedOrderText: string;
@@ -26,7 +28,14 @@ type QuestionForScoring = {
 };
 
 function jsonError(message: string, status = 500) {
-  return NextResponse.json({ error: message }, { status });
+  return submissionJson({ error: message }, { status });
+}
+
+function submissionJson(data: unknown, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: { ...init?.headers, "Cache-Control": "no-store" }
+  });
 }
 
 function isCorrectOrder(submittedOrderText: string, correctOrderText: string) {
@@ -64,7 +73,8 @@ export async function POST(request: Request) {
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
     });
 
@@ -103,7 +113,8 @@ export async function POST(request: Request) {
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
+        headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` },
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
     });
 
@@ -247,7 +258,7 @@ export async function POST(request: Request) {
       studentId: user.id
     });
 
-    return NextResponse.json({
+    return submissionJson({
       attemptId: attempt.attempt_id,
       correctCount,
       total: totalQuestions,

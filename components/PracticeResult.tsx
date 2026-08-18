@@ -76,7 +76,8 @@ export function PracticeResult({
 }) {
   const { data: payload, error, loading } = useStudentCachedData<ResultPayload>(
     studentAttemptCacheKey(attemptId),
-    (session) => loadResult(attemptId, session)
+    (session) => loadResult(attemptId, session),
+    { refreshOnMount: true }
   );
   if (loading) {
     return <StudentLoadingState text="正在加载练习结果..." />;

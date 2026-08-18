@@ -6,6 +6,10 @@ import {
   isOfficialPracticeSetId
 } from "@/lib/practiceHistory";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import {
+  enrichBuildSentenceHistoricalAttempts,
+  loadHistoricalPracticeDisplayResolver
+} from "@/lib/historicalPracticeDisplay";
 
 type AttemptRow = {
   attempt_id: string;
@@ -97,7 +101,7 @@ export async function GET(request: Request) {
       }
     });
 
-    const [attemptResult, answerResult, questionResult] = await Promise.all([
+    const [attemptResult, answerResult, questionResult, historicalDisplayResolver] = await Promise.all([
       readAllSupabaseRows<AttemptRow>((from, to) =>
         db
           .from("attempts")
@@ -126,7 +130,8 @@ export async function GET(request: Request) {
           )
           .order("question_id", { ascending: true })
           .range(from, to)
-      )
+      ),
+      loadHistoricalPracticeDisplayResolver(db)
     ]);
     const queryError = attemptResult.error ?? answerResult.error ?? questionResult.error;
     if (queryError) return jsonError(`Failed to load practice history: ${queryError.message}`);
@@ -158,15 +163,18 @@ export async function GET(request: Request) {
         .filter((attempt) => attempt.set_id.startsWith("wrongbook-"))
         .map((attempt) => attempt.attempt_id)
     );
-    const attempts = officialAttempts.map((attempt) => ({
-      attemptId: attempt.attempt_id,
-      setId: attempt.set_id,
-      setTitle: attempt.set_title?.trim() || attempt.set_id,
-      correctCount: attempt.correct_count ?? 0,
-      totalQuestions: attempt.total_questions ?? 0,
-      timeSpentSeconds: attempt.time_spent_seconds ?? 0,
-      submittedAt: attempt.submitted_at ?? attempt.created_at ?? null
-    }));
+    const attempts = enrichBuildSentenceHistoricalAttempts(
+      officialAttempts.map((attempt) => ({
+        attemptId: attempt.attempt_id,
+        setId: attempt.set_id,
+        setTitle: attempt.set_title?.trim() || attempt.set_id,
+        correctCount: attempt.correct_count ?? 0,
+        totalQuestions: attempt.total_questions ?? 0,
+        timeSpentSeconds: attempt.time_spent_seconds ?? 0,
+        submittedAt: attempt.submitted_at ?? attempt.created_at ?? null
+      })),
+      historicalDisplayResolver
+    );
     const allAnswers = (answerResult.data ?? [])
       .map((answer) => ({
         ...answer,

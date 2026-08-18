@@ -12,6 +12,13 @@ import {
 } from "./academicDiscussionAvatars.ts";
 
 export type WritingAssignmentQuestionSource = "question_bank" | "custom";
+export type WritingAssignmentPracticeResolution = {
+  questionSource: WritingAssignmentQuestionSource;
+  rawQuestionId: string | null;
+  historicalPracticeItemId: string | null;
+  publicPracticeItemId: string | null;
+  publicMappingAvailable: boolean;
+};
 export type WritingAssignmentLifecycleStatus = "active" | "withdrawn";
 export type WritingAssignmentStudentStatus =
   | "pending"
@@ -142,6 +149,30 @@ export function isWritingAssignmentQuestionSource(
   value: unknown
 ): value is WritingAssignmentQuestionSource {
   return value === "question_bank" || value === "custom";
+}
+
+export function resolveWritingAssignmentQuestionIsolation(input: {
+  questionSource: WritingAssignmentQuestionSource;
+  questionId: string | null;
+  resolvedHistoricalPracticeItemId: string | null;
+  resolvedPublicPracticeItemId: string | null;
+}): WritingAssignmentPracticeResolution {
+  if (input.questionSource === "custom") {
+    return {
+      questionSource: "custom",
+      rawQuestionId: null,
+      historicalPracticeItemId: null,
+      publicPracticeItemId: null,
+      publicMappingAvailable: false
+    };
+  }
+  return {
+    questionSource: "question_bank",
+    rawQuestionId: input.questionId,
+    historicalPracticeItemId: input.resolvedHistoricalPracticeItemId,
+    publicPracticeItemId: input.resolvedPublicPracticeItemId,
+    publicMappingAvailable: Boolean(input.resolvedPublicPracticeItemId)
+  };
 }
 
 export function isWritingAssignmentLifecycleStatus(

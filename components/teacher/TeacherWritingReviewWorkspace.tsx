@@ -95,6 +95,7 @@ import {
 } from "@/lib/writingReviewWorkspaceUi";
 import type { LanguageEditCategory } from "@/lib/writingReviewSchema";
 import type { RubricScore } from "@/lib/writingReviewSchemaV2";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import {
   buildWritingRevisionComposition,
   hasApplicableContentRevision,
@@ -103,6 +104,7 @@ import {
 
 type WorkspaceAttempt = {
   attempt_id: string;
+  assignment_id: string | null;
   user_id: string;
   student_name: string;
   task_type: WritingTaskType;
@@ -133,7 +135,16 @@ type WorkspaceReview = WritingReviewWorkingDraft & {
 
 type WorkspacePayload = {
   attempt: WorkspaceAttempt;
+  displayName: string;
+  logicalDisplay: {
+    itemId: string | null;
+    displayNumber: string | null;
+    displayTitle: string | null;
+    displayName: string;
+  } | null;
   question: WritingQuestion;
+  question_source: "question_bank" | "custom" | null;
+  reviewContext: "free_practice" | "assignment_question_bank" | "assignment_custom";
   review: WorkspaceReview;
 };
 
@@ -162,7 +173,8 @@ export function TeacherWritingReviewWorkspace({
   const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<WorkspacePayload>(
     cacheKey,
-    () => loadWorkspace(attemptId)
+    () => loadWorkspace(attemptId),
+    { refreshOnMount: true }
   );
   const [draft, setDraft] = useState<WritingReviewWorkingDraft | null>(null);
   const [mode, setMode] = useState<WorkspaceMode>("workspace");
@@ -484,6 +496,12 @@ export function TeacherWritingReviewWorkspace({
         const savedReview = await mutateWorkspace(attemptId, draft, false);
         currentPayload = { ...data, review: savedReview };
         currentDraft = toDraft(savedReview);
+        publishCacheInvalidation({
+          type: "WRITING_REVIEW_UPDATED",
+          studentId: data.attempt.user_id,
+          attemptId,
+          assignmentId: data.attempt.assignment_id
+        });
         cache.set(cacheKey, currentPayload);
         updateCachedListStatus(cache, attemptId, "reviewing");
         setDraft(currentDraft);
@@ -510,6 +528,12 @@ export function TeacherWritingReviewWorkspace({
         review = recovered;
       }
       const nextPayload = { ...currentPayload, review };
+      publishCacheInvalidation({
+        type: "WRITING_REVIEW_UPDATED",
+        studentId: data.attempt.user_id,
+        attemptId,
+        assignmentId: data.attempt.assignment_id
+      });
       cache.set(cacheKey, nextPayload);
       updateCachedListStatus(cache, attemptId, review.status);
       const regeneratedDraft = toDraft(review);
@@ -581,6 +605,12 @@ export function TeacherWritingReviewWorkspace({
         review = recovered;
       }
       const nextPayload = { ...data, review };
+      publishCacheInvalidation({
+        type: publish ? "WRITING_REVIEW_PUBLISHED" : "WRITING_REVIEW_UPDATED",
+        studentId: data.attempt.user_id,
+        attemptId,
+        assignmentId: data.attempt.assignment_id
+      });
       cache.set(cacheKey, nextPayload);
       updateCachedListStatus(cache, attemptId, review.status);
       setDraft(toDraft(review));
@@ -893,7 +923,7 @@ function WorkspaceToolbar({
               : "批改中"}
         </span>
         <span className="hidden truncate text-student-muted sm:inline">
-          / {data.question.set_title}
+          / {data.displayName}
         </span>
       </div>
       <div className="flex flex-wrap items-center justify-end gap-2">
@@ -979,7 +1009,13 @@ function WorkspaceToolbar({
 }
 
 function StudentInfoBar({ data }: { data: WorkspacePayload }) {
-  const source = data.question.source_labels || data.attempt.set_id;
+  const source = data.reviewContext === "free_practice"
+    ? data.displayName
+    : data.reviewContext === "assignment_question_bank"
+      ? data.logicalDisplay
+        ? `作业题目 · ${data.logicalDisplay.displayName}`
+        : "作业题目"
+      : "自定义作业题目";
   const items = [
     ["学生信息", data.attempt.student_name],
     ["题目类型", taskTypeLabel(data.attempt.task_type)],

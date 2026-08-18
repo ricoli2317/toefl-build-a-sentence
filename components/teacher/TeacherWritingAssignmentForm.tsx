@@ -23,6 +23,7 @@ import {
   studentSearchRank
 } from "@/lib/studentSearch";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { WRITING_TASK_CONFIG, type WritingQuestion, type WritingTaskType } from "@/lib/writing";
 import {
   CUSTOM_ACADEMIC_DISCUSSION_AVATAR_PATHS,
@@ -261,6 +262,11 @@ export function TeacherWritingAssignmentForm({
         })
       });
       cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+      publishCacheInvalidation({
+        type: "ASSIGNMENT_UPDATED",
+        assignmentId: payload.assignmentId,
+        assignmentQuestionSource: source
+      });
       router.push(`/teacher/writing/assignments/${payload.assignmentId}`);
       router.refresh();
     } catch (error) {

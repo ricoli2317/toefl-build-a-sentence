@@ -3,6 +3,12 @@ import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
 import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
+
+export const dynamic = "force-dynamic";
 
 type AttemptRow = {
   attempt_id: string;
@@ -38,7 +44,14 @@ type QuestionRow = {
 };
 
 function jsonError(message: string, status = 500) {
-  return NextResponse.json({ error: message }, { status });
+  return resultJson({ error: message }, { status });
+}
+
+function resultJson(data: unknown, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: { ...init?.headers, "Cache-Control": "no-store" }
+  });
 }
 
 export async function GET(
@@ -61,7 +74,8 @@ export async function GET(
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
     });
 
@@ -88,7 +102,8 @@ export async function GET(
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
+        headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` },
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
     });
 
@@ -109,13 +124,17 @@ export async function GET(
     }
 
     const attemptRow = attempt as AttemptRow;
-    const { data: answers, error: answersError } = await db
-      .from("attempt_answers")
-      .select(
-        "attempt_answer_id,question_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,grammar_tags_text,question_time_seconds"
-      )
-      .eq("attempt_id", params.attemptId)
-      .order("question_order", { ascending: true });
+    const [{ data: answers, error: answersError }, historicalDisplayResolver] =
+      await Promise.all([
+        db
+          .from("attempt_answers")
+          .select(
+            "attempt_answer_id,question_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,grammar_tags_text,question_time_seconds"
+          )
+          .eq("attempt_id", params.attemptId)
+          .order("question_order", { ascending: true }),
+        loadHistoricalPracticeDisplayResolver(db)
+      ]);
 
     if (answersError) {
       return jsonError(`Failed to read attempt answers: ${answersError.message}`);
@@ -164,10 +183,16 @@ export async function GET(
       setId: attemptRow.set_id,
       studentId: user.id
     });
+    const historicalDisplay = historicalDisplayResolver.resolveBuildSentence({
+      fallbackDisplayName: attemptRow.set_title || attemptRow.set_id,
+      rawSetId: attemptRow.set_id
+    });
+    logHistoricalPracticeDisplayWarnings([historicalDisplay]);
 
-    return NextResponse.json({
+    return resultJson({
       attempt: {
         ...attemptRow,
+        set_title: historicalDisplay.displayName,
         accuracy
       },
       answers: answerRows.map((answer) => {

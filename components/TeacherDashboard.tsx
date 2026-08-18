@@ -61,7 +61,9 @@ type TeacherStatsPayload = {
   };
   missingAnswerAttemptIds: string[];
   students: StudentSummary[];
-  sets: SetSummary[];
+  sets: LogicalSetSummary[];
+  logicalQuestionStats: LogicalItemQuestionStats[];
+  rawSets: RawSetSummary[];
   attempts: AttemptSummary[];
   answers: AnswerSummary[];
   questions: QuestionSummary[];
@@ -79,13 +81,59 @@ type StudentSummary = {
   averageAccuracy: number;
 };
 
-type SetSummary = {
+type LogicalSetSummary = {
+  itemId: string;
+  displayNumber: string;
+  setTitle: string;
+  firstSeenDate: string;
+  occurrenceDates: string[];
+  sourceSetIds: string[];
+  questionCount: number;
+  totalAttemptCount: number;
+  completedStudentCount: number;
+  averageAccuracy: number;
+  isActive: boolean;
+};
+
+type RawSetSummary = {
   setId: string;
   setTitle: string;
   questionCount: number;
   totalAttemptCount: number;
   completedStudentCount: number;
   averageAccuracy: number;
+};
+
+type LogicalRepresentativeQuestion = {
+  sourceId: string;
+  sourceSetId: string;
+  sourceQuestionId: string;
+  sourceQuestionOrder: number;
+  setTitle: string;
+  prompt: string;
+  sentenceTemplate: string;
+  optionsText: string;
+  correctOrderText: string;
+  finalSentence: string;
+};
+
+type LogicalQuestionSummary = {
+  logicalQuestionId: string;
+  itemId: string;
+  logicalQuestionOrder: number;
+  representativeQuestion: LogicalRepresentativeQuestion | null;
+  attemptAnswerIds: string[];
+  answerCount: number;
+  correctCount: number;
+  incorrectCount: number;
+  accuracy: number;
+};
+
+type LogicalItemQuestionStats = {
+  itemId: string;
+  displayNumber: string;
+  isActive: boolean;
+  questions: LogicalQuestionSummary[];
 };
 
 type PracticeType = "official" | "wrongbook-today" | "wrongbook-history";
@@ -499,7 +547,7 @@ export function TeacherStudentSetDetails({
   const setTitle = getAttemptGroupTitle(
     groupId,
     attempts[0]?.setTitle ??
-      stats?.sets.find((set) => set.setId === groupId)?.setTitle ??
+      stats?.rawSets.find((set) => set.setId === groupId)?.setTitle ??
       groupId
   );
   const attemptIds = new Set(attempts.map((attempt) => attempt.attemptId));
@@ -637,11 +685,11 @@ export function TeacherSetsList() {
         <TeacherSectionTitle>套题列表</TeacherSectionTitle>
       </div>
       <div className="overflow-x-auto px-6 pb-6 pt-4">
-        <table className="w-full min-w-[880px] border-separate border-spacing-0 overflow-hidden rounded-xl border border-student-border text-left text-sm">
+        <table className="w-full min-w-[960px] border-separate border-spacing-0 overflow-hidden rounded-xl border border-student-border text-left text-sm">
           <thead className="bg-student-primary-soft/55">
             <tr className="text-student-text">
               <th className="px-4 py-4 font-semibold">套题</th>
-              <th className="px-4 py-4 font-semibold">套题 ID</th>
+              <th className="px-4 py-4 font-semibold">Logical Item ID</th>
               <th className="px-4 py-4 font-semibold">题目数</th>
               <th className="px-4 py-4 font-semibold">总练习次数</th>
               <th className="px-4 py-4 font-semibold">平均正确率</th>
@@ -650,9 +698,15 @@ export function TeacherSetsList() {
           {loading ? <SetTableSkeleton /> : stats && stats.sets.length > 0 ? (
             <tbody>
               {stats.sets.map((set) => (
-                <tr className="border-t border-student-border transition hover:bg-student-primary-soft/45" key={set.setId}>
-                  <td className="border-t border-student-border px-4 py-4"><TeacherTextLink href={`/teacher/sets/${encodeURIComponent(set.setId)}`}>{set.setTitle}</TeacherTextLink></td>
-                  <td className="border-t border-student-border px-4 py-4 font-mono text-xs text-student-muted">{set.setId}</td>
+                <tr className="border-t border-student-border transition hover:bg-student-primary-soft/45" key={set.itemId}>
+                  <td className="border-t border-student-border px-4 py-4">
+                    <TeacherTextLink href={`/teacher/sets/${encodeURIComponent(set.itemId)}`}>{set.setTitle}</TeacherTextLink>
+                    <p className="mt-1 text-xs text-student-muted">
+                      首次出现 {formatLogicalDate(set.firstSeenDate)}
+                      {set.occurrenceDates.length > 1 ? ` · ${set.occurrenceDates.length} 个日期` : ""}
+                    </p>
+                  </td>
+                  <td className="border-t border-student-border px-4 py-4 font-mono text-xs text-student-muted">{set.itemId}</td>
                   <td className="border-t border-student-border px-4 py-4 tabular-nums">{set.questionCount}</td>
                   <td className="border-t border-student-border px-4 py-4 tabular-nums">{set.totalAttemptCount}</td>
                   <td className="border-t border-student-border px-4 py-4"><TeacherAccuracyBar value={set.averageAccuracy} /></td>
@@ -670,9 +724,12 @@ export function TeacherSetsList() {
 
 export function TeacherSetSummary({ setId }: { setId: string }) {
   const { error, loading, stats } = useTeacherStats();
-  const set = stats?.sets.find((item) => item.setId === setId);
+  const logicalSet = stats?.sets.find((item) => item.itemId === setId);
+  const logicalQuestions = stats?.logicalQuestionStats.find((item) => item.itemId === setId);
+  const rawSet = logicalSet ? undefined : stats?.rawSets.find((item) => item.setId === setId);
+  const set = logicalSet ?? rawSet;
   const questions = (stats?.questions ?? [])
-    .filter((question) => question.setId === setId)
+    .filter((question) => rawSet && question.setId === rawSet.setId)
     .sort((a, b) => a.questionOrder - b.questionOrder);
 
   return (
@@ -681,37 +738,90 @@ export function TeacherSetSummary({ setId }: { setId: string }) {
       {error ? <TeacherDataError text={toTeacherErrorMessage(error)} /> : null}
       {!loading && !error && !set ? <EmptyState text="未找到套题。" /> : (
         <>
-          {loading ? <TeacherSkeleton className="h-5 w-56" /> : <p className="-mt-3 text-base font-medium text-student-muted">{set?.setTitle} · {set?.setId}</p>}
+          {loading ? <TeacherSkeleton className="h-5 w-56" /> : (
+            <p className="-mt-3 text-base font-medium text-student-muted">
+              {set?.setTitle} · {logicalSet ? logicalSet.itemId : rawSet?.setId}
+            </p>
+          )}
           <div className="grid gap-5 md:grid-cols-3">
             <TeacherMetricCard icon={BookOpenCheck} label="总练习次数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(set?.totalAttemptCount ?? 0)} />
             <TeacherMetricCard icon={Users} label="完成学生数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(set?.completedStudentCount ?? 0)} />
             <TeacherMetricCard icon={TrendingUp} label="平均正确率" value={loading ? <TeacherSkeleton className="h-8 w-16" /> : error ? "—" : formatPercent(set?.averageAccuracy ?? 0)} />
           </div>
-          <TeacherCard className="p-5 sm:p-7">
-            <TeacherSectionTitle>单题正确率</TeacherSectionTitle>
-            {loading ? <QuestionAccuracySkeleton /> : error ? <div className="mt-5"><TeacherDataError text={toTeacherErrorMessage(error)} /></div> : questions.length === 0 ? (
-              <div className="mt-5"><TeacherEmptyState text="该套题暂无题目。" /></div>
-            ) : (
-              <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
-                {questions.map((question) => (
-                    <Link
-                      className={`flex min-h-[140px] flex-col items-center justify-center rounded-2xl border p-5 text-center transition hover:-translate-y-px hover:shadow-md ${
-                        question.accuracy < LOW_ACCURACY_THRESHOLD
-                          ? "border-student-error-border bg-student-error-soft"
-                          : "border-student-primary-border bg-student-primary-soft/65"
-                      }`}
-                      href={`/teacher/sets/${encodeURIComponent(setId)}/questions/${encodeURIComponent(question.questionId)}`}
-                      key={question.questionId}
+          {logicalSet ? (
+            <>
+              <TeacherCard className="p-5 sm:p-7">
+                <TeacherSectionTitle>Logical Q1–Q10 正确率</TeacherSectionTitle>
+                {!logicalQuestions || logicalQuestions.questions.length === 0 ? (
+                  <div className="mt-5"><TeacherDataError text="Logical Q1–Q10 映射不可用。" /></div>
+                ) : (
+                  <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+                    {logicalQuestions.questions.map((question) => (
+                      <Link
+                        className={`flex min-h-[140px] flex-col items-center justify-center rounded-2xl border p-5 text-center transition hover:-translate-y-px hover:shadow-md ${
+                          question.accuracy < LOW_ACCURACY_THRESHOLD
+                            ? "border-student-error-border bg-student-error-soft"
+                            : "border-student-primary-border bg-student-primary-soft/65"
+                        }`}
+                        href={`/teacher/sets/${encodeURIComponent(logicalSet.itemId)}/questions/${question.logicalQuestionOrder}`}
+                        key={question.logicalQuestionId}
+                      >
+                        <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "text-base font-semibold text-student-error" : "text-base font-semibold text-student-primary"}>
+                          Q{question.logicalQuestionOrder}
+                        </p>
+                        <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "mt-3 text-[2.35rem] font-bold leading-none text-student-error" : "mt-3 text-[2.35rem] font-bold leading-none text-student-text"}>
+                          {formatPercent(question.accuracy)}
+                        </p>
+                        {!question.representativeQuestion ? <p className="mt-2 text-xs text-student-error">代表题目缺失</p> : null}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </TeacherCard>
+              <TeacherCard className="p-5 sm:p-7">
+                <TeacherSectionTitle>历史原始来源</TeacherSectionTitle>
+                <p className="mt-2 text-sm leading-6 text-student-muted">
+                  Logical Q 统计已聚合以下全部原始来源；旧 raw 单题统计仍可独立查看。
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  {logicalSet.sourceSetIds.map((sourceSetId) => (
+                    <TeacherTextLink
+                      href={`/teacher/sets/${encodeURIComponent(sourceSetId)}`}
+                      key={sourceSetId}
                     >
-                      <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "text-base font-semibold text-student-error" : "text-base font-semibold text-student-primary"}>第 {question.questionOrder} 题</p>
-                      <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "mt-3 text-[2.35rem] font-bold leading-none text-student-error" : "mt-3 text-[2.35rem] font-bold leading-none text-student-text"}>
-                        {formatPercent(question.accuracy)}
-                      </p>
-                    </Link>
-                ))}
-              </div>
-            )}
-          </TeacherCard>
+                      {sourceSetId}
+                    </TeacherTextLink>
+                  ))}
+                </div>
+              </TeacherCard>
+            </>
+          ) : (
+            <TeacherCard className="p-5 sm:p-7">
+              <TeacherSectionTitle>单题正确率</TeacherSectionTitle>
+              {loading ? <QuestionAccuracySkeleton /> : error ? <div className="mt-5"><TeacherDataError text={toTeacherErrorMessage(error)} /></div> : questions.length === 0 ? (
+                <div className="mt-5"><TeacherEmptyState text="该套题暂无题目。" /></div>
+              ) : (
+                <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+                  {questions.map((question) => (
+                      <Link
+                        className={`flex min-h-[140px] flex-col items-center justify-center rounded-2xl border p-5 text-center transition hover:-translate-y-px hover:shadow-md ${
+                          question.accuracy < LOW_ACCURACY_THRESHOLD
+                            ? "border-student-error-border bg-student-error-soft"
+                            : "border-student-primary-border bg-student-primary-soft/65"
+                        }`}
+                        href={`/teacher/sets/${encodeURIComponent(setId)}/questions/${encodeURIComponent(question.questionId)}`}
+                        key={question.questionId}
+                      >
+                        <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "text-base font-semibold text-student-error" : "text-base font-semibold text-student-primary"}>第 {question.questionOrder} 题</p>
+                        <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "mt-3 text-[2.35rem] font-bold leading-none text-student-error" : "mt-3 text-[2.35rem] font-bold leading-none text-student-text"}>
+                          {formatPercent(question.accuracy)}
+                        </p>
+                      </Link>
+                  ))}
+                </div>
+              )}
+            </TeacherCard>
+          )}
         </>
       )}
     </div>
@@ -726,11 +836,36 @@ export function TeacherSetQuestionDetail({
   setId: string;
 }) {
   const { error, loading, stats } = useTeacherStats();
-  const question = stats?.questions.find(
+  const logicalSet = stats?.sets.find((item) => item.itemId === setId);
+  const logicalQuestion = logicalSet
+    ? stats?.logicalQuestionStats
+        .find((item) => item.itemId === logicalSet.itemId)
+        ?.questions.find((item) => item.logicalQuestionOrder === Number(questionId))
+    : undefined;
+  const representative = logicalQuestion?.representativeQuestion;
+  const rawQuestion = logicalSet ? undefined : stats?.questions.find(
     (item) => item.setId === setId && item.questionId === questionId
   );
+  const question = representative && logicalQuestion && logicalSet
+    ? {
+        questionId: representative.sourceQuestionId,
+        setId: logicalSet.itemId,
+        setTitle: logicalSet.setTitle,
+        questionOrder: logicalQuestion.logicalQuestionOrder,
+        prompt: representative.prompt,
+        sentenceTemplate: representative.sentenceTemplate,
+        correctOrderText: representative.correctOrderText,
+        finalSentence: representative.finalSentence,
+        answerCount: logicalQuestion.answerCount,
+        correctCount: logicalQuestion.correctCount,
+        accuracy: logicalQuestion.accuracy
+      }
+    : rawQuestion;
+  const logicalAnswerIds = new Set(logicalQuestion?.attemptAnswerIds ?? []);
   const answers = (stats?.answers ?? []).filter(
-    (answer) => answer.practiceType === "official" && answer.questionId === questionId
+    (answer) => logicalQuestion
+      ? logicalAnswerIds.has(answer.attemptAnswerId)
+      : answer.practiceType === "official" && answer.questionId === questionId
   );
   const wrongAnswers = answers.filter((answer) => !answer.isCorrect);
   const frequentWrong = Array.from(
@@ -744,7 +879,7 @@ export function TeacherSetQuestionDetail({
       count: grouped.length
     }))
     .sort((a, b) => b.count - a.count);
-  const optionChunks = splitTextItems(answers[0]?.optionsText ?? "").map((text, index) => ({
+  const optionChunks = splitTextItems(representative?.optionsText ?? answers[0]?.optionsText ?? "").map((text, index) => ({
     id: `${questionId}-${index}`,
     text
   }));
@@ -758,13 +893,15 @@ export function TeacherSetQuestionDetail({
       <TeacherBreadcrumbs crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
         { label: "套题统计", href: "/teacher/sets" },
-        { label: question?.setTitle ?? setId, href: `/teacher/sets/${encodeURIComponent(setId)}` },
-        { label: question ? `第 ${question.questionOrder} 题` : "单题详情" }
+        { label: logicalSet?.setTitle ?? question?.setTitle ?? setId, href: `/teacher/sets/${encodeURIComponent(setId)}` },
+        { label: logicalQuestion ? `Q${logicalQuestion.logicalQuestionOrder}` : question ? `第 ${question.questionOrder} 题` : "单题详情" }
       ]} />
       {loading ? (
         <QuestionStatisticsSkeleton />
       ) : error ? (
         <QuestionStatisticsError text={toTeacherErrorMessage(error)} />
+      ) : logicalQuestion && !representative ? (
+        <QuestionStatisticsError text={`Logical Q${logicalQuestion.logicalQuestionOrder} 的 canonical 代表题目映射缺失。`} />
       ) : !question ? (
         <EmptyState text="未找到题目。" />
       ) : (
@@ -804,7 +941,13 @@ export function TeacherSetQuestionDetail({
                     <tbody>
                       {frequentWrong.map((item) => (
                         <tr className="border-t border-student-error-border bg-student-error-soft/45" key={item.submittedOrderText || "empty"}>
-                          <td className="px-4 py-3 leading-6 text-student-text">{item.submittedOrderText ? buildSentenceDisplay(question.sentenceTemplate, item.submittedOrderText) : "未作答"}</td>
+                          <td className="px-4 py-3 leading-6 text-student-text">
+                            {item.submittedOrderText
+                              ? logicalQuestion
+                                ? item.submittedOrderText
+                                : buildSentenceDisplay(question.sentenceTemplate, item.submittedOrderText)
+                              : "未作答"}
+                          </td>
                           <td className="px-4 py-3 text-right font-semibold tabular-nums text-student-error">{item.count}</td>
                         </tr>
                       ))}
@@ -835,6 +978,7 @@ async function loadTeacherStats(): Promise<TeacherStatsPayload> {
   } = await supabase.auth.getSession();
 
   const response = await fetch("/api/teacher/stats", {
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${session?.access_token ?? ""}`
     }
@@ -982,6 +1126,12 @@ function getErrorMessage(value: TeacherStatsPayload | { error?: string }, fallba
 
 function formatPercent(value: number) {
   return `${Math.round(value * 100)}%`;
+}
+
+function formatLogicalDate(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return value || "日期未知";
+  return `${match[1]}年${Number(match[2])}月${Number(match[3])}日`;
 }
 
 function completedAttemptTimestamp(value: string | null) {

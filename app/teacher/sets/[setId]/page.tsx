@@ -9,7 +9,7 @@ export default function TeacherSetPage({ params }: { params: { setId: string } }
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
         { label: "套题统计", href: "/teacher/sets" },
-        { label: setId }
+        { label: "套题详情" }
       ]}
       title="套题详情"
     >

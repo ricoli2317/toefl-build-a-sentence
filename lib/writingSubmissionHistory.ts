@@ -12,6 +12,7 @@ export type SubmittedWritingAttemptSummary = {
 export type WritingSubmissionQuestionSummary = {
   question_id: string;
   set_title: string;
+  display_name?: string;
   year_month: string;
 };
 
@@ -82,14 +83,19 @@ export function buildWritingSubmissionHistory(
   publishedAttemptIds: Set<string>
 ): SubmittedWritingAttemptSummary[] {
   return [...attempts]
-    .sort((left, right) => {
-      const timeDifference = submittedTime(right.submitted_at) - submittedTime(left.submitted_at);
-      return timeDifference || right.attempt_id.localeCompare(left.attempt_id);
-    })
+    .sort(compareWritingSubmittedAttempts)
     .map((attempt) => ({
       ...attempt,
       has_published_review: publishedAttemptIds.has(attempt.attempt_id)
     }));
+}
+
+export function compareWritingSubmittedAttempts(
+  left: Pick<SubmittedAttemptRow, "attempt_id" | "submitted_at">,
+  right: Pick<SubmittedAttemptRow, "attempt_id" | "submitted_at">
+) {
+  const timeDifference = submittedTime(right.submitted_at) - submittedTime(left.submitted_at);
+  return timeDifference || right.attempt_id.localeCompare(left.attempt_id);
 }
 
 function submittedTime(value: string | null) {

@@ -1,4 +1,4 @@
-import { isVirtualPracticeSetId } from "./studentNavigation";
+import { isVirtualPracticeSetId } from "./studentNavigation.ts";
 
 export type OfficialAttemptStatus = {
   attempt_id: string;

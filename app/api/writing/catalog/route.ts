@@ -13,6 +13,10 @@ import {
   writingJson
 } from "@/lib/writingServer";
 import { buildWritingSubmissionHistory } from "@/lib/writingSubmissionHistory";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +36,8 @@ export async function GET(request: Request) {
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.userId) return writingJson({ error: "Unauthorized" }, { status: 401 });
 
-    const [questionResult, attemptResult] = await Promise.all([
+    const service = createServiceSupabase();
+    const [questionResult, attemptResult, historicalDisplayResolver] = await Promise.all([
       readAllSupabaseRows<QuestionCatalogRow>((from, to) =>
         auth.supabase!
           .from(WRITING_TASK_CONFIG[taskType].questionTable)
@@ -52,7 +57,8 @@ export async function GET(request: Request) {
           .is("assignment_id", null)
           .order("updated_at", { ascending: false })
           .range(from, to)
-      )
+      ),
+      loadHistoricalPracticeDisplayResolver(service)
     ]);
 
     if (questionResult.error) {
@@ -68,7 +74,6 @@ export async function GET(request: Request) {
       .map((attempt) => attempt.attempt_id);
     const publishedAttemptIds = new Set<string>();
     if (submittedAttemptIds.length > 0) {
-      const service = createServiceSupabase();
       const publishedResult = await readAllSupabaseRows<{ attempt_id: string }>((from, to) =>
         service
           .from("writing_reviews")
@@ -94,6 +99,18 @@ export async function GET(request: Request) {
       ]);
     }
 
+    const historicalDisplays = new Map(
+      (questionResult.data ?? []).map((question) => [
+        question.question_id,
+        historicalDisplayResolver.resolveWritingAttempt({
+          assignmentId: null,
+          fallbackDisplayName: question.set_title || question.question_id,
+          rawQuestionId: question.question_id,
+          taskType
+        })
+      ])
+    );
+    logHistoricalPracticeDisplayWarnings(Array.from(historicalDisplays.values()));
     const sets: WritingCatalogSet[] = (questionResult.data ?? [])
       .map((question) => {
         const attempts = attemptsByQuestion.get(question.question_id) ?? [];
@@ -115,6 +132,8 @@ export async function GET(request: Request) {
           question_id: String(question.question_id),
           set_id: String(question.set_id),
           set_title: question.set_title,
+          display_name:
+            historicalDisplays.get(question.question_id)?.displayName ?? question.set_title,
           year_month: question.year_month,
           status: draft
             ? ("draft" as const)

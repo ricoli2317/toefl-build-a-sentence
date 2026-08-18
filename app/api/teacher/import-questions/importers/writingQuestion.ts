@@ -1,4 +1,24 @@
-import { chunkRows, importResult, serializeError } from "./common";
+import { parseWritingOccurrences } from "@/lib/practiceImporter/occurrences";
+import {
+  academicDiscussionInput,
+  emailInput,
+  loadAcademicDiscussionCatalog,
+  loadEmailCatalog,
+  reconcilePracticeItemNumbers,
+  syncAcademicDiscussionLogicalSource,
+  syncEmailLogicalSource
+} from "@/lib/practiceImporter/server";
+import type {
+  NumberingReconciliationItem,
+  PracticeOccurrence
+} from "@/lib/practiceImporter/types";
+import {
+  addLogicalImportOutcome,
+  chunkRows,
+  emptyLogicalImportMetrics,
+  importResult,
+  serializeError
+} from "./common";
 import type { FailedRow, ImporterContext } from "./types";
 
 const LOOKUP_BATCH_SIZE = 100;
@@ -6,6 +26,7 @@ const LOOKUP_BATCH_SIZE = 100;
 type WritingImporterConfig = {
   fields: readonly string[];
   table: "email_questions" | "academic_discussion_questions";
+  taskType: "email" | "academic_discussion";
   upsertOperation: string;
 };
 
@@ -14,6 +35,7 @@ type ValidWritingRow = {
   questionId: string;
   rowNumber: number;
   setId: string;
+  occurrences: PracticeOccurrence[];
 };
 
 function normalizeWritingRow(row: Record<string, string>, fields: readonly string[]) {
@@ -46,6 +68,8 @@ export async function importWritingQuestions(
 ) {
   const failedRows: FailedRow[] = [];
   const validRows: ValidWritingRow[] = [];
+  const logicalMetrics = emptyLogicalImportMetrics();
+  const numberingReconciliationItems: NumberingReconciliationItem[] = [];
 
   for (let index = 0; index < rows.length; index += 1) {
     const payload = normalizeWritingRow(rows[index], config.fields);
@@ -65,7 +89,26 @@ export async function importWritingQuestions(
       continue;
     }
 
-    validRows.push({ payload, questionId, rowNumber, setId });
+    let occurrences: PracticeOccurrence[];
+    try {
+      occurrences = parseWritingOccurrences({
+        sourceLabels: payload.source_labels,
+        yearMonth: payload.year_month,
+        setTitle: payload.set_title,
+        setId
+      });
+    } catch (error) {
+      failedRows.push({
+        rowNumber,
+        questionId,
+        setId,
+        reason: error instanceof Error ? error.message : "Unable to parse writing occurrence",
+        operation: "parse occurrences"
+      });
+      continue;
+    }
+
+    validRows.push({ payload, questionId, rowNumber, setId, occurrences });
   }
 
   const existingByQuestionId = new Map<string, string>();
@@ -140,6 +183,7 @@ export async function importWritingQuestions(
 
   let insertedCount = 0;
   let updatedCount = 0;
+  const successfulRows: ValidWritingRow[] = [];
 
   for (const row of importableRows) {
     const { error } = await supabase
@@ -166,7 +210,84 @@ export async function importWritingQuestions(
       insertedCount += 1;
       existingByQuestionId.set(row.questionId, row.setId);
     }
+    successfulRows.push(row);
   }
 
-  return importResult(insertedCount, updatedCount, failedRows);
+  if (successfulRows.length > 0) {
+    const orderedRows = [...successfulRows].sort(
+      (left, right) =>
+        earliestOccurrence(left.occurrences).localeCompare(earliestOccurrence(right.occurrences)) ||
+        left.questionId.localeCompare(right.questionId)
+    );
+    if (config.taskType === "email") {
+      const catalog = await loadEmailCatalog(supabase);
+      for (const row of orderedRows) {
+        try {
+          const outcome = await syncEmailLogicalSource({
+            catalog,
+            content: emailInput(row.payload),
+            occurrences: row.occurrences,
+            questionId: row.questionId,
+            subject: row.payload.subject,
+            supabase
+          });
+          addLogicalImportOutcome(logicalMetrics, outcome);
+          if (outcome.numberingReconciliation) {
+            numberingReconciliationItems.push(outcome.numberingReconciliation);
+          }
+        } catch (error) {
+          failedRows.push(logicalFailure(row, error));
+        }
+      }
+    } else {
+      const catalog = await loadAcademicDiscussionCatalog(supabase);
+      for (const row of orderedRows) {
+        try {
+          const outcome = await syncAcademicDiscussionLogicalSource({
+            catalog,
+            content: academicDiscussionInput(row.payload),
+            occurrences: row.occurrences,
+            professorPrompt: row.payload.professor_prompt,
+            questionId: row.questionId,
+            supabase
+          });
+          addLogicalImportOutcome(logicalMetrics, outcome);
+          if (outcome.numberingReconciliation) {
+            numberingReconciliationItems.push(outcome.numberingReconciliation);
+          }
+        } catch (error) {
+          failedRows.push(logicalFailure(row, error));
+        }
+      }
+    }
+    await reconcilePracticeItemNumbers(
+      supabase,
+      config.taskType,
+      numberingReconciliationItems
+    );
+  }
+
+  return importResult(insertedCount, updatedCount, failedRows, [], logicalMetrics);
+}
+
+function earliestOccurrence(occurrences: PracticeOccurrence[]) {
+  return occurrences.reduce(
+    (earliest, occurrence) =>
+      occurrence.occurredOn < earliest ? occurrence.occurredOn : earliest,
+    occurrences[0].occurredOn
+  );
+}
+
+function logicalFailure(row: ValidWritingRow, error: unknown): FailedRow {
+  const serialized = serializeError(error);
+  return {
+    rowNumber: row.rowNumber,
+    questionId: row.questionId,
+    setId: row.setId,
+    reason: serialized.message,
+    operation: "sync logical writing source",
+    code: serialized.code,
+    details: serialized.details,
+    hint: serialized.hint
+  };
 }

@@ -1,10 +1,18 @@
-import { MonthList } from "@/components/SetList";
+import { LogicalPracticeCatalog } from "@/components/LogicalPracticeCatalog";
 import { StudentPage } from "@/components/student/StudentUI";
+import { parseLogicalCatalogPage } from "@/lib/practiceLogicalNavigation";
 
-export default function StudentPracticeSetsPage() {
+export default function StudentPracticeSetsPage({
+  searchParams
+}: {
+  searchParams: { page?: string | string[] };
+}) {
   return (
-    <StudentPage title="按月练习">
-      <MonthList />
+    <StudentPage title="Build a Sentence">
+      <LogicalPracticeCatalog
+        page={parseLogicalCatalogPage(searchParams.page)}
+        taskType="build_sentence"
+      />
     </StudentPage>
   );
 }

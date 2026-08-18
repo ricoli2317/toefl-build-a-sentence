@@ -4,6 +4,10 @@ import {
   loadStudentPublishedWritingReview
 } from "@/lib/writingPublishedReviewServer";
 import { requireWritingStudent, writingJson } from "@/lib/writingServer";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -17,12 +21,26 @@ export async function GET(
     if (!auth.userId) {
       return writingJson({ error: "Unauthorized" }, { status: 401 });
     }
-    const payload = await loadStudentPublishedWritingReview(
-      createServiceSupabase(),
-      auth.userId,
-      params.attemptId
-    );
-    return writingJson(payload);
+    const supabase = createServiceSupabase();
+    const [payload, historicalDisplayResolver] = await Promise.all([
+      loadStudentPublishedWritingReview(supabase, auth.userId, params.attemptId),
+      loadHistoricalPracticeDisplayResolver(supabase)
+    ]);
+    const display = historicalDisplayResolver.resolveWritingAttempt({
+      assignmentId: payload.attempt.assignment_id,
+      assignmentDisplayName: payload.question.set_title,
+      fallbackDisplayName:
+        payload.question.set_title || payload.attempt.set_id || payload.attempt.question_id,
+      questionSource: payload.question_source,
+      rawQuestionId: payload.attempt.question_id,
+      taskType: payload.attempt.task_type
+    });
+    logHistoricalPracticeDisplayWarnings([display]);
+    return writingJson({
+      ...payload,
+      display_name: display.displayName,
+      logical_display_name: display.logicalDisplayName
+    });
   } catch (error) {
     if (error instanceof StudentPublishedReviewError) {
       return writingJson(

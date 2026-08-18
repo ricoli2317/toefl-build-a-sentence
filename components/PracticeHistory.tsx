@@ -480,7 +480,8 @@ export function usePracticeHistory() {
   }, [range.end, range.start]);
   return useStudentCachedData<PracticeHistoryPayload>(
     `${STUDENT_PRACTICE_HISTORY_CACHE_PREFIX}:${query}`,
-    (session) => loadPracticeHistory(query, session)
+    (session) => loadPracticeHistory(query, session),
+    { refreshOnMount: true }
   );
 }
 

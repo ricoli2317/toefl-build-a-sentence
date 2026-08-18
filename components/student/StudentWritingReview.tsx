@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
+  STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_KEY,
+  studentPublishedWritingReviewCacheKey,
   useStudentCachedData,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
@@ -53,13 +55,17 @@ import {
 type ReviewPayload = {
   attempt: {
     attempt_id: string;
+    assignment_id: string | null;
     task_type: WritingTaskType;
+    question_id: string;
+    set_id: string;
     response_text: string;
     overtime_ranges: WritingOvertimeRange[] | null;
     word_count: number;
     submitted_at: string | null;
   };
   question: WritingQuestion;
+  display_name?: string;
   question_source?: "question_bank" | "custom";
   review: StudentPublishedWritingReview;
   error?: string;
@@ -70,6 +76,7 @@ type ReviewSummary = {
   task_type: WritingTaskType;
   set_id: string;
   set_title: string;
+  display_name?: string;
   year_month: string;
   submitted_at: string | null;
   published_at: string;
@@ -79,7 +86,6 @@ type ReviewListPayload = { error?: string; reviews: ReviewSummary[] };
 type ReviewTab = "all" | "language_edit" | "content_feedback";
 type ReviewView = "marked" | "revised" | "original" | "question";
 
-const REVIEW_LIST_CACHE_KEY = "writing:published-reviews";
 const EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP: AcademicDiscussionAvatarMap = {};
 
 export function StudentWritingReviewResult({
@@ -90,8 +96,9 @@ export function StudentWritingReviewResult({
   backHref: string;
 }) {
   const state = useStudentCachedData<ReviewPayload>(
-    `writing:published-review:${attemptId}`,
-    (session) => loadReview(attemptId, session)
+    studentPublishedWritingReviewCacheKey(attemptId),
+    (session) => loadReview(attemptId, session),
+    { refreshOnMount: true }
   );
   const avatarState = useStudentCachedData<AcademicDiscussionAvatarsPayload>(
     STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
@@ -193,7 +200,7 @@ export function StudentWritingReviewResult({
             <div className="min-w-0">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <h1 className="truncate text-base font-bold sm:text-lg">
-                  {taskLabel} · {question.set_title}
+                  {taskLabel} · {state.data.display_name ?? question.set_title}
                 </h1>
                 <span className="student-chip !py-1">已发布</span>
               </div>
@@ -289,8 +296,9 @@ export function StudentWritingReviewResult({
 
 export function StudentWritingReviewList() {
   const state = useStudentCachedData<ReviewListPayload>(
-    REVIEW_LIST_CACHE_KEY,
-    loadReviewList
+    STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_KEY,
+    loadReviewList,
+    { refreshOnMount: true }
   );
   if (state.loading) return <StudentLoadingState text="正在加载已发布批改..." />;
   if (state.error) return <StudentErrorState text="加载批改记录失败，请稍后重试。" />;
@@ -320,7 +328,7 @@ export function StudentWritingReviewList() {
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[review.task_type].label}</p>
-                  <h2 className="mt-1 truncate font-bold text-student-text">{review.set_title}</h2>
+                  <h2 className="mt-1 truncate font-bold text-student-text">{review.display_name ?? review.set_title}</h2>
                   <p className="mt-1 text-xs text-student-muted">发布于 {formatDateTime(review.published_at)}</p>
                 </div>
               </div>

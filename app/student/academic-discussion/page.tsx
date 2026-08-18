@@ -1,10 +1,18 @@
-import { WritingMonthList } from "@/components/writing/WritingCatalog";
+import { LogicalPracticeCatalog } from "@/components/LogicalPracticeCatalog";
 import { StudentPage } from "@/components/student/StudentUI";
+import { parseLogicalCatalogPage } from "@/lib/practiceLogicalNavigation";
 
-export default function AcademicDiscussionPage() {
+export default function AcademicDiscussionPage({
+  searchParams
+}: {
+  searchParams: { page?: string | string[] };
+}) {
   return (
-    <StudentPage subtitle="选择月份，开始或继续学术讨论写作练习。" title="Academic Discussion">
-      <WritingMonthList taskType="academic_discussion" />
+    <StudentPage title="Academic Discussion">
+      <LogicalPracticeCatalog
+        page={parseLogicalCatalogPage(searchParams.page)}
+        taskType="academic_discussion"
+      />
     </StudentPage>
   );
 }

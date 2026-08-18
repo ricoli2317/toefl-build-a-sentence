@@ -3,6 +3,22 @@ import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import { standardizeOrderTextCasing } from "@/lib/questionText";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import {
+  buildTeacherLogicalSetSummaries,
+  type TeacherLogicalPracticeItemRow,
+  type TeacherLogicalPracticeOccurrenceRow,
+  type TeacherLogicalPracticeSourceRow
+} from "@/lib/teacherLogicalSetStats";
+import {
+  buildTeacherLogicalQuestionStats,
+  type TeacherLogicalQuestionMapRow
+} from "@/lib/teacherLogicalQuestionStats";
+import {
+  createHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
+
+export const dynamic = "force-dynamic";
 
 type AttemptRow = {
   attempt_id: string;
@@ -55,7 +71,7 @@ type QuestionRow = {
   final_sentence: string | null;
 };
 
-type SetSummary = {
+type RawSetSummary = {
   setId: string;
   setTitle: string;
   questionCount: number;
@@ -105,7 +121,14 @@ async function fetchAllRows<T>(
 }
 
 function jsonError(message: string, status = 500) {
-  return NextResponse.json({ error: message }, { status });
+  return teacherStatsJson({ error: message }, { status });
+}
+
+function teacherStatsJson(data: unknown, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: { ...init?.headers, "Cache-Control": "no-store" }
+  });
 }
 
 function ratio(correct: number, total: number) {
@@ -159,7 +182,8 @@ export async function GET(request: Request) {
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
     });
 
@@ -186,7 +210,8 @@ export async function GET(request: Request) {
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
+        headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` },
+        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
     });
 
@@ -194,7 +219,11 @@ export async function GET(request: Request) {
       { data: attempts, error: attemptsError },
       { data: answers, error: answersError },
       { data: profiles, error: profilesError },
-      { data: questions, error: questionsError }
+      { data: questions, error: questionsError },
+      { data: logicalItems, error: logicalItemsError },
+      { data: logicalSources, error: logicalSourcesError },
+      { data: logicalOccurrences, error: logicalOccurrencesError },
+      { data: logicalQuestionMaps, error: logicalQuestionMapsError }
     ] = await Promise.all([
       fetchAllRows<AttemptRow>((from, to) =>
         db
@@ -229,10 +258,44 @@ export async function GET(request: Request) {
           )
           .order("question_id", { ascending: true })
           .range(from, to)
+      ),
+      fetchAllRows<TeacherLogicalPracticeItemRow>((from, to) =>
+        db
+          .from("practice_items")
+          .select("item_id,task_type,display_number,first_seen_date,is_active")
+          .eq("task_type", "build_sentence")
+          .order("item_id", { ascending: true })
+          .range(from, to)
+      ),
+      fetchAllRows<TeacherLogicalPracticeSourceRow>((from, to) =>
+        db
+          .from("practice_item_sources")
+          .select("source_id,item_id,task_type,source_set_id,is_canonical")
+          .eq("task_type", "build_sentence")
+          .not("source_set_id", "is", null)
+          .order("source_id", { ascending: true })
+          .range(from, to)
+      ),
+      fetchAllRows<TeacherLogicalPracticeOccurrenceRow>((from, to) =>
+        db
+          .from("practice_item_occurrences")
+          .select("source_id,occurred_on")
+          .order("source_id", { ascending: true })
+          .order("occurred_on", { ascending: false })
+          .range(from, to)
+      ),
+      fetchAllRows<TeacherLogicalQuestionMapRow>((from, to) =>
+        db
+          .from("practice_item_question_map")
+          .select("source_id,source_question_id,source_question_order,logical_question_order")
+          .order("source_id", { ascending: true })
+          .order("logical_question_order", { ascending: true })
+          .range(from, to)
       )
     ]);
 
-    const queryError = attemptsError ?? answersError ?? profilesError ?? questionsError;
+    const queryError = attemptsError ?? answersError ?? profilesError ?? questionsError ??
+      logicalItemsError ?? logicalSourcesError ?? logicalOccurrencesError ?? logicalQuestionMapsError;
     if (queryError) {
       return jsonError(`Failed to load teacher stats: ${queryError.message}`);
     }
@@ -273,6 +336,31 @@ export async function GET(request: Request) {
       ...question,
       question_id: String(question.question_id),
       set_id: String(question.set_id)
+    }));
+    const logicalItemRows = ((logicalItems ?? []) as TeacherLogicalPracticeItemRow[]).map(
+      (item) => ({ ...item, item_id: String(item.item_id) })
+    );
+    const logicalSourceRows = ((logicalSources ?? []) as TeacherLogicalPracticeSourceRow[]).map(
+      (source) => ({
+        ...source,
+        source_id: String(source.source_id),
+        item_id: String(source.item_id),
+        source_set_id: source.source_set_id === null ? null : String(source.source_set_id)
+      })
+    );
+    const logicalOccurrenceRows = (
+      (logicalOccurrences ?? []) as TeacherLogicalPracticeOccurrenceRow[]
+    ).map((occurrence) => ({
+      source_id: String(occurrence.source_id),
+      occurred_on: String(occurrence.occurred_on)
+    }));
+    const logicalQuestionMapRows = (
+      (logicalQuestionMaps ?? []) as TeacherLogicalQuestionMapRow[]
+    ).map((mapping) => ({
+      source_id: String(mapping.source_id),
+      source_question_id: String(mapping.source_question_id),
+      source_question_order: Number(mapping.source_question_order),
+      logical_question_order: Number(mapping.logical_question_order)
     }));
 
     const attemptById = new Map(attemptRows.map((attempt) => [attempt.attempt_id, attempt]));
@@ -347,7 +435,7 @@ export async function GET(request: Request) {
       };
     });
 
-    const setSummaries = Array.from(setTitles.entries()).map(([setId, setTitle]) => {
+    const rawSetSummaries = Array.from(setTitles.entries()).map(([setId, setTitle]) => {
       const setAttempts = attemptRows.filter(
         (attempt) =>
           getPracticeType(attempt.set_id) === "official" && attempt.set_id === setId
@@ -373,6 +461,52 @@ export async function GET(request: Request) {
         averageAccuracy: ratio(correctCount, totalQuestions)
       };
     });
+    const logicalSetSummaries = buildTeacherLogicalSetSummaries({
+      items: logicalItemRows,
+      sources: logicalSourceRows,
+      occurrences: logicalOccurrenceRows,
+      attempts: attemptRows,
+      questions: questionRows
+    });
+    const logicalQuestionStats = buildTeacherLogicalQuestionStats({
+      items: logicalItemRows,
+      sources: logicalSourceRows,
+      questionMaps: logicalQuestionMapRows,
+      questions: questionRows,
+      attempts: attemptRows,
+      answers: answerRows
+    });
+    for (const warning of logicalQuestionStats.warnings) {
+      console.warn("[teacher-logical-question-stats] mapping_warning", warning);
+    }
+    const historicalDisplayResolver = createHistoricalPracticeDisplayResolver({
+      items: logicalItemRows.map((item) => ({
+        ...item,
+        task_type: "build_sentence" as const,
+        display_title: null
+      })),
+      sources: logicalSourceRows.map((source) => ({
+        ...source,
+        task_type: "build_sentence" as const,
+        source_question_id: null
+      }))
+    });
+    const historicalDisplayBySetId = new Map(
+      Array.from(new Set(attemptRows.map((attempt) => attempt.set_id))).map((setId) => {
+        const fallbackDisplayName =
+          attemptRows.find((attempt) => attempt.set_id === setId)?.set_title ??
+          setTitles.get(setId) ??
+          setId;
+        return [
+          setId,
+          historicalDisplayResolver.resolveBuildSentence({
+            fallbackDisplayName,
+            rawSetId: setId
+          })
+        ] as const;
+      })
+    );
+    logHistoricalPracticeDisplayWarnings(Array.from(historicalDisplayBySetId.values()));
 
     const questionSummaries = questionRows.map((question) => {
       const relatedAnswers = answerRows.filter(
@@ -407,7 +541,7 @@ export async function GET(request: Request) {
       0
     );
 
-    return NextResponse.json({
+    return teacherStatsJson({
       overview: {
         studentCount: studentSummaries.length,
         totalAttemptCount: attemptRows.length,
@@ -416,13 +550,19 @@ export async function GET(request: Request) {
       },
       missingAnswerAttemptIds,
       students: studentSummaries.sort((a, b) => a.studentDisplayName.localeCompare(b.studentDisplayName)),
-      sets: setSummaries.sort((a, b) => compareSetIds(a.setId, b.setId)),
+      sets: logicalSetSummaries,
+      logicalQuestionStats: logicalQuestionStats.items,
+      rawSets: rawSetSummaries.sort((a, b) => compareSetIds(a.setId, b.setId)),
       attempts: attemptRows
         .map((attempt) => ({
           attemptId: attempt.attempt_id,
           studentId: attempt.student_id,
           setId: attempt.set_id,
-          setTitle: attempt.set_title ?? setTitles.get(attempt.set_id) ?? attempt.set_id,
+          setTitle:
+            historicalDisplayBySetId.get(attempt.set_id)?.displayName ??
+            attempt.set_title ??
+            setTitles.get(attempt.set_id) ??
+            attempt.set_id,
           practiceType: getPracticeType(attempt.set_id),
           correctCount: attempt.correct_count ?? 0,
           totalQuestions: attempt.total_questions ?? 0,
@@ -445,6 +585,7 @@ export async function GET(request: Request) {
             studentId: answer.student_id,
             setId: answer.set_id,
             setTitle:
+              historicalDisplayBySetId.get(attempt?.set_id ?? answer.set_id)?.displayName ??
               question?.set_title ??
               attempt?.set_title ??
               setTitles.get(answer.set_id) ??
@@ -478,8 +619,9 @@ export async function GET(request: Request) {
         },
         {}
       ),
-      setStats: setSummaries
-        .map((set): SetSummary => set)
+      setStats: logicalSetSummaries,
+      rawSetStats: rawSetSummaries
+        .map((set): RawSetSummary => set)
         .sort((a, b) => compareSetIds(a.setId, b.setId))
     });
   } catch (error) {

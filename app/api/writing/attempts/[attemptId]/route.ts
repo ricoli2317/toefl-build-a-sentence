@@ -13,6 +13,10 @@ import {
   isStudentWritingModeAllowed,
   writingModeUnavailableMessage
 } from "@/lib/writingModePolicy";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -70,8 +74,9 @@ export async function GET(
     if (!questionResult.data) return writingJson({ error: "Writing question not found" }, { status: 404 });
 
     let hasPublishedReview = false;
+    const serviceSupabase = createServiceSupabase();
     if (attemptResult.data.status === "submitted") {
-      const reviewResult = await createServiceSupabase()
+      const reviewResult = await serviceSupabase
         .from("writing_reviews")
         .select("attempt_id")
         .eq("attempt_id", attemptResult.data.attempt_id)
@@ -83,10 +88,25 @@ export async function GET(
       }
       hasPublishedReview = Boolean(reviewResult.data);
     }
+    const historicalDisplay = submissionOnly
+      ? (await loadHistoricalPracticeDisplayResolver(serviceSupabase)).resolveWritingAttempt({
+          assignmentId: attemptResult.data.assignment_id ?? null,
+          assignmentDisplayName: questionResult.data.set_title,
+          fallbackDisplayName:
+            questionResult.data.set_title ||
+            attemptResult.data.set_id ||
+            attemptResult.data.question_id,
+          questionSource: questionResult.questionSource,
+          rawQuestionId: attemptResult.data.question_id,
+          taskType: attemptResult.data.task_type
+        })
+      : null;
+    if (historicalDisplay) logHistoricalPracticeDisplayWarnings([historicalDisplay]);
 
     return writingJson({
       attempt: attemptResult.data,
       question: questionResult.data,
+      display_name: historicalDisplay?.displayName,
       question_source: questionResult.questionSource,
       assignment_available: questionResult.assignmentAvailable ?? true,
       has_published_review: hasPublishedReview

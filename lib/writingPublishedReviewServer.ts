@@ -86,6 +86,7 @@ export async function loadStudentPublishedWritingReview(
     );
   }
   const review = reviewResult.data as Record<string, unknown>;
+  const exactQuestion = questionResult.data as WritingQuestion;
   try {
     const snapshot = hydratePublishedWritingReviewSnapshot({
       taskType: attempt.task_type,
@@ -99,13 +100,16 @@ export async function loadStudentPublishedWritingReview(
     return {
       attempt: {
         attempt_id: attempt.attempt_id,
+        assignment_id: attempt.assignment_id ?? null,
         task_type: attempt.task_type,
+        question_id: attempt.question_id,
+        set_id: attempt.set_id,
         response_text: attempt.response_text,
         overtime_ranges: attempt.overtime_ranges,
         word_count: attempt.word_count,
         submitted_at: attempt.submitted_at
       },
-      question: questionResult.data as WritingQuestion,
+      question: exactQuestion,
       question_source: questionResult.questionSource,
       review: toStudentPublishedWritingReview(snapshot)
     };

@@ -4,6 +4,11 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { isWritingTaskType, type WritingTaskType } from "@/lib/writing";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings,
+  type HistoricalPracticeDisplay
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +41,7 @@ type ReviewRow = {
 
 type AssignmentRow = {
   assignment_id: string;
+  question_source: "question_bank" | "custom";
   question_snapshot: { set_title?: unknown } | null;
 };
 
@@ -106,7 +112,14 @@ export async function GET(request: Request) {
         .map((attempt) => String(attempt.question_id))
     );
 
-    const [profiles, emailQuestions, discussionQuestions, reviews, assignments] = await Promise.all([
+    const [
+      profiles,
+      emailQuestions,
+      discussionQuestions,
+      reviews,
+      assignments,
+      historicalDisplayResolver
+    ] = await Promise.all([
       readRowsByIds<ProfileRow>(userIds, (batch, from, to) =>
         supabase
           .from("profiles")
@@ -142,11 +155,12 @@ export async function GET(request: Request) {
       readRowsByIds<AssignmentRow>(assignmentIds, (batch, from, to) =>
         supabase
           .from("writing_assignments")
-          .select("assignment_id,question_snapshot")
+          .select("assignment_id,question_source,question_snapshot")
           .in("assignment_id", batch)
           .order("assignment_id", { ascending: true })
           .range(from, to)
-      )
+      ),
+      loadHistoricalPracticeDisplayResolver(supabase)
     ]);
 
     const relatedError =
@@ -177,37 +191,66 @@ export async function GET(request: Request) {
       (assignments.data ?? []).map((assignment) => [String(assignment.assignment_id), assignment])
     );
 
-    return json({
-      attempts: attempts.map((attempt) => {
-        const taskType = attempt.task_type as WritingTaskType;
-        const profile = profileById.get(String(attempt.user_id));
-        const question =
-          taskType === "email"
-            ? emailQuestionById.get(String(attempt.question_id))
-            : discussionQuestionById.get(String(attempt.question_id));
-        const review = reviewByAttemptId.get(String(attempt.attempt_id));
-        const assignment = attempt.assignment_id
-          ? assignmentById.get(String(attempt.assignment_id))
-          : undefined;
-        const assignmentTitle = typeof assignment?.question_snapshot?.set_title === "string"
-          ? assignment.question_snapshot.set_title.trim()
-          : "";
+    const resolvedDisplays: HistoricalPracticeDisplay[] = [];
+    const enrichedAttempts = attempts.map((attempt) => {
+      const taskType = attempt.task_type as WritingTaskType;
+      const profile = profileById.get(String(attempt.user_id));
+      const question =
+        taskType === "email"
+          ? emailQuestionById.get(String(attempt.question_id))
+          : discussionQuestionById.get(String(attempt.question_id));
+      const review = reviewByAttemptId.get(String(attempt.attempt_id));
+      const assignment = attempt.assignment_id
+        ? assignmentById.get(String(attempt.assignment_id))
+        : undefined;
+      const assignmentTitle = typeof assignment?.question_snapshot?.set_title === "string"
+        ? assignment.question_snapshot.set_title.trim()
+        : "";
+      const rawSetTitle = question?.set_title?.trim() || String(attempt.set_id);
+      const display = historicalDisplayResolver.resolveWritingAttempt({
+        assignmentId: attempt.assignment_id,
+        assignmentDisplayName: assignmentTitle,
+        fallbackDisplayName: assignmentTitle || rawSetTitle || String(attempt.question_id),
+        questionSource: assignment?.question_source ?? null,
+        rawQuestionId: String(attempt.question_id),
+        taskType
+      });
+      resolvedDisplays.push(display);
 
-        return {
-          attemptId: String(attempt.attempt_id),
-          studentId: String(attempt.user_id),
-          studentName: getPreferredUserDisplayName({
-            email: profile?.email,
-            profileFullName: profile?.full_name
-          }),
-          taskType,
-          setId: String(attempt.set_id),
-          setTitle: assignmentTitle || question?.set_title?.trim() || String(attempt.set_id),
-          wordCount: Math.max(0, Number(attempt.word_count) || 0),
-          submittedAt: attempt.submitted_at,
-          reviewStatus: toReviewStatus(review)
-        };
-      })
+      return {
+        attemptId: String(attempt.attempt_id),
+        assignmentId: attempt.assignment_id ? String(attempt.assignment_id) : null,
+        studentId: String(attempt.user_id),
+        studentName: getPreferredUserDisplayName({
+          email: profile?.email,
+          profileFullName: profile?.full_name
+        }),
+        taskType,
+        questionId: String(attempt.question_id),
+        setId: String(attempt.set_id),
+        setTitle: assignmentTitle || rawSetTitle,
+        displayName: display.displayName,
+        reviewContext: attempt.assignment_id
+          ? assignment?.question_source === "custom"
+            ? "assignment_custom"
+            : "assignment_question_bank"
+          : "free_practice",
+        logicalDisplay: display.logicalDisplayName
+          ? {
+              itemId: display.itemId,
+              displayNumber: display.displayNumber,
+              displayTitle: display.displayTitle,
+              displayName: display.logicalDisplayName
+            }
+          : null,
+        wordCount: Math.max(0, Number(attempt.word_count) || 0),
+        submittedAt: attempt.submitted_at,
+        reviewStatus: toReviewStatus(review)
+      };
+    });
+    logHistoricalPracticeDisplayWarnings(resolvedDisplays);
+    return json({
+      attempts: enrichedAttempts
     });
   } catch (error) {
     console.error("Unexpected writing review list error", {

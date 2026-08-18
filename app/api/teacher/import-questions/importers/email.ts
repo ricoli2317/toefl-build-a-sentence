@@ -6,6 +6,7 @@ export function importEmailQuestions(context: ImporterContext) {
   return importWritingQuestions(context, {
     fields: EMAIL_HEADERS,
     table: "email_questions",
+    taskType: "email",
     upsertOperation: "upsert email questions"
   });
 }

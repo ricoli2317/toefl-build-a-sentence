@@ -67,11 +67,13 @@ import {
 } from "@/lib/writingEditorPaste";
 import type { StudentWritingModeAvailability } from "@/lib/writingModePolicy";
 import { calculateActiveWritingTimer } from "@/lib/writingTimer";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 
 type PracticePayload = {
   assignment_available?: boolean;
   attempt?: WritingAttempt;
   question?: WritingQuestion;
+  display_name?: string;
   has_published_review?: boolean;
   question_source?: "question_bank" | "custom";
   error?: string;
@@ -180,6 +182,12 @@ export function WritingPractice({
           );
           setPayload(result);
           if (!attemptId && result.attempt.status === "draft") {
+            publishCacheInvalidation({
+              type: "WRITING_DRAFT_UPDATED",
+              studentId: result.attempt.user_id,
+              attemptId: result.attempt.attempt_id,
+              assignmentId: result.attempt.assignment_id ?? null
+            });
             router.replace(
               assignmentId
                 ? `/student/assignments/${encodeURIComponent(assignmentId)}?attempt=${encodeURIComponent(result.attempt.attempt_id)}`
@@ -234,6 +242,7 @@ export function WritingPractice({
       assignmentAvailable={payload.assignment_available !== false}
       assignmentQuestionSource={payload.question_source}
       attempt={payload.attempt}
+      displayName={payload.display_name}
       readOnly={mode === "readonly"}
       reviewPublished={payload.has_published_review === true}
       question={payload.question}
@@ -250,6 +259,7 @@ function WritingPracticeSession({
   assignmentAvailable,
   assignmentQuestionSource,
   attempt: initialAttempt,
+  displayName,
   readOnly: requestedReadOnly,
   reviewPublished,
   question,
@@ -262,6 +272,7 @@ function WritingPracticeSession({
   assignmentAvailable: boolean;
   assignmentQuestionSource?: "question_bank" | "custom";
   attempt: WritingAttempt;
+  displayName?: string;
   readOnly: boolean;
   reviewPublished: boolean;
   question: WritingQuestion;
@@ -307,7 +318,7 @@ function WritingPracticeSession({
   const dirty = editor.text !== lastSavedText || JSON.stringify(editor.overtimeRanges) !== JSON.stringify(lastSavedRanges);
   const listHref = initialAttempt.assignment_id
     ? "/student/assignments"
-    : `${WRITING_TASK_CONFIG[taskType].listHref}/${question.year_month}`;
+    : WRITING_TASK_CONFIG[taskType].listHref;
   const retakeHref = initialAttempt.assignment_id
     ? assignmentAvailable
       ? `/student/assignments/${encodeURIComponent(initialAttempt.assignment_id)}?new=1`
@@ -444,6 +455,12 @@ function WritingPracticeSession({
       setLastSavedRanges([...overtimeRangesRef.current]);
       setMessage("草稿已保存");
       invalidateWritingData();
+      publishCacheInvalidation({
+        type: "WRITING_DRAFT_UPDATED",
+        studentId: savedAttempt.user_id,
+        attemptId: savedAttempt.attempt_id,
+        assignmentId: savedAttempt.assignment_id ?? null
+      });
       window.setTimeout(() => setMessage(""), 2200);
       return true;
     } catch (saveError) {
@@ -467,6 +484,12 @@ function WritingPracticeSession({
         setLastSavedText(textRef.current);
         setLastSavedRanges([...overtimeRangesRef.current]);
         invalidateWritingData();
+        publishCacheInvalidation({
+          type: "WRITING_ATTEMPT_SUBMITTED",
+          studentId: submittedAttempt.user_id,
+          attemptId: submittedAttempt.attempt_id,
+          assignmentId: submittedAttempt.assignment_id ?? null
+        });
         setMessage(automatic ? "时间到，答案已自动提交" : "提交成功");
         router.replace(
           `${WRITING_TASK_CONFIG[taskType].submissionHref}/${encodeURIComponent(
@@ -528,7 +551,7 @@ function WritingPracticeSession({
         onExit={requestExit}
         readOnly={readOnly}
         remainingSeconds={remainingSeconds}
-        setTitle={question.set_title}
+        setTitle={readOnly ? displayName ?? question.set_title : question.set_title}
       />
       <main className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1560px] flex-col overflow-hidden px-4 py-3 sm:px-6 lg:px-8">
         <div className="grid h-full min-h-0 grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-4 overflow-hidden">

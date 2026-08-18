@@ -178,7 +178,7 @@ function WritingSetCards({
       sets={sets.map((set) => ({
         questionCount: 1,
         setId: set.set_id,
-        setTitle: set.set_title
+        setTitle: set.display_name ?? set.set_title
       }))}
     />
   );
@@ -192,7 +192,8 @@ export function WritingDraftSummary({ taskType }: { taskType: WritingTaskType })
 export function useWritingCatalog(taskType: WritingTaskType) {
   const { data, error, loading } = useStudentCachedData<WritingCatalogPayload>(
     studentWritingCatalogCacheKey(taskType),
-    (session) => loadWritingCatalog(taskType, session)
+    (session) => loadWritingCatalog(taskType, session),
+    { refreshOnMount: true }
   );
   return {
     error,

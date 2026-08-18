@@ -126,20 +126,17 @@ function WritingHomeCard({
   const config = WRITING_TASK_CONFIG[taskType];
   const icon = taskType === "email" ? Mail : MessageCircleMore;
   const description = taskType === "email" ? "邮件写作练习" : "学术讨论写作练习";
-  const href = draft
-    ? `${config.practiceHref}/${encodeURIComponent(draft.question_id)}`
-    : config.listHref;
   return (
     <PracticeHomeCard
       actionLabel={draft ? "继续练习" : "开始练习"}
       description={description}
-      href={href}
+      href={config.listHref}
       icon={icon}
       meta={
         loading
           ? "正在加载草稿..."
           : draft
-            ? `最近草稿：${draft.set_title}`
+            ? `最近草稿：${draft.display_name ?? draft.set_title}`
             : "暂无草稿"
       }
       secondaryMeta={draft ? `${draft.draft_word_count ?? 0} words · 已保存` : undefined}

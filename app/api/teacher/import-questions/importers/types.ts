@@ -26,10 +26,22 @@ export type ImportResult = {
   successCount: number;
   insertedCount: number;
   updatedCount: number;
+  logicalNewItemCount: number;
+  logicalAutoMergeCount: number;
+  logicalNeedsReviewCount: number;
+  occurrenceInsertedCount: number;
   failedCount: number;
   failedRows: FailedRow[];
   warnings: ImportWarning[];
 };
+
+export type LogicalImportMetrics = Pick<
+  ImportResult,
+  | "logicalNewItemCount"
+  | "logicalAutoMergeCount"
+  | "logicalNeedsReviewCount"
+  | "occurrenceInsertedCount"
+>;
 
 export type ImporterContext = {
   rows: Array<Record<string, string>>;

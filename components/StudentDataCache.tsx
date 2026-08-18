@@ -11,8 +11,10 @@ import {
   type ReactNode
 } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import { subscribeToQuestionBankUpdates } from "@/lib/questionBankCacheEvents";
-import { subscribeToStudentPracticeCompleted } from "@/lib/studentCacheEvents";
+import {
+  cacheDomainsForEvent,
+  subscribeToCacheInvalidation
+} from "@/lib/cacheInvalidation";
 import {
   mergeOfficialAttemptIntoSetsPayload,
   isLaterOfficialAttempt,
@@ -22,11 +24,21 @@ import {
 
 export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
+export const STUDENT_LOGICAL_CATALOG_CACHE_PREFIX = "logical-practice-catalog";
+export const STUDENT_QUESTIONS_CACHE_PREFIX = "questions";
 export const STUDENT_WRONG_QUESTIONS_CACHE_PREFIX = "wrong-questions";
 export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
+export const STUDENT_ATTEMPT_CACHE_PREFIX = "attempt";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
+export const STUDENT_WRITING_CATALOG_CACHE_PREFIX = "writing:catalog";
 export const STUDENT_WRITING_OVERVIEW_CACHE_KEY = "writing:overview";
+export const STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX =
+  "writing:historical-submission";
+export const STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX =
+  "writing:published-reviews";
+export const STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_KEY =
+  `${STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX}:list`;
 export const STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY = "writing:assignments";
 export const STUDENT_WRITING_MODE_POLICY_CACHE_KEY = "writing:mode-policy";
 export const STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY =
@@ -34,7 +46,14 @@ export const STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY =
 export const STUDENT_CURRENT_USER_CACHE_KEY = "current-user";
 
 export function studentWritingCatalogCacheKey(taskType: "email" | "academic_discussion") {
-  return `${STUDENT_WRITING_CACHE_PREFIX}:catalog:${taskType}`;
+  return `${STUDENT_WRITING_CATALOG_CACHE_PREFIX}:${taskType}`;
+}
+
+export function studentLogicalCatalogCacheKey(
+  taskType: "build_sentence" | "email" | "academic_discussion",
+  page: number
+) {
+  return `${STUDENT_LOGICAL_CATALOG_CACHE_PREFIX}:${taskType}:page:${page}`;
 }
 
 export function studentQuestionsCacheKey(setId: string) {
@@ -42,7 +61,11 @@ export function studentQuestionsCacheKey(setId: string) {
 }
 
 export function studentAttemptCacheKey(attemptId: string) {
-  return `attempt:current-question-v2:${attemptId}`;
+  return `${STUDENT_ATTEMPT_CACHE_PREFIX}:historical-display-v3:${attemptId}`;
+}
+
+export function studentPublishedWritingReviewCacheKey(attemptId: string) {
+  return `${STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX}:detail:${attemptId}`;
 }
 
 export function studentWrongQuestionsCacheKey(query: string) {
@@ -394,26 +417,48 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     () =>
-      subscribeToQuestionBankUpdates(() => {
-        invalidate(STUDENT_SETS_CACHE_PREFIX);
-        invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
-        invalidate(STUDENT_WRITING_CACHE_PREFIX);
-      }),
-    [invalidate]
-  );
+      subscribeToCacheInvalidation((event) => {
+        if (event.studentId && event.studentId !== sessionRef.current?.studentId) return;
 
-  useEffect(
-    () =>
-      subscribeToStudentPracticeCompleted((event) => {
-        if (event.studentId !== sessionRef.current?.studentId) return;
-
-        invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
-        invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
-        if (!event.isWrongQuestionsPractice) {
-          if (event.attempt) {
-            recordOfficialAttempt(event.attempt);
-          } else {
-            invalidate(STUDENT_SETS_CACHE_PREFIX);
+        for (const domain of cacheDomainsForEvent(event)) {
+          switch (domain) {
+            case "studentPracticeCatalog":
+              invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+              invalidate(STUDENT_SETS_CACHE_PREFIX);
+              invalidate(STUDENT_QUESTIONS_CACHE_PREFIX);
+              invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
+              break;
+            case "studentPracticeState":
+              invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+              if (!event.isWrongQuestionsPractice) {
+                if (event.attempt) recordOfficialAttempt(event.attempt);
+                else invalidate(STUDENT_SETS_CACHE_PREFIX);
+              }
+              break;
+            case "studentPracticeHistory":
+              invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
+              break;
+            case "studentAttemptResult":
+              invalidate(STUDENT_ATTEMPT_CACHE_PREFIX);
+              break;
+            case "studentWrongQuestions":
+              invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+              break;
+            case "studentWritingCatalog":
+              invalidate(STUDENT_WRITING_CATALOG_CACHE_PREFIX);
+              break;
+            case "studentWritingOverview":
+              invalidate(STUDENT_WRITING_OVERVIEW_CACHE_KEY);
+              break;
+            case "studentWritingHistory":
+              invalidate(STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX);
+              break;
+            case "studentPublishedReviews":
+              invalidate(STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX);
+              break;
+            case "studentAssignments":
+              invalidate(STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY);
+              break;
           }
         }
       }),
@@ -459,7 +504,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 export function useStudentCachedData<T>(
   key: string,
   loader: (session: StudentCacheSession) => Promise<T>,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean; refreshOnMount?: boolean }
 ) {
   const cache = useContext(StudentDataCacheContext);
   if (!cache) {
@@ -468,19 +513,27 @@ export function useStudentCachedData<T>(
 
   const enabled = options?.enabled ?? true;
   const loaderRef = useRef(loader);
+  const mountedRequestRef = useRef<string | null>(null);
   loaderRef.current = loader;
   const entry = enabled ? cache.getEntry(key) : undefined;
 
   useEffect(() => {
-    if (
-      enabled &&
-      cache.sessionReady &&
-      cache.studentId &&
-      !cache.getEntry(key)
-    ) {
+    if (!enabled || !cache.sessionReady || !cache.studentId) return;
+    const requestIdentity = `${cache.studentId}:${key}`;
+    const entry = cache.getEntry(key);
+    if (!entry) {
+      mountedRequestRef.current = requestIdentity;
       void cache.load(key, (session) => loaderRef.current(session));
+      return;
     }
-  }, [cache, enabled, key]);
+    if (
+      options?.refreshOnMount &&
+      mountedRequestRef.current !== requestIdentity
+    ) {
+      mountedRequestRef.current = requestIdentity;
+      void cache.refresh(key, (session) => loaderRef.current(session));
+    }
+  }, [cache, enabled, key, options?.refreshOnMount]);
 
   if (!enabled) return { data: null, error: "", loading: false };
 

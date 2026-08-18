@@ -95,6 +95,7 @@ export type WritingCatalogSet = {
   question_id: string;
   set_id: string;
   set_title: string;
+  display_name?: string;
   year_month: string;
   status: "not_started" | WritingAttemptStatus;
   draft_attempt_id: string | null;

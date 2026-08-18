@@ -2,6 +2,11 @@ import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { WRITING_TASK_CONFIG, type WritingTaskType } from "@/lib/writing";
 import { requireWritingStudent, writingJson } from "@/lib/writingServer";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings,
+  type HistoricalPracticeDisplay
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +23,7 @@ type ReviewRow = { attempt_id: string; published_at: string };
 type QuestionRow = { question_id: string; set_title: string; year_month: string };
 type AssignmentRow = {
   assignment_id: string;
+  question_source: "question_bank" | "custom";
   question_snapshot: { set_title?: unknown; year_month?: unknown } | null;
 };
 
@@ -29,15 +35,18 @@ export async function GET(request: Request) {
       return writingJson({ error: "Unauthorized" }, { status: 401 });
     }
     const supabase = createServiceSupabase();
-    const attemptResult = await readAllSupabaseRows<AttemptRow>((from, to) =>
-      supabase
-        .from("writing_attempts")
-        .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
-        .eq("user_id", auth.userId!)
-        .eq("status", "submitted")
-        .order("submitted_at", { ascending: false })
-        .range(from, to)
-    );
+    const [attemptResult, historicalDisplayResolver] = await Promise.all([
+      readAllSupabaseRows<AttemptRow>((from, to) =>
+        supabase
+          .from("writing_attempts")
+          .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
+          .eq("user_id", auth.userId!)
+          .eq("status", "submitted")
+          .order("submitted_at", { ascending: false })
+          .range(from, to)
+      ),
+      loadHistoricalPracticeDisplayResolver(supabase)
+    ]);
     if (attemptResult.error) {
       return writingJson({ error: "暂时无法加载批改记录。" }, { status: 500 });
     }
@@ -97,7 +106,7 @@ export async function GET(request: Request) {
       ? await readAllSupabaseRows<AssignmentRow>((from, to) =>
           supabase
             .from("writing_assignments")
-            .select("assignment_id,question_snapshot")
+            .select("assignment_id,question_source,question_snapshot")
             .in("assignment_id", assignmentIds)
             .order("assignment_id", { ascending: true })
             .range(from, to)
@@ -107,6 +116,7 @@ export async function GET(request: Request) {
     const assignmentById = new Map(
       (assignmentResult.data ?? []).map((assignment) => [assignment.assignment_id, assignment])
     );
+    const resolvedDisplays: HistoricalPracticeDisplay[] = [];
     const reviews = publishedAttempts
       .map((attempt) => {
         const question = questionByType.get(attempt.task_type)?.get(attempt.question_id);
@@ -120,11 +130,25 @@ export async function GET(request: Request) {
           ? snapshot.year_month
           : question?.year_month;
         if (!setTitle || !yearMonth) return null;
+        const assignment = attempt.assignment_id
+          ? assignmentById.get(attempt.assignment_id)
+          : null;
+        const display = historicalDisplayResolver.resolveWritingAttempt({
+          assignmentId: attempt.assignment_id,
+          assignmentDisplayName: setTitle,
+          fallbackDisplayName: setTitle || attempt.set_id || attempt.question_id,
+          questionSource: assignment?.question_source ?? null,
+          rawQuestionId: attempt.question_id,
+          taskType: attempt.task_type
+        });
+        resolvedDisplays.push(display);
         return {
           attempt_id: attempt.attempt_id,
           task_type: attempt.task_type,
           set_id: attempt.set_id,
           set_title: setTitle,
+          display_name: display.displayName,
+          logical_display_name: display.logicalDisplayName,
           year_month: yearMonth,
           submitted_at: attempt.submitted_at,
           published_at: publishedByAttempt.get(attempt.attempt_id)
@@ -135,6 +159,7 @@ export async function GET(request: Request) {
         (left, right) =>
           Date.parse(right?.published_at ?? "") - Date.parse(left?.published_at ?? "")
       );
+    logHistoricalPracticeDisplayWarnings(resolvedDisplays);
     return writingJson({ reviews });
   } catch (error) {
     return writingJson({ error: "暂时无法加载批改记录。" }, { status: 500 });

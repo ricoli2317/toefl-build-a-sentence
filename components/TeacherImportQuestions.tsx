@@ -24,6 +24,10 @@ type ImportResult = {
   successCount: number;
   insertedCount: number;
   updatedCount: number;
+  logicalNewItemCount: number;
+  logicalAutoMergeCount: number;
+  logicalNeedsReviewCount: number;
+  occurrenceInsertedCount: number;
   failedCount: number;
   warnings?: Array<{
     message: string;
@@ -135,14 +139,7 @@ export function TeacherImportQuestions() {
     const text = await file.text();
     const parsed = parseCsvDocument(text, { trimValues: false });
     const detectedQuestionType = detectQuestionType(parsed.headers);
-    const parsedRows =
-      detectedQuestionType === "build_a_sentence"
-        ? parsed.rows.map((row) =>
-            Object.fromEntries(
-              Object.entries(row).map(([field, value]) => [field, value.trim()])
-            )
-          )
-        : parsed.rows;
+    const parsedRows = parsed.rows;
     setHeaders(parsed.headers);
     setQuestionType(detectedQuestionType);
     setRows(parsedRows);
@@ -355,11 +352,20 @@ export function TeacherImportQuestions() {
         <section className="teacher-card p-6">
           <h2 className="text-xl font-bold text-student-text">导入结果</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <ResultMetric label="成功" value={result.successCount} />
-            <ResultMetric label="新增" value={result.insertedCount} />
-            <ResultMetric label="更新" value={result.updatedCount} />
+            <ResultMetric label="原始记录成功" value={result.successCount} />
+            <ResultMetric label="原始记录新增" value={result.insertedCount} />
+            <ResultMetric label="原始记录更新" value={result.updatedCount} />
             <ResultMetric label="失败" tone="error" value={result.failedCount} />
+            <ResultMetric label="新逻辑题" value={result.logicalNewItemCount ?? 0} />
+            <ResultMetric label="重复归组" value={result.logicalAutoMergeCount ?? 0} />
+            <ResultMetric label="待确认" tone={result.logicalNeedsReviewCount > 0 ? "error" : undefined} value={result.logicalNeedsReviewCount ?? 0} />
+            <ResultMetric label="新增日期记录" value={result.occurrenceInsertedCount ?? 0} />
           </div>
+          {result.logicalNeedsReviewCount > 0 ? (
+            <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
+              待确认题目已导入原始题库，但暂未进入学生练习列表，等待重复题确认。
+            </p>
+          ) : null}
           {result.warnings && result.warnings.length > 0 ? (
             <div className="mt-5 grid gap-3">
               {result.warnings.map((warning, index) => (

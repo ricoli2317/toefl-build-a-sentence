@@ -1,10 +1,18 @@
-import { WritingMonthList } from "@/components/writing/WritingCatalog";
+import { LogicalPracticeCatalog } from "@/components/LogicalPracticeCatalog";
 import { StudentPage } from "@/components/student/StudentUI";
+import { parseLogicalCatalogPage } from "@/lib/practiceLogicalNavigation";
 
-export default function WriteEmailPage() {
+export default function WriteEmailPage({
+  searchParams
+}: {
+  searchParams: { page?: string | string[] };
+}) {
   return (
-    <StudentPage subtitle="选择月份，开始或继续邮件写作练习。" title="Write an Email">
-      <WritingMonthList taskType="email" />
+    <StudentPage title="Write an Email">
+      <LogicalPracticeCatalog
+        page={parseLogicalCatalogPage(searchParams.page)}
+        taskType="email"
+      />
     </StudentPage>
   );
 }

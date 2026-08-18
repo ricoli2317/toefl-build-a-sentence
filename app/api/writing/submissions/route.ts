@@ -11,6 +11,10 @@ import {
   requireWritingStudent,
   writingJson
 } from "@/lib/writingServer";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -27,11 +31,25 @@ export async function GET(request: Request) {
     if (!auth.supabase || !auth.userId) {
       return writingJson({ error: "Unauthorized" }, { status: 401 });
     }
-    const payload = await loadWritingSubmissionHistory(
-      { userId: auth.userId, taskType, questionId },
-      createRepository(auth.supabase, createServiceSupabase())
-    );
-    return writingJson(payload);
+    const serviceSupabase = createServiceSupabase();
+    const [payload, historicalDisplayResolver] = await Promise.all([
+      loadWritingSubmissionHistory(
+        { userId: auth.userId, taskType, questionId },
+        createRepository(auth.supabase, serviceSupabase)
+      ),
+      loadHistoricalPracticeDisplayResolver(serviceSupabase)
+    ]);
+    const display = historicalDisplayResolver.resolveWritingAttempt({
+      assignmentId: null,
+      fallbackDisplayName: payload.question.set_title || questionId,
+      rawQuestionId: questionId,
+      taskType
+    });
+    logHistoricalPracticeDisplayWarnings([display]);
+    return writingJson({
+      ...payload,
+      question: { ...payload.question, display_name: display.displayName }
+    });
   } catch (error) {
     if (error instanceof WritingSubmissionHistoryError) {
       return writingJson(

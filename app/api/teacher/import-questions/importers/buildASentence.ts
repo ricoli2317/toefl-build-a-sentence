@@ -1,5 +1,20 @@
 import { BUILD_A_SENTENCE_HEADERS } from "@/lib/questionCsvSchemas";
-import { chunkRows, importResult, serializeError } from "./common";
+import { parseBuildSentenceOccurrences } from "@/lib/practiceImporter/occurrences";
+import {
+  buildSentenceInput,
+  loadBuildSentenceCatalog,
+  reconcilePracticeItemNumbers,
+  syncBuildSentenceLogicalSource
+} from "@/lib/practiceImporter/server";
+import type { NumberingReconciliationItem } from "@/lib/practiceImporter/types";
+import { parseTextArray } from "@/lib/practiceImporter/normalization";
+import {
+  addLogicalImportOutcome,
+  chunkRows,
+  emptyLogicalImportMetrics,
+  importResult,
+  serializeError
+} from "./common";
 import type {
   FailedRow,
   ImporterContext,
@@ -34,12 +49,20 @@ function validateRow(row: Partial<ImportQuestionRow>) {
     return "blank_count must be a positive integer";
   }
 
+  for (const field of ["options_text", "correct_order_text", "distractors_text"] as const) {
+    try {
+      parseTextArray(row[field], field, field === "distractors_text");
+    } catch (error) {
+      return error instanceof Error ? error.message : `${field} must be a JSON string array`;
+    }
+  }
+
   return null;
 }
 
 function normalizeRow(row: Record<string, string>) {
   return Object.fromEntries(
-    BUILD_A_SENTENCE_HEADERS.map((field) => [field, String(row[field] ?? "").trim()])
+    BUILD_A_SENTENCE_HEADERS.map((field) => [field, String(row[field] ?? "")])
   ) as ImportQuestionRow;
 }
 
@@ -84,6 +107,8 @@ export async function importBuildASentence({ rows, supabase, userId }: ImporterC
   const failedRows: FailedRow[] = [];
   const validRows: ValidImportRow[] = [];
   const warnings: ImportWarning[] = [];
+  const logicalMetrics = emptyLogicalImportMetrics();
+  const numberingReconciliationItems: NumberingReconciliationItem[] = [];
 
   for (let index = 0; index < rows.length; index += 1) {
     const row = normalizeRow(rows[index]);
@@ -103,7 +128,37 @@ export async function importBuildASentence({ rows, supabase, userId }: ImporterC
     }
   }
 
-  const questionIds = validRows.map(({ row }) => row.question_id);
+  const validBySet = new Map<string, ValidImportRow[]>();
+  for (const validRow of validRows) {
+    validBySet.set(validRow.row.set_id, [
+      ...(validBySet.get(validRow.row.set_id) ?? []),
+      validRow
+    ]);
+  }
+  const rejectedSetIds = new Set<string>();
+  validBySet.forEach((setRows, setId) => {
+    let reason: string | null = null;
+    try {
+      parseBuildSentenceOccurrences(setId, setRows[0]?.row.set_title);
+    } catch (error) {
+      reason = error instanceof Error ? error.message : "Unable to parse BAS occurrence";
+    }
+    if (reason) {
+      rejectedSetIds.add(setId);
+      for (const { row, rowNumber } of setRows) {
+        failedRows.push({
+          rowNumber,
+          questionId: row.question_id,
+          setId,
+          reason,
+          operation: "validate logical BAS set"
+        });
+      }
+    }
+  });
+  const importableValidRows = validRows.filter(({ row }) => !rejectedSetIds.has(row.set_id));
+
+  const questionIds = importableValidRows.map(({ row }) => row.question_id);
   const existingIds = new Set<string>();
 
   if (questionIds.length > 0) {
@@ -118,7 +173,7 @@ export async function importBuildASentence({ rows, supabase, userId }: ImporterC
 
   const setRows = Array.from(
     new Map(
-      validRows.map(({ row }) => [
+      importableValidRows.map(({ row }) => [
         row.set_id,
         {
           set_id: String(row.set_id),
@@ -140,7 +195,7 @@ export async function importBuildASentence({ rows, supabase, userId }: ImporterC
         warnings.push(questionSetsUuidWarning(setError));
       } else {
         const serialized = serializeError(setError);
-        for (const { row, rowNumber } of validRows) {
+        for (const { row, rowNumber } of importableValidRows) {
           failedRows.push({
             rowNumber,
             questionId: row.question_id,
@@ -152,14 +207,15 @@ export async function importBuildASentence({ rows, supabase, userId }: ImporterC
             hint: serialized.hint
           });
         }
-        return importResult(0, 0, failedRows, warnings);
+        return importResult(0, 0, failedRows, warnings, logicalMetrics);
       }
     }
   }
 
   let insertedCount = 0;
   let updatedCount = 0;
-  const questionBatches = chunkRows(validRows, QUESTION_BATCH_SIZE);
+  const successfulRows: ValidImportRow[] = [];
+  const questionBatches = chunkRows(importableValidRows, QUESTION_BATCH_SIZE);
 
   for (let batchIndex = 0; batchIndex < questionBatches.length; batchIndex += 1) {
     const batch = questionBatches[batchIndex];
@@ -195,7 +251,73 @@ export async function importBuildASentence({ rows, supabase, userId }: ImporterC
         existingIds.add(row.question_id);
       }
     }
+    successfulRows.push(...batch);
   }
 
-  return importResult(insertedCount, updatedCount, failedRows, warnings);
+  if (successfulRows.length > 0) {
+    const catalog = await loadBuildSentenceCatalog(supabase);
+    const successfulBySet = new Map<string, ValidImportRow[]>();
+    for (const successfulRow of successfulRows) {
+      successfulBySet.set(successfulRow.row.set_id, [
+        ...(successfulBySet.get(successfulRow.row.set_id) ?? []),
+        successfulRow
+      ]);
+    }
+    const logicalSets = Array.from(successfulBySet.entries())
+      .map(([setId, setRows]) => ({
+        setId,
+        setRows,
+        occurrences: parseBuildSentenceOccurrences(setId, setRows[0].row.set_title)
+      }))
+      .sort(
+        (left, right) =>
+          left.occurrences[0].occurredOn.localeCompare(right.occurrences[0].occurredOn) ||
+          left.setId.localeCompare(right.setId)
+      );
+
+    for (const logicalSet of logicalSets) {
+      try {
+        const { data: completeSetRows, error: completeSetError } = await supabase
+          .from("questions")
+          .select("question_id,set_id,question_order,sentence_template,blank_count,correct_order_text,options_text,distractors_text,final_sentence")
+          .eq("set_id", logicalSet.setId)
+          .order("question_order", { ascending: true });
+        if (completeSetError) {
+          throw Object.assign(completeSetError, { operation: "load complete BAS source" });
+        }
+        const outcome = await syncBuildSentenceLogicalSource({
+          catalog,
+          occurrences: logicalSet.occurrences,
+          questions: (completeSetRows ?? []).map((row) => buildSentenceInput(row)),
+          setId: logicalSet.setId,
+          supabase
+        });
+        addLogicalImportOutcome(logicalMetrics, outcome);
+        if (outcome.numberingReconciliation) {
+          numberingReconciliationItems.push(outcome.numberingReconciliation);
+        }
+      } catch (error) {
+        const serialized = serializeError(error);
+        for (const { row, rowNumber } of logicalSet.setRows) {
+          failedRows.push({
+            rowNumber,
+            questionId: row.question_id,
+            setId: row.set_id,
+            reason: serialized.message,
+            operation: "sync logical BAS source",
+            code: serialized.code,
+            details: serialized.details,
+            hint: serialized.hint
+          });
+        }
+      }
+    }
+    await reconcilePracticeItemNumbers(
+      supabase,
+      "build_sentence",
+      numberingReconciliationItems
+    );
+  }
+
+  return importResult(insertedCount, updatedCount, failedRows, warnings, logicalMetrics);
 }
