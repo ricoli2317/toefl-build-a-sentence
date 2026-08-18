@@ -150,26 +150,53 @@ export async function saveWritingReviewWorkspace(
   );
   const publish = options?.publish === true;
   const publishedAt = (options?.now ?? (() => new Date()))().toISOString();
+  if (
+    publish &&
+    loaded.review.status === "published" &&
+    publishedSnapshotMatchesDraft(loaded.review, draft)
+  ) {
+    return loaded.review;
+  }
   const mutation = publish
     ? buildWritingReviewPublishUpdate(draft, publishedAt)
     : buildWritingReviewSaveUpdate(draft);
-  const reviewQuery = loaded.review.review_id
-    ? supabase
-        .from("writing_reviews")
-        .update(mutation)
-        .eq("attempt_id", attemptId)
-    : supabase.from("writing_reviews").insert({
-        attempt_id: attemptId,
-        task_type: loaded.attempt.task_type,
-        status: publish ? "published" : "reviewing",
-        ai_model: null,
-        ai_generated_at: null,
-        ai_review_raw: null,
-        ...mutation
-      });
+  const inserting = !loaded.review.review_id;
+  let reviewQuery;
+  if (loaded.review.review_id) {
+    reviewQuery = supabase
+      .from("writing_reviews")
+      .update(mutation)
+      .eq("attempt_id", attemptId);
+    if (publish) {
+      reviewQuery = reviewQuery.eq("status", loaded.review.status);
+      if (loaded.review.updated_at) {
+        reviewQuery = reviewQuery.eq("updated_at", loaded.review.updated_at);
+      }
+    }
+  } else {
+    reviewQuery = supabase.from("writing_reviews").insert({
+      attempt_id: attemptId,
+      task_type: loaded.attempt.task_type,
+      status: publish ? "published" : "reviewing",
+      ai_model: null,
+      ai_generated_at: null,
+      ai_review_raw: null,
+      ...mutation
+    });
+  }
   const { data, error } = await reviewQuery.select(REVIEW_FIELDS).maybeSingle();
 
   if (error || !data) {
+    const canConfirmConcurrentResult =
+      (!error && !data) || (inserting && error?.code === "23505");
+    if (canConfirmConcurrentResult) {
+      const current = await loadWritingReviewWorkspace(supabase, attemptId);
+      const mutationReachedServer = publish
+        ? current.review.status === "published" &&
+          publishedSnapshotMatchesDraft(current.review, draft)
+        : workingDraftMatchesReview(current.review, draft);
+      if (mutationReachedServer) return current.review;
+    }
     throw new WritingReviewWorkspaceServerError(
       publish ? "REVIEW_PUBLISH_FAILED" : "REVIEW_SAVE_FAILED",
       publish ? "发布失败，请稍后重试。" : "保存失败，请稍后重试。",
@@ -181,6 +208,76 @@ export async function saveWritingReviewWorkspace(
     data as Record<string, unknown>,
     loaded.attempt.task_type,
     loaded.attempt.response_text
+  );
+}
+
+export function workingDraftMatchesReview(
+  review: WritingReviewWorkingDraft,
+  draft: WritingReviewWorkingDraft
+) {
+  const expected = buildWritingReviewSaveUpdate(draft);
+  return (
+    jsonValuesEqual(review.language_edits, expected.language_edits) &&
+    jsonValuesEqual(review.scores, expected.scores) &&
+    jsonValuesEqual(
+      review.scores.dimension_scores === null
+        ? review.content_feedback
+        : {
+            items: review.content_feedback.items,
+            overall_feedback: review.content_feedback.overall_feedback
+          },
+      expected.content_feedback
+    ) &&
+    review.teacher_comment === expected.teacher_comment
+  );
+}
+
+export function publishedSnapshotMatchesDraft(
+  review: {
+    published_language_edits?: unknown;
+    published_scores?: unknown;
+    published_content_feedback?: unknown;
+    published_teacher_comment?: string | null;
+  },
+  draft: WritingReviewWorkingDraft
+) {
+  const expected = buildWritingReviewPublishUpdate(
+    draft,
+    "1970-01-01T00:00:00.000Z"
+  );
+  return (
+    jsonValuesEqual(
+      review.published_language_edits,
+      expected.published_language_edits
+    ) &&
+    jsonValuesEqual(review.published_scores, expected.published_scores) &&
+    jsonValuesEqual(
+      review.published_content_feedback,
+      expected.published_content_feedback
+    ) &&
+    review.published_teacher_comment === expected.published_teacher_comment
+  );
+}
+
+function jsonValuesEqual(left: unknown, right: unknown): boolean {
+  if (Object.is(left, right)) return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return (
+      Array.isArray(left) &&
+      Array.isArray(right) &&
+      left.length === right.length &&
+      left.every((value, index) => jsonValuesEqual(value, right[index]))
+    );
+  }
+  if (!isRecord(left) || !isRecord(right)) return false;
+  const leftKeys = Object.keys(left).sort();
+  const rightKeys = Object.keys(right).sort();
+  return (
+    leftKeys.length === rightKeys.length &&
+    leftKeys.every(
+      (key, index) =>
+        key === rightKeys[index] && jsonValuesEqual(left[key], right[key])
+    )
   );
 }
 

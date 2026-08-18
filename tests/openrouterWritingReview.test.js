@@ -9,7 +9,8 @@ const {
   parseAIReviewRawResultForResponse
 } = require("../lib/writingReviewSchema.ts");
 const {
-  generateAndSaveWritingReview
+  generateAndSaveWritingReview,
+  WritingReviewPersistenceConflictError
 } = require("../lib/writingReviewGeneration.ts");
 const {
   WRITING_REVIEW_COMPARISON_MODELS,
@@ -324,14 +325,88 @@ test("draft attempt is rejected without calling OpenRouter", async () => {
   assert.equal(harness.calls.insert, 0);
 });
 
-test("existing writing review is rejected without calling OpenRouter", async () => {
-  const harness = createHarness({ existingReview: { review_id: "review-existing" } });
-  await assert.rejects(
-    generateAndSaveWritingReview("attempt-1", harness.dependencies),
-    assertCode("REVIEW_ALREADY_EXISTS")
+test("existing valid writing review is reused without calling OpenRouter", async () => {
+  const harness = createHarness({
+    existingReview: {
+      review_id: "review-existing",
+      status: "reviewing",
+      ai_model: "mock/existing",
+      ai_generated_at: fixedDate.toISOString()
+    }
+  });
+  const result = await generateAndSaveWritingReview(
+    "attempt-1",
+    harness.dependencies
   );
+  assert.equal(result.reviewId, "review-existing");
+  assert.equal(result.reusedExistingReview, true);
+  assert.equal(result.persistenceRaceRecovered, false);
   assert.equal(harness.calls.ai, 0);
   assert.equal(harness.calls.insert, 0);
+});
+
+test("existing published writing review is reused without being overwritten", async () => {
+  const harness = createHarness({
+    existingReview: {
+      review_id: "review-published",
+      status: "published",
+      ai_model: "mock/existing",
+      ai_generated_at: fixedDate.toISOString()
+    }
+  });
+  const result = await generateAndSaveWritingReview(
+    "attempt-1",
+    harness.dependencies
+  );
+  assert.equal(result.status, "published");
+  assert.equal(result.reusedExistingReview, true);
+  assert.equal(harness.calls.ai, 0);
+  assert.equal(harness.calls.insert, 0);
+});
+
+test("duplicate persistence race re-fetches and reuses the winning review", async () => {
+  const harness = createHarness();
+  let existingReads = 0;
+  harness.dependencies.repository.findExistingReview = async () => {
+    existingReads += 1;
+    return existingReads === 1
+      ? null
+      : {
+          review_id: "review-winner",
+          status: "reviewing",
+          ai_model: "mock/winner",
+          ai_generated_at: fixedDate.toISOString()
+        };
+  };
+  harness.dependencies.repository.insertReview = async () => {
+    harness.calls.insert += 1;
+    throw new WritingReviewPersistenceConflictError({ code: "23505" });
+  };
+  const result = await generateAndSaveWritingReview(
+    "attempt-1",
+    harness.dependencies
+  );
+  assert.equal(result.reviewId, "review-winner");
+  assert.equal(result.reusedExistingReview, true);
+  assert.equal(result.persistenceRaceRecovered, true);
+  assert.equal(harness.calls.ai, 1);
+  assert.equal(harness.calls.insert, 1);
+});
+
+test("non-duplicate persistence failures are not swallowed", async () => {
+  const harness = createHarness();
+  const persistenceError = Object.assign(new Error("database unavailable"), {
+    code: "REVIEW_SAVE_FAILED"
+  });
+  harness.dependencies.repository.insertReview = async () => {
+    harness.calls.insert += 1;
+    throw persistenceError;
+  };
+  await assert.rejects(
+    generateAndSaveWritingReview("attempt-1", harness.dependencies),
+    (error) => error === persistenceError
+  );
+  assert.equal(harness.calls.insert, 1);
 });
 
 test("generate timeout does not insert a partial review and does not retry", async () => {

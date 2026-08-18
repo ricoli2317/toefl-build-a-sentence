@@ -252,6 +252,7 @@ export function classifyWritingReviewAiFailure(
     code === "ATTEMPT_NOT_FOUND" ||
     code === "ATTEMPT_NOT_SUBMITTED" ||
     code === "REVIEW_ALREADY_EXISTS" ||
+    code === "EXISTING_REVIEW_INVALID" ||
     code === "REVIEW_NOT_FOUND" ||
     code === "QUESTION_NOT_FOUND" ||
     code === "INVALID_TEACHER_PROMPT" ||

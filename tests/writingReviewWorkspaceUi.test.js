@@ -862,6 +862,19 @@ test("review list only opens the workspace and the workspace owns initial AI gen
   assert.match(workspace, /generateInitialReview[\s\S]*\/generate-ai/);
 });
 
+test("workspace mutations use a synchronous click lock and confirm unknown outcomes", () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  assert.match(source, /operationRef\.current = "regenerate";[\s\S]*setOperation\("regenerate"\)/);
+  assert.match(source, /operationRef\.current = nextOperation;[\s\S]*setOperation\(nextOperation\)/);
+  assert.match(source, /disabled=\{operation !== null\}[\s\S]*onClick=\{onRegenerate\}[\s\S]*type="button"/);
+  assert.match(source, /confirmUnknownWritingReviewOutcome\([\s\S]*"generate"/);
+  assert.match(source, /publish \? "publish" : "save"/);
+  assert.match(source, /WritingReviewNetworkOutcomeUnknownError/);
+});
+
 test("preserve saves dirty work first while overwrite discards local merge", () => {
   const source = fs.readFileSync(
     path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),

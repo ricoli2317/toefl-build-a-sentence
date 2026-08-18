@@ -32,6 +32,7 @@ import {
 } from "@/lib/writingReviewProductionHedge";
 import {
   WritingReviewGenerationError,
+  WritingReviewPersistenceConflictError,
   generateAndSaveWritingReview,
   writingReviewAttemptResponseText,
   type ReviewableWritingAttempt,
@@ -52,13 +53,16 @@ import { loadWritingReviewWorkspace } from "@/lib/writingReviewWorkspaceServer";
 
 export const dynamic = "force-dynamic";
 
-type DatabaseError = { message: string };
+type DatabaseError = { code?: string; message: string };
 
 class WritingReviewDatabaseError extends Error {
-  code: "DATABASE_READ_FAILED" | "REVIEW_SAVE_FAILED";
+  code: "DATABASE_READ_FAILED" | "REVIEW_SAVE_FAILED" | "EXISTING_REVIEW_INVALID";
   status = 500;
 
-  constructor(code: "DATABASE_READ_FAILED" | "REVIEW_SAVE_FAILED", message: string) {
+  constructor(
+    code: "DATABASE_READ_FAILED" | "REVIEW_SAVE_FAILED" | "EXISTING_REVIEW_INVALID",
+    message: string
+  ) {
     super(message);
     this.name = "WritingReviewDatabaseError";
     this.code = code;
@@ -96,13 +100,24 @@ function createWritingReviewRepository(
     async findExistingReview(attemptId) {
       const { data, error } = await supabase
         .from("writing_reviews")
-        .select("review_id,ai_generated_at,ai_review_raw,language_edits,scores,content_feedback,teacher_comment")
+        .select("review_id,status,ai_model,ai_generated_at,ai_review_raw,language_edits,scores,content_feedback,teacher_comment")
         .eq("attempt_id", attemptId)
         .maybeSingle();
       throwReadError(error, "existing writing review");
       if (!data) return null;
       if (typeof data.ai_generated_at === "string" && data.ai_generated_at.length > 0) {
-        return { review_id: String(data.review_id) };
+        if (!isUsableExistingAiReview(data)) {
+          throw new WritingReviewDatabaseError(
+            "EXISTING_REVIEW_INVALID",
+            "An existing AI writing review is incomplete and was left unchanged."
+          );
+        }
+        return {
+          review_id: String(data.review_id),
+          status: data.status,
+          ai_model: data.ai_model,
+          ai_generated_at: data.ai_generated_at
+        };
       }
       manualReview = {
         review_id: String(data.review_id),
@@ -166,14 +181,16 @@ function createWritingReviewRepository(
             teacher_comment: teacherState.teacher_comment
           })
           .eq("review_id", manualReview.review_id)
+          .is("ai_generated_at", null)
           .select("review_id")
           .maybeSingle();
-        if (error || !data) {
+        if (error) {
           throw new WritingReviewDatabaseError(
             "REVIEW_SAVE_FAILED",
             "The validated AI writing review could not be saved."
           );
         }
+        if (!data) throw new WritingReviewPersistenceConflictError();
         return { review_id: String(data.review_id) };
       }
       const { data, error } = await supabase
@@ -181,6 +198,9 @@ function createWritingReviewRepository(
         .insert(input)
         .select("review_id")
         .single();
+      if (error?.code === "23505") {
+        throw new WritingReviewPersistenceConflictError(error);
+      }
       if (error || !data) {
         throw new WritingReviewDatabaseError(
           "REVIEW_SAVE_FAILED",
@@ -214,6 +234,8 @@ export async function POST(
   let hedgeTelemetry: WritingReviewProductionHedgeTelemetry | null = null;
   let generationId: string | null = null;
   let overlapDiagnostic: LanguageEditOverlapNormalizationDiagnostic | null = null;
+  let reusedExistingReview = false;
+  let persistenceRaceRecovered = false;
   const overlapDiagnosticsByBranch = new Map<
     "primary" | "hedge",
     LanguageEditOverlapNormalizationDiagnostic
@@ -234,7 +256,7 @@ export async function POST(
     operationStartedAt = Date.now();
     const overwriteTeacherContent =
       new URL(request.url).searchParams.get("teacher_content") === "overwrite";
-    await generateAndSaveWritingReview(params.attemptId, {
+    const generationResult = await generateAndSaveWritingReview(params.attemptId, {
       repository: createWritingReviewRepository(
         supabase,
         overwriteTeacherContent
@@ -296,10 +318,18 @@ export async function POST(
       parseReview: (value, responseText) =>
         parseAIReviewRawResultV22ForResponse(value, responseText)
     });
+    reusedExistingReview = generationResult.reusedExistingReview;
+    persistenceRaceRecovered = generationResult.persistenceRaceRecovered;
 
     const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId);
     await logPipeline();
-    return json({ review: workspace.review }, { status: 201 });
+    return json(
+      {
+        review: workspace.review,
+        ...(reusedExistingReview ? { reusedExistingReview: true } : {})
+      },
+      { status: reusedExistingReview ? 200 : 201 }
+    );
   } catch (error) {
     await logPipeline(error);
     if (error instanceof WritingReviewGenerationError) {
@@ -341,6 +371,17 @@ export async function POST(
       ? aiStartedAt === null && classified.pipeline_stage === "review_persistence"
         ? { ...classified, pipeline_stage: "request_preparation" as const }
         : classified
+      : reusedExistingReview
+        ? {
+            status: "recovered" as const,
+            pipeline_stage: persistenceRaceRecovered
+              ? "review_persistence" as const
+              : "request_preparation" as const,
+            error_type: null,
+            error_code: null,
+            error_message: null,
+            validation_issues: []
+          }
       : overlapDiagnostic
         ? {
             status: "recovered" as const,
@@ -374,9 +415,15 @@ export async function POST(
         operationStartedAt === null ? null : Date.now() - operationStartedAt,
       generation_id: generationId,
       normalization_applied: overlapDiagnostic !== null,
-      diagnostics: overlapDiagnostic
-        ? { language_edit_overlap: overlapDiagnostic }
-        : {},
+      diagnostics: {
+        ...(overlapDiagnostic
+          ? { language_edit_overlap: overlapDiagnostic }
+          : {}),
+        ...(reusedExistingReview ? { reused_existing_review: true } : {}),
+        ...(persistenceRaceRecovered
+          ? { persistence_race_recovered: true }
+          : {})
+      },
       ...writingReviewAiProviderDiagnostic(error),
       ...aiUsage,
       ...(hedgeTelemetry
@@ -398,6 +445,31 @@ export async function POST(
     });
     aiStartedAt = null;
   }
+}
+
+function isUsableExistingAiReview(value: {
+  review_id: unknown;
+  status: unknown;
+  ai_model: unknown;
+  ai_review_raw: unknown;
+  language_edits: unknown;
+  scores: unknown;
+  content_feedback: unknown;
+}) {
+  return (
+    typeof value.review_id === "string" &&
+    (value.status === "reviewing" || value.status === "published") &&
+    typeof value.ai_model === "string" &&
+    value.ai_model.length > 0 &&
+    isRecord(value.ai_review_raw) &&
+    Array.isArray(value.language_edits) &&
+    isRecord(value.scores) &&
+    isRecord(value.content_feedback)
+  );
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function logInvalidAIResponse(attemptId: string, cause: unknown) {

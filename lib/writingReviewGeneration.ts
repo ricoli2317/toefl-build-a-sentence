@@ -53,7 +53,7 @@ export type WritingReviewInsert = {
 
 export type WritingReviewRepository = {
   findAttempt(attemptId: string): Promise<ReviewableWritingAttempt | null>;
-  findExistingReview(attemptId: string): Promise<{ review_id: string } | null>;
+  findExistingReview(attemptId: string): Promise<ExistingWritingReview | null>;
   findQuestion(
     taskType: WritingTaskType,
     questionId: string,
@@ -61,6 +61,25 @@ export type WritingReviewRepository = {
   ): Promise<ReviewQuestion | null>;
   insertReview(input: WritingReviewInsert): Promise<{ review_id: string }>;
 };
+
+export type ExistingWritingReview = {
+  review_id: string;
+  status?: "reviewing" | "published";
+  ai_model?: string | null;
+  ai_generated_at?: string | null;
+};
+
+export class WritingReviewPersistenceConflictError extends Error {
+  code = "REVIEW_SAVE_FAILED" as const;
+  status = 500;
+  cause?: unknown;
+
+  constructor(cause?: unknown) {
+    super("Another request may have saved this writing review concurrently.");
+    this.name = "WritingReviewPersistenceConflictError";
+    this.cause = cause;
+  }
+}
 
 export type WritingReviewGenerationDependencies = {
   repository: WritingReviewRepository;
@@ -130,11 +149,7 @@ export async function generateAndSaveWritingReview(
 
   const existingReview = await dependencies.repository.findExistingReview(attemptId);
   if (existingReview) {
-    throw new WritingReviewGenerationError(
-      "REVIEW_ALREADY_EXISTS",
-      "A writing review already exists for this attempt.",
-      409
-    );
+    return reusedWritingReviewResult(attempt, existingReview, false);
   }
 
   const question = await dependencies.repository.findQuestion(
@@ -234,13 +249,39 @@ export async function generateAndSaveWritingReview(
           },
           teacher_comment: ""
         };
-  const savedReview = await dependencies.repository.insertReview(reviewData);
+  let savedReview: { review_id: string };
+  try {
+    savedReview = await dependencies.repository.insertReview(reviewData);
+  } catch (error) {
+    if (!(error instanceof WritingReviewPersistenceConflictError)) throw error;
+    const concurrentReview = await dependencies.repository.findExistingReview(attemptId);
+    if (!concurrentReview) throw error;
+    return reusedWritingReviewResult(attempt, concurrentReview, true);
+  }
 
   return {
     reviewId: savedReview.review_id,
     attemptId: attempt.attempt_id,
     status: "reviewing" as const,
     aiModel: aiResponse.model,
-    aiGeneratedAt
+    aiGeneratedAt,
+    reusedExistingReview: false,
+    persistenceRaceRecovered: false
+  };
+}
+
+function reusedWritingReviewResult(
+  attempt: ReviewableWritingAttempt,
+  review: ExistingWritingReview,
+  persistenceRaceRecovered: boolean
+) {
+  return {
+    reviewId: review.review_id,
+    attemptId: attempt.attempt_id,
+    status: review.status ?? ("reviewing" as const),
+    aiModel: review.ai_model ?? null,
+    aiGeneratedAt: review.ai_generated_at ?? null,
+    reusedExistingReview: true,
+    persistenceRaceRecovered
   };
 }

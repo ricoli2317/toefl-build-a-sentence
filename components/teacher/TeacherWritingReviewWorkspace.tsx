@@ -55,6 +55,7 @@ import type {
   WorkingLanguageEdit,
   WritingReviewWorkingDraft
 } from "@/lib/writingReviewWorkspace";
+import { recoverWritingReviewAfterUnknownOutcome } from "@/lib/writingReviewRequestRecovery";
 import {
   TEACHER_REVIEW_CONTENT_REQUIRED_MESSAGE,
   hasTeacherContentFeedbackContent,
@@ -179,6 +180,7 @@ export function TeacherWritingReviewWorkspace({
   const [addReviewOpen, setAddReviewOpen] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [operation, setOperation] = useState<"save" | "publish" | "regenerate" | null>(null);
+  const operationRef = useRef<"save" | "publish" | "regenerate" | null>(null);
   const [teacherContentConfirmOpen, setTeacherContentConfirmOpen] = useState(false);
   const [highlightedEssayFeedbackId, setHighlightedEssayFeedbackId] = useState<string | null>(null);
   const essayHighlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -452,7 +454,7 @@ export function TeacherWritingReviewWorkspace({
   }
 
   function requestAiGeneration() {
-    if (!data || !draft || operation) return;
+    if (!data || !draft || operationRef.current) return;
     if (
       dirty ||
       hasWritingReviewTeacherContent(
@@ -468,8 +470,9 @@ export function TeacherWritingReviewWorkspace({
   }
 
   async function regenerateAll(teacherContentMode: AiGenerationTeacherContentMode) {
-    if (!data || !draft || operation) return;
+    if (!data || !draft || operationRef.current) return;
     const hadAiReview = data.review.has_ai_review;
+    operationRef.current = "regenerate";
     setTeacherContentConfirmOpen(false);
     setOperation("regenerate");
     setMessage("");
@@ -486,9 +489,26 @@ export function TeacherWritingReviewWorkspace({
         setDraft(currentDraft);
         setDirty(false);
       }
-      const review = hadAiReview
-        ? await regenerateFullReview(attemptId, teacherContentMode)
-        : await generateInitialReview(attemptId, teacherContentMode);
+      let review: WorkspaceReview;
+      try {
+        review = hadAiReview
+          ? await regenerateFullReview(attemptId, teacherContentMode)
+          : await generateInitialReview(attemptId, teacherContentMode);
+      } catch (generationError) {
+        if (
+          hadAiReview ||
+          !(generationError instanceof WritingReviewNetworkOutcomeUnknownError)
+        ) {
+          throw generationError;
+        }
+        const recovered = await confirmUnknownWritingReviewOutcome(
+          "generate",
+          attemptId,
+          null
+        );
+        if (!recovered) throw generationError;
+        review = recovered;
+      }
       const nextPayload = { ...currentPayload, review };
       cache.set(cacheKey, nextPayload);
       updateCachedListStatus(cache, attemptId, review.status);
@@ -532,18 +552,34 @@ export function TeacherWritingReviewWorkspace({
           : "AI 初批失败，当前批改未改变。"
       );
     } finally {
+      operationRef.current = null;
       setOperation(null);
     }
   }
 
   async function persist(publish: boolean) {
-    if (!draft || !data || operation) return;
+    if (!draft || !data || operationRef.current) return;
     const nextOperation = publish ? "publish" : "save";
+    operationRef.current = nextOperation;
     setOperation(nextOperation);
     setMessage("");
     setRequestError("");
     try {
-      const review = await mutateWorkspace(attemptId, draft, publish);
+      let review: WorkspaceReview;
+      try {
+        review = await mutateWorkspace(attemptId, draft, publish);
+      } catch (mutationError) {
+        if (!(mutationError instanceof WritingReviewNetworkOutcomeUnknownError)) {
+          throw mutationError;
+        }
+        const recovered = await confirmUnknownWritingReviewOutcome(
+          publish ? "publish" : "save",
+          attemptId,
+          draft
+        );
+        if (!recovered) throw mutationError;
+        review = recovered;
+      }
       const nextPayload = { ...data, review };
       cache.set(cacheKey, nextPayload);
       updateCachedListStatus(cache, attemptId, review.status);
@@ -559,6 +595,7 @@ export function TeacherWritingReviewWorkspace({
             : "保存失败，请稍后重试。"
       );
     } finally {
+      operationRef.current = null;
       setOperation(null);
     }
   }
@@ -2322,17 +2359,52 @@ async function regenerateFeedback(attemptId: string, feedbackId: string, prompt:
 async function teacherFetch(input: string, init?: RequestInit) {
   const supabase = createBrowserSupabase();
   const { data: { session } } = await supabase.auth.getSession();
-  return fetch(input, {
-    ...init,
-    cache: "no-store",
-    headers: { ...init?.headers, Authorization: `Bearer ${session?.access_token ?? ""}` }
-  });
+  try {
+    return await fetch(input, {
+      ...init,
+      cache: "no-store",
+      headers: { ...init?.headers, Authorization: `Bearer ${session?.access_token ?? ""}` }
+    });
+  } catch (cause) {
+    throw new WritingReviewNetworkOutcomeUnknownError(cause);
+  }
 }
 
 async function readJson<T>(response: Response): Promise<T> {
-  const text = await response.text();
+  let text: string;
+  try {
+    text = await response.text();
+  } catch (cause) {
+    throw new WritingReviewNetworkOutcomeUnknownError(cause);
+  }
   if (!text) return {} as T;
   try { return JSON.parse(text) as T; } catch { throw new Error("服务器返回的数据格式无效，请稍后重试。"); }
+}
+
+class WritingReviewNetworkOutcomeUnknownError extends Error {
+  cause?: unknown;
+
+  constructor(cause?: unknown) {
+    super("网络连接中断，且未能确认服务器操作结果，请稍后重试。");
+    this.name = "WritingReviewNetworkOutcomeUnknownError";
+    this.cause = cause;
+  }
+}
+
+async function confirmUnknownWritingReviewOutcome(
+  operation: "generate" | "save" | "publish",
+  attemptId: string,
+  draft: WritingReviewWorkingDraft | null
+) {
+  try {
+    return await recoverWritingReviewAfterUnknownOutcome(
+      operation,
+      draft,
+      async () => (await loadWorkspace(attemptId)).review
+    ) as WorkspaceReview | null;
+  } catch {
+    return null;
+  }
 }
 
 function errorMessage(payload: unknown, fallback: string) {

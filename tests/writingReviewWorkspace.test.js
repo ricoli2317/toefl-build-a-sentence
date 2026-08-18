@@ -686,6 +686,26 @@ test("Publish performs one update containing working fields and every snapshot",
   assert.equal(review.status, "published");
 });
 
+test("repeated Publish is idempotent and preserves the first published_at", async () => {
+  const draft = normalize({ scores: score({ rubric_score: 4 }) });
+  const firstPublishedAt = "2026-08-13T12:00:00.000Z";
+  const supabase = workspaceSupabase({
+    review: reviewRow({
+      ...buildWritingReviewPublishUpdate(draft, firstPublishedAt),
+      updated_at: "2026-08-13T12:00:01.000Z"
+    })
+  });
+  const review = await saveWritingReviewWorkspace(
+    supabase,
+    "attempt-1",
+    draft,
+    { publish: true, now: () => new Date("2026-08-13T13:00:00.000Z") }
+  );
+  assert.equal(review.status, "published");
+  assert.equal(review.published_at, firstPublishedAt);
+  assert.equal(supabase.updates.length, 0);
+});
+
 test("workspace loading rejects missing and draft attempts", async () => {
   await assert.rejects(
     loadWritingReviewWorkspace(workspaceSupabase({ attempt: null }), "attempt-1"),
