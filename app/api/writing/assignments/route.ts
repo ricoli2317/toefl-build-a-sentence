@@ -11,6 +11,11 @@ import {
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
 import { requireWritingStudent, writingJson } from "@/lib/writingServer";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings,
+  type HistoricalPracticeDisplay
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +70,8 @@ export async function GET(request: Request) {
     if (memberships.length === 0) return writingJson({ assignments: [] });
 
     const assignmentIds = memberships.map((membership) => membership.assignment_id);
-    const [assignmentResult, attemptResult] = await Promise.all([
+    const service = createServiceSupabase();
+    const [assignmentResult, attemptResult, historicalDisplayResolver] = await Promise.all([
       readAllSupabaseRows<AssignmentRow>((from, to) =>
         auth.supabase!
           .from("writing_assignments")
@@ -84,7 +90,13 @@ export async function GET(request: Request) {
           .in("assignment_id", assignmentIds)
           .order("updated_at", { ascending: false })
           .range(from, to)
-      )
+      ),
+      loadHistoricalPracticeDisplayResolver(service).catch((error) => {
+        console.warn("[student-writing-assignments] display_resolution_unavailable", {
+          message: error instanceof Error ? error.message : "Unknown error"
+        });
+        return null;
+      })
     ]);
     if (assignmentResult.error || attemptResult.error) {
       return writingJson({ error: "暂时无法加载我的作业。" }, { status: 500 });
@@ -103,7 +115,6 @@ export async function GET(request: Request) {
       .map((attempt) => attempt.attempt_id);
     const publishedAttemptIds = new Set<string>();
     if (submittedAttemptIds.length > 0) {
-      const service = createServiceSupabase();
       const publishedResult = await readAllSupabaseRows<{ attempt_id: string }>((from, to) =>
         service
           .from("writing_reviews")
@@ -124,6 +135,7 @@ export async function GET(request: Request) {
     const membershipByAssignment = new Map(
       memberships.map((membership) => [membership.assignment_id, membership])
     );
+    const resolvedDisplays: HistoricalPracticeDisplay[] = [];
     const assignments: StudentWritingAssignmentSummary[] = [];
     for (const assignment of assignmentResult.data ?? []) {
       if (!isWritingQuestionSnapshot(assignment.task_type, assignment.question_snapshot)) {
@@ -139,6 +151,17 @@ export async function GET(request: Request) {
       );
       const published = submitted.find((attempt) => publishedAttemptIds.has(attempt.attempt_id));
       const membership = membershipByAssignment.get(assignment.assignment_id);
+      const display = assignment.question_source === "question_bank"
+        ? historicalDisplayResolver?.resolveWritingAttempt({
+            assignmentId: assignment.assignment_id,
+            assignmentDisplayName: assignment.question_snapshot.set_title,
+            fallbackDisplayName: assignment.question_snapshot.set_title,
+            questionSource: assignment.question_source,
+            rawQuestionId: assignment.question_snapshot.question_id,
+            taskType: assignment.task_type
+          }) ?? null
+        : null;
+      if (display) resolvedDisplays.push(display);
       assignments.push({
         assignment_id: assignment.assignment_id,
         group_id: assignment.group_id,
@@ -148,6 +171,7 @@ export async function GET(request: Request) {
         draft_attempt_id: draft?.attempt_id ?? null,
         draft_writing_mode: normalizeWritingMode(draft?.writing_mode),
         due_at: assignment.due_at,
+        display_name: display?.displayName ?? assignment.question_snapshot.set_title,
         first_submitted_at: firstSubmittedAt,
         latest_submitted_attempt_id: submitted[0]?.attempt_id ?? null,
         published_review_attempt_id: published?.attempt_id ?? null,
@@ -164,6 +188,7 @@ export async function GET(request: Request) {
       });
     }
 
+    logHistoricalPracticeDisplayWarnings(resolvedDisplays);
     assignments.sort(compareStudentWritingAssignments);
     return writingJson({ assignments });
   } catch {

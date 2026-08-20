@@ -68,6 +68,7 @@ export type StudentWritingAssignmentSummary = {
   draft_attempt_id: string | null;
   draft_writing_mode: "exam" | "practice" | null;
   due_at: string | null;
+  display_name?: string;
   first_submitted_at: string | null;
   latest_submitted_attempt_id: string | null;
   published_review_attempt_id: string | null;
@@ -91,6 +92,12 @@ export type StudentWritingAssignmentDisplayStatus =
   | "submitted"
   | "completed"
   | "overdue";
+
+export function studentWritingAssignmentTitle(
+  assignment: Pick<StudentWritingAssignmentSummary, "display_name" | "question_snapshot">
+) {
+  return assignment.display_name?.trim() || assignment.question_snapshot.set_title;
+}
 
 export type StudentWritingAssignmentListEntry =
   | {
@@ -156,6 +163,11 @@ export type WritingAssignmentProgress =
 export const CUSTOM_EMAIL_CLOSING_INSTRUCTION =
   "Write as much as you can and in complete sentences.";
 export const EMAIL_REQUIREMENTS_VALIDATION_MESSAGE = "请输入 3 个邮件要点";
+
+const EMAIL_GRAPHIC_BULLETS = "•●▪◦○■□◆◇►▶▸▹➢➤✓✔✦✧★☆";
+const EMAIL_REQUIREMENT_MARKER_PATTERN = new RegExp(
+  `^(?:[${EMAIL_GRAPHIC_BULLETS}]|[-–—]|\\d+\\s*[.):]|\\(\\d+\\))\\s*`
+);
 
 export type ParsedCustomEmailPrompt = {
   recipient: string;
@@ -655,16 +667,17 @@ function parseEmailRequirementItems(value: string) {
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-  const markerPattern = /^(?:[•●▪◦]|[-–—]|\d+[.)])\s*/;
-  const hasMarkers = nonEmptyLines.some((line) => markerPattern.test(line));
+  const hasMarkers = nonEmptyLines.some((line) => EMAIL_REQUIREMENT_MARKER_PATTERN.test(line));
   let items: string[];
 
   if (hasMarkers) {
     items = [];
     let current = "";
     for (const line of nonEmptyLines) {
-      const marked = markerPattern.test(line);
-      const content = normalizeAssignmentText(line.replace(markerPattern, ""));
+      const marked = EMAIL_REQUIREMENT_MARKER_PATTERN.test(line);
+      const content = normalizeAssignmentText(
+        line.replace(EMAIL_REQUIREMENT_MARKER_PATTERN, "")
+      );
       if (!content) continue;
       if (marked) {
         if (current) items.push(current);
@@ -706,18 +719,37 @@ export function normalizeEmailRequirementsInput(value: unknown) {
 export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt {
   const empty = { recipient: "", requirements: [], scenario: "" };
   if (typeof value !== "string") return empty;
-  const source = normalizeAssignmentCharacters(value).replace(/\r\n?/g, "\n").trim();
+  const source = cleanCustomEmailPromptText(value);
   if (!source) return empty;
 
-  const boundary = /write\s+an?\s+email\s+to\s+([\s\S]+?)\.\s*in\s+your\s+email\s*,\s*do\s+the\s+following\s*:/i.exec(source);
-  if (boundary?.index === undefined) return empty;
+  const recipientInstruction = /\bwrite\s+an?\s+e-?mail\s+to\s*:?\s*/i.exec(source);
+  if (recipientInstruction?.index === undefined) return empty;
+  const requirementInstruction = /\bin\s+(?:your|the)\s+e-?mail\s*,?\s*(?:please\s+)?do\s+the\s+following\s*[:.]?/i.exec(
+    source.slice(recipientInstruction.index + recipientInstruction[0].length)
+  );
+  if (requirementInstruction?.index === undefined) return empty;
 
-  const recipient = normalizeAssignmentText(boundary[1]);
+  const recipientStart = recipientInstruction.index + recipientInstruction[0].length;
+  const requirementInstructionStart = recipientStart + requirementInstruction.index;
+  const recipientSource = source
+    .slice(recipientStart, requirementInstructionStart)
+    .split("\n")
+    .filter((line) => !/^\s*subject\s*:/i.test(line))
+    .join(" ")
+    .replace(/[\s,;:.–—-]+$/, "");
+  const recipient = normalizeAssignmentText(recipientSource);
   if (!recipient) return empty;
-  const scenario = source.slice(0, boundary.index).trim();
+
+  const scenario = source
+    .slice(0, recipientInstruction.index)
+    .replace(/^[ \t]*•[ \t]*/gm, "")
+    .trim();
   const requirementSource = source
-    .slice(boundary.index + boundary[0].length)
-    .replace(new RegExp(escapeRegExp(CUSTOM_EMAIL_CLOSING_INSTRUCTION), "gi"), "")
+    .slice(requirementInstructionStart + requirementInstruction[0].length)
+    .replace(
+      /write\s+as\s+much\s+as\s+you\s+can\s+and\s+in\s+complete\s+sentences\s*\.?/gi,
+      ""
+    )
     .split("\n")
     .filter((line) => !/^\s*subject\s*:/i.test(line))
     .join("\n")
@@ -725,6 +757,17 @@ export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt 
   const requirements = parseEmailRequirementItems(requirementSource);
 
   return { recipient, requirements, scenario };
+}
+
+function cleanCustomEmailPromptText(value: string) {
+  const graphicBullets = new RegExp(`^[ \\t]*[${EMAIL_GRAPHIC_BULLETS}]+[ \\t]*`, "gm");
+  return normalizeAssignmentCharacters(value)
+    .replace(/\r\n?/g, "\n")
+    .replace(/^[ \t]*[\uE000-\uF8FF\uFFFD]+[ \t]*(?=\S)/gm, "• ")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .replace(/[\uE000-\uF8FF\uFFFD]/g, "")
+    .replace(graphicBullets, "• ")
+    .trim();
 }
 
 function normalizeAssignmentCharacters(value: string) {

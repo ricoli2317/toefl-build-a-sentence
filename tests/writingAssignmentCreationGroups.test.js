@@ -52,6 +52,45 @@ test("custom Email parser supports simplified plain-line input after the fixed b
   });
 });
 
+test("custom Email parser accepts colon and period instruction variants with numbered requirements", () => {
+  assert.deepEqual(parseCustomEmailPrompt([
+    "You need information about a campus event.",
+    "Write an email to: Student Activities Office",
+    "In your email do the following.",
+    "1) Ask when the event begins.",
+    "2. Ask where it will be held.",
+    "3: Ask whether registration is required."
+  ].join("\n")), {
+    recipient: "Student Activities Office",
+    requirements: [
+      "Ask when the event begins.",
+      "Ask where it will be held.",
+      "Ask whether registration is required."
+    ],
+    scenario: "You need information about a campus event."
+  });
+});
+
+test("custom Email parser removes copied special symbols and graphic bullets", () => {
+  assert.deepEqual(parseCustomEmailPrompt([
+    "◆ You need to change your appointment—it's urgent.\u200B\uE001",
+    "Write an e-mail to Dr. Rivera.",
+    "In your e-mail, please do the following:",
+    "\uF0B7 Explain why you need the change.",
+    "◆ Request a different day.",
+    "► Ask for confirmation.�",
+    "Write as much as you can and in complete sentences."
+  ].join("\n")), {
+    recipient: "Dr. Rivera",
+    requirements: [
+      "Explain why you need the change.",
+      "Request a different day.",
+      "Ask for confirmation."
+    ],
+    scenario: "You need to change your appointment—it's urgent."
+  });
+});
+
 test("custom Email parser does not guess fields when the fixed boundary is missing", () => {
   assert.deepEqual(
     parseCustomEmailPrompt("A campus office changed its hours.\n• Ask why.\n• Request the new hours."),

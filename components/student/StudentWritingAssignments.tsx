@@ -36,6 +36,7 @@ import type {
 import {
   getStudentWritingAssignmentDisplayStatus,
   groupStudentWritingAssignments,
+  studentWritingAssignmentTitle,
   studentWritingAssignmentDisplayStatusLabel
 } from "@/lib/writingAssignments";
 
@@ -217,7 +218,7 @@ function StudentWritingAssignmentCollectionCard({
             )}>{summary}</span>
           </div>
           <h2 className="mt-1.5 truncate text-lg font-bold text-student-text">
-            {first.question_snapshot.set_title} 等 {assignments.length} 篇写作
+            {studentWritingAssignmentTitle(first)} 等 {assignments.length} 篇写作
           </h2>
           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-student-muted">
             <span>布置于 {formatDateTime(first.assigned_at)}</span>
@@ -313,7 +314,7 @@ function StudentWritingAssignmentCard({
             ) : null}
           </div>
           <h2 className="mt-1.5 truncate text-lg font-bold text-student-text">
-            {assignment.question_snapshot.set_title}
+            {studentWritingAssignmentTitle(assignment)}
           </h2>
           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-student-muted">
             <span>布置于 {formatDateTime(assignment.assigned_at)}</span>

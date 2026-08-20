@@ -9,6 +9,7 @@ const {
   getWritingAssignmentProgress,
   groupStudentWritingAssignments,
   groupTeacherWritingAssignments,
+  studentWritingAssignmentTitle,
   studentWritingAssignmentDisplayStatusLabel
 } = require("../lib/writingAssignments.ts");
 const {
@@ -96,6 +97,36 @@ test("student assignment grouping keeps standalone work and collapses each multi
   assert.equal(entries[1].kind, "collection");
   assert.deepEqual(entries[1].assignments.map((item) => item.assignment_id), ["first", "second"]);
   assert.equal(entries[2].kind, "assignment");
+});
+
+test("student assignment titles prefer current bank display and fall back to snapshots", () => {
+  const question_snapshot = { set_title: "8.8A old raw title" };
+  assert.equal(
+    studentWritingAssignmentTitle({
+      display_name: "题目023 Community Theater Rentals",
+      question_snapshot
+    }),
+    "题目023 Community Theater Rentals"
+  );
+  assert.equal(
+    studentWritingAssignmentTitle({ question_snapshot }),
+    "8.8A old raw title"
+  );
+  assert.equal(
+    studentWritingAssignmentTitle({ display_name: "", question_snapshot }),
+    "8.8A old raw title"
+  );
+});
+
+test("student assignment API resolves current titles without mutating stored snapshots", () => {
+  const route = source("app/api/writing/assignments/route.ts");
+  const ui = source("components/student/StudentWritingAssignments.tsx");
+  assert.match(route, /loadHistoricalPracticeDisplayResolver\(service\)/);
+  assert.match(route, /assignment\.question_source === "question_bank"/);
+  assert.match(route, /display_name: display\?\.displayName \?\? assignment\.question_snapshot\.set_title/);
+  assert.doesNotMatch(route, /writing_assignments"\)\s*\.update|writing_assignments"\)\s*\.insert/);
+  assert.equal((ui.match(/studentWritingAssignmentTitle\(/g) ?? []).length, 2);
+  assert.doesNotMatch(ui, /\{(?:first|assignment)\.question_snapshot\.set_title\}/);
 });
 
 test("teacher assignment grouping aggregates submission and pending-review progress", () => {
