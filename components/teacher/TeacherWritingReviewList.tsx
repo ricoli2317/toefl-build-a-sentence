@@ -219,7 +219,7 @@ function ReviewStatusBadge({ status }: { status: ReviewStatus }) {
   return (
     <span
       className={clsx(
-        "inline-flex min-w-[4.5rem] whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold",
+        "mr-2 inline-flex h-7 w-16 items-center justify-center whitespace-nowrap rounded-full border px-1 text-xs font-semibold leading-none",
         status === "pending" && "border-amber-200 bg-amber-50 text-amber-700",
         status === "reviewing" &&
           "border-student-primary-border bg-student-primary-soft text-student-primary",

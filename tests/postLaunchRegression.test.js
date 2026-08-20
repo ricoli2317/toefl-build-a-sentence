@@ -152,7 +152,7 @@ test("frequent wrong JSON arrays render readably while the source field stays un
   assert.equal(historical, '["the","most","students","seemed","ideal"]');
   const ui = read("components/TeacherDashboard.tsx");
   assert.match(ui, /formatTextItems\(answer\.displaySubmittedOrderText \|\| answer\.submittedOrderText\)/);
-  assert.match(ui, /: "未作答"/);
+  assert.match(ui, /buildSentenceDisplay\([\s\S]*question\.sentenceTemplate,[\s\S]*item\.submittedOrderText[\s\S]*\) \|\| "未作答"/);
 });
 
 test("teacher set and review UI hide implementation details and keep status on one line", () => {

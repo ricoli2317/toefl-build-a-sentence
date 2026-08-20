@@ -861,8 +861,10 @@ export function TeacherSetQuestionDetail({
       (answer) => formatTextItems(answer.displaySubmittedOrderText || answer.submittedOrderText) || "__empty__"
     ).entries()
   )
-    .map(([submittedOrderText, grouped]) => ({
-      submittedOrderText: submittedOrderText === "__empty__" ? "" : submittedOrderText,
+    .map(([displayText, grouped]) => ({
+      submittedOrderText: displayText === "__empty__"
+        ? ""
+        : grouped[0]?.displaySubmittedOrderText || grouped[0]?.submittedOrderText || "",
       count: grouped.length
     }))
     .sort((a, b) => b.count - a.count);
@@ -929,11 +931,10 @@ export function TeacherSetQuestionDetail({
                       {frequentWrong.map((item) => (
                         <tr className="border-t border-student-error-border bg-student-error-soft/45" key={item.submittedOrderText || "empty"}>
                           <td className="px-4 py-3 leading-6 text-student-text">
-                            {item.submittedOrderText
-                              ? logicalQuestion
-                                ? item.submittedOrderText
-                                : buildSentenceDisplay(question.sentenceTemplate, item.submittedOrderText)
-                              : "未作答"}
+                            {buildSentenceDisplay(
+                              question.sentenceTemplate,
+                              item.submittedOrderText
+                            ) || "未作答"}
                           </td>
                           <td className="px-4 py-3 text-right font-semibold tabular-nums text-student-error">{item.count}</td>
                         </tr>

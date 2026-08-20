@@ -6,7 +6,7 @@ import {
 } from "@/lib/writingAssignments";
 import {
   chunkValues,
-  prepareWritingAssignmentMutation,
+  prepareWritingAssignmentGroupMutation,
   requireWritingAssignmentTeacher,
   writingAssignmentJson
 } from "@/lib/writingAssignmentsServer";
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
       auth.supabase!
         .from("writing_assignments")
-        .select("assignment_id,teacher_id,task_type,question_source,question_id,question_snapshot,due_at,status,created_at,updated_at")
+        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,question_snapshot,due_at,status,created_at,updated_at")
         .eq("teacher_id", auth.teacherId!)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
@@ -105,6 +105,8 @@ export async function GET(request: Request) {
         if (display) resolvedDisplays.push(display);
         return {
           assignment_id: assignment.assignment_id,
+          group_id: assignment.group_id,
+          group_position: assignment.group_position,
           task_type: assignment.task_type,
           question_source: assignment.question_source,
           question_id: assignment.question_id,
@@ -175,25 +177,39 @@ export async function POST(request: Request) {
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.teacherId) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
     const body = await request.json() as Record<string, unknown>;
-    const prepared = await prepareWritingAssignmentMutation(auth.supabase, body, {
+    const groupBody = Array.isArray(body.assignments)
+      ? body
+      : { assignments: [body], studentIds: body.studentIds };
+    const prepared = await prepareWritingAssignmentGroupMutation(auth.supabase, groupBody, {
       canonicalizeQuestionBank: true
     });
-    const { data, error } = await auth.supabase.rpc("create_writing_assignment", {
+    const { data, error } = await auth.supabase.rpc("create_writing_assignment_group", {
       p_teacher_id: auth.teacherId,
-      p_task_type: prepared.taskType,
-      p_question_source: prepared.questionSource,
-      p_question_id: prepared.questionId,
-      p_question_snapshot: prepared.questionSnapshot,
-      p_due_at: prepared.dueAt,
+      p_assignments: prepared.assignments.map((assignment) => ({
+        due_at: assignment.dueAt,
+        question_id: assignment.questionId,
+        question_snapshot: assignment.questionSnapshot,
+        question_source: assignment.questionSource,
+        task_type: assignment.taskType
+      })),
       p_student_ids: prepared.studentIds
     });
     if (error) throw error;
-    return writingAssignmentJson({ assignmentId: String(data) }, { status: 201 });
+    const assignmentIds = isRecord(data) && Array.isArray(data.assignment_ids)
+      ? data.assignment_ids.map(String)
+      : [];
+    if (assignmentIds.length !== prepared.assignments.length) {
+      throw new Error("Assignment group RPC returned an incomplete result");
+    }
+    return writingAssignmentJson({
+      assignmentId: assignmentIds[0],
+      assignmentIds
+    }, { status: 201 });
   } catch (error) {
     if (error instanceof Error && isAssignmentInputError(error.message)) return invalid(error.message);
     console.error("[writing-assignments] create_failed", error);
     return writingAssignmentJson(
-      { code: "ASSIGNMENT_CREATE_FAILED", message: "作业创建失败，请确认数据库 SQL 已执行后重试。" },
+      { code: "ASSIGNMENT_CREATE_FAILED", message: "作业创建失败，请稍后重试。" },
       { status: 500 }
     );
   }
@@ -225,5 +241,9 @@ function invalid(message: string) {
 }
 
 function isAssignmentInputError(message: string) {
-  return /^(请选择|请至少|请填写|请输入|所选|截止)/.test(message);
+  return /^(请选择|请至少|请完整|请填写|请输入|所选|截止|一次最多)/.test(message);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

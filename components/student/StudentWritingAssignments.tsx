@@ -6,6 +6,7 @@ import {
   Eye,
   FileCheck2,
   FilePenLine,
+  Files,
   Mail,
   MessageCircleMore,
   Play,
@@ -31,6 +32,11 @@ import { WRITING_TASK_CONFIG } from "@/lib/writing";
 import type {
   StudentWritingAssignmentSummary,
   StudentWritingAssignmentsPayload
+} from "@/lib/writingAssignments";
+import {
+  getStudentWritingAssignmentDisplayStatus,
+  groupStudentWritingAssignments,
+  studentWritingAssignmentDisplayStatusLabel
 } from "@/lib/writingAssignments";
 
 export function StudentWritingAssignmentList() {
@@ -69,6 +75,7 @@ export function StudentWritingAssignmentList() {
   if (error || !data) {
     return <StudentErrorState text="加载我的作业失败，请稍后重试。" />;
   }
+  const entries = groupStudentWritingAssignments(data.assignments);
 
   return (
     <div aria-busy={backgroundRefreshing} className="grid gap-5">
@@ -80,19 +87,154 @@ export function StudentWritingAssignmentList() {
           { label: "我的作业" }
         ]}
       />
-      {data.assignments.length === 0 ? (
+      {entries.length === 0 ? (
         <StudentEmptyState text="目前没有写作作业。" />
       ) : (
         <div className="grid gap-3">
-          {data.assignments.map((assignment) => (
-            <StudentWritingAssignmentCard
-              assignment={assignment}
-              key={assignment.assignment_id}
-            />
-          ))}
+          {entries.map((entry) => entry.kind === "assignment"
+            ? <StudentWritingAssignmentCard assignment={entry.assignment} key={entry.assignment.assignment_id} />
+            : <StudentWritingAssignmentCollectionCard
+                assignments={entry.assignments}
+                collectionId={entry.collection_id}
+                key={entry.collection_id}
+              />)}
         </div>
       )}
     </div>
+  );
+}
+
+export function StudentWritingAssignmentCollectionDetail({
+  collectionId
+}: {
+  collectionId: string;
+}) {
+  const state = useStudentCachedData<StudentWritingAssignmentsPayload>(
+    STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY,
+    loadStudentWritingAssignments,
+    { refreshOnMount: true }
+  );
+  if (state.loading) return <StudentLoadingState text="正在加载作业内容..." />;
+  const assignments = state.data?.assignments
+    .filter((assignment) => assignment.group_id === collectionId)
+    .sort((left, right) =>
+      (left.group_position ?? Number.MAX_SAFE_INTEGER) -
+      (right.group_position ?? Number.MAX_SAFE_INTEGER)
+    ) ?? [];
+  if (state.error || assignments.length < 2) {
+    return <StudentErrorState text="未找到这项写作作业。" />;
+  }
+  const submittedCount = assignments.filter(
+    (assignment) => assignment.latest_submitted_attempt_id
+  ).length;
+  const completedCount = assignments.filter(
+    (assignment) => assignment.published_review_attempt_id
+  ).length;
+
+  return (
+    <div className="grid gap-5" aria-busy={state.refreshing}>
+      <StudentNavigation
+        backHref={STUDENT_ROUTES.assignments}
+        crumbs={[
+          { label: "我的作业", href: STUDENT_ROUTES.assignments },
+          { label: "作业详情" }
+        ]}
+      />
+      <section className="student-card flex flex-wrap items-center justify-between gap-4 p-5">
+        <div>
+          <p className="text-xs font-bold text-student-primary">写作作业</p>
+          <h1 className="mt-1 text-xl font-bold text-student-text">
+            共 {assignments.length} 篇写作
+          </h1>
+          <p className="mt-2 text-sm text-student-muted">
+            {submittedCount} / {assignments.length} 已提交
+            {completedCount ? ` · ${completedCount} 篇已完成批改` : ""}
+          </p>
+        </div>
+        <span className="rounded-full bg-student-primary-soft px-3 py-1.5 text-xs font-bold text-student-primary">
+          每篇可独立完成
+        </span>
+      </section>
+      <div className="grid gap-3">
+        {assignments.map((assignment) => (
+          <StudentWritingAssignmentCard
+            assignment={assignment}
+            key={assignment.assignment_id}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StudentWritingAssignmentCollectionCard({
+  assignments,
+  collectionId
+}: {
+  assignments: StudentWritingAssignmentSummary[];
+  collectionId: string;
+}) {
+  const submittedCount = assignments.filter(
+    (assignment) => assignment.latest_submitted_attempt_id
+  ).length;
+  const completedCount = assignments.filter(
+    (assignment) => assignment.published_review_attempt_id
+  ).length;
+  const inProgress = assignments.some((assignment) => assignment.draft_attempt_id);
+  const overdue = assignments.some(
+    (assignment) => getStudentWritingAssignmentDisplayStatus(assignment) === "overdue"
+  );
+  const dueDates = assignments
+    .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
+    .sort((left, right) => Date.parse(left) - Date.parse(right));
+  const summary = completedCount === assignments.length
+    ? "已完成"
+    : submittedCount > 0
+      ? `${submittedCount} / ${assignments.length} 已提交`
+      : inProgress
+        ? "进行中"
+        : overdue
+          ? "已逾期"
+          : "未开始";
+  const first = assignments[0];
+
+  return (
+    <article className="student-card grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5">
+      <div className="flex min-w-0 items-start gap-3.5">
+        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-student-primary-soft text-student-primary">
+          <Files aria-hidden="true" size={22} />
+        </span>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-student-primary">写作作业 · {assignments.length} 篇</span>
+            <span className={clsx(
+              "rounded-full px-2.5 py-1 text-[11px] font-bold",
+              completedCount === assignments.length
+                ? "bg-emerald-50 text-emerald-700"
+                : overdue && submittedCount === 0 && !inProgress
+                  ? "bg-student-error-soft text-student-error"
+                  : "bg-amber-50 text-amber-700"
+            )}>{summary}</span>
+          </div>
+          <h2 className="mt-1.5 truncate text-lg font-bold text-student-text">
+            {first.question_snapshot.set_title} 等 {assignments.length} 篇写作
+          </h2>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-student-muted">
+            <span>布置于 {formatDateTime(first.assigned_at)}</span>
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarClock aria-hidden="true" size={14} />
+              {dueDates[0] ? `最近截止 ${formatDateTime(dueDates[0])}` : "无截止时间"}
+            </span>
+          </div>
+        </div>
+      </div>
+      <AssignmentAction
+        href={`${STUDENT_ROUTES.assignments}/batches/${encodeURIComponent(collectionId)}`}
+        icon={Eye}
+        label="查看作业"
+        primary
+      />
+    </article>
   );
 }
 
@@ -227,26 +369,19 @@ function AssignmentStatusChip({
 }: {
   assignment: StudentWritingAssignmentSummary;
 }) {
-  const overdue = assignment.student_status === "overdue";
-  const label = assignment.student_status === "completed"
-    ? "已完成"
-    : assignment.student_status === "late_completed"
-      ? "已完成 · 逾期提交"
-      : overdue
-        ? "已逾期"
-        : "未完成";
+  const status = getStudentWritingAssignmentDisplayStatus(assignment);
   return (
     <span
       className={clsx(
         "rounded-full px-2.5 py-1 text-[11px] font-bold",
-        overdue
+        status === "overdue"
           ? "bg-student-error-soft text-student-error"
-          : assignment.student_status === "pending"
+          : status === "not_started" || status === "in_progress" || status === "submitted"
             ? "bg-amber-50 text-amber-700"
             : "bg-emerald-50 text-emerald-700"
       )}
     >
-      {label}
+      {studentWritingAssignmentDisplayStatusLabel(status)}
     </span>
   );
 }

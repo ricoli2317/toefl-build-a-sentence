@@ -28,6 +28,8 @@ export type WritingAssignmentStudentStatus =
 
 export type WritingAssignmentSummary = {
   assignment_id: string;
+  group_id: string | null;
+  group_position: number | null;
   task_type: WritingTaskType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
@@ -59,6 +61,8 @@ export type WritingAssignmentStudentDetail = {
 
 export type StudentWritingAssignmentSummary = {
   assignment_id: string;
+  group_id: string | null;
+  group_position: number | null;
   assigned_at: string;
   created_at: string;
   draft_attempt_id: string | null;
@@ -79,6 +83,55 @@ export type StudentWritingAssignmentSummary = {
 export type StudentWritingAssignmentsPayload = {
   assignments: StudentWritingAssignmentSummary[];
   error?: string;
+};
+
+export type StudentWritingAssignmentDisplayStatus =
+  | "not_started"
+  | "in_progress"
+  | "submitted"
+  | "completed"
+  | "overdue";
+
+export type StudentWritingAssignmentListEntry =
+  | {
+      kind: "assignment";
+      assignment: StudentWritingAssignmentSummary;
+    }
+  | {
+      kind: "collection";
+      collection_id: string;
+      assignments: StudentWritingAssignmentSummary[];
+    };
+
+export type TeacherWritingAssignmentListEntry =
+  | {
+      kind: "assignment";
+      assignment: WritingAssignmentSummary;
+    }
+  | {
+      kind: "collection";
+      collection_id: string;
+      assignments: WritingAssignmentSummary[];
+      assigned_count: number;
+      completed_count: number;
+      created_at: string;
+      has_overdue_students: boolean;
+      pending_review_count: number;
+      published_count: number;
+      total_count: number;
+    };
+
+export type WritingAssignmentCollectionDetail = {
+  collection_id: string;
+  assignments: Array<WritingAssignmentDetail & {
+    group_position: number;
+  }>;
+  assigned_count: number;
+  completed_count: number;
+  created_at: string;
+  pending_review_count: number;
+  published_count: number;
+  total_count: number;
 };
 
 export type WritingAssignmentDetail = Omit<
@@ -103,6 +156,12 @@ export type WritingAssignmentProgress =
 export const CUSTOM_EMAIL_CLOSING_INSTRUCTION =
   "Write as much as you can and in complete sentences.";
 export const EMAIL_REQUIREMENTS_VALIDATION_MESSAGE = "请输入 3 个邮件要点";
+
+export type ParsedCustomEmailPrompt = {
+  recipient: string;
+  requirements: string[];
+  scenario: string;
+};
 
 const COMMON_MALE_NAMES = new Set([
   "alexander", "andrew", "anthony", "benjamin", "charles", "daniel", "david",
@@ -150,6 +209,16 @@ export function isWritingAssignmentQuestionSource(
   value: unknown
 ): value is WritingAssignmentQuestionSource {
   return value === "question_bank" || value === "custom";
+}
+
+export function toggleWritingAssignmentQuestionSelection<T extends { question_id: string }>(
+  current: ReadonlyMap<string, T>,
+  question: T
+) {
+  const next = new Map(current);
+  if (next.has(question.question_id)) next.delete(question.question_id);
+  else next.set(question.question_id, question);
+  return next;
 }
 
 export function resolveWritingAssignmentQuestionIsolation(input: {
@@ -220,18 +289,26 @@ export function buildCustomWritingQuestionSnapshot(input: {
 
   if (input.taskType === "email") {
     const recipient = requiredNormalizedText(input.fields.recipient, "请填写收件人。");
-    const requirements = parseEmailRequirements(
-      typeof input.fields.requirements === "string"
-        ? input.fields.requirements
-        : [
-            input.fields.requirement_1,
-            input.fields.requirement_2,
-            input.fields.requirement_3
-          ].filter((value): value is string => typeof value === "string").join("\n")
-    );
+    const parsedEmail = input.fields.parsed_email === true;
+    const requirements = parsedEmail
+      ? ([1, 2, 3].map((index) => requiredPreservedText(
+          input.fields[`requirement_${index}`],
+          EMAIL_REQUIREMENTS_VALIDATION_MESSAGE
+        )) as [string, string, string])
+      : parseEmailRequirements(
+          typeof input.fields.requirements === "string"
+            ? input.fields.requirements
+            : [
+                input.fields.requirement_1,
+                input.fields.requirement_2,
+                input.fields.requirement_3
+              ].filter((value): value is string => typeof value === "string").join("\n")
+        );
     return {
       ...metadata,
-      scenario: requiredNormalizedText(input.fields.scenario, "请填写 Scenario。"),
+      scenario: parsedEmail
+        ? requiredPreservedText(input.fields.scenario, "请填写 Scenario。")
+        : requiredNormalizedText(input.fields.scenario, "请填写 Scenario。"),
       task_instruction: buildCustomEmailTaskInstruction(recipient),
       requirement_1: requirements[0],
       requirement_2: requirements[1],
@@ -381,6 +458,139 @@ export function compareStudentWritingAssignments(
   );
 }
 
+export function getStudentWritingAssignmentDisplayStatus(
+  assignment: Pick<
+    StudentWritingAssignmentSummary,
+    | "draft_attempt_id"
+    | "due_at"
+    | "latest_submitted_attempt_id"
+    | "published_review_attempt_id"
+  >,
+  now = new Date()
+): StudentWritingAssignmentDisplayStatus {
+  if (assignment.published_review_attempt_id) return "completed";
+  if (assignment.latest_submitted_attempt_id) return "submitted";
+  if (assignment.draft_attempt_id) return "in_progress";
+  if (assignment.due_at && now.getTime() > Date.parse(assignment.due_at)) {
+    return "overdue";
+  }
+  return "not_started";
+}
+
+export function studentWritingAssignmentDisplayStatusLabel(
+  status: StudentWritingAssignmentDisplayStatus
+) {
+  return status === "not_started"
+    ? "未开始"
+    : status === "in_progress"
+      ? "进行中"
+      : status === "submitted"
+        ? "已提交"
+        : status === "completed"
+          ? "已完成"
+          : "已逾期";
+}
+
+export function groupStudentWritingAssignments(
+  assignments: StudentWritingAssignmentSummary[]
+): StudentWritingAssignmentListEntry[] {
+  const grouped = groupAssignmentsByCollection(assignments);
+  const entries: StudentWritingAssignmentListEntry[] = [];
+  for (const assignment of assignments) {
+    if (!assignment.group_id) {
+      entries.push({ kind: "assignment", assignment });
+      continue;
+    }
+    const collection = grouped.get(assignment.group_id) ?? [];
+    if (collection[0] !== assignment) continue;
+    if (collection.length === 1) {
+      entries.push({ kind: "assignment", assignment });
+      continue;
+    }
+    entries.push({
+      kind: "collection",
+      collection_id: assignment.group_id,
+      assignments: collection
+    });
+  }
+  return entries;
+}
+
+export function groupTeacherWritingAssignments(
+  assignments: WritingAssignmentSummary[]
+): TeacherWritingAssignmentListEntry[] {
+  const grouped = groupAssignmentsByCollection(assignments);
+  const entries: TeacherWritingAssignmentListEntry[] = [];
+  for (const assignment of assignments) {
+    if (!assignment.group_id) {
+      entries.push({ kind: "assignment", assignment });
+      continue;
+    }
+    const collection = grouped.get(assignment.group_id) ?? [];
+    if (collection[0] !== assignment) continue;
+    if (collection.length === 1) {
+      entries.push({ kind: "assignment", assignment });
+      continue;
+    }
+    const assignedCount = Math.max(
+      0,
+      ...collection.map((item) => item.assigned_count)
+    );
+    const completedCount = collection.reduce(
+      (count, item) => count + item.completed_count,
+      0
+    );
+    const publishedCount = collection.reduce(
+      (count, item) => count + item.published_count,
+      0
+    );
+    entries.push({
+      kind: "collection",
+      collection_id: assignment.group_id,
+      assignments: collection,
+      assigned_count: assignedCount,
+      completed_count: completedCount,
+      created_at: collection.reduce(
+        (latest, item) => Date.parse(item.created_at) > Date.parse(latest)
+          ? item.created_at
+          : latest,
+        collection[0].created_at
+      ),
+      has_overdue_students: collection.some((item) => item.has_overdue_students),
+      pending_review_count: Math.max(0, completedCount - publishedCount),
+      published_count: publishedCount,
+      total_count: collection.reduce(
+        (count, item) => count + item.assigned_count,
+        0
+      )
+    });
+  }
+  return entries;
+}
+
+function groupAssignmentsByCollection<T extends {
+  assignment_id: string;
+  group_id: string | null;
+  group_position: number | null;
+}>(assignments: T[]) {
+  const grouped = new Map<string, T[]>();
+  for (const assignment of assignments) {
+    if (!assignment.group_id) continue;
+    grouped.set(assignment.group_id, [
+      ...(grouped.get(assignment.group_id) ?? []),
+      assignment
+    ]);
+  }
+  for (const collection of Array.from(grouped.values())) {
+    collection.sort((left, right) =>
+      (left.group_position ?? Number.MAX_SAFE_INTEGER) -
+        (right.group_position ?? Number.MAX_SAFE_INTEGER) ||
+      left.assignment_id.localeCompare(right.assignment_id)
+    );
+  }
+  return grouped;
+}
+
 export function writingAssignmentTitle(question: WritingQuestion) {
   return question.set_title.trim() || "自定义题目";
 }
@@ -434,7 +644,7 @@ export function suggestAcademicDiscussionAvatarType(
 
 export function parseEmailRequirements(value: unknown): [string, string, string] {
   if (typeof value !== "string") throw new Error(EMAIL_REQUIREMENTS_VALIDATION_MESSAGE);
-  const source = normalizeAssignmentCharacters(value).replace(/\r\n?/g, "\n").trim();
+  const source = value.replace(/\r\n?/g, "\n").trim();
   const nonEmptyLines = source
     .split("\n")
     .map((line) => line.trim())
@@ -488,6 +698,67 @@ export function normalizeEmailRequirementsInput(value: unknown) {
   }
 }
 
+export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt {
+  if (typeof value !== "string") return { recipient: "", requirements: [], scenario: "" };
+  const source = normalizeAssignmentCharacters(value).replace(/\r\n?/g, "\n").trim();
+  if (!source) return { recipient: "", requirements: [], scenario: "" };
+
+  const recipient = detectEmailRecipient(source);
+  const lines = source.split("\n");
+  const markerPattern = /^\s*(?:[•●▪◦]|[-–—]|\d+[.)])\s*/;
+  const markerIndexes = lines.flatMap((line, index) => markerPattern.test(line) ? [index] : []);
+  let requirements: string[] = [];
+  let scenarioLines: string[] = [];
+
+  if (markerIndexes.length > 0) {
+    scenarioLines = lines.slice(0, markerIndexes[0]);
+    requirements = markerIndexes.map((start, index) => {
+      const end = markerIndexes[index + 1] ?? lines.length;
+      return lines.slice(start, end)
+        .map((line, lineIndex) => lineIndex === 0 ? line.replace(markerPattern, "") : line)
+        .join("\n")
+        .replace(new RegExp(`\\n*${escapeRegExp(CUSTOM_EMAIL_CLOSING_INSTRUCTION)}\\s*$`, "i"), "")
+        .trim();
+    }).filter(Boolean);
+  } else {
+    const meaningful = lines.map((line) => line.trim()).filter(Boolean);
+    const contentLines = meaningful.filter((line) =>
+      !/^write\s+an?\s+email\s+to\b/i.test(line)
+      && !/^in your email,?\s+do the following:?$/i.test(line)
+      && line !== CUSTOM_EMAIL_CLOSING_INSTRUCTION
+    );
+    if (contentLines.length >= 4) {
+      requirements = contentLines.slice(-3);
+      scenarioLines = contentLines.slice(0, -3);
+    } else {
+      scenarioLines = contentLines;
+    }
+  }
+
+  const scenario = stripFixedEmailInstructions(scenarioLines.join("\n")).trim();
+  return { recipient, requirements, scenario };
+}
+
+function detectEmailRecipient(source: string) {
+  const patterns = [
+    /write\s+an?\s+email\s+to\s+([\s\S]+?)(?=\.\s*(?:in your email|$)|\n|,\s*in your email)/i,
+    /(?:send|write)\s+(?:an?\s+)?email\s+to\s+([^.,;\n]+)/i
+  ];
+  for (const pattern of patterns) {
+    const match = source.match(pattern)?.[1]?.trim();
+    if (match) return match;
+  }
+  return "";
+}
+
+function stripFixedEmailInstructions(value: string) {
+  return value
+    .replace(/write\s+an?\s+email\s+to\s+[\s\S]+?\.\s*in your email,?\s+do the following:?/gi, "")
+    .replace(/\bin your email,?\s+do the following:?\s*$/gi, "")
+    .replace(new RegExp(escapeRegExp(CUSTOM_EMAIL_CLOSING_INSTRUCTION), "gi"), "")
+    .replace(/^\s+|\s+$/g, "");
+}
+
 function normalizeAssignmentCharacters(value: string) {
   return value
     .replace(/ﬁ/g, "fi")
@@ -510,6 +781,17 @@ function requiredNormalizedText(value: unknown, message: string) {
   const normalized = normalizeAssignmentText(value);
   if (!normalized) throw new Error(message);
   return normalized;
+}
+
+function requiredPreservedText(value: unknown, message: string) {
+  if (typeof value !== "string") throw new Error(message);
+  const preserved = value.replace(/\r\n?/g, "\n").trim();
+  if (!preserved) throw new Error(message);
+  return preserved;
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

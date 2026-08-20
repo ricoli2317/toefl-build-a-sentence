@@ -59,6 +59,13 @@ export type PracticeItemOccurrenceRow = {
   occurred_on: string;
 };
 
+export function logicalPracticeItemTitle(
+  item: Pick<LogicalPracticeListItem, "task_type" | "display_number" | "display_title">
+) {
+  if (item.task_type === "build_sentence") return `套题${item.display_number}`;
+  return `题目${item.display_number}${item.display_title ? ` ${item.display_title}` : ""}`;
+}
+
 export function buildLogicalPracticeCatalog(input: {
   universe: PracticePublicUniverse;
   occurrences: PracticeItemOccurrenceRow[];
@@ -117,6 +124,39 @@ export async function getLogicalPracticeItems(input: {
   taskType: PracticeTaskType;
   page: number;
 }): Promise<LogicalPracticeCatalogWithStudentState> {
+  const { catalog, universe } = await loadLogicalPracticeCatalog(input);
+  const sources = catalog.items.flatMap((item) =>
+    universe.getFormalSourcesForPracticeItem(item.item_id)
+  );
+  const attemptRows = await loadCurrentPageAttemptRows({
+    supabase: input.supabase,
+    studentId: input.studentId,
+    taskType: input.taskType,
+    sources
+  });
+  return {
+    ...catalog,
+    items: attachLogicalPracticeStudentState({
+      items: catalog.items,
+      sources,
+      ...attemptRows
+    })
+  };
+}
+
+export async function getLogicalPracticeCatalog(input: {
+  supabase: SupabaseClient;
+  taskType: PracticeTaskType;
+  page: number;
+}): Promise<LogicalPracticeCatalog> {
+  return (await loadLogicalPracticeCatalog(input)).catalog;
+}
+
+async function loadLogicalPracticeCatalog(input: {
+  supabase: SupabaseClient;
+  taskType: PracticeTaskType;
+  page: number;
+}) {
   const [universe, occurrenceResult] = await Promise.all([
     loadPracticePublicUniverse(input.supabase),
     readAllSupabaseRows<PracticeItemOccurrenceRow>((from, to) =>
@@ -134,28 +174,14 @@ export async function getLogicalPracticeItems(input: {
   if (occurrenceResult.error) {
     throw new Error(`Failed to load practice item occurrences: ${occurrenceResult.error.message}`);
   }
-  const catalog = buildLogicalPracticeCatalog({
-    universe,
-    occurrences: occurrenceResult.data ?? [],
-    taskType: input.taskType,
-    page: input.page
-  });
-  const sources = catalog.items.flatMap((item) =>
-    universe.getFormalSourcesForPracticeItem(item.item_id)
-  );
-  const attemptRows = await loadCurrentPageAttemptRows({
-    supabase: input.supabase,
-    studentId: input.studentId,
-    taskType: input.taskType,
-    sources
-  });
   return {
-    ...catalog,
-    items: attachLogicalPracticeStudentState({
-      items: catalog.items,
-      sources,
-      ...attemptRows
-    })
+    catalog: buildLogicalPracticeCatalog({
+      universe,
+      occurrences: occurrenceResult.data ?? [],
+      taskType: input.taskType,
+      page: input.page
+    }),
+    universe
   };
 }
 

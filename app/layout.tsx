@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "TPS · TOEFL Practice System",
   description: "TOEFL writing and language practice system",
-  icons: { icon: "/brand/tps-logo.png" }
+  icons: { icon: "/brand/tps-favicon.png" }
 };
 
 export default function RootLayout({

@@ -6,13 +6,15 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const catalog = read("components/LogicalPracticeCatalog.tsx");
+const catalogHelper = read("lib/practiceLogicalCatalog.ts");
 const shared = read("components/shared/PracticeCatalog.tsx");
 const basPage = read("app/student/practice-sets/page.tsx");
 const emailPage = read("app/student/write-email/page.tsx");
 const discussionPage = read("app/student/academic-discussion/page.tsx");
 
 test("BAS title is 套题 plus display_number and excludes display_title/raw set title", () => {
-  assert.match(catalog, /item\.task_type === "build_sentence"\) return `套题\$\{item\.display_number\}`/);
+  assert.match(catalogHelper, /item\.task_type === "build_sentence"\) return `套题\$\{item\.display_number\}`/);
+  assert.match(catalog, /logicalPracticeItemTitle\(item\)/);
   assert.doesNotMatch(catalog, /source_set_id|set_title/);
 });
 
@@ -22,12 +24,12 @@ test("BAS and the shared card render API question_count as 10题", () => {
 });
 
 test("Email title is 题目 plus display_number and permanent display_title", () => {
-  assert.match(catalog, /`题目\$\{item\.display_number\}\$\{item\.display_title \? ` \$\{item\.display_title\}` : ""\}`/);
+  assert.match(catalogHelper, /`题目\$\{item\.display_number\}\$\{item\.display_title \? ` \$\{item\.display_title\}` : ""\}`/);
   assert.doesNotMatch(catalog, /subject|truncate/);
 });
 
 test("Academic Discussion uses the same permanent title formatter as Email", () => {
-  assert.match(catalog, /if \(item\.task_type === "build_sentence"\)[\s\S]*return `题目/);
+  assert.match(catalogHelper, /if \(item\.task_type === "build_sentence"\)[\s\S]*return `题目/);
   assert.doesNotMatch(catalog, /professor_prompt|student_1_response/);
 });
 

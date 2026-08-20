@@ -21,6 +21,8 @@ type MembershipRow = {
 
 type AssignmentRow = {
   assignment_id: string;
+  group_id: string | null;
+  group_position: number | null;
   task_type: WritingTaskType;
   question_source: WritingAssignmentQuestionSource;
   question_snapshot: WritingQuestion;
@@ -67,7 +69,7 @@ export async function GET(request: Request) {
       readAllSupabaseRows<AssignmentRow>((from, to) =>
         auth.supabase!
           .from("writing_assignments")
-          .select("assignment_id,task_type,question_source,question_snapshot,due_at,status,created_at")
+          .select("assignment_id,group_id,group_position,task_type,question_source,question_snapshot,due_at,status,created_at")
           .in("assignment_id", assignmentIds)
           .eq("status", "active")
           .is("deleted_at", null)
@@ -139,6 +141,8 @@ export async function GET(request: Request) {
       const membership = membershipByAssignment.get(assignment.assignment_id);
       assignments.push({
         assignment_id: assignment.assignment_id,
+        group_id: assignment.group_id,
+        group_position: assignment.group_position,
         assigned_at: membership?.assigned_at ?? assignment.created_at,
         created_at: assignment.created_at,
         draft_attempt_id: draft?.attempt_id ?? null,

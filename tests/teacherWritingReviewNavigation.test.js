@@ -26,6 +26,10 @@ test("writing review returnTo accepts only approved teacher writing routes", () 
     safeWritingReviewReturnTo(`/teacher/writing/assignments/${assignmentId}`),
     `/teacher/writing/assignments/${assignmentId}`
   );
+  assert.equal(
+    safeWritingReviewReturnTo(`/teacher/writing/assignments/batches/${assignmentId}`),
+    `/teacher/writing/assignments/batches/${assignmentId}`
+  );
   for (const unsafe of [
     "https://example.com",
     "//example.com",

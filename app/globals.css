@@ -356,12 +356,24 @@ select {
   }
 
   .login-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: clip;
     color: var(--student-text);
     background:
       radial-gradient(circle at 49% 40%, rgba(255, 255, 255, 0.98) 0 18%, transparent 46%),
       linear-gradient(135deg, #fbfbff 0%, #f7f6ff 52%, #faf9ff 100%);
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
       "Microsoft YaHei", "Segoe UI", sans-serif;
+  }
+
+  @media (min-width: 768px) and (min-height: 700px) {
+    .login-page {
+      height: 100vh;
+      height: 100dvh;
+      min-height: 0;
+      overflow: hidden;
+    }
   }
 
   .login-orb {

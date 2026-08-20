@@ -51,16 +51,18 @@ export function LoginPanel() {
   }
 
   return (
-    <main className="login-page relative flex min-h-screen flex-col overflow-hidden px-5 py-6 sm:px-9 sm:py-8">
-      <div aria-hidden="true" className="login-orb login-orb-left" />
-      <div aria-hidden="true" className="login-orb login-orb-right" />
-      <div aria-hidden="true" className="login-dot-grid login-dot-grid-top" />
-      <div aria-hidden="true" className="login-dot-grid login-dot-grid-bottom" />
+    <main className="login-page relative flex flex-col px-5 py-5 sm:px-8 md:py-5">
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        <div className="login-orb login-orb-left" />
+        <div className="login-orb login-orb-right" />
+        <div className="login-dot-grid login-dot-grid-top" />
+        <div className="login-dot-grid login-dot-grid-bottom" />
+      </div>
 
       <header className="relative z-10">
         <Image
           alt="TPS · TOEFL Practice System"
-          className="h-auto w-[172px] object-contain sm:w-[206px]"
+          className="h-auto w-[164px] object-contain sm:w-[184px]"
           height={724}
           priority
           src="/brand/tps-logo.png"
@@ -68,24 +70,24 @@ export function LoginPanel() {
         />
       </header>
 
-      <div className="relative z-10 flex flex-1 items-center justify-center py-8 sm:py-10">
+      <div className="relative z-10 flex flex-1 items-center justify-center py-4 sm:py-5">
         <form
-          className="w-full max-w-[566px] rounded-[22px] border border-white/90 bg-white/95 p-6 shadow-[0_22px_70px_rgba(44,35,99,0.11)] backdrop-blur sm:p-10 md:p-12"
+          className="w-full max-w-[480px] rounded-[22px] border border-white/90 bg-white/95 p-6 shadow-[0_22px_70px_rgba(44,35,99,0.11)] backdrop-blur sm:p-8"
           onSubmit={onSubmit}
         >
           <div className="text-center">
-            <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(145deg,#f2efff,#ebe8ff)] text-student-primary">
-              <LockKeyhole aria-hidden="true" size={28} strokeWidth={1.8} />
+            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-[linear-gradient(145deg,#f2efff,#ebe8ff)] text-student-primary">
+              <LockKeyhole aria-hidden="true" size={26} strokeWidth={1.8} />
             </span>
-            <h1 className="mt-5 text-[1.9rem] font-bold tracking-[-0.025em] text-student-text sm:text-[2.1rem]">Welcome to TPS</h1>
-            <p className="mt-2 text-sm text-student-muted sm:text-base">Sign in to continue</p>
+            <h1 className="mt-3 text-[1.75rem] font-bold tracking-[-0.025em] text-student-text sm:text-[1.875rem]">Welcome to TPS</h1>
+            <p className="mt-1 text-sm text-student-muted sm:text-base">Sign in to continue</p>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 rounded-xl bg-[#f7f7fa] p-1">
+          <div className="mt-5 grid grid-cols-2 rounded-xl bg-[#f7f7fa] p-1">
             {(["student", "teacher"] as const).map((item) => (
               <button
                 aria-pressed={role === item}
-                className={`min-h-12 rounded-[10px] px-4 text-sm font-semibold transition sm:text-base ${
+                className={`min-h-11 rounded-[10px] px-4 text-sm font-semibold transition sm:text-base ${
                   role === item
                     ? "bg-[linear-gradient(135deg,#7357ff,#5134ef)] text-white shadow-[0_6px_16px_rgba(93,65,243,0.24)]"
                     : "text-student-text hover:bg-white"
@@ -99,12 +101,12 @@ export function LoginPanel() {
             ))}
           </div>
 
-          <label className="mt-7 block text-sm font-semibold text-student-text" htmlFor="email">Email</label>
-          <div className="relative mt-2">
+          <label className="mt-4 block text-sm font-semibold text-student-text" htmlFor="email">Email</label>
+          <div className="relative mt-1.5">
             <Mail aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
             <input
               autoComplete="email"
-              className="h-14 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-4 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
+              className="h-12 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-4 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
               id="email"
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Enter your email"
@@ -114,12 +116,12 @@ export function LoginPanel() {
             />
           </div>
 
-          <label className="mt-5 block text-sm font-semibold text-student-text" htmlFor="password">Password</label>
-          <div className="relative mt-2">
+          <label className="mt-4 block text-sm font-semibold text-student-text" htmlFor="password">Password</label>
+          <div className="relative mt-1.5">
             <LockKeyhole aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
             <input
               autoComplete="current-password"
-              className="h-14 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-12 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
+              className="h-12 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-12 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
               id="password"
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Enter your password"
@@ -139,7 +141,7 @@ export function LoginPanel() {
 
           {error ? <p className="mt-4 text-sm font-semibold text-student-error" role="alert">{error}</p> : null}
           <button
-            className="mt-7 inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-xl bg-[linear-gradient(135deg,#7357ff,#5134ef)] px-4 py-3 text-base font-semibold text-white shadow-[0_9px_22px_rgba(93,65,243,0.25)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-xl bg-[linear-gradient(135deg,#7357ff,#5134ef)] px-4 py-2.5 text-base font-semibold text-white shadow-[0_9px_22px_rgba(93,65,243,0.25)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={loading}
             type="submit"
           >

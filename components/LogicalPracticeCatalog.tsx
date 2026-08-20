@@ -22,6 +22,7 @@ import type {
   LogicalPracticeCatalogItemWithStudentState,
   LogicalPracticeCatalogWithStudentState
 } from "@/lib/practiceLogicalCatalog";
+import { logicalPracticeItemTitle } from "@/lib/practiceLogicalCatalog";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 
 const TASK_LABELS: Record<PracticeTaskType, string> = {
@@ -116,7 +117,7 @@ function CatalogContent({
           metadata: formatOccurrenceDates(item.occurrence_dates),
           questionCount: item.question_count,
           setId: item.item_id,
-          setTitle: logicalItemTitle(item),
+          setTitle: logicalPracticeItemTitle(item),
           titlePrefix: item.task_type === "build_sentence" ? `套题${item.display_number}` : `题目${item.display_number}`,
           titleSuffix: item.task_type === "build_sentence" ? null : item.display_title
         }))}
@@ -215,11 +216,6 @@ function CatalogPageLink({
   ) : (
     <Link className={className} href={href}>{children}</Link>
   );
-}
-
-function logicalItemTitle(item: LogicalPracticeCatalogItemWithStudentState) {
-  if (item.task_type === "build_sentence") return `套题${item.display_number}`;
-  return `题目${item.display_number}${item.display_title ? ` ${item.display_title}` : ""}`;
 }
 
 function LogicalItemStatus({

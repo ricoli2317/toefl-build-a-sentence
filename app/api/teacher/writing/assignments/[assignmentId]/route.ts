@@ -23,7 +23,7 @@ type AttemptRow = { attempt_id: string; user_id: string; status: string; submitt
 type ReviewRow = { attempt_id: string; status: string; published_at: string | null };
 
 const ASSIGNMENT_FIELDS =
-  "assignment_id,task_type,question_source,question_id,question_snapshot,status,deleted_at,due_at,created_at,updated_at";
+  "assignment_id,group_id,group_position,task_type,question_source,question_id,question_snapshot,status,deleted_at,due_at,created_at,updated_at";
 
 export async function GET(
   request: Request,
@@ -142,6 +142,8 @@ export async function GET(
 
     const detail: WritingAssignmentDetail = {
       assignment_id: String(assignment.assignment_id),
+      group_id: assignment.group_id,
+      group_position: assignment.group_position,
       task_type: assignment.task_type,
       question_source: assignment.question_source,
       question_id: assignment.question_id,

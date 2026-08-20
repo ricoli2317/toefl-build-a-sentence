@@ -5,7 +5,11 @@ const path = require("node:path");
 
 const {
   compareStudentWritingAssignments,
-  getWritingAssignmentProgress
+  getStudentWritingAssignmentDisplayStatus,
+  getWritingAssignmentProgress,
+  groupStudentWritingAssignments,
+  groupTeacherWritingAssignments,
+  studentWritingAssignmentDisplayStatusLabel
 } = require("../lib/writingAssignments.ts");
 const {
   DEFAULT_STUDENT_WRITING_MODE_AVAILABILITY,
@@ -58,6 +62,59 @@ test("student assignments sort overdue, pending, then completed with newest firs
     ["overdue", "pending", "pending", "late_completed", "completed"]
   );
   assert.equal(assignments[1].assigned_at, "2026-08-17T12:00:00Z");
+});
+
+test("student presentation status follows no attempt, draft, submission, and published review", () => {
+  const base = {
+    draft_attempt_id: null,
+    due_at: "2026-08-21T00:00:00Z",
+    latest_submitted_attempt_id: null,
+    published_review_attempt_id: null
+  };
+  const now = new Date("2026-08-20T00:00:00Z");
+  assert.equal(getStudentWritingAssignmentDisplayStatus(base, now), "not_started");
+  assert.equal(getStudentWritingAssignmentDisplayStatus({ ...base, draft_attempt_id: "draft-1" }, now), "in_progress");
+  assert.equal(getStudentWritingAssignmentDisplayStatus({ ...base, latest_submitted_attempt_id: "attempt-1" }, now), "submitted");
+  assert.equal(getStudentWritingAssignmentDisplayStatus({ ...base, latest_submitted_attempt_id: "attempt-1", published_review_attempt_id: "attempt-1" }, now), "completed");
+  assert.equal(getStudentWritingAssignmentDisplayStatus({ ...base, due_at: "2026-08-19T00:00:00Z" }, now), "overdue");
+  assert.deepEqual(
+    ["not_started", "in_progress", "submitted", "completed", "overdue"].map(studentWritingAssignmentDisplayStatusLabel),
+    ["未开始", "进行中", "已提交", "已完成", "已逾期"]
+  );
+});
+
+test("student assignment grouping keeps standalone work and collapses each multi-question batch", () => {
+  const assignments = [
+    { assignment_id: "standalone", group_id: null, group_position: null },
+    { assignment_id: "second", group_id: "batch-1", group_position: 2 },
+    { assignment_id: "first", group_id: "batch-1", group_position: 1 },
+    { assignment_id: "single", group_id: "batch-2", group_position: 1 }
+  ];
+  const entries = groupStudentWritingAssignments(assignments);
+  assert.equal(entries.length, 3);
+  assert.equal(entries[0].kind, "assignment");
+  assert.equal(entries[1].kind, "collection");
+  assert.deepEqual(entries[1].assignments.map((item) => item.assignment_id), ["first", "second"]);
+  assert.equal(entries[2].kind, "assignment");
+});
+
+test("teacher assignment grouping aggregates submission and pending-review progress", () => {
+  const common = {
+    group_id: "batch-1",
+    assigned_count: 2,
+    created_at: "2026-08-20T00:00:00Z",
+    has_overdue_students: false
+  };
+  const entries = groupTeacherWritingAssignments([
+    { ...common, assignment_id: "first", group_position: 1, completed_count: 2, published_count: 1 },
+    { ...common, assignment_id: "second", group_position: 2, completed_count: 1, published_count: 0 }
+  ]);
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].kind, "collection");
+  assert.equal(entries[0].assigned_count, 2);
+  assert.equal(entries[0].total_count, 4);
+  assert.equal(entries[0].completed_count, 3);
+  assert.equal(entries[0].pending_review_count, 2);
 });
 
 test("teacher assignment progress follows submission and published-review counts", () => {
@@ -129,6 +186,22 @@ test("student assignment endpoint only returns active non-deleted work", () => {
   const route = source("app/api/writing/assignments/route.ts");
   assert.match(route, /\.eq\("status", "active"\)/);
   assert.match(route, /\.is\("deleted_at", null\)/);
+  assert.match(route, /group_id,group_position/);
+});
+
+test("student and teacher multi-question pages reuse existing writing and review entry points", () => {
+  const studentUi = source("components/student/StudentWritingAssignments.tsx");
+  const teacherUi = source("components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx");
+  const teacherRoute = source("app/api/teacher/writing/assignments/batches/[batchId]/route.ts");
+  assert.match(studentUi, /groupStudentWritingAssignments/);
+  assert.match(studentUi, /<StudentWritingAssignmentCard/);
+  assert.match(studentUi, /<WritingPractice/);
+  assert.match(teacherUi, /getWritingAssignmentReviewAction/);
+  assert.match(teacherUi, /teacherWritingReviewWorkspaceHref/);
+  assert.match(teacherUi, /等待提交/);
+  assert.match(teacherRoute, /from\("writing_attempts"\)/);
+  assert.match(teacherRoute, /from\("writing_reviews"\)/);
+  assert.doesNotMatch(teacherRoute, /\.(?:insert|update|delete)\(/i);
 });
 
 test("teacher assignment APIs count published reviews for the latest submission", () => {

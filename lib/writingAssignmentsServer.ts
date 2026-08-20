@@ -108,11 +108,39 @@ export async function prepareWritingAssignmentMutation(
   body: Record<string, unknown>,
   options: { canonicalizeQuestionBank?: boolean } = {}
 ) {
+  const membership = await prepareWritingAssignmentMembership(supabase, body);
+  const question = await prepareWritingAssignmentQuestion(supabase, body, options);
+  return { ...membership, ...question };
+}
+
+export async function prepareWritingAssignmentGroupMutation(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  body: Record<string, unknown>,
+  options: { canonicalizeQuestionBank?: boolean } = {}
+) {
+  if (!Array.isArray(body.assignments) || body.assignments.length === 0) {
+    throw new Error("请至少添加一道题目。");
+  }
+  if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const membership = await prepareWritingAssignmentMembership(supabase, body);
+  const assignments = [];
+  for (const value of body.assignments) {
+    if (!isRecord(value)) throw new Error("请完整填写每道题目。");
+    assignments.push(await prepareWritingAssignmentQuestion(supabase, value, options));
+  }
+  return { assignments, studentIds: membership.studentIds };
+}
+
+async function prepareWritingAssignmentQuestion(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  body: Record<string, unknown>,
+  options: { canonicalizeQuestionBank?: boolean } = {}
+) {
   if (!isWritingTaskType(body.taskType)) throw new Error("请选择有效的写作题型。");
   if (!isWritingAssignmentQuestionSource(body.questionSource)) {
     throw new Error("请选择有效的题目来源。");
   }
-  const { dueAt, studentIds } = await prepareWritingAssignmentMembership(supabase, body);
+  const dueAt = validOptionalDueAt(body.dueAt);
   const taskType = body.taskType;
   const questionSource = body.questionSource;
   let questionId: string | null = null;
@@ -151,7 +179,6 @@ export async function prepareWritingAssignmentMutation(
     questionId,
     questionSnapshot,
     questionSource: questionSource satisfies WritingAssignmentQuestionSource,
-    studentIds,
     taskType
   };
 }
