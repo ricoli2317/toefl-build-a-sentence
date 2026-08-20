@@ -69,25 +69,25 @@ export async function GET(
       }
       hasPublishedReview = Boolean(reviewResult.data);
     }
-    const historicalDisplay = submissionOnly
-      ? (await loadHistoricalPracticeDisplayResolver(serviceSupabase)).resolveWritingAttempt({
-          assignmentId: attemptResult.data.assignment_id ?? null,
-          assignmentDisplayName: questionResult.data.set_title,
-          fallbackDisplayName:
-            questionResult.data.set_title ||
-            attemptResult.data.set_id ||
-            attemptResult.data.question_id,
-          questionSource: questionResult.questionSource,
-          rawQuestionId: attemptResult.data.question_id,
-          taskType: attemptResult.data.task_type
-        })
-      : null;
-    if (historicalDisplay) logHistoricalPracticeDisplayWarnings([historicalDisplay]);
+    const historicalDisplay = (
+      await loadHistoricalPracticeDisplayResolver(serviceSupabase)
+    ).resolveWritingAttempt({
+      assignmentId: attemptResult.data.assignment_id ?? null,
+      assignmentDisplayName: questionResult.data.set_title,
+      fallbackDisplayName:
+        questionResult.data.set_title ||
+        attemptResult.data.set_id ||
+        attemptResult.data.question_id,
+      questionSource: questionResult.questionSource,
+      rawQuestionId: attemptResult.data.question_id,
+      taskType: attemptResult.data.task_type
+    });
+    logHistoricalPracticeDisplayWarnings([historicalDisplay]);
 
     return writingJson({
       attempt: attemptResult.data,
       question: questionResult.data,
-      display_name: historicalDisplay?.displayName,
+      display_name: historicalDisplay.displayName,
       question_source: questionResult.questionSource,
       assignment_available: questionResult.assignmentAvailable ?? true,
       has_published_review: hasPublishedReview

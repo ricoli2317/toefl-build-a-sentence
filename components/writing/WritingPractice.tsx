@@ -551,7 +551,7 @@ function WritingPracticeSession({
         onExit={requestExit}
         readOnly={readOnly}
         remainingSeconds={remainingSeconds}
-        setTitle={readOnly ? displayName ?? question.set_title : question.set_title}
+        setTitle={displayName ?? question.set_title}
       />
       <main className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1560px] flex-col overflow-hidden px-4 py-3 sm:px-6 lg:px-8">
         <div className="grid h-full min-h-0 grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-4 overflow-hidden">

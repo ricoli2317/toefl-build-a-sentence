@@ -149,7 +149,7 @@ test("free writing uses logical display while exact historical question content 
   });
 });
 
-test("question-bank assignment keeps Assignment primary context and exposes logical auxiliary display", () => {
+test("question-bank assignment uses the current logical title instead of the snapshot raw title", () => {
   const display = resolver().resolveWritingAttempt({
     assignmentId: "assignment-1",
     assignmentDisplayName: "Weekly Assignment Snapshot",
@@ -159,7 +159,7 @@ test("question-bank assignment keeps Assignment primary context and exposes logi
     taskType: "email"
   });
   assert.equal(display.resolution, "assignment");
-  assert.equal(display.displayName, "Weekly Assignment Snapshot");
+  assert.equal(display.displayName, "题目021 Request for Schedule Change");
   assert.equal(display.logicalDisplayName, "题目021 Request for Schedule Change");
   assert.equal(display.rawQuestionId, "email-a");
 });

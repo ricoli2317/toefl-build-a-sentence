@@ -21,6 +21,11 @@ import {
   isStudentWritingModeAllowed,
   writingModeUnavailableMessage
 } from "@/lib/writingModePolicy";
+import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -113,10 +118,26 @@ export async function POST(request: Request) {
       );
     }
 
+    const display = (
+      await loadHistoricalPracticeDisplayResolver(createServiceSupabase())
+    ).resolveWritingAttempt({
+      assignmentId: draft.attempt.assignment_id ?? null,
+      assignmentDisplayName: questionResult.data.set_title,
+      fallbackDisplayName:
+        questionResult.data.set_title ||
+        draft.attempt.set_id ||
+        draft.attempt.question_id,
+      questionSource: questionResult.questionSource,
+      rawQuestionId: draft.attempt.question_id,
+      taskType: draft.attempt.task_type
+    });
+    logHistoricalPracticeDisplayWarnings([display]);
+
     return writingJson(
       {
         attempt: draft.attempt,
         question: questionResult.data,
+        display_name: display.displayName,
         question_source: questionResult.questionSource,
         assignment_available: true,
         resumed: draft.resumed

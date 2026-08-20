@@ -125,7 +125,10 @@ export function createHistoricalPracticeDisplayResolver(input: {
       const auxiliary = resolveWritingLogical(writingInput);
       return {
         ...auxiliary,
-        displayName: assignmentDisplayName,
+        displayName:
+          auxiliary.resolution === "logical"
+            ? auxiliary.displayName
+            : assignmentDisplayName,
         logicalDisplayName:
           auxiliary.resolution === "logical" ? auxiliary.displayName : null,
         resolution: "assignment",

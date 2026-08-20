@@ -644,6 +644,12 @@ export function suggestAcademicDiscussionAvatarType(
 
 export function parseEmailRequirements(value: unknown): [string, string, string] {
   if (typeof value !== "string") throw new Error(EMAIL_REQUIREMENTS_VALIDATION_MESSAGE);
+  const items = parseEmailRequirementItems(value);
+  if (items.length !== 3) throw new Error(EMAIL_REQUIREMENTS_VALIDATION_MESSAGE);
+  return [items[0], items[1], items[2]];
+}
+
+function parseEmailRequirementItems(value: string) {
   const source = value.replace(/\r\n?/g, "\n").trim();
   const nonEmptyLines = source
     .split("\n")
@@ -680,8 +686,7 @@ export function parseEmailRequirements(value: unknown): [string, string, string]
       : nonEmptyLines.map(normalizeAssignmentText).filter(Boolean);
   }
 
-  if (items.length !== 3) throw new Error(EMAIL_REQUIREMENTS_VALIDATION_MESSAGE);
-  return [items[0], items[1], items[2]];
+  return items;
 }
 
 export function normalizeEmailRequirementsInput(value: unknown) {
@@ -699,64 +704,27 @@ export function normalizeEmailRequirementsInput(value: unknown) {
 }
 
 export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt {
-  if (typeof value !== "string") return { recipient: "", requirements: [], scenario: "" };
+  const empty = { recipient: "", requirements: [], scenario: "" };
+  if (typeof value !== "string") return empty;
   const source = normalizeAssignmentCharacters(value).replace(/\r\n?/g, "\n").trim();
-  if (!source) return { recipient: "", requirements: [], scenario: "" };
+  if (!source) return empty;
 
-  const recipient = detectEmailRecipient(source);
-  const lines = source.split("\n");
-  const markerPattern = /^\s*(?:[•●▪◦]|[-–—]|\d+[.)])\s*/;
-  const markerIndexes = lines.flatMap((line, index) => markerPattern.test(line) ? [index] : []);
-  let requirements: string[] = [];
-  let scenarioLines: string[] = [];
+  const boundary = /write\s+an?\s+email\s+to\s+([\s\S]+?)\.\s*in\s+your\s+email\s*,\s*do\s+the\s+following\s*:/i.exec(source);
+  if (boundary?.index === undefined) return empty;
 
-  if (markerIndexes.length > 0) {
-    scenarioLines = lines.slice(0, markerIndexes[0]);
-    requirements = markerIndexes.map((start, index) => {
-      const end = markerIndexes[index + 1] ?? lines.length;
-      return lines.slice(start, end)
-        .map((line, lineIndex) => lineIndex === 0 ? line.replace(markerPattern, "") : line)
-        .join("\n")
-        .replace(new RegExp(`\\n*${escapeRegExp(CUSTOM_EMAIL_CLOSING_INSTRUCTION)}\\s*$`, "i"), "")
-        .trim();
-    }).filter(Boolean);
-  } else {
-    const meaningful = lines.map((line) => line.trim()).filter(Boolean);
-    const contentLines = meaningful.filter((line) =>
-      !/^write\s+an?\s+email\s+to\b/i.test(line)
-      && !/^in your email,?\s+do the following:?$/i.test(line)
-      && line !== CUSTOM_EMAIL_CLOSING_INSTRUCTION
-    );
-    if (contentLines.length >= 4) {
-      requirements = contentLines.slice(-3);
-      scenarioLines = contentLines.slice(0, -3);
-    } else {
-      scenarioLines = contentLines;
-    }
-  }
-
-  const scenario = stripFixedEmailInstructions(scenarioLines.join("\n")).trim();
-  return { recipient, requirements, scenario };
-}
-
-function detectEmailRecipient(source: string) {
-  const patterns = [
-    /write\s+an?\s+email\s+to\s+([\s\S]+?)(?=\.\s*(?:in your email|$)|\n|,\s*in your email)/i,
-    /(?:send|write)\s+(?:an?\s+)?email\s+to\s+([^.,;\n]+)/i
-  ];
-  for (const pattern of patterns) {
-    const match = source.match(pattern)?.[1]?.trim();
-    if (match) return match;
-  }
-  return "";
-}
-
-function stripFixedEmailInstructions(value: string) {
-  return value
-    .replace(/write\s+an?\s+email\s+to\s+[\s\S]+?\.\s*in your email,?\s+do the following:?/gi, "")
-    .replace(/\bin your email,?\s+do the following:?\s*$/gi, "")
+  const recipient = normalizeAssignmentText(boundary[1]);
+  if (!recipient) return empty;
+  const scenario = source.slice(0, boundary.index).trim();
+  const requirementSource = source
+    .slice(boundary.index + boundary[0].length)
     .replace(new RegExp(escapeRegExp(CUSTOM_EMAIL_CLOSING_INSTRUCTION), "gi"), "")
-    .replace(/^\s+|\s+$/g, "");
+    .split("\n")
+    .filter((line) => !/^\s*subject\s*:/i.test(line))
+    .join("\n")
+    .trim();
+  const requirements = parseEmailRequirementItems(requirementSource);
+
+  return { recipient, requirements, scenario };
 }
 
 function normalizeAssignmentCharacters(value: string) {

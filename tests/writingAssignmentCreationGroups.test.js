@@ -20,7 +20,8 @@ test("custom Email prompt parser extracts recipient, scenario, and exactly three
     "• Ask for the notes.",
     "• Suggest a time to meet.",
     "",
-    "Write as much as you can and in complete sentences."
+    "Write as much as you can and in complete sentences.",
+    "Subject: Missed class meeting"
   ].join("\n");
   assert.deepEqual(parseCustomEmailPrompt(prompt), {
     recipient: "Professor Lee",
@@ -33,12 +34,34 @@ test("custom Email prompt parser extracts recipient, scenario, and exactly three
   });
 });
 
-test("custom Email parser reports missing recipient and an inaccurate requirement count for manual correction", () => {
-  const parsed = parseCustomEmailPrompt("A campus office changed its hours.\n• Ask why.\n• Request the new hours.");
-  assert.equal(parsed.recipient, "");
-  assert.equal(parsed.requirements.length, 2);
+test("custom Email parser supports simplified plain-line input after the fixed boundary", () => {
+  assert.deepEqual(parseCustomEmailPrompt([
+    "A campus office changed its hours.",
+    "Write an email to the campus office. In your email, do the following:",
+    "Ask why the hours changed.",
+    "Request the new hours.",
+    "Ask when the change takes effect."
+  ].join("\n")), {
+    recipient: "the campus office",
+    requirements: [
+      "Ask why the hours changed.",
+      "Request the new hours.",
+      "Ask when the change takes effect."
+    ],
+    scenario: "A campus office changed its hours."
+  });
+});
+
+test("custom Email parser does not guess fields when the fixed boundary is missing", () => {
+  assert.deepEqual(
+    parseCustomEmailPrompt("A campus office changed its hours.\n• Ask why.\n• Request the new hours."),
+    { recipient: "", requirements: [], scenario: "" }
+  );
+});
+
+test("custom Email parser reports an inaccurate requirement count for manual correction", () => {
   assert.equal(parseCustomEmailPrompt(
-    "Write an email to the office.\n• One.\n• Two.\n• Three.\n• Four."
+    "Write an email to the office. In your email, do the following:\n• One.\n• Two.\n• Three.\n• Four."
   ).requirements.length, 4);
 });
 

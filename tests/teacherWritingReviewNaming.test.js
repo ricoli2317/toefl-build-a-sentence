@@ -121,7 +121,7 @@ test("published and reviewing review data are unchanged by display enrichment", 
   assert.deepEqual(reviewRows, before);
 });
 
-test("question-bank Assignment keeps snapshot context and exposes only auxiliary logical naming", () => {
+test("question-bank Assignment uses current logical naming as its primary display", () => {
   const display = namingResolver().resolveWritingAttempt({
     assignmentId: "assignment-bank",
     assignmentDisplayName: "Week 4 Assignment Snapshot",
@@ -130,7 +130,7 @@ test("question-bank Assignment keeps snapshot context and exposes only auxiliary
     rawQuestionId: "email-a",
     taskType: "email"
   });
-  assert.equal(display.displayName, "Week 4 Assignment Snapshot");
+  assert.equal(display.displayName, "题目021 Request for Schedule Change");
   assert.equal(display.logicalDisplayName, "题目021 Request for Schedule Change");
   assert.equal(display.resolution, "assignment");
 });
