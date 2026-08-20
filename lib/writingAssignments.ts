@@ -32,6 +32,7 @@ export type WritingAssignmentSummary = {
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
   question_snapshot: WritingQuestion;
+  display_name?: string;
   status: WritingAssignmentLifecycleStatus;
   due_at: string | null;
   created_at: string;

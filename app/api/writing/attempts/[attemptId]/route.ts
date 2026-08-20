@@ -9,11 +9,6 @@ import {
   writingJson
 } from "@/lib/writingServer";
 import {
-  getStudentWritingModeAvailability,
-  isStudentWritingModeAllowed,
-  writingModeUnavailableMessage
-} from "@/lib/writingModePolicy";
-import {
   loadHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
@@ -50,20 +45,6 @@ export async function GET(
         return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
-    if (attemptResult.data.status === "draft") {
-      const modeAvailability = await getStudentWritingModeAvailability(
-        auth.supabase,
-        auth.userId
-      );
-      if (modeAvailability.error || !modeAvailability.data) {
-        return writingJson({ error: "暂时无法验证写作模式，请稍后重试。" }, { status: 500 });
-      }
-      if (!isStudentWritingModeAllowed(modeAvailability.data, attemptResult.data.writing_mode)) {
-        const mode = attemptResult.data.writing_mode === "practice" ? "practice" : "exam";
-        return writingJson({ error: writingModeUnavailableMessage(mode) }, { status: 403 });
-      }
-    }
-
     const questionResult = await readWritingQuestion(
       auth.supabase,
       attemptResult.data.task_type,
@@ -159,18 +140,6 @@ export async function PATCH(
         return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
-    const modeAvailability = await getStudentWritingModeAvailability(
-      auth.supabase,
-      auth.userId
-    );
-    if (modeAvailability.error || !modeAvailability.data) {
-      return writingJson({ error: "暂时无法验证写作模式，请稍后重试。" }, { status: 500 });
-    }
-    if (!isStudentWritingModeAllowed(modeAvailability.data, attempt.writing_mode)) {
-      const mode = attempt.writing_mode === "practice" ? "practice" : "exam";
-      return writingJson({ error: writingModeUnavailableMessage(mode) }, { status: 403 });
-    }
-
     const requestedRemaining = clampRemainingSeconds(
       body.remainingSeconds,
       attempt.time_limit_seconds

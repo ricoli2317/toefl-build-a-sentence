@@ -10,6 +10,11 @@ import {
   requireWritingAssignmentTeacher,
   writingAssignmentJson
 } from "@/lib/writingAssignmentsServer";
+import {
+  loadHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings,
+  type HistoricalPracticeDisplay
+} from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -40,9 +45,10 @@ export async function GET(request: Request) {
     if (assignments.length === 0) return writingAssignmentJson({ assignments: [] });
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
-    const [members, attempts] = await Promise.all([
+    const [members, attempts, historicalDisplayResolver] = await Promise.all([
       readAssignmentRows<AssignmentStudentRow>(auth.supabase, "writing_assignment_students", "assignment_id,student_id,assigned_at", assignmentIds),
-      readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds)
+      readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds),
+      loadHistoricalPracticeDisplayResolver(auth.supabase)
     ]);
     const assignedByAssignment = new Map<string, Set<string>>();
     for (const member of members) {
@@ -68,8 +74,8 @@ export async function GET(request: Request) {
       Array.from(latestSubmission.values(), (attempt) => attempt.attempt_id)
     );
     const now = Date.now();
-    return writingAssignmentJson({
-      assignments: assignments.map((assignment) => {
+    const resolvedDisplays: HistoricalPracticeDisplay[] = [];
+    const enrichedAssignments = assignments.map((assignment) => {
         const students = assignedByAssignment.get(assignment.assignment_id) ?? new Set();
         let completedCount = 0;
         let publishedCount = 0;
@@ -87,12 +93,23 @@ export async function GET(request: Request) {
         const singleStudentSubmission = singleStudentId
           ? latestSubmission.get(`${assignment.assignment_id}:${singleStudentId}`)
           : undefined;
+        const snapshotTitle = assignment.question_snapshot.set_title?.trim() || "自定义题目";
+        const display = assignment.question_source === "question_bank" && assignment.question_id
+          ? historicalDisplayResolver.resolveWritingAttempt({
+              assignmentId: null,
+              fallbackDisplayName: snapshotTitle,
+              rawQuestionId: assignment.question_id,
+              taskType: assignment.task_type
+            })
+          : null;
+        if (display) resolvedDisplays.push(display);
         return {
           assignment_id: assignment.assignment_id,
           task_type: assignment.task_type,
           question_source: assignment.question_source,
           question_id: assignment.question_id,
           question_snapshot: assignment.question_snapshot,
+          display_name: display?.displayName ?? snapshotTitle,
           status: assignment.status,
           due_at: assignment.due_at,
           created_at: assignment.created_at,
@@ -109,8 +126,9 @@ export async function GET(request: Request) {
             assignment.due_at && Date.parse(assignment.due_at) < now && completedCount < students.size
           )
         } satisfies WritingAssignmentSummary;
-      })
     });
+    logHistoricalPracticeDisplayWarnings(resolvedDisplays);
+    return writingAssignmentJson({ assignments: enrichedAssignments });
   } catch (error) {
     console.error("[writing-assignments] list_load_failed", error);
     return writingAssignmentJson(
@@ -157,7 +175,9 @@ export async function POST(request: Request) {
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.teacherId) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
     const body = await request.json() as Record<string, unknown>;
-    const prepared = await prepareWritingAssignmentMutation(auth.supabase, body);
+    const prepared = await prepareWritingAssignmentMutation(auth.supabase, body, {
+      canonicalizeQuestionBank: true
+    });
     const { data, error } = await auth.supabase.rpc("create_writing_assignment", {
       p_teacher_id: auth.teacherId,
       p_task_type: prepared.taskType,

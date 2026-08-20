@@ -6,7 +6,7 @@ export function splitTextItems(value: string | null | undefined) {
     try {
       const parsed = JSON.parse(trimmed);
       if (Array.isArray(parsed)) {
-        return parsed.map((item) => String(item).trim()).filter(Boolean);
+        return flattenTextItems(parsed);
       }
     } catch {
       return [];
@@ -20,12 +20,40 @@ export function splitTextItems(value: string | null | undefined) {
     .filter(Boolean);
 }
 
+function flattenTextItems(items: unknown[]): string[] {
+  return items.flatMap((item) => {
+    if (Array.isArray(item)) return flattenTextItems(item);
+    if (typeof item !== "string" && typeof item !== "number") return [];
+    const text = String(item).trim();
+    if (!text) return [];
+    if (
+      (text.startsWith("[") && text.endsWith("]")) ||
+      (text.startsWith('"') && text.endsWith('"'))
+    ) {
+      try {
+        const nested = JSON.parse(text) as unknown;
+        if (Array.isArray(nested)) return flattenTextItems(nested);
+        if (typeof nested === "string" && nested !== text) {
+          return flattenTextItems([nested]);
+        }
+      } catch {
+        // Keep a malformed or genuinely bracketed text chunk unchanged.
+      }
+    }
+    return [text];
+  });
+}
+
 export function joinTextItems(items: string[]) {
   return JSON.stringify(items.map((item) => item.trim()).filter(Boolean));
 }
 
 export function formatTextItems(value: string | null | undefined) {
-  return splitTextItems(value).join(" ");
+  return splitTextItems(value)
+    .join(" ")
+    .replace(/[\[\]"]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function normalizeChunkForCompare(chunk: string) {

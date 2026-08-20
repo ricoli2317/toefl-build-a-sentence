@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
+import { StudentBrand } from "@/components/student/StudentBrand";
 import { useTeacherCachedData } from "@/components/TeacherDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 
@@ -147,12 +148,7 @@ export function TeacherAppShell({
             >
               {menuOpen ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
             </button>
-            <Link
-              className="text-[19px] font-bold tracking-[-0.015em] text-student-primary"
-              href="/teacher/dashboard"
-            >
-              Build a Sentence
-            </Link>
+            <Link href="/teacher/dashboard"><StudentBrand compact /></Link>
           </div>
           <div className="flex items-center gap-3">
             {teacherEmail ? (

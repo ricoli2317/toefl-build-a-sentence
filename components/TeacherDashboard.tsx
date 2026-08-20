@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import {
   buildSentenceDisplay,
+  formatTextItems,
   isBlankToken,
   splitSentenceTemplate,
   splitTextItems
@@ -685,11 +686,11 @@ export function TeacherSetsList() {
         <TeacherSectionTitle>套题列表</TeacherSectionTitle>
       </div>
       <div className="overflow-x-auto px-6 pb-6 pt-4">
-        <table className="w-full min-w-[960px] border-separate border-spacing-0 overflow-hidden rounded-xl border border-student-border text-left text-sm">
+        <table className="w-full min-w-[820px] border-separate border-spacing-0 overflow-hidden rounded-xl border border-student-border text-left text-sm">
           <thead className="bg-student-primary-soft/55">
             <tr className="text-student-text">
               <th className="px-4 py-4 font-semibold">套题</th>
-              <th className="px-4 py-4 font-semibold">Logical Item ID</th>
+              <th className="px-4 py-4 font-semibold">首次出现日期</th>
               <th className="px-4 py-4 font-semibold">题目数</th>
               <th className="px-4 py-4 font-semibold">总练习次数</th>
               <th className="px-4 py-4 font-semibold">平均正确率</th>
@@ -706,7 +707,7 @@ export function TeacherSetsList() {
                       {set.occurrenceDates.length > 1 ? ` · ${set.occurrenceDates.length} 个日期` : ""}
                     </p>
                   </td>
-                  <td className="border-t border-student-border px-4 py-4 font-mono text-xs text-student-muted">{set.itemId}</td>
+                  <td className="border-t border-student-border px-4 py-4 text-student-muted">{formatLogicalDate(set.firstSeenDate)}</td>
                   <td className="border-t border-student-border px-4 py-4 tabular-nums">{set.questionCount}</td>
                   <td className="border-t border-student-border px-4 py-4 tabular-nums">{set.totalAttemptCount}</td>
                   <td className="border-t border-student-border px-4 py-4"><TeacherAccuracyBar value={set.averageAccuracy} /></td>
@@ -740,59 +741,45 @@ export function TeacherSetSummary({ setId }: { setId: string }) {
         <>
           {loading ? <TeacherSkeleton className="h-5 w-56" /> : (
             <p className="-mt-3 text-base font-medium text-student-muted">
-              {set?.setTitle} · {logicalSet ? logicalSet.itemId : rawSet?.setId}
+              {set?.setTitle}
             </p>
           )}
           <div className="grid gap-5 md:grid-cols-3">
             <TeacherMetricCard icon={BookOpenCheck} label="总练习次数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(set?.totalAttemptCount ?? 0)} />
             <TeacherMetricCard icon={Users} label="完成学生数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(set?.completedStudentCount ?? 0)} />
-            <TeacherMetricCard icon={TrendingUp} label="平均正确率" value={loading ? <TeacherSkeleton className="h-8 w-16" /> : error ? "—" : formatPercent(set?.averageAccuracy ?? 0)} />
+            <TeacherMetricCard icon={TrendingUp} label="平均正确率" value={loading ? <TeacherSkeleton className="h-8 w-16" /> : error ? "—" : (set?.totalAttemptCount ?? 0) === 0 ? "--" : formatPercent(set?.averageAccuracy ?? 0)} />
           </div>
           {logicalSet ? (
             <>
               <TeacherCard className="p-5 sm:p-7">
-                <TeacherSectionTitle>Logical Q1–Q10 正确率</TeacherSectionTitle>
+                <TeacherSectionTitle>各题正确率</TeacherSectionTitle>
                 {!logicalQuestions || logicalQuestions.questions.length === 0 ? (
-                  <div className="mt-5"><TeacherDataError text="Logical Q1–Q10 映射不可用。" /></div>
+                  <div className="mt-5"><TeacherDataError text="各题统计暂时不可用。" /></div>
                 ) : (
-                  <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+                  <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-5">
                     {logicalQuestions.questions.map((question) => (
                       <Link
-                        className={`flex min-h-[140px] flex-col items-center justify-center rounded-2xl border p-5 text-center transition hover:-translate-y-px hover:shadow-md ${
-                          question.accuracy < LOW_ACCURACY_THRESHOLD
+                        className={`flex min-h-[76px] flex-col items-center justify-center rounded-xl border px-3 py-2 text-center transition hover:-translate-y-px hover:shadow-sm ${
+                          question.answerCount === 0
+                            ? "border-student-border bg-white"
+                            : question.accuracy < LOW_ACCURACY_THRESHOLD
                             ? "border-student-error-border bg-student-error-soft"
                             : "border-student-primary-border bg-student-primary-soft/65"
                         }`}
                         href={`/teacher/sets/${encodeURIComponent(logicalSet.itemId)}/questions/${question.logicalQuestionOrder}`}
                         key={question.logicalQuestionId}
                       >
-                        <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "text-base font-semibold text-student-error" : "text-base font-semibold text-student-primary"}>
+                        <p className={question.answerCount === 0 ? "text-sm font-semibold text-student-muted" : question.accuracy < LOW_ACCURACY_THRESHOLD ? "text-sm font-semibold text-student-error" : "text-sm font-semibold text-student-primary"}>
                           Q{question.logicalQuestionOrder}
                         </p>
-                        <p className={question.accuracy < LOW_ACCURACY_THRESHOLD ? "mt-3 text-[2.35rem] font-bold leading-none text-student-error" : "mt-3 text-[2.35rem] font-bold leading-none text-student-text"}>
-                          {formatPercent(question.accuracy)}
+                        <p className={question.answerCount === 0 ? "mt-1 text-xl font-bold leading-none text-student-muted" : question.accuracy < LOW_ACCURACY_THRESHOLD ? "mt-1 text-xl font-bold leading-none text-student-error" : "mt-1 text-xl font-bold leading-none text-student-text"}>
+                          {question.answerCount === 0 ? "--" : formatPercent(question.accuracy)}
                         </p>
                         {!question.representativeQuestion ? <p className="mt-2 text-xs text-student-error">代表题目缺失</p> : null}
                       </Link>
                     ))}
                   </div>
                 )}
-              </TeacherCard>
-              <TeacherCard className="p-5 sm:p-7">
-                <TeacherSectionTitle>历史原始来源</TeacherSectionTitle>
-                <p className="mt-2 text-sm leading-6 text-student-muted">
-                  Logical Q 统计已聚合以下全部原始来源；旧 raw 单题统计仍可独立查看。
-                </p>
-                <div className="mt-5 flex flex-wrap gap-3">
-                  {logicalSet.sourceSetIds.map((sourceSetId) => (
-                    <TeacherTextLink
-                      href={`/teacher/sets/${encodeURIComponent(sourceSetId)}`}
-                      key={sourceSetId}
-                    >
-                      {sourceSetId}
-                    </TeacherTextLink>
-                  ))}
-                </div>
               </TeacherCard>
             </>
           ) : (
@@ -871,7 +858,7 @@ export function TeacherSetQuestionDetail({
   const frequentWrong = Array.from(
     groupBy(
       wrongAnswers,
-      (answer) => answer.displaySubmittedOrderText || answer.submittedOrderText || "__empty__"
+      (answer) => formatTextItems(answer.displaySubmittedOrderText || answer.submittedOrderText) || "__empty__"
     ).entries()
   )
     .map(([submittedOrderText, grouped]) => ({
@@ -901,7 +888,7 @@ export function TeacherSetQuestionDetail({
       ) : error ? (
         <QuestionStatisticsError text={toTeacherErrorMessage(error)} />
       ) : logicalQuestion && !representative ? (
-        <QuestionStatisticsError text={`Logical Q${logicalQuestion.logicalQuestionOrder} 的 canonical 代表题目映射缺失。`} />
+        <QuestionStatisticsError text={`Q${logicalQuestion.logicalQuestionOrder} 的代表题目暂时不可用。`} />
       ) : !question ? (
         <EmptyState text="未找到题目。" />
       ) : (
@@ -926,7 +913,7 @@ export function TeacherSetQuestionDetail({
               </p>
           </TeacherCard>
           <div className="grid gap-5 sm:grid-cols-3">
-            <TeacherMetricCard icon={Target} label="平均正确率" value={formatPercent(question.accuracy)} />
+            <TeacherMetricCard icon={Target} label="平均正确率" value={question.answerCount === 0 ? "--" : formatPercent(question.accuracy)} />
             <TeacherMetricCard icon={FileText} label="总作答次数" value={String(question.answerCount)} />
             <TeacherMetricCard icon={CircleX} label="错误次数" tone="warning" value={String(wrongAnswers.length)} />
           </div>

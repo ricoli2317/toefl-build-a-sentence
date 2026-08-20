@@ -1,4 +1,5 @@
 import { isVirtualPracticeSetId } from "./studentNavigation.ts";
+import { compareDisplayNumbers } from "./practiceImporter/numbering.ts";
 
 export type TeacherLogicalPracticeItemRow = {
   item_id: string;
@@ -161,9 +162,10 @@ export function buildTeacherLogicalSetSummaries(input: {
 }
 
 export function compareTeacherLogicalSetSummaries(
-  left: Pick<TeacherLogicalSetSummary, "firstSeenDate" | "itemId">,
-  right: Pick<TeacherLogicalSetSummary, "firstSeenDate" | "itemId">
+  left: Pick<TeacherLogicalSetSummary, "firstSeenDate" | "displayNumber" | "itemId">,
+  right: Pick<TeacherLogicalSetSummary, "firstSeenDate" | "displayNumber" | "itemId">
 ) {
   return right.firstSeenDate.localeCompare(left.firstSeenDate) ||
+    compareDisplayNumbers(right.displayNumber, left.displayNumber) ||
     left.itemId.localeCompare(right.itemId);
 }

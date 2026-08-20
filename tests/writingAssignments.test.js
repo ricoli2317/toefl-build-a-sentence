@@ -576,11 +576,14 @@ test("withdrawn assignments block draft loading and saving but not submitted his
   assert.match(route, /if \(attempt\.status === "submitted"\)[\s\S]*if \(attempt\.assignment_id\)/);
 });
 
-test("question search stays server-side, task-specific, paged, stable, and uncached", () => {
+test("question search scans raw sources, deduplicates logical items, then pages stable results", () => {
   const source = fs.readFileSync(path.join(projectRoot, "app/api/teacher/writing/assignments/questions/route.ts"), "utf8");
   assert.match(source, /WRITING_TASK_CONFIG\[taskType\]\.questionTable/);
-  assert.match(source, /\.range\(from, from \+ pageSize - 1\)/);
-  assert.match(source, /\.order\("year_month"/);
+  assert.match(source, /practice_item_sources/);
+  assert.match(source, /matchedLogicalWritingItemIds/);
+  assert.match(source, /buildLogicalWritingQuestionSearchResults/);
+  assert.match(source, /allResults\.slice\(from, from \+ pageSize\)/);
+  assert.match(source, /source\.is_canonical/);
   assert.match(source, /export const dynamic = "force-dynamic"/);
   const server = fs.readFileSync(path.join(projectRoot, "lib/writingAssignmentsServer.ts"), "utf8");
   assert.match(server, /"Cache-Control": "no-store"/);

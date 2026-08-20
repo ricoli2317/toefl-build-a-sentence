@@ -357,31 +357,73 @@ select {
 
   .login-page {
     color: var(--student-text);
-    background: var(--student-bg);
+    background:
+      radial-gradient(circle at 49% 40%, rgba(255, 255, 255, 0.98) 0 18%, transparent 46%),
+      linear-gradient(135deg, #fbfbff 0%, #f7f6ff 52%, #faf9ff 100%);
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
       "Microsoft YaHei", "Segoe UI", sans-serif;
   }
 
-  .login-visual-panel {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 16% 14%, rgba(255, 255, 255, 0.72) 0 24%, transparent 24.2%),
-      radial-gradient(circle at 91% 86%, rgba(255, 255, 255, 0.32) 0 27%, transparent 27.2%),
-      linear-gradient(135deg, #f3f1ff 0%, #ddd9ff 48%, #a9a3ff 100%);
+  .login-orb {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 999px;
+    background: linear-gradient(145deg, rgba(112, 84, 255, 0.035), rgba(112, 84, 255, 0.01));
+    pointer-events: none;
   }
 
-  .login-visual-panel::before {
-    content: "";
+  .login-orb-left {
+    left: -22rem;
+    top: -16rem;
+    width: 39rem;
+    height: 39rem;
+  }
+
+  .login-orb-right {
+    right: -15rem;
+    bottom: -22rem;
+    width: 43rem;
+    height: 43rem;
+  }
+
+  .login-dot-grid {
     position: absolute;
-    z-index: -1;
-    top: 26px;
-    right: 22px;
-    width: 178px;
-    height: 178px;
-    opacity: 0.42;
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.95) 1.5px, transparent 1.6px);
-    background-size: 18px 18px;
+    width: 11rem;
+    height: 8rem;
+    opacity: 0.4;
+    background-image: radial-gradient(circle, rgba(107, 92, 246, 0.22) 1.7px, transparent 1.8px);
+    background-size: 23px 23px;
+    pointer-events: none;
+  }
+
+  .login-dot-grid-top {
+    right: 2.5rem;
+    top: 1.6rem;
+  }
+
+  .login-dot-grid-bottom {
+    bottom: 9rem;
+    left: 2.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .login-dot-grid {
+      opacity: 0.2;
+      transform: scale(0.72);
+    }
+
+    .login-dot-grid-top {
+      right: -2rem;
+      top: 0;
+    }
+
+    .login-dot-grid-bottom {
+      bottom: 2rem;
+      left: -2rem;
+    }
+
+    .login-orb {
+      opacity: 0.55;
+    }
   }
 }

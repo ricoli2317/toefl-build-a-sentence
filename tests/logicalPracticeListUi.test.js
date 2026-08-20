@@ -142,6 +142,11 @@ test("raw and canonical metadata are not rendered by the final list", () => {
 test("shared card wraps long titles and actions without horizontal scrolling", () => {
   assert.match(shared, /break-words/);
   assert.match(shared, /min-w-0 flex-wrap/);
-  assert.match(shared, /md:grid-cols-\[minmax\(0,1fr\)_5rem_auto\]/);
+  assert.match(shared, /md:grid-cols-\[minmax\(0,1fr\)_5rem_6rem_minmax\(15rem,auto\)\]/);
+  assert.match(shared, /data-question-count/);
+  assert.match(shared, /data-status-column/);
+  assert.match(shared, /data-actions-column/);
+  assert.match(shared, /data-title-number/);
+  assert.match(shared, /data-title-text/);
   assert.doesNotMatch(shared, /overflow-x-auto/);
 });

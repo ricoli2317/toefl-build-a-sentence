@@ -143,7 +143,14 @@ export function TeacherWritingReviewList() {
                         {taskTypeLabel(attempt.taskType)}
                       </td>
                       <td className="border-t border-student-border px-4 py-4 text-student-text">
-                        {attempt.displayName}
+                        <p>{attempt.displayName}</p>
+                        {attempt.reviewContext === "assignment_question_bank" &&
+                        attempt.logicalDisplay &&
+                        attempt.logicalDisplay.displayName !== attempt.displayName ? (
+                          <p className="mt-1 text-xs text-student-muted">
+                            {attempt.logicalDisplay.displayName}
+                          </p>
+                        ) : null}
                       </td>
                       <td className="border-t border-student-border px-4 py-4 tabular-nums text-student-text">
                         {attempt.wordCount}
@@ -212,7 +219,7 @@ function ReviewStatusBadge({ status }: { status: ReviewStatus }) {
   return (
     <span
       className={clsx(
-        "inline-flex rounded-full border px-3 py-1 text-xs font-semibold",
+        "inline-flex min-w-[4.5rem] whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold",
         status === "pending" && "border-amber-200 bg-amber-50 text-amber-700",
         status === "reviewing" &&
           "border-student-primary-border bg-student-primary-soft text-student-primary",

@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "../supabasePagination.ts";
 import { generateAcademicDiscussionTitle } from "./adTitle.ts";
+import { generateLogicalWritingTitle } from "./logicalTitle.ts";
 import {
   classifyAcademicDiscussion,
   classifyBuildSentence,
@@ -221,17 +222,22 @@ export async function syncEmailLogicalSource(input: {
   questionId: string;
   subject: string;
   supabase: SupabaseClient;
+  titleGenerator?: (subject: string) => Promise<string>;
 }) {
   const fingerprint = emailFingerprint(input.content);
   const alreadySynced = input.catalog.sourceIdentities.has(input.questionId);
   const classification = alreadySynced
     ? ({ classification: "AUTO_MERGE", candidateItemId: null, similaritySummary: { alreadySynced: true } } satisfies ClassificationResult)
     : classifyEmail(input.content, input.catalog.candidates);
+  const displayTitle =
+    classification.classification === "NEW_ITEM"
+      ? await (input.titleGenerator ?? ((subject) => generateLogicalWritingTitle(subject, "email")))(input.subject)
+      : null;
   return syncWritingSource({
     ...input,
     alreadySynced,
     classification,
-    displayTitle: input.subject,
+    displayTitle,
     fingerprint,
     normalizationVersion: PRACTICE_IMPORT_NORMALIZATION_VERSION,
     taskType: "email"

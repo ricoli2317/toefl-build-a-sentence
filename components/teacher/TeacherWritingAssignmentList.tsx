@@ -88,7 +88,7 @@ export function TeacherWritingAssignmentList() {
                 <AssignmentProgressBadge assignment={assignment} />
                 {assignment.has_overdue_students ? <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error"><AlertTriangle aria-hidden="true" size={13} />存在逾期未完成</span> : null}
               </div>
-              <h2 className="mt-3 truncate text-lg font-bold text-student-text">{writingAssignmentTitle(assignment.question_snapshot)}</h2>
+              <h2 className="mt-3 truncate text-lg font-bold text-student-text">{assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}</h2>
               <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
                 <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} />{assignment.assigned_count} 名学生 · {assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
                 <span className="inline-flex items-center gap-2"><CalendarClock aria-hidden="true" size={16} />截止：{formatDateTime(assignment.due_at, "无")}</span>

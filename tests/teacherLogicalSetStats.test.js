@@ -177,7 +177,7 @@ test("current display number changes the name without changing identity or stati
   }
 });
 
-test("sets sort by first_seen_date descending with item_id as a stable same-date tie-break", () => {
+test("sets sort by first_seen_date descending then Excel-style display number descending", () => {
   const sets = summarize({
     items: [
       item({ itemId: "item-b", displayNumber: "002", firstSeenDate: "2026-08-01" }),
@@ -191,7 +191,25 @@ test("sets sort by first_seen_date descending with item_id as a stable same-date
     ]
   });
 
-  assert.deepEqual(sets.map(({ itemId }) => itemId), ["item-new", "item-a", "item-b"]);
+  assert.deepEqual(sets.map(({ itemId }) => itemId), ["item-new", "item-b", "item-a"]);
+});
+
+test("same-date suffix comparator orders 058 after 057B after 057A after 057", () => {
+  const sets = summarize({
+    items: [
+      item({ itemId: "plain", displayNumber: "057", firstSeenDate: "2026-08-08" }),
+      item({ itemId: "a", displayNumber: "057A", firstSeenDate: "2026-08-08" }),
+      item({ itemId: "b", displayNumber: "057B", firstSeenDate: "2026-08-08" }),
+      item({ itemId: "next", displayNumber: "058", firstSeenDate: "2026-08-08" })
+    ],
+    sources: [
+      source("s-plain", "set-plain", "plain"),
+      source("s-a", "set-a", "a"),
+      source("s-b", "set-b", "b"),
+      source("s-next", "set-next", "next")
+    ]
+  });
+  assert.deepEqual(sets.map(({ displayNumber }) => displayNumber), ["058", "057B", "057A", "057"]);
 });
 
 test("inactive logical items with historical sources and attempts remain visible", () => {
@@ -224,8 +242,7 @@ test("server and UI use batched logical mapping, item identity, and raw drill-do
   assert.match(route, /buildTeacherLogicalSetSummaries\(\{[\s\S]*attempts:\s*attemptRows/);
   assert.doesNotMatch(route, /for\s*\([^)]*logical[^)]*\)[\s\S]{0,300}\.from\("attempts"\)/i);
   assert.match(dashboard, /href=\{`\/teacher\/sets\/\$\{encodeURIComponent\(set\.itemId\)\}`\}/);
-  assert.match(dashboard, /logicalSet\.sourceSetIds\.map/);
-  assert.match(dashboard, /href=\{`\/teacher\/sets\/\$\{encodeURIComponent\(sourceSetId\)\}`\}/);
+  assert.doesNotMatch(dashboard, /历史原始来源|logicalSet\.sourceSetIds\.map/);
   assert.match(route, /attemptId:\s*attempt\.attempt_id/);
   assert.match(route, /setId:\s*attempt\.set_id/);
   assert.doesNotMatch(dashboard, /encodeURIComponent\(set\.displayNumber\)/);

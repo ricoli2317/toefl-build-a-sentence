@@ -105,7 +105,8 @@ export function chunkValues<T>(values: T[], size = 100) {
 
 export async function prepareWritingAssignmentMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
+  options: { canonicalizeQuestionBank?: boolean } = {}
 ) {
   if (!isWritingTaskType(body.taskType)) throw new Error("请选择有效的写作题型。");
   if (!isWritingAssignmentQuestionSource(body.questionSource)) {
@@ -120,6 +121,13 @@ export async function prepareWritingAssignmentMutation(
   if (questionSource === "question_bank") {
     questionId = typeof body.questionId === "string" ? body.questionId.trim() : "";
     if (!questionId) throw new Error("请选择一道题库题目。");
+    if (options.canonicalizeQuestionBank) {
+      questionId = await resolveCanonicalWritingAssignmentQuestionId(
+        supabase,
+        taskType,
+        questionId
+      );
+    }
     const { data, error } = await supabase
       .from(WRITING_TASK_CONFIG[taskType].questionTable)
       .select(WRITING_ASSIGNMENT_QUERY_FIELDS[taskType])
@@ -146,6 +154,33 @@ export async function prepareWritingAssignmentMutation(
     studentIds,
     taskType
   };
+}
+
+async function resolveCanonicalWritingAssignmentQuestionId(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  taskType: WritingTaskType,
+  selectedQuestionId: string
+) {
+  const selectedSource = await supabase
+    .from("practice_item_sources")
+    .select("item_id")
+    .eq("task_type", taskType)
+    .eq("source_question_id", selectedQuestionId)
+    .maybeSingle();
+  if (selectedSource.error) throw selectedSource.error;
+  if (!selectedSource.data) throw new Error("所选题目不属于当前练习题库。");
+
+  const canonicalSource = await supabase
+    .from("practice_item_sources")
+    .select("source_question_id")
+    .eq("item_id", selectedSource.data.item_id)
+    .eq("task_type", taskType)
+    .eq("is_canonical", true)
+    .maybeSingle();
+  if (canonicalSource.error) throw canonicalSource.error;
+  const canonicalQuestionId = canonicalSource.data?.source_question_id?.trim();
+  if (!canonicalQuestionId) throw new Error("所选题目的当前版本不可用。");
+  return canonicalQuestionId;
 }
 
 export async function prepareWritingAssignmentMembership(
