@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const {
   buildCustomWritingQuestionSnapshot,
+  defaultWritingAssignmentTitle,
   parseCustomEmailPrompt,
   toggleWritingAssignmentQuestionSelection
 } = require("../lib/writingAssignments.ts");
@@ -30,7 +31,8 @@ test("custom Email prompt parser extracts recipient, scenario, and exactly three
       "Ask for the notes.",
       "Suggest a time to meet."
     ],
-    scenario: "You missed an important class meeting.\nYou need the notes before Friday."
+    scenario: "You missed an important class meeting.\nYou need the notes before Friday.",
+    taskInstruction: "Write an email to Professor Lee. In your email, do the following:"
   });
 });
 
@@ -48,7 +50,8 @@ test("custom Email parser supports simplified plain-line input after the fixed b
       "Request the new hours.",
       "Ask when the change takes effect."
     ],
-    scenario: "A campus office changed its hours."
+    scenario: "A campus office changed its hours.",
+    taskInstruction: "Write an email to the campus office. In your email, do the following:"
   });
 });
 
@@ -67,7 +70,8 @@ test("custom Email parser accepts colon and period instruction variants with num
       "Ask where it will be held.",
       "Ask whether registration is required."
     ],
-    scenario: "You need information about a campus event."
+    scenario: "You need information about a campus event.",
+    taskInstruction: "Write an email to: Student Activities Office\nIn your email do the following."
   });
 });
 
@@ -87,14 +91,15 @@ test("custom Email parser removes copied special symbols and graphic bullets", (
       "Request a different day.",
       "Ask for confirmation."
     ],
-    scenario: "You need to change your appointment—it's urgent."
+    scenario: "You need to change your appointment—it's urgent.",
+    taskInstruction: "Write an e-mail to Dr. Rivera.\nIn your e-mail, please do the following:"
   });
 });
 
 test("custom Email parser does not guess fields when the fixed boundary is missing", () => {
   assert.deepEqual(
     parseCustomEmailPrompt("A campus office changed its hours.\n• Ask why.\n• Request the new hours."),
-    { recipient: "", requirements: [], scenario: "" }
+    { recipient: "", requirements: [], scenario: "", taskInstruction: "" }
   );
 });
 
@@ -112,6 +117,7 @@ test("manual Email corrections become the final immutable snapshot", () => {
       parsed_email: true,
       title: "Class meeting",
       scenario: "Line one stays here.\nLine two stays here.",
+      task_instruction: "Write an email to the course coordinator. In your email, do the following:",
       recipient: "Professor Rivera",
       requirement_1: "Explain what happened.",
       requirement_2: "Ask for the notes.",
@@ -121,10 +127,60 @@ test("manual Email corrections become the final immutable snapshot", () => {
   });
   assert.equal(question.scenario, "Line one stays here.\nLine two stays here.");
   assert.equal(question.recipient, "Professor Rivera");
+  assert.equal(
+    question.task_instruction,
+    "Write an email to the course coordinator. In your email, do the following:"
+  );
   assert.deepEqual(
     [question.requirement_1, question.requirement_2, question.requirement_3],
     ["Explain what happened.", "Ask for the notes.", "Propose a meeting time."]
   );
+});
+
+test("recipient recognition defaults To while a manual To change leaves the original instruction intact", () => {
+  const parsed = parseCustomEmailPrompt([
+    "You need help with a hotel reservation.",
+    "Write an email to the hotel manager, Ms. Brown. In your email, do the following:",
+    "• Explain the reservation problem.",
+    "• Ask for help.",
+    "• Request a confirmation."
+  ].join("\n"));
+  assert.equal(parsed.recipient, "the hotel manager, Ms. Brown");
+
+  const question = buildCustomWritingQuestionSnapshot({
+    taskType: "email",
+    id: "manual-to",
+    fields: {
+      parsed_email: true,
+      title: "260820-张三",
+      scenario: parsed.scenario,
+      task_instruction: parsed.taskInstruction,
+      requirement_1: parsed.requirements[0],
+      requirement_2: parsed.requirements[1],
+      requirement_3: parsed.requirements[2],
+      recipient: "Ms. Brown",
+      subject: "Reservation help"
+    }
+  });
+  assert.equal(question.recipient, "Ms. Brown");
+  assert.equal(
+    question.task_instruction,
+    "Write an email to the hotel manager, Ms. Brown. In your email, do the following:"
+  );
+});
+
+test("custom assignment title defaults use assignment date and first selected student", () => {
+  const assignedAt = new Date("2026-08-20T04:00:00.000Z");
+  assert.equal(defaultWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1
+  }), "260820-张三");
+  assert.equal(defaultWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 3
+  }), "260820-张三等");
 });
 
 test("question-bank multi-selection survives replacing the visible search results", () => {
@@ -157,9 +213,13 @@ test("creation form supports multi-select, custom multi-question editing, deadli
   assert.match(createForm, /WritingAssignmentQuestionPreview/);
   assert.match(createForm, /assignments, studentIds: selectedStudents/);
   assert.match(createForm, /customEmailRequirementCount\(draft\) !== 3/);
+  assert.match(createForm, /defaultWritingAssignmentTitle/);
+  assert.match(createForm, /draft\.titleManuallyEdited[\s\S]*?fields: \{ \.\.\.draft\.fields, title: nextTitle \}/);
+  assert.match(createForm, /recipient: draft\.toManuallyEdited \? draft\.fields\.recipient : parsed\.recipient/);
+  assert.match(createForm, /task_instruction: parsed\.taskInstruction/);
 });
 
-test("custom Email creation keeps only three main inputs collapsed and exposes correction validation", () => {
+test("custom Email creation keeps the main inputs collapsed and exposes To correction validation", () => {
   const source = fs.readFileSync(
     path.join(projectRoot, "components/teacher/TeacherWritingAssignmentForm.tsx"),
     "utf8"
@@ -167,11 +227,12 @@ test("custom Email creation keeps only three main inputs collapsed and exposes c
   const card = source.match(
     /function CustomQuestionDraftCard[\s\S]*?(?=function MultiQuestionResults)/
   )?.[0] ?? "";
-  assert.match(card, />标题</);
+  assert.match(card, />作业标题</);
   assert.match(card, />题目</);
   assert.match(card, />Subject</);
   assert.match(card, /查看\/修改识别结果/);
-  assert.match(card, /未能识别 Recipient/);
+  assert.match(card, /未能识别收件对象/);
+  assert.match(card, />To</);
   assert.match(card, /必须准确识别或补充 3 条要求后才能布置/);
   assert.match(card, /Requirement \{number\}/);
 });

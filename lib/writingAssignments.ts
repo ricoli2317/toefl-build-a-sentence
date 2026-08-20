@@ -99,6 +99,30 @@ export function studentWritingAssignmentTitle(
   return assignment.display_name?.trim() || assignment.question_snapshot.set_title;
 }
 
+export function defaultWritingAssignmentTitle(input: {
+  assignedAt: Date | string;
+  firstStudentName: string;
+  studentCount: number;
+}) {
+  const date = input.assignedAt instanceof Date
+    ? input.assignedAt
+    : new Date(input.assignedAt);
+  if (Number.isNaN(date.getTime())) throw new Error("作业布置日期无效。");
+  const dateParts = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Asia/Shanghai",
+    year: "2-digit"
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    dateParts.find((item) => item.type === type)?.value ?? "";
+  const studentName = normalizeAssignmentText(input.firstStudentName);
+  if (!studentName) throw new Error("请选择学生后再确认作业标题。");
+  return `${part("year")}${part("month")}${part("day")}-${studentName}${
+    input.studentCount > 1 ? "等" : ""
+  }`;
+}
+
 export type StudentWritingAssignmentListEntry =
   | {
       kind: "assignment";
@@ -173,6 +197,7 @@ export type ParsedCustomEmailPrompt = {
   recipient: string;
   requirements: string[];
   scenario: string;
+  taskInstruction: string;
 };
 
 const COMMON_MALE_NAMES = new Set([
@@ -290,7 +315,7 @@ export function buildCustomWritingQuestionSnapshot(input: {
   const now = input.now ?? new Date();
   const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
   const questionId = `custom:${id}`;
-  const title = requiredNormalizedText(input.fields.title, "请填写标题。");
+  const title = requiredNormalizedText(input.fields.title, "请填写作业标题。");
   const metadata = {
     question_id: questionId,
     set_id: questionId,
@@ -300,7 +325,7 @@ export function buildCustomWritingQuestionSnapshot(input: {
   };
 
   if (input.taskType === "email") {
-    const recipient = requiredNormalizedText(input.fields.recipient, "请填写收件人。");
+    const recipient = requiredNormalizedText(input.fields.recipient, "请填写 To。");
     const parsedEmail = input.fields.parsed_email === true;
     const requirements = parsedEmail
       ? ([1, 2, 3].map((index) => requiredPreservedText(
@@ -321,7 +346,9 @@ export function buildCustomWritingQuestionSnapshot(input: {
       scenario: parsedEmail
         ? requiredPreservedText(input.fields.scenario, "请填写 Scenario。")
         : requiredNormalizedText(input.fields.scenario, "请填写 Scenario。"),
-      task_instruction: buildCustomEmailTaskInstruction(recipient),
+      task_instruction: typeof input.fields.task_instruction === "string"
+        ? requiredPreservedText(input.fields.task_instruction, "请粘贴完整邮件题目。")
+        : buildCustomEmailTaskInstruction(recipient),
       requirement_1: requirements[0],
       requirement_2: requirements[1],
       requirement_3: requirements[2],
@@ -717,7 +744,7 @@ export function normalizeEmailRequirementsInput(value: unknown) {
 }
 
 export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt {
-  const empty = { recipient: "", requirements: [], scenario: "" };
+  const empty = { recipient: "", requirements: [], scenario: "", taskInstruction: "" };
   if (typeof value !== "string") return empty;
   const source = cleanCustomEmailPromptText(value);
   if (!source) return empty;
@@ -731,13 +758,15 @@ export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt 
 
   const recipientStart = recipientInstruction.index + recipientInstruction[0].length;
   const requirementInstructionStart = recipientStart + requirementInstruction.index;
-  const recipientSource = source
-    .slice(recipientStart, requirementInstructionStart)
-    .split("\n")
-    .filter((line) => !/^\s*subject\s*:/i.test(line))
-    .join(" ")
-    .replace(/[\s,;:.–—-]+$/, "");
-  const recipient = normalizeAssignmentText(recipientSource);
+  const requirementInstructionEnd = requirementInstructionStart + requirementInstruction[0].length;
+  const recipient = normalizeAssignmentText(
+    source
+      .slice(recipientStart, requirementInstructionStart)
+      .split("\n")
+      .filter((line) => !/^\s*subject\s*:/i.test(line))
+      .join(" ")
+      .replace(/[\s,;:.–—-]+$/, "")
+  );
   if (!recipient) return empty;
 
   const scenario = source
@@ -745,7 +774,7 @@ export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt 
     .replace(/^[ \t]*•[ \t]*/gm, "")
     .trim();
   const requirementSource = source
-    .slice(requirementInstructionStart + requirementInstruction[0].length)
+    .slice(requirementInstructionEnd)
     .replace(
       /write\s+as\s+much\s+as\s+you\s+can\s+and\s+in\s+complete\s+sentences\s*\.?/gi,
       ""
@@ -756,7 +785,12 @@ export function parseCustomEmailPrompt(value: unknown): ParsedCustomEmailPrompt 
     .trim();
   const requirements = parseEmailRequirementItems(requirementSource);
 
-  return { recipient, requirements, scenario };
+  return {
+    recipient,
+    requirements,
+    scenario,
+    taskInstruction: source.slice(recipientInstruction.index, requirementInstructionEnd).trim()
+  };
 }
 
 function cleanCustomEmailPromptText(value: string) {

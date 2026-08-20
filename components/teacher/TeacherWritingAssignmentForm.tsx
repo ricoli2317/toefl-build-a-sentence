@@ -32,6 +32,7 @@ import {
 } from "@/lib/academicDiscussionAvatars";
 import {
   buildCustomWritingQuestionSnapshot,
+  defaultWritingAssignmentTitle,
   normalizeAssignmentText,
   normalizeEmailRequirementsInput,
   parseCustomEmailPrompt,
@@ -53,17 +54,19 @@ type CustomQuestionDraft = {
   parsedRequirementCount: number;
   rawPrompt: string;
   requirementsManuallyEdited: boolean;
+  titleManuallyEdited: boolean;
+  toManuallyEdited: boolean;
 };
 
 const EMAIL_CUSTOM_FIELDS = [
-  ["title", "标题"],
+  ["title", "作业标题"],
   ["scenario", "Scenario"],
   ["requirements", "三个要点"],
-  ["recipient", "Recipient"],
+  ["recipient", "To"],
   ["subject", "Subject"]
 ] as const;
 const DISCUSSION_CUSTOM_FIELDS = [
-  ["title", "标题"],
+  ["title", "作业标题"],
   ["professor_name", "Professor Name"],
   ["professor_prompt", "Professor Prompt"],
   ["student_1_name", "Student 1 Name"],
@@ -125,6 +128,17 @@ function TeacherWritingAssignmentCreateForm() {
     .filter(({ rank }) => Number.isFinite(rank))
     .sort((left, right) => left.rank - right.rank || compareStudentSearchMetadata(left.entry, right.entry))
     .map(({ entry }) => entry.student), [studentEntries, studentQuery]);
+  const generatedAssignmentTitle = useMemo(() => {
+    const firstStudent = (studentsState.data?.students ?? []).find(
+      (student) => student.id === selectedStudents[0]
+    );
+    if (!firstStudent) return "";
+    return defaultWritingAssignmentTitle({
+      assignedAt: new Date(),
+      firstStudentName: firstStudent.displayName,
+      studentCount: selectedStudents.length
+    });
+  }, [selectedStudents, studentsState.data]);
   const selectedBankQuestions = useMemo(() => Array.from(selectedQuestions.values()), [selectedQuestions]);
   const previewQuestions = useMemo(() => {
     if (!taskType || !source) return [];
@@ -145,7 +159,7 @@ function TeacherWritingAssignmentCreateForm() {
     setSelectedQuestions(new Map());
     setQuestionResult(null);
     setQuery("");
-    setCustomQuestions(source === "custom" ? [createCustomQuestionDraft(next)] : []);
+    setCustomQuestions(source === "custom" ? [createCustomQuestionDraft(next, generatedAssignmentTitle)] : []);
     setIndividualDueAt({});
     setSearchError("");
     setSubmitError("");
@@ -156,7 +170,7 @@ function TeacherWritingAssignmentCreateForm() {
     setSource(next);
     setSelectedQuestions(new Map());
     setQuestionResult(null);
-    setCustomQuestions(next === "custom" ? [createCustomQuestionDraft(taskType)] : []);
+    setCustomQuestions(next === "custom" ? [createCustomQuestionDraft(taskType, generatedAssignmentTitle)] : []);
     setIndividualDueAt({});
     setSearchError("");
     setSubmitError("");
@@ -194,11 +208,12 @@ function TeacherWritingAssignmentCreateForm() {
       fields: {
         ...draft.fields,
         parsed_email: true,
-        recipient: parsed.recipient,
+        recipient: draft.toManuallyEdited ? draft.fields.recipient : parsed.recipient,
         requirement_1: parsed.requirements[0] ?? "",
         requirement_2: parsed.requirements[1] ?? "",
         requirement_3: parsed.requirements[2] ?? "",
-        scenario: parsed.scenario
+        scenario: parsed.scenario,
+        task_instruction: parsed.taskInstruction
       }
     }));
   }
@@ -215,7 +230,9 @@ function TeacherWritingAssignmentCreateForm() {
       return {
         ...draft,
         fields,
-        requirementsManuallyEdited: draft.requirementsManuallyEdited || field.startsWith("requirement_")
+        requirementsManuallyEdited: draft.requirementsManuallyEdited || field.startsWith("requirement_"),
+        titleManuallyEdited: draft.titleManuallyEdited || field === "title",
+        toManuallyEdited: draft.toManuallyEdited || field === "recipient"
       };
     });
   }
@@ -229,9 +246,23 @@ function TeacherWritingAssignmentCreateForm() {
   }
 
   function toggleStudent(studentId: string) {
-    setSelectedStudents((current) => current.includes(studentId)
-      ? current.filter((id) => id !== studentId)
-      : [...current, studentId]);
+    const nextStudents = selectedStudents.includes(studentId)
+      ? selectedStudents.filter((id) => id !== studentId)
+      : [...selectedStudents, studentId];
+    setSelectedStudents(nextStudents);
+    const firstStudent = (studentsState.data?.students ?? []).find(
+      (student) => student.id === nextStudents[0]
+    );
+    const nextTitle = firstStudent
+      ? defaultWritingAssignmentTitle({
+          assignedAt: new Date(),
+          firstStudentName: firstStudent.displayName,
+          studentCount: nextStudents.length
+        })
+      : "";
+    setCustomQuestions((current) => current.map((draft) => draft.titleManuallyEdited
+      ? draft
+      : { ...draft, fields: { ...draft.fields, title: nextTitle } }));
   }
 
   function dueAtFor(key: string) {
@@ -322,7 +353,7 @@ function TeacherWritingAssignmentCreateForm() {
             {questionResult ? <MultiQuestionResults onPage={(page) => void searchQuestions(page)} onToggle={toggleQuestion} payload={questionResult} selectedIds={new Set(selectedQuestions.keys())} taskType={taskType} /> : <p className="text-sm text-student-muted">输入关键词后搜索；切换搜索或翻页不会清除已选题目。</p>}
           </div>
         ) : (
-          <div className="grid gap-4">{customQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(taskType)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
+          <div className="grid gap-4">{customQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(taskType, generatedAssignmentTitle)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
         )}
       </StepCard>
 
@@ -624,15 +655,15 @@ function CustomQuestionDraftCard({
   }
 
   const requirementCount = customEmailRequirementCount(draft);
-  const recipientMissing = !values.recipient?.trim();
+  const toMissing = !values.recipient?.trim();
   return (
     <div className="grid gap-4 rounded-xl border border-student-border p-4">
       <div className="flex items-center justify-between gap-3"><p className="font-bold text-student-text">第 {index + 1} 篇</p><button aria-label={`删除第 ${index + 1} 篇`} className="teacher-button-secondary px-3 text-student-error" disabled={disabled} onClick={onRemove} type="button"><Trash2 aria-hidden="true" size={16} />删除</button></div>
-      <label className="grid gap-2 text-sm font-semibold text-student-text">标题<input className="teacher-input" disabled={disabled} onChange={(event) => onChange("title", event.target.value)} value={values.title ?? ""} /></label>
+      <label className="grid gap-2 text-sm font-semibold text-student-text">作业标题<input className="teacher-input" disabled={disabled} onChange={(event) => onChange("title", event.target.value)} value={values.title ?? ""} /></label>
       <label className="grid gap-2 text-sm font-semibold text-student-text">题目<span className="text-xs font-normal text-student-muted">粘贴完整 Scenario 和三条要求；原文不会被改写。</span><textarea className="teacher-input min-h-52 resize-y" disabled={disabled} onChange={(event) => onPromptChange(event.target.value)} placeholder={"You need to...\n\nWrite an email to... In your email, do the following:\n• ...\n• ...\n• ..."} value={draft.rawPrompt} /></label>
       <label className="grid gap-2 text-sm font-semibold text-student-text">Subject<input className="teacher-input" disabled={disabled} onChange={(event) => onChange("subject", event.target.value)} value={values.subject ?? ""} /></label>
-      <div className={`rounded-xl border px-4 py-3 text-sm ${recipientMissing || requirementCount !== 3 ? "border-student-error/40 bg-red-50" : "border-student-border bg-student-bg"}`}><div className="flex flex-wrap items-center justify-between gap-3"><div className="flex flex-wrap gap-x-5 gap-y-1"><span><strong>Recipient：</strong>{values.recipient || "未识别，请补充"}</span><span><strong>已识别要求：</strong>{requirementCount} 条</span></div><button className="inline-flex items-center gap-1 font-semibold text-student-primary" onClick={onToggle} type="button">查看/修改识别结果{draft.expanded ? <ChevronUp aria-hidden="true" size={16} /> : <ChevronDown aria-hidden="true" size={16} />}</button></div>{recipientMissing ? <p className="mt-2 font-semibold text-student-error">未能识别 Recipient，请展开后确认或补充。</p> : null}{requirementCount !== 3 ? <p className="mt-2 font-semibold text-student-error">必须准确识别或补充 3 条要求后才能布置。</p> : null}</div>
-      {draft.expanded ? <div className="grid gap-3 rounded-xl border border-student-border bg-white p-4"><label className="grid gap-2 text-sm font-semibold text-student-text">Recipient<input className="teacher-input" onChange={(event) => onChange("recipient", event.target.value)} value={values.recipient ?? ""} /></label><label className="grid gap-2 text-sm font-semibold text-student-text">Scenario<textarea className="teacher-input min-h-28 resize-y" onChange={(event) => onChange("scenario", event.target.value)} value={values.scenario ?? ""} /></label>{[1, 2, 3].map((number) => <label className="grid gap-2 text-sm font-semibold text-student-text" key={number}>Requirement {number}<textarea className="teacher-input min-h-20 resize-y" onChange={(event) => onChange(`requirement_${number}`, event.target.value)} value={values[`requirement_${number}`] ?? ""} /></label>)}</div> : null}
+      <div className={`rounded-xl border px-4 py-3 text-sm ${toMissing || requirementCount !== 3 ? "border-student-error/40 bg-red-50" : "border-student-border bg-student-bg"}`}><div className="flex flex-wrap items-center justify-between gap-3"><div className="flex flex-wrap gap-x-5 gap-y-1"><span><strong>To：</strong>{values.recipient || "未识别，请补充"}</span><span><strong>已识别要求：</strong>{requirementCount} 条</span></div><button className="inline-flex items-center gap-1 font-semibold text-student-primary" onClick={onToggle} type="button">查看/修改识别结果{draft.expanded ? <ChevronUp aria-hidden="true" size={16} /> : <ChevronDown aria-hidden="true" size={16} />}</button></div>{toMissing ? <p className="mt-2 font-semibold text-student-error">未能识别收件对象，请展开后确认或补充 To。</p> : null}{requirementCount !== 3 ? <p className="mt-2 font-semibold text-student-error">必须准确识别或补充 3 条要求后才能布置。</p> : null}</div>
+      {draft.expanded ? <div className="grid gap-3 rounded-xl border border-student-border bg-white p-4"><label className="grid gap-2 text-sm font-semibold text-student-text">To<input className="teacher-input" onChange={(event) => onChange("recipient", event.target.value)} value={values.recipient ?? ""} /></label><label className="grid gap-2 text-sm font-semibold text-student-text">Scenario<textarea className="teacher-input min-h-28 resize-y" onChange={(event) => onChange("scenario", event.target.value)} value={values.scenario ?? ""} /></label>{[1, 2, 3].map((number) => <label className="grid gap-2 text-sm font-semibold text-student-text" key={number}>Requirement {number}<textarea className="teacher-input min-h-20 resize-y" onChange={(event) => onChange(`requirement_${number}`, event.target.value)} value={values[`requirement_${number}`] ?? ""} /></label>)}</div> : null}
     </div>
   );
 }
@@ -642,17 +673,22 @@ function MultiQuestionResults({ onPage, onToggle, payload, selectedIds, taskType
   return <div className="grid gap-3"><div className="grid gap-2">{payload.questions.map((question) => { const selected = selectedIds.has(question.question_id); return <button aria-pressed={selected} className={`rounded-xl border p-4 text-left transition ${selected ? "border-student-primary bg-student-primary-soft" : "border-student-border hover:border-student-primary-border"}`} key={question.logical_item_id} onClick={() => onToggle(question)} type="button"><div className="flex items-center justify-between gap-3"><div><p className="text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[taskType].label}</p><p className="mt-1 font-bold text-student-text">{question.logical_display_name}</p></div>{selected ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</div><p className="mt-2 line-clamp-2 text-sm text-student-muted">{"scenario" in question ? `${question.scenario} ${question.requirement_1}` : `Professor ${question.professor_name}: ${question.professor_prompt}`}</p>{"professor_prompt" in question ? <p className="mt-1 line-clamp-1 text-xs text-student-muted">{question.student_1_name}: {question.student_1_response} · {question.student_2_name}: {question.student_2_response}</p> : null}</button>; })}{!payload.questions.length ? <p className="py-6 text-center text-sm text-student-muted">没有找到匹配题目。</p> : null}</div><div className="flex items-center justify-between text-sm text-student-muted"><span>共 {payload.total} 道 · 第 {payload.page}/{totalPages} 页</span><div className="flex gap-2"><button className="teacher-button-secondary h-9 px-3" disabled={payload.page <= 1} onClick={() => onPage(payload.page - 1)} type="button"><ChevronLeft aria-hidden="true" size={15} />上一页</button><button className="teacher-button-secondary h-9 px-3" disabled={payload.page >= totalPages} onClick={() => onPage(payload.page + 1)} type="button">下一页<ChevronRight aria-hidden="true" size={15} /></button></div></div></div>;
 }
 
-function createCustomQuestionDraft(taskType: WritingTaskType): CustomQuestionDraft {
+function createCustomQuestionDraft(
+  taskType: WritingTaskType,
+  assignmentTitle = ""
+): CustomQuestionDraft {
   return {
     clientId: crypto.randomUUID(),
     expanded: false,
     fields: taskType === "email"
-      ? { parsed_email: true }
-      : defaultAcademicDiscussionAvatarFields(),
+      ? { parsed_email: true, title: assignmentTitle }
+      : { ...defaultAcademicDiscussionAvatarFields(), title: assignmentTitle },
     manuallySelectedAvatars: [],
     parsedRequirementCount: 0,
     rawPrompt: "",
-    requirementsManuallyEdited: false
+    requirementsManuallyEdited: false,
+    titleManuallyEdited: false,
+    toManuallyEdited: false
   };
 }
 
@@ -712,7 +748,8 @@ function customFieldsFromSnapshot(question: WritingQuestion): Record<string, str
       scenario: question.scenario,
       requirements: [question.requirement_1, question.requirement_2, question.requirement_3].join("\n"),
       recipient: question.recipient,
-      subject: question.subject
+      subject: question.subject,
+      task_instruction: question.task_instruction
     };
   }
   return {
