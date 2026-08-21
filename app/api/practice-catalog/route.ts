@@ -1,8 +1,7 @@
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import {
   getLogicalPracticeItems,
-  isLogicalPracticeTaskType,
-  parseLogicalPracticePage
+  isLogicalPracticeTaskType
 } from "@/lib/practiceLogicalCatalog";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -16,12 +15,8 @@ export async function GET(request: Request) {
   try {
     const params = new URL(request.url).searchParams;
     const taskType = params.get("taskType");
-    const page = parseLogicalPracticePage(params.get("page"));
     if (!isLogicalPracticeTaskType(taskType)) {
       return respond({ error: "Invalid practice task type." }, { status: 400 });
-    }
-    if (page === null) {
-      return respond({ error: "page must be a positive integer." }, { status: 400 });
     }
 
     const auth = await timing.measure("auth", "require_student", () =>
@@ -35,7 +30,6 @@ export async function GET(request: Request) {
       supabase: createServiceSupabase(),
       studentId: auth.userId,
       taskType,
-      page,
       timing
     });
     return respond(catalog);

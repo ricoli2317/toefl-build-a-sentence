@@ -127,11 +127,11 @@ export async function getLogicalPracticeItems(input: {
   supabase: SupabaseClient;
   studentId: string;
   taskType: PracticeTaskType;
-  page: number;
   timing?: StudentPerformanceTrace;
 }): Promise<LogicalPracticeCatalogWithStudentState> {
-  const { catalog, paginateAfterStudentState, universe } = await loadLogicalPracticeCatalog({
+  const { catalog, universe } = await loadLogicalPracticeCatalog({
     ...input,
+    page: 1,
     useTaskScopedUniverse: true
   });
   const sources = catalog.items.flatMap((item) =>
@@ -150,12 +150,9 @@ export async function getLogicalPracticeItems(input: {
       sources,
       ...attemptRows
     });
-    const from = (input.page - 1) * LOGICAL_PRACTICE_PAGE_SIZE;
     return {
       ...catalog,
-      items: paginateAfterStudentState
-        ? items.slice(from, from + LOGICAL_PRACTICE_PAGE_SIZE)
-        : items
+      items
     };
   };
   return input.timing

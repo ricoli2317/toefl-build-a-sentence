@@ -50,10 +50,9 @@ export function studentWritingCatalogCacheKey(taskType: "email" | "academic_disc
 }
 
 export function studentLogicalCatalogCacheKey(
-  taskType: "build_sentence" | "email" | "academic_discussion",
-  page: number
+  taskType: "build_sentence" | "email" | "academic_discussion"
 ) {
-  return `${STUDENT_LOGICAL_CATALOG_CACHE_PREFIX}:${taskType}:page:${page}`;
+  return `${STUDENT_LOGICAL_CATALOG_CACHE_PREFIX}:${taskType}`;
 }
 
 export function studentQuestionsCacheKey(setId: string) {

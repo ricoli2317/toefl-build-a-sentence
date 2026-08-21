@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { ChevronLeft, ChevronRight, Eye, FilePenLine, Play, RotateCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 import { PracticeSetAction, PracticeSetCatalogList } from "@/components/shared/PracticeCatalog";
 import {
   studentLogicalCatalogCacheKey,
@@ -45,12 +45,13 @@ export function LogicalPracticeCatalog({
   const label = TASK_LABELS[taskType];
   const rootHref = LOGICAL_PRACTICE_ROOTS[taskType];
   const cache = useStudentDataCache();
-  const cacheKey = studentLogicalCatalogCacheKey(taskType, page);
+  const cacheKey = studentLogicalCatalogCacheKey(taskType);
+  const [currentPage, setCurrentPage] = useState(page);
   const state = useStudentCachedData<LogicalPracticeCatalogWithStudentState>(
     cacheKey,
-    (session) => loadLogicalPracticeCatalog(taskType, page, session),
-    { refreshOnMount: true }
+    (session) => loadLogicalPracticeCatalog(taskType, session)
   );
+  useEffect(() => setCurrentPage(page), [page, taskType]);
   useStudentPagePerformance({
     errors: [state.error],
     loading: state.loading,
@@ -74,7 +75,12 @@ export function LogicalPracticeCatalog({
           onRetry={() => cache.invalidate(cacheKey)}
         />
       ) : (
-        <CatalogContent catalog={state.data} rootHref={rootHref} taskType={taskType} />
+        <CatalogContent
+          catalog={state.data}
+          onPageChange={setCurrentPage}
+          page={currentPage}
+          taskType={taskType}
+        />
       )}
     </div>
   );
@@ -82,10 +88,9 @@ export function LogicalPracticeCatalog({
 
 async function loadLogicalPracticeCatalog(
   taskType: PracticeTaskType,
-  page: number,
   session: StudentCacheSession
 ) {
-  const url = `/api/practice-catalog?taskType=${encodeURIComponent(taskType)}&page=${page}`;
+  const url = `/api/practice-catalog?taskType=${encodeURIComponent(taskType)}`;
   return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
     const response = await fetch(
       url,
@@ -107,26 +112,34 @@ async function loadLogicalPracticeCatalog(
 
 function CatalogContent({
   catalog,
-  rootHref,
+  onPageChange,
+  page,
   taskType
 }: {
   catalog: LogicalPracticeCatalogWithStudentState;
-  rootHref: string;
+  onPageChange: (page: number) => void;
+  page: number;
   taskType: PracticeTaskType;
 }) {
+  const totalPages = catalog.pagination.total_pages;
+  const visibleTotalPages = Math.max(totalPages, 1);
+  const visiblePage = Math.min(Math.max(page, 1), visibleTotalPages);
+  const from = (visiblePage - 1) * catalog.pagination.page_size;
+  const items = catalog.items.slice(from, from + catalog.pagination.page_size);
+
   return (
     <>
       <PracticeSetCatalogList
         emptyState={<StudentEmptyState text={emptyStateText(taskType)} />}
         renderActions={(catalogSet) => {
-          const item = catalog.items.find((candidate) => candidate.item_id === catalogSet.setId)!;
+          const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
           return <LogicalItemActions item={item} taskType={taskType} />;
         }}
         renderStatus={(catalogSet) => {
-          const item = catalog.items.find((candidate) => candidate.item_id === catalogSet.setId)!;
+          const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
           return <LogicalItemStatus status={item.student_state.status} />;
         }}
-        sets={catalog.items.map((item) => ({
+        sets={items.map((item) => ({
           metadata: formatOccurrenceDates(item.occurrence_dates),
           questionCount: item.question_count,
           setId: item.item_id,
@@ -136,10 +149,10 @@ function CatalogContent({
         }))}
       />
       <CatalogPagination
-        page={catalog.pagination.page}
-        rootHref={rootHref}
+        onPageChange={onPageChange}
+        page={visiblePage}
         totalItems={catalog.pagination.total_items}
-        totalPages={catalog.pagination.total_pages}
+        totalPages={totalPages}
       />
     </>
   );
@@ -186,13 +199,13 @@ function action(
 }
 
 function CatalogPagination({
+  onPageChange,
   page,
-  rootHref,
   totalItems,
   totalPages
 }: {
+  onPageChange: (page: number) => void;
   page: number;
-  rootHref: string;
   totalItems: number;
   totalPages: number;
 }) {
@@ -201,33 +214,39 @@ function CatalogPagination({
     <nav aria-label="练习列表分页" className="flex flex-wrap items-center justify-between gap-3 text-sm text-student-muted">
       <span>共 {totalItems} 项 · 第 {page}/{visibleTotalPages} 页</span>
       <div className="flex gap-2">
-        <CatalogPageLink disabled={page <= 1} href={`${rootHref}?page=${page - 1}`}>
+        <CatalogPageButton disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
           <ChevronLeft aria-hidden="true" size={16} />上一页
-        </CatalogPageLink>
-        <CatalogPageLink disabled={totalPages === 0 || page >= totalPages} href={`${rootHref}?page=${page + 1}`}>
+        </CatalogPageButton>
+        <CatalogPageButton
+          disabled={totalPages === 0 || page >= totalPages}
+          onClick={() => onPageChange(page + 1)}
+        >
           下一页<ChevronRight aria-hidden="true" size={16} />
-        </CatalogPageLink>
+        </CatalogPageButton>
       </div>
     </nav>
   );
 }
 
-function CatalogPageLink({
+function CatalogPageButton({
   children,
   disabled,
-  href
+  onClick
 }: {
   children: React.ReactNode;
   disabled: boolean;
-  href: string;
+  onClick: () => void;
 }) {
   const className = "student-button-secondary min-h-9 px-3 py-1.5";
-  return disabled ? (
-    <span aria-disabled="true" className={`${className} cursor-not-allowed opacity-50`}>
+  return (
+    <button
+      className={disabled ? `${className} cursor-not-allowed opacity-50` : className}
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
       {children}
-    </span>
-  ) : (
-    <Link className={className} href={href}>{children}</Link>
+    </button>
   );
 }
 
