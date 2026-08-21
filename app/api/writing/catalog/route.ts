@@ -17,6 +17,7 @@ import {
   loadHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 export const dynamic = "force-dynamic";
 
@@ -28,44 +29,50 @@ type QuestionCatalogRow = {
 };
 
 export async function GET(request: Request) {
+  const timing = createStudentPerformanceTrace("/api/writing/catalog");
+  const respond = (data: unknown, init?: ResponseInit) => writingJson(data, init, timing);
   try {
     const taskType = parseWritingTaskType(new URL(request.url).searchParams.get("taskType"));
-    if (!taskType) return writingJson({ error: "Invalid writing task type" }, { status: 400 });
+    if (!taskType) return respond({ error: "Invalid writing task type" }, { status: 400 });
 
-    const auth = await requireWritingStudent(request);
+    const auth = await requireWritingStudent(request, timing);
     if (auth.error) return auth.error;
-    if (!auth.supabase || !auth.userId) return writingJson({ error: "Unauthorized" }, { status: 401 });
+    if (!auth.supabase || !auth.userId) return respond({ error: "Unauthorized" }, { status: 401 });
 
     const service = createServiceSupabase();
     const [questionResult, attemptResult, historicalDisplayResolver] = await Promise.all([
-      readAllSupabaseRows<QuestionCatalogRow>((from, to) =>
-        auth.supabase!
-          .from(WRITING_TASK_CONFIG[taskType].questionTable)
-          .select("question_id,set_id,set_title,year_month")
-          .order("year_month", { ascending: false })
-          .order("set_title", { ascending: true })
-          .range(from, to)
+      timing.measure("database", `${WRITING_TASK_CONFIG[taskType].questionTable}_catalog`, () =>
+        readAllSupabaseRows<QuestionCatalogRow>((from, to) =>
+          auth.supabase!
+            .from(WRITING_TASK_CONFIG[taskType].questionTable)
+            .select("question_id,set_id,set_title,year_month")
+            .order("year_month", { ascending: false })
+            .order("set_title", { ascending: true })
+            .range(from, to)
+        )
       ),
-      readAllSupabaseRows<WritingAttempt>((from, to) =>
-        auth.supabase!
-          .from("writing_attempts")
-          .select(
-            "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,time_limit_seconds,remaining_seconds,writing_mode,elapsed_seconds,overtime_ranges,started_at,saved_at,submitted_at,created_at,updated_at"
-          )
-          .eq("user_id", auth.userId!)
-          .eq("task_type", taskType)
-          .is("assignment_id", null)
-          .order("updated_at", { ascending: false })
-          .range(from, to)
+      timing.measure("database", "writing_attempts_catalog", () =>
+        readAllSupabaseRows<WritingAttempt>((from, to) =>
+          auth.supabase!
+            .from("writing_attempts")
+            .select(
+              "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,time_limit_seconds,remaining_seconds,writing_mode,elapsed_seconds,overtime_ranges,started_at,saved_at,submitted_at,created_at,updated_at"
+            )
+            .eq("user_id", auth.userId!)
+            .eq("task_type", taskType)
+            .is("assignment_id", null)
+            .order("updated_at", { ascending: false })
+            .range(from, to)
+        )
       ),
-      loadHistoricalPracticeDisplayResolver(service)
+      loadHistoricalPracticeDisplayResolver(service, timing)
     ]);
 
     if (questionResult.error) {
-      return writingJson({ error: questionResult.error.message }, { status: 500 });
+      return respond({ error: questionResult.error.message }, { status: 500 });
     }
     if (attemptResult.error) {
-      return writingJson({ error: attemptResult.error.message }, { status: 500 });
+      return respond({ error: attemptResult.error.message }, { status: 500 });
     }
 
     const attempts = attemptResult.data ?? [];
@@ -74,23 +81,26 @@ export async function GET(request: Request) {
       .map((attempt) => attempt.attempt_id);
     const publishedAttemptIds = new Set<string>();
     if (submittedAttemptIds.length > 0) {
-      const publishedResult = await readAllSupabaseRows<{ attempt_id: string }>((from, to) =>
-        service
-          .from("writing_reviews")
-          .select("attempt_id")
-          .eq("status", "published")
-          .in("attempt_id", submittedAttemptIds)
-          .not("published_at", "is", null)
-          .range(from, to)
+      const publishedResult = await timing.measure("database", "writing_reviews_published", () =>
+        readAllSupabaseRows<{ attempt_id: string }>((from, to) =>
+          service
+            .from("writing_reviews")
+            .select("attempt_id")
+            .eq("status", "published")
+            .in("attempt_id", submittedAttemptIds)
+            .not("published_at", "is", null)
+            .range(from, to)
+        )
       );
       if (publishedResult.error) {
-        return writingJson({ error: "暂时无法加载写作批改状态。" }, { status: 500 });
+        return respond({ error: "暂时无法加载写作批改状态。" }, { status: 500 });
       }
       for (const review of publishedResult.data ?? []) {
         publishedAttemptIds.add(review.attempt_id);
       }
     }
 
+    const payload = timing.measureSync("processing", "build_writing_catalog_payload", () => {
     const attemptsByQuestion = new Map<string, WritingAttempt[]>();
     for (const attempt of attempts) {
       attemptsByQuestion.set(attempt.question_id, [
@@ -169,9 +179,11 @@ export async function GET(request: Request) {
       .filter((set) => set.status === "draft")
       .sort((left, right) => Date.parse(right.draft_saved_at ?? "") - Date.parse(left.draft_saved_at ?? ""))[0] ?? null;
 
-    return writingJson({ latestDraft, months, sets });
+    return { latestDraft, months, sets };
+    });
+    return respond(payload);
   } catch (error) {
-    return writingJson(
+    return respond(
       { error: error instanceof Error ? error.message : "Could not load writing catalog." },
       { status: 500 }
     );
