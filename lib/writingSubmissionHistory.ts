@@ -1,4 +1,5 @@
 import type { WritingMode, WritingTaskType } from "./writing.ts";
+import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 
 export type SubmittedWritingAttemptSummary = {
   attempt_id: string;
@@ -50,7 +51,8 @@ export class WritingSubmissionHistoryError extends Error {
 
 export async function loadWritingSubmissionHistory(
   input: { userId: string; taskType: WritingTaskType; questionId: string },
-  repository: WritingSubmissionHistoryRepository
+  repository: WritingSubmissionHistoryRepository,
+  timing?: StudentPerformanceTrace
 ) {
   const [attemptResult, questionResult] = await Promise.all([
     repository.findOwnedSubmittedAttempts(input),
@@ -64,18 +66,22 @@ export async function loadWritingSubmissionHistory(
       404
     );
   }
+  const question = questionResult.data;
   const attempts = attemptResult.data ?? [];
   const publishedResult = attempts.length > 0
     ? await repository.findPublishedAttemptIds(attempts.map((attempt) => attempt.attempt_id))
     : { data: [], error: null };
   if (publishedResult.error) throw databaseError();
-  return {
-    question: questionResult.data,
+  const buildPayload = () => ({
+    question,
     attempts: buildWritingSubmissionHistory(
       attempts,
       new Set(publishedResult.data ?? [])
     )
-  };
+  });
+  return timing
+    ? timing.measureSync("processing", "build_writing_submission_history", buildPayload)
+    : buildPayload();
 }
 
 export function buildWritingSubmissionHistory(

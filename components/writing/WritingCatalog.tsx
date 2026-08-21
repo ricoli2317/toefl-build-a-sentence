@@ -28,6 +28,7 @@ import {
   type WritingOverviewPayload,
   type WritingTaskType
 } from "@/lib/writing";
+import { measureStudentRequest } from "@/lib/studentPerformance.client";
 
 export function WritingMonthList({ taskType }: { taskType: WritingTaskType }) {
   const state = useWritingCatalog(taskType);
@@ -232,17 +233,20 @@ async function loadWritingJson<T extends { error?: string }>(
   session: StudentCacheSession,
   fallback: string
 ) {
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${session.accessToken}` }
+  return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    });
+    captureResponse(response);
+    const text = await response.text();
+    let payload: T;
+    try {
+      payload = text ? JSON.parse(text) : ({ error: "服务返回了空响应。" } as T);
+    } catch {
+      payload = { error: "服务返回的数据格式无效。" } as T;
+    }
+    if (!response.ok || payload.error) throw new Error(payload.error ?? fallback);
+    return payload;
   });
-  const text = await response.text();
-  let payload: T;
-  try {
-    payload = text ? JSON.parse(text) : ({ error: "服务返回了空响应。" } as T);
-  } catch {
-    payload = { error: "服务返回的数据格式无效。" } as T;
-  }
-  if (!response.ok || payload.error) throw new Error(payload.error ?? fallback);
-  return payload;
 }

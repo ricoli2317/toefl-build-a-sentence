@@ -27,6 +27,10 @@ import {
   useWritingOverview
 } from "@/components/writing/WritingCatalog";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import {
+  measureStudentRequest,
+  useStudentPagePerformance
+} from "@/lib/studentPerformance.client";
 import { WRITING_TASK_CONFIG, type WritingCatalogSet } from "@/lib/writing";
 import type { PracticeMonth, PracticeSet } from "@/lib/types";
 
@@ -38,6 +42,22 @@ export function StudentDashboard() {
   const emailState = useWritingCatalog("email");
   const discussionState = useWritingCatalog("academic_discussion");
   const writingOverview = useWritingOverview();
+  useStudentPagePerformance({
+    errors: [
+      setsState.error,
+      historyState.error,
+      emailState.error,
+      discussionState.error,
+      writingOverview.error
+    ],
+    loading:
+      setsState.loading ||
+      historyState.loading ||
+      emailState.loading ||
+      discussionState.loading ||
+      writingOverview.loading,
+    route: STUDENT_ROUTES.home
+  });
   const currentMonth = setsState.data?.months?.find((month) => month.month_key === currentMonthKey());
   const basCompleted = setsState.data?.sets?.filter((set) => set.completed).length ?? 0;
   const basTotal = setsState.data?.sets?.length ?? 0;
@@ -268,13 +288,16 @@ function OverviewCard({
 }
 
 async function loadStudentSets(session: StudentCacheSession) {
-  const response = await fetch("/api/sets", {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${session.accessToken}` }
+  return measureStudentRequest("GET /api/sets", async (captureResponse) => {
+    const response = await fetch("/api/sets", {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    });
+    captureResponse(response);
+    const payload = (await response.json()) as SetsPayload;
+    if (!response.ok || payload.error) throw new Error(payload.error ?? "无法加载套题。");
+    return payload;
   });
-  const payload = (await response.json()) as SetsPayload;
-  if (!response.ok || payload.error) throw new Error(payload.error ?? "无法加载套题。");
-  return payload;
 }
 
 function currentMonthKey() {

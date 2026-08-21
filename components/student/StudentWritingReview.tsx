@@ -31,6 +31,10 @@ import {
   writingReviewResultHref
 } from "@/lib/studentNavigation";
 import {
+  measureStudentRequest,
+  useStudentPagePerformance
+} from "@/lib/studentPerformance.client";
+import {
   WRITING_TASK_CONFIG,
   type WritingOvertimeRange,
   type WritingQuestion,
@@ -300,6 +304,11 @@ export function StudentWritingReviewList() {
     loadReviewList,
     { refreshOnMount: true }
   );
+  useStudentPagePerformance({
+    errors: [state.error],
+    loading: state.loading,
+    route: STUDENT_ROUTES.writingReviews
+  });
   if (state.loading) return <StudentLoadingState text="正在加载已发布批改..." />;
   if (state.error) return <StudentErrorState text="加载批改记录失败，请稍后重试。" />;
   const reviews = state.data?.reviews ?? [];
@@ -537,11 +546,14 @@ async function loadJson<T extends { error?: string }>(
   session: StudentCacheSession,
   fallback: string
 ) {
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${session.accessToken}` }
+  return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    });
+    captureResponse(response);
+    const payload = (await response.json()) as T;
+    if (!response.ok || payload.error) throw new Error(payload.error ?? fallback);
+    return payload;
   });
-  const payload = (await response.json()) as T;
-  if (!response.ok || payload.error) throw new Error(payload.error ?? fallback);
-  return payload;
 }

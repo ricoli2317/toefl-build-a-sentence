@@ -27,6 +27,10 @@ import type {
   SubmittedWritingAttemptSummary,
   WritingSubmissionQuestionSummary
 } from "@/lib/writingSubmissionHistory";
+import {
+  measureStudentRequest,
+  useStudentPagePerformance
+} from "@/lib/studentPerformance.client";
 
 type SubmissionHistoryPayload = {
   attempts: SubmittedWritingAttemptSummary[];
@@ -46,6 +50,11 @@ export function WritingSubmissionHistory({
     (session) => loadSubmissionHistory(taskType, questionId, session),
     { refreshOnMount: true }
   );
+  useStudentPagePerformance({
+    errors: [state.error],
+    loading: state.loading,
+    route: writingSubmissionHistoryHref(taskType, questionId)
+  });
   if (state.loading) return <StudentLoadingState text="正在加载提交记录..." />;
   if (state.error || !state.data) {
     return <StudentErrorState text="加载提交记录失败，请稍后重试。" />;
@@ -129,15 +138,19 @@ async function loadSubmissionHistory(
   session: StudentCacheSession
 ) {
   const params = new URLSearchParams({ taskType, questionId });
-  const response = await fetch(`/api/writing/submissions?${params}`, {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${session.accessToken}` }
+  const url = `/api/writing/submissions?${params}`;
+  return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    });
+    captureResponse(response);
+    const payload = (await response.json()) as SubmissionHistoryPayload;
+    if (!response.ok || payload.error) {
+      throw new Error(payload.error ?? "无法加载提交记录。");
+    }
+    return payload;
   });
-  const payload = (await response.json()) as SubmissionHistoryPayload;
-  if (!response.ok || payload.error) {
-    throw new Error(payload.error ?? "无法加载提交记录。");
-  }
-  return payload;
 }
 
 function formatDateTime(value: string | null) {

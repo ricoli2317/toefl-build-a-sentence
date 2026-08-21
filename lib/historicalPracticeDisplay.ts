@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
+import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 
 export type HistoricalPracticeItemRow = {
   item_id: string;
@@ -215,34 +216,50 @@ export function createHistoricalPracticeDisplayResolver(input: {
 }
 
 export async function loadHistoricalPracticeDisplayResolver(
-  supabase: SupabaseClient
+  supabase: SupabaseClient,
+  timing?: StudentPerformanceTrace
 ): Promise<HistoricalPracticeDisplayResolver> {
   const [itemsResult, sourcesResult] = await Promise.all([
-    readAllSupabaseRows<HistoricalPracticeItemRow>((from, to) =>
-      supabase
-        .from("practice_items")
-        .select("item_id,task_type,display_number,display_title,is_active")
-        .in("task_type", ["build_sentence", "email", "academic_discussion"])
-        .order("item_id", { ascending: true })
-        .range(from, to)
+    measureDatabase(timing, "historical_practice_items", () =>
+      readAllSupabaseRows<HistoricalPracticeItemRow>((from, to) =>
+        supabase
+          .from("practice_items")
+          .select("item_id,task_type,display_number,display_title,is_active")
+          .in("task_type", ["build_sentence", "email", "academic_discussion"])
+          .order("item_id", { ascending: true })
+          .range(from, to)
+      )
     ),
-    readAllSupabaseRows<HistoricalPracticeSourceRow>((from, to) =>
-      supabase
-        .from("practice_item_sources")
-        .select("source_id,item_id,task_type,source_set_id,source_question_id")
-        .in("task_type", ["build_sentence", "email", "academic_discussion"])
-        .order("source_id", { ascending: true })
-        .range(from, to)
+    measureDatabase(timing, "historical_practice_item_sources", () =>
+      readAllSupabaseRows<HistoricalPracticeSourceRow>((from, to) =>
+        supabase
+          .from("practice_item_sources")
+          .select("source_id,item_id,task_type,source_set_id,source_question_id")
+          .in("task_type", ["build_sentence", "email", "academic_discussion"])
+          .order("source_id", { ascending: true })
+          .range(from, to)
+      )
     )
   ]);
   if (itemsResult.error || sourcesResult.error) {
     const message = itemsResult.error?.message ?? sourcesResult.error?.message ?? "unknown error";
     throw new Error(`Failed to load historical practice display mappings: ${message}`);
   }
-  return createHistoricalPracticeDisplayResolver({
-    items: itemsResult.data ?? [],
-    sources: sourcesResult.data ?? []
-  });
+  const buildResolver = () => createHistoricalPracticeDisplayResolver({
+      items: itemsResult.data ?? [],
+      sources: sourcesResult.data ?? []
+    });
+  return timing
+    ? timing.measureSync("processing", "build_historical_display_resolver", buildResolver)
+    : buildResolver();
+}
+
+function measureDatabase<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => Promise<T>
+) {
+  return timing ? timing.measure("database", name, operation) : operation();
 }
 
 export function logHistoricalPracticeDisplayWarnings(

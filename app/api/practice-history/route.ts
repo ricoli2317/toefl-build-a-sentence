@@ -10,6 +10,7 @@ import {
   enrichBuildSentenceHistoricalAttempts,
   loadHistoricalPracticeDisplayResolver
 } from "@/lib/historicalPracticeDisplay";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 type AttemptRow = {
   attempt_id: string;
@@ -49,27 +50,33 @@ type QuestionRow = {
 
 export const dynamic = "force-dynamic";
 
-function json(data: unknown, init?: ResponseInit) {
+function json(
+  data: unknown,
+  init: ResponseInit | undefined,
+  timing: ReturnType<typeof createStudentPerformanceTrace>
+) {
+  const headers = new Headers(init?.headers);
+  headers.set("Cache-Control", "no-store");
   return NextResponse.json(data, {
     ...init,
-    headers: { ...init?.headers, "Cache-Control": "no-store" }
+    headers: timing.finishHeaders(headers)
   });
 }
 
-function jsonError(message: string, status = 500) {
-  return json({ error: message }, { status });
-}
-
 export async function GET(request: Request) {
+  const timing = createStudentPerformanceTrace("/api/practice-history");
+  const respond = (data: unknown, init?: ResponseInit) => json(data, init, timing);
+  const respondError = (message: string, status = 500) =>
+    respond({ error: message }, { status });
   try {
     const token = bearerToken(request);
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      return jsonError("Missing Supabase environment variables.");
+      return respondError("Missing Supabase environment variables.");
     }
-    if (!token) return jsonError("Missing access token", 401);
+    if (!token) return respondError("Missing access token", 401);
 
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
@@ -78,18 +85,20 @@ export async function GET(request: Request) {
     const {
       data: { user },
       error: userError
-    } = await authClient.auth.getUser(token);
+    } = await timing.measure("auth", "supabase_auth_get_user", () =>
+      authClient.auth.getUser(token)
+    );
     if (userError || !user) {
-      return jsonError(userError?.message ?? "Invalid session", 401);
+      return respondError(userError?.message ?? "Invalid session", 401);
     }
 
-    const { data: profile, error: profileError } = await authClient
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
+    const { data: profile, error: profileError } = await timing.measure(
+      "database",
+      "profiles_role",
+      () => authClient.from("profiles").select("role").eq("id", user.id).single()
+    );
     if (profileError || profile?.role !== "student") {
-      return jsonError(profileError?.message ?? "Unauthorized", 401);
+      return respondError(profileError?.message ?? "Unauthorized", 401);
     }
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -102,40 +111,47 @@ export async function GET(request: Request) {
     });
 
     const [attemptResult, answerResult, questionResult, historicalDisplayResolver] = await Promise.all([
-      readAllSupabaseRows<AttemptRow>((from, to) =>
-        db
-          .from("attempts")
-          .select(
-            "attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
-          )
-          .eq("student_id", user.id)
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
+      timing.measure("database", "attempts_student_history", () =>
+        readAllSupabaseRows<AttemptRow>((from, to) =>
+          db
+            .from("attempts")
+            .select(
+              "attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
+            )
+            .eq("student_id", user.id)
+            .order("attempt_id", { ascending: true })
+            .range(from, to)
+        )
       ),
-      readAllSupabaseRows<AnswerRow>((from, to) =>
-        db
-          .from("attempt_answers")
-          .select(
-            "attempt_answer_id,attempt_id,question_id,question_order,prompt,submitted_order_text,is_correct,question_time_seconds,answered_at,created_at"
-          )
-          .eq("student_id", user.id)
-          .order("attempt_answer_id", { ascending: true })
-          .range(from, to)
+      timing.measure("database", "attempt_answers_student_history", () =>
+        readAllSupabaseRows<AnswerRow>((from, to) =>
+          db
+            .from("attempt_answers")
+            .select(
+              "attempt_answer_id,attempt_id,question_id,question_order,prompt,submitted_order_text,is_correct,question_time_seconds,answered_at,created_at"
+            )
+            .eq("student_id", user.id)
+            .order("attempt_answer_id", { ascending: true })
+            .range(from, to)
+        )
       ),
-      readAllSupabaseRows<QuestionRow>((from, to) =>
-        db
-          .from("questions")
-          .select(
-            "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,final_sentence,grammar_tags_text"
-          )
-          .order("question_id", { ascending: true })
-          .range(from, to)
+      timing.measure("database", "questions_history_lookup", () =>
+        readAllSupabaseRows<QuestionRow>((from, to) =>
+          db
+            .from("questions")
+            .select(
+              "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,final_sentence,grammar_tags_text"
+            )
+            .order("question_id", { ascending: true })
+            .range(from, to)
+        )
       ),
-      loadHistoricalPracticeDisplayResolver(db)
+      loadHistoricalPracticeDisplayResolver(db, timing)
     ]);
     const queryError = attemptResult.error ?? answerResult.error ?? questionResult.error;
-    if (queryError) return jsonError(`Failed to load practice history: ${queryError.message}`);
+    if (queryError) return respondError(`Failed to load practice history: ${queryError.message}`);
 
+    const payload = timing.measureSync("processing", "build_practice_history_payload", () => {
     const questionRows = (questionResult.data ?? []).map((question) => ({
       ...question,
       question_id: String(question.question_id),
@@ -224,17 +240,17 @@ export async function GET(request: Request) {
       ? requestedEnd
       : fallbackStart + 24 * 60 * 60 * 1000;
 
-    return json(
-      buildPracticeHistoryPayload({
+    return buildPracticeHistoryPayload({
         answers,
         attempts,
         correctionAnswers,
         todayStart,
         todayEnd
-      })
-    );
+      });
+    });
+    return respond(payload);
   } catch (error) {
-    return jsonError(error instanceof Error ? error.message : "Could not load practice history.");
+    return respondError(error instanceof Error ? error.message : "Could not load practice history.");
   }
 }
 
