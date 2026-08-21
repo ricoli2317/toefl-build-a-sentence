@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import { buildLatestOfficialAttemptMap } from "@/lib/studentSetStatus";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 type QuestionSetRow = {
   question_id: string;
@@ -64,13 +65,16 @@ const MONTH_NAMES = [
 
 export const dynamic = "force-dynamic";
 
-function json(data: unknown, init?: ResponseInit) {
+function json(
+  data: unknown,
+  init: ResponseInit | undefined,
+  timing: ReturnType<typeof createStudentPerformanceTrace>
+) {
+  const headers = new Headers(init?.headers);
+  headers.set("Cache-Control", "no-store");
   return NextResponse.json(data, {
     ...init,
-    headers: {
-      ...init?.headers,
-      "Cache-Control": "no-store"
-    }
+    headers: timing.finishHeaders(headers)
   });
 }
 
@@ -118,6 +122,8 @@ function normalizeSetId(setId: unknown) {
 }
 
 export async function GET(request: Request) {
+  const timing = createStudentPerformanceTrace("/api/sets");
+  const respond = (data: unknown, init?: ResponseInit) => json(data, init, timing);
   try {
     const url = new URL(request.url);
     const monthFilter = url.searchParams.get("month") ?? "";
@@ -126,7 +132,7 @@ export async function GET(request: Request) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      return json(
+      return respond(
         { error: "Missing Supabase environment variables." },
         { status: 500 }
       );
@@ -140,26 +146,28 @@ export async function GET(request: Request) {
     });
 
     if (!token) {
-      return json({ error: "Missing access token" }, { status: 401 });
+      return respond({ error: "Missing access token" }, { status: 401 });
     }
 
     const {
       data: { user },
       error: userError
-    } = await authClient.auth.getUser(token);
+    } = await timing.measure("auth", "supabase_auth_get_user", () =>
+      authClient.auth.getUser(token)
+    );
 
     if (userError || !user) {
-      return json({ error: "Invalid session" }, { status: 401 });
+      return respond({ error: "Invalid session" }, { status: 401 });
     }
 
-    const { data: profile, error: profileError } = await authClient
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
+    const { data: profile, error: profileError } = await timing.measure(
+      "database",
+      "profiles_role",
+      () => authClient.from("profiles").select("role").eq("id", user.id).single()
+    );
 
     if (profileError || profile?.role !== "student") {
-      return json({ error: "Unauthorized" }, { status: 401 });
+      return respond({ error: "Unauthorized" }, { status: 401 });
     }
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -172,43 +180,48 @@ export async function GET(request: Request) {
     });
 
     const [questionResult, attemptResult] = await Promise.all([
-      readAllSupabaseRows<QuestionSetRow>((from, to) =>
-        readClient
-          .from("questions")
-          .select("question_id,set_id,set_title,question_order")
-          .order("set_id", { ascending: true })
-          .order("question_order", { ascending: true })
-          .order("question_id", { ascending: true })
-          .range(from, to)
+      timing.measure("database", "questions_all_sets", () =>
+        readAllSupabaseRows<QuestionSetRow>((from, to) =>
+          readClient
+            .from("questions")
+            .select("question_id,set_id,set_title,question_order")
+            .order("set_id", { ascending: true })
+            .order("question_order", { ascending: true })
+            .order("question_id", { ascending: true })
+            .range(from, to)
+        )
       ),
-      readAllSupabaseRows<AttemptRow>((from, to) =>
-        readClient
-          .from("attempts")
-          .select(
-            "attempt_id,set_id,submitted_at,created_at,correct_count,total_questions"
-          )
-          .eq("student_id", user.id)
-          .order("set_id", { ascending: true })
-          .order("submitted_at", { ascending: true, nullsFirst: true })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
+      timing.measure("database", "attempts_student_sets", () =>
+        readAllSupabaseRows<AttemptRow>((from, to) =>
+          readClient
+            .from("attempts")
+            .select(
+              "attempt_id,set_id,submitted_at,created_at,correct_count,total_questions"
+            )
+            .eq("student_id", user.id)
+            .order("set_id", { ascending: true })
+            .order("submitted_at", { ascending: true, nullsFirst: true })
+            .order("attempt_id", { ascending: true })
+            .range(from, to)
+        )
       )
     ]);
 
     if (questionResult.error) {
-      return json(
+      return respond(
         { months: [], sets: [], error: questionResult.error.message },
         { status: 500 }
       );
     }
 
     if (attemptResult.error) {
-      return json(
+      return respond(
         { months: [], sets: [], error: attemptResult.error.message },
         { status: 500 }
       );
     }
 
+    const payload = timing.measureSync("processing", "build_sets_payload", () => {
     const questionsById = new Map<string, QuestionSetRow>();
     for (const question of questionResult.data ?? []) {
       questionsById.set(String(question.question_id), question);
@@ -275,12 +288,14 @@ export async function GET(request: Request) {
       }))
       .sort(compareMonths);
 
-    return json({
+    return {
       months,
       sets: Array.from(setsById.values()).sort(compareSets)
+    };
     });
+    return respond(payload);
   } catch (error) {
-    return json(
+    return respond(
       { error: error instanceof Error ? error.message : "Could not load sets." },
       { status: 500 }
     );
