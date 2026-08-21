@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
-import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
-import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import {
   loadHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
@@ -167,22 +165,6 @@ export async function GET(
     const totalCount = attemptRow.total_questions;
     const correctCount = attemptRow.correct_count;
     const accuracy = totalCount === 0 ? 0 : correctCount / totalCount;
-    const comparableOfficialSet =
-      !isVirtualPracticeSetId(attemptRow.set_id) &&
-      questionRows.length > 0 &&
-      questionRows.every((question) => String(question.set_id) === attemptRow.set_id);
-    const peerComparison = await loadResultPeerComparison({
-      comparable: comparableOfficialSet,
-      currentAttempt: {
-        attemptId: attemptRow.attempt_id,
-        correctCount,
-        totalQuestions: totalCount,
-        timeSpentSeconds: attemptRow.time_spent_seconds
-      },
-      db,
-      setId: attemptRow.set_id,
-      studentId: user.id
-    });
     const historicalDisplay = historicalDisplayResolver.resolveBuildSentence({
       fallbackDisplayName: attemptRow.set_title || attemptRow.set_id,
       rawSetId: attemptRow.set_id
@@ -209,8 +191,7 @@ export async function GET(
       }),
       total_count: totalCount,
       correct_count: correctCount,
-      accuracy,
-      peer_comparison: peerComparison
+      accuracy
     });
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not load result.");

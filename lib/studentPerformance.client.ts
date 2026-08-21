@@ -59,7 +59,7 @@ function getPageTrace(expectedRoute: string) {
   return activePageTrace;
 }
 
-function logClientPerformance(payload: Record<string, unknown>) {
+export function logStudentPerformance(payload: Record<string, unknown>) {
   console.info("[student-perf]", JSON.stringify({ scope: "client", ...payload }));
 }
 
@@ -79,7 +79,7 @@ export function useStudentPagePerformance({
     const trace = traceRef.current!;
     if (trace.startLogged) return;
     trace.startLogged = true;
-    logClientPerformance({
+    logStudentPerformance({
       actualRoute: trace.actualRoute,
       event: "page_load_started",
       expectedRoute: trace.expectedRoute,
@@ -92,7 +92,7 @@ export function useStudentPagePerformance({
     const trace = traceRef.current!;
     if (loading || trace.completed) return;
     trace.completed = true;
-    logClientPerformance({
+    logStudentPerformance({
       actualRoute: trace.actualRoute,
       completedAt: new Date().toISOString(),
       event: "page_main_data_complete",
@@ -132,7 +132,7 @@ export async function measureStudentRequest<T>(
     const totalMs = roundDuration(performance.now() - startedAt);
     const serverTimings = parseServerTiming(response?.headers.get("Server-Timing") ?? null);
     const apiTotalMs = serverTimings.find((metric) => metric.name === "api_total")?.durationMs;
-    logClientPerformance({
+    logStudentPerformance({
       apiTotalMs: apiTotalMs ?? null,
       event: "request_complete",
       frontendAndNetworkWaitMs:

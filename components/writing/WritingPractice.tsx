@@ -32,6 +32,7 @@ import {
   STUDENT_WRITING_OVERVIEW_CACHE_KEY,
   STUDENT_WRITING_MODE_POLICY_CACHE_KEY,
   STUDENT_WRITING_CACHE_PREFIX,
+  studentWritingAttemptCacheKey,
   useStudentCachedData,
   useStudentDataCache,
 } from "@/components/StudentDataCache";
@@ -68,7 +69,10 @@ import {
 import type { StudentWritingModeAvailability } from "@/lib/writingModePolicy";
 import { calculateActiveWritingTimer } from "@/lib/writingTimer";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
-import { measureStudentRequest } from "@/lib/studentPerformance.client";
+import {
+  logStudentPerformance,
+  measureStudentRequest
+} from "@/lib/studentPerformance.client";
 
 type PracticePayload = {
   assignment_available?: boolean;
@@ -81,6 +85,7 @@ type PracticePayload = {
 };
 
 const EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP: AcademicDiscussionAvatarMap = {};
+const submittedReadonlyStarts = new Map<string, number>();
 
 export function WritingPractice({
   assignmentId,
@@ -98,6 +103,7 @@ export function WritingPractice({
   taskType: WritingTaskType;
 }) {
   const router = useRouter();
+  const { getEntry } = useStudentDataCache();
   const [selectedWritingMode, setSelectedWritingMode] = useState<WritingMode | null>(null);
   const [payload, setPayload] = useState<PracticePayload | null>(null);
   const [accessToken, setAccessToken] = useState("");
@@ -113,6 +119,14 @@ export function WritingPractice({
     loadWritingModePolicy,
     { enabled: mode === "practice" && !attemptId }
   );
+  const cachedReadonlyEntry =
+    mode === "readonly" && attemptId
+      ? getEntry(studentWritingAttemptCacheKey(attemptId))
+      : undefined;
+  const cachedReadonlyPayload =
+    cachedReadonlyEntry?.status === "success"
+      ? cachedReadonlyEntry.data as PracticePayload
+      : null;
 
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
@@ -141,6 +155,16 @@ export function WritingPractice({
         const { data } = await supabase.auth.getSession();
         const token = data.session?.access_token ?? "";
         if (!token) throw new Error("登录状态已失效，请重新登录。");
+        if (cachedReadonlyPayload) {
+          if (!ignore) {
+            setAccessToken(token);
+            setAllowExternalPaste(
+              canUseExternalWritingPaste(data.session?.user.email, taskType)
+            );
+            setPayload(cachedReadonlyPayload);
+          }
+          return;
+        }
         const detailUrl = attemptId
           ? `/api/writing/attempts/${encodeURIComponent(attemptId)}${
               mode === "readonly" ? "?mode=submission" : ""
@@ -216,7 +240,36 @@ export function WritingPractice({
     return () => {
       ignore = true;
     };
-  }, [assignmentId, attemptId, forceNew, mode, questionId, router, selectedWritingMode, taskType]);
+  }, [
+    assignmentId,
+    attemptId,
+    cachedReadonlyPayload,
+    forceNew,
+    mode,
+    questionId,
+    router,
+    selectedWritingMode,
+    taskType
+  ]);
+
+  useEffect(() => {
+    if (
+      mode !== "readonly" ||
+      !attemptId ||
+      !accessToken ||
+      payload?.attempt?.status !== "submitted"
+    ) {
+      return;
+    }
+    const startedAt = submittedReadonlyStarts.get(attemptId);
+    if (startedAt === undefined) return;
+    submittedReadonlyStarts.delete(attemptId);
+    logStudentPerformance({
+      event: "writing_readonly_ready",
+      source: cachedReadonlyPayload ? "submitted_attempt_cache" : "api_reload",
+      totalMs: Math.round((performance.now() - startedAt) * 10) / 10
+    });
+  }, [accessToken, attemptId, cachedReadonlyPayload, mode, payload?.attempt?.status]);
 
   if (mode === "practice" && !attemptId && !selectedWritingMode) {
     if (modePolicyState.loading) {
@@ -290,7 +343,7 @@ function WritingPracticeSession({
   taskType: WritingTaskType;
 }) {
   const router = useRouter();
-  const { invalidate } = useStudentDataCache();
+  const { invalidate, setData } = useStudentDataCache();
   const [attempt, setAttempt] = useState(initialAttempt);
   const [remainingSeconds, setRemainingSeconds] = useState(() =>
     initialAttempt.remaining_seconds
@@ -309,6 +362,7 @@ function WritingPracticeSession({
   const [submitting, setSubmitting] = useState(false);
   const [exitPromptOpen, setExitPromptOpen] = useState(false);
   const submitStartedRef = useRef(false);
+  const submittingRef = useRef(false);
   const remainingRef = useRef(remainingSeconds);
   const elapsedRef = useRef(elapsedSeconds);
   const sessionStartedAtRef = useRef(Date.now());
@@ -416,16 +470,18 @@ function WritingPracticeSession({
   );
 
   useEffect(() => {
-    if (readOnly || attempt.status !== "draft") return;
+    if (readOnly || submitting || attempt.status !== "draft") return;
     const sync = window.setInterval(() => {
+      if (submittingRef.current) return;
       void requestUpdate("sync").catch(() => undefined);
     }, 8000);
     return () => window.clearInterval(sync);
-  }, [attempt.status, readOnly, requestUpdate]);
+  }, [attempt.status, readOnly, requestUpdate, submitting]);
 
   useEffect(() => {
     if (readOnly || attempt.status !== "draft") return;
     const onPageHide = () => {
+      if (submittingRef.current) return;
       void requestUpdate("sync", { keepalive: true }).catch(() => undefined);
     };
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -449,7 +505,7 @@ function WritingPracticeSession({
   }, [attempt.status, readOnly, requestUpdate]);
   useEffect(
     () => () => {
-      if (!persistOnUnmountRef.current) return;
+      if (!persistOnUnmountRef.current || submittingRef.current) return;
       void requestUpdateRef.current("sync", { keepalive: true }).catch(() => undefined);
     },
     []
@@ -494,14 +550,25 @@ function WritingPracticeSession({
     async (automatic = false) => {
       if (submitStartedRef.current || attempt.status !== "draft") return;
       submitStartedRef.current = true;
+      submittingRef.current = true;
+      const submitStartedAt = performance.now();
       setSubmitting(true);
       setError("");
       try {
         const submittedAttempt = await requestUpdate("submit", { responseText: textRef.current });
         persistOnUnmountRef.current = false;
+        submittedReadonlyStarts.set(submittedAttempt.attempt_id, submitStartedAt);
         setAttempt(submittedAttempt);
         setLastSavedText(textRef.current);
         setLastSavedRanges([...overtimeRangesRef.current]);
+        setData(studentWritingAttemptCacheKey(submittedAttempt.attempt_id), {
+          assignment_available: assignmentAvailable,
+          attempt: submittedAttempt,
+          display_name: displayName,
+          has_published_review: false,
+          question,
+          question_source: assignmentQuestionSource
+        } satisfies PracticePayload);
         invalidateWritingData();
         publishCacheInvalidation({
           type: "WRITING_ATTEMPT_SUBMITTED",
@@ -517,11 +584,23 @@ function WritingPracticeSession({
         );
       } catch (submitError) {
         submitStartedRef.current = false;
+        submittingRef.current = false;
         setError(submitError instanceof Error ? submitError.message : "提交失败。");
       } finally {
         setSubmitting(false);
       }
-    }, [attempt.status, invalidateWritingData, requestUpdate, router, taskType]
+    }, [
+      assignmentAvailable,
+      assignmentQuestionSource,
+      attempt.status,
+      displayName,
+      invalidateWritingData,
+      question,
+      requestUpdate,
+      router,
+      setData,
+      taskType
+    ]
   );
 
   useEffect(() => {

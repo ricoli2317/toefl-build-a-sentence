@@ -22,7 +22,10 @@ import {
 } from "@/components/StudentDataCache";
 import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import { broadcastStudentPracticeCompleted } from "@/lib/studentCacheEvents";
-import { measureStudentRequest } from "@/lib/studentPerformance.client";
+import {
+  logStudentPerformance,
+  measureStudentRequest
+} from "@/lib/studentPerformance.client";
 import type { PublicQuestion, SubmitResponse } from "@/lib/types";
 
 type SavedAnswer = {
@@ -102,6 +105,7 @@ export function PracticeSession({
       forcedTimeSpentSeconds?: number,
       questionIdsToSubmit?: string[]
     ) => {
+      const submitStartedAt = performance.now();
       setSubmitting(true);
       setError("");
 
@@ -200,6 +204,10 @@ export function PracticeSession({
               attempt: officialAttempt
             });
           }
+          logStudentPerformance({
+            event: "bas_core_submission_ready",
+            totalMs: Math.round((performance.now() - submitStartedAt) * 10) / 10
+          });
           router.push(`/student/results/${payload.attemptId}`);
         } else {
           setError("Submit succeeded but no attempt id was returned.");

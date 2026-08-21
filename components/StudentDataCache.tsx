@@ -63,6 +63,10 @@ export function studentAttemptCacheKey(attemptId: string) {
   return `${STUDENT_ATTEMPT_CACHE_PREFIX}:historical-display-v3:${attemptId}`;
 }
 
+export function studentWritingAttemptCacheKey(attemptId: string) {
+  return `${STUDENT_WRITING_CACHE_PREFIX}:attempt:${attemptId}`;
+}
+
 export function studentPublishedWritingReviewCacheKey(attemptId: string) {
   return `${STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX}:detail:${attemptId}`;
 }

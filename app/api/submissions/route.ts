@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
-import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
-import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import {
   createStudentPerformanceTrace,
   type StudentPerformanceTrace
@@ -270,31 +268,12 @@ export async function POST(request: Request) {
       return fail(`Failed to save attempt answers: ${answerError.message}.${cleanupMessage}`);
     }
 
-    const normalizedSetId = String(body.setId);
-    const comparableOfficialSet =
-      !isVirtualPracticeSetId(normalizedSetId) &&
-      questionRows.every((question) => String(question.set_id) === normalizedSetId);
-    const peerComparison = await loadResultPeerComparison({
-      comparable: comparableOfficialSet,
-      currentAttempt: {
-        attemptId: String(attempt.attempt_id),
-        correctCount,
-        totalQuestions,
-        timeSpentSeconds
-      },
-      db,
-      setId: normalizedSetId,
-      studentId: user.id,
-      timing
-    });
-
     const payload = timing.measureSync("processing", "build_submission_response", () => ({
         attemptId: attempt.attempt_id,
         correctCount,
         total: totalQuestions,
         accuracy,
         timeSpentSeconds,
-        peer_comparison: peerComparison,
         attempt: {
           attempt_id: attempt.attempt_id,
           set_id: String(body.setId),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Clock3,
   ListFilter,
@@ -14,6 +14,7 @@ import {
   StudentLoadingState,
   StudentNavigation
 } from "@/components/student/StudentUI";
+import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   studentAttemptCacheKey,
   useStudentCachedData,
@@ -29,6 +30,10 @@ import {
   EMPTY_RESULT_PEER_COMPARISON,
   type ResultPeerComparison
 } from "@/lib/resultPeerComparison";
+import {
+  logStudentPerformance,
+  measureStudentRequest
+} from "@/lib/studentPerformance.client";
 
 export type ResultAttempt = {
   attempt_id: string;
@@ -76,9 +81,45 @@ export function PracticeResult({
 }) {
   const { data: payload, error, loading } = useStudentCachedData<ResultPayload>(
     studentAttemptCacheKey(attemptId),
-    (session) => loadResult(attemptId, session),
-    { refreshOnMount: true }
+    (session) => loadResult(attemptId, session)
   );
+  const [peerComparison, setPeerComparison] = useState<ResultPeerComparison | null>(null);
+  const peerRequestAttemptRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!payload?.attempt) return;
+    if (payload.peer_comparison) {
+      setPeerComparison(payload.peer_comparison);
+      return;
+    }
+    if (peerRequestAttemptRef.current === attemptId) return;
+    peerRequestAttemptRef.current = attemptId;
+    let cancelled = false;
+    const startedAt = performance.now();
+
+    void loadPeerComparison(attemptId).then(
+      (comparison) => {
+        if (cancelled) return;
+        setPeerComparison(comparison);
+        logStudentPerformance({
+          event: "bas_peer_comparison_ready",
+          outcome: "success",
+          totalMs: roundDuration(performance.now() - startedAt)
+        });
+      },
+      () => {
+        logStudentPerformance({
+          event: "bas_peer_comparison_ready",
+          outcome: "error",
+          totalMs: roundDuration(performance.now() - startedAt)
+        });
+      }
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [attemptId, payload?.attempt, payload?.peer_comparison]);
   if (loading) {
     return <StudentLoadingState text="正在加载练习结果..." />;
   }
@@ -98,7 +139,7 @@ export function PracticeResult({
         backHref={navigation.backHref}
         crumbs={navigation.crumbs}
       />}
-      payload={payload}
+      payload={peerComparison ? { ...payload, peer_comparison: peerComparison } : payload}
     />
   );
 }
@@ -358,11 +399,18 @@ async function loadResult(
   attemptId: string,
   session: StudentCacheSession
 ): Promise<ResultPayload> {
-  const response = await fetch(`/api/attempts/${attemptId}`, {
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`
+  const response = await measureStudentRequest(
+    `GET /api/attempts/${encodeURIComponent(attemptId)}`,
+    async (captureResponse) => {
+      const resultResponse = await fetch(`/api/attempts/${encodeURIComponent(attemptId)}`, {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`
+        }
+      });
+      captureResponse(resultResponse);
+      return resultResponse;
     }
-  });
+  );
   const responseText = await response.text();
   let data: ResultPayload | { error?: string };
 
@@ -379,6 +427,37 @@ async function loadResult(
   }
 
   return data as ResultPayload;
+}
+
+async function loadPeerComparison(attemptId: string): Promise<ResultPeerComparison> {
+  const {
+    data: { session }
+  } = await createBrowserSupabase().auth.getSession();
+  const response = await measureStudentRequest(
+    `GET /api/attempts/${encodeURIComponent(attemptId)}/peer-comparison`,
+    async (captureResponse) => {
+      const peerResponse = await fetch(
+        `/api/attempts/${encodeURIComponent(attemptId)}/peer-comparison`,
+        {
+          headers: { Authorization: `Bearer ${session?.access_token ?? ""}` }
+        }
+      );
+      captureResponse(peerResponse);
+      return peerResponse;
+    }
+  );
+  const payload = (await response.json()) as {
+    error?: string;
+    peer_comparison?: ResultPeerComparison;
+  };
+  if (!response.ok || payload.error || !payload.peer_comparison) {
+    throw new Error(payload.error ?? "无法加载同伴对比。");
+  }
+  return payload.peer_comparison;
+}
+
+function roundDuration(value: number) {
+  return Math.round(value * 10) / 10;
 }
 
 function formatResultSetTitle(setId: string, setTitle: string) {
