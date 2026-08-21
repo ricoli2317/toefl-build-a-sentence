@@ -254,8 +254,6 @@ export async function loadHistoricalPracticeDisplayResolver(
     : buildResolver();
 }
 
-<<<<<<< Updated upstream
-=======
 export async function loadBuildSentenceHistoricalPracticeDisplayResolver(
   supabase: SupabaseClient,
   rawSetIds: string[],
@@ -306,15 +304,12 @@ export async function loadBuildSentenceHistoricalPracticeDisplayResolver(
     : buildResolver();
 }
 
->>>>>>> Stashed changes
 function measureDatabase<T>(
   timing: StudentPerformanceTrace | undefined,
   name: string,
   operation: () => Promise<T>
 ) {
   return timing ? timing.measure("database", name, operation) : operation();
-<<<<<<< Updated upstream
-=======
 }
 
 async function readRowsInBatches<T>(
@@ -352,7 +347,6 @@ function chunkValues<T>(values: T[], size = 100) {
 
 function distinct(values: string[]) {
   return Array.from(new Set(values));
->>>>>>> Stashed changes
 }
 
 export function logHistoricalPracticeDisplayWarnings(

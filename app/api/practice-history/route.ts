@@ -113,11 +113,7 @@ export async function GET(request: Request) {
       }
     });
 
-<<<<<<< Updated upstream
-    const [attemptResult, answerResult, questionResult, historicalDisplayResolver] = await Promise.all([
-=======
     const [attemptResult, answerResult] = await Promise.all([
->>>>>>> Stashed changes
       timing.measure("database", "attempts_student_history", () =>
         readAllSupabaseRows<AttemptRow>((from, to) =>
           db
@@ -141,25 +137,6 @@ export async function GET(request: Request) {
             .order("attempt_answer_id", { ascending: true })
             .range(from, to)
         )
-<<<<<<< Updated upstream
-      ),
-      timing.measure("database", "questions_history_lookup", () =>
-        readAllSupabaseRows<QuestionRow>((from, to) =>
-          db
-            .from("questions")
-            .select(
-              "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,final_sentence,grammar_tags_text"
-            )
-            .order("question_id", { ascending: true })
-            .range(from, to)
-        )
-      ),
-      loadHistoricalPracticeDisplayResolver(db, timing)
-    ]);
-    const queryError = attemptResult.error ?? answerResult.error ?? questionResult.error;
-    if (queryError) return respondError(`Failed to load practice history: ${queryError.message}`);
-
-=======
       )
     ]);
     const initialQueryError = attemptResult.error ?? answerResult.error;
@@ -190,7 +167,6 @@ export async function GET(request: Request) {
     const queryError = questionResult.error ?? questionSetResult.error;
     if (queryError) return respondError(`Failed to load practice history: ${queryError.message}`);
 
->>>>>>> Stashed changes
     const payload = timing.measureSync("processing", "build_practice_history_payload", () => {
     const questionRows = (questionResult.data ?? []).map((question) => ({
       ...question,

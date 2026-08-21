@@ -404,8 +404,6 @@ export async function loadPracticePublicUniverse(
   return universe;
 }
 
-<<<<<<< Updated upstream
-=======
 export async function loadPracticePublicUniverseForTaskType(
   supabase: SupabaseClient,
   taskType: PracticeTaskType,
@@ -559,7 +557,6 @@ export async function loadPracticePublicUniverseForTaskType(
   return universe;
 }
 
->>>>>>> Stashed changes
 function measureDatabase<T>(
   timing: StudentPerformanceTrace | undefined,
   name: string,
