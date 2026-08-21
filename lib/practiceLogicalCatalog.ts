@@ -14,6 +14,7 @@ import {
 } from "./practiceLogicalState.ts";
 import { isVirtualPracticeSetId } from "./studentNavigation.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
+import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 
 export const LOGICAL_PRACTICE_PAGE_SIZE = 10;
 
@@ -123,6 +124,7 @@ export async function getLogicalPracticeItems(input: {
   studentId: string;
   taskType: PracticeTaskType;
   page: number;
+  timing?: StudentPerformanceTrace;
 }): Promise<LogicalPracticeCatalogWithStudentState> {
   const { catalog, universe } = await loadLogicalPracticeCatalog(input);
   const sources = catalog.items.flatMap((item) =>
@@ -132,16 +134,20 @@ export async function getLogicalPracticeItems(input: {
     supabase: input.supabase,
     studentId: input.studentId,
     taskType: input.taskType,
-    sources
+    sources,
+    timing: input.timing
   });
-  return {
+  const buildResult = () => ({
     ...catalog,
     items: attachLogicalPracticeStudentState({
       items: catalog.items,
       sources,
       ...attemptRows
     })
-  };
+  });
+  return input.timing
+    ? input.timing.measureSync("processing", "attach_student_catalog_state", buildResult)
+    : buildResult();
 }
 
 export async function getLogicalPracticeCatalog(input: {
@@ -156,31 +162,37 @@ async function loadLogicalPracticeCatalog(input: {
   supabase: SupabaseClient;
   taskType: PracticeTaskType;
   page: number;
+  timing?: StudentPerformanceTrace;
 }) {
   const [universe, occurrenceResult] = await Promise.all([
-    loadPracticePublicUniverse(input.supabase),
-    readAllSupabaseRows<PracticeItemOccurrenceRow>((from, to) =>
-      input.supabase
-        .from("practice_item_occurrences")
-        .select("source_id,occurred_on")
-        .order("source_id", { ascending: true })
-        .order("occurred_on", { ascending: false })
-        .range(from, to) as unknown as PromiseLike<{
-          data: PracticeItemOccurrenceRow[] | null;
-          error: { message: string } | null;
-        }>
+    loadPracticePublicUniverse(input.supabase, input.timing),
+    measureDatabase(input.timing, "practice_item_occurrences", () =>
+      readAllSupabaseRows<PracticeItemOccurrenceRow>((from, to) =>
+        input.supabase
+          .from("practice_item_occurrences")
+          .select("source_id,occurred_on")
+          .order("source_id", { ascending: true })
+          .order("occurred_on", { ascending: false })
+          .range(from, to) as unknown as PromiseLike<{
+            data: PracticeItemOccurrenceRow[] | null;
+            error: { message: string } | null;
+          }>
+      )
     )
   ]);
   if (occurrenceResult.error) {
     throw new Error(`Failed to load practice item occurrences: ${occurrenceResult.error.message}`);
   }
-  return {
-    catalog: buildLogicalPracticeCatalog({
+  const buildCatalog = () => buildLogicalPracticeCatalog({
       universe,
       occurrences: occurrenceResult.data ?? [],
       taskType: input.taskType,
       page: input.page
-    }),
+    });
+  return {
+    catalog: input.timing
+      ? input.timing.measureSync("processing", "build_logical_catalog_page", buildCatalog)
+      : buildCatalog(),
     universe
   };
 }
@@ -190,6 +202,7 @@ async function loadCurrentPageAttemptRows(input: {
   studentId: string;
   taskType: PracticeTaskType;
   sources: ReturnType<PracticePublicUniverse["getFormalSourcesForPracticeItem"]>;
+  timing?: StudentPerformanceTrace;
 }): Promise<{
   buildSentenceAttempts?: BuildSentenceLogicalAttemptRow[];
   writingAttempts?: WritingLogicalAttemptRow[];
@@ -201,18 +214,20 @@ async function loadCurrentPageAttemptRows(input: {
         : []
     ));
     if (setIds.length === 0) return { buildSentenceAttempts: [] };
-    const result = await readAllSupabaseRows<BuildSentenceLogicalAttemptRow>((from, to) =>
-      input.supabase
-        .from("attempts")
-        .select("attempt_id,set_id,submitted_at,created_at")
-        .eq("student_id", input.studentId)
-        .in("set_id", setIds)
-        .order("submitted_at", { ascending: false, nullsFirst: false })
-        .order("attempt_id", { ascending: false })
-        .range(from, to) as unknown as PromiseLike<{
-          data: BuildSentenceLogicalAttemptRow[] | null;
-          error: { message: string } | null;
-        }>
+    const result = await measureDatabase(input.timing, "attempts_current_catalog_page", () =>
+      readAllSupabaseRows<BuildSentenceLogicalAttemptRow>((from, to) =>
+        input.supabase
+          .from("attempts")
+          .select("attempt_id,set_id,submitted_at,created_at")
+          .eq("student_id", input.studentId)
+          .in("set_id", setIds)
+          .order("submitted_at", { ascending: false, nullsFirst: false })
+          .order("attempt_id", { ascending: false })
+          .range(from, to) as unknown as PromiseLike<{
+            data: BuildSentenceLogicalAttemptRow[] | null;
+            error: { message: string } | null;
+          }>
+      )
     );
     if (result.error) {
       throw new Error(`Failed to load BAS logical attempts: ${result.error.message}`);
@@ -224,27 +239,37 @@ async function loadCurrentPageAttemptRows(input: {
     source.sourceQuestionId ? [source.sourceQuestionId] : []
   ));
   if (questionIds.length === 0) return { writingAttempts: [] };
-  const result = await readAllSupabaseRows<WritingLogicalAttemptRow>((from, to) =>
-    input.supabase
-      .from("writing_attempts")
-      .select(
-        "attempt_id,assignment_id,task_type,question_id,status,saved_at,submitted_at,created_at,updated_at"
-      )
-      .eq("user_id", input.studentId)
-      .eq("task_type", input.taskType)
-      .is("assignment_id", null)
-      .in("question_id", questionIds)
-      .order("updated_at", { ascending: false })
-      .order("attempt_id", { ascending: false })
-      .range(from, to) as unknown as PromiseLike<{
-        data: WritingLogicalAttemptRow[] | null;
-        error: { message: string } | null;
-      }>
+  const result = await measureDatabase(input.timing, "writing_attempts_current_catalog_page", () =>
+    readAllSupabaseRows<WritingLogicalAttemptRow>((from, to) =>
+      input.supabase
+        .from("writing_attempts")
+        .select(
+          "attempt_id,assignment_id,task_type,question_id,status,saved_at,submitted_at,created_at,updated_at"
+        )
+        .eq("user_id", input.studentId)
+        .eq("task_type", input.taskType)
+        .is("assignment_id", null)
+        .in("question_id", questionIds)
+        .order("updated_at", { ascending: false })
+        .order("attempt_id", { ascending: false })
+        .range(from, to) as unknown as PromiseLike<{
+          data: WritingLogicalAttemptRow[] | null;
+          error: { message: string } | null;
+        }>
+    )
   );
   if (result.error) {
     throw new Error(`Failed to load Writing logical attempts: ${result.error.message}`);
   }
   return { writingAttempts: result.data ?? [] };
+}
+
+function measureDatabase<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => Promise<T>
+) {
+  return timing ? timing.measure("database", name, operation) : operation();
 }
 
 function distinct(values: string[]) {

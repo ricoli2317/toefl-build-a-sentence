@@ -9,23 +9,38 @@ import {
   type WritingTaskType
 } from "@/lib/writing";
 import { isWritingQuestionSnapshot } from "./writingAssignments.ts";
+import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 
-export function writingJson(data: unknown, init?: ResponseInit) {
+export function writingJson(
+  data: unknown,
+  init?: ResponseInit,
+  timing?: StudentPerformanceTrace
+) {
+  const headers = new Headers(init?.headers);
+  headers.set("Cache-Control", "no-store");
   return NextResponse.json(data, {
     ...init,
-    headers: {
-      ...init?.headers,
-      "Cache-Control": "no-store"
-    }
+    headers: timing ? timing.finishHeaders(headers) : headers
   });
 }
 
-export async function requireWritingStudent(request: Request) {
+export async function requireWritingStudent(
+  request: Request,
+  timing?: StudentPerformanceTrace
+) {
   const token = bearerToken(request);
-  const auth = await requireUserWithRole(token, "student");
+  const auth = timing
+    ? await timing.measure("auth", "require_writing_student", () =>
+        requireUserWithRole(token, "student")
+      )
+    : await requireUserWithRole(token, "student");
   if (auth.error || !auth.userId || !token) {
     return {
-      error: writingJson({ error: auth.error ?? "Unauthorized" }, { status: 401 }),
+      error: writingJson(
+        { error: auth.error ?? "Unauthorized" },
+        { status: 401 },
+        timing
+      ),
       supabase: null,
       userId: null
     };

@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
+import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 import {
   resolveWritingAssignmentQuestionIsolation,
   type WritingAssignmentPracticeResolution
@@ -329,54 +330,86 @@ export function createPracticePublicUniverse(
 }
 
 export async function loadPracticePublicUniverse(
-  supabase: SupabaseClient
+  supabase: SupabaseClient,
+  timing?: StudentPerformanceTrace
 ): Promise<PracticePublicUniverse> {
   const [items, sources, questionMaps, buildSentenceQuestions, emailQuestions, academicQuestions] =
     await Promise.all([
-      readRows<PracticeItemRow>(
-        supabase,
-        "practice_items",
-        "item_id,task_type,display_number,display_title,first_seen_date,is_active",
-        "item_id"
+      measureDatabase(timing, "practice_items", () =>
+        readRows<PracticeItemRow>(
+          supabase,
+          "practice_items",
+          "item_id,task_type,display_number,display_title,first_seen_date,is_active",
+          "item_id"
+        )
       ),
-      readRows<PracticeItemSourceRow>(
-        supabase,
-        "practice_item_sources",
-        "source_id,item_id,task_type,source_set_id,source_question_id,is_canonical",
-        "source_id"
+      measureDatabase(timing, "practice_item_sources", () =>
+        readRows<PracticeItemSourceRow>(
+          supabase,
+          "practice_item_sources",
+          "source_id,item_id,task_type,source_set_id,source_question_id,is_canonical",
+          "source_id"
+        )
       ),
-      readRows<PracticeItemQuestionMapRow>(
-        supabase,
-        "practice_item_question_map",
-        "source_id,source_question_id,source_question_order,logical_question_order",
-        "map_id"
+      measureDatabase(timing, "practice_item_question_map", () =>
+        readRows<PracticeItemQuestionMapRow>(
+          supabase,
+          "practice_item_question_map",
+          "source_id,source_question_id,source_question_order,logical_question_order",
+          "map_id"
+        )
       ),
-      readRows<BuildSentenceRawQuestionRow>(
-        supabase,
-        "questions",
-        "question_id,set_id,question_order",
-        "question_id"
+      measureDatabase(timing, "questions_public_universe", () =>
+        readRows<BuildSentenceRawQuestionRow>(
+          supabase,
+          "questions",
+          "question_id,set_id,question_order",
+          "question_id"
+        )
       ),
-      readRows<WritingRawQuestionRow>(supabase, "email_questions", "question_id", "question_id"),
-      readRows<WritingRawQuestionRow>(
-        supabase,
-        "academic_discussion_questions",
-        "question_id",
-        "question_id"
-      )
+      measureDatabase(timing, "email_questions_public_universe", () =>
+        readRows<WritingRawQuestionRow>(supabase, "email_questions", "question_id", "question_id")
+      ),
+      measureDatabase(timing, "academic_discussion_questions_public_universe", () =>
+        readRows<WritingRawQuestionRow>(
+          supabase,
+          "academic_discussion_questions",
+          "question_id",
+          "question_id"
+        )
+      ),
     ]);
-  const universe = createPracticePublicUniverse({
-    items,
-    sources,
-    questionMaps,
-    buildSentenceQuestions,
-    emailQuestions,
-    academicDiscussionQuestions: academicQuestions
-  });
+  const universe = timing
+    ? timing.measureSync("processing", "build_practice_public_universe", () =>
+        createPracticePublicUniverse({
+          items,
+          sources,
+          questionMaps,
+          buildSentenceQuestions,
+          emailQuestions,
+          academicDiscussionQuestions: academicQuestions
+        })
+      )
+    : createPracticePublicUniverse({
+        items,
+        sources,
+        questionMaps,
+        buildSentenceQuestions,
+        emailQuestions,
+        academicDiscussionQuestions: academicQuestions
+      });
   for (const warning of universe.warnings) {
     console.warn("[practice-public-universe] excluded_invalid_item", warning);
   }
   return universe;
+}
+
+function measureDatabase<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => Promise<T>
+) {
+  return timing ? timing.measure("database", name, operation) : operation();
 }
 
 export async function isPublicPracticeItem(supabase: SupabaseClient, itemId: string) {
