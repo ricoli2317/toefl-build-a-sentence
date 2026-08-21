@@ -2,9 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { compareDisplayNumbers } from "./practiceImporter/numbering.ts";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import {
+  loadPracticeCatalogDirectory,
   loadPracticePublicUniverse,
-  loadPracticePublicUniverseForTaskType,
-  type PracticePublicUniverse
+  type PracticeCatalogDirectory
 } from "./practicePublicUniverse.ts";
 import {
   attachLogicalPracticeStudentState,
@@ -69,10 +69,11 @@ export function logicalPracticeItemTitle(
 }
 
 export function buildLogicalPracticeCatalog(input: {
-  universe: PracticePublicUniverse;
+  universe: PracticeCatalogDirectory;
   occurrences: PracticeItemOccurrenceRow[];
   taskType: PracticeTaskType;
   page: number;
+  paginate?: boolean;
 }): LogicalPracticeCatalog {
   if (!Number.isSafeInteger(input.page) || input.page < 1) {
     throw new Error("Logical practice catalog page must be a positive integer.");
@@ -110,7 +111,9 @@ export function buildLogicalPracticeCatalog(input: {
   const totalPages = Math.ceil(totalItems / LOGICAL_PRACTICE_PAGE_SIZE);
   const from = (input.page - 1) * LOGICAL_PRACTICE_PAGE_SIZE;
   return {
-    items: allItems.slice(from, from + LOGICAL_PRACTICE_PAGE_SIZE),
+    items: input.paginate === false
+      ? allItems
+      : allItems.slice(from, from + LOGICAL_PRACTICE_PAGE_SIZE),
     pagination: {
       page: input.page,
       page_size: LOGICAL_PRACTICE_PAGE_SIZE,
@@ -127,28 +130,34 @@ export async function getLogicalPracticeItems(input: {
   page: number;
   timing?: StudentPerformanceTrace;
 }): Promise<LogicalPracticeCatalogWithStudentState> {
-  const { catalog, universe } = await loadLogicalPracticeCatalog({
+  const { catalog, paginateAfterStudentState, universe } = await loadLogicalPracticeCatalog({
     ...input,
     useTaskScopedUniverse: true
   });
   const sources = catalog.items.flatMap((item) =>
     universe.getFormalSourcesForPracticeItem(item.item_id)
   );
-  const attemptRows = await loadCurrentPageAttemptRows({
+  const attemptRows = await loadCatalogAttemptRows({
     supabase: input.supabase,
     studentId: input.studentId,
     taskType: input.taskType,
     sources,
     timing: input.timing
   });
-  const buildResult = () => ({
-    ...catalog,
-    items: attachLogicalPracticeStudentState({
+  const buildResult = () => {
+    const items = attachLogicalPracticeStudentState({
       items: catalog.items,
       sources,
       ...attemptRows
-    })
-  });
+    });
+    const from = (input.page - 1) * LOGICAL_PRACTICE_PAGE_SIZE;
+    return {
+      ...catalog,
+      items: paginateAfterStudentState
+        ? items.slice(from, from + LOGICAL_PRACTICE_PAGE_SIZE)
+        : items
+    };
+  };
   return input.timing
     ? input.timing.measureSync("processing", "attach_student_catalog_state", buildResult)
     : buildResult();
@@ -169,14 +178,11 @@ async function loadLogicalPracticeCatalog(input: {
   timing?: StudentPerformanceTrace;
   useTaskScopedUniverse?: boolean;
 }) {
+  if (input.useTaskScopedUniverse) {
+    return loadLogicalPracticeCatalogDirectory(input);
+  }
   const [universe, occurrenceResult] = await Promise.all([
-    input.useTaskScopedUniverse
-      ? loadPracticePublicUniverseForTaskType(
-          input.supabase,
-          input.taskType,
-          input.timing
-        )
-      : loadPracticePublicUniverse(input.supabase, input.timing),
+    loadPracticePublicUniverse(input.supabase, input.timing),
     measureDatabase(input.timing, "practice_item_occurrences", () =>
       readAllSupabaseRows<PracticeItemOccurrenceRow>((from, to) =>
         input.supabase
@@ -204,15 +210,44 @@ async function loadLogicalPracticeCatalog(input: {
     catalog: input.timing
       ? input.timing.measureSync("processing", "build_logical_catalog_page", buildCatalog)
       : buildCatalog(),
+    paginateAfterStudentState: false,
     universe
   };
 }
 
-async function loadCurrentPageAttemptRows(input: {
+async function loadLogicalPracticeCatalogDirectory(input: {
+  supabase: SupabaseClient;
+  taskType: PracticeTaskType;
+  page: number;
+  timing?: StudentPerformanceTrace;
+}) {
+  const { directory, occurrences } = await loadPracticeCatalogDirectory(
+    input.supabase,
+    input.taskType,
+    input.timing
+  );
+  const buildCatalog = () =>
+    buildLogicalPracticeCatalog({
+      universe: directory,
+      occurrences,
+      taskType: input.taskType,
+      page: input.page,
+      paginate: false
+    });
+  return {
+    catalog: input.timing
+      ? input.timing.measureSync("processing", "build_logical_catalog_page", buildCatalog)
+      : buildCatalog(),
+    paginateAfterStudentState: true,
+    universe: directory
+  };
+}
+
+async function loadCatalogAttemptRows(input: {
   supabase: SupabaseClient;
   studentId: string;
   taskType: PracticeTaskType;
-  sources: ReturnType<PracticePublicUniverse["getFormalSourcesForPracticeItem"]>;
+  sources: ReturnType<PracticeCatalogDirectory["getFormalSourcesForPracticeItem"]>;
   timing?: StudentPerformanceTrace;
 }): Promise<{
   buildSentenceAttempts?: BuildSentenceLogicalAttemptRow[];

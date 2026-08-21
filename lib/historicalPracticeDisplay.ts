@@ -304,6 +304,59 @@ export async function loadBuildSentenceHistoricalPracticeDisplayResolver(
     : buildResolver();
 }
 
+export async function loadWritingHistoricalPracticeDisplayResolver(
+  supabase: SupabaseClient,
+  taskType: "email" | "academic_discussion",
+  rawQuestionIds: string[],
+  timing?: StudentPerformanceTrace
+): Promise<HistoricalPracticeDisplayResolver> {
+  const questionIds = distinct(
+    rawQuestionIds.map((questionId) => questionId.trim()).filter(Boolean)
+  );
+  const sources = await measureDatabase(
+    timing,
+    "writing_practice_item_sources_current_question",
+    () =>
+      readRowsInBatches<HistoricalPracticeSourceRow>(
+        questionIds,
+        (batch, from, to) =>
+          supabase
+            .from("practice_item_sources")
+            .select("source_id,item_id,task_type,source_set_id,source_question_id")
+            .eq("task_type", taskType)
+            .in("source_question_id", batch)
+            .order("source_id", { ascending: true })
+            .range(from, to) as unknown as PromiseLike<{
+              data: HistoricalPracticeSourceRow[] | null;
+              error: { message: string } | null;
+            }>,
+        "practice_item_sources"
+      )
+  );
+  const itemIds = distinct(sources.map((source) => String(source.item_id)));
+  const items = await measureDatabase(timing, "writing_practice_items_current_question", () =>
+    readRowsInBatches<HistoricalPracticeItemRow>(
+      itemIds,
+      (batch, from, to) =>
+        supabase
+          .from("practice_items")
+          .select("item_id,task_type,display_number,display_title,is_active")
+          .eq("task_type", taskType)
+          .in("item_id", batch)
+          .order("item_id", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{
+            data: HistoricalPracticeItemRow[] | null;
+            error: { message: string } | null;
+          }>,
+      "practice_items"
+    )
+  );
+  const buildResolver = () => createHistoricalPracticeDisplayResolver({ items, sources });
+  return timing
+    ? timing.measureSync("processing", "build_writing_display_resolver", buildResolver)
+    : buildResolver();
+}
+
 function measureDatabase<T>(
   timing: StudentPerformanceTrace | undefined,
   name: string,

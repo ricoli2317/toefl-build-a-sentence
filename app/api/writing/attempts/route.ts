@@ -23,17 +23,21 @@ import {
 } from "@/lib/writingModePolicy";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
-  loadHistoricalPracticeDisplayResolver,
+  createHistoricalPracticeDisplayResolver,
+  loadWritingHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const timing = createStudentPerformanceTrace("/api/writing/attempts");
+  const respond = (data: unknown, init?: ResponseInit) => writingJson(data, init, timing);
   try {
-    const auth = await requireWritingStudent(request);
+    const auth = await requireWritingStudent(request, timing);
     if (auth.error) return auth.error;
-    if (!auth.supabase || !auth.userId) return writingJson({ error: "Unauthorized" }, { status: 401 });
+    if (!auth.supabase || !auth.userId) return respond({ error: "Unauthorized" }, { status: 401 });
 
     const body = (await request.json()) as {
       forceNew?: unknown;
@@ -49,7 +53,7 @@ export async function POST(request: Request) {
       : "";
     const writingMode = isWritingMode(body.writingMode) ? body.writingMode : null;
     if (!taskType || !questionId || !writingMode) {
-      return writingJson({ error: "Invalid writing attempt request" }, { status: 400 });
+      return respond({ error: "Invalid writing attempt request" }, { status: 400 });
     }
 
     const modeAvailability = await getStudentWritingModeAvailability(
@@ -57,10 +61,10 @@ export async function POST(request: Request) {
       auth.userId
     );
     if (modeAvailability.error || !modeAvailability.data) {
-      return writingJson({ error: "暂时无法验证写作模式，请稍后重试。" }, { status: 500 });
+      return respond({ error: "暂时无法验证写作模式，请稍后重试。" }, { status: 500 });
     }
     if (!isStudentWritingModeAllowed(modeAvailability.data, writingMode)) {
-      return writingJson(
+      return respond(
         { error: writingModeUnavailableMessage(writingMode) },
         { status: 403 }
       );
@@ -73,13 +77,13 @@ export async function POST(request: Request) {
         assignmentId
       );
       if (availability.error) {
-        return writingJson({ error: "暂时无法加载作业，请稍后重试。" }, { status: 500 });
+        return respond({ error: "暂时无法加载作业，请稍后重试。" }, { status: 500 });
       }
       if (!availability.assigned) {
-        return writingJson({ error: "未找到这项写作作业。" }, { status: 404 });
+        return respond({ error: "未找到这项写作作业。" }, { status: 404 });
       }
       if (!availability.available) {
-        return writingJson({ error: "该作业已被教师撤回。" }, { status: 409 });
+        return respond({ error: "该作业已被教师撤回。" }, { status: 409 });
       }
     }
 
@@ -87,12 +91,13 @@ export async function POST(request: Request) {
       auth.supabase,
       taskType,
       questionId,
-      assignmentId || null
+      assignmentId || null,
+      timing
     );
     if (questionResult.error) {
-      return writingJson({ error: "暂时无法加载写作题目，请稍后重试。" }, { status: 500 });
+      return respond({ error: "暂时无法加载写作题目，请稍后重试。" }, { status: 500 });
     }
-    if (!questionResult.data) return writingJson({ error: "Writing question not found" }, { status: 404 });
+    if (!questionResult.data) return respond({ error: "Writing question not found" }, { status: 404 });
 
     const repository = createWritingDraftRepository(auth.supabase);
     const draft = await getOrCreateWritingDraft(
@@ -108,7 +113,7 @@ export async function POST(request: Request) {
     );
 
     if (!isStudentWritingModeAllowed(modeAvailability.data, draft.attempt.writing_mode)) {
-      return writingJson(
+      return respond(
         {
           error: writingModeUnavailableMessage(
             draft.attempt.writing_mode === "practice" ? "practice" : "exam"
@@ -118,9 +123,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const display = (
-      await loadHistoricalPracticeDisplayResolver(createServiceSupabase())
-    ).resolveWritingAttempt({
+    const displayResolver = questionResult.questionSource === "custom"
+      ? createHistoricalPracticeDisplayResolver({ items: [], sources: [] })
+      : await loadWritingHistoricalPracticeDisplayResolver(
+          createServiceSupabase(),
+          taskType,
+          [questionId],
+          timing
+        );
+    const display = displayResolver.resolveWritingAttempt({
       assignmentId: draft.attempt.assignment_id ?? null,
       assignmentDisplayName: questionResult.data.set_title,
       fallbackDisplayName:
@@ -133,23 +144,21 @@ export async function POST(request: Request) {
     });
     logHistoricalPracticeDisplayWarnings([display]);
 
-    return writingJson(
-      {
+    const payload = timing.measureSync("processing", "build_writing_practice_payload", () => ({
         attempt: draft.attempt,
         question: questionResult.data,
         display_name: display.displayName,
         question_source: questionResult.questionSource,
         assignment_available: true,
         resumed: draft.resumed
-      },
-      { status: draft.resumed ? 200 : 201 }
-    );
+      }));
+    return respond(payload, { status: draft.resumed ? 200 : 201 });
   } catch (error) {
     if (error instanceof WritingAttemptLifecycleError) {
       logWritingAttemptError("get_or_create_draft", error.cause);
-      return writingJson({ error: error.message }, { status: 500 });
+      return respond({ error: error.message }, { status: 500 });
     }
-    return writingJson(
+    return respond(
       { error: "暂时无法进入写作练习，请稍后重试。" },
       { status: 500 }
     );

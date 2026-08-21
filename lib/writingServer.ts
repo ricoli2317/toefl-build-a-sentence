@@ -61,14 +61,20 @@ export async function readWritingQuestion(
   supabase: ReturnType<typeof createAnonSupabase>,
   taskType: WritingTaskType,
   questionId: string,
-  assignmentId?: string | null
+  assignmentId?: string | null,
+  timing?: StudentPerformanceTrace
 ) {
   if (assignmentId) {
-    const { data, error } = await supabase
-      .from("writing_assignments")
-      .select("task_type,question_source,question_snapshot,status,deleted_at")
-      .eq("assignment_id", assignmentId)
-      .maybeSingle();
+    const { data, error } = await measureDatabase(
+      timing,
+      "writing_assignment_question_snapshot",
+      () =>
+        supabase
+          .from("writing_assignments")
+          .select("task_type,question_source,question_snapshot,status,deleted_at")
+          .eq("assignment_id", assignmentId)
+          .maybeSingle()
+    );
     if (error) return { data: null, error, questionSource: null };
     if (data?.task_type === taskType && isWritingQuestionSnapshot(taskType, data.question_snapshot)) {
       return {
@@ -80,11 +86,19 @@ export async function readWritingQuestion(
     }
     return { data: null, error: null, questionSource: null };
   }
-  const { data, error } = await supabase
-    .from(WRITING_TASK_CONFIG[taskType].questionTable)
-    .select("*")
-    .eq("question_id", questionId)
-    .maybeSingle();
+  const questionFields = taskType === "email"
+    ? "question_id,set_id,set_title,year_month,source_labels,scenario,task_instruction,requirement_1,requirement_2,requirement_3,closing_instruction,recipient,subject"
+    : "question_id,set_id,set_title,year_month,source_labels,professor_name,professor_prompt,student_1_name,student_1_response,student_2_name,student_2_response,professor_avatar_type,student_1_avatar_type,student_2_avatar_type";
+  const { data, error } = await measureDatabase(
+    timing,
+    `${taskType}_question_by_id`,
+    () =>
+      supabase
+        .from(WRITING_TASK_CONFIG[taskType].questionTable)
+        .select(questionFields)
+        .eq("question_id", questionId)
+        .maybeSingle()
+  );
 
   return {
     assignmentAvailable: true,
@@ -92,6 +106,14 @@ export async function readWritingQuestion(
     error,
     questionSource: "question_bank" as const
   };
+}
+
+function measureDatabase<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => PromiseLike<T>
+): Promise<T> {
+  return timing ? timing.measure("database", name, operation) : Promise.resolve(operation());
 }
 
 export async function readOwnedWritingAttempt(

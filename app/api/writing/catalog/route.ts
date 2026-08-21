@@ -28,6 +28,19 @@ type QuestionCatalogRow = {
   year_month: string;
 };
 
+type WritingCatalogAttemptRow = Pick<
+  WritingAttempt,
+  | "attempt_id"
+  | "question_id"
+  | "word_count"
+  | "status"
+  | "writing_mode"
+  | "elapsed_seconds"
+  | "saved_at"
+  | "submitted_at"
+  | "updated_at"
+>;
+
 export async function GET(request: Request) {
   const timing = createStudentPerformanceTrace("/api/writing/catalog");
   const respond = (data: unknown, init?: ResponseInit) => writingJson(data, init, timing);
@@ -52,11 +65,11 @@ export async function GET(request: Request) {
         )
       ),
       timing.measure("database", "writing_attempts_catalog", () =>
-        readAllSupabaseRows<WritingAttempt>((from, to) =>
+        readAllSupabaseRows<WritingCatalogAttemptRow>((from, to) =>
           auth.supabase!
             .from("writing_attempts")
             .select(
-              "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,time_limit_seconds,remaining_seconds,writing_mode,elapsed_seconds,overtime_ranges,started_at,saved_at,submitted_at,created_at,updated_at"
+              "attempt_id,question_id,word_count,status,writing_mode,elapsed_seconds,saved_at,submitted_at,updated_at"
             )
             .eq("user_id", auth.userId!)
             .eq("task_type", taskType)
@@ -101,7 +114,7 @@ export async function GET(request: Request) {
     }
 
     const payload = timing.measureSync("processing", "build_writing_catalog_payload", () => {
-    const attemptsByQuestion = new Map<string, WritingAttempt[]>();
+    const attemptsByQuestion = new Map<string, WritingCatalogAttemptRow[]>();
     for (const attempt of attempts) {
       attemptsByQuestion.set(attempt.question_id, [
         ...(attemptsByQuestion.get(attempt.question_id) ?? []),

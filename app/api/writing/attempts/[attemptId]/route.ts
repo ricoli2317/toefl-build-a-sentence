@@ -9,9 +9,11 @@ import {
   writingJson
 } from "@/lib/writingServer";
 import {
-  loadHistoricalPracticeDisplayResolver,
+  createHistoricalPracticeDisplayResolver,
+  loadWritingHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 export const dynamic = "force-dynamic";
 
@@ -19,22 +21,24 @@ export async function GET(
   request: Request,
   { params }: { params: { attemptId: string } }
 ) {
+  const timing = createStudentPerformanceTrace("/api/writing/attempts/[attemptId]");
+  const respond = (data: unknown, init?: ResponseInit) => writingJson(data, init, timing);
   try {
-    const auth = await requireWritingStudent(request);
+    const auth = await requireWritingStudent(request, timing);
     if (auth.error) return auth.error;
-    if (!auth.supabase || !auth.userId) return writingJson({ error: "Unauthorized" }, { status: 401 });
+    if (!auth.supabase || !auth.userId) return respond({ error: "Unauthorized" }, { status: 401 });
 
     const attemptResult = await readOwnedWritingAttempt(
       auth.supabase,
       auth.userId,
       params.attemptId
     );
-    if (attemptResult.error) return writingJson({ error: attemptResult.error.message }, { status: 500 });
-    if (!attemptResult.data) return writingJson({ error: "Writing attempt not found" }, { status: 404 });
+    if (attemptResult.error) return respond({ error: attemptResult.error.message }, { status: 500 });
+    if (!attemptResult.data) return respond({ error: "Writing attempt not found" }, { status: 404 });
     const submissionOnly =
       new URL(request.url).searchParams.get("mode") === "submission";
     if (submissionOnly && attemptResult.data.status !== "submitted") {
-      return writingJson({ error: "Submitted writing attempt not found" }, { status: 404 });
+      return respond({ error: "Submitted writing attempt not found" }, { status: 404 });
     }
     if (attemptResult.data.status === "draft" && attemptResult.data.assignment_id) {
       const assignmentAvailable = await isAssignmentAvailable(
@@ -42,17 +46,18 @@ export async function GET(
         attemptResult.data.assignment_id
       );
       if (!assignmentAvailable) {
-        return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
+        return respond({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
     const questionResult = await readWritingQuestion(
       auth.supabase,
       attemptResult.data.task_type,
       attemptResult.data.question_id,
-      attemptResult.data.assignment_id
+      attemptResult.data.assignment_id,
+      timing
     );
-    if (questionResult.error) return writingJson({ error: questionResult.error.message }, { status: 500 });
-    if (!questionResult.data) return writingJson({ error: "Writing question not found" }, { status: 404 });
+    if (questionResult.error) return respond({ error: questionResult.error.message }, { status: 500 });
+    if (!questionResult.data) return respond({ error: "Writing question not found" }, { status: 404 });
 
     let hasPublishedReview = false;
     const serviceSupabase = createServiceSupabase();
@@ -65,13 +70,19 @@ export async function GET(
         .not("published_at", "is", null)
         .maybeSingle();
       if (reviewResult.error) {
-        return writingJson({ error: "暂时无法加载批改状态。" }, { status: 500 });
+        return respond({ error: "暂时无法加载批改状态。" }, { status: 500 });
       }
       hasPublishedReview = Boolean(reviewResult.data);
     }
-    const historicalDisplay = (
-      await loadHistoricalPracticeDisplayResolver(serviceSupabase)
-    ).resolveWritingAttempt({
+    const displayResolver = questionResult.questionSource === "custom"
+      ? createHistoricalPracticeDisplayResolver({ items: [], sources: [] })
+      : await loadWritingHistoricalPracticeDisplayResolver(
+          serviceSupabase,
+          attemptResult.data.task_type,
+          [attemptResult.data.question_id],
+          timing
+        );
+    const historicalDisplay = displayResolver.resolveWritingAttempt({
       assignmentId: attemptResult.data.assignment_id ?? null,
       assignmentDisplayName: questionResult.data.set_title,
       fallbackDisplayName:
@@ -84,16 +95,17 @@ export async function GET(
     });
     logHistoricalPracticeDisplayWarnings([historicalDisplay]);
 
-    return writingJson({
+    const payload = timing.measureSync("processing", "build_writing_practice_payload", () => ({
       attempt: attemptResult.data,
       question: questionResult.data,
       display_name: historicalDisplay.displayName,
       question_source: questionResult.questionSource,
       assignment_available: questionResult.assignmentAvailable ?? true,
       has_published_review: hasPublishedReview
-    });
+    }));
+    return respond(payload);
   } catch (error) {
-    return writingJson(
+    return respond(
       { error: error instanceof Error ? error.message : "Could not load writing attempt." },
       { status: 500 }
     );

@@ -47,6 +47,11 @@ type PracticeItemQuestionMapRow = {
   logical_question_order: number;
 };
 
+type PracticeItemOccurrenceRow = {
+  source_id: string;
+  occurred_on: string;
+};
+
 type BuildSentenceRawQuestionRow = {
   question_id: string;
   set_id: string;
@@ -131,6 +136,12 @@ export type PracticePublicUniverse = {
     taskType: "email" | "academic_discussion";
     questionId: string | null;
   }): WritingAssignmentPracticeResolution;
+};
+
+export type PracticeCatalogDirectory = {
+  publicItems: PublicCanonicalPracticeSource[];
+  getFormalSourcesForPracticeItem(itemId: string): FormalPracticeItemSource[];
+  resolveSourceToPracticeItemId(sourceId: string): string | null;
 };
 
 export function createPracticePublicUniverse(
@@ -326,6 +337,71 @@ export function createPracticePublicUniverse(
         resolvedPublicPracticeItemId: publicItem?.itemId ?? null
       });
     }
+  };
+}
+
+function createPracticeCatalogDirectory(
+  items: PracticeItemRow[],
+  sources: PracticeItemSourceRow[]
+): PracticeCatalogDirectory {
+  const itemsById = new Map(items.map((item) => [item.item_id, item]));
+  const sourcesByItem = groupBy(sources, (source) => source.item_id);
+  const practiceItemIdBySource = new Map<string, string>();
+  const formalSourcesByItem = new Map<string, FormalPracticeItemSource[]>();
+
+  for (const source of sources) {
+    const item = itemsById.get(source.item_id);
+    if (!item || item.task_type !== source.task_type || !isFormalSource(source)) continue;
+    practiceItemIdBySource.set(source.source_id, item.item_id);
+    formalSourcesByItem.set(item.item_id, [
+      ...(formalSourcesByItem.get(item.item_id) ?? []),
+      {
+        sourceId: source.source_id,
+        itemId: source.item_id,
+        taskType: source.task_type,
+        sourceSetId: source.source_set_id,
+        sourceQuestionId: source.source_question_id,
+        isCanonical: source.is_canonical
+      }
+    ]);
+  }
+
+  const publicItems = items.flatMap((item): PublicCanonicalPracticeSource[] => {
+    if (
+      !PUBLIC_PRACTICE_TASK_TYPES.has(item.task_type) ||
+      !item.is_active ||
+      !item.display_number?.trim()
+    ) {
+      return [];
+    }
+    const formalSources = (sourcesByItem.get(item.item_id) ?? []).filter(
+      (source) => source.task_type === item.task_type && isFormalSource(source)
+    );
+    const canonicalSources = formalSources.filter((source) => source.is_canonical);
+    if (formalSources.length === 0 || canonicalSources.length !== 1) return [];
+    const canonical = canonicalSources[0];
+    if (
+      item.task_type === "build_sentence" &&
+      (!canonical.source_set_id || isVirtualBuildSentenceSetId(canonical.source_set_id))
+    ) {
+      return [];
+    }
+    return [{
+      ...historicalItem(item),
+      displayNumber: item.display_number,
+      sourceId: canonical.source_id,
+      sourceSetId: canonical.source_set_id,
+      sourceQuestionId: canonical.source_question_id,
+      canonicalQuestions: null
+    }];
+  });
+
+  return {
+    publicItems,
+    getFormalSourcesForPracticeItem: (itemId) => [
+      ...(formalSourcesByItem.get(itemId) ?? [])
+    ],
+    resolveSourceToPracticeItemId: (sourceId) => practiceItemIdBySource.get(sourceId) ?? null
   };
 }
 
@@ -555,6 +631,84 @@ export async function loadPracticePublicUniverseForTaskType(
     console.warn("[practice-public-universe] excluded_invalid_item", warning);
   }
   return universe;
+}
+
+export async function loadPracticeCatalogDirectory(
+  supabase: SupabaseClient,
+  taskType: PracticeTaskType,
+  timing?: StudentPerformanceTrace
+): Promise<{
+  directory: PracticeCatalogDirectory;
+  occurrences: PracticeItemOccurrenceRow[];
+}> {
+  const itemResult = await measureDatabase(timing, "practice_items", () =>
+    readAllSupabaseRows<PracticeItemRow>((from, to) =>
+      supabase
+        .from("practice_items")
+        .select("item_id,task_type,display_number,display_title,first_seen_date,is_active")
+        .eq("task_type", taskType)
+        .eq("is_active", true)
+        .not("display_number", "is", null)
+        .neq("display_number", "")
+        .order("first_seen_date", { ascending: false })
+        .order("display_number", { ascending: false })
+        .order("item_id", { ascending: true })
+        .range(from, to) as unknown as PromiseLike<{
+        data: PracticeItemRow[] | null;
+        error: { message: string } | null;
+      }>
+    )
+  );
+  if (itemResult.error) {
+    throw new Error(
+      `Failed to load practice_items directory for ${taskType} catalog: ${itemResult.error.message}`
+    );
+  }
+  const items = itemResult.data ?? [];
+
+  const itemIds = items.map((item) => item.item_id);
+  const sources = await measureDatabase(timing, "practice_item_sources", () =>
+    readRowsInBatches<PracticeItemSourceRow>(
+      itemIds,
+      (batch, rangeFrom, rangeTo) =>
+        supabase
+          .from("practice_item_sources")
+          .select("source_id,item_id,task_type,source_set_id,source_question_id,is_canonical")
+          .eq("task_type", taskType)
+          .in("item_id", batch)
+          .order("source_id", { ascending: true })
+          .range(rangeFrom, rangeTo) as unknown as PromiseLike<{
+          data: PracticeItemSourceRow[] | null;
+          error: { message: string } | null;
+        }>,
+      "practice_item_sources"
+    )
+  );
+  const formalSourceIds = distinct(
+    sources.filter(isFormalSource).map((source) => source.source_id)
+  );
+  const occurrences = await measureDatabase(timing, "practice_item_occurrences", () =>
+    readRowsInBatches<PracticeItemOccurrenceRow>(
+      formalSourceIds,
+      (batch, rangeFrom, rangeTo) =>
+        supabase
+          .from("practice_item_occurrences")
+          .select("source_id,occurred_on")
+          .in("source_id", batch)
+          .order("source_id", { ascending: true })
+          .order("occurred_on", { ascending: false })
+          .range(rangeFrom, rangeTo) as unknown as PromiseLike<{
+          data: PracticeItemOccurrenceRow[] | null;
+          error: { message: string } | null;
+        }>,
+      "practice_item_occurrences"
+    )
+  );
+  const buildDirectory = () => createPracticeCatalogDirectory(items, sources);
+  const directory = timing
+    ? timing.measureSync("processing", "build_practice_catalog_directory", buildDirectory)
+    : buildDirectory();
+  return { directory, occurrences };
 }
 
 function measureDatabase<T>(
