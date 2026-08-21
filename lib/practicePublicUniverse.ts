@@ -404,6 +404,162 @@ export async function loadPracticePublicUniverse(
   return universe;
 }
 
+<<<<<<< Updated upstream
+=======
+export async function loadPracticePublicUniverseForTaskType(
+  supabase: SupabaseClient,
+  taskType: PracticeTaskType,
+  timing?: StudentPerformanceTrace
+): Promise<PracticePublicUniverse> {
+  const [items, allTaskSources] = await Promise.all([
+    measureDatabase(timing, "practice_items", async () => {
+      const result = await readAllSupabaseRows<PracticeItemRow>((from, to) =>
+        supabase
+          .from("practice_items")
+          .select("item_id,task_type,display_number,display_title,first_seen_date,is_active")
+          .eq("task_type", taskType)
+          .eq("is_active", true)
+          .order("item_id", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{
+            data: PracticeItemRow[] | null;
+            error: { message: string } | null;
+          }>
+      );
+      if (result.error) {
+        throw new Error(
+          `Failed to load practice_items for ${taskType} catalog: ${result.error.message}`
+        );
+      }
+      return result.data ?? [];
+    }),
+    measureDatabase(timing, "practice_item_sources", async () => {
+      const result = await readAllSupabaseRows<PracticeItemSourceRow>((from, to) =>
+        supabase
+          .from("practice_item_sources")
+          .select("source_id,item_id,task_type,source_set_id,source_question_id,is_canonical")
+          .eq("task_type", taskType)
+          .order("source_id", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{
+            data: PracticeItemSourceRow[] | null;
+            error: { message: string } | null;
+          }>
+      );
+      if (result.error) {
+        throw new Error(
+          `Failed to load practice_item_sources for ${taskType} catalog: ${result.error.message}`
+        );
+      }
+      return result.data ?? [];
+    })
+  ]);
+
+  const activeItemIds = new Set(items.map((item) => item.item_id));
+  const sources = allTaskSources.filter((source) => activeItemIds.has(source.item_id));
+  const formalSources = sources.filter(isFormalSource);
+  const canonicalSources = formalSources.filter((source) => source.is_canonical);
+
+  let questionMaps: PracticeItemQuestionMapRow[] = [];
+  let buildSentenceQuestions: BuildSentenceRawQuestionRow[] = [];
+  let emailQuestions: WritingRawQuestionRow[] = [];
+  let academicDiscussionQuestions: WritingRawQuestionRow[] = [];
+
+  if (taskType === "build_sentence") {
+    const canonicalSourceIds = distinct(canonicalSources.map((source) => source.source_id));
+    const canonicalSetIds = distinct(
+      canonicalSources.flatMap((source) =>
+        source.source_set_id && !isVirtualBuildSentenceSetId(source.source_set_id)
+          ? [source.source_set_id]
+          : []
+      )
+    );
+    [questionMaps, buildSentenceQuestions] = await Promise.all([
+      measureDatabase(timing, "practice_item_question_map", () =>
+        readRowsInBatches<PracticeItemQuestionMapRow>(
+          canonicalSourceIds,
+          (batch, from, to) =>
+            supabase
+              .from("practice_item_question_map")
+              .select("source_id,source_question_id,source_question_order,logical_question_order")
+              .in("source_id", batch)
+              .order("map_id", { ascending: true })
+              .range(from, to) as unknown as PromiseLike<{
+                data: PracticeItemQuestionMapRow[] | null;
+                error: { message: string } | null;
+              }>,
+          "practice_item_question_map"
+        )
+      ),
+      measureDatabase(timing, "questions_public_universe", () =>
+        readRowsInBatches<BuildSentenceRawQuestionRow>(
+          canonicalSetIds,
+          (batch, from, to) =>
+            supabase
+              .from("questions")
+              .select("question_id,set_id,question_order")
+              .in("set_id", batch)
+              .order("question_id", { ascending: true })
+              .range(from, to) as unknown as PromiseLike<{
+                data: BuildSentenceRawQuestionRow[] | null;
+                error: { message: string } | null;
+              }>,
+          "questions"
+        )
+      )
+    ]);
+  } else {
+    const canonicalQuestionIds = distinct(
+      canonicalSources.flatMap((source) =>
+        source.source_question_id ? [source.source_question_id] : []
+      )
+    );
+    const rows = await measureDatabase(
+      timing,
+      taskType === "email"
+        ? "email_questions_public_universe"
+        : "academic_discussion_questions_public_universe",
+      () =>
+        readRowsInBatches<WritingRawQuestionRow>(
+          canonicalQuestionIds,
+          (batch, from, to) =>
+            supabase
+              .from(
+                taskType === "email"
+                  ? "email_questions"
+                  : "academic_discussion_questions"
+              )
+              .select("question_id")
+              .in("question_id", batch)
+              .order("question_id", { ascending: true })
+              .range(from, to) as unknown as PromiseLike<{
+                data: WritingRawQuestionRow[] | null;
+                error: { message: string } | null;
+              }>,
+          taskType === "email" ? "email_questions" : "academic_discussion_questions"
+        )
+    );
+    if (taskType === "email") emailQuestions = rows;
+    else academicDiscussionQuestions = rows;
+  }
+
+  const buildUniverse = () =>
+    createPracticePublicUniverse({
+      items,
+      sources,
+      questionMaps,
+      buildSentenceQuestions,
+      emailQuestions,
+      academicDiscussionQuestions
+    });
+  const universe = timing
+    ? timing.measureSync("processing", "build_practice_public_universe", buildUniverse)
+    : buildUniverse();
+  for (const warning of universe.warnings) {
+    console.warn("[practice-public-universe] excluded_invalid_item", warning);
+  }
+  return universe;
+}
+
+>>>>>>> Stashed changes
 function measureDatabase<T>(
   timing: StudentPerformanceTrace | undefined,
   name: string,
@@ -522,4 +678,41 @@ async function readRows<T>(
     throw new Error(`Failed to load ${table} for public practice universe: ${result.error.message}`);
   }
   return result.data ?? [];
+}
+
+async function readRowsInBatches<T>(
+  values: string[],
+  readPage: (
+    batch: string[],
+    from: number,
+    to: number
+  ) => PromiseLike<{
+    data: T[] | null;
+    error: { message: string } | null;
+  }>,
+  table: string
+): Promise<T[]> {
+  if (values.length === 0) return [];
+  const results = await Promise.all(
+    chunkValues(distinct(values)).map((batch) =>
+      readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
+    )
+  );
+  const error = results.find((result) => result.error)?.error;
+  if (error) {
+    throw new Error(`Failed to load ${table} for scoped public practice universe: ${error.message}`);
+  }
+  return results.flatMap((result) => result.data ?? []);
+}
+
+function chunkValues<T>(values: T[], size = 100) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function distinct(values: string[]) {
+  return Array.from(new Set(values));
 }

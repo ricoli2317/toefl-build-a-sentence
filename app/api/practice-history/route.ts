@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import {
   buildPracticeHistoryPayload,
-  isOfficialPracticeSetId
+  isOfficialPracticeSetId,
+  isVirtualSetId
 } from "@/lib/practiceHistory";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
   enrichBuildSentenceHistoricalAttempts,
-  loadHistoricalPracticeDisplayResolver
+  loadBuildSentenceHistoricalPracticeDisplayResolver
 } from "@/lib/historicalPracticeDisplay";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
@@ -38,14 +39,16 @@ type AnswerRow = {
 
 type QuestionRow = {
   question_id: string;
-  set_id: string;
-  set_title: string | null;
   question_order: number | null;
   prompt: string | null;
   sentence_template: string | null;
   options_text: string | null;
   final_sentence: string | null;
   grammar_tags_text: string | null;
+};
+
+type QuestionSetRow = {
+  set_id: string;
 };
 
 export const dynamic = "force-dynamic";
@@ -110,7 +113,11 @@ export async function GET(request: Request) {
       }
     });
 
+<<<<<<< Updated upstream
     const [attemptResult, answerResult, questionResult, historicalDisplayResolver] = await Promise.all([
+=======
+    const [attemptResult, answerResult] = await Promise.all([
+>>>>>>> Stashed changes
       timing.measure("database", "attempts_student_history", () =>
         readAllSupabaseRows<AttemptRow>((from, to) =>
           db
@@ -134,6 +141,7 @@ export async function GET(request: Request) {
             .order("attempt_answer_id", { ascending: true })
             .range(from, to)
         )
+<<<<<<< Updated upstream
       ),
       timing.measure("database", "questions_history_lookup", () =>
         readAllSupabaseRows<QuestionRow>((from, to) =>
@@ -151,13 +159,46 @@ export async function GET(request: Request) {
     const queryError = attemptResult.error ?? answerResult.error ?? questionResult.error;
     if (queryError) return respondError(`Failed to load practice history: ${queryError.message}`);
 
+=======
+      )
+    ]);
+    const initialQueryError = attemptResult.error ?? answerResult.error;
+    if (initialQueryError) {
+      return respondError(`Failed to load practice history: ${initialQueryError.message}`);
+    }
+
+    const candidateSetIds = distinct(
+      (attemptResult.data ?? []).flatMap((attempt) => {
+        const setId = String(attempt.set_id).trim();
+        return setId && !isVirtualSetId(setId) ? [setId] : [];
+      })
+    );
+    const historyQuestionIds = distinct(
+      (answerResult.data ?? []).map((answer) => String(answer.question_id))
+    );
+    // Detail rows only need questions referenced by this student's answers. The narrow
+    // set lookup separately preserves official-set detection for attempts with no answers.
+    const [questionResult, questionSetResult, historicalDisplayResolver] = await Promise.all([
+      timing.measure("database", "questions_history_lookup", () =>
+        loadHistoryQuestionRows(db, historyQuestionIds)
+      ),
+      timing.measure("database", "questions_history_set_lookup", () =>
+        loadHistoryQuestionSetRows(db, candidateSetIds)
+      ),
+      loadBuildSentenceHistoricalPracticeDisplayResolver(db, candidateSetIds, timing)
+    ]);
+    const queryError = questionResult.error ?? questionSetResult.error;
+    if (queryError) return respondError(`Failed to load practice history: ${queryError.message}`);
+
+>>>>>>> Stashed changes
     const payload = timing.measureSync("processing", "build_practice_history_payload", () => {
     const questionRows = (questionResult.data ?? []).map((question) => ({
       ...question,
-      question_id: String(question.question_id),
-      set_id: String(question.set_id)
+      question_id: String(question.question_id)
     }));
-    const realSetIds = new Set(questionRows.map((question) => question.set_id));
+    const realSetIds = new Set(
+      (questionSetResult.data ?? []).map((question) => String(question.set_id))
+    );
     const questionById = new Map(
       questionRows.map((question) => [question.question_id, question])
     );
@@ -252,6 +293,74 @@ export async function GET(request: Request) {
   } catch (error) {
     return respondError(error instanceof Error ? error.message : "Could not load practice history.");
   }
+}
+
+function loadHistoryQuestionRows(
+  db: SupabaseClient,
+  questionIds: string[]
+) {
+  return readRowsInBatches<QuestionRow>(questionIds, (batch, from, to) =>
+    db
+      .from("questions")
+      .select(
+        "question_id,question_order,prompt,sentence_template,options_text,final_sentence,grammar_tags_text"
+      )
+      .in("question_id", batch)
+      .order("question_id", { ascending: true })
+      .range(from, to)
+  );
+}
+
+function loadHistoryQuestionSetRows(
+  db: SupabaseClient,
+  setIds: string[]
+) {
+  return readRowsInBatches<QuestionSetRow>(setIds, (batch, from, to) =>
+    db
+      .from("questions")
+      .select("set_id")
+      .in("set_id", batch)
+      .order("set_id", { ascending: true })
+      .range(from, to)
+  );
+}
+
+async function readRowsInBatches<T>(
+  values: string[],
+  readPage: (
+    batch: string[],
+    from: number,
+    to: number
+  ) => PromiseLike<{
+    data: T[] | null;
+    error: { message: string } | null;
+  }>
+) {
+  if (values.length === 0) {
+    return { data: [] as T[], error: null };
+  }
+  const results = await Promise.all(
+    chunkValues(values).map((batch) =>
+      readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
+    )
+  );
+  const error = results.find((result) => result.error)?.error ?? null;
+  return {
+    data: error ? null : results.flatMap((result) => result.data ?? []),
+    error
+  };
+}
+
+function chunkValues<T>(values: T[], size = 100) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function distinct(values: string[]) {
+  return Array.from(new Set(values));
 }
 
 function startOfServerLocalDay() {

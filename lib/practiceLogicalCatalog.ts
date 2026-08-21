@@ -3,6 +3,7 @@ import { compareDisplayNumbers } from "./practiceImporter/numbering.ts";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import {
   loadPracticePublicUniverse,
+  loadPracticePublicUniverseForTaskType,
   type PracticePublicUniverse
 } from "./practicePublicUniverse.ts";
 import {
@@ -126,7 +127,10 @@ export async function getLogicalPracticeItems(input: {
   page: number;
   timing?: StudentPerformanceTrace;
 }): Promise<LogicalPracticeCatalogWithStudentState> {
-  const { catalog, universe } = await loadLogicalPracticeCatalog(input);
+  const { catalog, universe } = await loadLogicalPracticeCatalog({
+    ...input,
+    useTaskScopedUniverse: true
+  });
   const sources = catalog.items.flatMap((item) =>
     universe.getFormalSourcesForPracticeItem(item.item_id)
   );
@@ -163,9 +167,22 @@ async function loadLogicalPracticeCatalog(input: {
   taskType: PracticeTaskType;
   page: number;
   timing?: StudentPerformanceTrace;
+<<<<<<< Updated upstream
 }) {
   const [universe, occurrenceResult] = await Promise.all([
     loadPracticePublicUniverse(input.supabase, input.timing),
+=======
+  useTaskScopedUniverse?: boolean;
+}) {
+  const [universe, occurrenceResult] = await Promise.all([
+    input.useTaskScopedUniverse
+      ? loadPracticePublicUniverseForTaskType(
+          input.supabase,
+          input.taskType,
+          input.timing
+        )
+      : loadPracticePublicUniverse(input.supabase, input.timing),
+>>>>>>> Stashed changes
     measureDatabase(input.timing, "practice_item_occurrences", () =>
       readAllSupabaseRows<PracticeItemOccurrenceRow>((from, to) =>
         input.supabase

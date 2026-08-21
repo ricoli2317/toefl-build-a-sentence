@@ -254,12 +254,105 @@ export async function loadHistoricalPracticeDisplayResolver(
     : buildResolver();
 }
 
+<<<<<<< Updated upstream
+=======
+export async function loadBuildSentenceHistoricalPracticeDisplayResolver(
+  supabase: SupabaseClient,
+  rawSetIds: string[],
+  timing?: StudentPerformanceTrace
+): Promise<HistoricalPracticeDisplayResolver> {
+  const setIds = distinct(rawSetIds.map((setId) => setId.trim()).filter(Boolean));
+  const sources = await measureDatabase(
+    timing,
+    "historical_practice_item_sources",
+    () =>
+      readRowsInBatches<HistoricalPracticeSourceRow>(
+        setIds,
+        (batch, from, to) =>
+          supabase
+            .from("practice_item_sources")
+            .select("source_id,item_id,task_type,source_set_id,source_question_id")
+            .eq("task_type", "build_sentence")
+            .in("source_set_id", batch)
+            .order("source_id", { ascending: true })
+            .range(from, to) as unknown as PromiseLike<{
+              data: HistoricalPracticeSourceRow[] | null;
+              error: { message: string } | null;
+            }>,
+        "practice_item_sources"
+      )
+  );
+  const itemIds = distinct(sources.map((source) => String(source.item_id)));
+  const items = await measureDatabase(timing, "historical_practice_items", () =>
+    readRowsInBatches<HistoricalPracticeItemRow>(
+      itemIds,
+      (batch, from, to) =>
+        supabase
+          .from("practice_items")
+          .select("item_id,task_type,display_number,display_title,is_active")
+          .eq("task_type", "build_sentence")
+          .in("item_id", batch)
+          .order("item_id", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{
+            data: HistoricalPracticeItemRow[] | null;
+            error: { message: string } | null;
+          }>,
+      "practice_items"
+    )
+  );
+  const buildResolver = () => createHistoricalPracticeDisplayResolver({ items, sources });
+  return timing
+    ? timing.measureSync("processing", "build_historical_display_resolver", buildResolver)
+    : buildResolver();
+}
+
+>>>>>>> Stashed changes
 function measureDatabase<T>(
   timing: StudentPerformanceTrace | undefined,
   name: string,
   operation: () => Promise<T>
 ) {
   return timing ? timing.measure("database", name, operation) : operation();
+<<<<<<< Updated upstream
+=======
+}
+
+async function readRowsInBatches<T>(
+  values: string[],
+  readPage: (
+    batch: string[],
+    from: number,
+    to: number
+  ) => PromiseLike<{
+    data: T[] | null;
+    error: { message: string } | null;
+  }>,
+  table: string
+): Promise<T[]> {
+  if (values.length === 0) return [];
+  const results = await Promise.all(
+    chunkValues(values).map((batch) =>
+      readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
+    )
+  );
+  const error = results.find((result) => result.error)?.error;
+  if (error) {
+    throw new Error(`Failed to load scoped historical ${table}: ${error.message}`);
+  }
+  return results.flatMap((result) => result.data ?? []);
+}
+
+function chunkValues<T>(values: T[], size = 100) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function distinct(values: string[]) {
+  return Array.from(new Set(values));
+>>>>>>> Stashed changes
 }
 
 export function logHistoricalPracticeDisplayWarnings(
