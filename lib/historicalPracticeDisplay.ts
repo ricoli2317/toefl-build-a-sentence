@@ -19,6 +19,10 @@ export type HistoricalPracticeSourceRow = {
   source_question_id: string | null;
 };
 
+type HistoricalWritingSourceWithItemRow = HistoricalPracticeSourceRow & {
+  item: HistoricalPracticeItemRow | HistoricalPracticeItemRow[] | null;
+};
+
 export type HistoricalPracticeDisplayWarning = {
   code:
     | "AMBIGUOUS_HISTORICAL_SOURCE"
@@ -313,45 +317,40 @@ export async function loadWritingHistoricalPracticeDisplayResolver(
   const questionIds = distinct(
     rawQuestionIds.map((questionId) => questionId.trim()).filter(Boolean)
   );
-  const sources = await measureDatabase(
+  const joinedRows = await measureDatabase(
     timing,
-    "writing_practice_item_sources_current_question",
+    "writing_practice_display_current_question",
     () =>
-      readRowsInBatches<HistoricalPracticeSourceRow>(
+      readRowsInBatches<HistoricalWritingSourceWithItemRow>(
         questionIds,
         (batch, from, to) =>
           supabase
             .from("practice_item_sources")
-            .select("source_id,item_id,task_type,source_set_id,source_question_id")
+            .select(
+              "source_id,item_id,task_type,source_set_id,source_question_id,item:practice_items!inner(item_id,task_type,display_number,display_title,is_active)"
+            )
             .eq("task_type", taskType)
             .in("source_question_id", batch)
             .order("source_id", { ascending: true })
             .range(from, to) as unknown as PromiseLike<{
-              data: HistoricalPracticeSourceRow[] | null;
+              data: HistoricalWritingSourceWithItemRow[] | null;
               error: { message: string } | null;
             }>,
-        "practice_item_sources"
+        "practice display mapping"
       )
   );
-  const itemIds = distinct(sources.map((source) => String(source.item_id)));
-  const items = await measureDatabase(timing, "writing_practice_items_current_question", () =>
-    readRowsInBatches<HistoricalPracticeItemRow>(
-      itemIds,
-      (batch, from, to) =>
-        supabase
-          .from("practice_items")
-          .select("item_id,task_type,display_number,display_title,is_active")
-          .eq("task_type", taskType)
-          .in("item_id", batch)
-          .order("item_id", { ascending: true })
-          .range(from, to) as unknown as PromiseLike<{
-            data: HistoricalPracticeItemRow[] | null;
-            error: { message: string } | null;
-          }>,
-      "practice_items"
-    )
-  );
-  const buildResolver = () => createHistoricalPracticeDisplayResolver({ items, sources });
+  const buildResolver = () => {
+    const itemsById = new Map<string, HistoricalPracticeItemRow>();
+    const sources = joinedRows.map(({ item, ...source }) => {
+      const practiceItem = Array.isArray(item) ? item[0] : item;
+      if (practiceItem) itemsById.set(String(practiceItem.item_id), practiceItem);
+      return source;
+    });
+    return createHistoricalPracticeDisplayResolver({
+      items: Array.from(itemsById.values()),
+      sources
+    });
+  };
   return timing
     ? timing.measureSync("processing", "build_writing_display_resolver", buildResolver)
     : buildResolver();

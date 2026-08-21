@@ -88,7 +88,7 @@ export async function readWritingQuestion(
   }
   const questionFields = taskType === "email"
     ? "question_id,set_id,set_title,year_month,source_labels,scenario,task_instruction,requirement_1,requirement_2,requirement_3,closing_instruction,recipient,subject"
-    : "question_id,set_id,set_title,year_month,source_labels,professor_name,professor_prompt,student_1_name,student_1_response,student_2_name,student_2_response,professor_avatar_type,student_1_avatar_type,student_2_avatar_type";
+    : "question_id,set_id,set_title,year_month,source_labels,professor_name,professor_prompt,student_1_name,student_1_response,student_2_name,student_2_response";
   const { data, error } = await measureDatabase(
     timing,
     `${taskType}_question_by_id`,
