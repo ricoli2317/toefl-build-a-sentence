@@ -129,6 +129,12 @@ export function WritingPractice({
       : null;
 
   useEffect(() => {
+    if (mode === "readonly" && attemptId) {
+      logStudentPerformance({ event: "readonly_render_start", attemptId, source: cachedReadonlyPayload ? "submitted_attempt_cache" : "api_reload" });
+    }
+  }, [attemptId, cachedReadonlyPayload, mode]);
+
+  useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
@@ -151,20 +157,14 @@ export function WritingPractice({
           throw new Error("缺少写作题目。");
         }
         if (mode === "practice" && !attemptId && !selectedWritingMode) return;
+        if (cachedReadonlyPayload) {
+          if (!ignore) setPayload(cachedReadonlyPayload);
+          return;
+        }
         const supabase = createBrowserSupabase();
         const { data } = await supabase.auth.getSession();
         const token = data.session?.access_token ?? "";
         if (!token) throw new Error("登录状态已失效，请重新登录。");
-        if (cachedReadonlyPayload) {
-          if (!ignore) {
-            setAccessToken(token);
-            setAllowExternalPaste(
-              canUseExternalWritingPaste(data.session?.user.email, taskType)
-            );
-            setPayload(cachedReadonlyPayload);
-          }
-          return;
-        }
         const detailUrl = attemptId
           ? `/api/writing/attempts/${encodeURIComponent(attemptId)}${
               mode === "readonly" ? "?mode=submission" : ""
@@ -256,7 +256,6 @@ export function WritingPractice({
     if (
       mode !== "readonly" ||
       !attemptId ||
-      !accessToken ||
       payload?.attempt?.status !== "submitted"
     ) {
       return;
@@ -291,7 +290,7 @@ export function WritingPractice({
   if (error) {
     return <PracticeMessage title="无法进入练习" description={error} />;
   }
-  if (!payload?.attempt || !payload.question || !accessToken) {
+  if (!payload?.attempt || !payload.question || (!accessToken && mode !== "readonly")) {
     return <PracticeMessage title="正在准备练习" description="正在加载题目和草稿..." />;
   }
 
@@ -437,6 +436,7 @@ function WritingPracticeSession({
     ) => {
       const timerSnapshot = readActiveTimer();
       const detailUrl = `/api/writing/attempts/${encodeURIComponent(attempt.attempt_id)}`;
+      if (action === "submit") logStudentPerformance({ event: "patch_request_start", attemptId: attempt.attempt_id });
       const response = await measureStudentRequest(
         `PATCH ${detailUrl} (${action})`,
         async (captureResponse) => {
@@ -461,6 +461,7 @@ function WritingPracticeSession({
         }
       );
       const result = (await response.json()) as { attempt?: WritingAttempt; error?: string };
+      if (action === "submit") logStudentPerformance({ event: "patch_request_complete", attemptId: attempt.attempt_id });
       if (!response.ok || result.error || !result.attempt) {
         throw new Error(result.error ?? "写作记录保存失败。");
       }
@@ -550,6 +551,7 @@ function WritingPracticeSession({
     async (automatic = false) => {
       if (submitStartedRef.current || attempt.status !== "draft") return;
       submitStartedRef.current = true;
+      logStudentPerformance({ event: "submit_click", attemptId: attempt.attempt_id });
       submittingRef.current = true;
       const submitStartedAt = performance.now();
       setSubmitting(true);
@@ -573,6 +575,7 @@ function WritingPracticeSession({
           question,
           question_source: assignmentQuestionSource
         } satisfies PracticePayload);
+        logStudentPerformance({ event: "submitted_cache_write_complete", attemptId: submittedAttempt.attempt_id });
         publishCacheInvalidation({
           type: "WRITING_ATTEMPT_SUBMITTED",
           studentId: submittedAttempt.user_id,
