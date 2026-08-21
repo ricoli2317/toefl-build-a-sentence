@@ -29,11 +29,7 @@ export async function requireWritingStudent(
   timing?: StudentPerformanceTrace
 ) {
   const token = bearerToken(request);
-  const auth = timing
-    ? await timing.measure("auth", "require_writing_student", () =>
-        requireUserWithRole(token, "student")
-      )
-    : await requireUserWithRole(token, "student");
+  const auth = await requireUserWithRole(token, "student", timing);
   if (auth.error || !auth.userId || !token) {
     return {
       error: writingJson(

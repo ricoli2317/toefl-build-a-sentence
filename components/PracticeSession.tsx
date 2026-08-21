@@ -113,36 +113,43 @@ export function PracticeSession({
           data: { session }
         } = await supabase.auth.getSession();
 
-        const response = await fetch("/api/submissions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.access_token ?? ""}`
-          },
-          body: JSON.stringify({
-            setId,
-            setTitle,
-            questionIds: effectiveQuestionIds,
-            answers: questions
-              .filter((question) =>
-                effectiveQuestionIds ? effectiveQuestionIds.includes(question.question_id) : true
-              )
-              .map((question) => ({
-              questionId: question.question_id,
-              submittedOrderText: joinTextItems(
-                answersToSubmit[question.question_id]?.chunks ?? []
-              ),
-              question_time_seconds:
-                answersToSubmit[question.question_id]?.questionTimeSeconds ?? 0
-            })),
-            timeSpentSeconds:
-              forcedTimeSpentSeconds ??
-              Math.min(
-                timed ? totalSeconds : Number.MAX_SAFE_INTEGER,
-                Math.max(0, Math.round((Date.now() - startedAt) / 1000))
-              )
-          })
-        });
+        const response = await measureStudentRequest(
+          "POST /api/submissions",
+          async (captureResponse) => {
+            const submitResponse = await fetch("/api/submissions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.access_token ?? ""}`
+              },
+              body: JSON.stringify({
+                setId,
+                setTitle,
+                questionIds: effectiveQuestionIds,
+                answers: questions
+                  .filter((question) =>
+                    effectiveQuestionIds ? effectiveQuestionIds.includes(question.question_id) : true
+                  )
+                  .map((question) => ({
+                    questionId: question.question_id,
+                    submittedOrderText: joinTextItems(
+                      answersToSubmit[question.question_id]?.chunks ?? []
+                    ),
+                    question_time_seconds:
+                      answersToSubmit[question.question_id]?.questionTimeSeconds ?? 0
+                  })),
+                timeSpentSeconds:
+                  forcedTimeSpentSeconds ??
+                  Math.min(
+                    timed ? totalSeconds : Number.MAX_SAFE_INTEGER,
+                    Math.max(0, Math.round((Date.now() - startedAt) / 1000))
+                  )
+              })
+            });
+            captureResponse(submitResponse);
+            return submitResponse;
+          }
+        );
 
         const responseText = await response.text();
         let payload: { attemptId?: string; error?: string } & Partial<SubmitResponse>;

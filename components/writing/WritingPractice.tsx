@@ -382,22 +382,30 @@ function WritingPracticeSession({
       options?: { keepalive?: boolean; responseText?: string }
     ) => {
       const timerSnapshot = readActiveTimer();
-      const response = await fetch(`/api/writing/attempts/${encodeURIComponent(attempt.attempt_id)}`, {
-        method: "PATCH",
-        cache: "no-store",
-        keepalive: options?.keepalive,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          action,
-          elapsedSeconds: timerSnapshot.elapsedSeconds,
-          overtimeRanges: overtimeRangesRef.current,
-          remainingSeconds: timerSnapshot.remainingSeconds,
-          responseText: options?.responseText ?? textRef.current
-        })
-      });
+      const detailUrl = `/api/writing/attempts/${encodeURIComponent(attempt.attempt_id)}`;
+      const response = await measureStudentRequest(
+        `PATCH ${detailUrl} (${action})`,
+        async (captureResponse) => {
+          const updateResponse = await fetch(detailUrl, {
+            method: "PATCH",
+            cache: "no-store",
+            keepalive: options?.keepalive,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              action,
+              elapsedSeconds: timerSnapshot.elapsedSeconds,
+              overtimeRanges: overtimeRangesRef.current,
+              remainingSeconds: timerSnapshot.remainingSeconds,
+              responseText: options?.responseText ?? textRef.current
+            })
+          });
+          captureResponse(updateResponse);
+          return updateResponse;
+        }
+      );
       const result = (await response.json()) as { attempt?: WritingAttempt; error?: string };
       if (!response.ok || result.error || !result.attempt) {
         throw new Error(result.error ?? "写作记录保存失败。");

@@ -14,6 +14,7 @@ import {
   type LogicalPeerSource
 } from "@/lib/resultPeerComparisonLogical";
 import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
+import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 type CurrentSourceRow = Pick<LogicalPeerSource, "source_id" | "item_id" | "source_set_id">;
 
@@ -22,7 +23,8 @@ export async function loadResultPeerComparison({
   currentAttempt,
   db,
   setId,
-  studentId
+  studentId,
+  timing
 }: {
   comparable: boolean;
   currentAttempt: {
@@ -34,27 +36,32 @@ export async function loadResultPeerComparison({
   db: SupabaseClient;
   setId: string;
   studentId: string;
+  timing?: StudentPerformanceTrace;
 }): Promise<ResultPeerComparison> {
   if (!comparable) return EMPTY_RESULT_PEER_COMPARISON;
 
-  const currentSourceResult = await db
-    .from("practice_item_sources")
-    .select("source_id,item_id,source_set_id")
-    .eq("task_type", "build_sentence")
-    .eq("source_set_id", setId)
-    .maybeSingle();
-  const currentSource = currentSourceResult.data as CurrentSourceRow | null;
-  if (currentSourceResult.error || !currentSource) return EMPTY_RESULT_PEER_COMPARISON;
-
-  const sourceResult = await readAllSupabaseRows<LogicalPeerSource>((from, to) =>
+  const currentSourceResult = await measureDatabase(timing, "peer_current_practice_source", () =>
     db
       .from("practice_item_sources")
       .select("source_id,item_id,source_set_id")
-      .eq("item_id", currentSource.item_id)
       .eq("task_type", "build_sentence")
-      .not("source_set_id", "is", null)
-      .order("source_id", { ascending: true })
-      .range(from, to)
+      .eq("source_set_id", setId)
+      .maybeSingle()
+  );
+  const currentSource = currentSourceResult.data as CurrentSourceRow | null;
+  if (currentSourceResult.error || !currentSource) return EMPTY_RESULT_PEER_COMPARISON;
+
+  const sourceResult = await measureDatabase(timing, "peer_practice_sources", () =>
+    readAllSupabaseRows<LogicalPeerSource>((from, to) =>
+      db
+        .from("practice_item_sources")
+        .select("source_id,item_id,source_set_id")
+        .eq("item_id", currentSource.item_id)
+        .eq("task_type", "build_sentence")
+        .not("source_set_id", "is", null)
+        .order("source_id", { ascending: true })
+        .range(from, to)
+    )
   );
   if (sourceResult.error) return EMPTY_RESULT_PEER_COMPARISON;
 
@@ -70,25 +77,29 @@ export async function loadResultPeerComparison({
   }
 
   const [peerResult, questionMapResult] = await Promise.all([
-    readAllSupabaseRows<LogicalPeerCandidateAttempt>((from, to) =>
-      db
-        .from("attempts")
-        .select("attempt_id,student_id,set_id,time_spent_seconds,submitted_at")
-        .in("set_id", sourceSetIds)
-        .neq("student_id", studentId)
-        .not("submitted_at", "is", null)
-        .order("submitted_at", { ascending: false })
-        .order("attempt_id", { ascending: false })
-        .range(from, to)
+    measureDatabase(timing, "peer_attempts", () =>
+      readAllSupabaseRows<LogicalPeerCandidateAttempt>((from, to) =>
+        db
+          .from("attempts")
+          .select("attempt_id,student_id,set_id,time_spent_seconds,submitted_at")
+          .in("set_id", sourceSetIds)
+          .neq("student_id", studentId)
+          .not("submitted_at", "is", null)
+          .order("submitted_at", { ascending: false })
+          .order("attempt_id", { ascending: false })
+          .range(from, to)
+      )
     ),
-    readAllSupabaseRows<LogicalPeerQuestionMap>((from, to) =>
-      db
-        .from("practice_item_question_map")
-        .select("source_id,source_question_id,logical_question_order")
-        .in("source_id", sourceIds)
-        .order("source_id", { ascending: true })
-        .order("logical_question_order", { ascending: true })
-        .range(from, to)
+    measureDatabase(timing, "peer_question_map", () =>
+      readAllSupabaseRows<LogicalPeerQuestionMap>((from, to) =>
+        db
+          .from("practice_item_question_map")
+          .select("source_id,source_question_id,logical_question_order")
+          .in("source_id", sourceIds)
+          .order("source_id", { ascending: true })
+          .order("logical_question_order", { ascending: true })
+          .range(from, to)
+      )
     )
   ]);
   if (peerResult.error || questionMapResult.error) return EMPTY_RESULT_PEER_COMPARISON;
@@ -96,38 +107,60 @@ export async function loadResultPeerComparison({
   const latestPeerAttempts = selectLatestLogicalPeerAttempts(peerResult.data ?? []);
   const peerAttemptIds = latestPeerAttempts.map((attempt) => attempt.attempt_id);
   const answerResult = peerAttemptIds.length > 0
-    ? await readAllSupabaseRows<LogicalPeerAnswer>((from, to) =>
-        db
-          .from("attempt_answers")
-          .select("attempt_id,question_id,is_correct,question_time_seconds")
-          .in("attempt_id", peerAttemptIds)
-          .order("attempt_id", { ascending: true })
-          .order("question_id", { ascending: true })
-          .range(from, to)
+    ? await measureDatabase(timing, "peer_attempt_answers", () =>
+        readAllSupabaseRows<LogicalPeerAnswer>((from, to) =>
+          db
+            .from("attempt_answers")
+            .select("attempt_id,question_id,is_correct,question_time_seconds")
+            .in("attempt_id", peerAttemptIds)
+            .order("attempt_id", { ascending: true })
+            .order("question_id", { ascending: true })
+            .range(from, to)
+        )
       )
     : { data: [], error: null };
   if (answerResult.error) return EMPTY_RESULT_PEER_COMPARISON;
 
-  const mapped = mapLogicalPeerAttempts({
-    itemId: currentSource.item_id,
-    attempts: latestPeerAttempts,
-    sources,
-    questionMaps: questionMapResult.data ?? [],
-    answers: answerResult.data ?? []
-  });
+  const mapped = measureProcessing(timing, "map_peer_attempts", () =>
+    mapLogicalPeerAttempts({
+      itemId: currentSource.item_id,
+      attempts: latestPeerAttempts,
+      sources,
+      questionMaps: questionMapResult.data ?? [],
+      answers: answerResult.data ?? []
+    })
+  );
   for (const warning of mapped.warnings) {
     console.warn("[result-peer-comparison] logical_answer_excluded", warning);
   }
 
-  return buildResultPeerComparison(
-    {
-      attemptId: currentAttempt.attemptId,
-      correctCount: currentAttempt.correctCount,
-      totalQuestions: currentAttempt.totalQuestions,
-      timeSpentSeconds: currentAttempt.timeSpentSeconds
-    },
-    mapped.attempts
+  return measureProcessing(timing, "build_peer_comparison", () =>
+    buildResultPeerComparison(
+      {
+        attemptId: currentAttempt.attemptId,
+        correctCount: currentAttempt.correctCount,
+        totalQuestions: currentAttempt.totalQuestions,
+        timeSpentSeconds: currentAttempt.timeSpentSeconds
+      },
+      mapped.attempts
+    )
   );
+}
+
+function measureDatabase<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => PromiseLike<T>
+): Promise<T> {
+  return timing ? timing.measure("database", name, operation) : Promise.resolve(operation());
+}
+
+function measureProcessing<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => T
+): T {
+  return timing ? timing.measureSync("processing", name, operation) : operation();
 }
 
 function distinct(values: string[]) {

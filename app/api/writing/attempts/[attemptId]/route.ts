@@ -44,7 +44,8 @@ export async function GET(
     if (attemptResult.data.status === "draft" && attemptResult.data.assignment_id) {
       const assignmentAvailable = await isAssignmentAvailable(
         auth.supabase,
-        attemptResult.data.assignment_id
+        attemptResult.data.assignment_id,
+        timing
       );
       if (!assignmentAvailable) {
         return respond({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
@@ -117,89 +118,106 @@ export async function PATCH(
   request: Request,
   { params }: { params: { attemptId: string } }
 ) {
+  const timing = createStudentPerformanceTrace("/api/writing/attempts/[attemptId]");
+  const respond = (data: unknown, init?: ResponseInit) => writingJson(data, init, timing);
   try {
-    const auth = await requireWritingStudent(request);
+    const auth = await requireWritingStudent(request, timing);
     if (auth.error) return auth.error;
-    if (!auth.supabase || !auth.userId) return writingJson({ error: "Unauthorized" }, { status: 401 });
+    if (!auth.supabase || !auth.userId) return respond({ error: "Unauthorized" }, { status: 401 });
 
-    const body = (await request.json()) as {
-      action?: unknown;
-      remainingSeconds?: unknown;
-      responseText?: unknown;
-      elapsedSeconds?: unknown;
-      overtimeRanges?: unknown;
-    };
+    const body = await timing.measure("processing", "parse_writing_attempt_update", () =>
+      request.json() as Promise<{
+        action?: unknown;
+        remainingSeconds?: unknown;
+        responseText?: unknown;
+        elapsedSeconds?: unknown;
+        overtimeRanges?: unknown;
+      }>
+    );
     const action = body.action;
     if (action !== "sync" && action !== "save" && action !== "submit") {
-      return writingJson({ error: "Invalid writing attempt action" }, { status: 400 });
+      return respond({ error: "Invalid writing attempt action" }, { status: 400 });
     }
 
     const attemptResult = await readOwnedWritingAttempt(
       auth.supabase,
       auth.userId,
-      params.attemptId
+      params.attemptId,
+      timing
     );
-    if (attemptResult.error) return writingJson({ error: attemptResult.error.message }, { status: 500 });
+    if (attemptResult.error) return respond({ error: attemptResult.error.message }, { status: 500 });
     const attempt = attemptResult.data;
-    if (!attempt) return writingJson({ error: "Writing attempt not found" }, { status: 404 });
+    if (!attempt) return respond({ error: "Writing attempt not found" }, { status: 404 });
 
     if (attempt.status === "submitted") {
-      if (action === "submit") return writingJson({ attempt, alreadySubmitted: true });
-      return writingJson({ error: "Submitted writing attempts cannot be modified." }, { status: 409 });
+      if (action === "submit") return respond({ attempt, alreadySubmitted: true });
+      return respond({ error: "Submitted writing attempts cannot be modified." }, { status: 409 });
     }
     if (attempt.assignment_id) {
-      const assignmentAvailable = await isAssignmentAvailable(auth.supabase, attempt.assignment_id);
+      const assignmentAvailable = await isAssignmentAvailable(
+        auth.supabase,
+        attempt.assignment_id,
+        timing
+      );
       if (!assignmentAvailable) {
-        return writingJson({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
+        return respond({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
-    const requestedRemaining = clampRemainingSeconds(
-      body.remainingSeconds,
-      attempt.time_limit_seconds
-    );
-    const requestedElapsed = Number(body.elapsedSeconds);
-    const elapsedSeconds = Math.max(
-      attempt.elapsed_seconds ?? 0,
-      Number.isFinite(requestedElapsed) && requestedElapsed >= 0
-        ? Math.floor(requestedElapsed)
-        : attempt.elapsed_seconds ?? 0
-    );
-    const practiceMode = attempt.writing_mode === "practice";
-    const remainingSeconds = practiceMode
-      ? attempt.remaining_seconds
-      : Math.min(attempt.remaining_seconds, requestedRemaining);
-    const responseText = typeof body.responseText === "string" ? body.responseText : attempt.response_text;
-    const overtimeRanges = practiceMode
-      ? normalizeWritingOvertimeRanges(body.overtimeRanges, responseText.length)
-      : [];
-    const now = new Date().toISOString();
-    const update = buildWritingAttemptUpdate({
-      action,
-      now,
-      elapsedSeconds,
-      overtimeRanges,
-      remainingSeconds,
-      responseText
+    const update = timing.measureSync("processing", "prepare_writing_attempt_update", () => {
+      const requestedRemaining = clampRemainingSeconds(
+        body.remainingSeconds,
+        attempt.time_limit_seconds
+      );
+      const requestedElapsed = Number(body.elapsedSeconds);
+      const elapsedSeconds = Math.max(
+        attempt.elapsed_seconds ?? 0,
+        Number.isFinite(requestedElapsed) && requestedElapsed >= 0
+          ? Math.floor(requestedElapsed)
+          : attempt.elapsed_seconds ?? 0
+      );
+      const practiceMode = attempt.writing_mode === "practice";
+      const remainingSeconds = practiceMode
+        ? attempt.remaining_seconds
+        : Math.min(attempt.remaining_seconds, requestedRemaining);
+      const responseText = typeof body.responseText === "string"
+        ? body.responseText
+        : attempt.response_text;
+      const overtimeRanges = practiceMode
+        ? normalizeWritingOvertimeRanges(body.overtimeRanges, responseText.length)
+        : [];
+      return buildWritingAttemptUpdate({
+        action,
+        now: new Date().toISOString(),
+        elapsedSeconds,
+        overtimeRanges,
+        remainingSeconds,
+        responseText
+      });
     });
     if (!update) {
-      return writingJson({ error: "responseText is required" }, { status: 400 });
+      return respond({ error: "responseText is required" }, { status: 400 });
     }
 
-    const { data, error } = await auth.supabase
-      .from("writing_attempts")
-      .update(update)
-      .eq("attempt_id", attempt.attempt_id)
-      .eq("user_id", auth.userId)
-      .eq("status", "draft")
-      .select("*")
-      .single();
+    const writeMetricName = action === "submit"
+      ? "writing_attempt_response_save_and_submitted_status_update"
+      : `writing_attempt_${action}_update`;
+    const { data, error } = await timing.measure("database", writeMetricName, () =>
+      auth.supabase!
+        .from("writing_attempts")
+        .update(update)
+        .eq("attempt_id", attempt.attempt_id)
+        .eq("user_id", auth.userId!)
+        .eq("status", "draft")
+        .select("*")
+        .single()
+    );
     if (error || !data) {
-      return writingJson({ error: "写作记录保存失败，请稍后重试。" }, { status: 500 });
+      return respond({ error: "写作记录保存失败，请稍后重试。" }, { status: 500 });
     }
 
-    return writingJson({ attempt: data });
-  } catch (error) {
-    return writingJson(
+    return respond({ attempt: data });
+  } catch {
+    return respond(
       { error: "写作记录保存失败，请稍后重试。" },
       { status: 500 }
     );
@@ -208,15 +226,20 @@ export async function PATCH(
 
 async function isAssignmentAvailable(
   supabase: NonNullable<Awaited<ReturnType<typeof requireWritingStudent>>["supabase"]>,
-  assignmentId: string
+  assignmentId: string,
+  timing?: ReturnType<typeof createStudentPerformanceTrace>
 ) {
-  const { data, error } = await supabase
-    .from("writing_assignments")
-    .select("assignment_id")
-    .eq("assignment_id", assignmentId)
-    .eq("status", "active")
-    .is("deleted_at", null)
-    .maybeSingle();
+  const operation = () =>
+    supabase
+      .from("writing_assignments")
+      .select("assignment_id")
+      .eq("assignment_id", assignmentId)
+      .eq("status", "active")
+      .is("deleted_at", null)
+      .maybeSingle();
+  const { data, error } = timing
+    ? await timing.measure("database", "writing_assignment_available", operation)
+    : await operation();
   if (error) throw error;
   return Boolean(data);
 }
