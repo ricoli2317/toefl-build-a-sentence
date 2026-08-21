@@ -561,6 +561,10 @@ function WritingPracticeSession({
         setAttempt(submittedAttempt);
         setLastSavedText(textRef.current);
         setLastSavedRanges([...overtimeRangesRef.current]);
+        // Invalidation for standalone writing uses the broad "writing" prefix.
+        // Run it before storing the readonly handoff so it cannot evict the
+        // submitted payload that the destination page consumes.
+        invalidateWritingData();
         setData(studentWritingAttemptCacheKey(submittedAttempt.attempt_id), {
           assignment_available: assignmentAvailable,
           attempt: submittedAttempt,
@@ -569,7 +573,6 @@ function WritingPracticeSession({
           question,
           question_source: assignmentQuestionSource
         } satisfies PracticePayload);
-        invalidateWritingData();
         publishCacheInvalidation({
           type: "WRITING_ATTEMPT_SUBMITTED",
           studentId: submittedAttempt.user_id,
