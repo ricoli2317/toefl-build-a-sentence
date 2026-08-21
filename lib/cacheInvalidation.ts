@@ -38,6 +38,8 @@ export type CacheInvalidationEvent = {
   assignmentQuestionSource?: "question_bank" | "custom";
   isWrongQuestionsPractice?: boolean;
   attempt?: OfficialAttemptStatus;
+  taskType?: "email" | "academic_discussion";
+  questionId?: string;
 };
 
 const BASE_INVALIDATION_MATRIX: Record<
@@ -105,7 +107,6 @@ export function cacheDomainsForEvent(
       }
     } else {
       domains.add("studentWritingCatalog");
-      domains.add("studentPracticeCatalog");
     }
   }
 

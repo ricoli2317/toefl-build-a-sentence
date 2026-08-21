@@ -580,7 +580,9 @@ function WritingPracticeSession({
           type: "WRITING_ATTEMPT_SUBMITTED",
           studentId: submittedAttempt.user_id,
           attemptId: submittedAttempt.attempt_id,
-          assignmentId: submittedAttempt.assignment_id ?? null
+          assignmentId: submittedAttempt.assignment_id ?? null,
+          taskType: submittedAttempt.task_type,
+          questionId: submittedAttempt.question_id
         });
         setMessage(automatic ? "时间到，答案已自动提交" : "提交成功");
         router.replace(

@@ -383,6 +383,44 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
     [notify, scopedKey]
   );
 
+  const updateLogicalCatalogCompletion = useCallback(
+    (
+      basAttempt?: OfficialAttemptStatus,
+      writingTaskType?: "email" | "academic_discussion",
+      writingQuestionId?: string,
+      writingAttemptId?: string
+    ) => {
+      const taskType = basAttempt ? "build_sentence" : writingTaskType;
+      const target = basAttempt ? normalizeSetId(basAttempt.set_id) : writingQuestionId;
+      const attemptId = basAttempt?.attempt_id ?? writingAttemptId;
+      if (!taskType || !target || !attemptId) return;
+      const keyWithStudent = scopedKey(studentLogicalCatalogCacheKey(taskType));
+      const current = keyWithStudent ? entries.current.get(keyWithStudent) : undefined;
+      if (current?.status !== "success") return;
+      const data = current.data as { items: Array<any> };
+      let changed = false;
+      const items = data.items.map((item) => {
+        const matches = taskType === "build_sentence"
+          ? normalizeSetId(item.canonical.source_set_id ?? "") === target
+          : item.canonical.source_question_id === target;
+        if (!matches) return item;
+        changed = true;
+        const canonical = { ...item.canonical };
+        return {
+          ...item,
+          student_state: { status: "completed", resume_attempt_id: null, latest_attempt_id: attemptId, latest_completed_attempt_id: attemptId, can_start: false, can_resume: false, can_retake: true, can_view_result: true },
+          actions: { start: null, resume: null, view_result: { attempt_id: attemptId, source_set_id: taskType === "build_sentence" ? target : null, source_question_id: taskType === "build_sentence" ? null : target }, retake: canonical }
+        };
+      });
+      if (changed) {
+        entries.current.set(keyWithStudent!, { status: "success", data: { ...data, items } });
+        generations.current.set(keyWithStudent!, (generations.current.get(keyWithStudent!) ?? 0) + 1);
+        notify();
+      }
+    },
+    [notify, scopedKey]
+  );
+
   useEffect(() => {
     let mounted = true;
     const supabase = createBrowserSupabase();
@@ -432,10 +470,9 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
               break;
             case "studentPracticeState":
-              invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
               if (!event.isWrongQuestionsPractice) {
                 if (event.attempt) recordOfficialAttempt(event.attempt);
-                else invalidate(STUDENT_SETS_CACHE_PREFIX);
+                updateLogicalCatalogCompletion(event.attempt);
               }
               break;
             case "studentPracticeHistory":
@@ -449,6 +486,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "studentWritingCatalog":
               invalidate(STUDENT_WRITING_CATALOG_CACHE_PREFIX);
+              updateLogicalCatalogCompletion(undefined, event.taskType, event.questionId, event.attemptId);
               break;
             case "studentWritingOverview":
               invalidate(STUDENT_WRITING_OVERVIEW_CACHE_KEY);
@@ -465,7 +503,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
           }
         }
       }),
-    [invalidate, recordOfficialAttempt]
+    [invalidate, recordOfficialAttempt, updateLogicalCatalogCompletion]
   );
 
   const value = useMemo(
