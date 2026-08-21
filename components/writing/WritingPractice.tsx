@@ -68,6 +68,7 @@ import {
 import type { StudentWritingModeAvailability } from "@/lib/writingModePolicy";
 import { calculateActiveWritingTimer } from "@/lib/writingTimer";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
+import { measureStudentRequest } from "@/lib/studentPerformance.client";
 
 type PracticePayload = {
   assignment_available?: boolean;
@@ -140,27 +141,37 @@ export function WritingPractice({
         const { data } = await supabase.auth.getSession();
         const token = data.session?.access_token ?? "";
         if (!token) throw new Error("登录状态已失效，请重新登录。");
-        const response = attemptId
-          ? await fetch(`/api/writing/attempts/${encodeURIComponent(attemptId)}${
+        const detailUrl = attemptId
+          ? `/api/writing/attempts/${encodeURIComponent(attemptId)}${
               mode === "readonly" ? "?mode=submission" : ""
-            }`, {
-              cache: "no-store",
-              headers: { Authorization: `Bearer ${token}` }
-            })
-          : await fetch("/api/writing/attempts", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                assignmentId,
-                forceNew: Boolean(forceNew),
-                questionId,
-                taskType,
-                writingMode: selectedWritingMode
-              })
-            });
+            }`
+          : "/api/writing/attempts";
+        const response = await measureStudentRequest(
+          `${attemptId ? "GET" : "POST"} ${detailUrl}`,
+          async (captureResponse) => {
+            const detailResponse = attemptId
+              ? await fetch(detailUrl, {
+                  cache: "no-store",
+                  headers: { Authorization: `Bearer ${token}` }
+                })
+              : await fetch(detailUrl, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                  },
+                  body: JSON.stringify({
+                    assignmentId,
+                    forceNew: Boolean(forceNew),
+                    questionId,
+                    taskType,
+                    writingMode: selectedWritingMode
+                  })
+                });
+            captureResponse(detailResponse);
+            return detailResponse;
+          }
+        );
         const result = (await response.json()) as PracticePayload;
         if (!response.ok || result.error || !result.attempt || !result.question) {
           throw new Error(result.error ?? "无法进入写作练习。");

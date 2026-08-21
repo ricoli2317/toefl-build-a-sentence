@@ -31,7 +31,8 @@ export async function GET(
     const attemptResult = await readOwnedWritingAttempt(
       auth.supabase,
       auth.userId,
-      params.attemptId
+      params.attemptId,
+      timing
     );
     if (attemptResult.error) return respond({ error: attemptResult.error.message }, { status: 500 });
     if (!attemptResult.data) return respond({ error: "Writing attempt not found" }, { status: 404 });

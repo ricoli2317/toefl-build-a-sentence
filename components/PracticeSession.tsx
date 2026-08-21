@@ -22,6 +22,7 @@ import {
 } from "@/components/StudentDataCache";
 import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import { broadcastStudentPracticeCompleted } from "@/lib/studentCacheEvents";
+import { measureStudentRequest } from "@/lib/studentPerformance.client";
 import type { PublicQuestion, SubmitResponse } from "@/lib/types";
 
 type SavedAnswer = {
@@ -494,27 +495,31 @@ export function PracticeSession({
 }
 
 async function loadPracticeQuestions(setId: string, session: StudentCacheSession) {
-  const response = await fetch(`/api/sets/${encodeURIComponent(setId)}/questions`, {
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`
+  const url = `/api/sets/${encodeURIComponent(setId)}/questions`;
+  return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`
+      }
+    });
+    captureResponse(response);
+    const responseText = await response.text();
+    let payload: QuestionsPayload;
+
+    try {
+      payload = responseText
+        ? JSON.parse(responseText)
+        : { error: "The questions API returned an empty response." };
+    } catch {
+      payload = { error: "The questions API returned invalid JSON." };
     }
+
+    if (!response.ok || payload.error) {
+      throw new Error(payload.error ?? "Could not load questions.");
+    }
+
+    return payload;
   });
-  const responseText = await response.text();
-  let payload: QuestionsPayload;
-
-  try {
-    payload = responseText
-      ? JSON.parse(responseText)
-      : { error: "The questions API returned an empty response." };
-  } catch {
-    payload = { error: "The questions API returned invalid JSON." };
-  }
-
-  if (!response.ok || payload.error) {
-    throw new Error(payload.error ?? "Could not load questions.");
-  }
-
-  return payload;
 }
 
 function formatTime(totalSeconds: number) {

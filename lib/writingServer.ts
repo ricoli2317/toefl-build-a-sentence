@@ -119,14 +119,20 @@ function measureDatabase<T>(
 export async function readOwnedWritingAttempt(
   supabase: ReturnType<typeof createAnonSupabase>,
   userId: string,
-  attemptId: string
+  attemptId: string,
+  timing?: StudentPerformanceTrace
 ) {
-  const { data, error } = await supabase
-    .from("writing_attempts")
-    .select("*")
-    .eq("attempt_id", attemptId)
-    .eq("user_id", userId)
-    .maybeSingle();
+  const { data, error } = await measureDatabase(
+    timing,
+    "writing_attempt_by_id",
+    () =>
+      supabase
+        .from("writing_attempts")
+        .select("*")
+        .eq("attempt_id", attemptId)
+        .eq("user_id", userId)
+        .maybeSingle()
+  );
 
   return { data: data as WritingAttempt | null, error };
 }
