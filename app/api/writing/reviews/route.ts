@@ -7,6 +7,7 @@ import {
   logHistoricalPracticeDisplayWarnings,
   type HistoricalPracticeDisplay
 } from "@/lib/historicalPracticeDisplay";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 export const dynamic = "force-dynamic";
 
@@ -28,43 +29,49 @@ type AssignmentRow = {
 };
 
 export async function GET(request: Request) {
+  const timing = createStudentPerformanceTrace("/api/writing/reviews");
+  const respond = (data: unknown, init?: ResponseInit) => writingJson(data, init, timing);
   try {
-    const auth = await requireWritingStudent(request);
+    const auth = await requireWritingStudent(request, timing);
     if (auth.error) return auth.error;
     if (!auth.userId) {
-      return writingJson({ error: "Unauthorized" }, { status: 401 });
+      return respond({ error: "Unauthorized" }, { status: 401 });
     }
     const supabase = createServiceSupabase();
     const [attemptResult, historicalDisplayResolver] = await Promise.all([
-      readAllSupabaseRows<AttemptRow>((from, to) =>
-        supabase
-          .from("writing_attempts")
-          .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
-          .eq("user_id", auth.userId!)
-          .eq("status", "submitted")
-          .order("submitted_at", { ascending: false })
-          .range(from, to)
+      timing.measure("database", "writing_attempts_submitted_reviews", () =>
+        readAllSupabaseRows<AttemptRow>((from, to) =>
+          supabase
+            .from("writing_attempts")
+            .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
+            .eq("user_id", auth.userId!)
+            .eq("status", "submitted")
+            .order("submitted_at", { ascending: false })
+            .range(from, to)
+        )
       ),
-      loadHistoricalPracticeDisplayResolver(supabase)
+      loadHistoricalPracticeDisplayResolver(supabase, timing)
     ]);
     if (attemptResult.error) {
-      return writingJson({ error: "暂时无法加载批改记录。" }, { status: 500 });
+      return respond({ error: "暂时无法加载批改记录。" }, { status: 500 });
     }
     const attempts = attemptResult.data ?? [];
-    if (attempts.length === 0) return writingJson({ reviews: [] });
+    if (attempts.length === 0) return respond({ reviews: [] });
 
-    const reviewResult = await readAllSupabaseRows<ReviewRow>((from, to) =>
-      supabase
-        .from("writing_reviews")
-        .select("attempt_id,published_at")
-        .eq("status", "published")
-        .in("attempt_id", attempts.map((attempt) => attempt.attempt_id))
-        .not("published_at", "is", null)
-        .order("published_at", { ascending: false })
-        .range(from, to)
+    const reviewResult = await timing.measure("database", "writing_reviews_published_list", () =>
+      readAllSupabaseRows<ReviewRow>((from, to) =>
+        supabase
+          .from("writing_reviews")
+          .select("attempt_id,published_at")
+          .eq("status", "published")
+          .in("attempt_id", attempts.map((attempt) => attempt.attempt_id))
+          .not("published_at", "is", null)
+          .order("published_at", { ascending: false })
+          .range(from, to)
+      )
     );
     if (reviewResult.error) {
-      return writingJson({ error: "暂时无法加载批改记录。" }, { status: 500 });
+      return respond({ error: "暂时无法加载批改记录。" }, { status: 500 });
     }
     const publishedByAttempt = new Map(
       (reviewResult.data ?? []).map((review) => [review.attempt_id, review.published_at])
@@ -72,7 +79,7 @@ export async function GET(request: Request) {
     const publishedAttempts = attempts.filter((attempt) =>
       publishedByAttempt.has(attempt.attempt_id)
     );
-    if (publishedAttempts.length === 0) return writingJson({ reviews: [] });
+    if (publishedAttempts.length === 0) return respond({ reviews: [] });
 
     const questionMaps = await Promise.all(
       (["email", "academic_discussion"] as const).map(async (taskType) => {
@@ -84,12 +91,16 @@ export async function GET(request: Request) {
           )
         );
         if (questionIds.length === 0) return [taskType, new Map<string, QuestionRow>()] as const;
-        const result = await readAllSupabaseRows<QuestionRow>((from, to) =>
-          supabase
-            .from(WRITING_TASK_CONFIG[taskType].questionTable)
-            .select("question_id,set_title,year_month")
-            .in("question_id", questionIds)
-            .range(from, to)
+        const result = await timing.measure(
+          "database",
+          `${WRITING_TASK_CONFIG[taskType].questionTable}_published_reviews`,
+          () => readAllSupabaseRows<QuestionRow>((from, to) =>
+            supabase
+              .from(WRITING_TASK_CONFIG[taskType].questionTable)
+              .select("question_id,set_title,year_month")
+              .in("question_id", questionIds)
+              .range(from, to)
+          )
         );
         if (result.error) throw new Error("question read failed");
         return [
@@ -103,16 +114,19 @@ export async function GET(request: Request) {
       publishedAttempts.map((attempt) => attempt.assignment_id ?? "").filter(Boolean)
     ));
     const assignmentResult = assignmentIds.length
-      ? await readAllSupabaseRows<AssignmentRow>((from, to) =>
-          supabase
-            .from("writing_assignments")
-            .select("assignment_id,question_source,question_snapshot")
-            .in("assignment_id", assignmentIds)
-            .order("assignment_id", { ascending: true })
-            .range(from, to)
+      ? await timing.measure("database", "writing_assignments_published_reviews", () =>
+          readAllSupabaseRows<AssignmentRow>((from, to) =>
+            supabase
+              .from("writing_assignments")
+              .select("assignment_id,question_source,question_snapshot")
+              .in("assignment_id", assignmentIds)
+              .order("assignment_id", { ascending: true })
+              .range(from, to)
+          )
         )
       : { data: [] as AssignmentRow[], error: null };
     if (assignmentResult.error) throw new Error("assignment read failed");
+    const payload = timing.measureSync("processing", "build_published_review_list", () => {
     const assignmentById = new Map(
       (assignmentResult.data ?? []).map((assignment) => [assignment.assignment_id, assignment])
     );
@@ -160,8 +174,10 @@ export async function GET(request: Request) {
           Date.parse(right?.published_at ?? "") - Date.parse(left?.published_at ?? "")
       );
     logHistoricalPracticeDisplayWarnings(resolvedDisplays);
-    return writingJson({ reviews });
+    return { reviews };
+    });
+    return respond(payload);
   } catch (error) {
-    return writingJson({ error: "暂时无法加载批改记录。" }, { status: 500 });
+    return respond({ error: "暂时无法加载批改记录。" }, { status: 500 });
   }
 }
