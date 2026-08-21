@@ -24,6 +24,10 @@ import type {
 } from "@/lib/practiceLogicalCatalog";
 import { logicalPracticeItemTitle } from "@/lib/practiceLogicalCatalog";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
+import {
+  measureStudentRequest,
+  useStudentPagePerformance
+} from "@/lib/studentPerformance.client";
 
 const TASK_LABELS: Record<PracticeTaskType, string> = {
   build_sentence: "Build a Sentence",
@@ -47,6 +51,11 @@ export function LogicalPracticeCatalog({
     (session) => loadLogicalPracticeCatalog(taskType, page, session),
     { refreshOnMount: true }
   );
+  useStudentPagePerformance({
+    errors: [state.error],
+    loading: state.loading,
+    route: rootHref
+  });
 
   return (
     <div className="grid gap-5">
@@ -76,20 +85,24 @@ async function loadLogicalPracticeCatalog(
   page: number,
   session: StudentCacheSession
 ) {
-  const response = await fetch(
-    `/api/practice-catalog?taskType=${encodeURIComponent(taskType)}&page=${page}`,
-    {
-      cache: "no-store",
-      headers: { Authorization: `Bearer ${session.accessToken}` }
+  const url = `/api/practice-catalog?taskType=${encodeURIComponent(taskType)}&page=${page}`;
+  return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
+    const response = await fetch(
+      url,
+      {
+        cache: "no-store",
+        headers: { Authorization: `Bearer ${session.accessToken}` }
+      }
+    );
+    captureResponse(response);
+    const payload = (await response.json()) as LogicalPracticeCatalogWithStudentState & {
+      error?: string;
+    };
+    if (!response.ok || payload.error) {
+      throw new Error(payload.error ?? "无法加载练习列表。");
     }
-  );
-  const payload = (await response.json()) as LogicalPracticeCatalogWithStudentState & {
-    error?: string;
-  };
-  if (!response.ok || payload.error) {
-    throw new Error(payload.error ?? "无法加载练习列表。");
-  }
-  return payload;
+    return payload;
+  });
 }
 
 function CatalogContent({

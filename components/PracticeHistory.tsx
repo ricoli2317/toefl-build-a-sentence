@@ -33,11 +33,20 @@ import type {
 } from "@/lib/practiceHistory";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
+import {
+  measureStudentRequest,
+  useStudentPagePerformance
+} from "@/lib/studentPerformance.client";
 
 export type HistoryScope = "history" | "today";
 
 export function PracticeHistoryDashboard() {
   const { data, error, loading } = usePracticeHistory();
+  useStudentPagePerformance({
+    errors: [error],
+    loading,
+    route: STUDENT_ROUTES.practiceHistory
+  });
 
   if (loading) return <StudentLoadingState text="正在加载练习历史..." />;
   if (error || !data) return <StudentErrorState text="加载练习历史失败，请稍后重试。" />;
@@ -486,21 +495,25 @@ export function usePracticeHistory() {
 }
 
 async function loadPracticeHistory(query: string, session: StudentCacheSession) {
-  const response = await fetch(`/api/practice-history?${query}`, {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${session.accessToken}` }
+  const url = `/api/practice-history?${query}`;
+  return measureStudentRequest(`GET ${url}`, async (captureResponse) => {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    });
+    captureResponse(response);
+    const text = await response.text();
+    let payload: PracticeHistoryPayload | { error?: string };
+    try {
+      payload = text ? JSON.parse(text) : { error: "练习历史服务返回了空响应。" };
+    } catch {
+      payload = { error: "练习历史服务返回的数据格式无效。" };
+    }
+    if (!response.ok || "error" in payload) {
+      throw new Error(("error" in payload && payload.error) || "无法加载练习历史。");
+    }
+    return payload as PracticeHistoryPayload;
   });
-  const text = await response.text();
-  let payload: PracticeHistoryPayload | { error?: string };
-  try {
-    payload = text ? JSON.parse(text) : { error: "练习历史服务返回了空响应。" };
-  } catch {
-    payload = { error: "练习历史服务返回的数据格式无效。" };
-  }
-  if (!response.ok || "error" in payload) {
-    throw new Error(("error" in payload && payload.error) || "无法加载练习历史。");
-  }
-  return payload as PracticeHistoryPayload;
 }
 
 function getTodayRange() {
