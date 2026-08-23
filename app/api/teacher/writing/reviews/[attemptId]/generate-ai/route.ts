@@ -62,6 +62,9 @@ import {
 import { loadWritingReviewWorkspace } from "@/lib/writingReviewWorkspaceServer";
 
 export const dynamic = "force-dynamic";
+// Keep the hosting function alive beyond C3's 180s internal deadline so the
+// route can still persist the result and its observability record.
+export const maxDuration = 240;
 
 type DatabaseError = { code?: string; message: string };
 

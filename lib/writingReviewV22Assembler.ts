@@ -1,32 +1,296 @@
 import type { WritingTaskType } from "./writing.ts";
-import { ACADEMIC_DISCUSSION_CONTENT_FEEDBACK_CATEGORIES_V2, ACADEMIC_DISCUSSION_DIMENSION_SCORE_KEYS, EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2, EMAIL_DIMENSION_SCORE_KEYS } from "./writingReviewSchemaV2.ts";
-import { parseAIReviewRawResultV22ForResponse, type AIReviewRawResultV22, type AIReviewResultV22 } from "./writingReviewSchemaV22.ts";
-import { diffWritingReviewUnit, type WritingReviewRevisionDiff } from "./writingReviewRevisionDiff.ts";
+import {
+  ACADEMIC_DISCUSSION_CONTENT_FEEDBACK_CATEGORIES_V2,
+  ACADEMIC_DISCUSSION_DIMENSION_SCORE_KEYS,
+  EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2,
+  EMAIL_DIMENSION_SCORE_KEYS
+} from "./writingReviewSchemaV2.ts";
+import {
+  parseAIReviewRawResultV22ForResponse,
+  type AIReviewRawResultV22,
+  type AIReviewResultV22
+} from "./writingReviewSchemaV22.ts";
+import {
+  diffWritingReviewUnit,
+  type WritingReviewRevisionDiff
+} from "./writingReviewRevisionDiff.ts";
 import type { WritingReviewSemanticC3 } from "./writingReviewSemanticSchema.ts";
 import type { WritingReviewTextUnit } from "./writingReviewTextUnits.ts";
 
-const codeError = (message: string) => Object.assign(new Error(message), { code: "C3_ASSEMBLY_INVALID" });
-const uniqueTexts = (values: string[]) => Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
-function occurrences(source: string, value: string) { let count = 0; for (let at = source.indexOf(value); at >= 0; at = source.indexOf(value, at + 1)) count += 1; return count; }
-function insertionRange(source: string, unit: WritingReviewTextUnit, diff: Exclude<WritingReviewRevisionDiff, null>) { const point = diff.start - unit.startOffset; for (let width = 1; width <= unit.text.length; width += 1) for (let left = Math.max(0, point - width); left <= Math.min(point, unit.text.length - width); left += 1) { const right = left + width; const originalText = unit.text.slice(left, right); if (occurrences(source, originalText) === 1) return { start: unit.startOffset + left, end: unit.startOffset + right, originalText, replacementText: unit.text.slice(left, point) + diff.replacementText + unit.text.slice(point, right) }; } throw codeError("C3 insertion cannot be uniquely localized within its unit."); }
-function rawEdit(unit: WritingReviewTextUnit, source: string, revision: WritingReviewSemanticC3["unit_revisions"][number], index: number) { const diff = diffWritingReviewUnit(unit.text, revision.revised_text, unit.startOffset); if (!diff) return null; const safe = diff.start === diff.end ? insertionRange(source, unit, diff) : diff; return { edit_id: `c3-edit-${String(index + 1).padStart(2, "0")}`, original_text: safe.originalText, replacement_text: safe.replacementText, category: revision.issue_type === "punctuation" ? "punctuation" : revision.issue_type === "word_choice" ? "word_choice" : revision.issue_type === "grammar" ? "grammar" : "usage", severity: "minor", explanation: revision.reason }; }
+const codeError = (message: string) =>
+  Object.assign(new Error(message), { code: "C3_ASSEMBLY_INVALID" });
+
+const uniqueTexts = (values: string[]) =>
+  Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
+
+function occurrenceCount(source: string, value: string) {
+  let count = 0;
+  for (
+    let at = source.indexOf(value);
+    at >= 0;
+    at = source.indexOf(value, at + 1)
+  ) {
+    count += 1;
+  }
+  return count;
+}
+
+/**
+ * Expands a minimal unit diff until its original source text is unique in the
+ * complete response. This is required for both insertions and ordinary
+ * replacements: a model often changes a short repeated token such as "I",
+ * "the", or a punctuation mark, while v2.2 intentionally localizes by exact
+ * unique source text.
+ */
+function uniqueRevisionRange(
+  source: string,
+  unit: WritingReviewTextUnit,
+  diff: Exclude<WritingReviewRevisionDiff, null>
+) {
+  const changeStart = diff.start - unit.startOffset;
+  const changeEnd = diff.end - unit.startOffset;
+  const minimumWidth = Math.max(1, changeEnd - changeStart);
+
+  for (let width = minimumWidth; width <= unit.text.length; width += 1) {
+    const firstLeft = Math.max(0, changeEnd - width);
+    const lastLeft = Math.min(changeStart, unit.text.length - width);
+    for (let left = firstLeft; left <= lastLeft; left += 1) {
+      const right = left + width;
+      const originalText = unit.text.slice(left, right);
+      if (occurrenceCount(source, originalText) !== 1) continue;
+      return {
+        start: unit.startOffset + left,
+        end: unit.startOffset + right,
+        originalText,
+        replacementText:
+          unit.text.slice(left, changeStart) +
+          diff.replacementText +
+          unit.text.slice(changeEnd, right)
+      };
+    }
+  }
+
+  throw codeError("C3 revision cannot be uniquely localized within its unit.");
+}
+
+function rawEdit(
+  unit: WritingReviewTextUnit,
+  source: string,
+  revision: WritingReviewSemanticC3["unit_revisions"][number],
+  index: number
+) {
+  const diff = diffWritingReviewUnit(
+    unit.text,
+    revision.revised_text,
+    unit.startOffset
+  );
+  if (!diff) return null;
+
+  const safe =
+    diff.originalText.length > 0 && occurrenceCount(source, diff.originalText) === 1
+      ? diff
+      : uniqueRevisionRange(source, unit, diff);
+
+  return {
+    edit_id: `c3-edit-${String(index + 1).padStart(2, "0")}`,
+    original_text: safe.originalText,
+    replacement_text: safe.replacementText,
+    category:
+      revision.issue_type === "punctuation"
+        ? "punctuation"
+        : revision.issue_type === "word_choice"
+          ? "word_choice"
+          : revision.issue_type === "grammar"
+            ? "grammar"
+            : "usage",
+    severity: "minor",
+    explanation: revision.reason
+  };
+}
 
 export function normalizeC3ContentFeedback(input: WritingReviewSemanticC3) {
-  const overall = [input.overall_feedback]; const localized: WritingReviewSemanticC3["content_feedback"] = []; const groups = new Map<string, WritingReviewSemanticC3["content_feedback"]>();
-  for (const feedback of input.content_feedback) { if (feedback.unit_id === null) { overall.push(...uniqueTexts([feedback.issue, feedback.suggestion])); continue; } const group = groups.get(feedback.unit_id) ?? []; group.push(feedback); groups.set(feedback.unit_id, group); }
-  for (const group of Array.from(groups.values())) { const primary = group[0]; const issue = uniqueTexts(group.map((item) => item.issue)).join(" "); const suggestion = uniqueTexts(group.map((item) => item.suggestion)).join(" "); const proposed_revision = group.map((item) => item.proposed_revision?.trim()).find(Boolean); if (!proposed_revision) throw codeError("C3 feedback group has no safe proposed revision."); localized.push({ ...primary, issue, suggestion, proposed_revision }); }
-  return { content_feedback: localized, overall_feedback: uniqueTexts(overall).join("\n") };
+  const overall = [input.overall_feedback];
+  const localized: WritingReviewSemanticC3["content_feedback"] = [];
+  const groups = new Map<
+    string,
+    WritingReviewSemanticC3["content_feedback"]
+  >();
+
+  for (const feedback of input.content_feedback) {
+    if (feedback.unit_id === null) {
+      overall.push(...uniqueTexts([feedback.issue, feedback.suggestion]));
+      continue;
+    }
+    const group = groups.get(feedback.unit_id) ?? [];
+    group.push(feedback);
+    groups.set(feedback.unit_id, group);
+  }
+
+  for (const group of Array.from(groups.values())) {
+    const primary = group[0];
+    const issue = uniqueTexts(group.map((item) => item.issue)).join(" ");
+    const suggestion = uniqueTexts(group.map((item) => item.suggestion)).join(
+      " "
+    );
+    const proposedRevision = group
+      .map((item) => item.proposed_revision?.trim())
+      .find(Boolean);
+    if (!proposedRevision) {
+      throw codeError("C3 feedback group has no safe proposed revision.");
+    }
+    localized.push({
+      ...primary,
+      issue,
+      suggestion,
+      proposed_revision: proposedRevision
+    });
+  }
+
+  return {
+    content_feedback: localized,
+    overall_feedback: uniqueTexts(overall).join("\n")
+  };
 }
 
-export function assembleWritingReviewV22FromC3(input: { taskType: WritingTaskType; responseText: string; units: WritingReviewTextUnit[]; semantic: WritingReviewSemanticC3 }): AIReviewResultV22 {
-  const dimensions = input.taskType === "email" ? EMAIL_DIMENSION_SCORE_KEYS : ACADEMIC_DISCUSSION_DIMENSION_SCORE_KEYS;
-  const categories = input.taskType === "email" ? EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2 : ACADEMIC_DISCUSSION_CONTENT_FEEDBACK_CATEGORIES_V2;
+export function assembleWritingReviewV22FromC3(input: {
+  taskType: WritingTaskType;
+  responseText: string;
+  units: WritingReviewTextUnit[];
+  semantic: WritingReviewSemanticC3;
+}): AIReviewResultV22 {
+  const dimensions =
+    input.taskType === "email"
+      ? EMAIL_DIMENSION_SCORE_KEYS
+      : ACADEMIC_DISCUSSION_DIMENSION_SCORE_KEYS;
+  const categories =
+    input.taskType === "email"
+      ? EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2
+      : ACADEMIC_DISCUSSION_CONTENT_FEEDBACK_CATEGORIES_V2;
   const units = new Map(input.units.map((unit) => [unit.unitId, unit]));
-  const revisions = new Map<string, WritingReviewSemanticC3["unit_revisions"][number]>();
-  for (const revision of input.semantic.unit_revisions) { if (!units.has(revision.unit_id)) throw codeError("C3 revision references an unknown unit."); if (revisions.has(revision.unit_id)) throw codeError("C3 has multiple revisions for one unit."); revisions.set(revision.unit_id, revision); }
-  const language_edits = Array.from(revisions.values()).flatMap((revision, index) => { const edit = rawEdit(units.get(revision.unit_id)!, input.responseText, revision, index); return edit ? [edit] : []; });
+  const revisions = new Map<
+    string,
+    WritingReviewSemanticC3["unit_revisions"][number]
+  >();
+
+  for (const revision of input.semantic.unit_revisions) {
+    if (!units.has(revision.unit_id)) {
+      throw codeError("C3 revision references an unknown unit.");
+    }
+    if (revisions.has(revision.unit_id)) {
+      throw codeError("C3 has multiple revisions for one unit.");
+    }
+    revisions.set(revision.unit_id, revision);
+  }
+
+  const languageEdits = Array.from(revisions.values()).flatMap(
+    (revision, index) => {
+      const edit = rawEdit(
+        units.get(revision.unit_id)!,
+        input.responseText,
+        revision,
+        index
+      );
+      return edit ? [edit] : [];
+    }
+  );
   const normalized = normalizeC3ContentFeedback(input.semantic);
-  const raw = { schema_version: "2.2" as const, task_type: input.taskType, language_edits, scores: { official_score: { ai_score: input.semantic.official_score, rationale: input.semantic.score_reason }, dimension_scores: Object.fromEntries(dimensions.map((key) => { const value = input.semantic.dimension_scores[key]; if (!value) throw codeError(`C3 missing dimension ${key}.`); return [key, { ai_score: value.score, ai_basis: value.basis }]; })) }, content_feedback: normalized.content_feedback.map((feedback, index) => { if (!categories.includes(feedback.category as never)) throw codeError("C3 feedback category is invalid."); const unit = units.get(feedback.unit_id!); if (!unit) throw codeError("C3 feedback has no safe unit."); return { feedback_id: `c3-feedback-${String(index + 1).padStart(2, "0")}`, category: feedback.category, original_sentence: unit.text, issue: feedback.issue, suggestion: feedback.suggestion, proposed_revision: feedback.proposed_revision! }; }), overall_feedback: normalized.overall_feedback };
-  try { return parseAIReviewRawResultV22ForResponse(raw, input.responseText); } catch (cause) { throw Object.assign(codeError("C3 assembly failed final v2.2/localization validation."), { cause }); }
+  const raw = {
+    schema_version: "2.2" as const,
+    task_type: input.taskType,
+    language_edits: languageEdits,
+    scores: {
+      official_score: {
+        ai_score: input.semantic.official_score,
+        rationale: input.semantic.score_reason
+      },
+      dimension_scores: Object.fromEntries(
+        dimensions.map((key) => {
+          const value = input.semantic.dimension_scores[key];
+          if (!value) throw codeError(`C3 missing dimension ${key}.`);
+          return [key, { ai_score: value.score, ai_basis: value.basis }];
+        })
+      )
+    },
+    content_feedback: normalized.content_feedback.map((feedback, index) => {
+      if (!categories.includes(feedback.category as never)) {
+        throw codeError("C3 feedback category is invalid.");
+      }
+      const unit = units.get(feedback.unit_id!);
+      if (!unit) throw codeError("C3 feedback has no safe unit.");
+      return {
+        feedback_id: `c3-feedback-${String(index + 1).padStart(2, "0")}`,
+        category: feedback.category,
+        original_sentence: unit.text,
+        issue: feedback.issue,
+        suggestion: feedback.suggestion,
+        proposed_revision: feedback.proposed_revision!
+      };
+    }),
+    overall_feedback: normalized.overall_feedback
+  };
+
+  try {
+    return parseAIReviewRawResultV22ForResponse(raw, input.responseText);
+  } catch (cause) {
+    throw Object.assign(
+      codeError("C3 assembly failed final v2.2/localization validation."),
+      { cause }
+    );
+  }
 }
-export function writingReviewRawV22FromAssembled(review: AIReviewResultV22): AIReviewRawResultV22 { return { schema_version: review.schema_version, task_type: review.task_type, language_edits: review.language_edits.map(({ edit_id, original_text, replacement_text, category, severity, explanation }) => ({ edit_id, original_text, replacement_text, category, severity, explanation })), scores: { official_score: { ai_score: review.scores.official_score.ai_score, rationale: review.scores.official_score.rationale }, dimension_scores: Object.fromEntries(Object.entries(review.scores.dimension_scores).map(([key, value]) => [key, { ai_score: value.ai_score, ai_basis: value.ai_basis }])) as AIReviewRawResultV22["scores"]["dimension_scores"] }, content_feedback: review.content_feedback.map(({ feedback_id, category, original_sentence, issue, suggestion, proposed_revision }) => ({ feedback_id, category, original_sentence, issue, suggestion, proposed_revision })), overall_feedback: review.overall_feedback }; }
+
+export function writingReviewRawV22FromAssembled(
+  review: AIReviewResultV22
+): AIReviewRawResultV22 {
+  return {
+    schema_version: review.schema_version,
+    task_type: review.task_type,
+    language_edits: review.language_edits.map(
+      ({
+        edit_id,
+        original_text,
+        replacement_text,
+        category,
+        severity,
+        explanation
+      }) => ({
+        edit_id,
+        original_text,
+        replacement_text,
+        category,
+        severity,
+        explanation
+      })
+    ),
+    scores: {
+      official_score: {
+        ai_score: review.scores.official_score.ai_score,
+        rationale: review.scores.official_score.rationale
+      },
+      dimension_scores: Object.fromEntries(
+        Object.entries(review.scores.dimension_scores).map(([key, value]) => [
+          key,
+          { ai_score: value.ai_score, ai_basis: value.ai_basis }
+        ])
+      ) as AIReviewRawResultV22["scores"]["dimension_scores"]
+    },
+    content_feedback: review.content_feedback.map(
+      ({
+        feedback_id,
+        category,
+        original_sentence,
+        issue,
+        suggestion,
+        proposed_revision
+      }) => ({
+        feedback_id,
+        category,
+        original_sentence,
+        issue,
+        suggestion,
+        proposed_revision
+      })
+    ),
+    overall_feedback: review.overall_feedback
+  };
+}

@@ -21,6 +21,36 @@ for (const [name, text, revised] of [["start", "agree", "I agree"], ["middle", "
   assert.equal(applyWritingReviewDiffs(text, [{ start: edit.start, end: edit.end, originalText: edit.original_text, replacementText: edit.replacement_text }]), revised);
 });
 
+for (const [name, revised] of [
+  ["replacement", "I prefer tea."],
+  ["deletion", "I tea."]
+]) test(`C3 ${name} expands a repeated minimal diff to a unique source range`, () => {
+  const text = "I like coffee. I like tea.";
+  const units = buildWritingReviewTextUnits(text);
+  const target = units[1];
+  const semantic = insertionSemantic(target.text, revised).semantic;
+  semantic.unit_revisions[0].unit_id = target.unitId;
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "academic_discussion",
+    responseText: text,
+    units,
+    semantic
+  });
+  const edit = assembled.language_edits[0];
+  assert.notEqual(edit.original_text, "like");
+  assert.equal(text.indexOf(edit.original_text), text.lastIndexOf(edit.original_text));
+  assert.equal(text.slice(edit.start, edit.end), edit.original_text);
+  assert.equal(
+    applyWritingReviewDiffs(text, [{
+      start: edit.start,
+      end: edit.end,
+      originalText: edit.original_text,
+      replacementText: edit.replacement_text
+    }]),
+    `I like coffee. ${revised}`
+  );
+});
+
 test("C3 insertion rejects a non-unique complete unit", () => {
   const text = "Go. Go.";
   const units = [{ unitId: "U01", startOffset: 0, endOffset: 2, text: "Go" }];

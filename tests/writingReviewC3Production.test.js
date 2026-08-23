@@ -46,7 +46,7 @@ test("C3 service uses Moonshot structured output and returns only fully validate
   assert.equal(result.review.schema_version, "2.2");
   assert.equal(JSON.parse(result.response.content).schema_version, "2.2");
   assert.equal(result.timing.hedgeDelayMs, 60_000);
-  assert.equal(result.timing.deadlineMs, 120_000);
+  assert.equal(result.timing.deadlineMs, 180_000);
 });
 
 for (const [name, body, code] of [

@@ -15,6 +15,7 @@ test("full-review routes select C3 once and reuse legacy persistence only after 
     assert.match(source, /getWritingReviewPipeline\(\)/);
     assert.match(source, /pipeline === "c3"/);
     assert.match(source, /requestProductionC3WritingReview\(input, providerConfig\)/);
+    assert.match(source, /export const maxDuration = 240/);
     assert.match(source, /writingReviewC3TelemetryDiagnostic/);
     assert.match(source, /writingReviewLogMetadata\(aiPipeline\)/);
     assert.match(source, /pipeline: logMetadata\.pipeline/);
