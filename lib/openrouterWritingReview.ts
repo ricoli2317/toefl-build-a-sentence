@@ -1,5 +1,7 @@
 type JsonSchema = Record<string, unknown>;
 
+import type { CostObservability } from "./writingReviewCost.ts";
+
 export const WRITING_REVIEW_PROMPT_VERSION =
   "writing_review_prompt_v2026_08_16_1" as const;
 // Bump the human-readable version above whenever the review Prompt contract changes.
@@ -16,7 +18,7 @@ export type OpenRouterWritingReviewInput = {
 };
 
 export type OpenRouterWritingReviewOptions = {
-  env?: Pick<NodeJS.ProcessEnv, "OPENROUTER_API_KEY" | "OPENROUTER_WRITING_MODEL">;
+  env?: Partial<Pick<NodeJS.ProcessEnv, "OPENROUTER_API_KEY" | "OPENROUTER_WRITING_MODEL">>;
   fetchImpl?: typeof fetch;
   jsonSchema: JsonSchema;
   modelOverride?: string;
@@ -65,6 +67,7 @@ export type OpenRouterWritingReviewResponse = {
   model: string;
   usage: OpenRouterTokenUsage;
   generationId: string | null;
+  costObservability?: CostObservability;
 };
 
 export type OpenRouterWritingReviewErrorCode =

@@ -112,7 +112,7 @@ test("initial generation and full regeneration both use the shared fidelity prom
     "utf8"
   );
   for (const route of [initial, full]) {
-    assert.match(route, /requestOpenRouterWritingReview/);
+    assert.match(route, /requestWritingReview/);
     assert.match(route, /AI_REVIEW_RAW_RESULT_V22_JSON_SCHEMA/);
   }
   assert.match(openrouter, /buildWritingReviewMessages\(input\)/);

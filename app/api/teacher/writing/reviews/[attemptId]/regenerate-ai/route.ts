@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import {
-  OpenRouterWritingReviewError,
   EMPTY_OPENROUTER_USAGE,
   WRITING_REVIEW_PROMPT_VERSION,
-  requestOpenRouterWritingReview,
   type OpenRouterTokenUsage
 } from "@/lib/openrouterWritingReview";
+import {
+  getWritingReviewProviderConfig,
+  isWritingReviewProviderError,
+  requestWritingReview
+} from "@/lib/writingReviewProvider";
+import { getWritingReviewPipeline } from "@/lib/writingReviewPipeline";
+import { writingReviewLogMetadata } from "@/lib/writingReviewLogMetadata";
+import {
+  requestProductionC3WritingReview,
+  writingReviewC3FailureTelemetryDiagnostic,
+  writingReviewC3TelemetryDiagnostic
+} from "@/lib/writingReviewC3Production";
 import {
   classifyWritingReviewAiFailure,
   persistWritingReviewAiLogBestEffort,
@@ -111,9 +121,11 @@ export async function POST(
   let aiStartedAt: number | null = null;
   let aiTaskType: "email" | "academic_discussion" | null = null;
   let aiModel: string = WRITING_REVIEW_PRODUCTION_MODEL;
+  let aiPipeline: "legacy_v22" | "c3" = "legacy_v22";
   let aiUsage: OpenRouterTokenUsage = { ...EMPTY_OPENROUTER_USAGE };
   let hedgeTelemetry: WritingReviewProductionHedgeTelemetry | null = null;
   let generationId: string | null = null;
+  let costObservability: Record<string, unknown> | null = null;
   let overlapDiagnostic: LanguageEditOverlapNormalizationDiagnostic | null = null;
   const overlapDiagnosticsByBranch = new Map<
     "primary" | "hedge",
@@ -135,15 +147,31 @@ export async function POST(
         aiStartedAt = Date.now();
         aiTaskType = input.taskType;
         try {
+          const providerConfig = getWritingReviewProviderConfig();
+          const pipeline = getWritingReviewPipeline();
+          aiPipeline = pipeline;
+          aiModel = providerConfig.model;
+          if (pipeline === "c3") {
+            const c3 = await requestProductionC3WritingReview(input, providerConfig);
+            const c3Telemetry = writingReviewC3TelemetryDiagnostic(c3.telemetry, c3.timing.deadlineMs);
+            hedgeTelemetry = c3Telemetry;
+            aiUsage = c3.response.usage;
+            costObservability =
+              c3Telemetry.winner_cost_observability ??
+              c3.response.costObservability ??
+              null;
+            aiModel = c3.response.model;
+            generationId = c3.response.generationId;
+            return c3.response;
+          }
           const result = await requestProductionWritingReviewHedged(input, {
             requestAI: (requestInput, signal) =>
-              requestOpenRouterWritingReview(requestInput, {
+              requestWritingReview(providerConfig, requestInput, {
                 jsonSchema:
                   AI_REVIEW_RAW_RESULT_V22_JSON_SCHEMA as unknown as Record<
                     string,
                     unknown
                   >,
-                modelOverride: WRITING_REVIEW_PRODUCTION_MODEL,
                 reasoningEffort: WRITING_REVIEW_PRODUCTION_REASONING,
                 signal
               }),
@@ -158,6 +186,10 @@ export async function POST(
               }),
             onComplete(telemetry) {
               hedgeTelemetry = telemetry;
+              costObservability =
+                telemetry.winner_cost_observability ??
+                telemetry.final_cost_observability ??
+                null;
               aiUsage = telemetry.winner_usage ?? telemetry.final_usage ?? {
                 ...EMPTY_OPENROUTER_USAGE
               };
@@ -172,6 +204,25 @@ export async function POST(
           });
           return result.response;
         } catch (error) {
+          const c3FailureTelemetry =
+            writingReviewC3FailureTelemetryDiagnostic(error);
+          if (c3FailureTelemetry) {
+            hedgeTelemetry = c3FailureTelemetry;
+            aiUsage =
+              c3FailureTelemetry.winner_usage ??
+              c3FailureTelemetry.final_usage ??
+              { ...EMPTY_OPENROUTER_USAGE };
+            aiModel =
+              c3FailureTelemetry.winner_model ??
+              aiModel;
+            generationId =
+              c3FailureTelemetry.winner_generation_id ??
+              c3FailureTelemetry.final_generation_id;
+            costObservability =
+              c3FailureTelemetry.winner_cost_observability ??
+              c3FailureTelemetry.final_cost_observability ??
+              null;
+          }
           if (error instanceof WritingReviewProductionValidationError) {
             throw new WritingReviewFullRegenerationError(
               "AI_RESPONSE_INVALID",
@@ -196,7 +247,7 @@ export async function POST(
     if (
       error instanceof WritingReviewFullRegenerationError ||
       error instanceof WritingReviewWorkspaceServerError ||
-      error instanceof OpenRouterWritingReviewError
+      isWritingReviewProviderError(error)
     ) {
       return json(
         { error: error.code, code: error.code, message: error.message },
@@ -237,14 +288,15 @@ export async function POST(
             error_message: null,
             validation_issues: []
           };
+    const logMetadata = writingReviewLogMetadata(aiPipeline);
     await persistWritingReviewAiLogBestEffort(aiLogClient, {
       request_id: requestId,
       operation: "full_regenerate",
       attempt_id: params.attemptId,
       task_type: aiTaskType,
       model: aiModel,
-      prompt_version: WRITING_REVIEW_PROMPT_VERSION,
-      schema_version: AI_REVIEW_SCHEMA_VERSION_V22,
+      prompt_version: logMetadata.promptVersion,
+      schema_version: logMetadata.schemaVersion,
       ...outcome,
       elapsed_ms:
         hedgeTelemetry?.end_to_end_elapsed_ms ??
@@ -253,9 +305,29 @@ export async function POST(
         operationStartedAt === null ? null : Date.now() - operationStartedAt,
       generation_id: generationId,
       normalization_applied: overlapDiagnostic !== null,
-      diagnostics: overlapDiagnostic
+      diagnostics: {
+        pipeline: logMetadata.pipeline,
+        ...(costObservability ? { cost_observability: costObservability } : {}),
+        ...(hedgeTelemetry?.billing_completeness
+          ? {
+              billing_completeness: hedgeTelemetry.billing_completeness,
+              primary_cost_observability:
+                hedgeTelemetry.primary_cost_observability ?? null,
+              hedge_cost_observability:
+                hedgeTelemetry.hedge_cost_observability ?? null,
+              winner_cost_observability:
+                hedgeTelemetry.winner_cost_observability ?? null,
+              observed_cost_observability:
+                hedgeTelemetry.observed_cost_observability ?? null
+            }
+          : {}),
+        hedge_delay_ms: logMetadata.hedgeDelayMs,
+        deadline_ms: logMetadata.deadlineMs,
+        ...(writingReviewC3FailureTelemetryDiagnostic(error) ?? {}),
+        ...(overlapDiagnostic
         ? { language_edit_overlap: overlapDiagnostic }
-        : {},
+        : {})
+      },
       ...writingReviewAiProviderDiagnostic(error),
       ...aiUsage,
       ...(hedgeTelemetry

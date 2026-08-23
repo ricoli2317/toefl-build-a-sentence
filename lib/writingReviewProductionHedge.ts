@@ -18,8 +18,14 @@ import type {
   AIReviewRawResultV22,
   AIReviewResultV22
 } from "./writingReviewSchemaV22.ts";
+import {
+  observedWritingReviewCost,
+  withBillingCompleteness,
+  type BillingCompleteness,
+  type CostObservability
+} from "./writingReviewCost.ts";
 
-export const WRITING_REVIEW_PRODUCTION_MODEL = "moonshotai/kimi-k3" as const;
+export const WRITING_REVIEW_PRODUCTION_MODEL = "kimi-k3" as const;
 export const WRITING_REVIEW_PRODUCTION_REASONING = "high" as const;
 export const WRITING_REVIEW_PRODUCTION_RETRY = 0 as const;
 
@@ -56,6 +62,12 @@ export type WritingReviewProductionHedgeTelemetry = {
   loser_status: WritingReviewHedgeLoserStatus;
   winner_cost: number | null;
   observed_completed_cost: number | null;
+  billing_completeness?: BillingCompleteness;
+  primary_cost_observability?: CostObservability | null;
+  hedge_cost_observability?: CostObservability | null;
+  winner_cost_observability?: CostObservability | null;
+  final_cost_observability?: CostObservability | null;
+  observed_cost_observability?: CostObservability | null;
   winner_usage: OpenRouterTokenUsage | null;
   final_usage: OpenRouterTokenUsage | null;
   winner_model: string | null;
@@ -78,6 +90,8 @@ export type WritingReviewProductionHedgeDependencies = {
   now?: () => number;
   setTimeoutImpl?: (callback: () => void, delayMs: number) => TimerHandle;
   clearTimeoutImpl?: (handle: TimerHandle) => void;
+  hedgeDelayMs?: number;
+  overallDeadlineMs?: number;
 };
 
 export class WritingReviewProductionValidationError extends Error {
@@ -103,8 +117,8 @@ export async function requestProductionWritingReviewHedged(
   dependencies: WritingReviewProductionHedgeDependencies
 ) {
   const run = await runWritingReviewHedgedRequest<ProductionRequestOutcome>({
-    hedgeDelayMs: WRITING_REVIEW_HEDGE_DELAY_MS,
-    overallDeadlineMs: WRITING_REVIEW_HEDGE_DEADLINE_MS,
+    hedgeDelayMs: dependencies.hedgeDelayMs ?? WRITING_REVIEW_HEDGE_DELAY_MS,
+    overallDeadlineMs: dependencies.overallDeadlineMs ?? WRITING_REVIEW_HEDGE_DEADLINE_MS,
     now: dependencies.now,
     setTimeoutImpl: dependencies.setTimeoutImpl,
     clearTimeoutImpl: dependencies.clearTimeoutImpl,
@@ -250,12 +264,33 @@ function buildTelemetry(
   run: WritingReviewHedgeRun<ProductionRequestOutcome>
 ): WritingReviewProductionHedgeTelemetry {
   const winner = run.winner_outcome;
+  const primaryObservation = branchCostObservability(run.primary);
+  const hedgeObservation = branchCostObservability(run.hedge);
+  const billingCompleteness: BillingCompleteness = startedBranches(run).every(
+    (branch) => observedCostAmount(branchCostObservability(branch)) !== null
+  )
+    ? "complete_for_observed_requests"
+    : "partial_or_unknown";
+  const winnerObservation =
+    run.winner === "primary"
+      ? primaryObservation
+      : run.winner === "hedge"
+        ? hedgeObservation
+        : null;
+  const finalObservation =
+    run.final_outcome?.response?.costObservability ?? null;
+  const observedObservation = observedWritingReviewCost(
+    [primaryObservation, hedgeObservation],
+    billingCompleteness
+  );
   const completed = [run.primary, run.hedge].flatMap((branch) =>
     branch?.outcome ? [branch.outcome] : []
   );
   const costs = completed
     .map((outcome) => outcome.usage.cost)
     .filter((cost): cost is number => typeof cost === "number");
+  const hasCostObservability =
+    primaryObservation !== null || hedgeObservation !== null;
   return {
     hedge_triggered: run.hedge_triggered,
     requests_started: run.requests_started,
@@ -270,15 +305,55 @@ function buildTelemetry(
     loser_status: run.loser_status,
     winner_cost: winner?.usage.cost ?? null,
     observed_completed_cost:
-      costs.length === 0
-        ? null
-        : costs.reduce((sum, cost) => sum + cost, 0),
+      hasCostObservability
+        ? observedObservation?.amount ?? null
+        : costs.length === 0
+          ? null
+          : costs.reduce((sum, cost) => sum + cost, 0),
+    billing_completeness: billingCompleteness,
+    primary_cost_observability: withBillingCompleteness(
+      primaryObservation,
+      billingCompleteness
+    ),
+    hedge_cost_observability: withBillingCompleteness(
+      hedgeObservation,
+      billingCompleteness
+    ),
+    winner_cost_observability: withBillingCompleteness(
+      winnerObservation,
+      billingCompleteness
+    ),
+    final_cost_observability: withBillingCompleteness(
+      finalObservation,
+      billingCompleteness
+    ),
+    observed_cost_observability: observedObservation,
     winner_usage: winner?.usage ?? null,
     final_usage: run.final_outcome?.usage ?? null,
     winner_model: winner?.response?.model ?? null,
     winner_generation_id: winner?.response?.generationId ?? null,
     final_generation_id: run.final_outcome?.response?.generationId ?? null
   };
+}
+
+function branchCostObservability(
+  branch: WritingReviewHedgeBranch<ProductionRequestOutcome> | null
+) {
+  return branch?.outcome?.response?.costObservability ?? null;
+}
+
+function observedCostAmount(cost: CostObservability | null) {
+  return typeof cost?.amount === "number" && Number.isFinite(cost.amount)
+    ? cost.amount
+    : null;
+}
+
+function startedBranches(run: WritingReviewHedgeRun<ProductionRequestOutcome>) {
+  return run.requests_started === 1
+    ? [run.primary]
+    : [run.primary, run.hedge].filter(
+        (branch): branch is NonNullable<typeof branch> => branch !== null
+      );
 }
 
 function branchCost(

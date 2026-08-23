@@ -2,15 +2,14 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import {
+  projectWritingReviewAiLog,
+  WRITING_REVIEW_AI_LOG_SAFE_COLUMNS
+} from "@/lib/writingReviewAiLogProjection";
 
 export const dynamic = "force-dynamic";
 
-const LOG_COLUMNS = [
-  "id", "created_at", "attempt_id", "task_type", "operation", "request_id",
-  "model", "prompt_version", "schema_version", "status", "pipeline_stage",
-  "error_type", "error_code", "elapsed_ms", "end_to_end_elapsed_ms",
-  "total_tokens", "cost", "normalization_applied"
-].join(",");
+const LOG_COLUMNS = WRITING_REVIEW_AI_LOG_SAFE_COLUMNS.join(",");
 
 type AttemptRow = { attempt_id: string; user_id: string };
 type ProfileRow = { id: string; email: string | null; full_name: string | null };
@@ -85,7 +84,7 @@ export async function GET(request: Request) {
         ? profileById.get(String(attempt.user_id))
         : undefined;
       return {
-        ...log,
+        ...projectWritingReviewAiLog(log),
         student_name: profile
           ? getPreferredUserDisplayName({
               email: profile.email,

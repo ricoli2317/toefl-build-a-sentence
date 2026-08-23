@@ -9,6 +9,12 @@ import {
   TeacherEmptyState,
   TeacherLoadingRegion
 } from "@/components/teacher/TeacherUI";
+import {
+  formatWritingReviewCost,
+  writingReviewBillingWarning,
+  writingReviewCostSourceLabel,
+  writingReviewEstimateKindLabel
+} from "@/lib/writingReviewCostPresentation";
 
 type AiLog = Record<string, unknown> & {
   id: string;
@@ -28,6 +34,19 @@ type AiLog = Record<string, unknown> & {
   elapsed_ms: number;
   total_tokens?: number | null;
   cost?: number | string | null;
+  cost_currency?: "CNY" | "USD" | null;
+  cost_source?: string | null;
+  estimate_kind?: string | null;
+  upstream_cost_currency?: "USD" | null;
+  billing_completeness?:
+    | "complete_for_observed_requests"
+    | "partial_or_unknown"
+    | null;
+  cost_observability?: Record<string, unknown> | null;
+  primary_cost_observability?: Record<string, unknown> | null;
+  hedge_cost_observability?: Record<string, unknown> | null;
+  winner_cost_observability?: Record<string, unknown> | null;
+  observed_cost_observability?: Record<string, unknown> | null;
   normalization_applied?: boolean;
   validation_issues?: Array<{ path: string; message: string }>;
   diagnostics?: Record<string, unknown>;
@@ -165,7 +184,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
                     <td className="px-3 py-3">{errorTypeLabel(log.error_type)}</td>
                     <td className="whitespace-nowrap px-3 py-3">{formatDuration(log.elapsed_ms)}</td>
                     <td className="px-3 py-3 tabular-nums">{log.total_tokens ?? "—"}</td>
-                    <td className="px-3 py-3 tabular-nums">{formatCost(log.cost)}</td>
+                    <td className="px-3 py-3 tabular-nums">{formatWritingReviewCost(log.cost, log.cost_currency)}{log.estimate_kind ? <div className="text-xs text-student-muted">{writingReviewEstimateKindLabel(log.estimate_kind)}</div> : null}</td>
                   </tr>
                 ))}
               </tbody>
@@ -252,25 +271,26 @@ function LogDetail({ log, onClose }: { log: AiLog; onClose(): void }) {
           AI耗时: formatDuration(log.elapsed_ms), 端到端耗时: formatDuration(Number(log.end_to_end_elapsed_ms ?? 0)),
           Prompt_Token: log.prompt_tokens ?? "—", Cached_Token: log.cached_tokens ?? "—",
           Completion_Token: log.completion_tokens ?? "—", Reasoning_Token: log.reasoning_tokens ?? "—",
-          Total_Token: log.total_tokens ?? "—", 费用: formatCost(log.cost),
+          Total_Token: log.total_tokens ?? "—", 费用: formatWritingReviewCost(log.cost, log.cost_currency),
           Provider: log.provider_name ?? "—", HTTP状态: log.http_status ?? "—",
           Provider错误: log.provider_error_type ?? "—", Generation_ID: log.generation_id ?? "—",
           Provider_Request_ID: log.provider_request_id ?? "—",
-          Upstream总费用: formatCost(log.upstream_inference_cost),
-          Upstream输入费用: formatCost(log.upstream_inference_prompt_cost),
-          Upstream输出费用: formatCost(log.upstream_inference_completions_cost)
+          Upstream总费用: formatWritingReviewCost(log.upstream_inference_cost, log.upstream_cost_currency),
+          Upstream输入费用: formatWritingReviewCost(log.upstream_inference_prompt_cost, log.upstream_cost_currency),
+          Upstream输出费用: formatWritingReviewCost(log.upstream_inference_completions_cost, log.upstream_cost_currency)
         }} />
         <DetailSection title="Hedge" values={{
           已触发: log.hedge_triggered === true ? "是" : log.hedge_triggered === false ? "否" : "—",
           请求数: log.requests_started ?? "—", Winner: log.winner ?? "—",
           Primary结果: log.primary_result ?? "—",
           Primary耗时: formatDuration(Number(log.primary_elapsed_ms ?? 0)),
-          Primary费用: formatCost(log.primary_cost), Hedge结果: log.hedge_result ?? "—",
+          Primary费用: formatWritingReviewCost(log.primary_cost, costCurrency(log.primary_cost_observability)), Hedge结果: log.hedge_result ?? "—",
           Hedge耗时: formatDuration(Number(log.hedge_elapsed_ms ?? 0)),
-          Hedge费用: formatCost(log.hedge_cost), Loser状态: log.loser_status ?? "—",
-          Winner费用: formatCost(log.winner_cost),
-          已完成请求总费用: formatCost(log.observed_completed_cost)
+          Hedge费用: formatWritingReviewCost(log.hedge_cost, costCurrency(log.hedge_cost_observability)), Loser状态: log.loser_status ?? "—",
+          Winner费用: formatWritingReviewCost(log.winner_cost, costCurrency(log.winner_cost_observability)),
+          可观测请求费用: formatWritingReviewCost(log.observed_completed_cost, costCurrency(log.observed_cost_observability))
         }} />
+        <CostObservabilityDetail log={log} />
         <section className="mb-6"><h3 className="mb-3 font-bold">Validation issues</h3>
           {log.validation_issues?.length ? <ul className="grid gap-2">{log.validation_issues.map((issue, index) => <li className="rounded-lg bg-rose-50 p-3 text-sm" key={`${issue.path}-${index}`}><code>{issue.path}</code><div>{issue.message}</div></li>)}</ul> : <p className="text-sm text-student-muted">无</p>}
         </section>
@@ -278,6 +298,66 @@ function LogDetail({ log, onClose }: { log: AiLog; onClose(): void }) {
         {Object.keys(unknownDiagnostics).length ? <details className="rounded-lg border border-student-border p-4"><summary className="cursor-pointer font-semibold">查看原始诊断 JSON</summary><pre className="mt-3 overflow-auto whitespace-pre-wrap text-xs">{JSON.stringify(unknownDiagnostics, null, 2)}</pre></details> : null}
         <Link className="teacher-button-secondary mt-6 inline-flex" href={`/teacher/writing/reviews/${encodeURIComponent(log.attempt_id)}`}>打开当前批改</Link>
       </section>
+    </div>
+  );
+}
+
+function CostObservabilityDetail({ log }: { log: AiLog }) {
+  const cost = asRecord(log.cost_observability);
+  const warning = writingReviewBillingWarning(log.billing_completeness);
+  if (!cost && !warning) return null;
+  const officialUrl = safeOfficialPricingUrl(cost?.official_pricing_url);
+  return (
+    <section className="mb-6">
+      <h3 className="mb-3 font-bold">费用说明</h3>
+      <dl className="grid gap-3 rounded-xl border border-student-border p-4 sm:grid-cols-2">
+        <CostDetail label="来源" value={writingReviewCostSourceLabel(cost?.source)} />
+        <CostDetail label="估算类型" value={writingReviewEstimateKindLabel(cost?.estimate_kind)} />
+        <CostDetail label="价格版本" value={cost?.pricing_version ?? "—"} />
+        <CostDetail label="Endpoint" value={cost?.endpoint_hostname ?? "—"} />
+        <CostDetail label="缓存输入 Token" value={cost?.cached_input_tokens ?? "—"} />
+        <CostDetail label="未缓存输入 Token" value={cost?.uncached_input_tokens ?? "—"} />
+        <CostDetail label="输出 Token" value={cost?.output_tokens ?? "—"} />
+        <CostDetail label="Reasoning Token" value={cost?.reasoning_tokens ?? "—"} />
+        <CostDetail
+          label="Reasoning 计费"
+          value={cost?.reasoning_included_in_output === true
+            ? "已包含在输出 token 中，未重复计费"
+            : "—"}
+        />
+        <CostDetail
+          label="账单完整性"
+          value={log.billing_completeness === "complete_for_observed_requests"
+            ? "所有已启动请求均取得费用明细"
+            : log.billing_completeness === "partial_or_unknown"
+              ? "仅包含可观测请求"
+              : "—"}
+        />
+      </dl>
+      {officialUrl ? (
+        <a
+          className="mt-3 inline-flex text-sm font-semibold text-student-primary underline"
+          href={officialUrl}
+          rel="noreferrer"
+          target="_blank"
+        >
+          查看官方价格来源
+        </a>
+      ) : null}
+      {warning ? (
+        <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+          {warning}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
+function CostDetail({ label, value }: { label: string; value: unknown }) {
+  return (
+    <div>
+      <dt className="text-xs text-student-muted">{label}</dt>
+      <dd className="mt-1 break-words text-sm font-medium">{String(value)}</dd>
     </div>
   );
 }
@@ -309,7 +389,8 @@ function stageLabel(value: string) { return ({ provider_request: "Provider 请�
 function errorTypeLabel(value: unknown) { return value ? failedLabel(value) : "—"; }
 function formatDate(value: string) { return new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "medium" }).format(new Date(value)); }
 function formatDuration(value: number) { return Number.isFinite(value) && value > 0 ? `${(value / 1000).toFixed(2)} s` : "—"; }
-function formatCost(value: unknown) { if (value === null || value === undefined || value === "") return "—"; const number = Number(value); return Number.isFinite(number) ? `$${number.toFixed(6)}` : "—"; }
+function costCurrency(value: unknown) { const cost = asRecord(value); return cost?.currency ?? null; }
+function safeOfficialPricingUrl(value: unknown) { if (typeof value !== "string") return null; try { const url = new URL(value); return url.protocol === "https:" && (url.hostname === "platform.kimi.com" || url.hostname === "www.kimi.com") ? url.toString() : null; } catch { return null; } }
 function asRecord(value: unknown): Record<string, unknown> | null { return typeof value === "object" && value !== null && !Array.isArray(value) ? value as Record<string, unknown> : null; }
 
 async function teacherFetch(input: string) {

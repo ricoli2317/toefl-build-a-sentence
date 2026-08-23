@@ -96,6 +96,18 @@ test("stable classifier separates timeout, provider, parse, schema, localization
     }))),
     ["review_persistence", "persistence_error", "REVIEW_SAVE_FAILED"]
   );
+  assert.deepEqual(
+    pick(classifyWritingReviewAiFailure(Object.assign(new Error("anchor"), {
+      code: "C3_ANCHOR_LEAKAGE"
+    }))),
+    ["final_validation", "c3_anchor_leakage", "C3_ANCHOR_LEAKAGE"]
+  );
+  assert.deepEqual(
+    pick(classifyWritingReviewAiFailure(Object.assign(new Error("assembly"), {
+      code: "C3_ASSEMBLY_INVALID"
+    }))),
+    ["final_validation", "c3_assembly_error", "C3_ASSEMBLY_INVALID"]
+  );
 });
 
 test("database projection keeps core observability fields and sanitizes forbidden payloads", () => {
@@ -190,6 +202,10 @@ test("teacher log API enforces teacher auth, all filters, DESC pagination, and d
   assert.match(list, /\.range\(from, from \+ pageSize - 1\)/);
   assert.match(list, /Math\.min[\s\S]*100/);
   assert.match(detail, /\.eq\("id", params\.logId\)/);
+  assert.match(list, /projectWritingReviewAiLog/);
+  assert.match(detail, /projectWritingReviewAiLog/);
+  assert.match(detail, /WRITING_REVIEW_AI_LOG_SAFE_COLUMNS/);
+  assert.doesNotMatch(detail, /\.select\("\*"\)/);
 });
 
 test("teacher UI exposes list, filters, friendly status/detail, overlap actions, and attempt links", () => {
@@ -210,6 +226,11 @@ test("teacher UI exposes list, filters, friendly status/detail, overlap actions,
   assert.match(logs, /suppressed_conflict: "冲突项已抑制"/);
   assert.match(logs, /查看原始诊断 JSON/);
   assert.match(logs, /page_size/);
+  assert.match(logs, /可观测请求费用/);
+  assert.match(logs, /writingReviewBillingWarning/);
+  assert.match(logs, /Reasoning 计费/);
+  assert.match(logs, /查看官方价格来源/);
+  assert.match(logs, /primary_cost_observability/);
 });
 
 test("SQL defines constrained general-purpose logs, indexes, RLS, and service-role writes", () => {

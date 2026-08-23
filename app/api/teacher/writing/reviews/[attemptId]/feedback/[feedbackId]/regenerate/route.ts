@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import {
   EMPTY_OPENROUTER_USAGE,
-  requestOpenRouterStructuredOutput,
   type OpenRouterTokenUsage,
   WRITING_FEEDBACK_REQUEST_TIMEOUT_MS
 } from "@/lib/openrouterWritingReview";
+import {
+  getWritingReviewProviderConfig,
+  requestWritingReviewStructuredOutput
+} from "@/lib/writingReviewProvider";
+import { getWritingReviewPipeline } from "@/lib/writingReviewPipeline";
 import {
   classifyWritingReviewAiFailure,
   persistWritingReviewAiLogBestEffort,
@@ -98,9 +102,11 @@ export async function POST(
   let operationStartedAt: number | null = null;
   let aiStartedAt: number | null = null;
   let aiTaskType: "email" | "academic_discussion" | null = null;
-  let aiModel = process.env.OPENROUTER_WRITING_MODEL?.trim() || "unknown";
+  let aiModel = "unknown";
+  let aiPipeline: "legacy_v22" | "c3" = "legacy_v22";
   let aiUsage: OpenRouterTokenUsage = { ...EMPTY_OPENROUTER_USAGE };
   let generationId: string | null = null;
+  let costObservability: Record<string, unknown> | null = null;
   let aiLogClient: ReturnType<typeof createServiceSupabase> | null = null;
   try {
     assertWritingReviewTeacher(
@@ -115,21 +121,25 @@ export async function POST(
       await request.json().catch(() => null),
       {
         repository: createRepository(supabase),
+        pipeline: (aiPipeline = getWritingReviewPipeline()),
         requestAI: async (messages, context) => {
           aiStartedAt = Date.now();
           aiTaskType = context.taskType;
-          const response = await requestOpenRouterStructuredOutput(messages, {
+          const providerConfig = getWritingReviewProviderConfig();
+          const response = await requestWritingReviewStructuredOutput(providerConfig, messages, {
             jsonSchema:
               WRITING_FEEDBACK_REGENERATION_JSON_SCHEMA as unknown as Record<
                 string,
                 unknown
               >,
             schemaName: "tps_writing_feedback_regeneration",
+            reasoningEffort: "high",
             timeoutMs: WRITING_FEEDBACK_REQUEST_TIMEOUT_MS,
             timeoutMessage: "AI 建议生成超时，请稍后重试。"
           });
           aiModel = response.model;
           aiUsage = response.usage;
+          costObservability = (response as typeof response & { costObservability?: Record<string, unknown> }).costObservability ?? null;
           generationId = response.generationId;
           return response;
         }
@@ -187,6 +197,7 @@ export async function POST(
       end_to_end_elapsed_ms:
         operationStartedAt === null ? null : Date.now() - operationStartedAt,
       generation_id: generationId,
+      diagnostics: { pipeline: aiPipeline, ...(costObservability ? { cost_observability: costObservability } : {}) },
       ...writingReviewAiProviderDiagnostic(error),
       ...aiUsage
     });

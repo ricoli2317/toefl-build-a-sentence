@@ -15,17 +15,28 @@ export const MOONSHOT_WRITING_REVIEW_MODEL = "kimi-k3";
 export type MoonshotReasoningEffort = "max" | "high";
 
 export type MoonshotWritingReviewOptions = {
-  env?: Pick<NodeJS.ProcessEnv, "MOONSHOT_API_KEY">;
+  env?: Partial<Pick<
+    NodeJS.ProcessEnv,
+    "MOONSHOT_API_KEY" | "MOONSHOT_API_BASE_URL" | "MOONSHOT_WRITING_MODEL"
+  >>;
   fetchImpl?: typeof fetch;
   jsonSchema: JsonSchema;
+  modelOverride?: string;
   reasoningEffort: MoonshotReasoningEffort;
   signal?: AbortSignal;
 };
 
+export type MoonshotStructuredOutputOptions = MoonshotWritingReviewOptions & {
+  schemaName: string;
+  timeoutMs?: number;
+  timeoutMessage?: string;
+};
+
 export type MoonshotWritingReviewResponse = {
   content: string;
-  model: typeof MOONSHOT_WRITING_REVIEW_MODEL;
+  model: string;
   usage: OpenRouterTokenUsage;
+  generationId: string | null;
 };
 
 export type MoonshotWritingReviewErrorCode =
@@ -50,6 +61,31 @@ export async function requestMoonshotWritingReview(
   input: OpenRouterWritingReviewInput,
   options: MoonshotWritingReviewOptions
 ): Promise<MoonshotWritingReviewResponse> {
+  return requestMoonshotStructuredOutput(buildWritingReviewMessages(input), {
+    ...options,
+    schemaName: "tps_writing_review"
+  });
+}
+
+export async function requestMoonshotStructuredOutput(
+  messages: { role: "system" | "user"; content: string }[],
+  options: MoonshotStructuredOutputOptions
+): Promise<MoonshotWritingReviewResponse> {
+  if (options.timeoutMs !== undefined) {
+    return requestMoonshotWithTimeout(
+      (signal) =>
+        requestMoonshotStructuredOutput(messages, {
+          ...options,
+          signal,
+          timeoutMs: undefined,
+          timeoutMessage: undefined
+        }),
+      {
+        timeoutMs: options.timeoutMs,
+        timeoutMessage: options.timeoutMessage ?? "AI 请求超时，请稍后重试。"
+      }
+    );
+  }
   const env = options.env ?? process.env;
   const apiKey = env.MOONSHOT_API_KEY?.trim();
   if (!apiKey) {
@@ -58,10 +94,14 @@ export async function requestMoonshotWritingReview(
       "MOONSHOT_API_KEY is not configured in .env.local"
     );
   }
+  const baseUrl = env.MOONSHOT_API_BASE_URL?.trim() || MOONSHOT_API_BASE_URL;
+  const model = options.modelOverride?.trim() ||
+    env.MOONSHOT_WRITING_MODEL?.trim() ||
+    MOONSHOT_WRITING_REVIEW_MODEL;
 
   let response: Response;
   try {
-    response = await (options.fetchImpl ?? fetch)(MOONSHOT_CHAT_COMPLETIONS_URL, {
+    response = await (options.fetchImpl ?? fetch)(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -69,14 +109,14 @@ export async function requestMoonshotWritingReview(
       },
       ...(options.signal ? { signal: options.signal } : {}),
       body: JSON.stringify({
-        model: MOONSHOT_WRITING_REVIEW_MODEL,
+        model,
         stream: false,
-        messages: buildWritingReviewMessages(input),
+        messages,
         reasoning_effort: options.reasoningEffort,
         response_format: {
           type: "json_schema",
           json_schema: {
-            name: "tps_writing_review",
+            name: options.schemaName,
             strict: true,
             schema: options.jsonSchema
           }
@@ -119,8 +159,11 @@ export async function requestMoonshotWritingReview(
   }
   return {
     content,
-    model: MOONSHOT_WRITING_REVIEW_MODEL,
-    usage: readOpenAICompatibleUsage(payload)
+    model,
+    usage: readOpenAICompatibleUsage(payload),
+    generationId: isRecord(payload) && typeof payload.id === "string" && payload.id.trim()
+      ? payload.id.trim()
+      : null
   };
 }
 

@@ -160,8 +160,8 @@ function productionDependencies(requestAI, clock, onComplete) {
   };
 }
 
-test("production hedge configuration is Kimi K3 high, 60s, 240s, retry zero", () => {
-  assert.equal(WRITING_REVIEW_PRODUCTION_MODEL, "moonshotai/kimi-k3");
+test("production hedge configuration is domestic Kimi K3 high, 60s, 240s, retry zero", () => {
+  assert.equal(WRITING_REVIEW_PRODUCTION_MODEL, "kimi-k3");
   assert.equal(WRITING_REVIEW_PRODUCTION_REASONING, "high");
   assert.equal(WRITING_REVIEW_PRODUCTION_RETRY, 0);
   assert.equal(WRITING_REVIEW_HEDGE_DELAY_MS, 60_000);
@@ -439,12 +439,14 @@ test("only full-review routes use hedge; feedback regenerate remains single requ
     assert.match(source, /requestProductionWritingReviewHedged/);
     assert.match(source, /WRITING_REVIEW_PRODUCTION_MODEL/);
     assert.match(source, /WRITING_REVIEW_PRODUCTION_REASONING/);
-    assert.match(source, /modelOverride: WRITING_REVIEW_PRODUCTION_MODEL/);
+    assert.match(source, /getWritingReviewProviderConfig/);
+    assert.match(source, /requestWritingReview\(providerConfig, requestInput/);
     assert.match(source, /reasoningEffort: WRITING_REVIEW_PRODUCTION_REASONING/);
     assert.match(source, /AI_REVIEW_RAW_RESULT_V22_JSON_SCHEMA/);
     assert.match(source, /parseAIReviewRawResultV22ForResponse/);
   }
   assert.doesNotMatch(feedback, /requestProductionWritingReviewHedged/);
-  assert.match(feedback, /requestOpenRouterStructuredOutput/);
+  assert.match(feedback, /getWritingReviewProviderConfig/);
+  assert.match(feedback, /requestWritingReviewStructuredOutput/);
   assert.match(feedback, /WRITING_FEEDBACK_REQUEST_TIMEOUT_MS/);
 });

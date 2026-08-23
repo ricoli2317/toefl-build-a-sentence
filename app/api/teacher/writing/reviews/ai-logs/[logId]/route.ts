@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  projectWritingReviewAiLog,
+  WRITING_REVIEW_AI_LOG_SAFE_COLUMNS
+} from "@/lib/writingReviewAiLogProjection";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +21,7 @@ export async function GET(
   }
   const { data, error } = await createServiceSupabase()
     .from("writing_review_ai_logs")
-    .select("*")
+    .select(WRITING_REVIEW_AI_LOG_SAFE_COLUMNS.join(","))
     .eq("id", params.logId)
     .maybeSingle();
   if (error) {
@@ -32,7 +36,12 @@ export async function GET(
       404
     );
   }
-  return json({ log: data });
+  return json({
+    log: projectWritingReviewAiLog(
+      data as unknown as Record<string, unknown>,
+      { includeDiagnostics: true }
+    )
+  });
 }
 
 function json(data: unknown, status = 200) {

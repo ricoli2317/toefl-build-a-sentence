@@ -32,6 +32,8 @@ pnpm-debug.log*
 /tmp/writing-review-kimi-medium-weak/
 /tmp/writing-review-kimi-hedged-weak/
 /tmp/writing-review-production-export/
+/tmp/writing-review-prompt-benchmark/
+/tmp/writing-review-c3-production/
 
 # system files
 .DS_Store

@@ -8,6 +8,8 @@ import {
   ACADEMIC_DISCUSSION_CONTENT_FEEDBACK_CATEGORIES_V2,
   EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2
 } from "./writingReviewSchemaV2.ts";
+import { buildWritingReviewTextUnits } from "./writingReviewTextUnits.ts";
+import { buildAnchoredWritingResponse } from "./writingReviewAnchors.ts";
 
 export const WRITING_FEEDBACK_PROMPT_MAX_LENGTH = 2000;
 export const WRITING_FEEDBACK_REGEN_PROMPT_VERSION =
@@ -66,6 +68,7 @@ export type WritingFeedbackRegenerationDependencies = {
     messages: Array<{ role: "system" | "user"; content: string }>,
     context: { taskType: WritingTaskType }
   ): Promise<{ content: string }>;
+  pipeline?: "legacy_v22" | "c3";
 };
 
 export type WritingFeedbackRegenerationErrorCode =
@@ -134,7 +137,7 @@ export async function regenerateWritingContentFeedback(
   let aiResponse: { content: string };
   try {
     aiResponse = await dependencies.requestAI(
-      buildWritingFeedbackRegenerationMessages({
+      (dependencies.pipeline === "c3" ? buildWritingFeedbackRegenerationC3Messages : buildWritingFeedbackRegenerationMessages)({
         taskType: attempt.task_type,
         question,
         responseText: attempt.response_text,
@@ -246,6 +249,17 @@ The suggestion is explanatory feedback and must be written in Simplified Chinese
   ];
 }
 
+export function buildWritingFeedbackRegenerationC3Messages(input: {
+  taskType: WritingTaskType;
+  question: WritingQuestion;
+  responseText: string;
+  feedback: InternalContentFeedbackV22<string> & { example?: string };
+  teacherPrompt: string;
+}) {
+  const anchored = buildAnchoredWritingResponse(input.responseText, buildWritingReviewTextUnits(input.responseText));
+  return [{ role: "system" as const, content: "You are revising one existing TOEFL Content Feedback item only. Return only suggestion and proposed_revision under the supplied JSON Schema. TPS_UNIT markers are TPS metadata, not student writing: ignore and never mention, quote, count, or reproduce them. Read anchored_response as the complete response; unit boundaries are not sentence boundaries. Keep the target feedback's ID, category, location, and issue unchanged. Do not revise language edits, scores, other feedback, offsets, original text, or database fields." }, { role: "user" as const, content: JSON.stringify({ task_type: input.taskType, question: input.question, anchored_response: anchored.anchoredResponse, target_feedback: { category: input.feedback.category, issue: input.feedback.issue, suggestion: input.feedback.suggestion, proposed_revision: input.feedback.proposed_revision }, teacher_instruction: input.teacherPrompt }) }];
+}
+
 export function parseWritingFeedbackRegenerationResult(
   content: string
 ): WritingFeedbackRegenerationResult {
@@ -269,6 +283,9 @@ export function parseWritingFeedbackRegenerationResult(
     value.proposed_revision.trim().length === 0
   ) {
     throw failure("AI_RESPONSE_INVALID", "AI 返回的反馈格式无效。", 502);
+  }
+  if (/⟦TPS_|TPS_UNIT:|TPS_INTERNAL_/.test(value.suggestion) || /⟦TPS_|TPS_UNIT:|TPS_INTERNAL_/.test(value.proposed_revision)) {
+    throw failure("AI_RESPONSE_INVALID", "AI 返回包含内部定位标记。", 502);
   }
   return {
     suggestion: value.suggestion,

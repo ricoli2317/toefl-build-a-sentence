@@ -2,7 +2,9 @@ import {
   getOpenRouterErrorDiagnostic,
   OpenRouterWritingReviewError
 } from "./openrouterWritingReview.ts";
+import { MoonshotWritingReviewError } from "./moonshotWritingReview.ts";
 import { AIReviewValidationError } from "./writingReviewSchema.ts";
+import type { OpenRouterTokenUsage } from "./openrouterWritingReview.ts";
 
 export type WritingReviewAiOperation =
   | "generate_ai"
@@ -90,6 +92,9 @@ type PersistenceClient = {
 };
 
 export function logWritingReviewAi(entry: WritingReviewAiLogEntry) {
+  const costObservability = isRecord(entry.diagnostics?.cost_observability)
+    ? entry.diagnostics?.cost_observability
+    : null;
   console.info("[writing-review-ai]", {
     request_id: entry.request_id,
     operation: entry.operation,
@@ -108,7 +113,13 @@ export function logWritingReviewAi(entry: WritingReviewAiLogEntry) {
     requests_started: entry.requests_started ?? null,
     winner: entry.winner ?? null,
     total_tokens: entry.total_tokens ?? null,
-    cost: entry.cost ?? null
+    cost: entry.cost ?? null,
+    cost_currency: costObservability?.currency ?? null,
+    cost_source: costObservability?.source ?? null,
+    billing_completeness:
+      entry.diagnostics?.billing_completeness ??
+      costObservability?.billing_completeness ??
+      null
   });
 }
 
@@ -133,6 +144,12 @@ export async function persistWritingReviewAiLogBestEffort(
 }
 
 export function writingReviewAiLogDatabaseRow(entry: WritingReviewAiLogEntry) {
+  const supplied = entry.diagnostics?.cost_observability;
+  const costObservability = supplied && typeof supplied === "object"
+    ? supplied
+    : entry.cost === null || entry.cost === undefined
+      ? { amount: null, currency: null, source: null, estimate_kind: null }
+      : { amount: entry.cost, currency: "USD", source: "legacy_provider_reported", estimate_kind: null };
   return {
     request_id: entry.request_id,
     attempt_id: entry.attempt_id,
@@ -188,7 +205,7 @@ export function writingReviewAiLogDatabaseRow(entry: WritingReviewAiLogEntry) {
       path: boundedText(item.path, 500),
       message: boundedText(item.message, 1000)
     })),
-    diagnostics: sanitizeDiagnostics(entry.diagnostics ?? {})
+    diagnostics: sanitizeDiagnostics({ ...(entry.diagnostics ?? {}), cost_observability: costObservability })
   };
 }
 
@@ -237,9 +254,32 @@ export function classifyWritingReviewAiFailure(
 
   const code = firstString(chain, "code");
   const result = firstString(chain, "result");
+  if (code === "PREPROCESSING_INVALID") {
+    return failure("request_preparation", "c3_preprocessing_error", code, error);
+  }
+  if (code === "C3_INVALID_JSON") {
+    return failure("response_parsing", "c3_invalid_json", code, error);
+  }
+  if (code === "C3_SCHEMA_INVALID") {
+    return failure("schema_validation", "c3_semantic_schema_error", code, error);
+  }
+  if (code === "C3_SCORE_CONTRACT_INVALID") {
+    return failure("schema_validation", "c3_score_contract_error", code, error);
+  }
+  if (code === "C3_UNIT_VALIDATION_FAILED") {
+    return failure("final_validation", "c3_unit_id_error", code, error);
+  }
+  if (code === "C3_ANCHOR_LEAKAGE") {
+    return failure("final_validation", "c3_anchor_leakage", code, error);
+  }
+  if (code === "C3_ASSEMBLY_INVALID") {
+    return failure("final_validation", "c3_assembly_error", code, error);
+  }
   if (
     code === "OPENROUTER_API_KEY_MISSING" ||
-    code === "OPENROUTER_MODEL_MISSING"
+    code === "OPENROUTER_MODEL_MISSING" ||
+    code === "MOONSHOT_API_KEY_MISSING" ||
+    code === "WRITING_REVIEW_PROVIDER_INVALID"
   ) {
     return failure(
       "request_preparation",
@@ -308,7 +348,11 @@ export function classifyWritingReviewAiFailure(
   }
   if (
     code === "AI_RESPONSE_INVALID" &&
-    chain.some((item) => item instanceof OpenRouterWritingReviewError)
+    chain.some(
+      (item) =>
+        item instanceof OpenRouterWritingReviewError ||
+        item instanceof MoonshotWritingReviewError
+    )
   ) {
     return failure(
       "provider_response",
@@ -319,7 +363,11 @@ export function classifyWritingReviewAiFailure(
   }
   const provider = getOpenRouterErrorDiagnostic(error);
   if (
-    chain.some((item) => item instanceof OpenRouterWritingReviewError) ||
+    chain.some(
+      (item) =>
+        item instanceof OpenRouterWritingReviewError ||
+        item instanceof MoonshotWritingReviewError
+    ) ||
     provider.http_status !== null
   ) {
     return failure(
