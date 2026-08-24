@@ -316,6 +316,66 @@ test("persisted pre-v5 character spans remain openable only through stored exact
   );
 });
 
+test("C3 working drafts keep anchored offsets when the same edit text appears elsewhere", () => {
+  const repeatedResponse = "I like the room. I like the service.";
+  const secondLike = repeatedResponse.lastIndexOf("like");
+  const input = emailV22Input();
+  input.responseText = repeatedResponse;
+  input.languageEdits = [
+    languageEdit({
+      edit_id: "c3-second-like",
+      start: secondLike,
+      end: secondLike + "like".length,
+      original_text: "like",
+      replacement_text: "appreciate",
+      restored: false
+    })
+  ];
+  input.contentFeedback.items[0].start = 0;
+  input.contentFeedback.items[0].end = repeatedResponse.length;
+  input.contentFeedback.items[0].original_sentence = repeatedResponse;
+
+  const draft = normalizeWritingReviewWorkingDraft(input);
+  assert.equal(draft.language_edits[0].start, secondLike);
+  assert.equal(draft.language_edits[0].end, secondLike + "like".length);
+  assert.equal(
+    repeatedResponse.slice(
+      draft.language_edits[0].start,
+      draft.language_edits[0].end
+    ),
+    "like"
+  );
+});
+
+test("workspace reload accepts a saved C3 anchored edit without global relocalization", async () => {
+  const repeatedResponse = "I like the room. I like the service.";
+  const secondLike = repeatedResponse.lastIndexOf("like");
+  const input = emailV22Input();
+  input.responseText = repeatedResponse;
+  input.languageEdits = [
+    languageEdit({
+      edit_id: "c3-saved-second-like",
+      start: secondLike,
+      end: secondLike + "like".length,
+      original_text: "like",
+      replacement_text: "appreciate",
+      restored: false
+    })
+  ];
+  input.contentFeedback.items[0].start = 0;
+  input.contentFeedback.items[0].end = repeatedResponse.length;
+  input.contentFeedback.items[0].original_sentence = repeatedResponse;
+  const storedDraft = normalizeWritingReviewWorkingDraft(input);
+  const supabase = workspaceSupabase({
+    attempt: { ...attemptRow(), response_text: repeatedResponse },
+    review: reviewRow(buildWritingReviewSaveUpdate(storedDraft))
+  });
+
+  const workspace = await loadWritingReviewWorkspace(supabase, "attempt-1");
+  assert.equal(workspace.review.language_edits[0].start, secondLike);
+  assert.equal(workspace.review.language_edits[0].original_text, "like");
+});
+
 test("score references are optional in working Save and Publish snapshots", () => {
   const input = emailV22Input();
   input.scores.official_score.rationale = "";

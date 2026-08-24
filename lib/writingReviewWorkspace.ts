@@ -14,7 +14,7 @@ import {
   ACADEMIC_DISCUSSION_DIMENSION_SCORE_KEYS,
   EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2,
   EMAIL_DIMENSION_SCORE_KEYS,
-  parseAIReviewRawResultV2ForResponse,
+  parseAIReviewRawResultV2,
   type DimensionScoreKey,
   type InternalContentFeedbackV2,
   type WorkingDimensionScoreV2,
@@ -22,12 +22,12 @@ import {
   type WorkingReviewScoresV2
 } from "./writingReviewSchemaV2.ts";
 import {
-  parseAIReviewRawResultV21ForResponse,
+  parseAIReviewRawResultV21,
   validateContentRevisionOverlap,
   type InternalContentFeedbackV21
 } from "./writingReviewSchemaV21.ts";
 import {
-  parseAIReviewRawResultV22ForResponse,
+  parseAIReviewRawResultV22,
   type InternalContentFeedbackV22
 } from "./writingReviewSchemaV22.ts";
 import type { WritingTaskType } from "./writing.ts";
@@ -327,19 +327,21 @@ function normalizeV2WorkingDraft(
     )
   };
 
-  let validated;
+  let validatedRaw:
+    | ReturnType<typeof parseAIReviewRawResultV2>
+    | ReturnType<typeof parseAIReviewRawResultV21>
+    | ReturnType<typeof parseAIReviewRawResultV22>;
   try {
-    validated = isV22
-      ? parseAIReviewRawResultV22ForResponse(rawCandidate, input.responseText, {
-          allowLegacyEmbeddedLanguageEditText: true
-        })
+    // A persisted working draft already contains verified source offsets. Do
+    // not throw those offsets away and localize its text again: C3 anchors may
+    // legitimately target the second occurrence of text that is repeated in
+    // the full response. Validate the raw field contract here, then verify the
+    // stored offset against the exact response slice below.
+    validatedRaw = isV22
+      ? parseAIReviewRawResultV22(rawCandidate)
       : isV21
-        ? parseAIReviewRawResultV21ForResponse(rawCandidate, input.responseText, {
-            allowLegacyEmbeddedLanguageEditText: true
-          })
-        : parseAIReviewRawResultV2ForResponse(rawCandidate, input.responseText, {
-            allowLegacyEmbeddedLanguageEditText: true
-          });
+        ? parseAIReviewRawResultV21(rawCandidate)
+        : parseAIReviewRawResultV2(rawCandidate);
   } catch (error) {
     throw invalid(
       error instanceof AIReviewValidationError
@@ -359,16 +361,34 @@ function normalizeV2WorkingDraft(
         index
       );
     }
-    const edit = validated.language_edits[aiEditIndex++];
+    const edit = validatedRaw.language_edits[aiEditIndex++];
     if (
       !edit ||
       !isRecord(inputEdit) ||
-      inputEdit.start !== edit.start ||
-      inputEdit.end !== edit.end
+      !Number.isInteger(inputEdit.start) ||
+      !Number.isInteger(inputEdit.end) ||
+      (inputEdit.start as number) < 0 ||
+      (inputEdit.end as number) <= (inputEdit.start as number) ||
+      (inputEdit.end as number) > input.responseText.length ||
+      input.responseText.slice(
+        inputEdit.start as number,
+        inputEdit.end as number
+      ) !== edit.original_text
     ) {
       throw invalid(`language_edits[${index}] offset 无效。`);
     }
-    return { ...edit, restored: restoredFlags[index], source: "ai" as const };
+    return {
+      edit_id: edit.edit_id,
+      start: inputEdit.start as number,
+      end: inputEdit.end as number,
+      original_text: edit.original_text,
+      replacement_text: edit.replacement_text,
+      category: edit.category as WorkingLanguageEdit["category"],
+      severity: edit.severity as WorkingLanguageEdit["severity"],
+      explanation: edit.explanation,
+      restored: restoredFlags[index],
+      source: "ai" as const
+    };
   });
   validateWorkingLanguageEditOverlap(normalizedEdits);
 
@@ -383,16 +403,29 @@ function normalizeV2WorkingDraft(
         index
       );
     }
-    const feedback = validated.content_feedback[aiFeedbackIndex++];
+    const feedback = validatedRaw.content_feedback[aiFeedbackIndex++];
     if (
       !feedback ||
       !isRecord(inputFeedback) ||
-      inputFeedback.start !== feedback.start ||
-      inputFeedback.end !== feedback.end
+      !Number.isInteger(inputFeedback.start) ||
+      !Number.isInteger(inputFeedback.end) ||
+      (inputFeedback.start as number) < 0 ||
+      (inputFeedback.end as number) <= (inputFeedback.start as number) ||
+      (inputFeedback.end as number) > input.responseText.length ||
+      input.responseText.slice(
+        inputFeedback.start as number,
+        inputFeedback.end as number
+      ) !== feedback.original_sentence
     ) {
       throw invalid(`content_feedback.items[${index}] offset 无效。`);
     }
-    return { ...feedback, included: includedFlags[index], source: "ai" as const };
+    return {
+      ...feedback,
+      start: inputFeedback.start as number,
+      end: inputFeedback.end as number,
+      included: includedFlags[index],
+      source: "ai" as const
+    };
   });
   if (hasProposedRevision) {
     try {
