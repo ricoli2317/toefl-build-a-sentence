@@ -170,6 +170,86 @@ test("C3 removes overlapping localization context while preserving each explanat
   );
 });
 
+test("C3 assigns each aligned token split only its matching explanation clause", () => {
+  const text = "The internet equipment is stable. I notice impact for the enviroment. Delivery was fo 12 p.m";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "email",
+    responseText: text,
+    units,
+    semantic: semantic(EMAIL_DIMENSIONS, [
+      edit({
+        original_text: "equipment is",
+        replacement_text: "connection was",
+        issue_type: "grammar",
+        severity: "moderate",
+        reason: "叙述入住经历应用过去时 was，且网络稳定通常用 connection 而非 equipment。"
+      }),
+      edit({
+        unit_id: "U02",
+        original_text: "impact for the enviroment",
+        replacement_text: "impact on the environment",
+        issue_type: "usage",
+        severity: "moderate",
+        reason: "impact 后接介词 on 表示对事物的影响，且 environment 拼写错误。"
+      }),
+      edit({
+        unit_id: "U03",
+        original_text: "fo 12 p.m",
+        replacement_text: "for 12 p.m.",
+        issue_type: "spelling",
+        severity: "minor",
+        reason: "fo 拼写错误应为 for；p.m. 缩写加点更规范。"
+      })
+    ])
+  });
+
+  assert.deepEqual(
+    assembled.language_edits.map((item) => [
+      item.original_text,
+      item.replacement_text,
+      item.explanation
+    ]),
+    [
+      ["equipment", "connection", "网络稳定通常用 connection 而非 equipment。"],
+      ["is", "was", "叙述入住经历应用过去时 was。"],
+      ["for", "on", "impact 后接介词 on 表示对事物的影响。"],
+      ["enviroment", "environment", "environment 拼写错误。"],
+      ["fo", "for", "fo 拼写错误应为 for；"],
+      ["m", "m.", "p.m. 缩写加点更规范。"]
+    ]
+  );
+});
+
+test("C3 keeps an unaligned sentence rewrite as one explained edit", () => {
+  const text = "We recieved a pasta instead that we ordered a salad.";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "email",
+    responseText: text,
+    units,
+    semantic: semantic(EMAIL_DIMENSIONS, [
+      edit({
+        original_text: "recieved a pasta instead that we ordered a salad",
+        replacement_text: "received pasta instead of the salad we ordered",
+        issue_type: "grammar",
+        severity: "moderate",
+        reason: "received 拼写错误；instead 后应使用 instead of；pasta 通常为不可数名词。"
+      })
+    ])
+  });
+
+  assert.equal(assembled.language_edits.length, 1);
+  assert.equal(
+    assembled.language_edits[0].original_text,
+    "recieved a pasta instead that we ordered a salad"
+  );
+  assert.equal(
+    assembled.language_edits[0].explanation,
+    "received 拼写错误；instead 后应使用 instead of；pasta 通常为不可数名词。"
+  );
+});
+
 test("C3 keeps spelling and adjacent grammar corrections as separate explained edits", () => {
   const text = "We recieved a pasta instead that we ordered a salad.";
   const units = buildWritingReviewTextUnits(text);

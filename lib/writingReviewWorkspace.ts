@@ -31,6 +31,7 @@ import {
   type InternalContentFeedbackV22
 } from "./writingReviewSchemaV22.ts";
 import type { WritingTaskType } from "./writing.ts";
+import { allocatePersistedSplitEditExplanations } from "./writingReviewLanguageEditExplanation.ts";
 
 export type WorkingReviewItemSource = "ai" | "teacher";
 export const TEACHER_REVIEW_CONTENT_REQUIRED_MESSAGE =
@@ -352,7 +353,8 @@ function normalizeV2WorkingDraft(
   }
 
   let aiEditIndex = 0;
-  const normalizedEdits = languageEdits.map((inputEdit, index) => {
+  const normalizedEdits = allocatePersistedSplitEditExplanations(
+    languageEdits.map((inputEdit, index) => {
     if (editSources[index] === "teacher") {
       return validateTeacherLanguageEdit(
         inputEdit,
@@ -389,7 +391,8 @@ function normalizeV2WorkingDraft(
       restored: restoredFlags[index],
       source: "ai" as const
     };
-  });
+    })
+  );
   validateWorkingLanguageEditOverlap(normalizedEdits);
 
   let aiFeedbackIndex = 0;

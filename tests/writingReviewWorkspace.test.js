@@ -376,6 +376,48 @@ test("workspace reload accepts a saved C3 anchored edit without global relocaliz
   assert.equal(workspace.review.language_edits[0].original_text, "like");
 });
 
+test("workspace reload repairs combined explanations on persisted C3 split parts", () => {
+  const splitResponse = "The internet equipment is stable.";
+  const equipmentStart = splitResponse.indexOf("equipment");
+  const isStart = splitResponse.indexOf("is", equipmentStart);
+  const combinedReason =
+    "叙述入住经历应用过去时 was，且网络稳定通常用 connection 而非 equipment。";
+  const input = emailV22Input();
+  input.responseText = splitResponse;
+  input.languageEdits = [
+    languageEdit({
+      edit_id: "c3-edit-01-part-01",
+      start: equipmentStart,
+      end: equipmentStart + "equipment".length,
+      original_text: "equipment",
+      replacement_text: "connection",
+      explanation: combinedReason,
+      restored: false
+    }),
+    languageEdit({
+      edit_id: "c3-edit-01-part-02",
+      start: isStart,
+      end: isStart + "is".length,
+      original_text: "is",
+      replacement_text: "was",
+      explanation: combinedReason,
+      restored: false
+    })
+  ];
+  input.contentFeedback.items[0].start = 0;
+  input.contentFeedback.items[0].end = splitResponse.length;
+  input.contentFeedback.items[0].original_sentence = splitResponse;
+
+  const draft = normalizeWritingReviewWorkingDraft(input);
+  assert.deepEqual(
+    draft.language_edits.map((item) => item.explanation),
+    [
+      "网络稳定通常用 connection 而非 equipment。",
+      "叙述入住经历应用过去时 was。"
+    ]
+  );
+});
+
 test("score references are optional in working Save and Publish snapshots", () => {
   const input = emailV22Input();
   input.scores.official_score.rationale = "";

@@ -17,6 +17,7 @@ import {
   normalizeLanguageEditOverlaps,
   type LanguageEditOverlapNormalizationDiagnostic
 } from "./writingReviewLanguageEditNormalization.ts";
+import { allocateLanguageEditExplanations } from "./writingReviewLanguageEditExplanation.ts";
 import type { WritingReviewSemanticC3 } from "./writingReviewSemanticSchema.ts";
 import { findReadableExactTextOccurrences } from "./writingReviewTextMatch.ts";
 import type { WritingReviewTextUnit } from "./writingReviewTextUnits.ts";
@@ -248,6 +249,13 @@ function splitIndependentAlignedTokenChanges(
       : [{ original: token, replacement: replacementTokens[index] }]
   );
   if (changed.length < 2) return [edit];
+  const explanations = allocateLanguageEditExplanations(
+    changed.map(({ original, replacement }) => ({
+      original_text: original[0],
+      replacement_text: replacement[0]
+    })),
+    edit.explanation
+  );
 
   return changed.map(({ original, replacement }, index) => ({
     ...edit,
@@ -255,7 +263,8 @@ function splitIndependentAlignedTokenChanges(
     start: edit.start + original.index,
     end: edit.start + original.index + original[0].length,
     original_text: original[0],
-    replacement_text: replacement[0]
+    replacement_text: replacement[0],
+    explanation: explanations[index]
   }));
 }
 
