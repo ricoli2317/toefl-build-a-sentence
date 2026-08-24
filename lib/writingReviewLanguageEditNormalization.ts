@@ -198,7 +198,7 @@ function normalizeGroup(responseText: string, group: IndexedEdit[]) {
   const compatible = compatibleCarrier(equivalentDeduplicated);
   if (compatible) {
     return normalizedGroupResult(
-      compatible.edit,
+      withCombinedExplanations(compatible.edit, equivalentDeduplicated),
       group,
       compatible,
       "merged_compatible",
@@ -279,8 +279,27 @@ function mergeChangedCores(
     start: unionStart,
     end: unionEnd,
     original_text: responseText.slice(unionStart, unionEnd),
-    replacement_text: replacement
+    replacement_text: replacement,
+    explanation: combinedExplanations(group)
   };
+}
+
+function combinedExplanations(group: IndexedEdit[]) {
+  return Array.from(
+    new Set(
+      group
+        .map(({ edit }) => edit.explanation.trim())
+        .filter(Boolean)
+    )
+  ).join("\n");
+}
+
+function withCombinedExplanations(
+  edit: InternalLanguageEditV2,
+  group: IndexedEdit[]
+) {
+  const explanation = combinedExplanations(group);
+  return explanation ? { ...edit, explanation } : edit;
 }
 
 function compatibleCarrier(group: IndexedEdit[]) {

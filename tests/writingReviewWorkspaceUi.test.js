@@ -31,6 +31,15 @@ const responseText = "Cities should invests in transit. Better buses reduce traf
 const editStart = responseText.indexOf("invests");
 const feedbackSentence = "Cities should invests in transit.";
 
+test("workspace does not show a content-revision suppression notice in language edit details", () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  assert.doesNotMatch(source, /该修改所在原句已采用内容建议改写/);
+  assert.doesNotMatch(source, /coveredByContentRevision/);
+});
+
 function edit(overrides = {}) {
   return {
     edit_id: "edit-1",
@@ -905,18 +914,6 @@ test("feedback tabs explicitly scroll the right column and synchronize selection
   assert.match(source, /scrollTargetWithinContainer\(rightColumnRef\.current/);
   assert.match(source, /onSelectFeedbackId\(first\.feedback_id\)/);
   assert.match(source, /calculateContainedScrollTop/);
-});
-
-test("language edit inspector explains when an adopted content rewrite takes precedence", () => {
-  const source = fs.readFileSync(
-    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
-    "utf8"
-  );
-  assert.match(
-    source,
-    /suppressedLanguageEditIds\.has\(selectedEdit\.edit_id\)/
-  );
-  assert.match(source, /批改稿会优先使用整句改写/);
 });
 
 test("immersive shell uses fixed hover overlays without reserving layout space", () => {

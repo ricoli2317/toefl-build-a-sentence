@@ -249,6 +249,7 @@ export async function POST(
   let generationId: string | null = null;
   let costObservability: Record<string, unknown> | null = null;
   let overlapDiagnostic: LanguageEditOverlapNormalizationDiagnostic | null = null;
+  let c3AssembledReview: AIReviewResultV22 | null = null;
   let reusedExistingReview = false;
   let persistenceRaceRecovered = false;
   const overlapDiagnosticsByBranch = new Map<
@@ -289,6 +290,7 @@ export async function POST(
             const c3Telemetry = writingReviewC3TelemetryDiagnostic(c3.telemetry, c3.timing.deadlineMs);
             hedgeTelemetry = c3Telemetry;
             overlapDiagnostic = c3.normalizationDiagnostic;
+            c3AssembledReview = c3.review;
             aiUsage = c3.response.usage;
             costObservability =
               c3Telemetry.winner_cost_observability ??
@@ -371,7 +373,9 @@ export async function POST(
         }
       },
       parseReview: (value, responseText) =>
-        parseAIReviewRawResultV22ForResponse(value, responseText)
+        aiPipeline === "c3" && c3AssembledReview
+          ? c3AssembledReview
+          : parseAIReviewRawResultV22ForResponse(value, responseText)
     });
     reusedExistingReview = generationResult.reusedExistingReview;
     persistenceRaceRecovered = generationResult.persistenceRaceRecovered;

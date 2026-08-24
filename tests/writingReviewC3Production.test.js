@@ -49,7 +49,7 @@ test("C3 service uses Moonshot structured output and returns only fully validate
   assert.equal(result.timing.deadlineMs, 180_000);
 });
 
-test("C3 service treats deterministic overlap normalization as a successful winner", async () => {
+test("C3 service treats deterministic anchored deduplication as a successful winner", async () => {
   const calls = [];
   const overlapping = {
     ...semantic,
@@ -81,7 +81,7 @@ test("C3 service treats deterministic overlap normalization as a successful winn
   assert.equal(calls.length, 1);
   assert.equal(result.telemetry.winner, "primary");
   assert.equal(result.review.language_edits.length, 1);
-  assert.equal(result.normalizationDiagnostic?.normalization_applied, true);
+  assert.equal(result.normalizationDiagnostic, null);
 });
 
 for (const [name, body, code] of [

@@ -9,12 +9,14 @@ const fullRoutes = [
   "app/api/teacher/writing/reviews/[attemptId]/regenerate-ai/route.ts"
 ];
 
-test("full-review routes select C3 once and reuse legacy persistence only after v2.2 output", () => {
+test("full-review routes keep C3 localization and legacy parsing isolated", () => {
   for (const path of fullRoutes) {
     const source = read(path);
     assert.match(source, /getWritingReviewPipeline\(\)/);
     assert.match(source, /pipeline === "c3"/);
     assert.match(source, /requestProductionC3WritingReview\(input, providerConfig\)/);
+    assert.match(source, /c3AssembledReview = c3\.review/);
+    assert.match(source, /aiPipeline === "c3" && c3AssembledReview/);
     assert.match(source, /export const maxDuration = 240/);
     assert.match(source, /writingReviewC3TelemetryDiagnostic/);
     assert.match(source, /writingReviewLogMetadata\(aiPipeline\)/);

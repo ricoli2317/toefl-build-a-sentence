@@ -33,7 +33,8 @@ import {
   AI_REVIEW_SCHEMA_VERSION_V22,
   AI_REVIEW_RAW_RESULT_V22_JSON_SCHEMA,
   parseAIReviewRawResultV22,
-  parseAIReviewRawResultV22ForResponse
+  parseAIReviewRawResultV22ForResponse,
+  type AIReviewResultV22
 } from "@/lib/writingReviewSchemaV22";
 import {
   requestProductionWritingReviewHedged,
@@ -130,6 +131,7 @@ export async function POST(
   let generationId: string | null = null;
   let costObservability: Record<string, unknown> | null = null;
   let overlapDiagnostic: LanguageEditOverlapNormalizationDiagnostic | null = null;
+  let c3AssembledReview: AIReviewResultV22 | null = null;
   const overlapDiagnosticsByBranch = new Map<
     "primary" | "hedge",
     LanguageEditOverlapNormalizationDiagnostic
@@ -159,6 +161,7 @@ export async function POST(
             const c3Telemetry = writingReviewC3TelemetryDiagnostic(c3.telemetry, c3.timing.deadlineMs);
             hedgeTelemetry = c3Telemetry;
             overlapDiagnostic = c3.normalizationDiagnostic;
+            c3AssembledReview = c3.review;
             aiUsage = c3.response.usage;
             costObservability =
               c3Telemetry.winner_cost_observability ??
@@ -239,7 +242,9 @@ export async function POST(
         }
       },
       parseReview: (value, responseText) =>
-        parseAIReviewRawResultV22ForResponse(value, responseText)
+        aiPipeline === "c3" && c3AssembledReview
+          ? c3AssembledReview
+          : parseAIReviewRawResultV22ForResponse(value, responseText)
     }, {
       preserveTeacherContent: !overwriteTeacherContent
     });

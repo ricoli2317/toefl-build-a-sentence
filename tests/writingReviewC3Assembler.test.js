@@ -100,7 +100,7 @@ test("C3 keeps independent errors in one unit as separate applicable edits", () 
   assert.equal(assembled.language_edits.length, 3);
   assert.deepEqual(
     assembled.language_edits.map((item) => item.original_text),
-    ["suggest to conduct", "miantenance", "lose"]
+    ["to conduct", "miantenance", "lose"]
   );
   const changes = assembled.language_edits.map((item) => ({
     start: item.start,
@@ -114,7 +114,99 @@ test("C3 keeps independent errors in one unit as separate applicable edits", () 
   );
 });
 
-test("C3 deterministically normalizes overlapping model corrections", () => {
+test("C3 removes overlapping localization context while preserving each explanation", () => {
+  const text = "I notice some potential impact for the enviroment. Also, air polution for the enviroment.";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "email",
+    responseText: text,
+    units,
+    semantic: semantic(EMAIL_DIMENSIONS, [
+      edit({
+        original_text: "impact for",
+        replacement_text: "impact on",
+        issue_type: "usage",
+        severity: "minor",
+        reason: "impact 后表示对象时应使用介词 on。"
+      }),
+      edit({
+        original_text: "impact for the enviroment.",
+        replacement_text: "impact for the environment.",
+        issue_type: "spelling",
+        severity: "minor",
+        reason: "environment 拼写错误。"
+      }),
+      edit({
+        unit_id: "U02",
+        original_text: "air polution",
+        replacement_text: "air pollution",
+        issue_type: "spelling",
+        severity: "minor",
+        reason: "pollution 拼写错误。"
+      }),
+      edit({
+        unit_id: "U02",
+        original_text: "polution for the enviroment.",
+        replacement_text: "pollution for the environment.",
+        issue_type: "spelling",
+        severity: "minor",
+        reason: "environment 拼写错误。"
+      })
+    ])
+  });
+
+  assert.deepEqual(
+    assembled.language_edits.map((item) => [
+      item.original_text,
+      item.replacement_text,
+      item.explanation
+    ]),
+    [
+      ["for", "on", "impact 后表示对象时应使用介词 on。"],
+      ["enviroment", "environment", "environment 拼写错误。"],
+      ["polution", "pollution", "pollution 拼写错误。"],
+      ["enviroment", "environment", "environment 拼写错误。"]
+    ]
+  );
+});
+
+test("C3 keeps spelling and adjacent grammar corrections as separate explained edits", () => {
+  const text = "We recieved a pasta instead that we ordered a salad.";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "email",
+    responseText: text,
+    units,
+    semantic: semantic(EMAIL_DIMENSIONS, [
+      edit({
+        original_text: "recieved a",
+        replacement_text: "received a",
+        issue_type: "spelling",
+        severity: "minor",
+        reason: "received 拼写错误。"
+      }),
+      edit({
+        original_text: "a pasta instead that we ordered a salad",
+        replacement_text: "pasta instead of the salad we ordered",
+        issue_type: "grammar",
+        severity: "moderate",
+        reason: "instead of 后应使用名词短语，并调整从句结构。"
+      })
+    ])
+  });
+
+  assert.equal(assembled.language_edits.length, 2);
+  assert.deepEqual(
+    assembled.language_edits.map((item) => item.category),
+    ["spelling", "grammar"]
+  );
+  assert.deepEqual(
+    assembled.language_edits.map((item) => item.explanation),
+    ["received 拼写错误。", "instead of 后应使用名词短语，并调整从句结构。"]
+  );
+});
+
+test("C3 deterministically deduplicates equivalent anchored corrections", () => {
   const text = "Dear Professor Lee, I apologize.";
   const units = buildWritingReviewTextUnits(text);
   let diagnostic = null;
@@ -144,8 +236,7 @@ test("C3 deterministically normalizes overlapping model corrections", () => {
   assert.equal(assembled.language_edits.length, 1);
   assert.equal(assembled.language_edits[0].original_text, "Professor Lee");
   assert.equal(assembled.language_edits[0].replacement_text, "Professor");
-  assert.equal(diagnostic?.normalization_applied, true);
-  assert.equal(diagnostic?.groups[0].action, "kept_minimal_equivalent");
+  assert.equal(diagnostic, null);
 });
 
 test("C3 keeps one safe correction when overlapping replacements conflict", () => {
@@ -190,7 +281,7 @@ test("C3 keeps one safe correction when overlapping replacements conflict", () =
   assert.equal(diagnostic?.groups[0].action, "suppressed_conflict");
 });
 
-test("C3 expands a repeated source only to a unique whole-token phrase", () => {
+test("C3 uses its anchored unit offset when the same source appears elsewhere", () => {
   const text = "I like coffee. I like tea.";
   const units = buildWritingReviewTextUnits(text);
   const assembled = assembleWritingReviewV22FromC3({
@@ -208,8 +299,9 @@ test("C3 expands a repeated source only to a unique whole-token phrase", () => {
     ])
   });
   const actual = assembled.language_edits[0];
-  assert.equal(actual.original_text, "like tea.");
-  assert.equal(actual.replacement_text, "prefer tea.");
+  assert.equal(actual.original_text, "like");
+  assert.equal(actual.replacement_text, "prefer");
+  assert.equal(actual.start, text.lastIndexOf("like"));
   assert.equal(text.slice(actual.start, actual.end), actual.original_text);
 });
 
