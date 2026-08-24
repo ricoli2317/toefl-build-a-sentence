@@ -100,7 +100,7 @@ test("C3 keeps independent errors in one unit as separate applicable edits", () 
   assert.equal(assembled.language_edits.length, 3);
   assert.deepEqual(
     assembled.language_edits.map((item) => item.original_text),
-    ["to conduct", "miantenance", "lose"]
+    ["suggest to conduct", "miantenance", "lose"]
   );
   const changes = assembled.language_edits.map((item) => ({
     start: item.start,
@@ -147,7 +147,7 @@ test("C3 removes overlapping localization context while preserving each explanat
       edit({
         unit_id: "U02",
         original_text: "polution for the enviroment.",
-        replacement_text: "pollution for the environment.",
+        replacement_text: "polution for the environment.",
         issue_type: "spelling",
         severity: "minor",
         reason: "environment 拼写错误。"
@@ -162,7 +162,7 @@ test("C3 removes overlapping localization context while preserving each explanat
       item.explanation
     ]),
     [
-      ["for", "on", "impact 后表示对象时应使用介词 on。"],
+      ["impact for", "impact on", "impact 后表示对象时应使用介词 on。"],
       ["enviroment", "environment", "enviroment 拼写错误，应改为 environment。"],
       ["polution", "pollution", "polution 拼写错误，应改为 pollution。"],
       ["enviroment", "environment", "enviroment 拼写错误，应改为 environment。"]
@@ -218,7 +218,7 @@ test("C3 assigns each aligned token split only its matching explanation clause",
       ["for", "on", "usage", "moderate", "impact 后接介词 on 表示对事物的影响。"],
       ["enviroment", "environment", "spelling", "minor", "enviroment 拼写错误，应改为 environment。"],
       ["fo", "for", "spelling", "minor", "fo 拼写错误，应改为 for。"],
-      ["m", "m.", "punctuation", "minor", "m 的标点格式不规范，此处应写为 m."]
+      ["p.m", "p.m.", "punctuation", "minor", "p.m 的标点格式不规范，此处应写为 p.m."]
     ]
   );
 });
@@ -256,7 +256,7 @@ test("C3 splits unequal token groups around stable anchors with independent meta
   );
 });
 
-test("C3 assigns possessive and plural token splits their own word-form explanations", () => {
+test("C3 keeps a coupled possessive and plural correction together without guessing metadata", () => {
   const text = "We should consider others idea.";
   const units = buildWritingReviewTextUnits(text);
   const assembled = assembleWritingReviewV22FromC3({
@@ -267,7 +267,7 @@ test("C3 assigns possessive and plural token splits their own word-form explanat
       edit({
         original_text: "others idea",
         replacement_text: "others' ideas",
-        issue_type: "spelling",
+        issue_type: "word_form",
         severity: "moderate",
         reason: "others' ideas 应使用复数所有格加复数名词。"
       })
@@ -281,10 +281,7 @@ test("C3 assigns possessive and plural token splits their own word-form explanat
       item.category,
       item.explanation
     ]),
-    [
-      ["others", "others'", "word_form", "others 此处应使用复数所有格形式 others'。"],
-      ["idea", "ideas", "word_form", "idea 此处应使用复数形式 ideas。"]
-    ]
+    [["others idea", "others' ideas", "word_form", "others' ideas 应使用复数所有格加复数名词。"]]
   );
 });
 
@@ -350,6 +347,57 @@ test("C3 keeps spelling and adjacent grammar corrections as separate explained e
   assert.deepEqual(
     assembled.language_edits.map((item) => item.explanation),
     ["recieved 拼写错误，应改为 received。", "instead of 后应使用名词短语，并调整从句结构。"]
+  );
+});
+
+test("C3 preserves provider metadata when compound changes cannot be explained atomically", () => {
+  const text =
+    "It will cuase the proposal to fail. We continued with selecting more optmal plan.";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "academic_discussion",
+    responseText: text,
+    units,
+    semantic: semantic(AD_DIMENSIONS, [
+      edit({
+        original_text: "cuase",
+        replacement_text: "make",
+        issue_type: "grammar",
+        severity: "moderate",
+        reason: "cuase 拼写错误；cause 不能接宾语加形容词补语的结构，应用 make。"
+      }),
+      edit({
+        unit_id: "U02",
+        original_text: "with selecting more optmal",
+        replacement_text: "to select a more optimal",
+        issue_type: "grammar",
+        severity: "moderate",
+        reason: "optmal 拼写错误；此处应用不定式表目的，且 plan 为可数名词需加 a。"
+      })
+    ])
+  });
+
+  assert.deepEqual(
+    assembled.language_edits.map((item) => [
+      item.original_text,
+      item.replacement_text,
+      item.category,
+      item.explanation
+    ]),
+    [
+      [
+        "cuase",
+        "make",
+        "grammar",
+        "cuase 拼写错误；cause 不能接宾语加形容词补语的结构，应用 make。"
+      ],
+      [
+        "with selecting more optmal",
+        "to select a more optimal",
+        "grammar",
+        "optmal 拼写错误；此处应用不定式表目的，且 plan 为可数名词需加 a。"
+      ]
+    ]
   );
 });
 

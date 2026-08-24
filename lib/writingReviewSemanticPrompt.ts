@@ -7,7 +7,7 @@ import {
 } from "./writingReviewSemanticSchema.ts";
 
 export const WRITING_REVIEW_C3_PROMPT_VERSION =
-  "writing_review_c3_prompt_v5" as const;
+  "writing_review_c3_prompt_v6" as const;
 
 const anchors = `Anchor handling rules:
 The markers such as ⟦TPS_UNIT:U01⟧ are TPS metadata, not student writing. Ignore them for scoring, grammar, organization, punctuation, formatting, and word count. Read anchored_response as one complete response; unit boundaries are not sentence boundaries. Use unit IDs only as location references. Never quote, revise, count, mention, or return a marker.`;
@@ -17,6 +17,8 @@ const languageRevisions = `Language revision rules:
 - original_text must be copied exactly from that unit. It must be a complete, readable word, phrase, or clause with no leading or trailing whitespace. Never return a character fragment such as "ks" from "feedbacks" or "d in" from "enjoyed in". Include the governing word when a short function word alone would be unclear.
 - replacement_text must be the exact English text that directly replaces original_text, with no boundary whitespace. Use an empty string only for a deletion. If original_text begins with a word, replacement_text must not begin with a detached comma or other punctuation; include the necessary source context instead.
 - Keep independent errors separate. Do not combine spelling, word form, grammar, and wording changes into one long rewrite merely because they occur in the same unit.
+- issue_type and reason must describe the complete replacement, not merely the easiest visible sub-error. Use spelling only when replacement_text merely corrects the spelling of the same intended word. If the replacement also changes the intended word, grammatical construction, or usage, choose the primary grammar, word_choice, syntax, or usage category and explain every material change.
+- If one replacement necessarily fixes a tightly coupled structure containing more than one surface error, keep it as one item and explain all of those changes. Split it only when every resulting item has its own non-overlapping original_text, directly applicable replacement_text, single issue_type, and reason that refers only to that item.
 - Do not return overlapping original_text ranges. Preserve the student's intended meaning and do not add missing ideas through a language revision.
 - issue_type must be exactly one of: ${WRITING_REVIEW_C3_LANGUAGE_CATEGORIES.join(", ")}.
 - severity must be exactly one of: ${WRITING_REVIEW_C3_LANGUAGE_SEVERITIES.join(", ")}. Use major only when the error seriously obstructs meaning or task communication; moderate for a noticeable grammar, syntax, or word-choice problem whose meaning remains recoverable; minor for a local spelling, punctuation, capitalization, article, or similarly small error.

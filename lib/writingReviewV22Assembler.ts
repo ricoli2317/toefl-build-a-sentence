@@ -211,7 +211,7 @@ function minimizeLocalizedLanguageEdit(
     }
   }
 
-  return (
+  const minimized = (
     candidates.sort(
       (left, right) =>
         left.end - left.start - (right.end - right.start) ||
@@ -219,6 +219,26 @@ function minimizeLocalizedLanguageEdit(
         left.original_text.localeCompare(right.original_text)
     )[0] ?? edit
   );
+  const sourceTerms = asciiTerms(edit.explanation).filter(
+    (term) => containsAsciiTerm(edit.original_text, term) || containsAsciiTerm(edit.replacement_text, term)
+  );
+  const keepsExplanationContext = sourceTerms.every(
+    (term) =>
+      containsAsciiTerm(minimized.original_text, term) ||
+      containsAsciiTerm(minimized.replacement_text, term)
+  );
+  return keepsExplanationContext ? minimized : edit;
+}
+
+function asciiTerms(value: string) {
+  return Array.from(value.toLowerCase().matchAll(/[a-z0-9]+(?:[.'’-][a-z0-9]+)*/g)).map(
+    (match) => match[0]
+  );
+}
+
+function containsAsciiTerm(value: string, term: string) {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i").test(value);
 }
 
 type IndexedToken = {
@@ -377,6 +397,7 @@ function splitIndependentTokenChanges(
     edit.category,
     edit.severity
   );
+  if (!metadata) return [edit];
 
   return changes.map((change, index) => ({
     ...edit,
@@ -436,7 +457,7 @@ function finalizeSplitLanguageEdit(edit: InternalLanguageEditV2) {
     localized.explanation,
     localized.category,
     localized.severity
-  )[0];
+  )![0];
   return {
     ...localized,
     category: metadata.category as InternalLanguageEditV2["category"],

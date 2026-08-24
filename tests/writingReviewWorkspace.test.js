@@ -422,6 +422,51 @@ test("workspace reload repairs combined explanations on persisted C3 split parts
   );
 });
 
+test("workspace reload keeps persisted mixed-error split metadata internally consistent", () => {
+  const response = "This will cause air polution for the enviroment.";
+  const combinedReason =
+    "pollution和environment均拼写错误，且pollution与environment搭配应用介词in。";
+  const corrections = [
+    ["polution", "pollution"],
+    ["for", "in"],
+    ["enviroment", "environment"]
+  ];
+  const input = emailV22Input();
+  input.responseText = response;
+  input.languageEdits = corrections.map(([original, replacement], index) => {
+    const start = response.indexOf(original);
+    return languageEdit({
+      edit_id: `c3-edit-08-part-0${index + 1}`,
+      start,
+      end: start + original.length,
+      original_text: original,
+      replacement_text: replacement,
+      explanation: combinedReason,
+      category: "spelling",
+      severity: "minor",
+      restored: false
+    });
+  });
+  input.contentFeedback.items[0].start = 0;
+  input.contentFeedback.items[0].end = response.length;
+  input.contentFeedback.items[0].original_sentence = response;
+
+  const draft = normalizeWritingReviewWorkingDraft(input);
+  assert.deepEqual(
+    draft.language_edits.map((item) => [
+      item.original_text,
+      item.replacement_text,
+      item.category,
+      item.explanation
+    ]),
+    [
+      ["polution", "pollution", "spelling", "polution 拼写错误，应改为 pollution。"],
+      ["for", "in", "usage", "for 此处介词用法不正确，应改为 in。"],
+      ["enviroment", "environment", "spelling", "enviroment 拼写错误，应改为 environment。"]
+    ]
+  );
+});
+
 test("workspace reload splits a persisted C3 revision while preserving a reordered rewrite", () => {
   const response =
     "I suggest to conduct prompt miantenance. We recieved a pasta instead that we ordered a salad.";
