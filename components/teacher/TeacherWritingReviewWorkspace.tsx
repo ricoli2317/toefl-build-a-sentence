@@ -841,6 +841,12 @@ export function TeacherWritingReviewWorkspace({
           }
           onSaveEdit={() => {
             if (
+              workingReviewItemSource(selectedEdit) === "ai" &&
+              !editExplanation.trim()
+            ) {
+              return "请填写修改说明。";
+            }
+            if (
               workingReviewItemSource(selectedEdit) === "teacher" &&
               !hasTeacherLanguageEditContent({
                 replacement_text: replacementText,
@@ -1560,7 +1566,6 @@ function LanguageEditInspector({
   replacementText: string;
 }) {
   const itemPosition = filteredEdits.findIndex((item) => item.edit_id === edit.edit_id);
-  const teacherSource = workingReviewItemSource(edit) === "teacher";
   const [validationError, setValidationError] = useState("");
   useEffect(() => setValidationError(""), [edit.edit_id, editing]);
   return (
@@ -1602,7 +1607,7 @@ function LanguageEditInspector({
           </p>
         )}
       </div>
-      {editing && teacherSource ? (
+      {editing ? (
         <label className="mt-3 block text-[10px] font-semibold text-student-muted">
           错误类型
           <select
@@ -1618,7 +1623,7 @@ function LanguageEditInspector({
       ) : (
         <Detail label="错误类型" value={writingReviewCategoryLabel(edit.category)} />
       )}
-      {editing && teacherSource ? (
+      {editing ? (
         <FormTextarea
           label="修改说明"
           onChange={onExplanationChange}
@@ -1639,7 +1644,7 @@ function LanguageEditInspector({
             <MiniButton onClick={onCancelEdit}>取消</MiniButton>
           </>
         ) : (
-          <MiniButton onClick={onEdit}><Pencil size={13} />编辑修改</MiniButton>
+          <MiniButton onClick={onEdit}><Pencil size={13} />编辑批改</MiniButton>
         )}
         <MiniButton onClick={onRestore}>
           <RotateCcw size={13} />{edit.restored ? "恢复修改" : "恢复原文"}

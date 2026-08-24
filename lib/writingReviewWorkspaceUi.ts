@@ -401,16 +401,25 @@ export function countTeacherEditedLanguageEdits(
       aiReviewRaw.schema_version !== "2.2")
   ) return null;
   if (!Array.isArray(aiReviewRaw.language_edits)) return null;
-  const rawById = new Map<string, string>();
+  const rawById = new Map<
+    string,
+    Pick<WorkingLanguageEdit, "replacement_text" | "category" | "explanation">
+  >();
   for (const value of aiReviewRaw.language_edits) {
     if (
       !isRecord(value) ||
       typeof value.edit_id !== "string" ||
-      typeof value.replacement_text !== "string"
+      typeof value.replacement_text !== "string" ||
+      typeof value.category !== "string" ||
+      typeof value.explanation !== "string"
     ) {
       return null;
     }
-    rawById.set(value.edit_id, value.replacement_text);
+    rawById.set(value.edit_id, {
+      replacement_text: value.replacement_text,
+      category: value.category as WorkingLanguageEdit["category"],
+      explanation: value.explanation
+    });
     if (
       /^c3-edit-\d+$/.test(value.edit_id) &&
       typeof value.original_text === "string" &&
@@ -424,14 +433,23 @@ export function countTeacherEditedLanguageEdits(
         end: value.original_text.length,
         restored: false
       } as InternalLanguageEditV2);
-      parts.forEach((part) => rawById.set(part.edit_id, part.replacement_text));
+      parts.forEach((part) => rawById.set(part.edit_id, {
+        replacement_text: part.replacement_text,
+        category: part.category,
+        explanation: part.explanation
+      }));
     }
   }
   const aiEdits = edits.filter((edit) => workingReviewItemSource(edit) === "ai");
   if (aiEdits.some((edit) => !rawById.has(edit.edit_id))) return null;
-  return aiEdits.filter(
-    (edit) => rawById.get(edit.edit_id) !== edit.replacement_text
-  ).length;
+  return aiEdits.filter((edit) => {
+    const original = rawById.get(edit.edit_id);
+    return (
+      original?.replacement_text !== edit.replacement_text ||
+      original?.category !== edit.category ||
+      original?.explanation !== edit.explanation
+    );
+  }).length;
 }
 
 export function hasWritingReviewTeacherContent(

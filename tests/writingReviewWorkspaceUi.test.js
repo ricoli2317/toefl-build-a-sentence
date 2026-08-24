@@ -306,14 +306,36 @@ test("previous and next edit navigation wraps within the filtered list", () => {
   assert.equal(adjacentLanguageEditId(edits, "edit-3", 1), "edit-1");
 });
 
-test("edited count compares current replacement text with immutable ai_review_raw", () => {
+test("edited count compares every teacher-editable AI Language Edit field", () => {
   const raw = {
     schema_version: "2.0",
-    language_edits: [{ edit_id: "edit-1", replacement_text: "invest" }]
+    language_edits: [{
+      edit_id: "edit-1",
+      replacement_text: "invest",
+      category: "grammar",
+      explanation: "情态动词后应使用动词原形。"
+    }]
   };
   assert.equal(countTeacherEditedLanguageEdits(raw, [edit()]), 0);
   assert.equal(countTeacherEditedLanguageEdits(raw, [edit({ replacement_text: "put money" })]), 1);
+  assert.equal(countTeacherEditedLanguageEdits(raw, [edit({ category: "usage" })]), 1);
+  assert.equal(countTeacherEditedLanguageEdits(raw, [edit({ explanation: "教师修订后的说明。" })]), 1);
   assert.equal(countTeacherEditedLanguageEdits({}, [edit()]), null);
+});
+
+test("AI Language Edit editor exposes replacement, category, and explanation together", () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  const inspector = source.slice(
+    source.indexOf("function LanguageEditInspector"),
+    source.indexOf("function EditFilter")
+  );
+  assert.doesNotMatch(inspector, /editing && teacherSource/);
+  assert.match(inspector, /onCategoryChange\(event\.target\.value as LanguageEditCategory\)/);
+  assert.match(inspector, /label="修改说明"[\s\S]*onExplanationChange/);
+  assert.match(inspector, /编辑批改/);
 });
 
 test("sentence feedback is located against exact response_text", () => {

@@ -561,6 +561,33 @@ test("score references are optional in working Save and Publish snapshots", () =
   );
 });
 
+test("edited AI Language Edit category and explanation survive save and reload", () => {
+  const input = emailV22Input();
+  input.languageEdits[0].category = "usage";
+  input.languageEdits[0].explanation = "教师修订：这里属于固定搭配问题。";
+
+  const draft = normalizeWritingReviewWorkingDraft(input);
+  const saved = buildWritingReviewSaveUpdate(draft);
+  assert.equal(saved.language_edits[0].category, "usage");
+  assert.equal(
+    saved.language_edits[0].explanation,
+    "教师修订：这里属于固定搭配问题。"
+  );
+
+  const reloaded = normalizeWritingReviewWorkingDraft({
+    ...input,
+    languageEdits: saved.language_edits,
+    scores: saved.scores,
+    contentFeedback: saved.content_feedback,
+    teacherComment: saved.teacher_comment
+  });
+  assert.equal(reloaded.language_edits[0].category, "usage");
+  assert.equal(
+    reloaded.language_edits[0].explanation,
+    "教师修订：这里属于固定搭配问题。"
+  );
+});
+
 test("manual-only review accepts every score reference left blank", () => {
   const manual = buildManualWritingReviewDraft("email");
   const draft = normalizeWritingReviewWorkingDraft({
