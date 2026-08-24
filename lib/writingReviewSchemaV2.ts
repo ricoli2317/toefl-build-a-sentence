@@ -104,6 +104,11 @@ export type InternalLanguageEditV2 = LanguageEdit & { restored: boolean };
 export type WritingReviewLocalizationDiagnosticContext = {
   attemptId?: string;
   requestId?: string;
+  /**
+   * Read-only compatibility for persisted reviews created before readable-span
+   * validation. Stored offsets are still checked by the workspace loader.
+   */
+  allowLegacyEmbeddedLanguageEditText?: boolean;
   onLanguageEditOverlapNormalization?: (
     diagnostic: LanguageEditOverlapNormalizationDiagnostic
   ) => void;
@@ -264,7 +269,7 @@ export function parseAIReviewRawResultV2ForResponse(
       edit.original_text,
       `$.language_edits[${index}].original_text`,
       issues,
-      true
+      diagnosticContext?.allowLegacyEmbeddedLanguageEditText !== true
     );
     return {
       edit: { ...edit, ...offsets, restored: false },

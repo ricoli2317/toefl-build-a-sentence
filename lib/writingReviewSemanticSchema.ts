@@ -440,7 +440,6 @@ export function parseWritingReviewSemanticC3(
     );
   }
   const unitById = new Map(units.map((unit) => [unit.unitId, unit]));
-  const revisionRanges = new Map<string, Array<{ start: number; end: number }>>();
   for (const [index, item] of Array.from(value.unit_revisions.entries())) {
     const path = `$.unit_revisions[${index}]`;
     if (!record(item)) {
@@ -526,21 +525,11 @@ export function parseWritingReviewSemanticC3(
       );
     }
     const unit = unitById.get(item.unit_id)!;
-    const range = validateReadableOriginal(
+    validateReadableOriginal(
       originalText,
       unit,
       `${path}.original_text`
     );
-    const ranges = revisionRanges.get(item.unit_id) ?? [];
-    if (ranges.some((other) => range.start < other.end && range.end > other.start)) {
-      invalid(
-        "C3_UNIT_VALIDATION_FAILED",
-        `${path}.original_text`,
-        "C3 language revisions overlap within one unit."
-      );
-    }
-    ranges.push(range);
-    revisionRanges.set(item.unit_id, ranges);
   }
 
   if (!Array.isArray(value.content_feedback)) {

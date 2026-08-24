@@ -10,6 +10,10 @@ import {
   type AIReviewRawResultV22,
   type AIReviewResultV22
 } from "./writingReviewSchemaV22.ts";
+import {
+  normalizeLanguageEditOverlaps,
+  type LanguageEditOverlapNormalizationDiagnostic
+} from "./writingReviewLanguageEditNormalization.ts";
 import type { WritingReviewSemanticC3 } from "./writingReviewSemanticSchema.ts";
 import { findReadableExactTextOccurrences } from "./writingReviewTextMatch.ts";
 import type { WritingReviewTextUnit } from "./writingReviewTextUnits.ts";
@@ -138,10 +142,37 @@ function localizeRevisions(
     return false;
   }
 
-  if (!choose(0)) {
-    throw codeError("C3 language revisions cannot be localized without overlap.");
-  }
-  return selected;
+  if (choose(0)) return selected;
+
+  // Model-selected corrections may overlap even though every individual span
+  // is valid. Choose the least-overlapping localization for each correction;
+  // the shared deterministic normalizer below will then merge compatible
+  // changes or keep one safe correction when they genuinely conflict.
+  return choices.reduce<LocalizedRevision[]>((localized, candidates) => {
+    const best = [...candidates].sort((left, right) => {
+      const leftOverlap = localized.filter((item) => rangesOverlap(item, left));
+      const rightOverlap = localized.filter((item) => rangesOverlap(item, right));
+      const leftOverlapWidth = leftOverlap.reduce(
+        (total, item) =>
+          total + Math.max(0, Math.min(item.end, left.end) - Math.max(item.start, left.start)),
+        0
+      );
+      const rightOverlapWidth = rightOverlap.reduce(
+        (total, item) =>
+          total + Math.max(0, Math.min(item.end, right.end) - Math.max(item.start, right.start)),
+        0
+      );
+      return (
+        leftOverlap.length - rightOverlap.length ||
+        leftOverlapWidth - rightOverlapWidth ||
+        left.end - left.start - (right.end - right.start) ||
+        left.start - right.start
+      );
+    })[0];
+    if (!best) throw codeError("C3 revision has no localization candidate.");
+    localized.push(best);
+    return localized;
+  }, []);
 }
 
 export function normalizeC3ContentFeedback(input: WritingReviewSemanticC3) {
@@ -193,6 +224,9 @@ export function assembleWritingReviewV22FromC3(input: {
   responseText: string;
   units: WritingReviewTextUnit[];
   semantic: WritingReviewSemanticC3;
+  onLanguageEditOverlapNormalization?: (
+    diagnostic: LanguageEditOverlapNormalizationDiagnostic
+  ) => void;
 }): AIReviewResultV22 {
   const dimensions =
     input.taskType === "email"
@@ -208,15 +242,30 @@ export function assembleWritingReviewV22FromC3(input: {
     units,
     input.semantic.unit_revisions
   );
-  const languageEdits = input.semantic.unit_revisions.map(
+  const localizedLanguageEdits = input.semantic.unit_revisions.map(
     (revision, index) => ({
       edit_id: `c3-edit-${String(index + 1).padStart(2, "0")}`,
+      start: localizedRevisions[index].start,
+      end: localizedRevisions[index].end,
       original_text: localizedRevisions[index].originalText,
       replacement_text: localizedRevisions[index].replacementText,
       category: revision.issue_type,
       severity: revision.severity,
-      explanation: revision.reason
+      explanation: revision.reason,
+      restored: false
     })
+  );
+  const normalizedLanguageEdits = normalizeLanguageEditOverlaps(
+    input.responseText,
+    localizedLanguageEdits
+  );
+  if (normalizedLanguageEdits.diagnostic) {
+    input.onLanguageEditOverlapNormalization?.(
+      normalizedLanguageEdits.diagnostic
+    );
+  }
+  const languageEdits = normalizedLanguageEdits.edits.map(
+    ({ start: _start, end: _end, restored: _restored, ...edit }) => edit
   );
   const normalized = normalizeC3ContentFeedback(input.semantic);
   const raw = {

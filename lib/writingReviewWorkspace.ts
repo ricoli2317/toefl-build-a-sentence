@@ -330,10 +330,16 @@ function normalizeV2WorkingDraft(
   let validated;
   try {
     validated = isV22
-      ? parseAIReviewRawResultV22ForResponse(rawCandidate, input.responseText)
+      ? parseAIReviewRawResultV22ForResponse(rawCandidate, input.responseText, {
+          allowLegacyEmbeddedLanguageEditText: true
+        })
       : isV21
-        ? parseAIReviewRawResultV21ForResponse(rawCandidate, input.responseText)
-        : parseAIReviewRawResultV2ForResponse(rawCandidate, input.responseText);
+        ? parseAIReviewRawResultV21ForResponse(rawCandidate, input.responseText, {
+            allowLegacyEmbeddedLanguageEditText: true
+          })
+        : parseAIReviewRawResultV2ForResponse(rawCandidate, input.responseText, {
+            allowLegacyEmbeddedLanguageEditText: true
+          });
   } catch (error) {
     throw invalid(
       error instanceof AIReviewValidationError

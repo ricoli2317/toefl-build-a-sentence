@@ -23,6 +23,7 @@ import {
   assembleWritingReviewV22FromC3,
   writingReviewRawV22FromAssembled
 } from "./writingReviewV22Assembler.ts";
+import type { LanguageEditOverlapNormalizationDiagnostic } from "./writingReviewLanguageEditNormalization.ts";
 import { writingReviewPipelineTiming } from "./writingReviewPipeline.ts";
 import {
   observedWritingReviewCost,
@@ -70,6 +71,7 @@ export type WritingReviewC3Outcome = {
   result: OutcomeResult;
   response: OpenRouterWritingReviewResponse | null;
   review: ReturnType<typeof assembleWritingReviewV22FromC3> | null;
+  normalizationDiagnostic: LanguageEditOverlapNormalizationDiagnostic | null;
   error: unknown;
 };
 
@@ -257,6 +259,7 @@ export async function requestProductionC3WritingReview(
     overallDeadlineMs: timing.deadlineMs,
     request: async (_branch, signal) => {
       let response: OpenRouterWritingReviewResponse | null = null;
+      let normalizationDiagnostic: LanguageEditOverlapNormalizationDiagnostic | null = null;
       try {
         response = await requestStructuredOutput(provider, messages, {
           jsonSchema: writingReviewC3JsonSchema(input.taskType) as unknown as Record<string, unknown>,
@@ -273,11 +276,26 @@ export async function requestProductionC3WritingReview(
           taskType: input.taskType,
           responseText: input.responseText,
           units,
-          semantic
+          semantic,
+          onLanguageEditOverlapNormalization(diagnostic) {
+            normalizationDiagnostic = diagnostic;
+          }
         });
-        return { result: "success", response, review, error: null };
+        return {
+          result: "success",
+          response,
+          review,
+          normalizationDiagnostic,
+          error: null
+        };
       } catch (error) {
-        return { result: outcomeResultFor(error), response, review: null, error };
+        return {
+          result: outcomeResultFor(error),
+          response,
+          review: null,
+          normalizationDiagnostic,
+          error
+        };
       }
     },
     isSuccess: (outcome) => outcome.result === "success",
@@ -295,7 +313,9 @@ export async function requestProductionC3WritingReview(
       units,
       anchorNamespace: anchored.namespace,
       timing,
-      telemetry: run
+      telemetry: run,
+      normalizationDiagnostic:
+        run.winner_outcome.normalizationDiagnostic ?? null
     };
   }
   if (run.timed_out) {

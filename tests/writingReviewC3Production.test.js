@@ -49,6 +49,41 @@ test("C3 service uses Moonshot structured output and returns only fully validate
   assert.equal(result.timing.deadlineMs, 180_000);
 });
 
+test("C3 service treats deterministic overlap normalization as a successful winner", async () => {
+  const calls = [];
+  const overlapping = {
+    ...semantic,
+    unit_revisions: [
+      {
+        unit_id: "U01",
+        original_text: "Dear Professor Lee",
+        replacement_text: "Dear Professor",
+        reason: "称呼中不需要保留姓名 Lee。",
+        issue_type: "social_convention",
+        severity: "moderate"
+      },
+      {
+        unit_id: "U01",
+        original_text: "Professor Lee",
+        replacement_text: "Professor",
+        reason: "删除不必要的姓名 Lee。",
+        issue_type: "social_convention",
+        severity: "minor"
+      }
+    ]
+  };
+  const result = await requestProductionC3WritingReview(input, provider, {}, {
+    requestStructuredOutput: requestWith(
+      response(JSON.stringify(overlapping)),
+      calls
+    )
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(result.telemetry.winner, "primary");
+  assert.equal(result.review.language_edits.length, 1);
+  assert.equal(result.normalizationDiagnostic?.normalization_applied, true);
+});
+
 for (const [name, body, code] of [
   ["invalid JSON", "{", "C3_INVALID_JSON"],
   ["semantic schema", JSON.stringify({ ...semantic, official_score: 9 }), "C3_SCHEMA_INVALID"],

@@ -289,6 +289,33 @@ test("v2.2 working data saves without manufacturing the removed example field", 
   assert.equal("example" in saved.content_feedback.items[0], false);
 });
 
+test("persisted pre-v5 character spans remain openable only through stored exact offsets", () => {
+  const historicalResponse = "feedbacks are useful.";
+  const input = emailV22Input();
+  input.responseText = historicalResponse;
+  input.languageEdits = [
+    languageEdit({
+      start: 7,
+      end: 9,
+      original_text: "ks",
+      replacement_text: "k",
+      restored: false
+    })
+  ];
+  input.contentFeedback.items[0].start = 0;
+  input.contentFeedback.items[0].end = historicalResponse.length;
+  input.contentFeedback.items[0].original_sentence = historicalResponse;
+  const draft = normalizeWritingReviewWorkingDraft(input);
+  assert.equal(draft.language_edits[0].original_text, "ks");
+  assert.equal(draft.language_edits[0].start, 7);
+
+  input.languageEdits[0].start = 6;
+  assert.throws(
+    () => normalizeWritingReviewWorkingDraft(input),
+    /offset 无效/
+  );
+});
+
 test("score references are optional in working Save and Publish snapshots", () => {
   const input = emailV22Input();
   input.scores.official_score.rationale = "";

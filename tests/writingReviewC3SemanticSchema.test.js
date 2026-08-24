@@ -142,7 +142,7 @@ test("semantic parser accepts strict JSON plus a legal BOM or single fence", () 
   }
 });
 
-test("semantic parser rejects character fragments, boundary whitespace, and overlapping edits", () => {
+test("semantic parser rejects character fragments and unsafe boundary text", () => {
   rejects(
     (item) => {
       item.unit_revisions[0].original_text = "d in";
@@ -152,12 +152,6 @@ test("semantic parser rejects character fragments, boundary whitespace, and over
   rejects(
     (item) => {
       item.unit_revisions[0].original_text = " enjoyed in";
-    },
-    "C3_UNIT_VALIDATION_FAILED"
-  );
-  rejects(
-    (item) => {
-      item.unit_revisions[1].original_text = "in the gym and saw some equipments";
     },
     "C3_UNIT_VALIDATION_FAILED"
   );
@@ -173,6 +167,34 @@ test("semantic parser rejects character fragments, boundary whitespace, and over
     },
     "C3_UNIT_VALIDATION_FAILED"
   );
+});
+
+test("semantic parser defers readable overlap to deterministic assembly normalization", () => {
+  const item = value();
+  item.unit_revisions = [
+    {
+      unit_id: units[0].unitId,
+      original_text: "enjoyed in",
+      replacement_text: "enjoyed",
+      reason: "enjoy 后不需要介词 in。",
+      issue_type: "grammar",
+      severity: "moderate"
+    },
+    {
+      unit_id: units[0].unitId,
+      original_text: "in",
+      replacement_text: "",
+      reason: "删除多余的介词 in。",
+      issue_type: "grammar",
+      severity: "minor"
+    }
+  ];
+  const parsed = parseWritingReviewSemanticC3(
+    JSON.stringify(item),
+    "academic_discussion",
+    units
+  );
+  assert.equal(parsed.unit_revisions.length, 2);
 });
 
 test("semantic parser rejects English-only explanatory feedback", () => {

@@ -114,6 +114,82 @@ test("C3 keeps independent errors in one unit as separate applicable edits", () 
   );
 });
 
+test("C3 deterministically normalizes overlapping model corrections", () => {
+  const text = "Dear Professor Lee, I apologize.";
+  const units = buildWritingReviewTextUnits(text);
+  let diagnostic = null;
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "email",
+    responseText: text,
+    units,
+    semantic: semantic(EMAIL_DIMENSIONS, [
+      edit({
+        original_text: "Dear Professor Lee",
+        replacement_text: "Dear Professor",
+        reason: "称呼中不需要重复姓名信息。",
+        issue_type: "social_convention"
+      }),
+      edit({
+        original_text: "Professor Lee",
+        replacement_text: "Professor",
+        reason: "删除不必要的姓名 Lee。",
+        issue_type: "social_convention",
+        severity: "minor"
+      })
+    ]),
+    onLanguageEditOverlapNormalization(value) {
+      diagnostic = value;
+    }
+  });
+  assert.equal(assembled.language_edits.length, 1);
+  assert.equal(assembled.language_edits[0].original_text, "Professor Lee");
+  assert.equal(assembled.language_edits[0].replacement_text, "Professor");
+  assert.equal(diagnostic?.normalization_applied, true);
+  assert.equal(diagnostic?.groups[0].action, "kept_minimal_equivalent");
+});
+
+test("C3 keeps one safe correction when overlapping replacements conflict", () => {
+  const text = "The idea is very good.";
+  const units = buildWritingReviewTextUnits(text);
+  let diagnostic = null;
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "academic_discussion",
+    responseText: text,
+    units,
+    semantic: semantic(AD_DIMENSIONS, [
+      edit({
+        original_text: "very good",
+        replacement_text: "excellent",
+        reason: "可使用更准确的形容词。",
+        issue_type: "word_choice"
+      }),
+      edit({
+        original_text: "good",
+        replacement_text: "useful",
+        reason: "此处可改为 useful。",
+        issue_type: "word_choice"
+      })
+    ]),
+    onLanguageEditOverlapNormalization(value) {
+      diagnostic = value;
+    }
+  });
+  assert.equal(assembled.language_edits.length, 1);
+  assert.equal(
+    applyWritingReviewDiffs(
+      text,
+      assembled.language_edits.map((item) => ({
+        start: item.start,
+        end: item.end,
+        originalText: item.original_text,
+        replacementText: item.replacement_text
+      }))
+    ),
+    "The idea is very useful."
+  );
+  assert.equal(diagnostic?.groups[0].action, "suppressed_conflict");
+});
+
 test("C3 expands a repeated source only to a unique whole-token phrase", () => {
   const text = "I like coffee. I like tea.";
   const units = buildWritingReviewTextUnits(text);
