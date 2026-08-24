@@ -10,7 +10,7 @@ import { AI_REVIEW_SCHEMA_VERSION_V22 } from "../lib/writingReviewSchemaV22.ts";
 test("complete-review log metadata selects C3 versions and a full hedge request window", () => {
   assert.deepEqual(writingReviewLogMetadata("c3", {}), {
     pipeline: "c3", promptVersion: WRITING_REVIEW_C3_PROMPT_VERSION,
-    schemaVersion: WRITING_REVIEW_C3_SCHEMA_VERSION, hedgeDelayMs: 60_000, deadlineMs: 180_000
+    schemaVersion: WRITING_REVIEW_C3_SCHEMA_VERSION, hedgeDelayMs: 90_000, deadlineMs: 210_000
   });
 });
 

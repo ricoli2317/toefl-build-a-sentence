@@ -70,6 +70,7 @@ function run(overrides = {}) {
 
 test("one successful primary is a complete observable bill", () => {
   const telemetry = writingReviewC3TelemetryDiagnostic(run(), 120_000);
+  assert.equal(telemetry.hedge_delay_ms, 90_000);
   assert.equal(telemetry.primary_cost, 0.1);
   assert.equal(telemetry.winner_cost, 0.1);
   assert.equal(telemetry.observed_completed_cost, 0.1);
@@ -121,8 +122,10 @@ test("post-response validation failures retain their observed request cost", () 
   assert.equal(telemetry.final_usage.cost, 0.13);
   assert.equal(telemetry.billing_completeness, "complete_for_observed_requests");
   const failureTelemetry = writingReviewC3FailureTelemetryDiagnostic({
-    run: failedRun, c3Timing: { deadlineMs: 120_000 }
+    run: failedRun, c3Timing: { deadlineMs: 210_000, hedgeDelayMs: 90_000 }
   });
+  assert.equal(failureTelemetry.hedge_delay_ms, 90_000);
+  assert.equal(failureTelemetry.deadline_ms, 210_000);
   assert.equal(failureTelemetry.primary_cost, 0.13);
   assert.equal(failureTelemetry.final_cost_observability.amount, 0.13);
 });

@@ -62,7 +62,7 @@ import {
 import { loadWritingReviewWorkspace } from "@/lib/writingReviewWorkspaceServer";
 
 export const dynamic = "force-dynamic";
-// Keep the hosting function alive beyond C3's 180s internal deadline so the
+// Keep the hosting function alive beyond C3's 210s internal deadline so the
 // route can still persist the result and its observability record.
 export const maxDuration = 240;
 
@@ -287,7 +287,11 @@ export async function POST(
           aiModel = providerConfig.model;
           if (pipeline === "c3") {
             const c3 = await requestProductionC3WritingReview(input, providerConfig);
-            const c3Telemetry = writingReviewC3TelemetryDiagnostic(c3.telemetry, c3.timing.deadlineMs);
+            const c3Telemetry = writingReviewC3TelemetryDiagnostic(
+              c3.telemetry,
+              c3.timing.deadlineMs,
+              c3.timing.hedgeDelayMs
+            );
             hedgeTelemetry = c3Telemetry;
             overlapDiagnostic = c3.normalizationDiagnostic;
             c3AssembledReview = c3.review;

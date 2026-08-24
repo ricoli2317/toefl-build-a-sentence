@@ -1,11 +1,11 @@
 export type WritingReviewPipeline = "c3" | "legacy_v22";
 
 export const WRITING_REVIEW_DEFAULT_PIPELINE: WritingReviewPipeline = "c3";
-export const WRITING_REVIEW_C3_HEDGE_DELAY_MS = 60_000;
-// The hedge starts after 60 seconds and must still receive the same 120-second
-// request window as the primary. A 120-second overall deadline only gave the
-// hedge 60 seconds and aborted valid slow responses in production.
-export const WRITING_REVIEW_C3_DEFAULT_DEADLINE_MS = 180_000;
+export const WRITING_REVIEW_C3_HEDGE_DELAY_MS = 90_000;
+// The hedge starts after 90 seconds and must still receive the same 120-second
+// request window as the primary. The 210-second deadline preserves that full
+// window while avoiding duplicate requests for primary responses in 60–90s.
+export const WRITING_REVIEW_C3_DEFAULT_DEADLINE_MS = 210_000;
 export const WRITING_REVIEW_LEGACY_HEDGE_DELAY_MS = 60_000;
 export const WRITING_REVIEW_LEGACY_DEADLINE_MS = 240_000;
 

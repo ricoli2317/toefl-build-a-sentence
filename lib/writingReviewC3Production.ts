@@ -24,7 +24,10 @@ import {
   writingReviewRawV22FromAssembled
 } from "./writingReviewV22Assembler.ts";
 import type { LanguageEditOverlapNormalizationDiagnostic } from "./writingReviewLanguageEditNormalization.ts";
-import { writingReviewPipelineTiming } from "./writingReviewPipeline.ts";
+import {
+  WRITING_REVIEW_C3_HEDGE_DELAY_MS,
+  writingReviewPipelineTiming
+} from "./writingReviewPipeline.ts";
 import {
   observedWritingReviewCost,
   withBillingCompleteness,
@@ -90,7 +93,8 @@ export type WritingReviewC3Dependencies = {
 
 export function writingReviewC3TelemetryDiagnostic(
   run: WritingReviewHedgeRun<WritingReviewC3Outcome>,
-  deadlineMs: number
+  deadlineMs: number,
+  hedgeDelayMs = WRITING_REVIEW_C3_HEDGE_DELAY_MS
 ) : WritingReviewProductionHedgeTelemetry & {
   pipeline: "c3";
   hedge_delay_ms: number;
@@ -122,7 +126,7 @@ export function writingReviewC3TelemetryDiagnostic(
   );
   return {
     pipeline: "c3",
-    hedge_delay_ms: 60_000,
+    hedge_delay_ms: hedgeDelayMs,
     deadline_ms: deadlineMs,
     hedge_triggered: run.hedge_triggered,
     requests_started: run.requests_started,
@@ -196,10 +200,14 @@ export function writingReviewC3FailureTelemetryDiagnostic(error: unknown) {
   if (!error || typeof error !== "object") return null;
   const record = error as {
     run?: WritingReviewHedgeRun<WritingReviewC3Outcome>;
-    c3Timing?: { deadlineMs: number };
+    c3Timing?: { deadlineMs: number; hedgeDelayMs: number };
   };
   return record.run && record.c3Timing
-    ? writingReviewC3TelemetryDiagnostic(record.run, record.c3Timing.deadlineMs)
+    ? writingReviewC3TelemetryDiagnostic(
+        record.run,
+        record.c3Timing.deadlineMs,
+        record.c3Timing.hedgeDelayMs
+      )
     : null;
 }
 
