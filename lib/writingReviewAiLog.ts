@@ -3,6 +3,7 @@ import {
   OpenRouterWritingReviewError
 } from "./openrouterWritingReview.ts";
 import { MoonshotWritingReviewError } from "./moonshotWritingReview.ts";
+import { DeepSeekWritingReviewError } from "./deepseekWritingReview.ts";
 import { AIReviewValidationError } from "./writingReviewSchema.ts";
 import type { OpenRouterTokenUsage } from "./openrouterWritingReview.ts";
 
@@ -279,6 +280,7 @@ export function classifyWritingReviewAiFailure(
     code === "OPENROUTER_API_KEY_MISSING" ||
     code === "OPENROUTER_MODEL_MISSING" ||
     code === "MOONSHOT_API_KEY_MISSING" ||
+    code === "DEEPSEEK_API_KEY_MISSING" ||
     code === "WRITING_REVIEW_PROVIDER_INVALID"
   ) {
     return failure(
@@ -351,7 +353,8 @@ export function classifyWritingReviewAiFailure(
     chain.some(
       (item) =>
         item instanceof OpenRouterWritingReviewError ||
-        item instanceof MoonshotWritingReviewError
+        item instanceof MoonshotWritingReviewError ||
+        item instanceof DeepSeekWritingReviewError
     )
   ) {
     return failure(
@@ -366,7 +369,8 @@ export function classifyWritingReviewAiFailure(
     chain.some(
       (item) =>
         item instanceof OpenRouterWritingReviewError ||
-        item instanceof MoonshotWritingReviewError
+        item instanceof MoonshotWritingReviewError ||
+        item instanceof DeepSeekWritingReviewError
     ) ||
     provider.http_status !== null
   ) {
@@ -419,6 +423,18 @@ export function classifyWritingReviewAiError(error: unknown) {
 }
 
 export function writingReviewAiProviderDiagnostic(error: unknown) {
+  const deepSeek = errorChain(error).find(
+    (item): item is DeepSeekWritingReviewError =>
+      item instanceof DeepSeekWritingReviewError
+  );
+  if (deepSeek) {
+    return {
+      http_status: deepSeek.httpStatus,
+      provider_error_type: deepSeek.code,
+      provider_error_code: deepSeek.code,
+      provider_name: "deepseek"
+    };
+  }
   const diagnostic = getOpenRouterErrorDiagnostic(error);
   return {
     http_status: diagnostic.http_status,

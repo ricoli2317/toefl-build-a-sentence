@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  deepSeekPricingPeriod,
+  deepSeekV4FlashCost,
   enrichWritingReviewUsage,
   moonshotKimiK3Cost,
   observedWritingReviewCost
@@ -91,6 +93,47 @@ test("official Moonshot identity is required for local CNY pricing", () => {
   }
 });
 
+test("DeepSeek Flash uses exact domestic peak and off-peak CNY pricing", () => {
+  const flashUsage = usage(2232, 0, 16712, { reasoning_tokens: 14501 });
+  const offPeak = deepSeekV4FlashCost(
+    flashUsage,
+    new Date("2026-08-24T12:30:00.000Z")
+  );
+  const peak = deepSeekV4FlashCost(
+    flashUsage,
+    new Date("2026-08-24T07:00:00.000Z")
+  );
+  assert.equal(deepSeekPricingPeriod(new Date("2026-08-24T12:30:00.000Z")), "off_peak");
+  assert.equal(deepSeekPricingPeriod(new Date("2026-08-24T07:00:00.000Z")), "peak");
+  assert.equal(offPeak.amount, 0.078552);
+  assert.equal(peak.amount, 0.157104);
+  assert.equal(offPeak.reasoning_included_in_output, true);
+});
+
+test("official DeepSeek identity is required for local CNY pricing", () => {
+  const official = enrichWritingReviewUsage(
+    "deepseek_flash",
+    "deepseek-v4-flash",
+    usage(10, 0, 2),
+    "api.deepseek.com"
+  );
+  assert.equal(official.cost.currency, "CNY");
+  assert.equal(typeof official.usage.cost, "number");
+  for (const [model, hostname] of [
+    ["deepseek-v4-pro", "api.deepseek.com"],
+    ["deepseek-v4-flash", "proxy.example.com"]
+  ]) {
+    const unconfirmed = enrichWritingReviewUsage(
+      "deepseek_flash",
+      model,
+      usage(10, 0, 2),
+      hostname
+    );
+    assert.equal(unconfirmed.cost.amount, null);
+    assert.equal(unconfirmed.usage.cost, null);
+  }
+});
+
 test("provider configuration normalizes official paths and rejects invalid endpoints", () => {
   for (const base of [
     "https://api.moonshot.cn/v1",
@@ -105,6 +148,13 @@ test("provider configuration normalizes official paths and rejects invalid endpo
   assert.equal(
     getWritingReviewProviderConfig({ MOONSHOT_API_BASE_URL: "not a valid URL" }).endpointHostname,
     null
+  );
+  assert.equal(
+    getWritingReviewProviderConfig({
+      WRITING_REVIEW_PROVIDER: "deepseek_flash",
+      DEEPSEEK_API_BASE_URL: "https://api.deepseek.com/"
+    }).endpointHostname,
+    "api.deepseek.com"
   );
 });
 

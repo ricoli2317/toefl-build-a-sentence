@@ -596,7 +596,9 @@ export function readOpenAICompatibleUsage(payload: unknown): OpenRouterTokenUsag
   return {
     prompt_tokens: readTokenCount(usage?.prompt_tokens),
     cached_tokens: readTokenCount(
-      promptDetails?.cached_tokens ?? usage?.cached_tokens
+      promptDetails?.cached_tokens ??
+        usage?.cached_tokens ??
+        usage?.prompt_cache_hit_tokens
     ),
     completion_tokens: readTokenCount(usage?.completion_tokens),
     reasoning_tokens: readTokenCount(

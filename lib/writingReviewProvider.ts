@@ -12,6 +12,12 @@ import {
   type OpenRouterReasoningEffort,
   type OpenRouterWritingReviewInput
 } from "./openrouterWritingReview.ts";
+import {
+  requestDeepSeekStructuredOutput,
+  requestDeepSeekWritingReview,
+  DeepSeekWritingReviewError,
+  type DeepSeekReasoningEffort
+} from "./deepseekWritingReview.ts";
 import { enrichWritingReviewUsage } from "./writingReviewCost.ts";
 
 type JsonSchema = Record<string, unknown>;
@@ -22,9 +28,12 @@ type WritingReviewProviderEnv = Partial<Pick<
   | "MOONSHOT_API_KEY"
   | "MOONSHOT_API_BASE_URL"
   | "MOONSHOT_WRITING_MODEL"
+  | "DEEPSEEK_API_KEY"
+  | "DEEPSEEK_API_BASE_URL"
+  | "DEEPSEEK_WRITING_MODEL"
 >>;
 
-export type WritingReviewProvider = "moonshot" | "openrouter";
+export type WritingReviewProvider = "moonshot" | "openrouter" | "deepseek_flash";
 
 export const WRITING_REVIEW_DEFAULT_PROVIDER: WritingReviewProvider = "moonshot";
 export const WRITING_REVIEW_DEFAULT_MOONSHOT_MODEL = "kimi-k3";
@@ -40,7 +49,7 @@ export class WritingReviewProviderConfigurationError extends Error {
   status = 500;
 
   constructor() {
-    super("WRITING_REVIEW_PROVIDER must be either moonshot or openrouter.");
+    super("WRITING_REVIEW_PROVIDER must be moonshot, openrouter, or deepseek_flash.");
     this.name = "WritingReviewProviderConfigurationError";
   }
 }
@@ -48,6 +57,7 @@ export class WritingReviewProviderConfigurationError extends Error {
 export function isWritingReviewProviderError(error: unknown) {
   return error instanceof MoonshotWritingReviewError ||
     error instanceof OpenRouterWritingReviewError ||
+    error instanceof DeepSeekWritingReviewError ||
     error instanceof WritingReviewProviderConfigurationError;
 }
 
@@ -56,18 +66,24 @@ export function getWritingReviewProviderConfig(
 ): WritingReviewProviderConfig {
   const value = env.WRITING_REVIEW_PROVIDER?.trim().toLowerCase() ||
     WRITING_REVIEW_DEFAULT_PROVIDER;
-  if (value !== "moonshot" && value !== "openrouter") {
+  if (value !== "moonshot" && value !== "openrouter" && value !== "deepseek_flash") {
     throw new WritingReviewProviderConfigurationError();
   }
-  const base = env.MOONSHOT_API_BASE_URL?.trim() || "https://api.moonshot.cn/v1";
+  const base = value === "deepseek_flash"
+    ? env.DEEPSEEK_API_BASE_URL?.trim() || "https://api.deepseek.com"
+    : env.MOONSHOT_API_BASE_URL?.trim() || "https://api.moonshot.cn/v1";
   let endpointHostname: string | null = null;
   try { endpointHostname = new URL(base).hostname.toLowerCase() || null; } catch { endpointHostname = null; }
   return {
     provider: value,
     model: value === "moonshot"
       ? env.MOONSHOT_WRITING_MODEL?.trim() || WRITING_REVIEW_DEFAULT_MOONSHOT_MODEL
-      : env.OPENROUTER_WRITING_MODEL?.trim() || "unknown",
-    endpointHostname: value === "moonshot" ? endpointHostname : null
+      : value === "deepseek_flash"
+        ? env.DEEPSEEK_WRITING_MODEL?.trim() || "deepseek-v4-flash"
+        : env.OPENROUTER_WRITING_MODEL?.trim() || "unknown",
+    endpointHostname: value === "moonshot" || value === "deepseek_flash"
+      ? endpointHostname
+      : null
   };
 }
 
@@ -89,6 +105,15 @@ export async function requestWritingReview(
       reasoningEffort: options.reasoningEffort as MoonshotReasoningEffort
     });
     const enriched = enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname); return { ...response, usage: enriched.usage, costObservability: enriched.cost };
+  }
+  if (config.provider === "deepseek_flash") {
+    const response = await requestDeepSeekWritingReview(input, {
+      ...options,
+      modelOverride: config.model,
+      reasoningEffort: options.reasoningEffort as DeepSeekReasoningEffort
+    });
+    const enriched = enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname);
+    return { ...response, usage: enriched.usage, costObservability: enriched.cost };
   }
   const response = await requestOpenRouterWritingReview(input, {
     ...options,
@@ -118,6 +143,15 @@ export async function requestWritingReviewStructuredOutput(
       modelOverride: config.model,
       reasoningEffort: (options.reasoningEffort ?? "high") as MoonshotReasoningEffort
     }); { const enriched=enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname); return { ...response, usage: enriched.usage, costObservability: enriched.cost }; }
+  }
+  if (config.provider === "deepseek_flash") {
+    const response = await requestDeepSeekStructuredOutput(messages, {
+      ...options,
+      modelOverride: config.model,
+      reasoningEffort: (options.reasoningEffort ?? "high") as DeepSeekReasoningEffort
+    });
+    const enriched = enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname);
+    return { ...response, usage: enriched.usage, costObservability: enriched.cost };
   }
   const response = await requestOpenRouterStructuredOutput(messages, {
     ...options,

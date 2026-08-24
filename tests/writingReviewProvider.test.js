@@ -2,7 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   getWritingReviewProviderConfig,
-  requestWritingReview
+  requestWritingReview,
+  requestWritingReviewStructuredOutput
 } = require("../lib/writingReviewProvider.ts");
 const {
   requestProductionWritingReviewHedged
@@ -133,6 +134,80 @@ test("manual OpenRouter selection keeps requests on OpenRouter", async () => {
   assert.equal(urls[0].url, "https://openrouter.ai/api/v1/chat/completions");
   assert.deepEqual(urls[0].body.reasoning, { effort: "high" });
   assert.equal("reasoning_effort" in urls[0].body, false);
+});
+
+test("manual DeepSeek Flash selection uses the official direct endpoint and tested C3 contract", async () => {
+  const config = getWritingReviewProviderConfig({
+    WRITING_REVIEW_PROVIDER: "deepseek_flash",
+    DEEPSEEK_API_KEY: "test-key"
+  });
+  assert.deepEqual(config, {
+    provider: "deepseek_flash",
+    model: "deepseek-v4-flash",
+    endpointHostname: "api.deepseek.com"
+  });
+  const requests = [];
+  const response = await requestWritingReviewStructuredOutput(
+    config,
+    [{ role: "user", content: "Return a review." }],
+    {
+      env: { DEEPSEEK_API_KEY: "test-key" },
+      jsonSchema: { type: "object", required: ["ok"] },
+      schemaName: "tps_test",
+      reasoningEffort: "high",
+      async fetchImpl(url, init) {
+        requests.push({ url, body: JSON.parse(init.body) });
+        return new Response(JSON.stringify({
+          id: "deepseek-generation",
+          model: "deepseek-v4-flash",
+          choices: [{ message: { content: JSON.stringify({ ok: true }) } }],
+          usage: {
+            prompt_tokens: 10,
+            prompt_cache_hit_tokens: 4,
+            completion_tokens: 2,
+            total_tokens: 12,
+            completion_tokens_details: { reasoning_tokens: 1 }
+          }
+        }), { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+    }
+  );
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].url, "https://api.deepseek.com/chat/completions");
+  assert.equal(requests[0].body.model, "deepseek-v4-flash");
+  assert.deepEqual(requests[0].body.thinking, { type: "enabled" });
+  assert.equal(requests[0].body.reasoning_effort, "high");
+  assert.deepEqual(requests[0].body.response_format, { type: "json_object" });
+  assert.match(requests[0].body.messages.at(-1).content, /tps_test JSON Schema exactly/);
+  assert.equal(response.generationId, "deepseek-generation");
+  assert.equal(response.usage.cached_tokens, 4);
+  assert.equal(response.usage.reasoning_tokens, 1);
+  assert.equal(response.costObservability.currency, "CNY");
+});
+
+test("DeepSeek Flash missing configuration never falls back to Moonshot or OpenRouter", async () => {
+  const config = getWritingReviewProviderConfig({
+    WRITING_REVIEW_PROVIDER: "deepseek_flash"
+  });
+  let called = false;
+  await assert.rejects(
+    requestWritingReviewStructuredOutput(
+      config,
+      [{ role: "user", content: "Return JSON." }],
+      {
+        env: {},
+        jsonSchema: { type: "object" },
+        schemaName: "tps_test",
+        reasoningEffort: "high",
+        async fetchImpl() {
+          called = true;
+          return completion("email");
+        }
+      }
+    ),
+    (error) => error.code === "DEEPSEEK_API_KEY_MISSING"
+  );
+  assert.equal(called, false);
 });
 
 test("Moonshot configuration failures never call OpenRouter", async () => {
