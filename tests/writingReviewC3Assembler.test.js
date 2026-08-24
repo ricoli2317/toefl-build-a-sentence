@@ -163,9 +163,9 @@ test("C3 removes overlapping localization context while preserving each explanat
     ]),
     [
       ["for", "on", "impact 后表示对象时应使用介词 on。"],
-      ["enviroment", "environment", "environment 拼写错误。"],
-      ["polution", "pollution", "pollution 拼写错误。"],
-      ["enviroment", "environment", "environment 拼写错误。"]
+      ["enviroment", "environment", "enviroment 拼写错误，应改为 environment。"],
+      ["polution", "pollution", "polution 拼写错误，应改为 pollution。"],
+      ["enviroment", "environment", "enviroment 拼写错误，应改为 environment。"]
     ]
   );
 });
@@ -208,15 +208,82 @@ test("C3 assigns each aligned token split only its matching explanation clause",
     assembled.language_edits.map((item) => [
       item.original_text,
       item.replacement_text,
+      item.category,
+      item.severity,
       item.explanation
     ]),
     [
-      ["equipment", "connection", "网络稳定通常用 connection 而非 equipment。"],
-      ["is", "was", "叙述入住经历应用过去时 was。"],
-      ["for", "on", "impact 后接介词 on 表示对事物的影响。"],
-      ["enviroment", "environment", "environment 拼写错误。"],
-      ["fo", "for", "fo 拼写错误应为 for；"],
-      ["m", "m.", "p.m. 缩写加点更规范。"]
+      ["equipment", "connection", "word_choice", "moderate", "网络稳定通常用 connection 而非 equipment。"],
+      ["is", "was", "grammar", "moderate", "叙述入住经历应用过去时 was。"],
+      ["for", "on", "usage", "moderate", "impact 后接介词 on 表示对事物的影响。"],
+      ["enviroment", "environment", "spelling", "minor", "enviroment 拼写错误，应改为 environment。"],
+      ["fo", "for", "spelling", "minor", "fo 拼写错误，应改为 for。"],
+      ["m", "m.", "punctuation", "minor", "m 的标点格式不规范，此处应写为 m."]
+    ]
+  );
+});
+
+test("C3 splits unequal token groups around stable anchors with independent metadata", () => {
+  const text = "I suggest to conduct prompt miantenance.";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "email",
+    responseText: text,
+    units,
+    semantic: semantic(EMAIL_DIMENSIONS, [
+      edit({
+        original_text: "to conduct prompt miantenance",
+        replacement_text: "conducting prompt maintenance",
+        issue_type: "grammar",
+        severity: "moderate",
+        reason: "suggest 后应接动名词 conducting，且 maintenance 拼写错误。"
+      })
+    ])
+  });
+
+  assert.deepEqual(
+    assembled.language_edits.map((item) => [
+      item.original_text,
+      item.replacement_text,
+      item.category,
+      item.severity,
+      item.explanation
+    ]),
+    [
+      ["to conduct", "conducting", "grammar", "moderate", "suggest 后应接动名词 conducting。"],
+      ["miantenance", "maintenance", "spelling", "minor", "miantenance 拼写错误，应改为 maintenance。"]
+    ]
+  );
+});
+
+test("C3 assigns possessive and plural token splits their own word-form explanations", () => {
+  const text = "We should consider others idea.";
+  const units = buildWritingReviewTextUnits(text);
+  const assembled = assembleWritingReviewV22FromC3({
+    taskType: "academic_discussion",
+    responseText: text,
+    units,
+    semantic: semantic(AD_DIMENSIONS, [
+      edit({
+        original_text: "others idea",
+        replacement_text: "others' ideas",
+        issue_type: "spelling",
+        severity: "moderate",
+        reason: "others' ideas 应使用复数所有格加复数名词。"
+      })
+    ])
+  });
+
+  assert.deepEqual(
+    assembled.language_edits.map((item) => [
+      item.original_text,
+      item.replacement_text,
+      item.category,
+      item.explanation
+    ]),
+    [
+      ["others", "others'", "word_form", "others 此处应使用复数所有格形式 others'。"],
+      ["idea", "ideas", "word_form", "idea 此处应使用复数形式 ideas。"]
     ]
   );
 });
@@ -282,7 +349,7 @@ test("C3 keeps spelling and adjacent grammar corrections as separate explained e
   );
   assert.deepEqual(
     assembled.language_edits.map((item) => item.explanation),
-    ["received 拼写错误。", "instead of 后应使用名词短语，并调整从句结构。"]
+    ["recieved 拼写错误，应改为 received。", "instead of 后应使用名词短语，并调整从句结构。"]
   );
 });
 

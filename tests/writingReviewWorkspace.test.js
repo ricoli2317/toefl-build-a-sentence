@@ -416,6 +416,80 @@ test("workspace reload repairs combined explanations on persisted C3 split parts
       "叙述入住经历应用过去时 was。"
     ]
   );
+  assert.deepEqual(
+    draft.language_edits.map((item) => item.category),
+    ["word_choice", "grammar"]
+  );
+});
+
+test("workspace reload splits a persisted C3 revision while preserving a reordered rewrite", () => {
+  const response =
+    "I suggest to conduct prompt miantenance. We recieved a pasta instead that we ordered a salad.";
+  const firstOriginal = "to conduct prompt miantenance";
+  const secondOriginal = "recieved a pasta instead that we ordered a salad";
+  const input = emailV22Input();
+  input.responseText = response;
+  input.languageEdits = [
+    languageEdit({
+      edit_id: "c3-edit-01",
+      start: response.indexOf(firstOriginal),
+      end: response.indexOf(firstOriginal) + firstOriginal.length,
+      original_text: firstOriginal,
+      replacement_text: "conducting prompt maintenance",
+      explanation: "suggest 后应接动名词 conducting，且 maintenance 拼写错误。",
+      category: "grammar",
+      severity: "moderate",
+      restored: false
+    }),
+    languageEdit({
+      edit_id: "c3-edit-02",
+      start: response.indexOf(secondOriginal),
+      end: response.indexOf(secondOriginal) + secondOriginal.length,
+      original_text: secondOriginal,
+      replacement_text: "received pasta instead of the salad we ordered",
+      explanation: "recieved 拼写错误，且 instead 后应使用 of。",
+      category: "grammar",
+      severity: "moderate",
+      restored: false
+    })
+  ];
+  input.contentFeedback.items[0].start = 0;
+  input.contentFeedback.items[0].end = response.length;
+  input.contentFeedback.items[0].original_sentence = response;
+
+  const draft = normalizeWritingReviewWorkingDraft(input);
+  assert.deepEqual(
+    draft.language_edits.map((item) => [
+      item.edit_id,
+      item.original_text,
+      item.replacement_text,
+      item.category,
+      item.explanation
+    ]),
+    [
+      [
+        "c3-edit-01-part-01",
+        "to conduct",
+        "conducting",
+        "grammar",
+        "suggest 后应接动名词 conducting。"
+      ],
+      [
+        "c3-edit-01-part-02",
+        "miantenance",
+        "maintenance",
+        "spelling",
+        "miantenance 拼写错误，应改为 maintenance。"
+      ],
+      [
+        "c3-edit-02",
+        secondOriginal,
+        "received pasta instead of the salad we ordered",
+        "grammar",
+        "recieved 拼写错误，且 instead 后应使用 of。"
+      ]
+    ]
+  );
 });
 
 test("score references are optional in working Save and Publish snapshots", () => {

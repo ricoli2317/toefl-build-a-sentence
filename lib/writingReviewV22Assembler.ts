@@ -17,7 +17,7 @@ import {
   normalizeLanguageEditOverlaps,
   type LanguageEditOverlapNormalizationDiagnostic
 } from "./writingReviewLanguageEditNormalization.ts";
-import { allocateLanguageEditExplanations } from "./writingReviewLanguageEditExplanation.ts";
+import { languageEditMetadataForSplits } from "./writingReviewLanguageEditExplanation.ts";
 import type { WritingReviewSemanticC3 } from "./writingReviewSemanticSchema.ts";
 import { findReadableExactTextOccurrences } from "./writingReviewTextMatch.ts";
 import type { WritingReviewTextUnit } from "./writingReviewTextUnits.ts";
@@ -165,7 +165,6 @@ function tokenGroupsContainingChange(
  * every independent correction keeps its own category, severity and reason.
  */
 function minimizeLocalizedLanguageEdit(
-  responseText: string,
   edit: InternalLanguageEditV2
 ): InternalLanguageEditV2 {
   const change = actualChangedCore(edit);
@@ -222,50 +221,237 @@ function minimizeLocalizedLanguageEdit(
   );
 }
 
-function splitIndependentAlignedTokenChanges(
+type IndexedToken = {
+  value: string;
+  start: number;
+  end: number;
+};
+
+function indexedTokens(value: string): IndexedToken[] {
+  return Array.from(value.matchAll(/\S+/g)).map((match) => ({
+    value: match[0],
+    start: match.index,
+    end: match.index + match[0].length
+  }));
+}
+
+function hasStableTokenOrderInversion(
+  original: IndexedToken[],
+  replacement: IndexedToken[]
+) {
+  const originalPositions = new Map<string, number[]>();
+  const replacementPositions = new Map<string, number[]>();
+  original.forEach((token, index) => {
+    const key = token.value.toLowerCase();
+    originalPositions.set(key, [...(originalPositions.get(key) ?? []), index]);
+  });
+  replacement.forEach((token, index) => {
+    const key = token.value.toLowerCase();
+    replacementPositions.set(key, [...(replacementPositions.get(key) ?? []), index]);
+  });
+  const stableReplacementOrder = original.flatMap((token) => {
+    const key = token.value.toLowerCase();
+    const left = originalPositions.get(key) ?? [];
+    const right = replacementPositions.get(key) ?? [];
+    return left.length === 1 && right.length === 1 ? right : [];
+  });
+  return stableReplacementOrder.some(
+    (position, index) => index > 0 && position < stableReplacementOrder[index - 1]
+  );
+}
+
+function lcsTokenMatches(original: IndexedToken[], replacement: IndexedToken[]) {
+  const rows = original.length + 1;
+  const columns = replacement.length + 1;
+  const lengths = Array.from({ length: rows }, () =>
+    Array.from({ length: columns }, () => 0)
+  );
+  for (let left = original.length - 1; left >= 0; left -= 1) {
+    for (let right = replacement.length - 1; right >= 0; right -= 1) {
+      lengths[left][right] =
+        original[left].value === replacement[right].value
+          ? 1 + lengths[left + 1][right + 1]
+          : Math.max(lengths[left + 1][right], lengths[left][right + 1]);
+    }
+  }
+  const matches: Array<{ original: number; replacement: number }> = [];
+  let left = 0;
+  let right = 0;
+  while (left < original.length && right < replacement.length) {
+    if (original[left].value === replacement[right].value) {
+      matches.push({ original: left, replacement: right });
+      left += 1;
+      right += 1;
+    } else if (lengths[left + 1][right] >= lengths[left][right + 1]) {
+      left += 1;
+    } else {
+      right += 1;
+    }
+  }
+  return matches;
+}
+
+function splitIndependentTokenChanges(
   edit: InternalLanguageEditV2
 ): InternalLanguageEditV2[] {
-  const originalTokens = Array.from(edit.original_text.matchAll(/\S+/g));
-  const replacementTokens = Array.from(edit.replacement_text.matchAll(/\S+/g));
+  const originalTokens = indexedTokens(edit.original_text);
+  const replacementTokens = indexedTokens(edit.replacement_text);
   if (
-    originalTokens.length !== replacementTokens.length ||
-    originalTokens.length < 2
+    originalTokens.length < 2 ||
+    replacementTokens.length === 0 ||
+    hasStableTokenOrderInversion(originalTokens, replacementTokens)
   ) {
     return [edit];
   }
-  const originalSeparators = edit.original_text.split(/\S+/);
-  const replacementSeparators = edit.replacement_text.split(/\S+/);
-  if (
-    originalSeparators.length !== replacementSeparators.length ||
-    originalSeparators.some(
-      (separator, index) => separator !== replacementSeparators[index]
-    )
-  ) {
-    return [edit];
+
+  const matches = [
+    { original: -1, replacement: -1 },
+    ...lcsTokenMatches(originalTokens, replacementTokens),
+    { original: originalTokens.length, replacement: replacementTokens.length }
+  ];
+  const changes: Array<{
+    start: number;
+    end: number;
+    original_text: string;
+    replacement_text: string;
+  }> = [];
+  for (let index = 1; index < matches.length; index += 1) {
+    const previous = matches[index - 1];
+    const next = matches[index];
+    const originalGap = originalTokens.slice(previous.original + 1, next.original);
+    const replacementGap = replacementTokens.slice(
+      previous.replacement + 1,
+      next.replacement
+    );
+    if (originalGap.length === 0 && replacementGap.length === 0) continue;
+    // A pure insertion has no non-empty source span of its own. Keep the
+    // model's readable revision intact so the existing insertion fallback can
+    // localize it safely.
+    if (originalGap.length === 0) return [edit];
+
+    if (originalGap.length === replacementGap.length && originalGap.length > 1) {
+      originalGap.forEach((original, pairIndex) => {
+        const replacement = replacementGap[pairIndex];
+        if (original.value === replacement.value) return;
+        changes.push({
+          start: original.start,
+          end: original.end,
+          original_text: original.value,
+          replacement_text: replacement.value
+        });
+      });
+      continue;
+    }
+
+    const originalStart = originalGap[0].start;
+    const originalEnd = originalGap[originalGap.length - 1].end;
+    changes.push({
+      start: originalStart,
+      end: originalEnd,
+      original_text: edit.original_text.slice(originalStart, originalEnd),
+      replacement_text:
+        replacementGap.length === 0
+          ? ""
+          : edit.replacement_text.slice(
+              replacementGap[0].start,
+              replacementGap[replacementGap.length - 1].end
+            )
+    });
   }
-  const changed = originalTokens.flatMap((token, index) =>
-    token[0] === replacementTokens[index][0]
-      ? []
-      : [{ original: token, replacement: replacementTokens[index] }]
-  );
-  if (changed.length < 2) return [edit];
-  const explanations = allocateLanguageEditExplanations(
-    changed.map(({ original, replacement }) => ({
-      original_text: original[0],
-      replacement_text: replacement[0]
-    })),
-    edit.explanation
+  if (changes.length < 2) return [edit];
+
+  const reconstructed = [...changes]
+    .sort((left, right) => right.start - left.start)
+    .reduce(
+      (value, change) =>
+        value.slice(0, change.start) +
+        change.replacement_text +
+        value.slice(change.end),
+      edit.original_text
+    );
+  if (reconstructed !== edit.replacement_text) return [edit];
+
+  const metadata = languageEditMetadataForSplits(
+    changes,
+    edit.explanation,
+    edit.category,
+    edit.severity
   );
 
-  return changed.map(({ original, replacement }, index) => ({
+  return changes.map((change, index) => ({
     ...edit,
     edit_id: `${edit.edit_id}-part-${String(index + 1).padStart(2, "0")}`,
-    start: edit.start + original.index,
-    end: edit.start + original.index + original[0].length,
-    original_text: original[0],
-    replacement_text: replacement[0],
-    explanation: explanations[index]
+    start: edit.start + change.start,
+    end: edit.start + change.end,
+    original_text: change.original_text,
+    replacement_text: change.replacement_text,
+    category: metadata[index].category as InternalLanguageEditV2["category"],
+    severity: metadata[index].severity as InternalLanguageEditV2["severity"],
+    explanation: metadata[index].explanation
   }));
+}
+
+function trimSharedBoundaryPunctuation(
+  edit: InternalLanguageEditV2
+): InternalLanguageEditV2 {
+  let leading = 0;
+  while (
+    leading < edit.original_text.length - 1 &&
+    leading < edit.replacement_text.length - 1 &&
+    edit.original_text[leading] === edit.replacement_text[leading] &&
+    /[^A-Za-z0-9]/.test(edit.original_text[leading])
+  ) {
+    leading += 1;
+  }
+  let trailing = 0;
+  while (
+    trailing < edit.original_text.length - leading - 1 &&
+    trailing < edit.replacement_text.length - leading - 1 &&
+    edit.original_text[edit.original_text.length - trailing - 1] ===
+      edit.replacement_text[edit.replacement_text.length - trailing - 1] &&
+    /[^A-Za-z0-9]/.test(
+      edit.original_text[edit.original_text.length - trailing - 1]
+    )
+  ) {
+    trailing += 1;
+  }
+  if (leading === 0 && trailing === 0) return edit;
+  const originalEnd = edit.original_text.length - trailing;
+  const replacementEnd = edit.replacement_text.length - trailing;
+  return {
+    ...edit,
+    start: edit.start + leading,
+    end: edit.end - trailing,
+    original_text: edit.original_text.slice(leading, originalEnd),
+    replacement_text: edit.replacement_text.slice(leading, replacementEnd)
+  };
+}
+
+function finalizeSplitLanguageEdit(edit: InternalLanguageEditV2) {
+  const localized = trimSharedBoundaryPunctuation(
+    minimizeLocalizedLanguageEdit(edit)
+  );
+  const metadata = languageEditMetadataForSplits(
+    [localized],
+    localized.explanation,
+    localized.category,
+    localized.severity
+  )[0];
+  return {
+    ...localized,
+    category: metadata.category as InternalLanguageEditV2["category"],
+    severity: metadata.severity as InternalLanguageEditV2["severity"],
+    explanation: metadata.explanation
+  };
+}
+
+/**
+ * Deterministically repair a C3 semantic revision into independent UI edits.
+ * Stable token order is required; sentence rewrites with reordered anchors are
+ * deliberately kept whole so their meaning is not guessed apart locally.
+ */
+export function normalizeC3LanguageEditParts(edit: InternalLanguageEditV2) {
+  return splitIndependentTokenChanges(edit).map(finalizeSplitLanguageEdit);
 }
 
 function deduplicateC3ExactCorrections(edits: InternalLanguageEditV2[]) {
@@ -353,7 +539,7 @@ export function assembleWritingReviewV22FromC3(input: {
     input.semantic.unit_revisions
   );
   const localizedLanguageEdits = input.semantic.unit_revisions.flatMap(
-    (revision, index) => splitIndependentAlignedTokenChanges({
+    (revision, index) => normalizeC3LanguageEditParts({
       edit_id: `c3-edit-${String(index + 1).padStart(2, "0")}`,
       start: localizedRevisions[index].start,
       end: localizedRevisions[index].end,
@@ -363,7 +549,7 @@ export function assembleWritingReviewV22FromC3(input: {
       severity: revision.severity,
       explanation: revision.reason,
       restored: false
-    }).map((edit) => minimizeLocalizedLanguageEdit(input.responseText, edit))
+    })
   );
   const normalizedLanguageEdits = normalizeLanguageEditOverlaps(
     input.responseText,

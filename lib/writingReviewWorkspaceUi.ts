@@ -16,6 +16,8 @@ import type {
 import { workingReviewItemSource } from "./writingReviewWorkspace.ts";
 import type { RubricScore } from "./writingReviewSchemaV2.ts";
 import { computeInlineRevisionDiff } from "./writingReviewInlineDiff.ts";
+import { normalizeC3LanguageEditParts } from "./writingReviewV22Assembler.ts";
+import type { InternalLanguageEditV2 } from "./writingReviewSchemaV2.ts";
 
 export type LanguageEditFilter = "all" | "major" | "moderate" | "minor";
 
@@ -409,6 +411,21 @@ export function countTeacherEditedLanguageEdits(
       return null;
     }
     rawById.set(value.edit_id, value.replacement_text);
+    if (
+      /^c3-edit-\d+$/.test(value.edit_id) &&
+      typeof value.original_text === "string" &&
+      typeof value.category === "string" &&
+      typeof value.severity === "string" &&
+      typeof value.explanation === "string"
+    ) {
+      const parts = normalizeC3LanguageEditParts({
+        ...value,
+        start: 0,
+        end: value.original_text.length,
+        restored: false
+      } as InternalLanguageEditV2);
+      parts.forEach((part) => rawById.set(part.edit_id, part.replacement_text));
+    }
   }
   const aiEdits = edits.filter((edit) => workingReviewItemSource(edit) === "ai");
   if (aiEdits.some((edit) => !rawById.has(edit.edit_id))) return null;
