@@ -10,11 +10,8 @@ import {
   type AIReviewRawResultV22,
   type AIReviewResultV22
 } from "./writingReviewSchemaV22.ts";
-import {
-  diffWritingReviewUnit,
-  type WritingReviewRevisionDiff
-} from "./writingReviewRevisionDiff.ts";
 import type { WritingReviewSemanticC3 } from "./writingReviewSemanticSchema.ts";
+import { findReadableExactTextOccurrences } from "./writingReviewTextMatch.ts";
 import type { WritingReviewTextUnit } from "./writingReviewTextUnits.ts";
 
 const codeError = (message: string) =>
@@ -35,77 +32,116 @@ function occurrenceCount(source: string, value: string) {
   return count;
 }
 
-/**
- * Expands a minimal unit diff until its original source text is unique in the
- * complete response. This is required for both insertions and ordinary
- * replacements: a model often changes a short repeated token such as "I",
- * "the", or a punctuation mark, while v2.2 intentionally localizes by exact
- * unique source text.
- */
-function uniqueRevisionRange(
+type LocalizedRevision = {
+  start: number;
+  end: number;
+  originalText: string;
+  replacementText: string;
+};
+
+function revisionCandidates(
   source: string,
   unit: WritingReviewTextUnit,
-  diff: Exclude<WritingReviewRevisionDiff, null>
-) {
-  const changeStart = diff.start - unit.startOffset;
-  const changeEnd = diff.end - unit.startOffset;
-  const minimumWidth = Math.max(1, changeEnd - changeStart);
+  revision: WritingReviewSemanticC3["unit_revisions"][number]
+): LocalizedRevision[] {
+  const unitOccurrences = findReadableExactTextOccurrences(
+    unit.text,
+    revision.original_text
+  );
+  const relativeStart = unitOccurrences[0] ?? -1;
+  if (unitOccurrences.length !== 1) {
+    throw codeError("C3 revision source is not unique inside its unit.");
+  }
+  const relativeEnd = relativeStart + revision.original_text.length;
+  const direct = {
+    start: unit.startOffset + relativeStart,
+    end: unit.startOffset + relativeEnd,
+    originalText: revision.original_text,
+    replacementText: revision.replacement_text
+  };
+  if (
+    findReadableExactTextOccurrences(source, revision.original_text).length === 1
+  ) {
+    return [direct];
+  }
 
-  for (let width = minimumWidth; width <= unit.text.length; width += 1) {
-    const firstLeft = Math.max(0, changeEnd - width);
-    const lastLeft = Math.min(changeStart, unit.text.length - width);
-    for (let left = firstLeft; left <= lastLeft; left += 1) {
-      const right = left + width;
+  const tokens = Array.from(unit.text.matchAll(/\S+/g)).map((match) => ({
+    start: match.index,
+    end: match.index + match[0].length
+  }));
+  const firstToken = tokens.findIndex(
+    (token) => token.start <= relativeStart && token.end > relativeStart
+  );
+  const lastToken = tokens.findLastIndex(
+    (token) => token.start < relativeEnd && token.end >= relativeEnd
+  );
+  if (firstToken < 0 || lastToken < firstToken) {
+    throw codeError("C3 revision has no readable localization range.");
+  }
+
+  const candidates: LocalizedRevision[] = [];
+  for (
+    let tokenWidth = lastToken - firstToken + 1;
+    tokenWidth <= tokens.length;
+    tokenWidth += 1
+  ) {
+    const firstLeft = Math.max(0, lastToken - tokenWidth + 1);
+    const lastLeft = Math.min(firstToken, tokens.length - tokenWidth);
+    for (let leftToken = firstLeft; leftToken <= lastLeft; leftToken += 1) {
+      const rightToken = leftToken + tokenWidth - 1;
+      const left = tokens[leftToken].start;
+      const right = tokens[rightToken].end;
       const originalText = unit.text.slice(left, right);
       if (occurrenceCount(source, originalText) !== 1) continue;
-      return {
+      candidates.push({
         start: unit.startOffset + left,
         end: unit.startOffset + right,
         originalText,
         replacementText:
-          unit.text.slice(left, changeStart) +
-          diff.replacementText +
-          unit.text.slice(changeEnd, right)
-      };
+          unit.text.slice(left, relativeStart) +
+          revision.replacement_text +
+          unit.text.slice(relativeEnd, right)
+      });
     }
+    if (candidates.length > 0) break;
   }
-
-  throw codeError("C3 revision cannot be uniquely localized within its unit.");
+  if (candidates.length === 0) {
+    throw codeError("C3 revision cannot be uniquely localized within its unit.");
+  }
+  return candidates;
 }
 
-function rawEdit(
-  unit: WritingReviewTextUnit,
+function rangesOverlap(left: LocalizedRevision, right: LocalizedRevision) {
+  return left.start < right.end && left.end > right.start;
+}
+
+function localizeRevisions(
   source: string,
-  revision: WritingReviewSemanticC3["unit_revisions"][number],
-  index: number
+  units: Map<string, WritingReviewTextUnit>,
+  revisions: WritingReviewSemanticC3["unit_revisions"]
 ) {
-  const diff = diffWritingReviewUnit(
-    unit.text,
-    revision.revised_text,
-    unit.startOffset
-  );
-  if (!diff) return null;
+  const choices = revisions.map((revision) => {
+    const unit = units.get(revision.unit_id);
+    if (!unit) throw codeError("C3 revision references an unknown unit.");
+    return revisionCandidates(source, unit, revision);
+  });
+  const selected: LocalizedRevision[] = [];
 
-  const safe =
-    diff.originalText.length > 0 && occurrenceCount(source, diff.originalText) === 1
-      ? diff
-      : uniqueRevisionRange(source, unit, diff);
+  function choose(index: number): boolean {
+    if (index === choices.length) return true;
+    for (const candidate of choices[index]) {
+      if (selected.some((range) => rangesOverlap(range, candidate))) continue;
+      selected.push(candidate);
+      if (choose(index + 1)) return true;
+      selected.pop();
+    }
+    return false;
+  }
 
-  return {
-    edit_id: `c3-edit-${String(index + 1).padStart(2, "0")}`,
-    original_text: safe.originalText,
-    replacement_text: safe.replacementText,
-    category:
-      revision.issue_type === "punctuation"
-        ? "punctuation"
-        : revision.issue_type === "word_choice"
-          ? "word_choice"
-          : revision.issue_type === "grammar"
-            ? "grammar"
-            : "usage",
-    severity: "minor",
-    explanation: revision.reason
-  };
+  if (!choose(0)) {
+    throw codeError("C3 language revisions cannot be localized without overlap.");
+  }
+  return selected;
 }
 
 export function normalizeC3ContentFeedback(input: WritingReviewSemanticC3) {
@@ -167,31 +203,20 @@ export function assembleWritingReviewV22FromC3(input: {
       ? EMAIL_CONTENT_FEEDBACK_CATEGORIES_V2
       : ACADEMIC_DISCUSSION_CONTENT_FEEDBACK_CATEGORIES_V2;
   const units = new Map(input.units.map((unit) => [unit.unitId, unit]));
-  const revisions = new Map<
-    string,
-    WritingReviewSemanticC3["unit_revisions"][number]
-  >();
-
-  for (const revision of input.semantic.unit_revisions) {
-    if (!units.has(revision.unit_id)) {
-      throw codeError("C3 revision references an unknown unit.");
-    }
-    if (revisions.has(revision.unit_id)) {
-      throw codeError("C3 has multiple revisions for one unit.");
-    }
-    revisions.set(revision.unit_id, revision);
-  }
-
-  const languageEdits = Array.from(revisions.values()).flatMap(
-    (revision, index) => {
-      const edit = rawEdit(
-        units.get(revision.unit_id)!,
-        input.responseText,
-        revision,
-        index
-      );
-      return edit ? [edit] : [];
-    }
+  const localizedRevisions = localizeRevisions(
+    input.responseText,
+    units,
+    input.semantic.unit_revisions
+  );
+  const languageEdits = input.semantic.unit_revisions.map(
+    (revision, index) => ({
+      edit_id: `c3-edit-${String(index + 1).padStart(2, "0")}`,
+      original_text: localizedRevisions[index].originalText,
+      replacement_text: localizedRevisions[index].replacementText,
+      category: revision.issue_type,
+      severity: revision.severity,
+      explanation: revision.reason
+    })
   );
   const normalized = normalizeC3ContentFeedback(input.semantic);
   const raw = {

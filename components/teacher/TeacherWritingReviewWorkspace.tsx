@@ -805,6 +805,9 @@ export function TeacherWritingReviewWorkspace({
       ) : null}
       {selectedEdit && inspectorPosition ? (
         <LanguageEditInspector
+          coveredByContentRevision={Boolean(
+            revisionComposition?.suppressedLanguageEditIds.has(selectedEdit.edit_id)
+          )}
           edit={selectedEdit}
           editCategory={editCategory}
           editExplanation={editExplanation}
@@ -1523,6 +1526,7 @@ function FormTextarea({
 }
 
 function LanguageEditInspector({
+  coveredByContentRevision,
   edit,
   editCategory,
   editExplanation,
@@ -1541,6 +1545,7 @@ function LanguageEditInspector({
   position,
   replacementText
 }: {
+  coveredByContentRevision: boolean;
   edit: WorkingLanguageEdit;
   editCategory: LanguageEditCategory;
   editExplanation: string;
@@ -1587,6 +1592,11 @@ function LanguageEditInspector({
           下一项<ChevronRight size={13} />
         </MiniButton>
       </div>
+      {coveredByContentRevision ? (
+        <p className="mt-2 rounded-lg bg-amber-50 p-2 text-[10px] leading-4 text-amber-800">
+          该修改所在原句已采用内容建议改写；批改稿会优先使用整句改写，本条语言修改仍保留供单独查看。
+        </p>
+      ) : null}
       <Detail label="学生原文" value={edit.original_text} />
       <div className="mt-3">
         <p className="text-[10px] font-semibold text-student-muted">当前修改</p>

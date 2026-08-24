@@ -907,6 +907,18 @@ test("feedback tabs explicitly scroll the right column and synchronize selection
   assert.match(source, /calculateContainedScrollTop/);
 });
 
+test("language edit inspector explains when an adopted content rewrite takes precedence", () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), "components/teacher/TeacherWritingReviewWorkspace.tsx"),
+    "utf8"
+  );
+  assert.match(
+    source,
+    /suppressedLanguageEditIds\.has\(selectedEdit\.edit_id\)/
+  );
+  assert.match(source, /批改稿会优先使用整句改写/);
+});
+
 test("immersive shell uses fixed hover overlays without reserving layout space", () => {
   const source = fs.readFileSync(
     path.join(process.cwd(), "components/teacher/TeacherAppShell.tsx"),

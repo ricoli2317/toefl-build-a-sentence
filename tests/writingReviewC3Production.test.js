@@ -11,16 +11,16 @@ const input = {
 const provider = { provider: "moonshot", model: "kimi-k3" };
 const semantic = {
   official_score: 4,
-  score_reason: "The response meets the task.",
-  overall_feedback: "Add one supporting detail.",
+  score_reason: "回答完成了主要任务。",
+  overall_feedback: "建议再补充一个支持细节。",
   dimension_scores: Object.fromEntries([
     "communicative_purpose_and_elaboration",
     "syntactic_range_and_word_choice",
     "social_conventions",
     "lexical_and_grammatical_control"
-  ].map((key) => [key, { score: 4, basis: "Clear evidence." }])),
+  ].map((key) => [key, { score: 4, basis: "文中有明确依据。" }])),
   unit_revisions: [],
-  content_feedback: [{ unit_id: "U01", category: "communicative_purpose", issue: "Add detail.", suggestion: "补充一个具体原因。", proposed_revision: "Add a specific reason." }]
+  content_feedback: [{ unit_id: "U01", category: "communicative_purpose", issue: "邮件缺少必要细节。", suggestion: "补充一个具体原因。", proposed_revision: "Add a specific reason." }]
 };
 function response(content = JSON.stringify(semantic)) {
   return { content, model: "kimi-k3", usage: EMPTY_OPENROUTER_USAGE, generationId: "safe-test-id" };
@@ -41,7 +41,7 @@ test("C3 service uses Moonshot structured output and returns only fully validate
   assert.equal(calls.length, 1);
   assert.deepEqual(calls[0].actualProvider, provider);
   assert.equal(calls[0].options.reasoningEffort, "high");
-  assert.equal(calls[0].options.schemaName, "tps_writing_review_c3_v4_email");
+  assert.equal(calls[0].options.schemaName, "tps_writing_review_c3_v5_email");
   assert.equal(result.telemetry.winner, "primary");
   assert.equal(result.review.schema_version, "2.2");
   assert.equal(JSON.parse(result.response.content).schema_version, "2.2");
@@ -79,8 +79,8 @@ test("C3 provider failure does not retry another provider", async () => {
 test("C3 selects the task-specific schema rather than sharing Email schema with AD", async () => {
   const calls = [];
   const adInput = { taskType: "academic_discussion", question: { professor_prompt: "Discuss." }, responseText: "I agree because practical skills matter." };
-  const adSemantic = { ...semantic, dimension_scores: Object.fromEntries(["relevance", "elaboration", "syntactic_range_and_word_choice", "lexical_and_grammatical_control"].map((key) => [key, { score: 4, basis: "Evidence." }])), content_feedback: [{ unit_id: "U01", category: "relevance", issue: "Add detail.", suggestion: "补充细节。", proposed_revision: "I agree because practical skills matter." }] };
+  const adSemantic = { ...semantic, dimension_scores: Object.fromEntries(["relevance", "elaboration", "syntactic_range_and_word_choice", "lexical_and_grammatical_control"].map((key) => [key, { score: 4, basis: "文中有明确依据。" }])), content_feedback: [{ unit_id: "U01", category: "relevance", issue: "论述缺少细节。", suggestion: "补充细节。", proposed_revision: "I agree because practical skills matter." }] };
   await requestProductionC3WritingReview(adInput, provider, {}, { requestStructuredOutput: requestWith(response(JSON.stringify(adSemantic)), calls) });
-  assert.equal(calls[0].options.schemaName, "tps_writing_review_c3_v4_academic_discussion");
+  assert.equal(calls[0].options.schemaName, "tps_writing_review_c3_v5_academic_discussion");
   assert.deepEqual(calls[0].options.jsonSchema.properties.dimension_scores.required, ["relevance", "elaboration", "syntactic_range_and_word_choice", "lexical_and_grammatical_control"]);
 });

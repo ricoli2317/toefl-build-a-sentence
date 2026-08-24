@@ -13,6 +13,7 @@ import {
   normalizeLanguageEditOverlaps,
   type LanguageEditOverlapNormalizationDiagnostic
 } from "./writingReviewLanguageEditNormalization.ts";
+import { findReadableExactTextOccurrences } from "./writingReviewTextMatch.ts";
 
 export const AI_REVIEW_SCHEMA_VERSION_V2 = "2.0" as const;
 
@@ -262,7 +263,8 @@ export function parseAIReviewRawResultV2ForResponse(
       responseText,
       edit.original_text,
       `$.language_edits[${index}].original_text`,
-      issues
+      issues,
+      true
     );
     return {
       edit: { ...edit, ...offsets, restored: false },
@@ -432,14 +434,24 @@ function locateUniqueText(
   responseText: string,
   exactText: string,
   path: string,
-  issues: Array<{ path: string; message: string }>
+  issues: Array<{ path: string; message: string }>,
+  readableBoundaries = false
 ) {
-  const start = responseText.indexOf(exactText);
+  const occurrences = readableBoundaries
+    ? findReadableExactTextOccurrences(responseText, exactText)
+    : [];
+  const start = readableBoundaries
+    ? (occurrences[0] ?? -1)
+    : responseText.indexOf(exactText);
   if (start < 0) {
     issue(issues, path, "must occur exactly in response_text");
     return { start: 0, end: exactText.length };
   }
-  if (responseText.indexOf(exactText, start + 1) >= 0) {
+  if (
+    readableBoundaries
+      ? occurrences.length > 1
+      : responseText.indexOf(exactText, start + 1) >= 0
+  ) {
     issue(issues, path, "must occur exactly once in response_text");
   }
   return { start, end: start + exactText.length };

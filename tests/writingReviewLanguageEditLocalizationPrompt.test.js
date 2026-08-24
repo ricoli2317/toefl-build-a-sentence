@@ -95,6 +95,27 @@ test("a unique short misspelling remains valid without unnecessary expansion", (
   assert.equal(located.language_edits[0].replacement_text, "viewpoints");
 });
 
+test("strict localization ignores embedded letters when a standalone word is unique", () => {
+  const response = "hello teacher i miss meeting.";
+  const located = parseAIReviewRawResultV22ForResponse(
+    rawReview([edit("edit-1", "i", "I")]),
+    response
+  );
+  assert.equal(located.language_edits[0].original_text, "i");
+  assert.equal(located.language_edits[0].start, response.indexOf(" i ") + 1);
+});
+
+test("strict localization still rejects a source that starts inside a word", () => {
+  assert.throws(
+    () =>
+      parseAIReviewRawResultV22ForResponse(
+        rawReview([edit("edit-1", "d in", "")]),
+        "I enjoyed in the gym."
+      ),
+    /must occur exactly in response_text/
+  );
+});
+
 test("strict server localization still rejects model-normalized source text", () => {
   assert.throws(
     () =>
