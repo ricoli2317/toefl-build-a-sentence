@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { validateLogicalWritingTitle } from "@/lib/practiceImporter/logicalTitle";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { revalidatePracticeCatalog } from "@/lib/practiceCatalogCache.server";
 
 export const dynamic = "force-dynamic";
 
@@ -189,7 +190,14 @@ export async function POST(request: Request) {
     const candidateItemId = resolution === "merge"
       ? String(body.candidateItemId ?? "").trim() || null
       : null;
-    const { data, error } = await createServiceSupabase().rpc(
+    const supabase = createServiceSupabase();
+    const reviewResult = await supabase
+      .from("practice_import_review_queue")
+      .select("task_type")
+      .eq("review_id", reviewId)
+      .maybeSingle();
+    if (reviewResult.error) throw reviewResult.error;
+    const { data, error } = await supabase.rpc(
       "resolve_practice_import_review_v2",
       {
         p_review_id: reviewId,
@@ -199,6 +207,9 @@ export async function POST(request: Request) {
       }
     );
     if (error) throw error;
+    if (reviewResult.data?.task_type) {
+      revalidatePracticeCatalog(reviewResult.data.task_type as ReviewRow["task_type"]);
+    }
     return json({ result: data });
   } catch (error) {
     console.error("[teacher-import-reviews] resolve_failed", error);

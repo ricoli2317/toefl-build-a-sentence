@@ -22,6 +22,7 @@ import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { beginStudentNavigationTrace } from "@/lib/studentPerformance.client";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 
 type NavigationItem = {
@@ -124,7 +125,13 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
         )}
       >
         <div className="flex items-start justify-between gap-3 px-3 pb-5">
-          <Link href={STUDENT_ROUTES.home} onClick={() => setMenuOpen(false)}>
+          <Link
+            href={STUDENT_ROUTES.home}
+            onClick={() => {
+              beginStudentNavigationTrace(STUDENT_ROUTES.home);
+              setMenuOpen(false);
+            }}
+          >
             <StudentBrand />
           </Link>
           <button aria-label="关闭导航" className="p-2 text-student-muted lg:hidden" onClick={() => setMenuOpen(false)} type="button">
@@ -189,7 +196,15 @@ function StudentNavItem({
   );
 
   return item.href ? (
-    <Link aria-current={active ? "page" : undefined} className={className} href={item.href} onClick={onNavigate}>
+    <Link
+      aria-current={active ? "page" : undefined}
+      className={className}
+      href={item.href}
+      onClick={() => {
+        beginStudentNavigationTrace(item.href!);
+        onNavigate();
+      }}
+    >
       {content}
     </Link>
   ) : (

@@ -5,8 +5,10 @@ import { useEffect, useRef } from "react";
 type PageTrace = {
   actualRoute: string;
   completed: boolean;
+  contentVisibleLogged: boolean;
   expectedRoute: string;
   firstRequestStartedMs: number | null;
+  mainDataCompleted: boolean;
   requestCount: number;
   startLogged: boolean;
   startedAt: number;
@@ -35,10 +37,12 @@ function currentRoute(fallback: string) {
 function createPageTrace(expectedRoute: string): PageTrace {
   const now = performance.now();
   return {
-    actualRoute: currentRoute(expectedRoute),
+    actualRoute: expectedRoute,
     completed: false,
+    contentVisibleLogged: false,
     expectedRoute,
     firstRequestStartedMs: null,
+    mainDataCompleted: false,
     requestCount: 0,
     startLogged: false,
     startedAt: now,
@@ -48,10 +52,9 @@ function createPageTrace(expectedRoute: string): PageTrace {
 }
 
 function getPageTrace(expectedRoute: string) {
-  const actualRoute = currentRoute(expectedRoute);
   if (
     !activePageTrace ||
-    activePageTrace.actualRoute !== actualRoute ||
+    activePageTrace.expectedRoute !== expectedRoute ||
     (activePageTrace.completed && performance.now() - activePageTrace.startedAt > 500)
   ) {
     activePageTrace = createPageTrace(expectedRoute);
@@ -61,6 +64,19 @@ function getPageTrace(expectedRoute: string) {
 
 export function logStudentPerformance(payload: Record<string, unknown>) {
   console.info("[student-perf]", JSON.stringify({ scope: "client", ...payload }));
+}
+
+export function beginStudentNavigationTrace(expectedRoute: string) {
+  if (typeof window === "undefined") return;
+  const trace = createPageTrace(expectedRoute);
+  activePageTrace = trace;
+  logStudentPerformance({
+    event: "navigation_started",
+    expectedRoute,
+    fromRoute: currentRoute(""),
+    startedAt: new Date(trace.startedAtEpochMs).toISOString(),
+    traceId: trace.traceId
+  });
 }
 
 export function useStudentPagePerformance({
@@ -78,6 +94,7 @@ export function useStudentPagePerformance({
   useEffect(() => {
     const trace = traceRef.current!;
     if (trace.startLogged) return;
+    trace.actualRoute = currentRoute(route);
     trace.startLogged = true;
     logStudentPerformance({
       actualRoute: trace.actualRoute,
@@ -86,12 +103,13 @@ export function useStudentPagePerformance({
       startedAt: new Date(trace.startedAtEpochMs).toISOString(),
       traceId: trace.traceId
     });
-  }, []);
+  }, [route]);
 
   useEffect(() => {
     const trace = traceRef.current!;
-    if (loading || trace.completed) return;
-    trace.completed = true;
+    if (loading || trace.mainDataCompleted) return;
+    trace.mainDataCompleted = true;
+    const outcome = errors.some(Boolean) ? "error" : "success";
     logStudentPerformance({
       actualRoute: trace.actualRoute,
       completedAt: new Date().toISOString(),
@@ -101,10 +119,25 @@ export function useStudentPagePerformance({
         trace.firstRequestStartedMs === null
           ? null
           : roundDuration(trace.firstRequestStartedMs - trace.startedAt),
-      outcome: errors.some(Boolean) ? "error" : "success",
+      outcome,
       requestCount: trace.requestCount,
       totalMs: roundDuration(performance.now() - trace.startedAt),
       traceId: trace.traceId
+    });
+    requestAnimationFrame(() => {
+      if (trace.contentVisibleLogged) return;
+      trace.contentVisibleLogged = true;
+      trace.completed = true;
+      logStudentPerformance({
+        actualRoute: trace.actualRoute,
+        event: "page_main_content_visible",
+        expectedRoute: trace.expectedRoute,
+        outcome,
+        requestCount: trace.requestCount,
+        totalMs: roundDuration(performance.now() - trace.startedAt),
+        traceId: trace.traceId,
+        visibleAt: new Date().toISOString()
+      });
     });
   }, [errors, loading]);
 }
@@ -113,9 +146,7 @@ export async function measureStudentRequest<T>(
   requestName: string,
   operation: (captureResponse: (response: Response) => void) => Promise<T>
 ): Promise<T> {
-  const trace = activePageTrace?.actualRoute === currentRoute("")
-    ? activePageTrace
-    : null;
+  const trace = activePageTrace && !activePageTrace.completed ? activePageTrace : null;
   const startedAt = performance.now();
   const responseHolder: { current: Response | null } = { current: null };
   if (trace) {

@@ -30,12 +30,12 @@ test("BAS, Email, and AD roots render the corresponding logical practice catalog
   }
 });
 
-test("logical root UI reads only practice-catalog and keeps server ordering", () => {
+test("logical root UI reads one full practice-catalog and keeps server ordering", () => {
   const source = read("components/LogicalPracticeCatalog.tsx");
   assert.match(source, /\/api\/practice-catalog\?taskType=/);
-  assert.match(source, /&page=\$\{page\}/);
+  assert.doesNotMatch(source, /&page=/);
   assert.doesNotMatch(source, /\/api\/sets|\/api\/writing\/catalog/);
-  assert.match(source, /catalog\.items\.map/);
+  assert.match(source, /catalog\.items\.slice/);
   assert.doesNotMatch(source, /catalog\.items\.sort/);
 });
 
@@ -46,8 +46,8 @@ test("pagination parses and preserves page query values", () => {
   assert.equal(parseLogicalCatalogPage("0"), 1);
   assert.equal(parseLogicalCatalogPage("1.5"), 1);
   const source = read("components/LogicalPracticeCatalog.tsx");
-  assert.match(source, /\?page=\$\{page - 1\}/);
-  assert.match(source, /\?page=\$\{page \+ 1\}/);
+  assert.match(source, /onPageChange\(page - 1\)/);
+  assert.match(source, /onPageChange\(page \+ 1\)/);
 });
 
 test("logical list React identity is item_id and never display_number", () => {

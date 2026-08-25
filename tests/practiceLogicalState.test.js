@@ -370,7 +370,7 @@ test("display_number correction leaves item identity and student state unchanged
   assert.equal(before.student_state.latest_attempt_id, after.student_state.latest_attempt_id);
 });
 
-test("current page items are aggregated from one batch input and catalog loader uses IN queries", () => {
+test("catalog items are aggregated from one batch and student state can load before public sources", () => {
   const items = Array.from({ length: 10 }, (_, index) =>
     item({ itemId: `item-${index}`, setId: `set-${index}` })
   );
@@ -389,8 +389,9 @@ test("current page items are aggregated from one batch input and catalog loader 
     "utf8"
   );
   assert.match(catalogSource, /catalog\.items\.flatMap/);
-  assert.match(catalogSource, /\.from\("attempts"\)[\s\S]*?\.in\("set_id", setIds\)/);
-  assert.match(catalogSource, /\.from\("writing_attempts"\)[\s\S]*?\.in\("question_id", questionIds\)/);
+  assert.match(catalogSource, /\.from\("attempts"\)[\s\S]*?\.eq\("student_id", input\.studentId\)/);
+  assert.match(catalogSource, /\.from\("writing_attempts"\)[\s\S]*?\.eq\("user_id", input\.studentId\)/);
+  assert.doesNotMatch(catalogSource, /\.in\("set_id", setIds\)|\.in\("question_id", questionIds\)/);
   assert.doesNotMatch(catalogSource, /catalog\.items\.map\([\s\S]{0,300}\.from\(/);
 });
 

@@ -5,6 +5,7 @@ import {
 } from "@/lib/practiceLogicalCatalog";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { loadCachedPublicPracticeCatalog } from "@/lib/practiceCatalogCache.server";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +31,8 @@ export async function GET(request: Request) {
       supabase: createServiceSupabase(),
       studentId: auth.userId,
       taskType,
-      timing
+      timing,
+      loadPublicCatalog: () => loadCachedPublicPracticeCatalog(taskType)
     });
     return respond(catalog);
   } catch (error) {

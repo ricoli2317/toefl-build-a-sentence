@@ -4,6 +4,7 @@ import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import {
   loadPracticeCatalogDirectory,
   loadPracticePublicUniverse,
+  type FormalPracticeItemSource,
   type PracticeCatalogDirectory
 } from "./practicePublicUniverse.ts";
 import {
@@ -13,7 +14,6 @@ import {
   type LogicalPracticeStudentState,
   type WritingLogicalAttemptRow
 } from "./practiceLogicalState.ts";
-import { isVirtualPracticeSetId } from "./studentNavigation.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 
@@ -54,6 +54,16 @@ export type LogicalPracticeCatalogItemWithStudentState = LogicalPracticeListItem
 export type LogicalPracticeCatalogWithStudentState = {
   items: LogicalPracticeCatalogItemWithStudentState[];
   pagination: LogicalPracticePagination;
+};
+
+export type PublicLogicalPracticeCatalogData = {
+  catalog: LogicalPracticeCatalog;
+  sources: FormalPracticeItemSource[];
+};
+
+export type LogicalPracticeStudentAttempts = {
+  buildSentenceAttempts?: BuildSentenceLogicalAttemptRow[];
+  writingAttempts?: WritingLogicalAttemptRow[];
 };
 
 export type PracticeItemOccurrenceRow = {
@@ -128,22 +138,27 @@ export async function getLogicalPracticeItems(input: {
   studentId: string;
   taskType: PracticeTaskType;
   timing?: StudentPerformanceTrace;
+  loadPublicCatalog?: () => Promise<PublicLogicalPracticeCatalogData>;
 }): Promise<LogicalPracticeCatalogWithStudentState> {
-  const { catalog, universe } = await loadLogicalPracticeCatalog({
-    ...input,
-    page: 1,
-    useTaskScopedUniverse: true
-  });
-  const sources = catalog.items.flatMap((item) =>
-    universe.getFormalSourcesForPracticeItem(item.item_id)
-  );
-  const attemptRows = await loadCatalogAttemptRows({
-    supabase: input.supabase,
-    studentId: input.studentId,
-    taskType: input.taskType,
-    sources,
-    timing: input.timing
-  });
+  const loadPublic = input.loadPublicCatalog ?? (() =>
+    loadPublicLogicalPracticeCatalog({
+      supabase: input.supabase,
+      taskType: input.taskType,
+      timing: input.timing
+    }));
+  const publicCatalogPromise = input.timing
+    ? input.timing.measure("cache", "public_practice_catalog", loadPublic)
+    : loadPublic();
+  const [publicCatalog, attemptRows] = await Promise.all([
+    publicCatalogPromise,
+    loadLogicalPracticeStudentAttempts({
+      supabase: input.supabase,
+      studentId: input.studentId,
+      taskType: input.taskType,
+      timing: input.timing
+    })
+  ]);
+  const { catalog, sources } = publicCatalog;
   const buildResult = () => {
     const items = attachLogicalPracticeStudentState({
       items: catalog.items,
@@ -158,6 +173,35 @@ export async function getLogicalPracticeItems(input: {
   return input.timing
     ? input.timing.measureSync("processing", "attach_student_catalog_state", buildResult)
     : buildResult();
+}
+
+export async function loadPublicLogicalPracticeCatalog(input: {
+  supabase: SupabaseClient;
+  taskType: PracticeTaskType;
+  timing?: StudentPerformanceTrace;
+}): Promise<PublicLogicalPracticeCatalogData> {
+  const { directory, occurrences } = await loadPracticeCatalogDirectory(
+    input.supabase,
+    input.taskType,
+    input.timing
+  );
+  const buildCatalog = () =>
+    buildLogicalPracticeCatalog({
+      universe: directory,
+      occurrences,
+      taskType: input.taskType,
+      page: 1,
+      paginate: false
+    });
+  const catalog = input.timing
+    ? input.timing.measureSync("processing", "build_logical_catalog_page", buildCatalog)
+    : buildCatalog();
+  return {
+    catalog,
+    sources: catalog.items.flatMap((item) =>
+      directory.getFormalSourcesForPracticeItem(item.item_id)
+    )
+  };
 }
 
 export async function getLogicalPracticeCatalog(input: {
@@ -240,30 +284,19 @@ async function loadLogicalPracticeCatalogDirectory(input: {
   };
 }
 
-async function loadCatalogAttemptRows(input: {
+export async function loadLogicalPracticeStudentAttempts(input: {
   supabase: SupabaseClient;
   studentId: string;
   taskType: PracticeTaskType;
-  sources: ReturnType<PracticeCatalogDirectory["getFormalSourcesForPracticeItem"]>;
   timing?: StudentPerformanceTrace;
-}): Promise<{
-  buildSentenceAttempts?: BuildSentenceLogicalAttemptRow[];
-  writingAttempts?: WritingLogicalAttemptRow[];
-}> {
+}): Promise<LogicalPracticeStudentAttempts> {
   if (input.taskType === "build_sentence") {
-    const setIds = distinct(input.sources.flatMap((source) =>
-      source.sourceSetId && !isVirtualPracticeSetId(source.sourceSetId)
-        ? [source.sourceSetId]
-        : []
-    ));
-    if (setIds.length === 0) return { buildSentenceAttempts: [] };
     const result = await measureDatabase(input.timing, "attempts_current_catalog_page", () =>
       readAllSupabaseRows<BuildSentenceLogicalAttemptRow>((from, to) =>
         input.supabase
           .from("attempts")
           .select("attempt_id,set_id,submitted_at,created_at")
           .eq("student_id", input.studentId)
-          .in("set_id", setIds)
           .order("submitted_at", { ascending: false, nullsFirst: false })
           .order("attempt_id", { ascending: false })
           .range(from, to) as unknown as PromiseLike<{
@@ -278,10 +311,6 @@ async function loadCatalogAttemptRows(input: {
     return { buildSentenceAttempts: result.data ?? [] };
   }
 
-  const questionIds = distinct(input.sources.flatMap((source) =>
-    source.sourceQuestionId ? [source.sourceQuestionId] : []
-  ));
-  if (questionIds.length === 0) return { writingAttempts: [] };
   const result = await measureDatabase(input.timing, "writing_attempts_current_catalog_page", () =>
     readAllSupabaseRows<WritingLogicalAttemptRow>((from, to) =>
       input.supabase
@@ -292,7 +321,6 @@ async function loadCatalogAttemptRows(input: {
         .eq("user_id", input.studentId)
         .eq("task_type", input.taskType)
         .is("assignment_id", null)
-        .in("question_id", questionIds)
         .order("updated_at", { ascending: false })
         .order("attempt_id", { ascending: false })
         .range(from, to) as unknown as PromiseLike<{
@@ -313,10 +341,6 @@ function measureDatabase<T>(
   operation: () => Promise<T>
 ) {
   return timing ? timing.measure("database", name, operation) : operation();
-}
-
-function distinct(values: string[]) {
-  return Array.from(new Set(values));
 }
 
 export function parseLogicalPracticePage(value: string | null) {

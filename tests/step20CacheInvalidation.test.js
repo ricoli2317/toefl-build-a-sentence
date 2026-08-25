@@ -40,7 +40,7 @@ test("duplicate occurrence and display correction invalidate historical naming c
 test("BAS submit invalidates logical card state while preserving the authoritative overlay", () => {
   assert.match(practiceSession, /recordOfficialAttempt\(officialAttempt!\)/);
   assert.match(practiceSession, /broadcastStudentPracticeCompleted/);
-  assert.match(studentCache, /case "studentPracticeState":[\s\S]*STUDENT_LOGICAL_CATALOG_CACHE_PREFIX[\s\S]*recordOfficialAttempt/);
+  assert.match(studentCache, /case "studentPracticeState":[\s\S]*recordOfficialAttempt[\s\S]*updateLogicalCatalogCompletion/);
 });
 
 test("BAS submit invalidates teacher statistics", () => {
@@ -94,7 +94,7 @@ test("AI generate and save do not expose unpublished reviews to students", () =>
 });
 
 test("display number correction refreshes metadata while cache identity remains stable", () => {
-  assert.match(logicalCatalog, /studentLogicalCatalogCacheKey\(taskType, page\)/);
+  assert.match(logicalCatalog, /studentLogicalCatalogCacheKey\(taskType\)/);
   assert.doesNotMatch(matrix, /display_number|displayNumber|display_title|first_seen_date/);
   assert.match(studentCache, /studentAttemptCacheKey\(attemptId: string\)/);
 });
@@ -168,7 +168,7 @@ test("dynamic BAS result, submission, and teacher stats APIs disable route and f
   ]) {
     const source = read(file);
     assert.match(source, /export const dynamic = "force-dynamic"/);
-    assert.match(source, /Cache-Control": "no-store"/);
+    assert.match(source, /Cache-Control[\s\S]{0,30}"no-store"/);
     assert.match(source, /cache: "no-store"/);
   }
 });

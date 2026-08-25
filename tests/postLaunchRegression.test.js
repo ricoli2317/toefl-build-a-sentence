@@ -38,7 +38,8 @@ test("exact draft resume reads by attempt_id and never applies new-mode availabi
   const client = read("components/writing/WritingPractice.tsx");
   assert.match(exactRoute, /readOwnedWritingAttempt\([\s\S]*params\.attemptId/);
   assert.doesNotMatch(exactRoute, /getStudentWritingModeAvailability|writingModeUnavailableMessage/);
-  assert.match(client, /attemptId\s*\?\s*await fetch\(`\/api\/writing\/attempts\/\$\{encodeURIComponent\(attemptId\)\}/);
+  assert.match(client, /const detailUrl = attemptId[\s\S]*encodeURIComponent\(attemptId\)/);
+  assert.match(client, /attemptId\s*\?\s*await fetch\(detailUrl/);
   assert.match(client, /result\.attempt\.question_id !== questionId/);
   assert.match(createRoute, /getStudentWritingModeAvailability/);
   assert.match(createRoute, /isStudentWritingModeAllowed/);

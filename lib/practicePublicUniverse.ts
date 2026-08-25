@@ -641,48 +641,53 @@ export async function loadPracticeCatalogDirectory(
   directory: PracticeCatalogDirectory;
   occurrences: PracticeItemOccurrenceRow[];
 }> {
-  const itemResult = await measureDatabase(timing, "practice_items", () =>
-    readAllSupabaseRows<PracticeItemRow>((from, to) =>
-      supabase
-        .from("practice_items")
-        .select("item_id,task_type,display_number,display_title,first_seen_date,is_active")
-        .eq("task_type", taskType)
-        .eq("is_active", true)
-        .not("display_number", "is", null)
-        .neq("display_number", "")
-        .order("first_seen_date", { ascending: false })
-        .order("display_number", { ascending: false })
-        .order("item_id", { ascending: true })
-        .range(from, to) as unknown as PromiseLike<{
-        data: PracticeItemRow[] | null;
-        error: { message: string } | null;
-      }>
+  const [itemResult, sourceResult] = await Promise.all([
+    measureDatabase(timing, "practice_items", () =>
+      readAllSupabaseRows<PracticeItemRow>((from, to) =>
+        supabase
+          .from("practice_items")
+          .select("item_id,task_type,display_number,display_title,first_seen_date,is_active")
+          .eq("task_type", taskType)
+          .eq("is_active", true)
+          .not("display_number", "is", null)
+          .neq("display_number", "")
+          .order("first_seen_date", { ascending: false })
+          .order("display_number", { ascending: false })
+          .order("item_id", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{
+          data: PracticeItemRow[] | null;
+          error: { message: string } | null;
+        }>
+      )
+    ),
+    measureDatabase(timing, "practice_item_sources", () =>
+      readAllSupabaseRows<PracticeItemSourceRow>((from, to) =>
+        supabase
+          .from("practice_item_sources")
+          .select("source_id,item_id,task_type,source_set_id,source_question_id,is_canonical")
+          .eq("task_type", taskType)
+          .order("source_id", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{
+          data: PracticeItemSourceRow[] | null;
+          error: { message: string } | null;
+        }>
+      )
     )
-  );
+  ]);
   if (itemResult.error) {
     throw new Error(
       `Failed to load practice_items directory for ${taskType} catalog: ${itemResult.error.message}`
     );
   }
+  if (sourceResult.error) {
+    throw new Error(
+      `Failed to load practice_item_sources directory for ${taskType} catalog: ${sourceResult.error.message}`
+    );
+  }
   const items = itemResult.data ?? [];
-
-  const itemIds = items.map((item) => item.item_id);
-  const sources = await measureDatabase(timing, "practice_item_sources", () =>
-    readRowsInBatches<PracticeItemSourceRow>(
-      itemIds,
-      (batch, rangeFrom, rangeTo) =>
-        supabase
-          .from("practice_item_sources")
-          .select("source_id,item_id,task_type,source_set_id,source_question_id,is_canonical")
-          .eq("task_type", taskType)
-          .in("item_id", batch)
-          .order("source_id", { ascending: true })
-          .range(rangeFrom, rangeTo) as unknown as PromiseLike<{
-          data: PracticeItemSourceRow[] | null;
-          error: { message: string } | null;
-        }>,
-      "practice_item_sources"
-    )
+  const activeItemIds = new Set(items.map((item) => item.item_id));
+  const sources = (sourceResult.data ?? []).filter((source) =>
+    activeItemIds.has(source.item_id)
   );
   const formalSourceIds = distinct(
     sources.filter(isFormalSource).map((source) => source.source_id)

@@ -16,60 +16,34 @@ import {
   Puzzle,
   type LucideIcon
 } from "lucide-react";
-import { usePracticeHistory } from "@/components/PracticeHistory";
 import {
-  STUDENT_SETS_CACHE_KEY,
+  STUDENT_DASHBOARD_SUMMARY_CACHE_KEY,
   useStudentCachedData,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
-import {
-  useWritingCatalog,
-  useWritingOverview
-} from "@/components/writing/WritingCatalog";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import {
+  beginStudentNavigationTrace,
   measureStudentRequest,
   useStudentPagePerformance
 } from "@/lib/studentPerformance.client";
-import { WRITING_TASK_CONFIG, type WritingCatalogSet } from "@/lib/writing";
-import type { PracticeMonth, PracticeSet } from "@/lib/types";
-
-type SetsPayload = { error?: string; months?: PracticeMonth[]; sets?: PracticeSet[] };
+import { WRITING_TASK_CONFIG } from "@/lib/writing";
+import type {
+  StudentDashboardDraftSummary,
+  StudentDashboardSummary
+} from "@/lib/studentDashboardSummary";
 
 export function StudentDashboard() {
-  const setsState = useStudentCachedData<SetsPayload>(STUDENT_SETS_CACHE_KEY, loadStudentSets);
-  const historyState = usePracticeHistory();
-  const emailState = useWritingCatalog("email");
-  const discussionState = useWritingCatalog("academic_discussion");
-  const writingOverview = useWritingOverview();
+  const state = useStudentCachedData<StudentDashboardSummary>(
+    STUDENT_DASHBOARD_SUMMARY_CACHE_KEY,
+    loadStudentDashboardSummary
+  );
   useStudentPagePerformance({
-    errors: [
-      setsState.error,
-      historyState.error,
-      emailState.error,
-      discussionState.error,
-      writingOverview.error
-    ],
-    loading:
-      setsState.loading ||
-      historyState.loading ||
-      emailState.loading ||
-      discussionState.loading ||
-      writingOverview.loading,
+    errors: [state.error],
+    loading: state.loading,
     route: STUDENT_ROUTES.home
   });
-  const currentMonth = setsState.data?.months?.find((month) => month.month_key === currentMonthKey());
-  const basCompleted = setsState.data?.sets?.filter((set) => set.completed).length ?? 0;
-  const basTotal = setsState.data?.sets?.length ?? 0;
-  const basAttempts = historyState.data?.attempts ?? [];
-  const basThisMonth = basAttempts.filter((attempt) => isCurrentMonth(attempt.submittedAt)).length;
-  const basLearningDates = basAttempts.flatMap((attempt) =>
-    attempt.submittedAt ? [localDateKey(new Date(attempt.submittedAt))] : []
-  );
-  const overview = writingOverview.data;
-  const totalPractice = basAttempts.length + (overview?.submittedCount ?? 0);
-  const monthlyPractice = basThisMonth + (overview?.currentMonthCount ?? 0);
-  const learningDays = new Set([...basLearningDates, ...(overview?.learningDates ?? [])]).size;
+  const summary = state.data;
 
   return (
     <div>
@@ -99,12 +73,24 @@ export function StudentDashboard() {
             description="组句练习"
             href={STUDENT_ROUTES.buildASentence}
             icon={Puzzle}
-            meta={setsState.loading ? "正在加载进度..." : `已完成 ${basCompleted} / ${basTotal}`}
-            secondaryMeta={currentMonth ? `本月 ${currentMonth.set_count} 套` : undefined}
+            meta={
+              state.loading
+                ? "正在加载进度..."
+                : `已完成 ${summary?.buildSentence.completedSetCount ?? 0} / ${summary?.buildSentence.totalSetCount ?? 0}`
+            }
+            secondaryMeta={
+              state.loading
+                ? undefined
+                : `本月 ${summary?.buildSentence.currentMonthSetCount ?? 0} 套`
+            }
             title="Build a Sentence"
           />
-          <WritingHomeCard draft={emailState.latestDraft} loading={emailState.loading} taskType="email" />
-          <WritingHomeCard draft={discussionState.latestDraft} loading={discussionState.loading} taskType="academic_discussion" />
+          <WritingHomeCard draft={summary?.drafts.email ?? null} loading={state.loading} taskType="email" />
+          <WritingHomeCard
+            draft={summary?.drafts.academic_discussion ?? null}
+            loading={state.loading}
+            taskType="academic_discussion"
+          />
         </div>
       </DashboardSection>
 
@@ -118,15 +104,15 @@ export function StudentDashboard() {
 
       <DashboardSection title="学习概览">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <OverviewCard icon={CalendarCheck} label="累计练习" tone="purple" value={String(totalPractice)} />
-          <OverviewCard icon={CalendarDays} label="本月练习" tone="blue" value={String(monthlyPractice)} />
-          <OverviewCard icon={Flame} label="学习天数" tone="green" value={String(learningDays)} />
+          <OverviewCard icon={CalendarCheck} label="累计练习" tone="purple" value={String(summary?.overview.totalPracticeCount ?? 0)} />
+          <OverviewCard icon={CalendarDays} label="本月练习" tone="blue" value={String(summary?.overview.currentMonthPracticeCount ?? 0)} />
+          <OverviewCard icon={Flame} label="学习天数" tone="green" value={String(summary?.overview.learningDayCount ?? 0)} />
           <OverviewCard
             href={STUDENT_ROUTES.writingReviews}
             icon={MessageSquareText}
             label="待查看反馈"
             tone="orange"
-            value={String(overview?.pendingFeedbackCount ?? 0)}
+            value={String(summary?.overview.pendingFeedbackCount ?? 0)}
           />
         </div>
       </DashboardSection>
@@ -139,7 +125,7 @@ function WritingHomeCard({
   loading,
   taskType
 }: {
-  draft: WritingCatalogSet | null;
+  draft: StudentDashboardDraftSummary | null;
   loading: boolean;
   taskType: "email" | "academic_discussion";
 }) {
@@ -156,10 +142,10 @@ function WritingHomeCard({
         loading
           ? "正在加载草稿..."
           : draft
-            ? `最近草稿：${draft.display_name ?? draft.set_title}`
+            ? `最近草稿：${draft.displayName}`
             : "暂无草稿"
       }
-      secondaryMeta={draft ? `${draft.draft_word_count ?? 0} words · 已保存` : undefined}
+      secondaryMeta={draft ? `${draft.wordCount} words · 已保存` : undefined}
       title={config.label}
     />
   );
@@ -198,7 +184,11 @@ function PracticeHomeCard({
         <p>{meta}</p>
         {secondaryMeta ? <p>{secondaryMeta}</p> : null}
       </div>
-      <Link className="student-button-primary mt-2 min-h-[42px] w-full py-1.5" href={href}>
+      <Link
+        className="student-button-primary mt-2 min-h-[42px] w-full py-1.5"
+        href={href}
+        onClick={() => beginStudentNavigationTrace(href)}
+      >
         {actionLabel}
         <ArrowRight aria-hidden="true" size={18} />
       </Link>
@@ -287,32 +277,17 @@ function OverviewCard({
   ) : <div className={className}>{content}</div>;
 }
 
-async function loadStudentSets(session: StudentCacheSession) {
-  return measureStudentRequest("GET /api/sets", async (captureResponse) => {
-    const response = await fetch("/api/sets", {
+async function loadStudentDashboardSummary(session: StudentCacheSession) {
+  return measureStudentRequest("GET /api/student/dashboard-summary", async (captureResponse) => {
+    const response = await fetch("/api/student/dashboard-summary", {
       cache: "no-store",
       headers: { Authorization: `Bearer ${session.accessToken}` }
     });
     captureResponse(response);
-    const payload = (await response.json()) as SetsPayload;
-    if (!response.ok || payload.error) throw new Error(payload.error ?? "无法加载套题。");
+    const payload = (await response.json()) as StudentDashboardSummary & { error?: string };
+    if (!response.ok || payload.error) {
+      throw new Error(payload.error ?? "无法加载学生首页概览。");
+    }
     return payload;
   });
-}
-
-function currentMonthKey() {
-  const now = new Date();
-  return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function isCurrentMonth(value: string | null) {
-  if (!value) return false;
-  const date = new Date(value);
-  const now = new Date();
-  return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
-}
-
-function localDateKey(date: Date) {
-  if (Number.isNaN(date.getTime())) return "";
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }

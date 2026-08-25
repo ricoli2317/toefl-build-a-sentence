@@ -1,4 +1,4 @@
-type StudentPerformanceLayer = "auth" | "database" | "processing";
+type StudentPerformanceLayer = "auth" | "cache" | "database" | "processing";
 
 export type StudentPerformanceMetric = {
   durationMs: number;

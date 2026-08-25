@@ -44,6 +44,7 @@ export const STUDENT_WRITING_MODE_POLICY_CACHE_KEY = "writing:mode-policy";
 export const STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY =
   "writing:academic-discussion-avatars";
 export const STUDENT_CURRENT_USER_CACHE_KEY = "current-user";
+export const STUDENT_DASHBOARD_SUMMARY_CACHE_KEY = "dashboard-summary";
 
 export function studentWritingCatalogCacheKey(taskType: "email" | "academic_discussion") {
   return `${STUDENT_WRITING_CATALOG_CACHE_PREFIX}:${taskType}`;
@@ -468,12 +469,14 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(STUDENT_SETS_CACHE_PREFIX);
               invalidate(STUDENT_QUESTIONS_CACHE_PREFIX);
               invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
+              invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentPracticeState":
               if (!event.isWrongQuestionsPractice) {
                 if (event.attempt) recordOfficialAttempt(event.attempt);
                 updateLogicalCatalogCompletion(event.attempt);
               }
+              invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentPracticeHistory":
               invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
@@ -487,18 +490,22 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
             case "studentWritingCatalog":
               invalidate(STUDENT_WRITING_CATALOG_CACHE_PREFIX);
               updateLogicalCatalogCompletion(undefined, event.taskType, event.questionId, event.attemptId);
+              invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentWritingOverview":
               invalidate(STUDENT_WRITING_OVERVIEW_CACHE_KEY);
+              invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentWritingHistory":
               invalidate(STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX);
               break;
             case "studentPublishedReviews":
               invalidate(STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX);
+              invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentAssignments":
               invalidate(STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY);
+              invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
           }
         }

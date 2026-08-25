@@ -12,6 +12,8 @@ import { importBuildASentence } from "./importers/buildASentence";
 import { serializeError } from "./importers/common";
 import { importEmailQuestions } from "./importers/email";
 import type { ImporterContext, ImportResult } from "./importers/types";
+import { revalidatePracticeCatalog } from "@/lib/practiceCatalogCache.server";
+import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +24,12 @@ const importers: Record<
   build_a_sentence: importBuildASentence,
   email: importEmailQuestions,
   academic_discussion: importAcademicDiscussionQuestions
+};
+
+const importedTaskTypes: Record<KnownQuestionType, PracticeTaskType> = {
+  build_a_sentence: "build_sentence",
+  email: "email",
+  academic_discussion: "academic_discussion"
 };
 
 function json(data: unknown, init?: ResponseInit) {
@@ -136,6 +144,10 @@ export async function POST(request: Request) {
       supabase: createServiceSupabase(),
       userId: auth.userId
     });
+
+    if (result.successCount > 0) {
+      revalidatePracticeCatalog(importedTaskTypes[questionType]);
+    }
 
     return json({ ...result, questionType });
   } catch (error) {

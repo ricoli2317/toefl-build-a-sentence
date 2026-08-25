@@ -96,12 +96,13 @@ test("display-number correction changes text without changing action identity", 
   assert.doesNotMatch(catalog, /logicalPracticeActionHref\([^\n]*display_number/);
 });
 
-test("pagination stays server-side at the page query with no page-size selector", () => {
+test("pagination slices the cached full catalog locally with no page-size selector", () => {
   const serverCatalog = read("lib/practiceLogicalCatalog.ts");
   assert.match(serverCatalog, /LOGICAL_PRACTICE_PAGE_SIZE = 10/);
-  assert.match(serverCatalog, /items: allItems\.slice\(from, from \+ LOGICAL_PRACTICE_PAGE_SIZE\)/);
-  assert.match(catalog, /\?page=\$\{page - 1\}/);
-  assert.match(catalog, /\?page=\$\{page \+ 1\}/);
+  assert.match(serverCatalog, /paginate: false/);
+  assert.match(catalog, /catalog\.items\.slice\(from, from \+ catalog\.pagination\.page_size\)/);
+  assert.match(catalog, /onClick=\{\(\) => onPageChange\(page - 1\)\}/);
+  assert.match(catalog, /onClick=\{\(\) => onPageChange\(page \+ 1\)\}/);
   assert.match(catalog, /第 \{page\}\/\{visibleTotalPages\} 页/);
   assert.doesNotMatch(catalog, /page-size|pageSize|10 条\/页|select/);
 });
