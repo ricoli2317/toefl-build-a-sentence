@@ -506,6 +506,11 @@ function localizeImportMessage(message: string) {
   if (missingField) return `缺少字段：${missingField[1]}`;
   if (/question_order must be an integer from 1 to 10/i.test(message)) return "question_order 必须是 1 到 10 之间的整数。";
   if (/blank_count must be a positive integer/i.test(message)) return "blank_count 必须是正整数。";
+  if (/logical writing title.*empty title/i.test(message)) return "logical_title 不能为空。";
+  if (/logical writing title.*at most 5 words/i.test(message)) return "logical_title 最多包含 5 个英文单词。";
+  if (/logical writing title.*must be English/i.test(message)) return "logical_title 必须是英文标题。";
+  if (/logical writing title.*task name/i.test(message)) return "logical_title 不能包含题型名称。";
+  if (/logical writing title.*date or question number/i.test(message)) return "logical_title 不能包含日期或题号。";
   if (/question_sets\.set_id appears to be uuid/i.test(message)) return "question_sets.set_id 当前似乎是 uuid 类型，因此无法写入 CSV 中的文本 set_id；题目仍会按文本形式写入 questions.set_id。";
   if (/[\u3400-\u9fff]/.test(message)) return message;
   return "导入过程中发生错误，请根据错误代码排查。";
@@ -519,6 +524,7 @@ function localizeImportOperation(operation?: string) {
     "detect question type": "识别 CSV 题型",
     "validate CSV headers": "校验 CSV 表头",
     "validate row": "校验数据行",
+    "validate logical title": "校验逻辑题小标题",
     "validate set_id uniqueness": "校验 set_id 唯一性",
     "read existing question IDs": "读取现有题目 ID",
     "read existing writing question IDs": "读取现有写作题目 ID",

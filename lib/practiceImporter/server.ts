@@ -1,7 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "../supabasePagination.ts";
-import { generateAcademicDiscussionTitle } from "./adTitle.ts";
-import { generateLogicalWritingTitle } from "./logicalTitle.ts";
+import { validateLogicalWritingTitle } from "./logicalTitle.ts";
 import {
   classifyAcademicDiscussion,
   classifyBuildSentence,
@@ -218,12 +217,11 @@ export async function syncBuildSentenceLogicalSource(input: {
 export async function syncEmailLogicalSource(input: {
   catalog: WritingCatalog<EmailIdentityInput>;
   content: EmailIdentityInput;
+  logicalTitle: string;
   occurrences: PracticeOccurrence[];
   questionId: string;
   setId: string;
-  subject: string;
   supabase: SupabaseClient;
-  titleGenerator?: (subject: string) => Promise<string>;
 }) {
   const fingerprint = emailFingerprint(input.content);
   const alreadySynced = input.catalog.sourceIdentities.has(input.questionId);
@@ -232,7 +230,7 @@ export async function syncEmailLogicalSource(input: {
     : classifyEmail(input.content, input.catalog.candidates);
   const displayTitle =
     classification.classification === "NEW_ITEM"
-      ? await (input.titleGenerator ?? ((subject) => generateLogicalWritingTitle(subject, "email")))(input.subject)
+      ? validateLogicalWritingTitle(input.logicalTitle)
       : null;
   return syncWritingSource({
     ...input,
@@ -248,12 +246,11 @@ export async function syncEmailLogicalSource(input: {
 export async function syncAcademicDiscussionLogicalSource(input: {
   catalog: WritingCatalog<AcademicDiscussionIdentityInput>;
   content: AcademicDiscussionIdentityInput;
+  logicalTitle: string;
   occurrences: PracticeOccurrence[];
-  professorPrompt: string;
   questionId: string;
   setId: string;
   supabase: SupabaseClient;
-  titleGenerator?: (prompt: string) => Promise<string>;
 }) {
   const fingerprint = academicDiscussionFingerprint(input.content);
   const alreadySynced = input.catalog.sourceIdentities.has(input.questionId);
@@ -262,7 +259,7 @@ export async function syncAcademicDiscussionLogicalSource(input: {
     : classifyAcademicDiscussion(input.content, input.catalog.candidates);
   const displayTitle =
     classification.classification === "NEW_ITEM"
-      ? await (input.titleGenerator ?? generateAcademicDiscussionTitle)(input.professorPrompt)
+      ? validateLogicalWritingTitle(input.logicalTitle)
       : null;
   return syncWritingSource({
     ...input,

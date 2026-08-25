@@ -40,6 +40,12 @@ const {
 const {
   serializeError
 } = require("../app/api/teacher/import-questions/importers/common.ts");
+const {
+  ACADEMIC_DISCUSSION_HEADERS,
+  EMAIL_HEADERS,
+  detectQuestionType,
+  rawWritingQuestionPayload
+} = require("../lib/questionCsvSchemas.ts");
 
 function basQuestion(index, overrides = {}) {
   return {
@@ -215,19 +221,14 @@ test("Academic Discussion logical sync sends both writing source identities and 
     }
   };
   const catalog = { candidates: [], sourceIdentities: new Set() };
-  let titleCalls = 0;
   const input = {
     catalog,
     content: discussion,
+    logicalTitle: "Remote Work Tradeoffs",
     occurrences: [{ occurredOn: "2026-06-01", sourceLabel: "6.1A" }],
-    professorPrompt: discussion.professorPrompt,
     questionId: "AD-202606-0601-A",
     setId: "202606-0601-A",
-    supabase,
-    titleGenerator: async () => {
-      titleCalls += 1;
-      return "Remote Work Tradeoffs";
-    }
+    supabase
   };
 
   const first = await syncAcademicDiscussionLogicalSource(input);
@@ -240,12 +241,32 @@ test("Academic Discussion logical sync sends both writing source identities and 
   assert.equal(second.createdItem, false);
   assert.equal(second.createdSource, false);
   assert.equal(second.occurrenceInsertedCount, 0);
-  assert.equal(titleCalls, 1);
   assert.equal(calls.length, 2);
+  assert.equal(calls[0].p_display_title, "Remote Work Tradeoffs");
+  assert.equal(calls[1].p_display_title, null);
   for (const call of calls) {
     assert.equal(call.p_source_set_id, "202606-0601-A");
     assert.equal(call.p_source_question_id, "AD-202606-0601-A");
   }
+});
+
+test("writing CSV requires logical_title but never writes it into the raw question table", () => {
+  assert.equal(EMAIL_HEADERS.at(-1), "logical_title");
+  assert.equal(ACADEMIC_DISCUSSION_HEADERS.at(-1), "logical_title");
+  assert.equal(detectQuestionType(EMAIL_HEADERS), "email");
+  assert.equal(detectQuestionType(ACADEMIC_DISCUSSION_HEADERS), "academic_discussion");
+  assert.equal(detectQuestionType(ACADEMIC_DISCUSSION_HEADERS.slice(0, -1)), "unknown");
+  assert.deepEqual(
+    rawWritingQuestionPayload({
+      question_id: "AD-202606-0602",
+      set_id: "202606-0602",
+      logical_title: "Social Media Algorithm Effects"
+    }),
+    {
+      question_id: "AD-202606-0602",
+      set_id: "202606-0602"
+    }
+  );
 });
 
 test("import diagnostics preserve PostgreSQL table, column, constraint, detail, and hint", () => {
@@ -606,19 +627,21 @@ test("occurrence parsing records every writing label and never falls back to tod
   );
 });
 
-test("Academic Discussion titles are validated server-side and generated through an independent call", async () => {
+test("CSV production can generate a validated Academic Discussion title independently", async () => {
   assert.equal(validateAcademicDiscussionTitle("Nature vs Nurture"), "Nature vs Nurture");
   assert.throws(() => validateAcademicDiscussionTitle("one two three four five six"), /at most 5/);
   assert.throws(() => validateAcademicDiscussionTitle("技术与教育"), /English/);
   let calls = 0;
+  let requestBody;
   const title = await generateAcademicDiscussionTitle("prompt", {
     env: {
       OPENROUTER_API_KEY: "test-key",
       OPENROUTER_WRITING_MODEL: "test-model",
       PRACTICE_IMPORT_TITLE_MODEL: ""
     },
-    fetchImpl: async () => {
+    fetchImpl: async (_url, init) => {
       calls += 1;
+      requestBody = JSON.parse(String(init.body));
       return new Response(JSON.stringify({ choices: [{ message: { content: "Remote Work Tradeoffs" } }] }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
@@ -627,6 +650,29 @@ test("Academic Discussion titles are validated server-side and generated through
   });
   assert.equal(title, "Remote Work Tradeoffs");
   assert.equal(calls, 1);
+  assert.deepEqual(requestBody.reasoning, { enabled: false });
+  assert.equal(requestBody.max_tokens, 24);
+});
+
+test("logical title generation reports an empty provider response with its finish reason", async () => {
+  await assert.rejects(
+    () =>
+      generateAcademicDiscussionTitle("prompt", {
+        env: {
+          OPENROUTER_API_KEY: "test-key",
+          OPENROUTER_WRITING_MODEL: "test-model",
+          PRACTICE_IMPORT_TITLE_MODEL: ""
+        },
+        fetchImpl: async () =>
+          new Response(
+            JSON.stringify({
+              choices: [{ finish_reason: "length", message: { content: null } }]
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } }
+          )
+      }),
+    /contained no title \(finish_reason: length\)/
+  );
 });
 
 test("migration enforces idempotency, canonical stability, and auditable local numbering", () => {

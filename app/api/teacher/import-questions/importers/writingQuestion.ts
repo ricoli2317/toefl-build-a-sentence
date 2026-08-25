@@ -1,4 +1,6 @@
 import { parseWritingOccurrences } from "@/lib/practiceImporter/occurrences";
+import { validateLogicalWritingTitle } from "@/lib/practiceImporter/logicalTitle";
+import { rawWritingQuestionPayload } from "@/lib/questionCsvSchemas";
 import {
   academicDiscussionInput,
   emailInput,
@@ -32,6 +34,7 @@ type WritingImporterConfig = {
 };
 
 type ValidWritingRow = {
+  logicalTitle: string;
   payload: Record<string, string>;
   questionId: string;
   rowNumber: number;
@@ -90,6 +93,20 @@ export async function importWritingQuestions(
       continue;
     }
 
+    let logicalTitle: string;
+    try {
+      logicalTitle = validateLogicalWritingTitle(payload.logical_title);
+    } catch (error) {
+      failedRows.push({
+        rowNumber,
+        questionId,
+        setId,
+        reason: error instanceof Error ? error.message : "Invalid logical_title",
+        operation: "validate logical title"
+      });
+      continue;
+    }
+
     let occurrences: PracticeOccurrence[];
     try {
       occurrences = parseWritingOccurrences({
@@ -109,7 +126,7 @@ export async function importWritingQuestions(
       continue;
     }
 
-    validRows.push({ payload, questionId, rowNumber, setId, occurrences });
+    validRows.push({ logicalTitle, payload, questionId, rowNumber, setId, occurrences });
   }
 
   const existingByQuestionId = new Map<string, string>();
@@ -189,7 +206,7 @@ export async function importWritingQuestions(
   for (const row of importableRows) {
     const { error } = await supabase
       .from(config.table)
-      .upsert(row.payload, { onConflict: "question_id" });
+      .upsert(rawWritingQuestionPayload(row.payload), { onConflict: "question_id" });
 
     if (error) {
       const serialized = serializeError(error);
@@ -233,10 +250,10 @@ export async function importWritingQuestions(
           const outcome = await syncEmailLogicalSource({
             catalog,
             content: emailInput(row.payload),
+            logicalTitle: row.logicalTitle,
             occurrences: row.occurrences,
             questionId: row.questionId,
             setId: row.setId,
-            subject: row.payload.subject,
             supabase
           });
           addLogicalImportOutcome(logicalMetrics, outcome);
@@ -254,8 +271,8 @@ export async function importWritingQuestions(
           const outcome = await syncAcademicDiscussionLogicalSource({
             catalog,
             content: academicDiscussionInput(row.payload),
+            logicalTitle: row.logicalTitle,
             occurrences: row.occurrences,
-            professorPrompt: row.payload.professor_prompt,
             questionId: row.questionId,
             setId: row.setId,
             supabase

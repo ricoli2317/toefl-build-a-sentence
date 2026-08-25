@@ -58,8 +58,8 @@ test("Email and AD logical titles enforce permanent English 1-5 word names", () 
   assert.throws(() => validateLogicalWritingTitle("TOEFL Email Practice"), /task name/);
   assert.throws(() => validateLogicalWritingTitle("Question 12 Housing"), /question number/);
   const importer = read("lib/practiceImporter/server.ts");
-  assert.match(importer, /classification\.classification === "NEW_ITEM"[\s\S]*generateLogicalWritingTitle\(subject, "email"\)/);
-  assert.match(importer, /classification\.classification === "NEW_ITEM"[\s\S]*generateAcademicDiscussionTitle/);
+  assert.match(importer, /classification\.classification === "NEW_ITEM"[\s\S]*validateLogicalWritingTitle\(input\.logicalTitle\)/);
+  assert.doesNotMatch(importer, /generateLogicalWritingTitle|generateAcademicDiscussionTitle|OpenRouter/);
 });
 
 test("raw duplicate and non-canonical keyword matches yield one canonical logical result", () => {

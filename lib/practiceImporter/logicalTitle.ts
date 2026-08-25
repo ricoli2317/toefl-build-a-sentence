@@ -57,6 +57,7 @@ export async function generateLogicalWritingTitle(
         model,
         temperature: 0,
         max_tokens: 24,
+        reasoning: { enabled: false },
         messages: [
           {
             role: "system",
@@ -74,9 +75,19 @@ export async function generateLogicalWritingTitle(
     });
     if (!response.ok) throw new Error(`Logical writing title request failed (${response.status})`);
     const payload = (await response.json()) as {
-      choices?: Array<{ message?: { content?: unknown } }>;
+      choices?: Array<{
+        finish_reason?: unknown;
+        message?: { content?: unknown };
+      }>;
     };
-    return validateLogicalWritingTitle(payload.choices?.[0]?.message?.content);
+    const choice = payload.choices?.[0];
+    if (choice?.message?.content == null || choice.message.content === "") {
+      const finishReason = String(choice?.finish_reason ?? "unknown");
+      throw new Error(
+        `Logical writing title response contained no title (finish_reason: ${finishReason})`
+      );
+    }
+    return validateLogicalWritingTitle(choice.message.content);
   } finally {
     clearTimeout(timeout);
   }

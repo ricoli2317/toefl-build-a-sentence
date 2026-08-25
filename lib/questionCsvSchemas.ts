@@ -13,6 +13,8 @@ export const BUILD_A_SENTENCE_HEADERS = [
   "grammar_tags_text"
 ] as const;
 
+export const LOGICAL_WRITING_TITLE_HEADER = "logical_title" as const;
+
 export const EMAIL_HEADERS = [
   "question_id",
   "set_id",
@@ -26,7 +28,8 @@ export const EMAIL_HEADERS = [
   "requirement_3",
   "closing_instruction",
   "recipient",
-  "subject"
+  "subject",
+  LOGICAL_WRITING_TITLE_HEADER
 ] as const;
 
 export const ACADEMIC_DISCUSSION_HEADERS = [
@@ -40,8 +43,14 @@ export const ACADEMIC_DISCUSSION_HEADERS = [
   "student_1_name",
   "student_1_response",
   "student_2_name",
-  "student_2_response"
+  "student_2_response",
+  LOGICAL_WRITING_TITLE_HEADER
 ] as const;
+
+export function rawWritingQuestionPayload(row: Record<string, string>) {
+  const { [LOGICAL_WRITING_TITLE_HEADER]: _logicalTitle, ...rawPayload } = row;
+  return rawPayload;
+}
 
 export type QuestionType =
   | "build_a_sentence"
