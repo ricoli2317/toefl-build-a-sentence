@@ -220,6 +220,7 @@ export async function syncEmailLogicalSource(input: {
   content: EmailIdentityInput;
   occurrences: PracticeOccurrence[];
   questionId: string;
+  setId: string;
   subject: string;
   supabase: SupabaseClient;
   titleGenerator?: (subject: string) => Promise<string>;
@@ -250,6 +251,7 @@ export async function syncAcademicDiscussionLogicalSource(input: {
   occurrences: PracticeOccurrence[];
   professorPrompt: string;
   questionId: string;
+  setId: string;
   supabase: SupabaseClient;
   titleGenerator?: (prompt: string) => Promise<string>;
 }) {
@@ -308,6 +310,7 @@ async function syncWritingSource<T>(input: {
   normalizationVersion: number;
   occurrences: PracticeOccurrence[];
   questionId: string;
+  setId: string;
   supabase: SupabaseClient;
   taskType: "email" | "academic_discussion";
 }) {
@@ -327,7 +330,7 @@ async function syncWritingSource<T>(input: {
   const finalized = await finalize(input.supabase, {
     taskType: input.taskType,
     classification: input.classification.classification,
-    sourceSetId: null,
+    sourceSetId: input.setId,
     sourceQuestionId: input.questionId,
     candidateItemId: input.classification.candidateItemId,
     fingerprint: input.fingerprint,

@@ -17,6 +17,7 @@ import {
   chunkRows,
   emptyLogicalImportMetrics,
   importResult,
+  logImportError,
   serializeError
 } from "./common";
 import type { FailedRow, ImporterContext } from "./types";
@@ -192,6 +193,12 @@ export async function importWritingQuestions(
 
     if (error) {
       const serialized = serializeError(error);
+      logImportError(error, {
+        operation: config.upsertOperation,
+        questionId: row.questionId,
+        rowNumber: row.rowNumber,
+        setId: row.setId
+      });
       failedRows.push({
         rowNumber: row.rowNumber,
         questionId: row.questionId,
@@ -228,6 +235,7 @@ export async function importWritingQuestions(
             content: emailInput(row.payload),
             occurrences: row.occurrences,
             questionId: row.questionId,
+            setId: row.setId,
             subject: row.payload.subject,
             supabase
           });
@@ -249,6 +257,7 @@ export async function importWritingQuestions(
             occurrences: row.occurrences,
             professorPrompt: row.payload.professor_prompt,
             questionId: row.questionId,
+            setId: row.setId,
             supabase
           });
           addLogicalImportOutcome(logicalMetrics, outcome);
@@ -280,6 +289,12 @@ function earliestOccurrence(occurrences: PracticeOccurrence[]) {
 
 function logicalFailure(row: ValidWritingRow, error: unknown): FailedRow {
   const serialized = serializeError(error);
+  logImportError(error, {
+    operation: "sync logical writing source",
+    questionId: row.questionId,
+    rowNumber: row.rowNumber,
+    setId: row.setId
+  });
   return {
     rowNumber: row.rowNumber,
     questionId: row.questionId,
@@ -287,7 +302,10 @@ function logicalFailure(row: ValidWritingRow, error: unknown): FailedRow {
     reason: serialized.message,
     operation: "sync logical writing source",
     code: serialized.code,
+    column: serialized.column,
+    constraint: serialized.constraint,
     details: serialized.details,
-    hint: serialized.hint
+    hint: serialized.hint,
+    table: serialized.table
   };
 }

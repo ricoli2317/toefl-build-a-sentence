@@ -34,6 +34,12 @@ const {
   generateAcademicDiscussionTitle,
   validateAcademicDiscussionTitle
 } = require("../lib/practiceImporter/adTitle.ts");
+const {
+  syncAcademicDiscussionLogicalSource
+} = require("../lib/practiceImporter/server.ts");
+const {
+  serializeError
+} = require("../app/api/teacher/import-questions/importers/common.ts");
 
 function basQuestion(index, overrides = {}) {
   return {
@@ -182,6 +188,92 @@ test("Academic Discussion ignores names by design and treats student responses a
   assert.equal(
     classifyAcademicDiscussion(different, [{ itemId: "ad-1", content: discussion }]).classification,
     "NEW_ITEM"
+  );
+});
+
+test("Academic Discussion logical sync sends both writing source identities and is idempotent", async () => {
+  const calls = [];
+  let finalized = false;
+  const supabase = {
+    rpc: async (name, params) => {
+      assert.equal(name, "finalize_practice_import_v2");
+      calls.push(params);
+      const created = !finalized;
+      finalized = true;
+      return {
+        data: {
+          item_id: "ad-item-1",
+          source_id: "ad-source-1",
+          created_item: created,
+          created_source: created,
+          occurrences_inserted: created ? 1 : 0,
+          first_seen_before: "2026-06-01",
+          first_seen_after: "2026-06-01"
+        },
+        error: null
+      };
+    }
+  };
+  const catalog = { candidates: [], sourceIdentities: new Set() };
+  let titleCalls = 0;
+  const input = {
+    catalog,
+    content: discussion,
+    occurrences: [{ occurredOn: "2026-06-01", sourceLabel: "6.1A" }],
+    professorPrompt: discussion.professorPrompt,
+    questionId: "AD-202606-0601-A",
+    setId: "202606-0601-A",
+    supabase,
+    titleGenerator: async () => {
+      titleCalls += 1;
+      return "Remote Work Tradeoffs";
+    }
+  };
+
+  const first = await syncAcademicDiscussionLogicalSource(input);
+  const second = await syncAcademicDiscussionLogicalSource(input);
+
+  assert.equal(first.createdItem, true);
+  assert.equal(first.createdSource, true);
+  assert.equal(first.occurrenceInsertedCount, 1);
+  assert.equal(second.classification, "ALREADY_SYNCED");
+  assert.equal(second.createdItem, false);
+  assert.equal(second.createdSource, false);
+  assert.equal(second.occurrenceInsertedCount, 0);
+  assert.equal(titleCalls, 1);
+  assert.equal(calls.length, 2);
+  for (const call of calls) {
+    assert.equal(call.p_source_set_id, "202606-0601-A");
+    assert.equal(call.p_source_question_id, "AD-202606-0601-A");
+  }
+});
+
+test("import diagnostics preserve PostgreSQL table, column, constraint, detail, and hint", () => {
+  assert.deepEqual(
+    serializeError({
+      code: "23502",
+      message:
+        'null value in column "source_set_id" of relation "practice_item_sources" violates not-null constraint',
+      details: "Failing row contains (...)",
+      hint: "Check the writing source identity"
+    }),
+    {
+      message:
+        'null value in column "source_set_id" of relation "practice_item_sources" violates not-null constraint',
+      code: "23502",
+      table: "practice_item_sources",
+      column: "source_set_id",
+      constraint: null,
+      details: "Failing row contains (...)",
+      hint: "Check the writing source identity"
+    }
+  );
+  assert.equal(
+    serializeError({
+      code: "23505",
+      message: 'duplicate key value violates unique constraint "practice_item_sources_question_identity_uidx"'
+    }).constraint,
+    "practice_item_sources_question_identity_uidx"
   );
 });
 
@@ -557,6 +649,14 @@ test("migration enforces idempotency, canonical stability, and auditable local n
   assert.match(sql, /update\s+public\.practice_items\s+item\s+set\s+display_number/i);
   assert.match(sql, /'first_seen_before', v_first_seen_before/);
   assert.match(sql, /'first_seen_after', v_first_seen_after/);
+  assert.match(
+    sql,
+    /p_task_type <> 'build_sentence' and source_question_id = p_source_question_id/
+  );
+  assert.match(
+    sql,
+    /p_task_type <> 'build_sentence' and \(p_source_set_id is null or p_source_question_id is null\)/
+  );
   assert.doesNotMatch(sql, /update\s+public\.practice_item_sources\s+set\s+is_canonical/i);
   assert.doesNotMatch(sql, /update\s+public\.practice_items\s+set\s+display_title/i);
 });

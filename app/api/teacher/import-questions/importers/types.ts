@@ -8,6 +8,9 @@ export type FailedRow = {
   setId?: string;
   reason: string;
   code?: string | null;
+  table?: string | null;
+  column?: string | null;
+  constraint?: string | null;
   details?: string | null;
   hint?: string | null;
   operation?: string;
@@ -52,6 +55,9 @@ export type ImporterContext = {
 export type SupabaseLikeError = {
   message?: string;
   code?: string;
+  table?: string;
+  column?: string;
+  constraint?: string;
   details?: string;
   hint?: string;
 };

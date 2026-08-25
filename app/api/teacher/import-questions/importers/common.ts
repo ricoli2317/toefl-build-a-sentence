@@ -7,14 +7,36 @@ import type {
 
 export function serializeError(error: unknown) {
   const supabaseError = error as SupabaseLikeError;
+  const message =
+    supabaseError?.message ??
+    (error instanceof Error ? error.message : "Unknown import error");
+  const relationMatch = message.match(/relation \"([^\"]+)\"/i);
+  const columnMatch = message.match(/column \"([^\"]+)\"/i);
+  const constraintMatch = message.match(/constraint \"([^\"]+)\"/i);
   return {
-    message:
-      supabaseError?.message ??
-      (error instanceof Error ? error.message : "Unknown import error"),
+    message,
     code: supabaseError?.code ?? null,
+    table: supabaseError?.table ?? relationMatch?.[1] ?? null,
+    column: supabaseError?.column ?? columnMatch?.[1] ?? null,
+    constraint: supabaseError?.constraint ?? constraintMatch?.[1] ?? null,
     details: supabaseError?.details ?? null,
     hint: supabaseError?.hint ?? null
   };
+}
+
+export function logImportError(
+  error: unknown,
+  context: {
+    operation: string;
+    questionId?: string;
+    rowNumber?: number;
+    setId?: string;
+  }
+) {
+  console.error("Teacher CSV import row failed", {
+    ...context,
+    ...serializeError(error)
+  });
 }
 
 export function chunkRows<T>(rows: T[], size: number) {

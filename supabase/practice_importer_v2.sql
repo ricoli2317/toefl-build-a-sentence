@@ -538,7 +538,7 @@ begin
     raise exception 'Unsupported classification: %', p_classification;
   end if;
   if (p_task_type = 'build_sentence' and (p_source_set_id is null or p_source_question_id is not null))
-     or (p_task_type <> 'build_sentence' and (p_source_set_id is not null or p_source_question_id is null)) then
+     or (p_task_type <> 'build_sentence' and (p_source_set_id is null or p_source_question_id is null)) then
     raise exception 'Invalid source identity for task_type %', p_task_type;
   end if;
   if jsonb_typeof(p_occurrences) <> 'array' or jsonb_array_length(p_occurrences) = 0 then
@@ -559,8 +559,11 @@ begin
   select source_id, item_id into v_source_id, v_item_id
   from public.practice_item_sources
   where task_type = p_task_type
-    and source_set_id is not distinct from p_source_set_id
-    and source_question_id is not distinct from p_source_question_id
+    and (
+      (p_task_type = 'build_sentence' and source_set_id = p_source_set_id)
+      or
+      (p_task_type <> 'build_sentence' and source_question_id = p_source_question_id)
+    )
   limit 1;
 
   if v_source_id is null then
