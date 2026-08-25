@@ -228,15 +228,17 @@ export async function syncEmailLogicalSource(input: {
   const classification = alreadySynced
     ? ({ classification: "AUTO_MERGE", candidateItemId: null, similaritySummary: { alreadySynced: true } } satisfies ClassificationResult)
     : classifyEmail(input.content, input.catalog.candidates);
+  const proposedDisplayTitle = validateLogicalWritingTitle(input.logicalTitle);
   const displayTitle =
     classification.classification === "NEW_ITEM"
-      ? validateLogicalWritingTitle(input.logicalTitle)
+      ? proposedDisplayTitle
       : null;
   return syncWritingSource({
     ...input,
     alreadySynced,
     classification,
     displayTitle,
+    proposedDisplayTitle,
     fingerprint,
     normalizationVersion: PRACTICE_IMPORT_NORMALIZATION_VERSION,
     taskType: "email"
@@ -257,15 +259,17 @@ export async function syncAcademicDiscussionLogicalSource(input: {
   const classification = alreadySynced
     ? ({ classification: "AUTO_MERGE", candidateItemId: null, similaritySummary: { alreadySynced: true } } satisfies ClassificationResult)
     : classifyAcademicDiscussion(input.content, input.catalog.candidates);
+  const proposedDisplayTitle = validateLogicalWritingTitle(input.logicalTitle);
   const displayTitle =
     classification.classification === "NEW_ITEM"
-      ? validateLogicalWritingTitle(input.logicalTitle)
+      ? proposedDisplayTitle
       : null;
   return syncWritingSource({
     ...input,
     alreadySynced,
     classification,
     displayTitle,
+    proposedDisplayTitle,
     fingerprint,
     normalizationVersion: PRACTICE_IMPORT_NORMALIZATION_VERSION,
     taskType: "academic_discussion"
@@ -303,6 +307,7 @@ async function syncWritingSource<T>(input: {
   classification: ClassificationResult;
   content: T;
   displayTitle: string | null;
+  proposedDisplayTitle: string;
   fingerprint: string;
   normalizationVersion: number;
   occurrences: PracticeOccurrence[];
@@ -319,7 +324,8 @@ async function syncWritingSource<T>(input: {
       classification: input.classification,
       fingerprint: input.fingerprint,
       normalizationVersion: input.normalizationVersion,
-      occurrences: input.occurrences
+      occurrences: input.occurrences,
+      proposedDisplayTitle: input.proposedDisplayTitle
     });
     return pendingOutcome(reviewCreated);
   }
@@ -398,6 +404,7 @@ async function queueReview(
     fingerprint: string;
     normalizationVersion: number;
     occurrences: PracticeOccurrence[];
+    proposedDisplayTitle?: string;
   }
 ) {
   const candidateIds = Array.isArray(input.classification.similaritySummary.candidateItemIds)
@@ -411,7 +418,12 @@ async function queueReview(
     p_source_question_id: input.sourceQuestionId,
     p_candidate_item_id: input.classification.candidateItemId,
     p_candidate_item_ids: candidateIds,
-    p_similarity_summary: input.classification.similaritySummary,
+    p_similarity_summary: {
+      ...input.classification.similaritySummary,
+      ...(input.proposedDisplayTitle
+        ? { proposedDisplayTitle: input.proposedDisplayTitle }
+        : {})
+    },
     p_occurrences: input.occurrences.map((occurrence) => ({
       occurred_on: occurrence.occurredOn,
       source_label: occurrence.sourceLabel

@@ -35,7 +35,8 @@ const {
   validateAcademicDiscussionTitle
 } = require("../lib/practiceImporter/adTitle.ts");
 const {
-  syncAcademicDiscussionLogicalSource
+  syncAcademicDiscussionLogicalSource,
+  syncEmailLogicalSource
 } = require("../lib/practiceImporter/server.ts");
 const {
   serializeError
@@ -248,6 +249,32 @@ test("Academic Discussion logical sync sends both writing source identities and 
     assert.equal(call.p_source_set_id, "202606-0601-A");
     assert.equal(call.p_source_question_id, "AD-202606-0601-A");
   }
+});
+
+test("writing review queue preserves the CSV logical title for a later new-item decision", async () => {
+  let queued;
+  const supabase = {
+    rpc: async (name, params) => {
+      assert.equal(name, "queue_practice_import_review_v2");
+      queued = params;
+      return { data: { review_id: "review-1", created: true }, error: null };
+    }
+  };
+  const outcome = await syncEmailLogicalSource({
+    catalog: {
+      candidates: [{ itemId: "email-item-1", content: email }],
+      sourceIdentities: new Set()
+    },
+    content: { ...email, recipient: "Academic advisor" },
+    logicalTitle: "Schedule Conflict",
+    occurrences: [{ occurredOn: "2026-07-22", sourceLabel: "7.22D" }],
+    questionId: "EMAIL-202607-0722-D",
+    setId: "202607-0722-D",
+    supabase
+  });
+  assert.equal(outcome.classification, "NEEDS_REVIEW");
+  assert.equal(queued.p_similarity_summary.proposedDisplayTitle, "Schedule Conflict");
+  assert.equal(queued.p_candidate_item_id, "email-item-1");
 });
 
 test("writing CSV requires logical_title but never writes it into the raw question table", () => {
@@ -705,4 +732,19 @@ test("migration enforces idempotency, canonical stability, and auditable local n
   );
   assert.doesNotMatch(sql, /update\s+public\.practice_item_sources\s+set\s+is_canonical/i);
   assert.doesNotMatch(sql, /update\s+public\.practice_items\s+set\s+display_title/i);
+});
+
+test("review resolution migration resolves writing duplicates atomically and never deletes raw data", () => {
+  const sql = fs.readFileSync(
+    path.join(__dirname, "../supabase/practice_import_review_resolution.sql"),
+    "utf8"
+  );
+  assert.match(sql, /for update/i);
+  assert.match(sql, /finalize_practice_import_v2/);
+  assert.match(sql, /reconcile_practice_item_numbers_v2/);
+  assert.match(sql, /resolved_merge/);
+  assert.match(sql, /resolved_new/);
+  assert.match(sql, /set candidate_item_id = p_candidate_item_id/);
+  assert.match(sql, /v_candidate_item_id = v_review\.candidate_item_id/);
+  assert.doesNotMatch(sql, /delete\s+from/i);
 });

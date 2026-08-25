@@ -1,4 +1,5 @@
 import { TeacherImportQuestions } from "@/components/TeacherImportQuestions";
+import { TeacherImportReviews } from "@/components/TeacherImportReviews";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherImportPage() {
@@ -11,7 +12,10 @@ export default function TeacherImportPage() {
       subtitle="上传并导入新的题库文件"
       title="导入题库 CSV"
     >
-      <TeacherImportQuestions />
+      <div className="grid gap-5">
+        <TeacherImportQuestions />
+        <TeacherImportReviews />
+      </div>
     </TeacherAppShell>
   );
 }

@@ -229,6 +229,9 @@ export function TeacherImportQuestions() {
           broadcastQuestionBankUpdated();
         }
         setResult(resultPayload);
+        if (resultPayload.logicalNeedsReviewCount > 0) {
+          window.dispatchEvent(new Event("tps:import-reviews-updated"));
+        }
       }
     } catch (error) {
       const requestUrl = "/api/teacher/import-questions";
@@ -363,7 +366,7 @@ export function TeacherImportQuestions() {
           </div>
           {result.logicalNeedsReviewCount > 0 ? (
             <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
-              待确认题目已导入原始题库，但暂未进入学生练习列表，等待重复题确认。
+              待确认题目已导入原始题库，但暂未进入学生练习列表。请在下方“重复题待确认”中选择归入已有题或确认为新逻辑题。
             </p>
           ) : null}
           {result.warnings && result.warnings.length > 0 ? (
