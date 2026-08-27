@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireAdmin } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { prepareNewAccount } from "@/lib/accountIdentifier";
+import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +45,7 @@ export async function GET(request: Request) {
     return json({ teachers: (teachers.data ?? []).map((teacher) => ({
       id: teacher.id,
       email: teacher.email ?? "",
-      displayName: teacher.full_name?.trim() || teacher.email || "教师",
+      displayName: getPreferredUserDisplayName({ email: teacher.email, profileFullName: teacher.full_name }),
       studentCount: counts.get(teacher.id) ?? 0,
       studentAccountLimit: teacher.student_account_limit
     })) });
@@ -57,29 +59,40 @@ export async function POST(request: Request) {
   if (auth.error) return json({ message: "仅管理员可以创建教师账号。" }, { status: 403 });
   const body = await request.json().catch(() => ({})) as Record<string, unknown>;
   const fullName = typeof body.fullName === "string" ? body.fullName.trim() : "";
-  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const preparedAccount = prepareNewAccount(typeof body.account === "string" ? body.account : "");
   const password = typeof body.password === "string" ? body.password : "";
   const limit = Number(body.studentAccountLimit ?? 20);
-  if (!fullName || !email || password.length < 6 || !validLimit(limit)) {
+  if (!preparedAccount.ok) return json({ message: preparedAccount.error }, { status: 400 });
+  if (!fullName || password.length < 6 || !validLimit(limit)) {
     return json({ message: "请填写教师姓名、有效账号、至少 6 位密码和正整数额度。" }, { status: 400 });
   }
+  const { account, authEmail } = preparedAccount;
   const db = createServiceSupabase();
+  const { data: existingProfile, error: existingProfileError } = await db.from("profiles")
+    .select("id").ilike("email", authEmail).maybeSingle();
+  if (existingProfileError) return json({ message: existingProfileError.message }, { status: 500 });
+  if (existingProfile) return json({ message: "该账号已存在。" }, { status: 409 });
   const { data, error } = await db.auth.admin.createUser({
-    email, password, email_confirm: true,
+    email: authEmail, password, email_confirm: true,
     // The DB trigger always creates a least-privilege student first. This protected
     // endpoint promotes it to teacher immediately after Auth creation.
     user_metadata: { full_name: fullName, display_name: fullName, name: fullName, role: "student", owner_id: auth.userId }
   });
-  if (error || !data.user) return json({ message: error?.message ?? "教师账号创建失败。" }, { status: 409 });
+  if (error || !data.user) {
+    const message = /already (been )?registered|already exists/i.test(error?.message ?? "")
+      ? "该账号已存在。"
+      : error?.message ?? "教师账号创建失败。";
+    return json({ message }, { status: 409 });
+  }
   const { error: profileError } = await db.from("profiles").upsert({
-    id: data.user.id, email, full_name: fullName, role: "teacher",
+    id: data.user.id, email: authEmail, full_name: fullName, role: "teacher",
     owner_id: null, student_account_limit: limit, is_active: true
   }, { onConflict: "id" });
   if (profileError) {
     await db.auth.admin.deleteUser(data.user.id);
     return json({ message: "教师资料保存失败，账号创建已撤销。" }, { status: 500 });
   }
-  return json({ teacher: { id: data.user.id, email, displayName: fullName, studentAccountLimit: limit } }, { status: 201 });
+  return json({ teacher: { id: data.user.id, account, displayName: fullName, studentAccountLimit: limit } }, { status: 201 });
 }
 
 export async function PATCH(request: Request) {

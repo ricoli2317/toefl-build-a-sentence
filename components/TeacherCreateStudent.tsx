@@ -8,11 +8,12 @@ import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
+import { normalizeNewAccountInput, prepareNewAccount } from "@/lib/accountIdentifier";
 
 type CreateStudentResponse = {
   student?: {
     id: string;
-    email: string;
+    account: string;
     displayName: string;
   };
   error?: string;
@@ -21,7 +22,7 @@ type CreateStudentResponse = {
 export function TeacherCreateStudent() {
   const { invalidate } = useTeacherDataCache();
   const [studentName, setStudentName] = useState("");
-  const [email, setEmail] = useState("");
+  const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -54,6 +55,13 @@ export function TeacherCreateStudent() {
     setError("");
     setSuccess("");
 
+    const preparedAccount = prepareNewAccount(account);
+    if (!preparedAccount.ok) {
+      setError(preparedAccount.error);
+      setLoading(false);
+      return;
+    }
+
     try {
       const supabase = createBrowserSupabase();
       const {
@@ -67,7 +75,7 @@ export function TeacherCreateStudent() {
           Authorization: `Bearer ${session?.access_token ?? ""}`
         },
         body: JSON.stringify({
-          email,
+          account: preparedAccount.account,
           password,
           studentName
         })
@@ -89,7 +97,7 @@ export function TeacherCreateStudent() {
 
       setSuccess(`已创建学生：${payload.student?.displayName ?? studentName}`);
       setStudentName("");
-      setEmail("");
+      setAccount("");
       setPassword("");
       invalidate(TEACHER_STATS_CACHE_KEY);
       invalidate(TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY);
@@ -119,16 +127,18 @@ export function TeacherCreateStudent() {
           />
         </label>
 
-        <label className="grid gap-2.5 text-sm font-semibold text-student-text" htmlFor="student-email">
-          邮箱
+        <label className="grid gap-2.5 text-sm font-semibold text-student-text" htmlFor="student-account">
+          账号
           <input
+            autoComplete="username"
             className="h-14 w-full rounded-xl border border-student-border bg-white px-4 font-normal text-student-text placeholder:text-student-muted focus:border-student-primary"
-            id="student-email"
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="请输入邮箱地址"
+            id="student-account"
+            onBlur={() => setAccount(normalizeNewAccountInput(account))}
+            onChange={(event) => setAccount(event.target.value)}
+            placeholder="仅限英文字母和数字"
             required
-            type="email"
-            value={email}
+            type="text"
+            value={account}
           />
         </label>
 
@@ -165,9 +175,9 @@ export function TeacherCreateStudent() {
 function localizeCreateStudentError(message?: string) {
   if (!message) return "无法创建学生。";
   if (/unauthorized|not authenticated/i.test(message)) return "登录状态已失效，请重新登录。";
-  if (/already (been )?registered|already exists/i.test(message)) return "该邮箱已注册。";
+  if (/already (been )?registered|already exists|账号已存在/i.test(message)) return "该账号已存在。";
   if (/password must be at least 6 characters/i.test(message)) return "密码至少需要 6 个字符。";
-  if (/email, password, and student name are required/i.test(message)) return "请填写邮箱、密码和学生姓名。";
+  if (/account, password, and student name are required/i.test(message)) return "请填写账号、密码和学生姓名。";
   if (/profile save failed/i.test(message)) return "学生账号已创建，但学生资料保存失败。";
   if (/STUDENT_ACCOUNT_LIMIT_REACHED/i.test(message)) return "已达到学生账号数量上限，请联系管理员调整。";
   return /[\u3400-\u9fff]/.test(message) ? message : "无法创建学生，请稍后重试。";

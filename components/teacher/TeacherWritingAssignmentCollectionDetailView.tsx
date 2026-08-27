@@ -24,6 +24,7 @@ import {
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 export function TeacherWritingAssignmentCollectionDetailView({
   collectionId
@@ -134,8 +135,8 @@ export function TeacherWritingAssignmentCollectionDetailView({
             <TeacherCard className="grid gap-4 p-5" key={student.student_id}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-bold text-student-text">{student.student_name}</h3>
-                  <p className="mt-1 text-xs text-student-muted">{student.student_email || "—"}</p>
+                  <h3 className="font-bold text-student-text">{formatManagedAccountName(student.student_name, student.student_email)}</h3>
+                  <p className="mt-1 text-xs text-student-muted">账号：{formatAccountForDisplay(student.student_email) || "—"}</p>
                 </div>
                 <span className="rounded-full bg-student-bg px-3 py-1 text-xs font-bold text-student-muted">
                   {submittedCount} / {collection.assignments.length} 已提交

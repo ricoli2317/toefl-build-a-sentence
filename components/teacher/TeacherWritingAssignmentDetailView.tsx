@@ -30,6 +30,7 @@ import {
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
+import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmentId: string }) {
   const router = useRouter();
@@ -117,8 +118,8 @@ export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmen
             <tbody className="divide-y divide-student-border">
               {assignment.students.map((student) => (
                 <tr key={student.student_id}>
-                  <td className="px-4 py-3 font-semibold text-student-text">{student.student_name}</td>
-                  <td className="px-4 py-3 text-student-muted">{student.student_email || "—"}</td>
+                  <td className="px-4 py-3 font-semibold text-student-text">{formatManagedAccountName(student.student_name, student.student_email)}</td>
+                  <td className="px-4 py-3 text-student-muted">{formatAccountForDisplay(student.student_email) || "—"}</td>
                   <td className="px-4 py-3"><StatusBadge status={student.status} /></td>
                   <td className="px-4 py-3 text-student-muted">{student.first_submitted_at ? formatDate(student.first_submitted_at) : "—"}</td>
                   <td className="px-4 py-3 text-right"><StudentReviewAction returnTo={assignmentDetailHref} student={student} /></td>

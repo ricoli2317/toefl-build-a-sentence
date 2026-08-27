@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { resolveLoginAuthEmail } from "@/lib/accountIdentifier";
 
 export function LoginPanel() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,7 @@ export function LoginPanel() {
 
     const supabase = createBrowserSupabase();
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
+      email: resolveLoginAuthEmail(account),
       password
     });
 
@@ -91,18 +92,18 @@ export function LoginPanel() {
             <p className="mt-1 text-sm text-student-muted sm:text-base">Sign in to continue</p>
           </div>
 
-          <label className="mt-6 block text-sm font-semibold text-student-text" htmlFor="email">账号</label>
+          <label className="mt-6 block text-sm font-semibold text-student-text" htmlFor="account">账号</label>
           <div className="relative mt-1.5">
-            <Mail aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
+            <UserRound aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
             <input
-              autoComplete="email"
+              autoComplete="username"
               className="h-12 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-4 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
-              id="email"
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="请输入邮箱账号"
+              id="account"
+              onChange={(event) => setAccount(event.target.value)}
+              placeholder="请输入账号"
               required
-              type="email"
-              value={email}
+              type="text"
+              value={account}
             />
           </div>
 

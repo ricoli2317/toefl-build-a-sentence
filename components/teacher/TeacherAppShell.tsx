@@ -20,6 +20,7 @@ import { StudentBrand } from "@/components/student/StudentBrand";
 import { useTeacherCachedData } from "@/components/TeacherDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { AdminAreaSwitch } from "@/components/RoleGate";
+import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 
 export type TeacherCrumb = { href?: string; label: string };
 
@@ -155,7 +156,7 @@ export function TeacherAppShell({
             <AdminAreaSwitch current="teacher" />
             {teacherEmail ? (
               <span className="hidden text-sm font-medium text-student-text md:inline">
-                {teacherEmail}
+                {formatAccountForDisplay(teacherEmail)}
               </span>
             ) : null}
             <SignOutButton locale="zh-CN" showIdentity={false} variant="student" />

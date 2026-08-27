@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireAdmin } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
 export const dynamic = "force-dynamic";
 const response = (data: unknown, init?: ResponseInit) => NextResponse.json(data, { ...init, headers: { ...init?.headers, "Cache-Control": "no-store" } });
@@ -22,11 +23,13 @@ export async function GET(request: Request, { params }: { params: { teacherId: s
   return response({ teacher: {
     id: teacher.data.id,
     email: teacher.data.email ?? "",
-    displayName: teacher.data.full_name?.trim() || teacher.data.email || "教师",
+    displayName: getPreferredUserDisplayName({ email: teacher.data.email, profileFullName: teacher.data.full_name }),
     studentAccountLimit: teacher.data.student_account_limit,
     studentCount: students.data?.length ?? 0,
     students: (students.data ?? []).map((student) => ({
-      id: student.id, email: student.email ?? "", displayName: student.full_name?.trim() || student.email || "学生"
+      id: student.id,
+      email: student.email ?? "",
+      displayName: getPreferredUserDisplayName({ email: student.email, profileFullName: student.full_name })
     }))
   } });
 }

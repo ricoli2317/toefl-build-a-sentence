@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 import {
   TEACHER_CURRENT_USER_CACHE_KEY,
   useOptionalTeacherDataCache
@@ -47,7 +48,7 @@ export function SignOutButton({
         } = await supabase.auth.getUser(accessToken);
 
         if (!user) return "";
-        if (variant === "student") return user.email ?? "";
+        if (variant === "student") return formatAccountForDisplay(user.email);
         return getPreferredUserDisplayName({
           email: user.email,
           metadata: user.user_metadata

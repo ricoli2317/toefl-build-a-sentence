@@ -1,3 +1,5 @@
+import { formatAccountForDisplay } from "./accountIdentifier.ts";
+
 type UserMetadata = {
   display_name?: unknown;
   full_name?: unknown;
@@ -25,7 +27,7 @@ export function getPreferredUserDisplayName({
   const name = nameValue(metadata?.name, email);
   if (name) return name;
 
-  return email || "Unknown user";
+  return formatAccountForDisplay(email) || "Unknown user";
 }
 
 function nameValue(value: unknown, email?: string | null) {

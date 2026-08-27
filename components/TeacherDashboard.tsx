@@ -25,6 +25,7 @@ import {
   splitTextItems
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 import {
   compareStudentSearchGroups,
   compareStudentSearchMetadata,
@@ -477,7 +478,7 @@ export function TeacherStudentSummary({ studentId }: { studentId: string }) {
               <TeacherIconTile icon={UserRound} />
               <div className="min-w-0">
                 {loading ? <TeacherSkeleton className="h-7 w-36" /> : <h2 className="truncate text-2xl font-bold text-student-text">{student?.studentDisplayName ?? "学生详情"}</h2>}
-                {loading ? <TeacherSkeleton className="mt-2 h-4 w-52" /> : <p className="mt-1 truncate text-sm text-student-muted">{student?.studentEmail ?? "学生数据暂时无法显示"}</p>}
+                {loading ? <TeacherSkeleton className="mt-2 h-4 w-52" /> : <p className="mt-1 truncate text-sm text-student-muted">账号：{formatAccountForDisplay(student?.studentEmail) || "学生数据暂时无法显示"}</p>}
               </div>
             </div>
           </TeacherCard>
