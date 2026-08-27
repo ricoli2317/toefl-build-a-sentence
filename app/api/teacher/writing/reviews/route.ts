@@ -9,6 +9,7 @@ import {
   logHistoricalPracticeDisplayWarnings,
   type HistoricalPracticeDisplay
 } from "@/lib/historicalPracticeDisplay";
+import { listVisibleStudentIds } from "@/lib/accountAccess";
 
 export const dynamic = "force-dynamic";
 
@@ -70,13 +71,19 @@ export async function GET(request: Request) {
 
     const requestedAttemptId = new URL(request.url).searchParams.get("attemptId")?.trim();
     const supabase = createServiceSupabase();
+    const visibleStudentIds = await listVisibleStudentIds(supabase, {
+      userId: auth.userId,
+      role: auth.role!
+    });
+    if (visibleStudentIds.length === 0) return json({ attempts: [] });
     const attemptsResult = await readAllSupabaseRows<AttemptRow>((from, to) => {
       let query = supabase
         .from("writing_attempts")
         .select(
           "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
         )
-        .eq("status", "submitted");
+        .eq("status", "submitted")
+        .in("user_id", visibleStudentIds);
       if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
       return query
         .order("submitted_at", { ascending: false, nullsFirst: false })

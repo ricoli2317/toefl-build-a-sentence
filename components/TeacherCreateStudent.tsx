@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
@@ -26,6 +26,27 @@ export function TeacherCreateStudent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [quotaReached, setQuotaReached] = useState(false);
+
+  useEffect(() => {
+    let ignore = false;
+    async function loadQuota() {
+      const supabase = createBrowserSupabase();
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch("/api/teacher/students", {
+        headers: { Authorization: `Bearer ${session?.access_token ?? ""}` },
+        cache: "no-store"
+      });
+      const payload = await response.json().catch(() => ({})) as {
+        quota?: { limited?: boolean; count?: number; limit?: number };
+      };
+      if (!ignore && response.ok && payload.quota?.limited) {
+        setQuotaReached((payload.quota.count ?? 0) >= (payload.quota.limit ?? 20));
+      }
+    }
+    void loadQuota();
+    return () => { ignore = true; };
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -82,6 +103,9 @@ export function TeacherCreateStudent() {
   return (
     <form className="teacher-card p-6 sm:p-8" onSubmit={onSubmit}>
       <h2 className="text-xl font-bold text-student-text">创建学生账号</h2>
+      {quotaReached ? (
+        <p className="teacher-error mt-5">已达到学生账号数量上限，请联系管理员调整。</p>
+      ) : null}
       <div className="mt-7 grid gap-6">
         <label className="grid gap-2.5 text-sm font-semibold text-student-text" htmlFor="student-name">
           学生姓名
@@ -127,7 +151,7 @@ export function TeacherCreateStudent() {
       {success ? <p className="mt-5 rounded-xl border border-student-primary-border bg-student-primary-soft p-4 text-sm font-semibold text-student-primary">{success}</p> : null}
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <button className="teacher-button-primary min-w-36" disabled={loading} type="submit">
+        <button className="teacher-button-primary min-w-36" disabled={loading || quotaReached} type="submit">
           {loading ? "正在创建..." : "创建学生"}
         </button>
         <Link className="teacher-button-secondary min-w-32" href="/teacher/students">
@@ -145,5 +169,6 @@ function localizeCreateStudentError(message?: string) {
   if (/password must be at least 6 characters/i.test(message)) return "密码至少需要 6 个字符。";
   if (/email, password, and student name are required/i.test(message)) return "请填写邮箱、密码和学生姓名。";
   if (/profile save failed/i.test(message)) return "学生账号已创建，但学生资料保存失败。";
+  if (/STUDENT_ACCOUNT_LIMIT_REACHED/i.test(message)) return "已达到学生账号数量上限，请联系管理员调整。";
   return /[\u3400-\u9fff]/.test(message) ? message : "无法创建学生，请稍后重试。";
 }

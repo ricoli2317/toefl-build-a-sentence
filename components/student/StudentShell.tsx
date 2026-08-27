@@ -24,6 +24,7 @@ import { StudentBrand } from "@/components/student/StudentBrand";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { beginStudentNavigationTrace } from "@/lib/studentPerformance.client";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
+import { AdminAreaSwitch } from "@/components/RoleGate";
 
 type NavigationItem = {
   disabled?: boolean;
@@ -160,7 +161,10 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
             </button>
             <StudentBrand compact />
           </div>
-          <SignOutButton locale="zh-CN" variant="student" />
+          <div className="flex items-center gap-2">
+            <AdminAreaSwitch current="student" />
+            <SignOutButton locale="zh-CN" variant="student" />
+          </div>
         </header>
         <main className="min-w-0">{children}</main>
       </div>

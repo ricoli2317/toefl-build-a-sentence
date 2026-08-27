@@ -11,6 +11,7 @@ import {
   loadHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
+import { canManageWritingAttempt } from "@/lib/accountAccess";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +27,12 @@ export async function GET(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    assertWritingReviewTeacher(
-      await requireUserWithRole(bearerToken(request), "teacher")
-    );
+    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
+    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
+      throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
+    }
     const [workspace, historicalDisplayResolver] = await Promise.all([
       loadWritingReviewWorkspace(supabase, params.attemptId),
       loadHistoricalPracticeDisplayResolver(supabase)
@@ -73,12 +76,15 @@ export async function PATCH(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    assertWritingReviewTeacher(
-      await requireUserWithRole(bearerToken(request), "teacher")
-    );
+    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    assertWritingReviewTeacher(auth);
+    const supabase = createServiceSupabase();
+    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
+      throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
+    }
     const body = await request.json();
     const review = await saveWritingReviewWorkspace(
-      createServiceSupabase(),
+      supabase,
       params.attemptId,
       body
     );

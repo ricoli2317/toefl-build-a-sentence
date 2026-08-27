@@ -13,6 +13,7 @@ import {
   isWritingQuestionSnapshot,
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
+import type { AccountActor } from "@/lib/accountAccess";
 
 export const WRITING_ASSIGNMENT_QUERY_FIELDS = {
   email:
@@ -51,20 +52,22 @@ export function writingAssignmentJson(data: unknown, init?: ResponseInit) {
 
 export async function requireWritingAssignmentTeacher(request: Request) {
   const auth = await requireUserWithRole(bearerToken(request), "teacher");
-  if (auth.error || !auth.userId) {
+  if (auth.error || !auth.userId || !auth.role) {
     return {
       error: writingAssignmentJson(
         { code: "UNAUTHORIZED", message: "无权访问教师端作业数据。" },
         { status: auth.error === "Unauthorized" ? 403 : 401 }
       ),
       supabase: null,
-      teacherId: null
+      teacherId: null,
+      actor: null
     };
   }
   return {
     error: null,
     supabase: createServiceSupabase(),
-    teacherId: auth.userId
+    teacherId: auth.userId,
+    actor: { userId: auth.userId, role: auth.role } satisfies AccountActor
   };
 }
 
@@ -106,9 +109,9 @@ export function chunkValues<T>(values: T[], size = 100) {
 export async function prepareWritingAssignmentMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean } = {}
+  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
 ) {
-  const membership = await prepareWritingAssignmentMembership(supabase, body);
+  const membership = await prepareWritingAssignmentMembership(supabase, body, options.actor);
   const question = await prepareWritingAssignmentQuestion(supabase, body, options);
   return { ...membership, ...question };
 }
@@ -116,13 +119,13 @@ export async function prepareWritingAssignmentMutation(
 export async function prepareWritingAssignmentGroupMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean } = {}
+  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
 ) {
   if (!Array.isArray(body.assignments) || body.assignments.length === 0) {
     throw new Error("请至少添加一道题目。");
   }
   if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
-  const membership = await prepareWritingAssignmentMembership(supabase, body);
+  const membership = await prepareWritingAssignmentMembership(supabase, body, options.actor);
   const assignments = [];
   for (const value of body.assignments) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
@@ -212,26 +215,35 @@ async function resolveCanonicalWritingAssignmentQuestionId(
 
 export async function prepareWritingAssignmentMembership(
   supabase: ReturnType<typeof createServiceSupabase>,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
+  actor?: AccountActor
 ) {
   const studentIds = uniqueStrings(body.studentIds);
   if (studentIds.length === 0) throw new Error("请至少选择一名学生。");
   const dueAt = validOptionalDueAt(body.dueAt);
-  await assertWritingAssignmentStudentIds(supabase, studentIds);
+  await assertWritingAssignmentStudentIds(supabase, studentIds, actor);
   return { dueAt, studentIds };
 }
 
 async function assertWritingAssignmentStudentIds(
   supabase: ReturnType<typeof createServiceSupabase>,
-  studentIds: string[]
+  studentIds: string[],
+  actor?: AccountActor
 ) {
   let count = 0;
   for (const batch of chunkValues(studentIds)) {
-    const { data, error } = await supabase
+    let query = supabase
       .from("profiles")
       .select("id")
-      .eq("role", "student")
+      .eq("is_active", true)
       .in("id", batch);
+    if (actor?.role === "admin") {
+      query = query.or(`role.eq.student,id.eq.${actor.userId}`);
+    } else {
+      query = query.eq("role", "student");
+      if (actor) query = query.eq("owner_id", actor.userId);
+    }
+    const { data, error } = await query;
     if (error) throw error;
     count += data?.length ?? 0;
   }

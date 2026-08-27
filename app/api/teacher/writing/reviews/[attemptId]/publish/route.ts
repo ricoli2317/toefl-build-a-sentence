@@ -6,6 +6,7 @@ import {
   saveWritingReviewWorkspace,
   WritingReviewWorkspaceServerError
 } from "@/lib/writingReviewWorkspaceServer";
+import { canManageWritingAttempt } from "@/lib/accountAccess";
 
 export const dynamic = "force-dynamic";
 
@@ -21,11 +22,14 @@ export async function POST(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    assertWritingReviewTeacher(
-      await requireUserWithRole(bearerToken(request), "teacher")
-    );
+    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    assertWritingReviewTeacher(auth);
+    const supabase = createServiceSupabase();
+    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
+      throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
+    }
     const review = await saveWritingReviewWorkspace(
-      createServiceSupabase(),
+      supabase,
       params.attemptId,
       await request.json(),
       { publish: true }

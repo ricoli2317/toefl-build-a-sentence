@@ -93,7 +93,7 @@ export function TeacherImportQuestions() {
           .select("role")
           .eq("id", user.id)
           .single();
-        return data?.role === "teacher";
+        return data?.role === "teacher" || data?.role === "admin";
       });
 
       if (ignore) return;

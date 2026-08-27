@@ -7,10 +7,36 @@ function jsonError(message: string, status = 500) {
   return NextResponse.json({ error: message }, { status });
 }
 
+export async function GET(request: Request) {
+  try {
+    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    if (auth.error || !auth.userId || !auth.role) {
+      return jsonError(auth.error ?? "Unauthorized", 401);
+    }
+    if (auth.role === "admin") {
+      return NextResponse.json({ quota: { limited: false, count: null, limit: null, remaining: null } });
+    }
+    const supabase = createServiceSupabase();
+    const [{ data: profile, error: profileError }, { count, error: countError }] = await Promise.all([
+      supabase.from("profiles").select("student_account_limit").eq("id", auth.userId).single(),
+      supabase.from("profiles").select("id", { count: "exact", head: true })
+        .eq("role", "student").eq("is_active", true).eq("owner_id", auth.userId)
+    ]);
+    if (profileError || countError) throw profileError ?? countError;
+    const limit = Number(profile?.student_account_limit ?? 20);
+    const current = count ?? 0;
+    return NextResponse.json({
+      quota: { limited: true, count: current, limit, remaining: Math.max(0, limit - current) }
+    });
+  } catch (error) {
+    return jsonError(error instanceof Error ? error.message : "Could not load quota.");
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const auth = await requireUserWithRole(bearerToken(request), "teacher");
-    if (auth.error || !auth.userId) {
+    if (auth.error || !auth.userId || !auth.role) {
       return jsonError(auth.error ?? "Unauthorized", 401);
     }
 
@@ -32,6 +58,17 @@ export async function POST(request: Request) {
     }
 
     const supabase = createServiceSupabase();
+    if (auth.role === "teacher") {
+      const [{ data: profile, error: profileError }, { count, error: countError }] = await Promise.all([
+        supabase.from("profiles").select("student_account_limit").eq("id", auth.userId).single(),
+        supabase.from("profiles").select("id", { count: "exact", head: true })
+          .eq("role", "student").eq("is_active", true).eq("owner_id", auth.userId)
+      ]);
+      if (profileError || countError) throw profileError ?? countError;
+      if ((count ?? 0) >= Number(profile?.student_account_limit ?? 20)) {
+        return jsonError("STUDENT_ACCOUNT_LIMIT_REACHED", 409);
+      }
+    }
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
@@ -39,7 +76,9 @@ export async function POST(request: Request) {
       user_metadata: {
         display_name: studentName,
         full_name: studentName,
-        name: studentName
+        name: studentName,
+        role: "student",
+        owner_id: auth.userId
       }
     });
 
@@ -52,12 +91,15 @@ export async function POST(request: Request) {
         id: data.user.id,
         email,
         full_name: studentName,
-        role: "student"
+        role: "student",
+        owner_id: auth.userId,
+        is_active: true
       },
       { onConflict: "id" }
     );
 
     if (profileError) {
+      await supabase.auth.admin.deleteUser(data.user.id);
       return jsonError(`Student auth user created, but profile save failed: ${profileError.message}`);
     }
 

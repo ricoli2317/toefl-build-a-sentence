@@ -1,15 +1,25 @@
 import { createAnonSupabase } from "@/lib/supabase/server";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
-import type { UserRole } from "@/lib/types";
+import type { AppArea, UserRole } from "@/lib/types";
+import {
+  defaultRouteForRole,
+  isUserRole,
+  roleCanAccess
+} from "@/lib/accountPermissions";
 
-export async function requireUserWithRole(
+export { defaultRouteForRole, isUserRole, roleCanAccess } from "@/lib/accountPermissions";
+
+export type AuthenticatedAccount = {
+  error: string | null;
+  userId: string | null;
+  role: UserRole | null;
+};
+
+export async function requireAuthenticatedAccount(
   token: string | null,
-  role: UserRole,
   timing?: StudentPerformanceTrace
-) {
-  if (!token) {
-    return { error: "Missing access token", userId: null };
-  }
+): Promise<AuthenticatedAccount> {
+  if (!token) return { error: "Missing access token", userId: null, role: null };
 
   const anon = createAnonSupabase(token);
   const {
@@ -18,23 +28,41 @@ export async function requireUserWithRole(
   } = await measure(timing, "auth", "supabase_auth_get_user", () =>
     anon.auth.getUser(token)
   );
-
   if (userError || !user) {
-    return { error: "Invalid session", userId: null };
+    return { error: "Invalid session", userId: null, role: null };
   }
 
   const { data: profile, error: profileError } = await measure(
     timing,
     "database",
     "profiles_role",
-    () => anon.from("profiles").select("role").eq("id", user.id).single()
+    () => anon.from("profiles").select("role,is_active").eq("id", user.id).single()
   );
-
-  if (profileError || profile?.role !== role) {
-    return { error: "Unauthorized", userId: null };
+  if (profileError || !profile || profile.is_active === false || !isUserRole(profile.role)) {
+    return { error: "Account configuration error", userId: null, role: null };
   }
+  return { error: null, userId: user.id, role: profile.role };
+}
 
-  return { error: null, userId: user.id };
+export async function requireUserWithRole(
+  token: string | null,
+  role: AppArea,
+  timing?: StudentPerformanceTrace
+) {
+  const account = await requireAuthenticatedAccount(token, timing);
+  if (account.error || !account.userId || !account.role) return account;
+  if (!roleCanAccess(account.role, role)) {
+    return { error: "Unauthorized", userId: null, role: account.role };
+  }
+  return account;
+}
+
+export async function requireAdmin(token: string | null) {
+  const account = await requireAuthenticatedAccount(token);
+  if (account.error || account.role !== "admin") {
+    return { error: account.error ?? "Unauthorized", userId: null, role: account.role };
+  }
+  return account;
 }
 
 function measure<T>(

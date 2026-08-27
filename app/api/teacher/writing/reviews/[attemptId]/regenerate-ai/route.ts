@@ -23,6 +23,7 @@ import {
   writingReviewAiProviderDiagnostic
 } from "@/lib/writingReviewAiLog";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { canManageWritingAttempt } from "@/lib/accountAccess";
 import {
   regenerateFullWritingReview,
   WritingReviewFullRegenerationError,
@@ -138,10 +139,12 @@ export async function POST(
   >();
   let aiLogClient: ReturnType<typeof createServiceSupabase> | null = null;
   try {
-    assertWritingReviewTeacher(
-      await requireUserWithRole(bearerToken(request), "teacher")
-    );
+    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
+    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
+      return json({ code: "ATTEMPT_NOT_FOUND", message: "未找到这条写作提交。" }, { status: 404 });
+    }
     aiLogClient = supabase;
     operationStartedAt = Date.now();
     const overwriteTeacherContent =

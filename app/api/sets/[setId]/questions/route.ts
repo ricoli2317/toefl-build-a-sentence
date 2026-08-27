@@ -57,10 +57,10 @@ export async function GET(
     const { data: profile, error: profileError } = await timing.measure(
       "database",
       "profiles_role",
-      () => authClient.from("profiles").select("role").eq("id", user.id).single()
+      () => authClient.from("profiles").select("role,is_active").eq("id", user.id).single()
     );
 
-    if (profileError || profile?.role !== "student") {
+    if (profileError || profile?.is_active === false || !["student", "admin"].includes(profile?.role ?? "")) {
       return respond({ error: "Unauthorized" }, { status: 401 });
     }
 

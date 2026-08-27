@@ -246,13 +246,13 @@ export async function PATCH(
     if (submittedAttempt) assertLockedQuestionInput(body, assignment);
     const prepared = submittedAttempt
       ? {
-          ...(await prepareWritingAssignmentMembership(auth.supabase, body)),
+          ...(await prepareWritingAssignmentMembership(auth.supabase, body, auth.actor ?? undefined)),
           taskType: assignment.task_type,
           questionSource: assignment.question_source,
           questionId: assignment.question_id,
           questionSnapshot: assignment.question_snapshot
         }
-      : await prepareWritingAssignmentMutation(auth.supabase, body);
+      : await prepareWritingAssignmentMutation(auth.supabase, body, { actor: auth.actor ?? undefined });
     const { error: updateError } = await auth.supabase.rpc(
       "update_withdrawn_writing_assignment",
       {

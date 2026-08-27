@@ -1,20 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import type { UserRole } from "@/lib/types";
 
 export function LoginPanel() {
   const router = useRouter();
-  const [role, setRole] = useState<UserRole>("student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function redirectExistingSession() {
+      const supabase = createBrowserSupabase();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || cancelled) return;
+      const route = await resolveAuthenticatedRoute(session.access_token);
+      if (!cancelled && route) router.replace(route);
+      if (!cancelled && !route) setError("账号配置异常，请联系管理员。");
+    }
+    void redirectExistingSession();
+    return () => { cancelled = true; };
+  }, [router]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -33,20 +45,16 @@ export function LoginPanel() {
       return;
     }
 
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
-
-    if (profileError || profile?.role !== role) {
+    const route = data.session
+      ? await resolveAuthenticatedRoute(data.session.access_token)
+      : null;
+    if (!route) {
       await supabase.auth.signOut();
-      setError(`This account is not registered as a ${role}.`);
+      setError("账号配置异常，请联系管理员。");
       setLoading(false);
       return;
     }
-
-    router.push(role === "student" ? "/student/sets" : "/teacher/dashboard");
+    router.push(route);
     router.refresh();
   }
 
@@ -83,25 +91,7 @@ export function LoginPanel() {
             <p className="mt-1 text-sm text-student-muted sm:text-base">Sign in to continue</p>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 rounded-xl bg-[#f7f7fa] p-1">
-            {(["student", "teacher"] as const).map((item) => (
-              <button
-                aria-pressed={role === item}
-                className={`min-h-11 rounded-[10px] px-4 text-sm font-semibold transition sm:text-base ${
-                  role === item
-                    ? "bg-[linear-gradient(135deg,#7357ff,#5134ef)] text-white shadow-[0_6px_16px_rgba(93,65,243,0.24)]"
-                    : "text-student-text hover:bg-white"
-                }`}
-                key={item}
-                onClick={() => setRole(item)}
-                type="button"
-              >
-                {item === "student" ? "Student" : "Teacher"}
-              </button>
-            ))}
-          </div>
-
-          <label className="mt-4 block text-sm font-semibold text-student-text" htmlFor="email">Email</label>
+          <label className="mt-6 block text-sm font-semibold text-student-text" htmlFor="email">账号</label>
           <div className="relative mt-1.5">
             <Mail aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
             <input
@@ -109,14 +99,14 @@ export function LoginPanel() {
               className="h-12 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-4 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
               id="email"
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="Enter your email"
+              placeholder="请输入邮箱账号"
               required
               type="email"
               value={email}
             />
           </div>
 
-          <label className="mt-4 block text-sm font-semibold text-student-text" htmlFor="password">Password</label>
+          <label className="mt-4 block text-sm font-semibold text-student-text" htmlFor="password">密码</label>
           <div className="relative mt-1.5">
             <LockKeyhole aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
             <input
@@ -124,7 +114,7 @@ export function LoginPanel() {
               className="h-12 w-full rounded-xl border border-[#dfe2eb] bg-white pl-12 pr-12 text-sm text-student-text transition placeholder:text-[#8a91a5] hover:border-student-primary-border focus:border-student-primary"
               id="password"
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter your password"
+              placeholder="请输入密码"
               required
               type={showPassword ? "text" : "password"}
               value={password}
@@ -145,7 +135,7 @@ export function LoginPanel() {
             disabled={loading}
             type="submit"
           >
-            {loading ? "Signing in..." : "Sign in"}
+            {loading ? "正在登录..." : "登录"}
             {!loading ? <ArrowRight aria-hidden="true" size={19} /> : null}
           </button>
         </form>
@@ -154,4 +144,14 @@ export function LoginPanel() {
       <p className="relative z-10 text-center text-sm font-medium text-student-muted">Created by Rico</p>
     </main>
   );
+}
+
+async function resolveAuthenticatedRoute(accessToken: string) {
+  const response = await fetch("/api/account/me", {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store"
+  });
+  if (!response.ok) return null;
+  const payload = await response.json() as { defaultRoute?: unknown };
+  return typeof payload.defaultRoute === "string" ? payload.defaultRoute : null;
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { bearerToken } from "@/lib/auth";
+import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { standardizeOrderTextCasing } from "@/lib/questionText";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
@@ -17,6 +17,7 @@ import {
   createHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
+import { listVisibleStudentIds } from "@/lib/accountAccess";
 
 export const dynamic = "force-dynamic";
 
@@ -51,12 +52,8 @@ type ProfileRow = {
   email: string | null;
   full_name: string | null;
   role: string | null;
-};
-
-type AuthUserRow = {
-  id: string;
-  email?: string | null;
-  user_metadata?: Record<string, unknown> | null;
+  owner_id: string | null;
+  is_active: boolean | null;
 };
 
 type QuestionRow = {
@@ -118,6 +115,24 @@ async function fetchAllRows<T>(
     rows.push(...page);
     if (page.length < DATABASE_PAGE_SIZE) return { data: rows, error: null };
   }
+}
+
+async function fetchRowsForStudentIds<T>(
+  studentIds: string[],
+  loadPage: (
+    batch: string[],
+    from: number,
+    to: number
+  ) => PromiseLike<{ data: unknown[] | null; error: PageError | null }>
+) {
+  const rows: T[] = [];
+  for (let index = 0; index < studentIds.length; index += 100) {
+    const batch = studentIds.slice(index, index + 100);
+    const result = await fetchAllRows<T>((from, to) => loadPage(batch, from, to));
+    if (result.error) return { data: null, error: result.error };
+    rows.push(...(result.data ?? []));
+  }
+  return { data: rows, error: null };
 }
 
 function jsonError(message: string, status = 500) {
@@ -196,15 +211,8 @@ export async function GET(request: Request) {
       return jsonError(userError?.message ?? "Invalid session", 401);
     }
 
-    const { data: teacherProfile, error: profileError } = await authClient
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (profileError || teacherProfile?.role !== "teacher") {
-      return jsonError(profileError?.message ?? "Unauthorized", 401);
-    }
+    const auth = await requireUserWithRole(token, "teacher");
+    if (auth.error || !auth.userId || !auth.role) return jsonError(auth.error ?? "Unauthorized", 401);
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
@@ -213,6 +221,10 @@ export async function GET(request: Request) {
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` },
         fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
       }
+    });
+    const scopedStudentIds = await listVisibleStudentIds(db, {
+      userId: auth.userId,
+      role: auth.role
     });
 
     const [
@@ -225,28 +237,31 @@ export async function GET(request: Request) {
       { data: logicalOccurrences, error: logicalOccurrencesError },
       { data: logicalQuestionMaps, error: logicalQuestionMapsError }
     ] = await Promise.all([
-      fetchAllRows<AttemptRow>((from, to) =>
+      fetchRowsForStudentIds<AttemptRow>(scopedStudentIds, (batch, from, to) =>
         db
           .from("attempts")
           .select(
             "attempt_id,student_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
           )
+          .in("student_id", batch)
           .order("attempt_id", { ascending: true })
           .range(from, to)
       ),
-      fetchAllRows<AnswerRow>((from, to) =>
+      fetchRowsForStudentIds<AnswerRow>(scopedStudentIds, (batch, from, to) =>
         db
           .from("attempt_answers")
           .select(
             "attempt_answer_id,attempt_id,question_id,student_id,set_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,question_time_seconds"
           )
+          .in("student_id", batch)
           .order("attempt_answer_id", { ascending: true })
           .range(from, to)
       ),
-      fetchAllRows<ProfileRow>((from, to) =>
+      fetchRowsForStudentIds<ProfileRow>(scopedStudentIds, (batch, from, to) =>
         db
           .from("profiles")
-          .select("id,email,full_name,role")
+          .select("id,email,full_name,role,owner_id,is_active")
+          .in("id", batch)
           .order("id", { ascending: true })
           .range(from, to)
       ),
@@ -300,13 +315,13 @@ export async function GET(request: Request) {
       return jsonError(`Failed to load teacher stats: ${queryError.message}`);
     }
 
-    const attemptRows = ((attempts ?? []) as AttemptRow[]).map((attempt) => ({
+    const rawAttemptRows = ((attempts ?? []) as AttemptRow[]).map((attempt) => ({
       ...attempt,
       attempt_id: String(attempt.attempt_id),
       student_id: String(attempt.student_id),
       set_id: String(attempt.set_id)
     }));
-    const answerRows = ((answers ?? []) as AnswerRow[]).map((answer) => ({
+    const rawAnswerRows = ((answers ?? []) as AnswerRow[]).map((answer) => ({
       ...answer,
       attempt_answer_id: String(answer.attempt_answer_id),
       attempt_id: String(answer.attempt_id),
@@ -318,20 +333,18 @@ export async function GET(request: Request) {
       ...profile,
       id: String(profile.id)
     }));
-    const authUserById = new Map<string, AuthUserRow>();
-    if (serviceRoleKey) {
-      const { data: authUsers, error: authUsersError } = await db.auth.admin.listUsers({
-        page: 1,
-        perPage: 1000
-      });
-      if (authUsersError) {
-        console.error("Failed to load auth users for display names", authUsersError);
-      } else {
-        for (const authUser of authUsers.users as AuthUserRow[]) {
-          authUserById.set(String(authUser.id), authUser);
-        }
-      }
-    }
+    const visibleStudentIds = new Set(
+      profileRows
+        .filter((profile) =>
+          profile.role === "student" &&
+          profile.is_active !== false &&
+          (auth.role === "admin" || profile.owner_id === auth.userId)
+        )
+        .map((profile) => profile.id)
+    );
+    if (auth.role === "admin") visibleStudentIds.add(auth.userId);
+    const attemptRows = rawAttemptRows.filter((attempt) => visibleStudentIds.has(attempt.student_id));
+    const answerRows = rawAnswerRows.filter((answer) => visibleStudentIds.has(answer.student_id));
     const questionRows = ((questions ?? []) as QuestionRow[]).map((question) => ({
       ...question,
       question_id: String(question.question_id),
@@ -385,19 +398,14 @@ export async function GET(request: Request) {
       questionsBySet.set(question.set_id, list);
     }
 
-    const studentProfiles = profileRows.filter((profile) => profile.role === "student");
-    const studentIds = new Set<string>([
-      ...studentProfiles.map((profile) => profile.id),
-      ...attemptRows.map((attempt) => attempt.student_id)
-    ]);
+    const studentProfiles = profileRows.filter((profile) => visibleStudentIds.has(profile.id));
+    const studentIds = new Set<string>(studentProfiles.map((profile) => profile.id));
 
     const studentSummaries = Array.from(studentIds).map((studentId) => {
       const profile = profileRows.find((item) => item.id === studentId);
-      const authUser = authUserById.get(studentId);
-      const studentEmail = authUser?.email ?? profile?.email ?? null;
+      const studentEmail = profile?.email ?? null;
       const studentDisplayName = getPreferredUserDisplayName({
         email: studentEmail,
-        metadata: authUser?.user_metadata ?? null,
         profileFullName: profile?.full_name
       });
       const studentAttempts = attemptRows.filter((attempt) => attempt.student_id === studentId);

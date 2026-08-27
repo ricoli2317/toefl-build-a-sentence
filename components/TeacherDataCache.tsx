@@ -15,7 +15,7 @@ import {
   subscribeToCacheInvalidation
 } from "@/lib/cacheInvalidation";
 
-export const TEACHER_STATS_CACHE_SCHEMA_VERSION = 1;
+export const TEACHER_STATS_CACHE_SCHEMA_VERSION = 2;
 export const TEACHER_STATS_CACHE_KEY =
   `teacher:stats:logical-schema-${TEACHER_STATS_CACHE_SCHEMA_VERSION}`;
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";

@@ -181,7 +181,8 @@ export async function POST(request: Request) {
       ? body
       : { assignments: [body], studentIds: body.studentIds };
     const prepared = await prepareWritingAssignmentGroupMutation(auth.supabase, groupBody, {
-      canonicalizeQuestionBank: true
+      canonicalizeQuestionBank: true,
+      actor: auth.actor ?? undefined
     });
     const { data, error } = await auth.supabase.rpc("create_writing_assignment_group", {
       p_teacher_id: auth.teacherId,

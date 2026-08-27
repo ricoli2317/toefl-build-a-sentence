@@ -23,6 +23,7 @@ import {
   writingReviewAiProviderDiagnostic
 } from "@/lib/writingReviewAiLog";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { canManageWritingAttempt } from "@/lib/accountAccess";
 import {
   AIReviewValidationError
 } from "@/lib/writingReviewSchema";
@@ -259,7 +260,7 @@ export async function POST(
   let aiLogClient: ReturnType<typeof createServiceSupabase> | null = null;
   try {
     const auth = await requireUserWithRole(bearerToken(request), "teacher");
-    if (auth.error || !auth.userId) {
+    if (auth.error || !auth.userId || !auth.role) {
       const status = auth.error === "Unauthorized" ? 403 : 401;
       return json(
         { code: "UNAUTHORIZED", message: auth.error ?? "Unauthorized" },
@@ -268,6 +269,9 @@ export async function POST(
     }
 
     const supabase = createServiceSupabase();
+    if (!await canManageWritingAttempt(supabase, { userId: auth.userId, role: auth.role }, params.attemptId)) {
+      return json({ code: "ATTEMPT_NOT_FOUND", message: "未找到这条写作提交。" }, { status: 404 });
+    }
     aiLogClient = supabase;
     operationStartedAt = Date.now();
     const overwriteTeacherContent =

@@ -19,6 +19,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { useTeacherCachedData } from "@/components/TeacherDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { AdminAreaSwitch } from "@/components/RoleGate";
 
 export type TeacherCrumb = { href?: string; label: string };
 
@@ -32,7 +33,7 @@ const navigation = [
   {
     href: "/teacher/students",
     icon: Users,
-    label: "学生",
+    label: "账号",
     match: (path: string) => path.startsWith("/teacher/students")
   },
   {
@@ -151,6 +152,7 @@ export function TeacherAppShell({
             <Link href="/teacher/dashboard"><StudentBrand compact /></Link>
           </div>
           <div className="flex items-center gap-3">
+            <AdminAreaSwitch current="teacher" />
             {teacherEmail ? (
               <span className="hidden text-sm font-medium text-student-text md:inline">
                 {teacherEmail}

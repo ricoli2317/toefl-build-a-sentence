@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { TeacherStudentsList } from "@/components/TeacherDashboard";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { AccountTabs } from "@/components/teacher/TeacherAccounts";
 
 export default function TeacherStudentsPage() {
   return (
@@ -14,12 +15,15 @@ export default function TeacherStudentsPage() {
       }
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生" }
+        { label: "账号" }
       ]}
-      subtitle="查看学生账号与学习情况"
-      title="学生"
+      subtitle="管理学生与教师账号"
+      title="账号"
     >
-      <TeacherStudentsList />
+      <div className="grid gap-6">
+        <AccountTabs active="students" />
+        <TeacherStudentsList />
+      </div>
     </TeacherAppShell>
   );
 }

@@ -1,4 +1,5 @@
-export type UserRole = "student" | "teacher";
+export type UserRole = "admin" | "student" | "teacher";
+export type AppArea = "student" | "teacher";
 
 export type PracticeSet = {
   set_id: string;
