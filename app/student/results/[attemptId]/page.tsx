@@ -9,6 +9,7 @@ export default function StudentResultPage({
   searchParams: { setId?: string; source?: string };
 }) {
   const source =
+    searchParams.source === "practice-history" ||
     searchParams.source === "practice-history-today" ||
     searchParams.source === "practice-history-history"
       ? searchParams.source

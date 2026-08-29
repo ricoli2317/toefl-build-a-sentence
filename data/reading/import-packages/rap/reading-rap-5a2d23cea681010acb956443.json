@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+    "module": "rap",
+    "title": "Parallel Algorithms: From Challenges to Opportunities",
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20A",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "5a2d23cea681010acb9564437846f37ce87e5c851c53dcdf4011b4c89c915c5b",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20a-m1-rap-08",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20A",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-5a2d23cea681010acb956443-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-5a2d23cea681010acb956443-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-5a2d23cea681010acb956443-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-5a2d23cea681010acb956443-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-5a2d23cea681010acb956443-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-5a2d23cea681010acb956443-passage-01",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "title": "Parallel Algorithms: From Challenges to Opportunities",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.",
+          "rawText": "Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.",
+          "rawText": "In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "However, if too much data is sent to the processors at once without proper management, the system slows down."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "One of the strengths of parallel algorithms is their versatility. Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. Training a deep learning model would be nearly impossible without parallel computing.",
+          "rawText": "One of the strengths of parallel algorithms is their versatility. ■ Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. ■ This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. ■ Training a deep learning model would be nearly impossible without parallel computing. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "One of the strengths of parallel algorithms is their versatility."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly."
+            },
+            {
+              "sentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Training a deep learning model would be nearly impossible without parallel computing."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-5a2d23cea681010acb956443-q01",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage indicate about sequential algorithms?",
+      "rawDisplayText": "26. What does the passage indicate about sequential algorithms?",
+      "payload": {
+        "passageId": "reading-rap-5a2d23cea681010acb956443-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q01-opt-1",
+            "optionOrder": 1,
+            "text": "They are less efficient than parallel algorithms are."
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q01-opt-2",
+            "optionOrder": 2,
+            "text": "They handle computational tasks in the same way that parallel algorithms do."
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q01-opt-3",
+            "optionOrder": 3,
+            "text": "They can solve problems that parallel algorithms cannot."
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q01-opt-4",
+            "optionOrder": 4,
+            "text": "They use more advanced hardware than parallel algorithms do."
+          }
+        ],
+        "correctOptionId": "reading-rap-5a2d23cea681010acb956443-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a2d23cea681010acb956443-q02",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author discuss the simulation of the spread of a virus?",
+      "rawDisplayText": "27. Why does the author discuss the simulation of the spread of a virus?",
+      "payload": {
+        "passageId": "reading-rap-5a2d23cea681010acb956443-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate the challenges that public health officials face during disease outbreaks"
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To demonstrate the significance of parallel algorithms in healthcare"
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To highlight the data points that researchers focus on when a virus spreads through a population"
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To emphasize the risk of using small datasets for analysis during disease outbreaks"
+          }
+        ],
+        "correctOptionId": "reading-rap-5a2d23cea681010acb956443-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a2d23cea681010acb956443-q03",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "questionOrder": 3,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 2 that indicates that parallel algorithms have challenges. Select the sentence to make your choice.",
+      "rawDisplayText": "28. Identify the sentence in paragraph 2 that indicates that parallel algorithms have challenges. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-5a2d23cea681010acb956443-passage-01",
+        "targetParagraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02",
+        "correctSentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p02-s04"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a2d23cea681010acb956443-q04",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “tailor” in the passage is closest in meaning to",
+      "rawDisplayText": "29. The word “tailor” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-5a2d23cea681010acb956443-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q04-opt-1",
+            "optionOrder": 1,
+            "text": "direct"
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q04-opt-2",
+            "optionOrder": 2,
+            "text": "explore"
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q04-opt-3",
+            "optionOrder": 3,
+            "text": "adapt"
+          },
+          {
+            "optionId": "reading-rap-5a2d23cea681010acb956443-q04-opt-4",
+            "optionOrder": 4,
+            "text": "prepare"
+          }
+        ],
+        "correctOptionId": "reading-rap-5a2d23cea681010acb956443-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a2d23cea681010acb956443-q05",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-5a2d23cea681010acb956443-passage-01",
+        "insertSentence": "In light of their many advantages, parallel algorithms will surely continue to drive innovation in diverse areas like climate modeling and financial analysis.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-5a2d23cea681010acb956443-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-5a2d23cea681010acb956443-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-5a2d23cea681010acb956443-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s03"
+          },
+          {
+            "anchorId": "reading-rap-5a2d23cea681010acb956443-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03-s04"
+          }
+        ],
+        "correctAnchorId": "reading-rap-5a2d23cea681010acb956443-q05-anchor-4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+    "module": "rap",
+    "title": "Sociocybernetics: Understanding Complex Social Systems",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10B",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "ce5209524d2340201b2e81d2a8741af2fd18d20175527ceb5789c8a17d1059da",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10b-m1-rap-13",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10B",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-11a-m1-rap-13",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "sourceKind": "docx",
+      "sourceLabel": "5.11A",
+      "occurrenceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-ce5209524d2340201b2e81d2-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-ce5209524d2340201b2e81d2-passage-01",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "title": "Sociocybernetics: Understanding Complex Social Systems",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics. By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function. A key concept in sociocybernetics is self-organization. This is the process in which social systems develop ordered patterns without centralized control.",
+          "rawText": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics. ■ By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function. ■ A key concept in sociocybernetics is self-organization. ■ This is the process in which social systems develop ordered patterns without centralized control. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "A key concept in sociocybernetics is self-organization."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This is the process in which social systems develop ordered patterns without centralized control."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Feedback loops are crucial in sociocybernetics. Positive feedback amplifies changes, leading to rapid social transformations. Negative feedback stabilizes systems, maintaining equilibrium. In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises. Recognizing these mechanisms helps sociologists predict and influence social dynamics.",
+          "rawText": "Feedback loops are crucial in sociocybernetics. Positive feedback amplifies changes, leading to rapid social transformations. Negative feedback stabilizes systems, maintaining equilibrium. In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises. Recognizing these mechanisms helps sociologists predict and influence social dynamics.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Feedback loops are crucial in sociocybernetics."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Positive feedback amplifies changes, leading to rapid social transformations."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Negative feedback stabilizes systems, maintaining equilibrium."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Recognizing these mechanisms helps sociologists predict and influence social dynamics."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Communication is another critical aspect. Effective communication channels within social systems impact their stability and adaptability. Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos. Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems. These models also explore how digital technologies influence communication patterns.",
+          "rawText": "Communication is another critical aspect. Effective communication channels within social systems impact their stability and adaptability. Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos. Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems. These models also explore how digital technologies influence communication patterns.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Communication is another critical aspect."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Effective communication channels within social systems impact their stability and adaptability."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p03-s05",
+              "sentenceOrder": 5,
+              "text": "These models also explore how digital technologies influence communication patterns."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "Sociocybernetics is important to urban planning. Cities are complex systems with numerous interacting components. Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies. This approach helps create sustainable urban environments that better respond to changes.",
+          "rawText": "Sociocybernetics is important to urban planning. Cities are complex systems with numerous interacting components. Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies. This approach helps create sustainable urban environments that better respond to changes.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "Sociocybernetics is important to urban planning."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Cities are complex systems with numerous interacting components."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies."
+            },
+            {
+              "sentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p04-s04",
+              "sentenceOrder": 4,
+              "text": "This approach helps create sustainable urban environments that better respond to changes."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-ce5209524d2340201b2e81d2-q01",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “amplifies” in the passage is closest in meaning to",
+      "rawDisplayText": "31. The word “amplifies” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-ce5209524d2340201b2e81d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q01-opt-1",
+            "optionOrder": 1,
+            "text": "delays"
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q01-opt-2",
+            "optionOrder": 2,
+            "text": "increases"
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q01-opt-3",
+            "optionOrder": 3,
+            "text": "simplifies"
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q01-opt-4",
+            "optionOrder": 4,
+            "text": "suggests"
+          }
+        ],
+        "correctOptionId": "reading-rap-ce5209524d2340201b2e81d2-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-ce5209524d2340201b2e81d2-q02",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following can be inferred about positive and negative feedback?",
+      "rawDisplayText": "32. Which of the following can be inferred about positive and negative feedback?",
+      "payload": {
+        "passageId": "reading-rap-ce5209524d2340201b2e81d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Positive feedback leads to outcomes that are more beneficial than those from negative feedback."
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Negative feedback is easier for sociologists to recognize than positive feedback."
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Positive and negative feedback both provide systems with beneficial information."
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Positive feedback is more common in progressive social systems than negative feedback."
+          }
+        ],
+        "correctOptionId": "reading-rap-ce5209524d2340201b2e81d2-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-ce5209524d2340201b2e81d2-q03",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to sociocybernetic models, effective communication is important for",
+      "rawDisplayText": "33. According to sociocybernetic models, effective communication is important for",
+      "payload": {
+        "passageId": "reading-rap-ce5209524d2340201b2e81d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q03-opt-1",
+            "optionOrder": 1,
+            "text": "preventing misinformation"
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q03-opt-2",
+            "optionOrder": 2,
+            "text": "maintenance of social cohesion"
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q03-opt-3",
+            "optionOrder": 3,
+            "text": "transparent information flow"
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q03-opt-4",
+            "optionOrder": 4,
+            "text": "providing successful digital technologies"
+          }
+        ],
+        "correctOptionId": "reading-rap-ce5209524d2340201b2e81d2-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-ce5209524d2340201b2e81d2-q04",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is an aspect of urban environments that makes them a suitable object of study for sociocybernetics?",
+      "rawDisplayText": "34. What is an aspect of urban environments that makes them a suitable object of study for sociocybernetics?",
+      "payload": {
+        "passageId": "reading-rap-ce5209524d2340201b2e81d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q04-opt-1",
+            "optionOrder": 1,
+            "text": "They involve many interacting components."
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q04-opt-2",
+            "optionOrder": 2,
+            "text": "They can be made more resilient when designed using scientific principles."
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q04-opt-3",
+            "optionOrder": 3,
+            "text": "They feature ideal traffic patterns."
+          },
+          {
+            "optionId": "reading-rap-ce5209524d2340201b2e81d2-q04-opt-4",
+            "optionOrder": 4,
+            "text": "They respond better to changes when they are more sustainable."
+          }
+        ],
+        "correctOptionId": "reading-rap-ce5209524d2340201b2e81d2-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-ce5209524d2340201b2e81d2-q05",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-ce5209524d2340201b2e81d2-passage-01",
+        "insertSentence": "The latter is concerned with the comparative study of automatic control systems, such as the nervous system.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-ce5209524d2340201b2e81d2-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s01"
+          },
+          {
+            "anchorId": "reading-rap-ce5209524d2340201b2e81d2-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s02"
+          },
+          {
+            "anchorId": "reading-rap-ce5209524d2340201b2e81d2-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s03"
+          },
+          {
+            "anchorId": "reading-rap-ce5209524d2340201b2e81d2-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p01-s04"
+          }
+        ],
+        "correctAnchorId": "reading-rap-ce5209524d2340201b2e81d2-q05-anchor-1"
+      }
+    }
+  ]
+}

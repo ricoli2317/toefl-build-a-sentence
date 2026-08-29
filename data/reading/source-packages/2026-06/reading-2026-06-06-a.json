@@ -1,0 +1,1827 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.6A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The introduction of sanitation practices in urban areas during the nineteenth century significantly improved public health. Innovations such as sew_ _ _ systems a_ _ clean wa_ _ _ supplies deve_ _ _ _ _ from t_ _ growing awar_ _ _ _ _ of the conne_ _ _ _ _ between po_ _ hygiene and ill_ _ _ _, and reduced the spr_ _ _ of infectious diseases like cholera and typhoid. Public health campaigns, supported by local governments and medical professionals, educated communities on the importance of hygiene. These efforts were instrumental in decreasing mortality rates and enhancing quality of life.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The introduction of sanitation practices in urban areas during the nineteenth century significantly improved public health. Innovations such as sew_ _ _ systems a_ _ clean wa_ _ _ supplies deve_ _ _ _ _ from t_ _ growing awar_ _ _ _ _ of the conne_ _ _ _ _ between po_ _ hygiene and ill_ _ _ _, and reduced the spr_ _ _ of infectious diseases like cholera and typhoid. Public health campaigns, supported by local governments and medical professionals, educated communities on the importance of hygiene. These efforts were instrumental in decreasing mortality rates and enhancing quality of life.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The introduction of sanitation practices in urban areas during the nineteenth century significantly improved public health. Innovations such as "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " systems "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " clean "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " supplies "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " from "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " growing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " between "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " hygiene and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and reduced the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of infectious diseases like cholera and typhoid. Public health campaigns, supported by local governments and medical professionals, educated communities on the importance of hygiene. These efforts were instrumental in decreasing mortality rates and enhancing quality of life."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "sewage",
+                "prefix": "sew",
+                "displayText": "sew_ _ _",
+                "missingText": "age",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "water",
+                "prefix": "wa",
+                "displayText": "wa_ _ _",
+                "missingText": "ter",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "developed",
+                "prefix": "deve",
+                "displayText": "deve_ _ _ _ _",
+                "missingText": "loped",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "awareness",
+                "prefix": "awar",
+                "displayText": "awar_ _ _ _ _",
+                "missingText": "eness",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "connection",
+                "prefix": "conne",
+                "displayText": "conne_ _ _ _ _",
+                "missingText": "ction",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "poor",
+                "prefix": "po",
+                "displayText": "po_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "illness",
+                "prefix": "ill",
+                "displayText": "ill_ _ _ _",
+                "missingText": "ness",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q01-10-p01",
+                "answer": "spread",
+                "prefix": "spr",
+                "displayText": "spr_ _ _",
+                "missingText": "ead",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In recent decades, environmental awareness has surged, driven largely by the visible impacts of climate change and the depletion of natural resources. As soci_ _ _ _ _ grapple wi_ _ the nece_ _ _ _ _ of susta_ _ _ _ _ _ practices, deb_ _ _ _ continue ov_ _ the mo_ _ effective strat_ _ _ _ _. Renewable ene_ _ _ sources, su_ _ as solar and wind power, have gained prominence as potential solutions. Nevertheless, their implementation often encounters hurdles ranging from economic feasibility to technological limitations. Moreover, the transition toward greener alternatives necessitates a paradigm shift in both consumption patterns and industrial processes.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "In recent decades, environmental awareness has surged, driven largely by the visible impacts of climate change and the depletion of natural resources. As soci_ _ _ _ _ grapple wi_ _ the nece_ _ _ _ _ of susta_ _ _ _ _ _ practices, deb_ _ _ _ continue ov_ _ the mo_ _ effective strat_ _ _ _ _. Renewable ene_ _ _ sources, su_ _ as solar and wind power, have gained prominence as potential solutions. Nevertheless, their implementation often encounters hurdles ranging from economic feasibility to technological limitations. Moreover, the transition toward greener alternatives necessitates a paradigm shift in both consumption patterns and industrial processes.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In recent decades, environmental awareness has surged, driven largely by the visible impacts of climate change and the depletion of natural resources. As "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " grapple "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " practices, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " continue "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " effective "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Renewable "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " sources, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " as solar and wind power, have gained prominence as potential solutions. Nevertheless, their implementation often encounters hurdles ranging from economic feasibility to technological limitations. Moreover, the transition toward greener alternatives necessitates a paradigm shift in both consumption patterns and industrial processes."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "societies",
+                "prefix": "soci",
+                "displayText": "soci_ _ _ _ _",
+                "missingText": "eties",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "with",
+                "prefix": "wi",
+                "displayText": "wi_ _",
+                "missingText": "th",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "necessity",
+                "prefix": "nece",
+                "displayText": "nece_ _ _ _ _",
+                "missingText": "ssity",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "sustainable",
+                "prefix": "susta",
+                "displayText": "susta_ _ _ _ _ _",
+                "missingText": "inable",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "debates",
+                "prefix": "deb",
+                "displayText": "deb_ _ _ _",
+                "missingText": "ates",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "over",
+                "prefix": "ov",
+                "displayText": "ov_ _",
+                "missingText": "er",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "most",
+                "prefix": "mo",
+                "displayText": "mo_ _",
+                "missingText": "st",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "strategies",
+                "prefix": "strat",
+                "displayText": "strat_ _ _ _ _",
+                "missingText": "egies",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "energy",
+                "prefix": "ene",
+                "displayText": "ene_ _ _",
+                "missingText": "rgy",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-06-a-m1-ctw-q11-20-p01",
+                "answer": "such",
+                "prefix": "su",
+                "displayText": "su_ _",
+                "missingText": "ch",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m1-rdl-03",
+      "module": "rdl",
+      "title": "Discover Larkhaven, where lecture halls open to cobblestone courtyards abuzz with debate and steaming coffee.",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-005",
+          "title": "Discover Larkhaven, where lecture halls open to cobblestone courtyards abuzz with debate and steaming coffee.",
+          "source": "material-index.json#RDL-005",
+          "sourceDate": "2026-05-03",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-005/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-005/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Whom is the advertisement trying to attract to Larkhaven?",
+          "rawDisplayText": "21. Whom is the advertisement trying to attract to Larkhaven?",
+          "payload": {
+            "materialId": "RDL-005",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Adults seeking to take non-credit classes"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Older tourists on a budget"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Students wishing to study in a foreign country"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Students on summer holiday"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "Which of the following best describes the town of Larkhaven?",
+          "rawDisplayText": "22. Which of the following best describes the town of Larkhaven?",
+          "payload": {
+            "materialId": "RDL-005",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Rugged"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Modern"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Sleepy"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Lively"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q22-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m1-rdl-05",
+      "module": "rdl",
+      "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-006",
+          "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+          "source": "material-index.json#RDL-006",
+          "sourceDate": "2026-05-03",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-006/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-006/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the schedule?",
+          "rawDisplayText": "23. What is the main purpose of the schedule?",
+          "payload": {
+            "materialId": "RDL-006",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "To provide information on a conference keynote address"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "To provide conference registration details"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "To list events happening at a conference"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "To provide information about refreshments at a conference"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "All of the following are reasons why someone might choose to attend the event EXCEPT",
+          "rawDisplayText": "24. All of the following are reasons why someone might choose to attend the event EXCEPT",
+          "payload": {
+            "materialId": "RDL-006",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "to learn how to concentrate better on their studies"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "to gather materials for applying to medical school"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "to speak directly with people in the health industry"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "to gain access to wellness resources"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is likely true about most of the attendees?",
+          "rawDisplayText": "25. What is likely true about most of the attendees?",
+          "payload": {
+            "materialId": "RDL-006",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "They will receive free healthcare services at the event."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "They work in the health industry."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "They are visiting from other regions."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "They are students."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m1-rap-08",
+      "module": "rap",
+      "title": "The Mysteries of Opal",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-06-a-m1-rap-p01",
+          "title": "The Mysteries of Opal",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-06-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves. Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape. This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates. Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does.",
+              "rawText": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves. Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape. This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates. Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-06-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "The color and brilliance of opals depends on the size and spacing of the silica spheres. Larger spheres produce reds and oranges, while smaller spheres result in blues and greens. Because of Australia's unique geological conditions, it is home to over 90 percent of the world's opals. Opals are also fragile. Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes. Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals.",
+              "rawText": "The color and brilliance of opals depends on the size and spacing of the silica spheres. Larger spheres produce reds and oranges, while smaller spheres result in blues and greens. Because of Australia's unique geological conditions, it is home to over 90 percent of the world's opals. Opals are also fragile. Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes. Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The color and brilliance of opals depends on the size and spacing of the silica spheres."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Larger spheres produce reds and oranges, while smaller spheres result in blues and greens."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Because of Australia's unique geological conditions, it is home to over 90 percent of the world's opals."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Opals are also fragile."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-06-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Ancient cultures believed opals had mystical properties and brought good luck. The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy.",
+              "rawText": "Ancient cultures believed opals had mystical properties and brought good luck. The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Ancient cultures believed opals had mystical properties and brought good luck."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are mentioned as part of the formation process of opals EXCEPT:",
+          "rawDisplayText": "26. All of the following are mentioned as part of the formation process of opals EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Water flows into cracks in rocks."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "The water dries up, leaving silica deposits behind."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Small spheres of silica create the structure of the gemstones."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "The structure formed is rigid and non-varying."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"a prism\"?",
+          "rawDisplayText": "27. Why does the author mention \"a prism\"?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate how an opal affects light"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "To explain how the internal structure of opals is created"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "To give an example of how scientists study opals"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "To argue that opals do not truly diffract light"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q27-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is one consequence of the internal structure of opals?",
+          "rawDisplayText": "28. What is one consequence of the internal structure of opals?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "90 percent of them are red or orange."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "Relatively little ancient opal jewelry has survived."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "They are easily damaged by water."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Jewelers must use special care to prevent opals from cracking."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q28-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about ancient cultures' view of opals?",
+          "rawDisplayText": "29. What does the passage suggest about ancient cultures' view of opals?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "They understood how opals were formed."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "They found opals difficult to work with."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "They believed opals had special qualities that benefited their owners."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "They considered opals to be very durable."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"prophecy\" in the passage is closest in meaning to",
+          "rawDisplayText": "30. The word \"prophecy\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "long life"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "the ability to predict the future"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "happiness"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "high status"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m1-rap-13",
+      "module": "rap",
+      "title": "Quantum Computing",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-06-a-m1-rap-p02",
+          "title": "Quantum Computing",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power. Traditional computers store data in binary bits, representing 0 or 1. Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition). This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers.",
+              "rawText": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power. Traditional computers store data in binary bits, representing 0 or 1. Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition). This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Traditional computers store data in binary bits, representing 0 or 1."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition)."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages. Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break. Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques. Researchers are exploring such methods to secure data in a post-quantum world.",
+              "rawText": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages. Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break. Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques. Researchers are exploring such methods to secure data in a post-quantum world.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Researchers are exploring such methods to secure data in a post-quantum world."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances. Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations. Despite the challenges, progress is accelerating. Scientists are developing error-correcting codes and stable qubit designs to address these issues. Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence.",
+              "rawText": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances. ■ Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations. ■ Despite the challenges, progress is accelerating. ■ Scientists are developing error-correcting codes and stable qubit designs to address these issues. ■ Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Despite the challenges, progress is accelerating."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Scientists are developing error-correcting codes and stable qubit designs to address these issues."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"revolutionize\" in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word \"revolutionize\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "simplify"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "transform"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "study"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "use"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss binary bits and qubits?",
+          "rawDisplayText": "32. Why does the author discuss binary bits and qubits?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "To explain why quantum computers are more powerful than classical computers are"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "To discuss the two ways in which quantum computers store data"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "To emphasize the fast pace at which computing technology is advancing"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "To explain what causes the state of superposition"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q32-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, new encryption techniques are needed in the post-quantum world because",
+          "rawDisplayText": "33. According to the passage, new encryption techniques are needed in the post-quantum world because",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "quantum computers are less secure"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "quantum computers store more valuable data than classical computers do"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "quantum computers can break existing encryption"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "quantum computers cannot process current encryption algorithms"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"external disturbances\"?",
+          "rawDisplayText": "34. Why does the author mention \"external disturbances\"?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "To point out that qubits can only function in certain environmental conditions"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "To introduce a similarity between quantum computing and traditional computing"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "To explain how quantum computing creates unwanted fluctuations in magnetic or electric fields"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that quantum computing can be prohibitively expensive"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m1-rap-p02",
+            "insertSentence": "Seeing progress, companies and governments have begun to invest heavily in quantum research, aiming to unlock its potential.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-06-a-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-06-a-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-06-a-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-06-a-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-06-a-m1-rap-p02-p03",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-06-a-m1-rap-p02-p03-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-06-a-m1-q35-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In the world of academia, art history is more than just studying paintings—it is about decoding the emotional language of visual storytelling. For example, chiaroscuro is a tech_ _ _ _ _ that origi_ _ _ _ _ during t_ _ Renaissance. Exemp_ _ _ _ _ _ by str_ _ _ contrast bet_ _ _ _ light a_ _ shadow, the st_ _ _ evokes dr_ _ _ through sele_ _ _ _ _ illumination. Artists like Caravaggio mastered this interplay, using it to pull viewers into the heart of his scenes, guiding their eyes and stirring their emotions with every flicker of light.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "In the world of academia, art history is more than just studying paintings—it is about decoding the emotional language of visual storytelling. For example, chiaroscuro is a tech_ _ _ _ _ that origi_ _ _ _ _ during t_ _ Renaissance. Exemp_ _ _ _ _ _ by str_ _ _ contrast bet_ _ _ _ light a_ _ shadow, the st_ _ _ evokes dr_ _ _ through sele_ _ _ _ _ illumination. Artists like Caravaggio mastered this interplay, using it to pull viewers into the heart of his scenes, guiding their eyes and stirring their emotions with every flicker of light.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In the world of academia, art history is more than just studying paintings—it is about decoding the emotional language of visual storytelling. For example, chiaroscuro is a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " during "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Renaissance. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " by "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " contrast "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " light "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " shadow, the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " evokes "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " through "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " illumination. Artists like Caravaggio mastered this interplay, using it to pull viewers into the heart of his scenes, guiding their eyes and stirring their emotions with every flicker of light."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "technique",
+                "prefix": "tech",
+                "displayText": "tech_ _ _ _ _",
+                "missingText": "nique",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "originated",
+                "prefix": "origi",
+                "displayText": "origi_ _ _ _ _",
+                "missingText": "nated",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "Exemplified",
+                "prefix": "Exemp",
+                "displayText": "Exemp_ _ _ _ _ _",
+                "missingText": "lified",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "strong",
+                "prefix": "str",
+                "displayText": "str_ _ _",
+                "missingText": "ong",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "between",
+                "prefix": "bet",
+                "displayText": "bet_ _ _ _",
+                "missingText": "ween",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "style",
+                "prefix": "st",
+                "displayText": "st_ _ _",
+                "missingText": "yle",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "drama",
+                "prefix": "dr",
+                "displayText": "dr_ _ _",
+                "missingText": "ama",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-06-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-06-a-m2-ctw-q01-10-p01",
+                "answer": "selective",
+                "prefix": "sele",
+                "displayText": "sele_ _ _ _ _",
+                "missingText": "ctive",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-6a-m2-rap-19",
+      "module": "rap",
+      "title": "Magnetic Confinement Fusion",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.6A",
+        "occurrenceDate": "2026-06-06",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-06-a-m2-rap-p01",
+          "title": "Magnetic Confinement Fusion",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-06-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Magnetic confinement fusion is a promising approach for generating clean electricity. This technology fuses deuterium and tritium, heavy forms of hydrogen, to release energy while producing minimal radioactive waste when compared to current technologies to produce nuclear power. The basic principle was first demonstrated in 1957: powerful magnetic fields contain extremely hot plasma at temperatures reaching 150 million degrees Celsius—ten times hotter than the sun's core. Without magnetic containment, the plasma would instantly cool upon touching reactor walls, halting the fusion process.",
+              "rawText": "Magnetic confinement fusion is a promising approach for generating clean electricity. This technology fuses deuterium and tritium, heavy forms of hydrogen, to release energy while producing minimal radioactive waste when compared to current technologies to produce nuclear power. The basic principle was first demonstrated in 1957: powerful magnetic fields contain extremely hot plasma at temperatures reaching 150 million degrees Celsius—ten times hotter than the sun's core. Without magnetic containment, the plasma would instantly cool upon touching reactor walls, halting the fusion process.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Magnetic confinement fusion is a promising approach for generating clean electricity."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This technology fuses deuterium and tritium, heavy forms of hydrogen, to release energy while producing minimal radioactive waste when compared to current technologies to produce nuclear power."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "The basic principle was first demonstrated in 1957: powerful magnetic fields contain extremely hot plasma at temperatures reaching 150 million degrees Celsius—ten times hotter than the sun's core."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Without magnetic containment, the plasma would instantly cool upon touching reactor walls, halting the fusion process."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-06-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Since those early breakthroughs, researchers have built increasingly sophisticated magnetic confinement reactors called tokamaks. The International Thermonuclear Experimental Reactor (ITER), currently under construction, represents the culmination of decades of magnetic confinement research. ITER aims to demonstrate sustained fusion reactions that produce more energy than they consume—a critical milestone called net energy gain.",
+              "rawText": "Since those early breakthroughs, researchers have built increasingly sophisticated magnetic confinement reactors called tokamaks. The International Thermonuclear Experimental Reactor (ITER), currently under construction, represents the culmination of decades of magnetic confinement research. ITER aims to demonstrate sustained fusion reactions that produce more energy than they consume—a critical milestone called net energy gain.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Since those early breakthroughs, researchers have built increasingly sophisticated magnetic confinement reactors called tokamaks."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "The International Thermonuclear Experimental Reactor (ITER), currently under construction, represents the culmination of decades of magnetic confinement research."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "ITER aims to demonstrate sustained fusion reactions that produce more energy than they consume—a critical milestone called net energy gain."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-06-a-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "However, significant challenges remain before magnetic fusion can generate commercial electricity. Current experiments require enormous energy inputs to maintain plasma conditions, and the intense neutron radiation gradually damages reactor materials. Additionally, converting fusion energy into usable electricity requires developing efficient heat-to-power conversion systems. Despite these obstacles, successful demonstration of net energy gain could pave the way for fusion power plants in the 2040s.",
+              "rawText": "However, significant challenges remain before magnetic fusion can generate commercial electricity. Current experiments require enormous energy inputs to maintain plasma conditions, and the intense neutron radiation gradually damages reactor materials. Additionally, converting fusion energy into usable electricity requires developing efficient heat-to-power conversion systems. Despite these obstacles, successful demonstration of net energy gain could pave the way for fusion power plants in the 2040s.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, significant challenges remain before magnetic fusion can generate commercial electricity."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Current experiments require enormous energy inputs to maintain plasma conditions, and the intense neutron radiation gradually damages reactor materials."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Additionally, converting fusion energy into usable electricity requires developing efficient heat-to-power conversion systems."
+                },
+                {
+                  "sentenceId": "reading-2026-06-06-a-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Despite these obstacles, successful demonstration of net energy gain could pave the way for fusion power plants in the 2040s."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-06-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what significant achievement in fusion research occurred in 1957?",
+          "rawDisplayText": "11. According to the passage, what significant achievement in fusion research occurred in 1957?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "Researchers successfully fused deuterium and tritium atoms for the first time."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "Researchers demonstrated that magnetic fields could contain extremely hot plasma."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "Researchers estimated the temperature of the sun's core to be 150 million degrees Celsius."
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "Researchers discovered the basic principle that explains the existence of heavy forms of hydrogen."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m2-q11-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention plasma touching reactor walls?",
+          "rawDisplayText": "12. Why does the author mention plasma touching reactor walls?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "To explain how the plasma is contained within the reactor"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "To point out how researchers cool plasma after heating it for experiments"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "To demonstrate the final step in achieving nuclear fusion"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "To clarify why magnetic confinement techniques are necessary"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"sophisticated\" in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word \"sophisticated\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "advanced"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "large"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "expensive"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "successful"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is ITER's primary objective?",
+          "rawDisplayText": "14. According to the passage, what is ITER's primary objective?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To generate commercial electricity for distribution to power grids"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To demonstrate that magnetic confinement techniques are not environmentally sustainable"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To prove that fusion reactions can produce more energy than they consume"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To challenge decades of magnetic confinement research"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-06-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is mentioned as one factor that currently prevents magnetic fusion from generating commercial electricity?",
+          "rawDisplayText": "15. Which of the following is mentioned as one factor that currently prevents magnetic fusion from generating commercial electricity?",
+          "payload": {
+            "passageId": "reading-2026-06-06-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-06-a-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "Insufficient global supplies of reactor materials"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "Inability to achieve intense neutron radiation"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "High energy demands for plasma maintenance"
+              },
+              {
+                "optionId": "reading-2026-06-06-a-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "Lack of magnetic fields that are powerful enough"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-06-a-m2-q15-opt-3"
+          }
+        }
+      ]
+    }
+  ]
+}

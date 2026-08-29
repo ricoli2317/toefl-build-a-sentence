@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-e6c32ca542e87217d460261e",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-18",
+    "firstSeenSourceLabel": "5.18B",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "e6c32ca542e87217d460261e9c9f2e268366a3fae87fd276fc4ae85b719fa65d",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-18b-m1-ctw-02",
+      "logicalItemId": "reading-ctw-e6c32ca542e87217d460261e",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18B",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-e6c32ca542e87217d460261e-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-e6c32ca542e87217d460261e-q01",
+      "logicalItemId": "reading-ctw-e6c32ca542e87217d460261e",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Unlike literature or visual arts, theater engages audiences through live performances, creating an immediate emotional connection. The collab_ _ _ _ _ _ _ nature o_ theater fos_ _ _ _ a dyn_ _ _ _ exchange am_ _ _ professionals th_ _ spurs creat_ _ _ _ _. Theater c_ _ challenge precon_ _ _ _ _ _ notions a_ _ invite audiences to consider diverse perspectives. Its ephemeral quality—existing only in the moment of performance—heightens the impact, forcing both performers and viewers to engage with the present, ultimately transforming their understanding of human experiences.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Unlike literature or visual arts, theater engages audiences through live performances, creating an immediate emotional connection. The collab_ _ _ _ _ _ _ nature o_ theater fos_ _ _ _ a dyn_ _ _ _ exchange am_ _ _ professionals th_ _ spurs creat_ _ _ _ _. Theater c_ _ challenge precon_ _ _ _ _ _ notions a_ _ invite audiences to consider diverse perspectives. Its ephemeral quality—existing only in the moment of performance—heightens the impact, forcing both performers and viewers to engage with the present, ultimately transforming their understanding of human experiences.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Unlike literature or visual arts, theater engages audiences through live performances, creating an immediate emotional connection. The "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " nature "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " theater "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " exchange "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " professionals "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " spurs "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ". Theater "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " challenge "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " notions "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " invite audiences to consider diverse perspectives. Its ephemeral quality—existing only in the moment of performance—heightens the impact, forcing both performers and viewers to engage with the present, ultimately transforming their understanding of human experiences."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "collaborative",
+            "prefix": "collab",
+            "displayText": "collab_ _ _ _ _ _ _",
+            "missingText": "orative",
+            "missingLength": 7
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "fosters",
+            "prefix": "fos",
+            "displayText": "fos_ _ _ _",
+            "missingText": "ters",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "dynamic",
+            "prefix": "dyn",
+            "displayText": "dyn_ _ _ _",
+            "missingText": "amic",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "among",
+            "prefix": "am",
+            "displayText": "am_ _ _",
+            "missingText": "ong",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "that",
+            "prefix": "th",
+            "displayText": "th_ _",
+            "missingText": "at",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "creativity",
+            "prefix": "creat",
+            "displayText": "creat_ _ _ _ _",
+            "missingText": "ivity",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "can",
+            "prefix": "c",
+            "displayText": "c_ _",
+            "missingText": "an",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "preconceived",
+            "prefix": "precon",
+            "displayText": "precon_ _ _ _ _ _",
+            "missingText": "ceived",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-e6c32ca542e87217d460261e-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-e6c32ca542e87217d460261e-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

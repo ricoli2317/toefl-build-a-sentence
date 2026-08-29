@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-c849d537afb39dac106e67a6",
+    "module": "rdl",
+    "title": "Study Abroad Expo - Session Schedule",
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20B",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "c849d537afb39dac106e67a683f076c958c8eb25a27f6d6dd144c7f04c8ffe9f",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20b-m1-rdl-10",
+      "logicalItemId": "reading-rdl-c849d537afb39dac106e67a6",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20B",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-c849d537afb39dac106e67a6-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-c849d537afb39dac106e67a6-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-c849d537afb39dac106e67a6-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-045",
+      "title": "Study Abroad Expo - Session Schedule",
+      "source": "material-index.json#RDL-045",
+      "sourceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-045/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-045/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-c849d537afb39dac106e67a6-q01",
+      "logicalItemId": "reading-rdl-c849d537afb39dac106e67a6",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the general aim of the Study Abroad Expo?",
+      "rawDisplayText": "28. What is the general aim of the Study Abroad Expo?",
+      "payload": {
+        "materialId": "RDL-045",
+        "options": [
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To evaluate emerging risks in a variety of sectors in the field of global education"
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To facilitate a deep understanding of opportunities for international learning"
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To highlight the historical significance of student exchange programs"
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To promote the sale of travel-related merchandise intended for students"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c849d537afb39dac106e67a6-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c849d537afb39dac106e67a6-q02",
+      "logicalItemId": "reading-rdl-c849d537afb39dac106e67a6",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is suggested about the Sustainable Study Abroad panel?",
+      "rawDisplayText": "29. What is suggested about the Sustainable Study Abroad panel?",
+      "payload": {
+        "materialId": "RDL-045",
+        "options": [
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It will mainly address the costs of studying abroad for students."
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It will show the need to integrate eco-friendly practices into study abroad programs."
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It will examine the impact of studying abroad on student environmental consciousness."
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It will primarily focus on the legal aspects of participating in study abroad programs."
+          }
+        ],
+        "correctOptionId": "reading-rdl-c849d537afb39dac106e67a6-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c849d537afb39dac106e67a6-q03",
+      "logicalItemId": "reading-rdl-c849d537afb39dac106e67a6",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Which of the following aspects of study abroad programs might Dr. Kim’s keynote speech address?",
+      "rawDisplayText": "30. Which of the following aspects of study abroad programs might Dr. Kim’s keynote speech address?",
+      "payload": {
+        "materialId": "RDL-045",
+        "options": [
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q03-opt-1",
+            "optionOrder": 1,
+            "text": "The possible influence of emerging technologies"
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Existing patterns of participation in study abroad programs"
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The allure of traditional study abroad destinations"
+          },
+          {
+            "optionId": "reading-rdl-c849d537afb39dac106e67a6-q03-opt-4",
+            "optionOrder": 4,
+            "text": "The benefits of current study abroad program policies"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c849d537afb39dac106e67a6-q03-opt-2"
+      }
+    }
+  ]
+}

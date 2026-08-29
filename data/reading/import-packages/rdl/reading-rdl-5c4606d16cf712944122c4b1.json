@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+    "module": "rdl",
+    "title": "Instructions for Resetting Your Dorm Room Router",
+    "firstSeenDate": "2026-06-09",
+    "firstSeenSourceLabel": "6.9",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "5c4606d16cf712944122c4b1b1bd57539c98f1e38cdbdeadc25e1d3fe8771d90",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-9-m1-rdl-03",
+      "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+      "sourceKind": "docx",
+      "sourceLabel": "6.9",
+      "occurrenceDate": "2026-06-09",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-5c4606d16cf712944122c4b1-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-5c4606d16cf712944122c4b1-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-21b-m1-rdl-03",
+      "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21B",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-5c4606d16cf712944122c4b1-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-5c4606d16cf712944122c4b1-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-020",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "source": "material-index.json#RDL-020",
+      "sourceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-020/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-020/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-5c4606d16cf712944122c4b1-q01",
+      "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What should be done first to reset the router?",
+      "rawDisplayText": "21. What should be done first to reset the router?",
+      "payload": {
+        "materialId": "RDL-020",
+        "options": [
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Disconnect the router from electrical power"
+          },
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Wait for the router to restart automatically"
+          },
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Wait for 30 seconds for the router to cool"
+          },
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Plug the router back in and push the start button"
+          }
+        ],
+        "correctOptionId": "reading-rdl-5c4606d16cf712944122c4b1-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-5c4606d16cf712944122c4b1-q02",
+      "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is the final step to resetting the router?",
+      "rawDisplayText": "22. What is the final step to resetting the router?",
+      "payload": {
+        "materialId": "RDL-020",
+        "options": [
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Unplug the router from the power source"
+          },
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Wait until the router has completely started again"
+          },
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Plug the router into a different power source"
+          },
+          {
+            "optionId": "reading-rdl-5c4606d16cf712944122c4b1-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Wait for 30 seconds or until the light flashes"
+          }
+        ],
+        "correctOptionId": "reading-rdl-5c4606d16cf712944122c4b1-q02-opt-2"
+      }
+    }
+  ]
+}

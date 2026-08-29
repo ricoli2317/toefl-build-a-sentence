@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+    "module": "rap",
+    "title": "Optical Astronomy’s Adaptive Revolution",
+    "firstSeenDate": "2026-05-11",
+    "firstSeenSourceLabel": "5.11B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "150613dd5287e3f4b779eb5aadab185c4e054d1a028d887aa28354d4e3ddcb7f",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-11b-m2-rap-19",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "sourceKind": "docx",
+      "sourceLabel": "5.11B",
+      "occurrenceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "title": "Optical Astronomy’s Adaptive Revolution",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s. This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity. Light waves from distant stars travel through Earth’s atmosphere, creating a shimmering effect that distorts them. Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms. The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second.",
+          "rawText": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s. ■ This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity. Light waves from distant stars travel through Earth’s atmosphere, creating a shimmering effect that distorts them. ■ Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms. ■ The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Light waves from distant stars travel through Earth’s atmosphere, creating a shimmering effect that distorts them."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "However, the technology is not without controversy. Some argue that the energy consumption of adaptive optics contributes significantly to observatories’ carbon footprints. Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life.",
+          "rawText": "However, the technology is not without controversy. Some argue that the energy consumption of adaptive optics contributes significantly to observatories’ carbon footprints. Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "However, the technology is not without controversy."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Some argue that the energy consumption of adaptive optics contributes significantly to observatories’ carbon footprints."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship. Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations. Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections.",
+          "rawText": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship. Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations. Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations."
+            },
+            {
+              "sentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q01",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred from the passage about the capabilities of optical astronomy BEFORE the late 1980s?",
+      "rawDisplayText": "11. What can be inferred from the passage about the capabilities of optical astronomy BEFORE the late 1980s?",
+      "payload": {
+        "passageId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Images of celestial objects from ground-based telescopes were often unclear."
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Astronomers used adaptive optics to distort light waves."
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Astronomers used the shimmering effect to find distant stars."
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Telescopes used deformable mirrors to see farther into space."
+          }
+        ],
+        "correctOptionId": "reading-rap-150613dd5287e3f4b779eb5a-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q02",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "How do proponents of adaptive optics counter criticism of the technology?",
+      "rawDisplayText": "12. How do proponents of adaptive optics counter criticism of the technology?",
+      "payload": {
+        "passageId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q02-opt-1",
+            "optionOrder": 1,
+            "text": "The observatories that use the technology have a lower carbon footprint than the critics maintain."
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q02-opt-2",
+            "optionOrder": 2,
+            "text": "The usefulness of the technology is more important than its drawbacks."
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q02-opt-3",
+            "optionOrder": 3,
+            "text": "The technology is only in its early stages and will improve over time."
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q02-opt-4",
+            "optionOrder": 4,
+            "text": "The negative effects of the technology are localized and not globally significant."
+          }
+        ],
+        "correctOptionId": "reading-rap-150613dd5287e3f4b779eb5a-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q03",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “stewardship” in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word “stewardship” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q03-opt-1",
+            "optionOrder": 1,
+            "text": "supervision"
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q03-opt-2",
+            "optionOrder": 2,
+            "text": "achievement"
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q03-opt-3",
+            "optionOrder": 3,
+            "text": "enthusiasm"
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q03-opt-4",
+            "optionOrder": 4,
+            "text": "design"
+          }
+        ],
+        "correctOptionId": "reading-rap-150613dd5287e3f4b779eb5a-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q04",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention attempts to optimize algorithms?",
+      "rawDisplayText": "14. Why does the author mention attempts to optimize algorithms?",
+      "payload": {
+        "passageId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To give an example of how observatories could cut costs"
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To suggest that current algorithms still contain some errors when adjusting mirrors"
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To provide an example of how adaptive optics continues to evolve"
+          },
+          {
+            "optionId": "reading-rap-150613dd5287e3f4b779eb5a-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To show one way researchers are trying to reduce observatories’ energy consumption"
+          }
+        ],
+        "correctOptionId": "reading-rap-150613dd5287e3f4b779eb5a-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q05",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01",
+        "insertSentence": "To understand this phenomenon, imagine looking through the heat waves seen over hot asphalt or desert sand.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-150613dd5287e3f4b779eb5a-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s01"
+          },
+          {
+            "anchorId": "reading-rap-150613dd5287e3f4b779eb5a-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s03"
+          },
+          {
+            "anchorId": "reading-rap-150613dd5287e3f4b779eb5a-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s04"
+          },
+          {
+            "anchorId": "reading-rap-150613dd5287e3f4b779eb5a-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p01-s05"
+          }
+        ],
+        "correctAnchorId": "reading-rap-150613dd5287e3f4b779eb5a-q05-anchor-2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-356930309b8c015008667f85",
+    "module": "rap",
+    "title": "Quantum Computing",
+    "firstSeenDate": "2026-06-02",
+    "firstSeenSourceLabel": "6.2",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "356930309b8c015008667f85d6cbd4c28a8cf7936d121c879922bcd53ef1a743",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-2-m1-rap-07",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "sourceKind": "docx",
+      "sourceLabel": "6.2",
+      "occurrenceDate": "2026-06-02",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-356930309b8c015008667f85-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-356930309b8c015008667f85-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-356930309b8c015008667f85-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-356930309b8c015008667f85-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-356930309b8c015008667f85-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-356930309b8c015008667f85-passage-01",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "title": "Quantum Computing",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power. Traditional computers store data in binary bits, representing 0 or 1. Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition). This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers.",
+          "rawText": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power. Traditional computers store data in binary bits, representing 0 or 1. Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition). This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Traditional computers store data in binary bits, representing 0 or 1."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition)."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages. Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break. Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques. Researchers are exploring such methods to secure data in a post-quantum world.",
+          "rawText": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages. Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break. Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques. Researchers are exploring such methods to secure data in a post-quantum world.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Researchers are exploring such methods to secure data in a post-quantum world."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances. Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations. Despite the challenges, progress is accelerating. Scientists are developing error-correcting codes and stable qubit designs to address these issues. Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence.",
+          "rawText": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances. ■ Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations. ■ Despite the challenges, progress is accelerating. ■ Scientists are developing error-correcting codes and stable qubit designs to address these issues. ■ Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Despite the challenges, progress is accelerating."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Scientists are developing error-correcting codes and stable qubit designs to address these issues."
+            },
+            {
+              "sentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s05",
+              "sentenceOrder": 5,
+              "text": "Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-356930309b8c015008667f85-q01",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"revolutionize\" in the passage is closest in meaning to",
+      "rawDisplayText": "26. The word \"revolutionize\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-356930309b8c015008667f85-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q01-opt-1",
+            "optionOrder": 1,
+            "text": "simplify"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q01-opt-2",
+            "optionOrder": 2,
+            "text": "transform"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q01-opt-3",
+            "optionOrder": 3,
+            "text": "study"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q01-opt-4",
+            "optionOrder": 4,
+            "text": "use"
+          }
+        ],
+        "correctOptionId": "reading-rap-356930309b8c015008667f85-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-356930309b8c015008667f85-q02",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author discuss binary bits and qubits?",
+      "rawDisplayText": "27. Why does the author discuss binary bits and qubits?",
+      "payload": {
+        "passageId": "reading-rap-356930309b8c015008667f85-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To explain why quantum computers are more powerful than classical computers are"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To discuss the two ways in which quantum computers store data"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To emphasize the fast pace at which computing technology is advancing"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To explain what causes the state of superposition"
+          }
+        ],
+        "correctOptionId": "reading-rap-356930309b8c015008667f85-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-356930309b8c015008667f85-q03",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, new encryption techniques are needed in the post-quantum world because",
+      "rawDisplayText": "28. According to the passage, new encryption techniques are needed in the post-quantum world because",
+      "payload": {
+        "passageId": "reading-rap-356930309b8c015008667f85-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q03-opt-1",
+            "optionOrder": 1,
+            "text": "quantum computers are less secure"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q03-opt-2",
+            "optionOrder": 2,
+            "text": "quantum computers store more valuable data than classical computers do"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q03-opt-3",
+            "optionOrder": 3,
+            "text": "quantum computers can break existing encryption"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q03-opt-4",
+            "optionOrder": 4,
+            "text": "quantum computers cannot process current encryption algorithms"
+          }
+        ],
+        "correctOptionId": "reading-rap-356930309b8c015008667f85-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-356930309b8c015008667f85-q04",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention \"external disturbances\"?",
+      "rawDisplayText": "29. Why does the author mention \"external disturbances\"?",
+      "payload": {
+        "passageId": "reading-rap-356930309b8c015008667f85-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To point out that qubits can only function in certain environmental conditions"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To introduce a similarity between quantum computing and traditional computing"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To explain how quantum computing creates unwanted fluctuations in magnetic or electric fields"
+          },
+          {
+            "optionId": "reading-rap-356930309b8c015008667f85-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To suggest that quantum computing can be prohibitively expensive"
+          }
+        ],
+        "correctOptionId": "reading-rap-356930309b8c015008667f85-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-356930309b8c015008667f85-q05",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-356930309b8c015008667f85-passage-01",
+        "insertSentence": "Seeing progress, companies and governments have begun to invest heavily in quantum research, aiming to unlock its potential.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-356930309b8c015008667f85-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-356930309b8c015008667f85-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-356930309b8c015008667f85-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s03"
+          },
+          {
+            "anchorId": "reading-rap-356930309b8c015008667f85-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p03",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-356930309b8c015008667f85-passage-01-p03-s04"
+          }
+        ],
+        "correctAnchorId": "reading-rap-356930309b8c015008667f85-q05-anchor-4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-a057307eae4548034a143578",
+    "module": "rdl",
+    "title": "Urgent: Campus Transport and Traffic Advisory",
+    "firstSeenDate": "2026-06-14",
+    "firstSeenSourceLabel": "6.14",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "a057307eae4548034a1435789c7577ed4f95f40ba928abb58e6bc91e1f493ebc",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-14-m1-rdl-07",
+      "logicalItemId": "reading-rdl-a057307eae4548034a143578",
+      "sourceKind": "docx",
+      "sourceLabel": "6.14",
+      "occurrenceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.14.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.14_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-a057307eae4548034a143578-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-a057307eae4548034a143578-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-a057307eae4548034a143578-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-072",
+      "title": "Urgent: Campus Transport and Traffic Advisory",
+      "source": "material-index.json#RDL-072",
+      "sourceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-072/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-072/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-a057307eae4548034a143578-q01",
+      "logicalItemId": "reading-rdl-a057307eae4548034a143578",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Why was this notice posted?",
+      "rawDisplayText": "25. Why was this notice posted?",
+      "payload": {
+        "materialId": "RDL-072",
+        "options": [
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To announce the opening of new university offices on North Avenue"
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To provide information about construction work on North Avenue"
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To announce the addition of new university parking garages"
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To promote the university's enhanced North Avenue shuttle service"
+          }
+        ],
+        "correctOptionId": "reading-rdl-a057307eae4548034a143578-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-a057307eae4548034a143578-q02",
+      "logicalItemId": "reading-rdl-a057307eae4548034a143578",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "According to the advisory, the events described will temporarily affect people in all of the following ways EXCEPT:",
+      "rawDisplayText": "26. According to the advisory, the events described will temporarily affect people in all of the following ways EXCEPT:",
+      "payload": {
+        "materialId": "RDL-072",
+        "options": [
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They will experience increased noise."
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Their daily travel time will be increased."
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Some places to park cars will be unavailable."
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Some bus lines will not operate."
+          }
+        ],
+        "correctOptionId": "reading-rdl-a057307eae4548034a143578-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-a057307eae4548034a143578-q03",
+      "logicalItemId": "reading-rdl-a057307eae4548034a143578",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "According to the notice, why should students visit the university's infrastructure website?",
+      "rawDisplayText": "27. According to the notice, why should students visit the university's infrastructure website?",
+      "payload": {
+        "materialId": "RDL-072",
+        "options": [
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To check the current status of lane closures on North Avenue"
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To find information about parking permit refunds"
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To request special shuttle accommodations"
+          },
+          {
+            "optionId": "reading-rdl-a057307eae4548034a143578-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To reserve a parking space in the Pemberton Parking Complex"
+          }
+        ],
+        "correctOptionId": "reading-rdl-a057307eae4548034a143578-q03-opt-1"
+      }
+    }
+  ]
+}

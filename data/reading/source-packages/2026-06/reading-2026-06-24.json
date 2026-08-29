@@ -1,0 +1,1805 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.24",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The development of tools during the time of early hominids was a transformative step in human evolution, reflecting increasing cognitive abilities and adaptability to diverse environments. Beginning with simple stone flakes, tools we_ _ used f_ _ self-defense, cut_ _ _ _ meat, a_ _ processing pla_ _ _. A_ time progr_ _ _ _ _, more adva_ _ _ _ tools li_ _ hand ax_ _ and scrapers emerged, showing evidence of planning, skill, and possibly even teaching within social groups. These innovations not only improved survival rates but also laid the foundation for cultural evolution and technological advancement.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The development of tools during the time of early hominids was a transformative step in human evolution, reflecting increasing cognitive abilities and adaptability to diverse environments. Beginning with simple stone flakes, tools we_ _ used f_ _ self-defense, cut_ _ _ _ meat, a_ _ processing pla_ _ _. A_ time progr_ _ _ _ _, more adva_ _ _ _ tools li_ _ hand ax_ _ and scrapers emerged, showing evidence of planning, skill, and possibly even teaching within social groups. These innovations not only improved survival rates but also laid the foundation for cultural evolution and technological advancement.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The development of tools during the time of early hominids was a transformative step in human evolution, reflecting increasing cognitive abilities and adaptability to diverse environments. Beginning with simple stone flakes, tools "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " used "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " self-defense, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " meat, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " processing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " time "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", more "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " tools "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " hand "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and scrapers emerged, showing evidence of planning, skill, and possibly even teaching within social groups. These innovations not only improved survival rates but also laid the foundation for cultural evolution and technological advancement."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "were",
+                "prefix": "we",
+                "displayText": "we_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "for",
+                "prefix": "f",
+                "displayText": "f_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "cutting",
+                "prefix": "cut",
+                "displayText": "cut_ _ _ _",
+                "missingText": "ting",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "plants",
+                "prefix": "pla",
+                "displayText": "pla_ _ _",
+                "missingText": "nts",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "As",
+                "prefix": "A",
+                "displayText": "A_",
+                "missingText": "s",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "progressed",
+                "prefix": "progr",
+                "displayText": "progr_ _ _ _ _",
+                "missingText": "essed",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "advanced",
+                "prefix": "adva",
+                "displayText": "adva_ _ _ _",
+                "missingText": "nced",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "like",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q01-10-p01",
+                "answer": "axes",
+                "prefix": "ax",
+                "displayText": "ax_ _",
+                "missingText": "es",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Grasshoppers are insects commonly found in dry places with grass and plants. Grasshoppers ha_ _ several wa_ _ they pro_ _ _ _ themselves aga_ _ _ _ danger. Th_ _ have powe_ _ _ _ back le_ _, which al_ _ _ them t_ jump aw_ _ from enemies, such as rodents and snakes. Some grasshoppers can jump twenty times the length of their bodies. By the time they are adults, grasshoppers can also fly. Adult grasshoppers fly very quickly and this helps them avoid danger.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Grasshoppers are insects commonly found in dry places with grass and plants. Grasshoppers ha_ _ several wa_ _ they pro_ _ _ _ themselves aga_ _ _ _ danger. Th_ _ have powe_ _ _ _ back le_ _, which al_ _ _ them t_ jump aw_ _ from enemies, such as rodents and snakes. Some grasshoppers can jump twenty times the length of their bodies. By the time they are adults, grasshoppers can also fly. Adult grasshoppers fly very quickly and this helps them avoid danger.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Grasshoppers are insects commonly found in dry places with grass and plants. Grasshoppers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " several "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " they "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " themselves "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " danger. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " have "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " back "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", which "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " them "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " jump "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " from enemies, such as rodents and snakes. Some grasshoppers can jump twenty times the length of their bodies. By the time they are adults, grasshoppers can also fly. Adult grasshoppers fly very quickly and this helps them avoid danger."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "have",
+                "prefix": "ha",
+                "displayText": "ha_ _",
+                "missingText": "ve",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "ways",
+                "prefix": "wa",
+                "displayText": "wa_ _",
+                "missingText": "ys",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "protect",
+                "prefix": "pro",
+                "displayText": "pro_ _ _ _",
+                "missingText": "tect",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "against",
+                "prefix": "aga",
+                "displayText": "aga_ _ _ _",
+                "missingText": "inst",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "They",
+                "prefix": "Th",
+                "displayText": "Th_ _",
+                "missingText": "ey",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "powerful",
+                "prefix": "powe",
+                "displayText": "powe_ _ _ _",
+                "missingText": "rful",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "legs",
+                "prefix": "le",
+                "displayText": "le_ _",
+                "missingText": "gs",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "allow",
+                "prefix": "al",
+                "displayText": "al_ _ _",
+                "missingText": "low",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-24-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-24-m1-ctw-q11-20-p01",
+                "answer": "away",
+                "prefix": "aw",
+                "displayText": "aw_ _",
+                "missingText": "ay",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m1-rdl-03",
+      "module": "rdl",
+      "title": "Bridgeford University Music & Culture Night",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-078",
+          "title": "Bridgeford University Music & Culture Night",
+          "source": "material-index.json#RDL-078",
+          "sourceDate": "2026-06-24",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-078/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-078/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Students who arrive late may have trouble getting",
+          "rawDisplayText": "21. Students who arrive late may have trouble getting",
+          "payload": {
+            "materialId": "RDL-078",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "free admission"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "access to interpreters"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "a free souvenir"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "access to dining"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "Showers are predicted shortly before 7:30 p.m. An attendee who is arriving at the event should proceed to which place?",
+          "rawDisplayText": "22. Showers are predicted shortly before 7:30 p.m. An attendee who is arriving at the event should proceed to which place?",
+          "payload": {
+            "materialId": "RDL-078",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Union Ballroom"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Bridgeford Music Council Office"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "West Quad Amphitheater"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Café Azul"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m1-rdl-05",
+      "module": "rdl",
+      "title": "University nuclear research reactor article",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-079",
+          "title": "University nuclear research reactor article",
+          "source": "material-index.json#RDL-079",
+          "sourceDate": "2026-06-24",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-079/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-079/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "All of the following are true of the new nuclear reactor EXCEPT",
+          "rawDisplayText": "23. All of the following are true of the new nuclear reactor EXCEPT",
+          "payload": {
+            "materialId": "RDL-079",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "It is about the size of a classroom."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "It is located on the engineering quad."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Its purpose is to provide power to the university."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "It has caused safety concerns among students."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What claim does the project lead make regarding the safety of the new reactor?",
+          "rawDisplayText": "24. What claim does the project lead make regarding the safety of the new reactor?",
+          "payload": {
+            "materialId": "RDL-079",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "It exposes passersby to less radiation than they would receive on an airplane."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "It will provide opportunities for the university that override worries about safety."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "It is safer for students than are the industrial reactors located near campus."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "It is low-power, heavily shielded, and monitored under strict federal guidelines."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q24-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "Which of the following best describes the attitude represented by the event planned by the Physics Club?",
+          "rawDisplayText": "25. Which of the following best describes the attitude represented by the event planned by the Physics Club?",
+          "payload": {
+            "materialId": "RDL-079",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "Concerned but resigned"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Hopeful but cautious"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Critical and serious"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Lighthearted and celebratory"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m1-rap-08",
+      "module": "rap",
+      "title": "Urban Resilience",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-24-m1-rap-p01",
+          "title": "Urban Resilience",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals. This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas. Cities are implementing various strategies to enhance resilience. For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding. Renewable energy sources, such as solar and wind, reduce dependence on non- renewable resources and improve energy security.",
+              "rawText": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals. This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas. Cities are implementing various strategies to enhance resilience. For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding. Renewable energy sources, such as solar and wind, reduce dependence on non- renewable resources and improve energy security.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Cities are implementing various strategies to enhance resilience."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Renewable energy sources, such as solar and wind, reduce dependence on non- renewable resources and improve energy security."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Community engagement is another critical component of urban resilience. Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met. This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies. Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems.",
+              "rawText": "Community engagement is another critical component of urban resilience. Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met. This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies. Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Community engagement is another critical component of urban resilience."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Nonetheless, building urban resilience is not without obstacles. Budget constraints and political disagreements can hinder the implementation of necessary measures. Additionally, the integration of new technologies requires substantial investment and training. Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide.",
+              "rawText": "Nonetheless, building urban resilience is not without obstacles. ■ Budget constraints and political disagreements can hinder the implementation of necessary measures. ■ Additionally, the integration of new technologies requires substantial investment and training. ■ Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Nonetheless, building urban resilience is not without obstacles."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Budget constraints and political disagreements can hinder the implementation of necessary measures."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Additionally, the integration of new technologies requires substantial investment and training."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the purpose of green infrastructure like parks and green roofs?",
+          "rawDisplayText": "26. What is the purpose of green infrastructure like parks and green roofs?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "To increase urban density"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "To prevent.Flooding"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "To foster community engagement"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "To generate renewable energy"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"fosters\" in the passage is closest in meaning to",
+          "rawDisplayText": "27. The word \"fosters\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "describes"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "neglects"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "encourages"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "replaces"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q27-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest is essential for resilience strategies to be fully effective?",
+          "rawDisplayText": "28. What does the passage suggest is essential for resilience strategies to be fully effective?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "Discouraging the uncontrolled growth of urban populations"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "The involvement of local government and citizens"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "Less reliance on smart technology"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Limiting the number of structures in urban areas"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is NOT mentioned as a challenge for urban resilience?",
+          "rawDisplayText": "29. Which of the following is NOT mentioned as a challenge for urban resilience?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Financial limitations."
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Political disagreements"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "Integration of new technologies"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "Community participation"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q29-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p01",
+            "insertSentence": "For example, Singapore's Intelligent Transport System incorporates artificial intelligence (AI) to predict real-time traffic conditions, effectively manage road congestion, and optimize routes.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-24-m1-q30-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-24-m1-rap-p01-p02",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p01-p02-s04"
+              },
+              {
+                "anchorId": "reading-2026-06-24-m1-q30-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-24-m1-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-24-m1-q30-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-24-m1-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-24-m1-q30-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-24-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p01-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-24-m1-q30-anchor-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m1-rap-13",
+      "module": "rap",
+      "title": "Hidden Structures in Discrete Geometry",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-24-m1-rap-p02",
+          "title": "Hidden Structures in Discrete Geometry",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects. Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons. These distinct components reveal unexpected structures and relationships. Such revelations occur particularly in packing and tiling problems.",
+              "rawText": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects. Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons. These distinct components reveal unexpected structures and relationships. Such revelations occur particularly in packing and tiling problems.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "These distinct components reveal unexpected structures and relationships."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Such revelations occur particularly in packing and tiling problems."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Packing problems involve finding the most efficient arrangement of objects in a given space. While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access. Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency.",
+              "rawText": "Packing problems involve finding the most efficient arrangement of objects in a given space. While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access. Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Packing problems involve finding the most efficient arrangement of objects in a given space."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Tiling problems further illustrate the depth of discrete geometry. Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties. The insights gained from such tiling patterns have influenced architectural designs and artworks.",
+              "rawText": "■ Tiling problems further illustrate the depth of discrete geometry. ■ Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties. ■ The insights gained from such tiling patterns have influenced architectural designs and artworks. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Tiling problems further illustrate the depth of discrete geometry."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "The insights gained from such tiling patterns have influenced architectural designs and artworks."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-24-m1-rap-p02-p04",
+              "paragraphOrder": 4,
+              "text": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value. Mathematicians continue to show how these hidden structures drive innovation across fields.",
+              "rawText": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value. Mathematicians continue to show how these hidden structures drive innovation across fields.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m1-rap-p02-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Mathematicians continue to show how these hidden structures drive innovation across fields."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 1 that contrasts two branches of mathematics. Select the sentence to make your choice.",
+          "rawDisplayText": "31. Identify the sentence in paragraph 1 that contrasts two branches of mathematics. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p02",
+            "targetParagraphId": "reading-2026-06-24-m1-rap-p02-p01",
+            "correctSentenceId": "reading-2026-06-24-m1-rap-p02-p01-s02"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"fitting oranges into boxes\"?",
+          "rawDisplayText": "32. Why does the author mention \"fitting oranges into boxes\"?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "To help describe the historical development of packing problems"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "To help communicate the idea that packing problems are not as simple as they sound"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "To explain the basic principles of discrete geometry to nonspecialists"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "To highlight one of the challenges faced by researchers in discrete geometry"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The study of computer chip design and data storage has revealed that",
+          "rawDisplayText": "33. The study of computer chip design and data storage has revealed that",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "traditional assumptions about efficiency are still valid"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "the principles of continuous geometry are surprisingly relevant"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "there are interesting connections between how shapes are arranged and how spaces are used"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "there are new ways of enhancing the security of digital information"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"belie\" in the passage is closest in meaning to",
+          "rawDisplayText": "34. The word \"belie\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "hide"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "confirm"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "enhance"
+              },
+              {
+                "optionId": "reading-2026-06-24-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "undermine"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-24-m1-rap-p02",
+            "insertSentence": "For example, Penrose-inspired patterns have been used in mosaic art and floor designs to create visually striking compositions that evoke mathematical harmony.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-24-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-24-m1-rap-p02-p03",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-06-24-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-24-m1-rap-p02-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p02-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-24-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-24-m1-rap-p02-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p02-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-24-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-24-m1-rap-p02-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-24-m1-rap-p02-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-24-m1-q35-anchor-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The last Ice Age sculpted the face of Earth, leaving behind majestic glaciers that continue to shape the landscape even today. These mas_ _ _ _ ice riv_ _ _ flow slo_ _ _, grinding do_ _ mountains a_ _ carving val_ _ _ _ over mill_ _ _ _ _. Compared t_ other geolo_ _ _ _ _ phenomena, t_ _ movement of glaciers is imperceptible on a human timescale, yet their impact is undeniably profound. Glaciers serve as natural archives of Earth's climatic history, preserving atmospheric data in layers of ice that have accumulated over thousands of years. Studying glaciers allows scientists to analyze past temperature patterns and environmental changes over time.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The last Ice Age sculpted the face of Earth, leaving behind majestic glaciers that continue to shape the landscape even today. These mas_ _ _ _ ice riv_ _ _ flow slo_ _ _, grinding do_ _ mountains a_ _ carving val_ _ _ _ over mill_ _ _ _ _. Compared t_ other geolo_ _ _ _ _ phenomena, t_ _ movement of glaciers is imperceptible on a human timescale, yet their impact is undeniably profound. Glaciers serve as natural archives of Earth's climatic history, preserving atmospheric data in layers of ice that have accumulated over thousands of years. Studying glaciers allows scientists to analyze past temperature patterns and environmental changes over time.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The last Ice Age sculpted the face of Earth, leaving behind majestic glaciers that continue to shape the landscape even today. These "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ice "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " flow "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", grinding "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " mountains "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " carving "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " over "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Compared "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " other "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " phenomena, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " movement of glaciers is imperceptible on a human timescale, yet their impact is undeniably profound. Glaciers serve as natural archives of Earth's climatic history, preserving atmospheric data in layers of ice that have accumulated over thousands of years. Studying glaciers allows scientists to analyze past temperature patterns and environmental changes over time."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "massive",
+                "prefix": "mas",
+                "displayText": "mas_ _ _ _",
+                "missingText": "sive",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "rivers",
+                "prefix": "riv",
+                "displayText": "riv_ _ _",
+                "missingText": "ers",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "slowly",
+                "prefix": "slo",
+                "displayText": "slo_ _ _",
+                "missingText": "wly",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "down",
+                "prefix": "do",
+                "displayText": "do_ _",
+                "missingText": "wn",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "valleys",
+                "prefix": "val",
+                "displayText": "val_ _ _ _",
+                "missingText": "leys",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "millennia",
+                "prefix": "mill",
+                "displayText": "mill_ _ _ _ _",
+                "missingText": "ennia",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "geological",
+                "prefix": "geolo",
+                "displayText": "geolo_ _ _ _ _",
+                "missingText": "gical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-24-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-24-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-24-m2-rap-19",
+      "module": "rap",
+      "title": "Cooperative Education",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.24",
+        "occurrenceDate": "2026-06-24",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-24-m2-rap-p01",
+          "title": "Cooperative Education",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-24-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Cooperative education (\"co-ops\") emerged in the United States in the early twentieth century, when engineering programs seeking stronger industry alignment began alternating academic terms with structured, paid work experience. Although the model was first formalized at the University of Cincinnati, its rapid adoption across institutions specializing in scientific and technical fields reflected broader recognition that technical fields required applied practice alongside theoretical coursework. Today, co-ops are most prevalent at universities with deep employer partnerships. At Northeastern University and Drexel University, most students complete co-ops (multi-month paid placements) in fields ranging from engineering to computing to design. These programs often involve multiple sequenced work terms with increasing responsibility and are integrated into degree requirements rather than treated as optional internships.",
+              "rawText": "Cooperative education (\"co-ops\") emerged in the United States in the early twentieth century, when engineering programs seeking stronger industry alignment began alternating academic terms with structured, paid work experience. Although the model was first formalized at the University of Cincinnati, its rapid adoption across institutions specializing in scientific and technical fields reflected broader recognition that technical fields required applied practice alongside theoretical coursework. Today, co-ops are most prevalent at universities with deep employer partnerships. At Northeastern University and Drexel University, most students complete co-ops (multi-month paid placements) in fields ranging from engineering to computing to design. These programs often involve multiple sequenced work terms with increasing responsibility and are integrated into degree requirements rather than treated as optional internships.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Cooperative education (\"co-ops\") emerged in the United States in the early twentieth century, when engineering programs seeking stronger industry alignment began alternating academic terms with structured, paid work experience."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Although the model was first formalized at the University of Cincinnati, its rapid adoption across institutions specializing in scientific and technical fields reflected broader recognition that technical fields required applied practice alongside theoretical coursework."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Today, co-ops are most prevalent at universities with deep employer partnerships."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "At Northeastern University and Drexel University, most students complete co-ops (multi-month paid placements) in fields ranging from engineering to computing to design."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "These programs often involve multiple sequenced work terms with increasing responsibility and are integrated into degree requirements rather than treated as optional internships."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-24-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Proponents argue that co-ops cultivate professional maturity by requiring students to navigate real organizational structures, contribute to long-term projects, and build evidence-based portfolios before graduation. They also note that co-op graduates often report higher initial earnings and stronger job placement. Critics, however, contend that alternating semesters can disrupt academic continuity, extend time-to-degree, and disadvantage students who cannot relocate or afford breaks in campus employment. Despite these concerns, co-op education remains a defining form of work-integrated learning, especially in fields where applied expertise is essential.",
+              "rawText": "Proponents argue that co-ops cultivate professional maturity by requiring students to navigate real organizational structures, contribute to long-term projects, and build evidence-based portfolios before graduation. They also note that co-op graduates often report higher initial earnings and stronger job placement. Critics, however, contend that alternating semesters can disrupt academic continuity, extend time-to-degree, and disadvantage students who cannot relocate or afford breaks in campus employment. Despite these concerns, co-op education remains a defining form of work-integrated learning, especially in fields where applied expertise is essential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Proponents argue that co-ops cultivate professional maturity by requiring students to navigate real organizational structures, contribute to long-term projects, and build evidence-based portfolios before graduation."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "They also note that co-op graduates often report higher initial earnings and stronger job placement."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Critics, however, contend that alternating semesters can disrupt academic continuity, extend time-to-degree, and disadvantage students who cannot relocate or afford breaks in campus employment."
+                },
+                {
+                  "sentenceId": "reading-2026-06-24-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Despite these concerns, co-op education remains a defining form of work-integrated learning, especially in fields where applied expertise is essential."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-24-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage mentions all of the following about cooperative education programs EXCEPT:",
+          "rawDisplayText": "11. The passage mentions all of the following about cooperative education programs EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-06-24-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "They are based on the idea that practical experience is necessary in certain technical fields."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "They are recommended for students who are experiencing difficulties in theoretical courses."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "Engineering departments at universities were some of the first to adopt them."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "They allow students to receive payment while learning."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m2-q11-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about institutions such as Northeastern University and Drexel University?",
+          "rawDisplayText": "12. What does the passage suggest about institutions such as Northeastern University and Drexel University?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "They have worked closely with employers to establish comprehensive co-op programs."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "They allow students who have completed multiple co-ops to graduate more quickly than they otherwise would."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "They prefer to admit students who have already had extensive practical experience in their chosen fields."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "They limit co-op placements to the top students in each field."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m2-q12-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"cultivate\" in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word \"cultivate\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-24-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "precede"
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "highlight"
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "demonstrate"
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "promote"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m2-q13-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is one potential drawback of co-ops?",
+          "rawDisplayText": "14. According to the passage, what is one potential drawback of co-ops?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "Co-op students are less likely to graduate than students who do not participate in co-ops."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "Co-op students perfect their practical skills at the expense of their theoretical knowledge."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "Co-op students take longer to graduate than other students."
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "Co-op students overextend themselves by working at both their co-op placements and their regular campus jobs."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-24-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which type of student is probably least likely to find cooperative education attractive?",
+          "rawDisplayText": "15. Which type of student is probably least likely to find cooperative education attractive?",
+          "payload": {
+            "passageId": "reading-2026-06-24-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-24-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "A student who is most drawn to analyzing texts and doing academic research"
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "A student who is pursuing a degree in computer science"
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "A student who wants to have the best chance of finding a job after graduation"
+              },
+              {
+                "optionId": "reading-2026-06-24-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "A student who wants to network with professionals in her chosen field"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-24-m2-q15-opt-1"
+          }
+        }
+      ]
+    }
+  ]
+}

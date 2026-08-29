@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+    "module": "rap",
+    "title": "Microseisms: The Earth’s Subtle Vibrations",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "1f2a25af84cd749261037df0542d14e65a845a62e68b157c119228c05b925cf0",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10a-m1-rap-13",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10A",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-1f2a25af84cd749261037df0-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-1f2a25af84cd749261037df0-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-1f2a25af84cd749261037df0-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-1f2a25af84cd749261037df0-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-1f2a25af84cd749261037df0-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-1f2a25af84cd749261037df0-passage-01",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "title": "Microseisms: The Earth’s Subtle Vibrations",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The Earth is constantly vibrating, even when there are no earthquakes. These subtle vibrations, known as microseisms, are typically caused by ocean waves. When waves collide, they create pressure variations that travel through the water and into the sea floor. This energy transfer generates seismic waves detectable by seismometers worldwide. Interestingly, microseisms are strongest during storms when ocean waves are more powerful.",
+          "rawText": "The Earth is constantly vibrating, even when there are no earthquakes. These subtle vibrations, known as microseisms, are typically caused by ocean waves. When waves collide, they create pressure variations that travel through the water and into the sea floor. This energy transfer generates seismic waves detectable by seismometers worldwide. Interestingly, microseisms are strongest during storms when ocean waves are more powerful.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The Earth is constantly vibrating, even when there are no earthquakes."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "These subtle vibrations, known as microseisms, are typically caused by ocean waves."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "When waves collide, they create pressure variations that travel through the water and into the sea floor."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This energy transfer generates seismic waves detectable by seismometers worldwide."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Interestingly, microseisms are strongest during storms when ocean waves are more powerful."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Researchers have found these vibrations can provide important information about the Earth’s interior. Microseisms travel through the Earth’s crust and mantle, revealing details about the geological structures they pass through, including variations in rock density and the presence of faults or fractures. Another compelling use of microseisms is in climate studies. Scientists analyze historical data on these vibrations to reconstruct past ocean conditions and storm activities. This helps improve climate models and understand long-term weather patterns. Additionally, microseisms are used in oil and gas exploration. They identify potential drilling sites by highlighting subsurface structures without more invasive techniques.",
+          "rawText": "Researchers have found these vibrations can provide important information about the Earth’s interior. Microseisms travel through the Earth’s crust and mantle, revealing details about the geological structures they pass through, including variations in rock density and the presence of faults or fractures. Another compelling use of microseisms is in climate studies. Scientists analyze historical data on these vibrations to reconstruct past ocean conditions and storm activities. This helps improve climate models and understand long-term weather patterns. Additionally, microseisms are used in oil and gas exploration. They identify potential drilling sites by highlighting subsurface structures without more invasive techniques.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Researchers have found these vibrations can provide important information about the Earth’s interior."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Microseisms travel through the Earth’s crust and mantle, revealing details about the geological structures they pass through, including variations in rock density and the presence of faults or fractures."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Another compelling use of microseisms is in climate studies."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Scientists analyze historical data on these vibrations to reconstruct past ocean conditions and storm activities."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "This helps improve climate models and understand long-term weather patterns."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "Additionally, microseisms are used in oil and gas exploration."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02-s07",
+              "sentenceOrder": 7,
+              "text": "They identify potential drilling sites by highlighting subsurface structures without more invasive techniques."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Studying microseisms is challenging. The mild signals are easily masked by other seismic noises. Advanced data analysis techniques and state-of-the-art equipment are essential for accurately interpreting microseisms. Researchers often employ filtering methods and cross-referencing data from multiple seismometers.",
+          "rawText": "Studying microseisms is challenging. The mild signals are easily masked by other seismic noises. Advanced data analysis techniques and state-of-the-art equipment are essential for accurately interpreting microseisms. Researchers often employ filtering methods and cross-referencing data from multiple seismometers.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Studying microseisms is challenging."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "The mild signals are easily masked by other seismic noises."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Advanced data analysis techniques and state-of-the-art equipment are essential for accurately interpreting microseisms."
+            },
+            {
+              "sentenceId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Researchers often employ filtering methods and cross-referencing data from multiple seismometers."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q01",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “subtle” in the passage is closest in meaning to",
+      "rawDisplayText": "31. The word “subtle” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-1f2a25af84cd749261037df0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q01-opt-1",
+            "optionOrder": 1,
+            "text": "faint"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q01-opt-2",
+            "optionOrder": 2,
+            "text": "quick"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q01-opt-3",
+            "optionOrder": 3,
+            "text": "strong"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q01-opt-4",
+            "optionOrder": 4,
+            "text": "constant"
+          }
+        ],
+        "correctOptionId": "reading-rap-1f2a25af84cd749261037df0-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q02",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "It can be inferred that microseisms are strongest during ocean storms because",
+      "rawDisplayText": "32. It can be inferred that microseisms are strongest during ocean storms because",
+      "payload": {
+        "passageId": "reading-rap-1f2a25af84cd749261037df0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q02-opt-1",
+            "optionOrder": 1,
+            "text": "the Earth’s crust and mantle are more active during such storms"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q02-opt-2",
+            "optionOrder": 2,
+            "text": "ocean waves are larger and collide more vigorously during such storms"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q02-opt-3",
+            "optionOrder": 3,
+            "text": "seismometers are designed to work most effectively during such storms"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q02-opt-4",
+            "optionOrder": 4,
+            "text": "the details of geological structures become more apparent during such storms"
+          }
+        ],
+        "correctOptionId": "reading-rap-1f2a25af84cd749261037df0-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q03",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “variations in rock density and the presence of faults or fractures”?",
+      "rawDisplayText": "33. Why does the author mention “variations in rock density and the presence of faults or fractures”?",
+      "payload": {
+        "passageId": "reading-rap-1f2a25af84cd749261037df0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that more research is needed to understand the relationship between microseisms and earthquakes"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To identify the most important features of Earth’s crust and mantle"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To help explain how microseisms can alter the geological structures that they pass through"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To highlight the kinds of information microseisms can provide about Earth’s interior"
+          }
+        ],
+        "correctOptionId": "reading-rap-1f2a25af84cd749261037df0-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q04",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, how can microseisms help in oil and gas exploration?",
+      "rawDisplayText": "34. According to the passage, how can microseisms help in oil and gas exploration?",
+      "payload": {
+        "passageId": "reading-rap-1f2a25af84cd749261037df0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q04-opt-1",
+            "optionOrder": 1,
+            "text": "By providing historical data on ocean conditions"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q04-opt-2",
+            "optionOrder": 2,
+            "text": "By pinpointing potential drilling sites"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q04-opt-3",
+            "optionOrder": 3,
+            "text": "By measuring the strength of seismic waves"
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q04-opt-4",
+            "optionOrder": 4,
+            "text": "By reducing the need for seismometers"
+          }
+        ],
+        "correctOptionId": "reading-rap-1f2a25af84cd749261037df0-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q05",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the author suggest about “filtering methods and cross-referencing data from multiple seismometers”?",
+      "rawDisplayText": "35. What does the author suggest about “filtering methods and cross-referencing data from multiple seismometers”?",
+      "payload": {
+        "passageId": "reading-rap-1f2a25af84cd749261037df0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q05-opt-1",
+            "optionOrder": 1,
+            "text": "They are techniques used to study microseisms."
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q05-opt-2",
+            "optionOrder": 2,
+            "text": "They demonstrate the outdatedness of seismometers."
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q05-opt-3",
+            "optionOrder": 3,
+            "text": "They are popular ways of studying various types of seismic noises."
+          },
+          {
+            "optionId": "reading-rap-1f2a25af84cd749261037df0-q05-opt-4",
+            "optionOrder": 4,
+            "text": "They highlight a flaw in current research methods."
+          }
+        ],
+        "correctOptionId": "reading-rap-1f2a25af84cd749261037df0-q05-opt-1"
+      }
+    }
+  ]
+}

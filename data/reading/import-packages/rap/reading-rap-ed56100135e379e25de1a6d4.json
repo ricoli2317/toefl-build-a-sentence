@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+    "module": "rap",
+    "title": "Plant Communication",
+    "firstSeenDate": "2026-05-13",
+    "firstSeenSourceLabel": "5.13",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "ed56100135e379e25de1a6d4b744106f40a38c020e88be026a07e92634c3f81c",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-13-m1-rap-13",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "sourceKind": "docx",
+      "sourceLabel": "5.13",
+      "occurrenceDate": "2026-05-13",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-ed56100135e379e25de1a6d4-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-ed56100135e379e25de1a6d4-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-ed56100135e379e25de1a6d4-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-ed56100135e379e25de1a6d4-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-ed56100135e379e25de1a6d4-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-ed56100135e379e25de1a6d4-passage-01",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "title": "Plant Communication",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The discovery that plants use communication has changed our understanding of plant behavior and ecology. Traditionally, plants were considered passive organisms, reacting to environmental changes rather than actively engaging with their surroundings. However, studies have shown that plants can send chemical signals through the soil.",
+          "rawText": "The discovery that plants use communication has changed our understanding of plant behavior and ecology. Traditionally, plants were considered passive organisms, reacting to environmental changes rather than actively engaging with their surroundings. However, studies have shown that plants can send chemical signals through the soil.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The discovery that plants use communication has changed our understanding of plant behavior and ecology."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Traditionally, plants were considered passive organisms, reacting to environmental changes rather than actively engaging with their surroundings."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "However, studies have shown that plants can send chemical signals through the soil."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "These signals, often carried by root exudates (substances released by the plants’ roots into the soil), can inform neighboring plants about threats like plant-eating animals or disease-causing agents. For instance, when a corn plant is attacked by caterpillars, it can release specific chemicals that warn nearby corn plants. In response, the neighboring corn plants may release a chemical known as MBOA into their tissues, which makes them less palatable to the caterpillars.",
+          "rawText": "These signals, often carried by root exudates (substances released by the plants’ roots into the soil), can inform neighboring plants about threats like plant-eating animals or disease-causing agents. For instance, when a corn plant is attacked by caterpillars, it can release specific chemicals that warn nearby corn plants. In response, the neighboring corn plants may release a chemical known as MBOA into their tissues, which makes them less palatable to the caterpillars.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "These signals, often carried by root exudates (substances released by the plants’ roots into the soil), can inform neighboring plants about threats like plant-eating animals or disease-causing agents."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "For instance, when a corn plant is attacked by caterpillars, it can release specific chemicals that warn nearby corn plants."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "In response, the neighboring corn plants may release a chemical known as MBOA into their tissues, which makes them less palatable to the caterpillars."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Plants also use electrical signals to respond rapidly to environmental changes. These signals travel through the plant, allowing it to adjust resource allocation. Some plants can even detect the presence of other plants through their roots. This allows them to alter their growth patterns to avoid direct competition.",
+          "rawText": "Plants also use electrical signals to respond rapidly to environmental changes. These signals travel through the plant, allowing it to adjust resource allocation. Some plants can even detect the presence of other plants through their roots. This allows them to alter their growth patterns to avoid direct competition.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Plants also use electrical signals to respond rapidly to environmental changes."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "These signals travel through the plant, allowing it to adjust resource allocation."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Some plants can even detect the presence of other plants through their roots."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "This allows them to alter their growth patterns to avoid direct competition."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "Despite these discoveries, the study of plant communication is still in its infancy. Researchers are continuously uncovering new ways that plants interact with each other and their environment.",
+          "rawText": "Despite these discoveries, the study of plant communication is still in its infancy. Researchers are continuously uncovering new ways that plants interact with each other and their environment.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "Despite these discoveries, the study of plant communication is still in its infancy."
+            },
+            {
+              "sentenceId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Researchers are continuously uncovering new ways that plants interact with each other and their environment."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-ed56100135e379e25de1a6d4-q01",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, there used to be a mistaken view that plants",
+      "rawDisplayText": "31. According to the passage, there used to be a mistaken view that plants",
+      "payload": {
+        "passageId": "reading-rap-ed56100135e379e25de1a6d4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q01-opt-1",
+            "optionOrder": 1,
+            "text": "often changed their behavior"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q01-opt-2",
+            "optionOrder": 2,
+            "text": "released root exudates only in small amounts"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q01-opt-3",
+            "optionOrder": 3,
+            "text": "were not significantly affected by ecological factors"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q01-opt-4",
+            "optionOrder": 4,
+            "text": "did not actively interact with other plants"
+          }
+        ],
+        "correctOptionId": "reading-rap-ed56100135e379e25de1a6d4-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-ed56100135e379e25de1a6d4-q02",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, corn plants may release MBOA into their tissues in response to",
+      "rawDisplayText": "32. According to the passage, corn plants may release MBOA into their tissues in response to",
+      "payload": {
+        "passageId": "reading-rap-ed56100135e379e25de1a6d4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q02-opt-1",
+            "optionOrder": 1,
+            "text": "harmful chemicals released by caterpillars"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q02-opt-2",
+            "optionOrder": 2,
+            "text": "electrical signals in the soil"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q02-opt-3",
+            "optionOrder": 3,
+            "text": "human activities that affect the environment"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q02-opt-4",
+            "optionOrder": 4,
+            "text": "root exudates produced by other corn plants"
+          }
+        ],
+        "correctOptionId": "reading-rap-ed56100135e379e25de1a6d4-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-ed56100135e379e25de1a6d4-q03",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred to be the purpose of electrical signals that plants release?",
+      "rawDisplayText": "33. What can be inferred to be the purpose of electrical signals that plants release?",
+      "payload": {
+        "passageId": "reading-rap-ed56100135e379e25de1a6d4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To attract beneficial animals to the plants"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To prevent attack by caterpillars on the plants"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To help the plants make the best use of available resources"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To communicate with other plants across long distances"
+          }
+        ],
+        "correctOptionId": "reading-rap-ed56100135e379e25de1a6d4-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-ed56100135e379e25de1a6d4-q04",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Knowledge about the presence of other plants can help a plant to",
+      "rawDisplayText": "34. Knowledge about the presence of other plants can help a plant to",
+      "payload": {
+        "passageId": "reading-rap-ed56100135e379e25de1a6d4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q04-opt-1",
+            "optionOrder": 1,
+            "text": "change its growth in a way that reduces competition"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q04-opt-2",
+            "optionOrder": 2,
+            "text": "prevent major damage to its roots"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q04-opt-3",
+            "optionOrder": 3,
+            "text": "find additional resources"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q04-opt-4",
+            "optionOrder": 4,
+            "text": "determine which chemicals to release into the soil"
+          }
+        ],
+        "correctOptionId": "reading-rap-ed56100135e379e25de1a6d4-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-ed56100135e379e25de1a6d4-q05",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The phrase “still in its infancy” in the passage is closest in meaning to",
+      "rawDisplayText": "35. The phrase “still in its infancy” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-ed56100135e379e25de1a6d4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q05-opt-1",
+            "optionOrder": 1,
+            "text": "highly controversial"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q05-opt-2",
+            "optionOrder": 2,
+            "text": "in a difficult period"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q05-opt-3",
+            "optionOrder": 3,
+            "text": "looking for funding"
+          },
+          {
+            "optionId": "reading-rap-ed56100135e379e25de1a6d4-q05-opt-4",
+            "optionOrder": 4,
+            "text": "at an early stage"
+          }
+        ],
+        "correctOptionId": "reading-rap-ed56100135e379e25de1a6d4-q05-opt-4"
+      }
+    }
+  ]
+}

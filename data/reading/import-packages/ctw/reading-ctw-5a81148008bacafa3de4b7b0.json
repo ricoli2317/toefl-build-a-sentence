@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-5a81148008bacafa3de4b7b0",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "5a81148008bacafa3de4b7b09e6054bb1f16854d1df7af8d88fb504499d3a764",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m2-ctw-18",
+      "logicalItemId": "reading-ctw-5a81148008bacafa3de4b7b0",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-5a81148008bacafa3de4b7b0-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-5a81148008bacafa3de4b7b0-q01",
+      "logicalItemId": "reading-ctw-5a81148008bacafa3de4b7b0",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Terrestrial mammals exhibit a fascinating array of adaptations that help them survive and thrive in diverse environments. From com_ _ _ _ social intera_ _ _ _ _ _ that imp_ _ _ _ group surv_ _ _ _ to ingen_ _ _ _ _ _ designed lu_ _ _ that enh_ _ _ _ oxygen absor_ _ _ _ _, these crea_ _ _ _ _ are bu_ _ _ for resilience. Some have evolved powerful limbs for digging deep burrows, while others have agile bodies perfect for scaling trees or sprinting across open plains. Their sharp senses and stealthy movements are often the result of a high-stakes evolutionary arms race between predator and prey.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Terrestrial mammals exhibit a fascinating array of adaptations that help them survive and thrive in diverse environments. From com_ _ _ _ social intera_ _ _ _ _ _ that imp_ _ _ _ group surv_ _ _ _ to ingen_ _ _ _ _ _ designed lu_ _ _ that enh_ _ _ _ oxygen absor_ _ _ _ _, these crea_ _ _ _ _ are bu_ _ _ for resilience. Some have evolved powerful limbs for digging deep burrows, while others have agile bodies perfect for scaling trees or sprinting across open plains. Their sharp senses and stealthy movements are often the result of a high-stakes evolutionary arms race between predator and prey.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Terrestrial mammals exhibit a fascinating array of adaptations that help them survive and thrive in diverse environments. From "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " social "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " group "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " designed "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " oxygen "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": ", these "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " are "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " for resilience. Some have evolved powerful limbs for digging deep burrows, while others have agile bodies perfect for scaling trees or sprinting across open plains. Their sharp senses and stealthy movements are often the result of a high-stakes evolutionary arms race between predator and prey."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "complex",
+            "prefix": "com",
+            "displayText": "com_ _ _ _",
+            "missingText": "plex",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "interactions",
+            "prefix": "intera",
+            "displayText": "intera_ _ _ _ _ _",
+            "missingText": "ctions",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "improve",
+            "prefix": "imp",
+            "displayText": "imp_ _ _ _",
+            "missingText": "rove",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "survival",
+            "prefix": "surv",
+            "displayText": "surv_ _ _ _",
+            "missingText": "ival",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "ingeniously",
+            "prefix": "ingen",
+            "displayText": "ingen_ _ _ _ _ _",
+            "missingText": "iously",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "lungs",
+            "prefix": "lu",
+            "displayText": "lu_ _ _",
+            "missingText": "ngs",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "enhance",
+            "prefix": "enh",
+            "displayText": "enh_ _ _ _",
+            "missingText": "ance",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "absorption",
+            "prefix": "absor",
+            "displayText": "absor_ _ _ _ _",
+            "missingText": "ption",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "creatures",
+            "prefix": "crea",
+            "displayText": "crea_ _ _ _ _",
+            "missingText": "tures",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-5a81148008bacafa3de4b7b0-q01-p01",
+            "answer": "built",
+            "prefix": "bu",
+            "displayText": "bu_ _ _",
+            "missingText": "ilt",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

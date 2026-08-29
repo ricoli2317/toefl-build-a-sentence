@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-00e19a191755f2737517ce6f",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-22",
+    "firstSeenSourceLabel": "6.22",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "00e19a191755f2737517ce6f527288d118632aa071d6393669cecd744ffaa19b",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-22-m1-ctw-02",
+      "logicalItemId": "reading-ctw-00e19a191755f2737517ce6f",
+      "sourceKind": "docx",
+      "sourceLabel": "6.22",
+      "occurrenceDate": "2026-06-22",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.22.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.22_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-00e19a191755f2737517ce6f-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-00e19a191755f2737517ce6f-q01",
+      "logicalItemId": "reading-ctw-00e19a191755f2737517ce6f",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The respiratory system is essential for delivering oxygen to the body's cells and removing carbon dioxide. In hum_ _ _, air ent_ _ _ through t_ _ nose o_ mouth. Inco_ _ _ _ air ge_ _ warmed u_ and bec_ _ _ _ moist wh_ _ _ it tra_ _ _ _ in the nasal passages. Dust and other particles are also filtered out. Then the air goes down the trachea and reaches the lungs. Within the lungs, tiny air sacs shaped like balloons facilitate the exchange of gases with the bloodstream. This process is crucial for cellular respiration, which provides energy for bodily functions.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The respiratory system is essential for delivering oxygen to the body's cells and removing carbon dioxide. In hum_ _ _, air ent_ _ _ through t_ _ nose o_ mouth. Inco_ _ _ _ air ge_ _ warmed u_ and bec_ _ _ _ moist wh_ _ _ it tra_ _ _ _ in the nasal passages. Dust and other particles are also filtered out. Then the air goes down the trachea and reaches the lungs. Within the lungs, tiny air sacs shaped like balloons facilitate the exchange of gases with the bloodstream. This process is crucial for cellular respiration, which provides energy for bodily functions.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The respiratory system is essential for delivering oxygen to the body's cells and removing carbon dioxide. In "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": ", air "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " through "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " nose "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " mouth. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " air "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " warmed "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " moist "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " it "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " in the nasal passages. Dust and other particles are also filtered out. Then the air goes down the trachea and reaches the lungs. Within the lungs, tiny air sacs shaped like balloons facilitate the exchange of gases with the bloodstream. This process is crucial for cellular respiration, which provides energy for bodily functions."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "humans",
+            "prefix": "hum",
+            "displayText": "hum_ _ _",
+            "missingText": "ans",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "enters",
+            "prefix": "ent",
+            "displayText": "ent_ _ _",
+            "missingText": "ers",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "or",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "r",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "Incoming",
+            "prefix": "Inco",
+            "displayText": "Inco_ _ _ _",
+            "missingText": "ming",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "gets",
+            "prefix": "ge",
+            "displayText": "ge_ _",
+            "missingText": "ts",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "up",
+            "prefix": "u",
+            "displayText": "u_",
+            "missingText": "p",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "becomes",
+            "prefix": "bec",
+            "displayText": "bec_ _ _ _",
+            "missingText": "omes",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "while",
+            "prefix": "wh",
+            "displayText": "wh_ _ _",
+            "missingText": "ile",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-00e19a191755f2737517ce6f-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-00e19a191755f2737517ce6f-q01-p01",
+            "answer": "travels",
+            "prefix": "tra",
+            "displayText": "tra_ _ _ _",
+            "missingText": "vels",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

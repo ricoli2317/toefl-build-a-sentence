@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-deffbdd06fda5383320dbbe9",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6B",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "deffbdd06fda5383320dbbe9fb4d6ffb7c31fe9d6270e06390089de78f5de85b",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6b-m1-ctw-02",
+      "logicalItemId": "reading-ctw-deffbdd06fda5383320dbbe9",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6B",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-deffbdd06fda5383320dbbe9-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-deffbdd06fda5383320dbbe9-q01",
+      "logicalItemId": "reading-ctw-deffbdd06fda5383320dbbe9",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The study of geological formations provides insights into Earth’s dynamic processes. Metamorphic rocks are rocks that have been transformed by heat and pressure. Sedimentary rocks fo_ _ as lay_ _ _ of mate_ _ _ _ build u_ over ti_ _ and a_ _ eventually pre_ _ _ _ and fu_ _ _ together t_ create so_ _ _ rock. The strata inside these formations serve as historical records of environmental conditions, revealing changes in climate, sea levels, and biological evolution. Analyzing rocks allows geologists to reconstruct past geological events.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The study of geological formations provides insights into Earth’s dynamic processes. Metamorphic rocks are rocks that have been transformed by heat and pressure. Sedimentary rocks fo_ _ as lay_ _ _ of mate_ _ _ _ build u_ over ti_ _ and a_ _ eventually pre_ _ _ _ and fu_ _ _ together t_ create so_ _ _ rock. The strata inside these formations serve as historical records of environmental conditions, revealing changes in climate, sea levels, and biological evolution. Analyzing rocks allows geologists to reconstruct past geological events.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The study of geological formations provides insights into Earth’s dynamic processes. Metamorphic rocks are rocks that have been transformed by heat and pressure. Sedimentary rocks "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " as "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " build "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " over "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " eventually "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " together "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " create "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " rock. The strata inside these formations serve as historical records of environmental conditions, revealing changes in climate, sea levels, and biological evolution. Analyzing rocks allows geologists to reconstruct past geological events."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "form",
+            "prefix": "fo",
+            "displayText": "fo_ _",
+            "missingText": "rm",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "layers",
+            "prefix": "lay",
+            "displayText": "lay_ _ _",
+            "missingText": "ers",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "material",
+            "prefix": "mate",
+            "displayText": "mate_ _ _ _",
+            "missingText": "rial",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "up",
+            "prefix": "u",
+            "displayText": "u_",
+            "missingText": "p",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "time",
+            "prefix": "ti",
+            "displayText": "ti_ _",
+            "missingText": "me",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "are",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "re",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "pressed",
+            "prefix": "pre",
+            "displayText": "pre_ _ _ _",
+            "missingText": "ssed",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "fused",
+            "prefix": "fu",
+            "displayText": "fu_ _ _",
+            "missingText": "sed",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-deffbdd06fda5383320dbbe9-q01-p01",
+            "answer": "solid",
+            "prefix": "so",
+            "displayText": "so_ _ _",
+            "missingText": "lid",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

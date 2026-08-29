@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-b88f4c4d1a372e13aad0e93c",
+    "module": "rdl",
+    "title": "Student council meeting text-message chain",
+    "firstSeenDate": "2026-06-30",
+    "firstSeenSourceLabel": "6.30B",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "b88f4c4d1a372e13aad0e93c8f6f10fa4be1b9b6febbe79d9f5e002abf28fc19",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-30b-m1-rdl-07",
+      "logicalItemId": "reading-rdl-b88f4c4d1a372e13aad0e93c",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30B",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-083",
+      "title": "Student council meeting text-message chain",
+      "source": "material-index.json#RDL-083",
+      "sourceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-083/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-083/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01",
+      "logicalItemId": "reading-rdl-b88f4c4d1a372e13aad0e93c",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is NOT mentioned as a topic for the meeting?",
+      "rawDisplayText": "25. What is NOT mentioned as a topic for the meeting?",
+      "payload": {
+        "materialId": "RDL-083",
+        "options": [
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Finalizing the budget"
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Updating a governing document"
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Organizing activities for the spring semester"
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Appointing new leadership"
+          }
+        ],
+        "correctOptionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02",
+      "logicalItemId": "reading-rdl-b88f4c4d1a372e13aad0e93c",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "At 4:51 p.m., what does Ryan imply when he writes, \"If time permits\"?",
+      "rawDisplayText": "26. At 4:51 p.m., what does Ryan imply when he writes, \"If time permits\"?",
+      "payload": {
+        "materialId": "RDL-083",
+        "options": [
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02-opt-1",
+            "optionOrder": 1,
+            "text": "A vote on new club proposals will likely take place."
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02-opt-2",
+            "optionOrder": 2,
+            "text": "University officials are not likely to approve any new clubs."
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Ella does not have the authority to propose topics for discussion."
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Other topics have higher priority than the one mentioned by Ella."
+          }
+        ],
+        "correctOptionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03",
+      "logicalItemId": "reading-rdl-b88f4c4d1a372e13aad0e93c",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Which of the following is part of Ryan's role?",
+      "rawDisplayText": "27. Which of the following is part of Ryan's role?",
+      "payload": {
+        "materialId": "RDL-083",
+        "options": [
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Compiling the minutes during the meeting"
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Preparing materials and equipment for the meeting"
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Keeping track of the time during the meeting"
+          },
+          {
+            "optionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Bringing snacks for council members at the meeting"
+          }
+        ],
+        "correctOptionId": "reading-rdl-b88f4c4d1a372e13aad0e93c-q03-opt-2"
+      }
+    }
+  ]
+}

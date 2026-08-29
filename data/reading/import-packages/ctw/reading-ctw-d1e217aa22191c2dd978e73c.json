@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-d1e217aa22191c2dd978e73c",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-31",
+    "firstSeenSourceLabel": "5.31",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "d1e217aa22191c2dd978e73c0c448a7758ce2493714ec51b3326da0d6bb23bca",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-31-m1-ctw-02",
+      "logicalItemId": "reading-ctw-d1e217aa22191c2dd978e73c",
+      "sourceKind": "docx",
+      "sourceLabel": "5.31",
+      "occurrenceDate": "2026-05-31",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.31.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.31_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-d1e217aa22191c2dd978e73c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-d1e217aa22191c2dd978e73c-q01",
+      "logicalItemId": "reading-ctw-d1e217aa22191c2dd978e73c",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Medieval European history encompasses the time period from the fall of the Roman Empire to the onset of the Renaissance. This era lasted around 900 years and is also called the Middle Ages. Dur_ _ _ these cent_ _ _ _ _, feudalism w_ _ the domi_ _ _ _ social stru_ _ _ _ _, shaping t_ _ political, econ_ _ _ _, and cult_ _ _ _ landscape. Da_ _ _ life a_ _ governance were strongly influenced by the Catholic Church. Studying medieval history reveals the foundations of modern European society and the profound changes that occurred over time. It also helps students understand how people lived, worked, and believed during this important time in history.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Medieval European history encompasses the time period from the fall of the Roman Empire to the onset of the Renaissance. This era lasted around 900 years and is also called the Middle Ages. Dur_ _ _ these cent_ _ _ _ _, feudalism w_ _ the domi_ _ _ _ social stru_ _ _ _ _, shaping t_ _ political, econ_ _ _ _, and cult_ _ _ _ landscape. Da_ _ _ life a_ _ governance were strongly influenced by the Catholic Church. Studying medieval history reveals the foundations of modern European society and the profound changes that occurred over time. It also helps students understand how people lived, worked, and believed during this important time in history.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Medieval European history encompasses the time period from the fall of the Roman Empire to the onset of the Renaissance. This era lasted around 900 years and is also called the Middle Ages. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " these "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", feudalism "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " social "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", shaping "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " political, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " landscape. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " life "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " governance were strongly influenced by the Catholic Church. Studying medieval history reveals the foundations of modern European society and the profound changes that occurred over time. It also helps students understand how people lived, worked, and believed during this important time in history."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "During",
+            "prefix": "Dur",
+            "displayText": "Dur_ _ _",
+            "missingText": "ing",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "centuries",
+            "prefix": "cent",
+            "displayText": "cent_ _ _ _ _",
+            "missingText": "uries",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "was",
+            "prefix": "w",
+            "displayText": "w_ _",
+            "missingText": "as",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "dominant",
+            "prefix": "domi",
+            "displayText": "domi_ _ _ _",
+            "missingText": "nant",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "structure",
+            "prefix": "stru",
+            "displayText": "stru_ _ _ _ _",
+            "missingText": "cture",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "economic",
+            "prefix": "econ",
+            "displayText": "econ_ _ _ _",
+            "missingText": "omic",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "cultural",
+            "prefix": "cult",
+            "displayText": "cult_ _ _ _",
+            "missingText": "ural",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "Daily",
+            "prefix": "Da",
+            "displayText": "Da_ _ _",
+            "missingText": "ily",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-d1e217aa22191c2dd978e73c-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

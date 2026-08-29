@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-27719fdcec5f88a285c67688",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-11",
+    "firstSeenSourceLabel": "5.11A",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "27719fdcec5f88a285c6768866da0995b11539f035f119ca1a94b9737a679db7",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-11a-m1-ctw-01",
+      "logicalItemId": "reading-ctw-27719fdcec5f88a285c67688",
+      "sourceKind": "docx",
+      "sourceLabel": "5.11A",
+      "occurrenceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-27719fdcec5f88a285c67688-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-27719fdcec5f88a285c67688-q01",
+      "logicalItemId": "reading-ctw-27719fdcec5f88a285c67688",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The development of transcontinental railroads was a pivotal moment in North American history, fundamentally altering the landscape and economy. By linking the eastern and western coasts, these rail lines facilitated unprecedented movement of goods, people, and ideas. The railroad accel_ _ _ _ _ _ national integ_ _ _ _ _ _, supported indus_ _ _ _ _ growth, a_ _ contributed t_ the expa_ _ _ _ _ of tr_ _ _, transforming t_ _ United States in_ _ a mo_ _ interconnected and economically dynamic nation. Advances in engineering, such as the use of steel rails, standardized gauges, and telegraph communication, enabled efficient construction and coordination across vast distances.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The development of transcontinental railroads was a pivotal moment in North American history, fundamentally altering the landscape and economy. By linking the eastern and western coasts, these rail lines facilitated unprecedented movement of goods, people, and ideas. The railroad accel_ _ _ _ _ _ national integ_ _ _ _ _ _, supported indus_ _ _ _ _ growth, a_ _ contributed t_ the expa_ _ _ _ _ of tr_ _ _, transforming t_ _ United States in_ _ a mo_ _ interconnected and economically dynamic nation. Advances in engineering, such as the use of steel rails, standardized gauges, and telegraph communication, enabled efficient construction and coordination across vast distances.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The development of transcontinental railroads was a pivotal moment in North American history, fundamentally altering the landscape and economy. By linking the eastern and western coasts, these rail lines facilitated unprecedented movement of goods, people, and ideas. The railroad "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " national "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", supported "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " growth, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " contributed "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ", transforming "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " United States "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " interconnected and economically dynamic nation. Advances in engineering, such as the use of steel rails, standardized gauges, and telegraph communication, enabled efficient construction and coordination across vast distances."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "accelerated",
+            "prefix": "accel",
+            "displayText": "accel_ _ _ _ _ _",
+            "missingText": "erated",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "integration",
+            "prefix": "integ",
+            "displayText": "integ_ _ _ _ _ _",
+            "missingText": "ration",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "industrial",
+            "prefix": "indus",
+            "displayText": "indus_ _ _ _ _",
+            "missingText": "trial",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "expansion",
+            "prefix": "expa",
+            "displayText": "expa_ _ _ _ _",
+            "missingText": "nsion",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "trade",
+            "prefix": "tr",
+            "displayText": "tr_ _ _",
+            "missingText": "ade",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "into",
+            "prefix": "in",
+            "displayText": "in_ _",
+            "missingText": "to",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-27719fdcec5f88a285c67688-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-27719fdcec5f88a285c67688-q01-p01",
+            "answer": "more",
+            "prefix": "mo",
+            "displayText": "mo_ _",
+            "missingText": "re",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

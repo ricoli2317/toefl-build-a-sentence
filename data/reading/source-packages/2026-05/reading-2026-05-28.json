@@ -1,0 +1,1780 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.28",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Plants have tiny holes called stomata on their leaves and stems that allow them to take in carbon dioxide from the air and release oxygen into the air. How_ _ _ _, stomata c_ _ also l_ _ water vapor esc_ _ _, which cau_ _ _ problems i_ dry enviro_ _ _ _ _ _. To man_ _ _ this, dur_ _ _ hot per_ _ _ _ when water loss is especially severe, some plants close their stomata temporarily. Another special adaptation is thick, waxy coatings on plant leaves that help conserve water.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Plants have tiny holes called stomata on their leaves and stems that allow them to take in carbon dioxide from the air and release oxygen into the air. How_ _ _ _, stomata c_ _ also l_ _ water vapor esc_ _ _, which cau_ _ _ problems i_ dry enviro_ _ _ _ _ _. To man_ _ _ this, dur_ _ _ hot per_ _ _ _ when water loss is especially severe, some plants close their stomata temporarily. Another special adaptation is thick, waxy coatings on plant leaves that help conserve water.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Plants have tiny holes called stomata on their leaves and stems that allow them to take in carbon dioxide from the air and release oxygen into the air. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", stomata "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " also "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " water vapor "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", which "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " problems "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " dry "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". To "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " this, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " hot "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " when water loss is especially severe, some plants close their stomata temporarily. Another special adaptation is thick, waxy coatings on plant leaves that help conserve water."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "However",
+                "prefix": "How",
+                "displayText": "How_ _ _ _",
+                "missingText": "ever",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "can",
+                "prefix": "c",
+                "displayText": "c_ _",
+                "missingText": "an",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "let",
+                "prefix": "l",
+                "displayText": "l_ _",
+                "missingText": "et",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "escape",
+                "prefix": "esc",
+                "displayText": "esc_ _ _",
+                "missingText": "ape",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "causes",
+                "prefix": "cau",
+                "displayText": "cau_ _ _",
+                "missingText": "ses",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "environments",
+                "prefix": "enviro",
+                "displayText": "enviro_ _ _ _ _ _",
+                "missingText": "nments",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "manage",
+                "prefix": "man",
+                "displayText": "man_ _ _",
+                "missingText": "age",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "during",
+                "prefix": "dur",
+                "displayText": "dur_ _ _",
+                "missingText": "ing",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q01-10-p01",
+                "answer": "periods",
+                "prefix": "per",
+                "displayText": "per_ _ _ _",
+                "missingText": "iods",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Wind currents form due to differences in atmospheric pressure, which arise from uneven solar heating across Earth’s surface. As warmer air rises and cooler air sinks, pressure differentials are created, driving horizontal air movement known as wind. Wind currents transport mois_ _ _ _ and infl_ _ _ _ _ temperature, pla_ _ _ _ a k_ _ role i_ shaping wea_ _ _ _ patterns. T_ _ Coriolis eff_ _ _ caused b_ Earth’s rota_ _ _ _ further alters wind direction, creating prevailing winds that impact regional climates and storm systems. Understanding these interactions is crucial for accurate forecasting.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Wind currents form due to differences in atmospheric pressure, which arise from uneven solar heating across Earth’s surface. As warmer air rises and cooler air sinks, pressure differentials are created, driving horizontal air movement known as wind. Wind currents transport mois_ _ _ _ and infl_ _ _ _ _ temperature, pla_ _ _ _ a k_ _ role i_ shaping wea_ _ _ _ patterns. T_ _ Coriolis eff_ _ _ caused b_ Earth’s rota_ _ _ _ further alters wind direction, creating prevailing winds that impact regional climates and storm systems. Understanding these interactions is crucial for accurate forecasting.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Wind currents form due to differences in atmospheric pressure, which arise from uneven solar heating across Earth’s surface. As warmer air rises and cooler air sinks, pressure differentials are created, driving horizontal air movement known as wind. Wind currents transport "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " temperature, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " role "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " shaping "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " patterns. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Coriolis "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " caused "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Earth’s "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " further alters wind direction, creating prevailing winds that impact regional climates and storm systems. Understanding these interactions is crucial for accurate forecasting."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "moisture",
+                "prefix": "mois",
+                "displayText": "mois_ _ _ _",
+                "missingText": "ture",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "influence",
+                "prefix": "infl",
+                "displayText": "infl_ _ _ _ _",
+                "missingText": "uence",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "playing",
+                "prefix": "pla",
+                "displayText": "pla_ _ _ _",
+                "missingText": "ying",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "key",
+                "prefix": "k",
+                "displayText": "k_ _",
+                "missingText": "ey",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "weather",
+                "prefix": "wea",
+                "displayText": "wea_ _ _ _",
+                "missingText": "ther",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "The",
+                "prefix": "T",
+                "displayText": "T_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "effect",
+                "prefix": "eff",
+                "displayText": "eff_ _ _",
+                "missingText": "ect",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "by",
+                "prefix": "b",
+                "displayText": "b_",
+                "missingText": "y",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-28-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-28-m1-ctw-q11-20-p01",
+                "answer": "rotation",
+                "prefix": "rota",
+                "displayText": "rota_ _ _ _",
+                "missingText": "tion",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-rdl-03",
+      "module": "rdl",
+      "title": "Annual dormitory room maintenance will occur from",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-053",
+          "title": "Annual dormitory room maintenance will occur from",
+          "source": "material-index.json#RDL-053",
+          "sourceDate": "2026-05-28",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-053/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-053/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the notice?",
+          "rawDisplayText": "21. What is the main purpose of the notice?",
+          "payload": {
+            "materialId": "RDL-053",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "To announce changes in dormitory policies"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "To ask students to comment on a proposal"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "To tell residents about some inconveniences"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "To introduce several new housing options"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the maintenance work?",
+          "rawDisplayText": "22. What can be inferred about the maintenance work?",
+          "payload": {
+            "materialId": "RDL-053",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "It is an unexpected occurrence."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "It will improve room security."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "It will be performed over a weekend."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "It takes place on a regular basis."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q22-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-rdl-05",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-043",
+          "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+          "source": "material-index.json#RDL-043",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-043/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-043/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the most likely subject of the course?",
+          "rawDisplayText": "23. What is the most likely subject of the course?",
+          "payload": {
+            "materialId": "RDL-043",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Calculus"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Biology"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Physics"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Sociology"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is NOT mentioned as an assessment method?",
+          "rawDisplayText": "24. What is NOT mentioned as an assessment method?",
+          "payload": {
+            "materialId": "RDL-043",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Weekly exercises"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Lab reports"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Tests"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Essays"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q24-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-rdl-07",
+      "module": "rdl",
+      "title": "Student Housing Dilemma: A Shortage of Affordable Options",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-054",
+          "title": "Student Housing Dilemma: A Shortage of Affordable Options",
+          "source": "material-index.json#RDL-054",
+          "sourceDate": "2026-05-28",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-054/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-054/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "According to the article, what was one major cause of the housing shortage at Bridgeford University?",
+          "rawDisplayText": "25. According to the article, what was one major cause of the housing shortage at Bridgeford University?",
+          "payload": {
+            "materialId": "RDL-054",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "A competitive off-campus housing market"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "A pause in new dormitory construction"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "A lack of interest in off-campus housing"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "A poor understanding of tenant rights"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "How has the housing shortage affected Sarah Lee?",
+          "rawDisplayText": "26. How has the housing shortage affected Sarah Lee?",
+          "payload": {
+            "materialId": "RDL-054",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "She has to share a room with more people."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "She had to go on a waiting list for housing."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Her travel time from home to class has increased."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Her rent has increased significantly."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "What is suggested about the Student Union’s strategies?",
+          "rawDisplayText": "27. What is suggested about the Student Union’s strategies?",
+          "payload": {
+            "materialId": "RDL-054",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "They are more focused on long-term rather than immediate solutions."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "They are trying to reduce competition in the off-campus market."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "They are partly responsible for dormitory construction delays."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "Their current focus is on educating and supporting students."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q27-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-rdl-10",
+      "module": "rdl",
+      "title": "Sandeep Patel (10:00 A.M.)",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-017",
+          "title": "Sandeep Patel (10:00 A.M.)",
+          "source": "material-index.json#RDL-017",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-017/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-017/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "Who is Sandeep going to the concert with?",
+          "rawDisplayText": "28. Who is Sandeep going to the concert with?",
+          "payload": {
+            "materialId": "RDL-017",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "His cousin"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "His classmate"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "Fatima"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "His friend"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q28-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "How does Sandeep most likely feel about Fatima’s situation?",
+          "rawDisplayText": "29. How does Sandeep most likely feel about Fatima’s situation?",
+          "payload": {
+            "materialId": "RDL-017",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Happy"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Relieved"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "Indifferent"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "Disappointed"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q29-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "At 10:05 a.m., what does Fatima most likely mean when she writes, “I would like to, but one of my classmates has been out sick all week and our report is due tomorrow”?",
+          "rawDisplayText": "30. At 10:05 a.m., what does Fatima most likely mean when she writes, “I would like to, but one of my classmates has been out sick all week and our report is due tomorrow”?",
+          "payload": {
+            "materialId": "RDL-017",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "She feels too ill to go to the concert."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "She will take next week off from work."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "She does not think the concert will be enjoyable."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "She is unlikely to be able to attend the concert."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q30-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m1-rap-13",
+      "module": "rap",
+      "title": "Genetically Modified Foods",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-28-m1-rap-p01",
+          "title": "Genetically Modified Foods",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-28-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The use of genetically modified organisms (GMOs) in foods has raised a number of concerns, yet genetic modification (GM) technology can provide solutions to many persistent problems facing humanity.",
+              "rawText": "The use of genetically modified organisms (GMOs) in foods has raised a number of concerns, yet genetic modification (GM) technology can provide solutions to many persistent problems facing humanity.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The use of genetically modified organisms (GMOs) in foods has raised a number of concerns, yet genetic modification (GM) technology can provide solutions to many persistent problems facing humanity."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-28-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "For instance, by engineering crops to resist pests, tolerate drought, or grow in nutrient-poor soil, farmers can produce more food with fewer resources. This can be especially valuable in regions facing food insecurity or harsh environmental conditions. GM technology can also enhance nutritional content. Rice, for example, can be enriched with vitamin A to combat malnutrition. Furthermore, reduced reliance on chemical pesticides benefits both the environment and farm workers.",
+              "rawText": "For instance, by engineering crops to resist pests, tolerate drought, or grow in nutrient-poor soil, farmers can produce more food with fewer resources. This can be especially valuable in regions facing food insecurity or harsh environmental conditions. GM technology can also enhance nutritional content. Rice, for example, can be enriched with vitamin A to combat malnutrition. Furthermore, reduced reliance on chemical pesticides benefits both the environment and farm workers.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "For instance, by engineering crops to resist pests, tolerate drought, or grow in nutrient-poor soil, farmers can produce more food with fewer resources."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "This can be especially valuable in regions facing food insecurity or harsh environmental conditions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "GM technology can also enhance nutritional content."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Rice, for example, can be enriched with vitamin A to combat malnutrition."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Furthermore, reduced reliance on chemical pesticides benefits both the environment and farm workers."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-28-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Yet some critics anticipate harm from GMOs. One major issue is ecological impact. Genetically modified plants may crossbreed with wild species, potentially disrupting ecosystems or reducing biodiversity. GM critics also worry about long-term health effects, even though current scientific consensus finds GM foods safe to eat. Additionally, GM technology has economic effects: Patented GM seeds can increase farmers’ dependence on large biotech companies, raising questions about fairness and control within the food system. Public skepticism remains strong, fueled by limited transparency and the rapid pace of technological change. If GM foods are to serve the public good, thoughtful regulation, candid communication, and ongoing research will be essential.",
+              "rawText": "Yet some critics anticipate harm from GMOs. One major issue is ecological impact. Genetically modified plants may crossbreed with wild species, potentially disrupting ecosystems or reducing biodiversity. GM critics also worry about long-term health effects, even though current scientific consensus finds GM foods safe to eat. Additionally, GM technology has economic effects: Patented GM seeds can increase farmers’ dependence on large biotech companies, raising questions about fairness and control within the food system. Public skepticism remains strong, fueled by limited transparency and the rapid pace of technological change. If GM foods are to serve the public good, thoughtful regulation, candid communication, and ongoing research will be essential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Yet some critics anticipate harm from GMOs."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "One major issue is ecological impact."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Genetically modified plants may crossbreed with wild species, potentially disrupting ecosystems or reducing biodiversity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "GM critics also worry about long-term health effects, even though current scientific consensus finds GM foods safe to eat."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "Additionally, GM technology has economic effects: Patented GM seeds can increase farmers’ dependence on large biotech companies, raising questions about fairness and control within the food system."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s06",
+                  "sentenceOrder": 6,
+                  "text": "Public skepticism remains strong, fueled by limited transparency and the rapid pace of technological change."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m1-rap-p01-p03-s07",
+                  "sentenceOrder": 7,
+                  "text": "If GM foods are to serve the public good, thoughtful regulation, candid communication, and ongoing research will be essential."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The primary purpose of the passage is to",
+          "rawDisplayText": "31. The primary purpose of the passage is to",
+          "payload": {
+            "passageId": "reading-2026-05-28-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "outline some benefits of GM technology and advocate for its adoption"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "argue that GM technology is too dangerous and should be discontinued"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "summarize some potential benefits and drawbacks related to the use of GM technology"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "propose a set of steps toward resolving the debate over the use of GM technology"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “persistent” in the passage is closest in meaning to",
+          "rawDisplayText": "32. The word “persistent” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-28-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "disastrous"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "long-lasting"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "inconvenient"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "technical"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the author, GM technology can do all of the following EXCEPT",
+          "rawDisplayText": "33. According to the author, GM technology can do all of the following EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-05-28-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "improve the fertility of soil"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "boost agricultural productivity"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "improve human nutrition"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "protect the health of agricultural workers"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q33-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests which of the following about “Patented GM seeds”?",
+          "rawDisplayText": "34. The passage suggests which of the following about “Patented GM seeds”?",
+          "payload": {
+            "passageId": "reading-2026-05-28-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "They can sometimes alter the nutrients in crops in ways that harm human health."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "Their use can benefit farmers when profits are shared by biotech companies."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "Their adoption could potentially subject farmers to unfair control by businesses."
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "Their widespread use in agriculture could help to expand and protect biodiversity."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q34-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author mentions “the rapid pace of technological change” in order to",
+          "rawDisplayText": "35. The author mentions “the rapid pace of technological change” in order to",
+          "payload": {
+            "passageId": "reading-2026-05-28-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "acknowledge the promise that GM technology holds for farmers"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "suggest why research on the health effects of GM technology has lagged"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "question one argument used to advocate for expanded use of GM technology"
+              },
+              {
+                "optionId": "reading-2026-05-28-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "explain some of the resistance to implementation of GM technology"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m1-q35-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Theater has long been a powerful medium for social change, offering the viewing public a space to reflect on societal norms and injustices. Like many ot_ _ _ art fo_ _ _, theater cre_ _ _ _ a dyn_ _ _ _ and abso_ _ _ _ _ experience f_ _ the audi_ _ _ _ that c_ _ provoke de_ _ emotional resp_ _ _ _ _. Such engagement makes theater uniquely suited for persuasive storytelling, galvanizing viewers to consider new perspectives and ideas critically. When playwrights craft narratives that challenge prevailing attitudes, they can influence public discourse and inspire action.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Theater has long been a powerful medium for social change, offering the viewing public a space to reflect on societal norms and injustices. Like many ot_ _ _ art fo_ _ _, theater cre_ _ _ _ a dyn_ _ _ _ and abso_ _ _ _ _ experience f_ _ the audi_ _ _ _ that c_ _ provoke de_ _ emotional resp_ _ _ _ _. Such engagement makes theater uniquely suited for persuasive storytelling, galvanizing viewers to consider new perspectives and ideas critically. When playwrights craft narratives that challenge prevailing attitudes, they can influence public discourse and inspire action.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Theater has long been a powerful medium for social change, offering the viewing public a space to reflect on societal norms and injustices. Like many "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " art "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", theater "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " experience "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " provoke "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " emotional "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Such engagement makes theater uniquely suited for persuasive storytelling, galvanizing viewers to consider new perspectives and ideas critically. When playwrights craft narratives that challenge prevailing attitudes, they can influence public discourse and inspire action."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "other",
+                "prefix": "ot",
+                "displayText": "ot_ _ _",
+                "missingText": "her",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "forms",
+                "prefix": "fo",
+                "displayText": "fo_ _ _",
+                "missingText": "rms",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "creates",
+                "prefix": "cre",
+                "displayText": "cre_ _ _ _",
+                "missingText": "ates",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "dynamic",
+                "prefix": "dyn",
+                "displayText": "dyn_ _ _ _",
+                "missingText": "amic",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "absorbing",
+                "prefix": "abso",
+                "displayText": "abso_ _ _ _ _",
+                "missingText": "rbing",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "for",
+                "prefix": "f",
+                "displayText": "f_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "audience",
+                "prefix": "audi",
+                "displayText": "audi_ _ _ _",
+                "missingText": "ence",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "can",
+                "prefix": "c",
+                "displayText": "c_ _",
+                "missingText": "an",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "deep",
+                "prefix": "de",
+                "displayText": "de_ _",
+                "missingText": "ep",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-28-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-28-m2-ctw-q01-10-p01",
+                "answer": "responses",
+                "prefix": "resp",
+                "displayText": "resp_ _ _ _ _",
+                "missingText": "onses",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-28-m2-rap-19",
+      "module": "rap",
+      "title": "Coastal Erosion Challenges",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.28",
+        "occurrenceDate": "2026-05-28",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-28-m2-rap-p01",
+          "title": "Coastal Erosion Challenges",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-28-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Coastal erosion, the gradual loss of shoreline due to natural forces, poses challenges worldwide. Waves, currents, and rising sea levels are primary contributors to the phenomenon. Strong storms can exacerbate erosion, reshaping coastlines abruptly. For countries with extensive coastal zones, such as Bangladesh and the Netherlands, managing erosion is not only an environmental issue but also an economic and social one. Coastal erosion threatens infrastructure, transportation, and residential areas, necessitating costly investments in protective measures.",
+              "rawText": "Coastal erosion, the gradual loss of shoreline due to natural forces, poses challenges worldwide. Waves, currents, and rising sea levels are primary contributors to the phenomenon. Strong storms can exacerbate erosion, reshaping coastlines abruptly. For countries with extensive coastal zones, such as Bangladesh and the Netherlands, managing erosion is not only an environmental issue but also an economic and social one. Coastal erosion threatens infrastructure, transportation, and residential areas, necessitating costly investments in protective measures.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Coastal erosion, the gradual loss of shoreline due to natural forces, poses challenges worldwide."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Waves, currents, and rising sea levels are primary contributors to the phenomenon."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Strong storms can exacerbate erosion, reshaping coastlines abruptly."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "For countries with extensive coastal zones, such as Bangladesh and the Netherlands, managing erosion is not only an environmental issue but also an economic and social one."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Coastal erosion threatens infrastructure, transportation, and residential areas, necessitating costly investments in protective measures."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-28-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "One strategy to combat erosion is beach nourishment, the addition of sand or sediment to shorelines. While this method provides short-term benefits, frequent replenishment is required. Seawalls and breakwaters, solid structures designed to deflect wave energy and protect coastlines, are longer-term solutions but can alter natural sediment movement, unintentionally accelerating erosion in nearby areas.",
+              "rawText": "One strategy to combat erosion is beach nourishment, the addition of sand or sediment to shorelines. While this method provides short-term benefits, frequent replenishment is required. Seawalls and breakwaters, solid structures designed to deflect wave energy and protect coastlines, are longer-term solutions but can alter natural sediment movement, unintentionally accelerating erosion in nearby areas.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "One strategy to combat erosion is beach nourishment, the addition of sand or sediment to shorelines."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "While this method provides short-term benefits, frequent replenishment is required."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Seawalls and breakwaters, solid structures designed to deflect wave energy and protect coastlines, are longer-term solutions but can alter natural sediment movement, unintentionally accelerating erosion in nearby areas."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-28-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Recent studies suggest that some natural approaches may be more sustainable. For instance, mangrove forests and dune systems serve as buffers, reducing wave energy before it reaches populated areas. Mangroves not only provide erosion control but also support diverse ecosystems. However, such methods require extensive space and careful planning, making them unsuitable for heavily urbanized coastal zones. This highlights the tension between maintaining natural landscapes and safeguarding human developments along vulnerable coastlines.",
+              "rawText": "Recent studies suggest that some natural approaches may be more sustainable. For instance, mangrove forests and dune systems serve as buffers, reducing wave energy before it reaches populated areas. Mangroves not only provide erosion control but also support diverse ecosystems. However, such methods require extensive space and careful planning, making them unsuitable for heavily urbanized coastal zones. This highlights the tension between maintaining natural landscapes and safeguarding human developments along vulnerable coastlines.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Recent studies suggest that some natural approaches may be more sustainable."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "For instance, mangrove forests and dune systems serve as buffers, reducing wave energy before it reaches populated areas."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Mangroves not only provide erosion control but also support diverse ecosystems."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, such methods require extensive space and careful planning, making them unsuitable for heavily urbanized coastal zones."
+                },
+                {
+                  "sentenceId": "reading-2026-05-28-m2-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "This highlights the tension between maintaining natural landscapes and safeguarding human developments along vulnerable coastlines."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-28-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “exacerbate” in the passage is closest in meaning to",
+          "rawDisplayText": "11. The word “exacerbate” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-28-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "contribute to"
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "cause"
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "control"
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "increase"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention Bangladesh and the Netherlands?",
+          "rawDisplayText": "12. Why does the author mention Bangladesh and the Netherlands?",
+          "payload": {
+            "passageId": "reading-2026-05-28-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate that strong storms pose threats to infrastructure in coastal areas"
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "To give examples of countries for which coastal erosion presents challenges beyond environmental ones"
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "To provide examples of countries that have recently invested in protecting their coastal infrastructure"
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "To acknowledge that coastal erosion is a problem that affects countries in a variety of regions"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates which of the following about “beach nourishment”?",
+          "rawDisplayText": "13. The passage indicates which of the following about “beach nourishment”?",
+          "payload": {
+            "passageId": "reading-2026-05-28-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "It involves an ongoing commitment to maintain the advantages it offers."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "It is effective primarily in areas that already have natural dune systems."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "It is a relatively expensive method of combating erosion."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "It is primarily effective in areas where the coastal zones have little residential development."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about the “natural approaches” mentioned in the passage?",
+          "rawDisplayText": "14. What can be inferred about the “natural approaches” mentioned in the passage?",
+          "payload": {
+            "passageId": "reading-2026-05-28-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "They offer significant protection of coastal areas but are short-term measures."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "They are easier to implement in areas with high population density."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "They are less likely than man-made structures to cause unintended harm to surrounding shorelines."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "They are more effective as a way of protecting biodiversity than as a measure to combat erosion."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-28-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates each of the following about erosion-control measures EXCEPT:",
+          "rawDisplayText": "15. The passage indicates each of the following about erosion-control measures EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-28-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-28-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "They can sometimes deflect wave energy."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "They sometimes disrupt transportation in coastal areas."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "They vary in the amount of space they require."
+              },
+              {
+                "optionId": "reading-2026-05-28-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "They have greater economic impact in some countries than in others."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-28-m2-q15-opt-2"
+          }
+        }
+      ]
+    }
+  ]
+}

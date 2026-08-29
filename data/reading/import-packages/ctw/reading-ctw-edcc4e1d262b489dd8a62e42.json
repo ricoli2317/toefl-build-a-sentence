@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-03",
+    "firstSeenSourceLabel": "5.3A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "edcc4e1d262b489dd8a62e42cf66f6696c6fd6ceb0a91c7858627e6b1709d5fe",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-3a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+      "sourceKind": "docx",
+      "sourceLabel": "5.3A",
+      "occurrenceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-7b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7B",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01",
+      "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The study of insect behavior reveals complex survival strategies and social interactions across species. Honeybees, for inst_ _ _ _, perform a disti_ _ _ _ _ _ dance t_ convey spa_ _ _ _ information ab_ _ _ foraging si_ _ _. Ants exem_ _ _ _ _ extraordinary colle_ _ _ _ _ behavior, def_ _ _ _ by cooper_ _ _ _ _ efficiency. By analyzing these patterns, researchers can trace evolutionary pathways and adaptive strategies that support insect resilience across diverse ecosystems. These insights underscore the ecological sophistication embedded within even the smallest of organisms.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The study of insect behavior reveals complex survival strategies and social interactions across species. Honeybees, for inst_ _ _ _, perform a disti_ _ _ _ _ _ dance t_ convey spa_ _ _ _ information ab_ _ _ foraging si_ _ _. Ants exem_ _ _ _ _ extraordinary colle_ _ _ _ _ behavior, def_ _ _ _ by cooper_ _ _ _ _ efficiency. By analyzing these patterns, researchers can trace evolutionary pathways and adaptive strategies that support insect resilience across diverse ecosystems. These insights underscore the ecological sophistication embedded within even the smallest of organisms.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The study of insect behavior reveals complex survival strategies and social interactions across species. Honeybees, for "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": ", perform a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " dance "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " convey "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " information "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " foraging "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": ". Ants "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " extraordinary "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " behavior, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " by "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " efficiency. By analyzing these patterns, researchers can trace evolutionary pathways and adaptive strategies that support insect resilience across diverse ecosystems. These insights underscore the ecological sophistication embedded within even the smallest of organisms."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "instance",
+            "prefix": "inst",
+            "displayText": "inst_ _ _ _",
+            "missingText": "ance",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "distinctive",
+            "prefix": "disti",
+            "displayText": "disti_ _ _ _ _ _",
+            "missingText": "nctive",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "spatial",
+            "prefix": "spa",
+            "displayText": "spa_ _ _ _",
+            "missingText": "tial",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "about",
+            "prefix": "ab",
+            "displayText": "ab_ _ _",
+            "missingText": "out",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "sites",
+            "prefix": "si",
+            "displayText": "si_ _ _",
+            "missingText": "tes",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "exemplify",
+            "prefix": "exem",
+            "displayText": "exem_ _ _ _ _",
+            "missingText": "plify",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "collective",
+            "prefix": "colle",
+            "displayText": "colle_ _ _ _ _",
+            "missingText": "ctive",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "defined",
+            "prefix": "def",
+            "displayText": "def_ _ _ _",
+            "missingText": "ined",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-edcc4e1d262b489dd8a62e42-q01-p01",
+            "answer": "cooperative",
+            "prefix": "cooper",
+            "displayText": "cooper_ _ _ _ _",
+            "missingText": "ative",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

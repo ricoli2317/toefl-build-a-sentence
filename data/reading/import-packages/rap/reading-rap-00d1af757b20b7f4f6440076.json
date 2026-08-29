@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+    "module": "rap",
+    "title": "Radio Astronomy: A New Perspective",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6A",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "00d1af757b20b7f4f644007690ee13f70d1f47b45acca285fd503de1f1b3e237",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6a-m1-rap-08",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6A",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-6b-m1-rap-08",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6B",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-00d1af757b20b7f4f6440076-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-00d1af757b20b7f4f6440076-passage-01",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "title": "Radio Astronomy: A New Perspective",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Radio astronomy is the study of celestial objects using radio waves rather than visible light. Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments. This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe’s early conditions.",
+          "rawText": "Radio astronomy is the study of celestial objects using radio waves rather than visible light. Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments. This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe’s early conditions.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Radio astronomy is the study of celestial objects using radio waves rather than visible light."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe’s early conditions."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967. These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals. Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions.",
+          "rawText": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967. These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals. Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "However, radio astronomy faces growing challenges due to technological interference. Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect. This “radio frequency pollution” makes it increasingly difficult to isolate genuine astronomical data. To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat.",
+          "rawText": "However, radio astronomy faces growing challenges due to technological interference. Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect. This “radio frequency pollution” makes it increasingly difficult to isolate genuine astronomical data. To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "However, radio astronomy faces growing challenges due to technological interference."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "This “radio frequency pollution” makes it increasingly difficult to isolate genuine astronomical data."
+            },
+            {
+              "sentenceId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q01",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the comparison of optical and radio telescopes suggest?",
+      "rawDisplayText": "26. What does the comparison of optical and radio telescopes suggest?",
+      "payload": {
+        "passageId": "reading-rap-00d1af757b20b7f4f6440076-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Traditional instruments are more susceptible to damage."
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Dust often interferes with the optical detection of objects in space."
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Radio telescopes are best for detecting massive stars."
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Optical telescopes were the first to detect cosmic microwave background radiation."
+          }
+        ],
+        "correctOptionId": "reading-rap-00d1af757b20b7f4f6440076-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q02",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “transformative” in the passage is closest in meaning to",
+      "rawDisplayText": "27. The word “transformative” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-00d1af757b20b7f4f6440076-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q02-opt-1",
+            "optionOrder": 1,
+            "text": "groundbreaking"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q02-opt-2",
+            "optionOrder": 2,
+            "text": "exciting"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q02-opt-3",
+            "optionOrder": 3,
+            "text": "concerning"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q02-opt-4",
+            "optionOrder": 4,
+            "text": "startling"
+          }
+        ],
+        "correctOptionId": "reading-rap-00d1af757b20b7f4f6440076-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q03",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, radio astronomy helps scientists study all of the following EXCEPT",
+      "rawDisplayText": "28. According to the passage, radio astronomy helps scientists study all of the following EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-00d1af757b20b7f4f6440076-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q03-opt-1",
+            "optionOrder": 1,
+            "text": "the beginnings of the universe"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q03-opt-2",
+            "optionOrder": 2,
+            "text": "how to prevent the explosions of large stars"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q03-opt-3",
+            "optionOrder": 3,
+            "text": "the last stages of stars"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q03-opt-4",
+            "optionOrder": 4,
+            "text": "the way matter behaves under extreme conditions"
+          }
+        ],
+        "correctOptionId": "reading-rap-00d1af757b20b7f4f6440076-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q04",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “the global spread of wireless technology”?",
+      "rawDisplayText": "29. Why does the author mention “the global spread of wireless technology”?",
+      "payload": {
+        "passageId": "reading-rap-00d1af757b20b7f4f6440076-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that the issue of technological interference is not likely to end soon"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To argue that technological interference is not as severe as was once thought"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To support the argument that optical telescopes are more reliable than radio telescopes"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To highlight the sophisticated tools astronomers use to detect cosmic signals"
+          }
+        ],
+        "correctOptionId": "reading-rap-00d1af757b20b7f4f6440076-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q05",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is one way to address the issue of technological interference?",
+      "rawDisplayText": "30. According to the passage, what is one way to address the issue of technological interference?",
+      "payload": {
+        "passageId": "reading-rap-00d1af757b20b7f4f6440076-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q05-opt-1",
+            "optionOrder": 1,
+            "text": "Revive the use of optical telescopes"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q05-opt-2",
+            "optionOrder": 2,
+            "text": "Limit wireless routers to certain frequencies"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q05-opt-3",
+            "optionOrder": 3,
+            "text": "Place observatories far away from urban areas"
+          },
+          {
+            "optionId": "reading-rap-00d1af757b20b7f4f6440076-q05-opt-4",
+            "optionOrder": 4,
+            "text": "Mandate specific quiet times when the use of wireless technology is prohibited"
+          }
+        ],
+        "correctOptionId": "reading-rap-00d1af757b20b7f4f6440076-q05-opt-3"
+      }
+    }
+  ]
+}

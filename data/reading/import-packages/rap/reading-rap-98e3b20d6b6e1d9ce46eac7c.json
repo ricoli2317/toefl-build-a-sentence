@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+    "module": "rap",
+    "title": "Antimicrobial Resistance Challenges",
+    "firstSeenDate": "2026-06-21",
+    "firstSeenSourceLabel": "6.21A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "98e3b20d6b6e1d9ce46eac7c3d33c2b7f0afa372e8c2a4a7f3759f9ae3efb847",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-21a-m2-rap-19",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21A",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "title": "Antimicrobial Resistance Challenges",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Antimicrobial resistance (AMR)—the ability of microorganisms to withstand drugs that once killed them—threatens to reverse decades of medical advancement, posing an urgent public health challenge globally. In particular, the widespread and often indiscriminate use of antibiotics in medicine and agriculture has accelerated the emergence of resistant bacteria. Recognizing the gravity of AMR, the World Health Organization classifies it among the top global health threats, underscoring the critical need for immediate action.",
+          "rawText": "Antimicrobial resistance (AMR)—the ability of microorganisms to withstand drugs that once killed them—threatens to reverse decades of medical advancement, posing an urgent public health challenge globally. In particular, the widespread and often indiscriminate use of antibiotics in medicine and agriculture has accelerated the emergence of resistant bacteria. Recognizing the gravity of AMR, the World Health Organization classifies it among the top global health threats, underscoring the critical need for immediate action.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Antimicrobial resistance (AMR)—the ability of microorganisms to withstand drugs that once killed them—threatens to reverse decades of medical advancement, posing an urgent public health challenge globally."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "In particular, the widespread and often indiscriminate use of antibiotics in medicine and agriculture has accelerated the emergence of resistant bacteria."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Recognizing the gravity of AMR, the World Health Organization classifies it among the top global health threats, underscoring the critical need for immediate action."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate. Unfortunately, the pharmaceutical industry has been slow to produce new antibiotics, hampered by both scientific obstacles and economic disincentives. Antibiotics often yield lower financial returns compared to medications for chronic diseases. Therefore, they receive less investment.",
+          "rawText": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate. Unfortunately, the pharmaceutical industry has been slow to produce new antibiotics, hampered by both scientific obstacles and economic disincentives. Antibiotics often yield lower financial returns compared to medications for chronic diseases. Therefore, they receive less investment.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Unfortunately, the pharmaceutical industry has been slow to produce new antibiotics, hampered by both scientific obstacles and economic disincentives."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Antibiotics often yield lower financial returns compared to medications for chronic diseases."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Therefore, they receive less investment."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Addressing AMR requires a comprehensive and coordinated international strategy. Implementing stringent regulations on antibiotic prescriptions can curb misuse but might not eliminate it completely. Financial incentives for pharmaceutical companies could stimulate the development of novel antibiotics. However, this approach remains contentious due to the varying perspectives on economic feasibility. Public health campaigns aimed at educating communities about judicious antibiotic use are vital, but experts continue to debate the most effective",
+          "rawText": "Addressing AMR requires a comprehensive and coordinated international strategy. Implementing stringent regulations on antibiotic prescriptions can curb misuse but might not eliminate it completely. Financial incentives for pharmaceutical companies could stimulate the development of novel antibiotics. However, this approach remains contentious due to the varying perspectives on economic feasibility. Public health campaigns aimed at educating communities about judicious antibiotic use are vital, but experts continue to debate the most effective",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Addressing AMR requires a comprehensive and coordinated international strategy."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Implementing stringent regulations on antibiotic prescriptions can curb misuse but might not eliminate it completely."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Financial incentives for pharmaceutical companies could stimulate the development of novel antibiotics."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "However, this approach remains contentious due to the varying perspectives on economic feasibility."
+            },
+            {
+              "sentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03-s05",
+              "sentenceOrder": 5,
+              "text": "Public health campaigns aimed at educating communities about judicious antibiotic use are vital, but experts continue to debate the most effective"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention the \"indiscriminate use of antibiotics\"?",
+      "rawDisplayText": "11. Why does the author mention the \"indiscriminate use of antibiotics\"?",
+      "payload": {
+        "passageId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that the AMR crisis can be easily solved"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To argue that the World Health Organization has underestimated the extent of the problem"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To make a distinction between how antibiotics are used in healthcare and agriculture"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To explain why AMR is becoming a global health challenge"
+          }
+        ],
+        "correctOptionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q02",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "questionOrder": 2,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 2 that explains how antimicrobial resistance works. Select the sentence to make your choice.",
+      "rawDisplayText": "12. Identify the sentence in paragraph 2 that explains how antimicrobial resistance works. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01",
+        "targetParagraphId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02",
+        "correctSentenceId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02-s01"
+      }
+    },
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which obstacle to the development of new antibiotics is mentioned in the passage?",
+      "rawDisplayText": "13. Which obstacle to the development of new antibiotics is mentioned in the passage?",
+      "payload": {
+        "passageId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Insurance companies do not support the necessary investment."
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Antibiotics are typically less profitable than some other drugs."
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The pace of bacterial gene mutation is too rapid to keep up with."
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Medications for chronic diseases are less complex to produce."
+          }
+        ],
+        "correctOptionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"comprehensive\" in the passage is closest in meaning to",
+      "rawDisplayText": "14. The word \"comprehensive\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04-opt-1",
+            "optionOrder": 1,
+            "text": "understandable"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04-opt-2",
+            "optionOrder": 2,
+            "text": "well-researched"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04-opt-3",
+            "optionOrder": 3,
+            "text": "thorough"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04-opt-4",
+            "optionOrder": 4,
+            "text": "cost-effective"
+          }
+        ],
+        "correctOptionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage mentions each of the following strategies for addressing antimicrobial resistance EXCEPT",
+      "rawDisplayText": "15. The passage mentions each of the following strategies for addressing antimicrobial resistance EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05-opt-1",
+            "optionOrder": 1,
+            "text": "increasing investment in measures for preventing infections"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05-opt-2",
+            "optionOrder": 2,
+            "text": "strengthening regulations that govern antibiotic prescriptions"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05-opt-3",
+            "optionOrder": 3,
+            "text": "offering financial incentives to drugmakers to develop new antibiotics"
+          },
+          {
+            "optionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05-opt-4",
+            "optionOrder": 4,
+            "text": "educating people worldwide about limiting the use of antibiotics"
+          }
+        ],
+        "correctOptionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q05-opt-1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1826 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.1B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Realism in theater is a movement that emerged in the 19th century, aiming to portray everyday life with authenticity and truthfulness. It rejects exaggerated sentime_ _ _ _ _ _ _ and theat_ _ _ _ _ conventions, ins_ _ _ _ focusing o_ believable chara_ _ _ _ _, natural conver_ _ _ _ _ _, and sett_ _ _ _ that ref_ _ _ _ real soc_ _ _ environments. Rea_ _ _ _ plays often explore complex moral and social issues, emphasizing psychological depth and the influence of environment and circumstance on human behavior. Realism continues to influence contemporary theatre by encouraging honest, nuanced storytelling.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Realism in theater is a movement that emerged in the 19th century, aiming to portray everyday life with authenticity and truthfulness. It rejects exaggerated sentime_ _ _ _ _ _ _ and theat_ _ _ _ _ conventions, ins_ _ _ _ focusing o_ believable chara_ _ _ _ _, natural conver_ _ _ _ _ _, and sett_ _ _ _ that ref_ _ _ _ real soc_ _ _ environments. Rea_ _ _ _ plays often explore complex moral and social issues, emphasizing psychological depth and the influence of environment and circumstance on human behavior. Realism continues to influence contemporary theatre by encouraging honest, nuanced storytelling.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Realism in theater is a movement that emerged in the 19th century, aiming to portray everyday life with authenticity and truthfulness. It rejects exaggerated "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " conventions, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " focusing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " believable "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", natural "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " real "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " environments. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " plays often explore complex moral and social issues, emphasizing psychological depth and the influence of environment and circumstance on human behavior. Realism continues to influence contemporary theatre by encouraging honest, nuanced storytelling."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "sentimentality",
+                "prefix": "sentime",
+                "displayText": "sentime_ _ _ _ _ _ _",
+                "missingText": "ntality",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "theatrical",
+                "prefix": "theat",
+                "displayText": "theat_ _ _ _ _",
+                "missingText": "rical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "instead",
+                "prefix": "ins",
+                "displayText": "ins_ _ _ _",
+                "missingText": "tead",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "on",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "characters",
+                "prefix": "chara",
+                "displayText": "chara_ _ _ _ _",
+                "missingText": "cters",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "conversation",
+                "prefix": "conver",
+                "displayText": "conver_ _ _ _ _ _",
+                "missingText": "sation",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "settings",
+                "prefix": "sett",
+                "displayText": "sett_ _ _ _",
+                "missingText": "ings",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "reflect",
+                "prefix": "ref",
+                "displayText": "ref_ _ _ _",
+                "missingText": "lect",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "social",
+                "prefix": "soc",
+                "displayText": "soc_ _ _",
+                "missingText": "ial",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q01-10-p01",
+                "answer": "Realist",
+                "prefix": "Rea",
+                "displayText": "Rea_ _ _ _",
+                "missingText": "list",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Crop rotation is a farming technique that involves growing a series of different types of crops in the same area across a sequence of seasons. Different crops use different nutrients from the soil, so rotating them prevents the soil from becoming depleted. Th_ _ method he_ _ _ to red_ _ _ pests a_ _ diseases; i_ also decr_ _ _ _ _ the ne_ _ for chem_ _ _ _ fertilizers, prom_ _ _ _ _ sustainable agric_ _ _ _ _ _. Farmers use this practice to improve crop yields and maintain healthy soil.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Crop rotation is a farming technique that involves growing a series of different types of crops in the same area across a sequence of seasons. Different crops use different nutrients from the soil, so rotating them prevents the soil from becoming depleted. Th_ _ method he_ _ _ to red_ _ _ pests a_ _ diseases; i_ also decr_ _ _ _ _ the ne_ _ for chem_ _ _ _ fertilizers, prom_ _ _ _ _ sustainable agric_ _ _ _ _ _. Farmers use this practice to improve crop yields and maintain healthy soil.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Crop rotation is a farming technique that involves growing a series of different types of crops in the same area across a sequence of seasons. Different crops use different nutrients from the soil, so rotating them prevents the soil from becoming depleted. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " method "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " pests "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " diseases; "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " also "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " fertilizers, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " sustainable "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Farmers use this practice to improve crop yields and maintain healthy soil."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "This",
+                "prefix": "Th",
+                "displayText": "Th_ _",
+                "missingText": "is",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "helps",
+                "prefix": "he",
+                "displayText": "he_ _ _",
+                "missingText": "lps",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "reduce",
+                "prefix": "red",
+                "displayText": "red_ _ _",
+                "missingText": "uce",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "it",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "decreases",
+                "prefix": "decr",
+                "displayText": "decr_ _ _ _ _",
+                "missingText": "eases",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "need",
+                "prefix": "ne",
+                "displayText": "ne_ _",
+                "missingText": "ed",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "chemical",
+                "prefix": "chem",
+                "displayText": "chem_ _ _ _",
+                "missingText": "ical",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "promoting",
+                "prefix": "prom",
+                "displayText": "prom_ _ _ _ _",
+                "missingText": "oting",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-01-b-m1-ctw-q11-20-p01",
+                "answer": "agriculture",
+                "prefix": "agric",
+                "displayText": "agric_ _ _ _ _ _",
+                "missingText": "ulture",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m1-rdl-03",
+      "module": "rdl",
+      "title": "POLS 201 Comparative Political Thought",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-059",
+          "title": "POLS 201 Comparative Political Thought",
+          "source": "material-index.json#RDL-059",
+          "sourceDate": "2026-06-01",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-059/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-059/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Based on the description, a student in this course would benefit most from the ability to",
+          "rawDisplayText": "21. Based on the description, a student in this course would benefit most from the ability to",
+          "payload": {
+            "materialId": "RDL-059",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "follow precise laboratory procedures"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "design visually appealing presentations"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "express abstract ideas"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "write poetry and fiction"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "Which of the following would be most helpful in this course?",
+          "rawDisplayText": "22. Which of the following would be most helpful in this course?",
+          "payload": {
+            "materialId": "RDL-059",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Prior political campaign experience"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Command of basic statistical methods"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Knowledge of the scientific method"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Familiarity with political history"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q22-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m1-rdl-05",
+      "module": "rdl",
+      "title": "Momentum Meet-up: Networking Mixer for Students",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-060",
+          "title": "Momentum Meet-up: Networking Mixer for Students",
+          "source": "material-index.json#RDL-060",
+          "sourceDate": "2026-06-01",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-060/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-060/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is Momentum Meet-up primarily designed to help students do?",
+          "rawDisplayText": "23. What is Momentum Meet-up primarily designed to help students do?",
+          "payload": {
+            "materialId": "RDL-060",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Choose an academic major"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Get help writing their résumés"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Establish professional contacts"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Discover volunteer opportunities"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What are attendees asked to bring to the event?",
+          "rawDisplayText": "24. What are attendees asked to bring to the event?",
+          "payload": {
+            "materialId": "RDL-060",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "At least 100 business cards"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Multiple copies of their résumé"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Money to pay for refreshments"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "A name tag and discussion topics"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What should attendees do to receive tips about networking before the mixer?",
+          "rawDisplayText": "25. What should attendees do to receive tips about networking before the mixer?",
+          "payload": {
+            "materialId": "RDL-060",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "Download a PDF document"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Join an online FAQ session"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Attend an orientation the day before"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Arrive at the event early"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m1-rap-08",
+      "module": "rap",
+      "title": "Veganism in the United States",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-01-b-m1-rap-p01",
+          "title": "Veganism in the United States",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-01-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States. A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019. This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating. During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks.",
+              "rawText": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States. A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019. This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating. During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "By the mid-2020s, however, momentum began to level off. Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan. Several factors contributed to this plateau. Preparing vegan meals can be more involved than preparing meat-based meals. For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming. And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness. Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat. American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits.",
+              "rawText": "By the mid-2020s, however, momentum began to level off. Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan. Several factors contributed to this plateau. Preparing vegan meals can be more involved than preparing meat-based meals. For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming. And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness. Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat. American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "By the mid-2020s, however, momentum began to level off."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Several factors contributed to this plateau."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Preparing vegan meals can be more involved than preparing meat-based meals."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s07",
+                  "sentenceOrder": 7,
+                  "text": "Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p01-p02-s08",
+                  "sentenceOrder": 8,
+                  "text": "American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "The main purpose of this passage is to",
+          "rawDisplayText": "26. The main purpose of this passage is to",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "describe the birth of veganism in the United States"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "list the benefits of a vegan diet"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "analyze some changes in Americans' attitudes toward veganism"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "identify trends in American consumer preferences"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author notes all of the following as factors driving the popularity of veganism EXCEPT",
+          "rawDisplayText": "27. The author notes all of the following as factors driving the popularity of veganism EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "concern for animals"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "considerations about neaith"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "the high cost of consuming meat"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "a desre to protect the environment"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q27-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"involved\" in the passage is closest in meaning to",
+          "rawDisplayText": "28. The word \"involved\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "unsatisiying"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "expensive"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "unpleasant"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "complicated"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q28-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author mentions \"a vegan cheese substitute\" primarily in order to",
+          "rawDisplayText": "29. The author mentions \"a vegan cheese substitute\" primarily in order to",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "note a challenge inherent in preparing vegan meals"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "identity a popular item used in many vegan recipes"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "contrast the healthfulness of vegan and animal-based foods"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "describe a cooking process popularized by vegans"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests which of the following about commercial meat-alternative products?",
+          "rawDisplayText": "30. The passage suggests which of the following about commercial meat-alternative products?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "They became Increasingly popular with home cooks during the mid-2020s."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "They are produced in a way that catses some people to doubt their healthfulness."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "They are not popular with Americans concerned about food allergies."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "They have greatly improved in flavor since their Introduction."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m1-rap-13",
+      "module": "rap",
+      "title": "Noise Control in Urban Areas",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-01-b-m1-rap-p02",
+          "title": "Noise Control in Urban Areas",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Urban areas across the globe are grappling with the challenge of noise pollution. This type of pollution can severely impact health, leading to sleep disturbances and cardiovascular problems. It has many causes.",
+              "rawText": "■ Urban areas across the globe are grappling with the challenge of noise pollution. ■ This type of pollution can severely impact health, leading to sleep disturbances and cardiovascular problems. ■ It has many causes. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Urban areas across the globe are grappling with the challenge of noise pollution."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This type of pollution can severely impact health, leading to sleep disturbances and cardiovascular problems."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "It has many causes."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Innovative solutions to control noise pollution, from traffic or other sources, are emerging. One such solution is green walls, vertical gardens installed on building facades. Green walls can absorb, reflect, or deflect sound waves, reducing the noise that enters a building. Additionally, they offer benefits like air purification and temperature regulation—thus not only improving the outdoor environment around buildings but also enhancing indoor air quality and helping regulate interior temperatures by acting as natural insulation.",
+              "rawText": "Innovative solutions to control noise pollution, from traffic or other sources, are emerging. One such solution is green walls, vertical gardens installed on building facades. Green walls can absorb, reflect, or deflect sound waves, reducing the noise that enters a building. Additionally, they offer benefits like air purification and temperature regulation—thus not only improving the outdoor environment around buildings but also enhancing indoor air quality and helping regulate interior temperatures by acting as natural insulation.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Innovative solutions to control noise pollution, from traffic or other sources, are emerging."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "One such solution is green walls, vertical gardens installed on building facades."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Green walls can absorb, reflect, or deflect sound waves, reducing the noise that enters a building."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Additionally, they offer benefits like air purification and temperature regulation—thus not only improving the outdoor environment around buildings but also enhancing indoor air quality and helping regulate interior temperatures by acting as natural insulation."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Another approach involves quiet zones. These zones are designated areas where noisy activities are restricted, often including parks, residential neighborhoods, and hospital areas. By reducing noise levels in these zones, cities create pockets of tranquility. Some European cities have seen a decrease in stress-related health issues among residents in quiet zones.",
+              "rawText": "Another approach involves quiet zones. These zones are designated areas where noisy activities are restricted, often including parks, residential neighborhoods, and hospital areas. By reducing noise levels in these zones, cities create pockets of tranquility. Some European cities have seen a decrease in stress-related health issues among residents in quiet zones.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Another approach involves quiet zones."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "These zones are designated areas where noisy activities are restricted, often including parks, residential neighborhoods, and hospital areas."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "By reducing noise levels in these zones, cities create pockets of tranquility."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some European cities have seen a decrease in stress-related health issues among residents in quiet zones."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p04",
+              "paragraphOrder": 4,
+              "text": "Advancements in technology have also led to the creation of noise-canceling materials. Such materials are often used in buildings or road surfaces. They work by actively reducing sound vibrations. Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem.",
+              "rawText": "Advancements in technology have also led to the creation of noise-canceling materials. Such materials are often used in buildings or road surfaces. They work by actively reducing sound vibrations. Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Advancements in technology have also led to the creation of noise-canceling materials."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Such materials are often used in buildings or road surfaces."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "They work by actively reducing sound vibrations."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m1-rap-p02-p04-s04",
+                  "sentenceOrder": 4,
+                  "text": "Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"grappling\" in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word \"grappling\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "Identifying"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "interfering"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "struggling"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "experimenting"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "How do green walls help control noise pollution?",
+          "rawDisplayText": "32. How do green walls help control noise pollution?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "By purifying the air around buildings"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "By disrupting the path of sound waves"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "By making building facades more attractive"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "By reducing temperatures inside buildings"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about noise pollution in the European cities mentioned in the passage?",
+          "rawDisplayText": "33. What can be inferred about noise pollution in the European cities mentioned in the passage?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "It was likely a factor in causing stress-related health issues among residents."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "It has not been as effectively managed there as it has been in other places."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "It has been controlled most successfully by adding green walls to buildings."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "It has been funded primarily through the efforts of urban planners."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m1-q33-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 4 that names specific architectural elements built with noise-canceling materials. Select the sentence to make your choice",
+          "rawDisplayText": "34. Identify the sentence in paragraph 4 that names specific architectural elements built with noise-canceling materials. Select the sentence to make your choice",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p02",
+            "targetParagraphId": "reading-2026-06-01-b-m1-rap-p02-p04",
+            "correctSentenceId": "reading-2026-06-01-b-m1-rap-p02-p04-s04"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m1-rap-p02",
+            "insertSentence": "One common source is traffic, which includes cars, buses, motorcycles, and trucks.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-01-b-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p01",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-06-01-b-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-01-b-m1-rap-p02-p01-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-01-b-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p01",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-01-b-m1-rap-p02-p01-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-01-b-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-01-b-m1-rap-p02-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-01-b-m1-rap-p02-p01-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-01-b-m1-q35-anchor-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The trajectory of modern history has been profoundly shaped by urbanization and industrialization, which redefined both physical landscapes and social structures. As industrial centers grew, rural populations increasingly abandoned agrarian lifestyles rooted in seasonal labor and subsistence farming for wage-based employment in cities. Urban enviro_ _ _ _ _ _ became hu_ _ of econ_ _ _ _ opportunity a_ _ social exch_ _ _ _, where indiv_ _ _ _ _ _ from var_ _ _ backgrounds inter_ _ _ _ _, shared id_ _ _, and contr_ _ _ _ _ _ to emerging cultural movements. This shift marked a fundamental transformation in how people lived, worked, and connected within society.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The trajectory of modern history has been profoundly shaped by urbanization and industrialization, which redefined both physical landscapes and social structures. As industrial centers grew, rural populations increasingly abandoned agrarian lifestyles rooted in seasonal labor and subsistence farming for wage-based employment in cities. Urban enviro_ _ _ _ _ _ became hu_ _ of econ_ _ _ _ opportunity a_ _ social exch_ _ _ _, where indiv_ _ _ _ _ _ from var_ _ _ backgrounds inter_ _ _ _ _, shared id_ _ _, and contr_ _ _ _ _ _ to emerging cultural movements. This shift marked a fundamental transformation in how people lived, worked, and connected within society.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The trajectory of modern history has been profoundly shaped by urbanization and industrialization, which redefined both physical landscapes and social structures. As industrial centers grew, rural populations increasingly abandoned agrarian lifestyles rooted in seasonal labor and subsistence farming for wage-based employment in cities. Urban "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " became "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " opportunity "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " social "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", where "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " from "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " backgrounds "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", shared "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to emerging cultural movements. This shift marked a fundamental transformation in how people lived, worked, and connected within society."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "environments",
+                "prefix": "enviro",
+                "displayText": "enviro_ _ _ _ _ _",
+                "missingText": "nments",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "hubs",
+                "prefix": "hu",
+                "displayText": "hu_ _",
+                "missingText": "bs",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "economic",
+                "prefix": "econ",
+                "displayText": "econ_ _ _ _",
+                "missingText": "omic",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "exchange",
+                "prefix": "exch",
+                "displayText": "exch_ _ _ _",
+                "missingText": "ange",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "individuals",
+                "prefix": "indiv",
+                "displayText": "indiv_ _ _ _ _ _",
+                "missingText": "iduals",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "varied",
+                "prefix": "var",
+                "displayText": "var_ _ _",
+                "missingText": "ied",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "interacted",
+                "prefix": "inter",
+                "displayText": "inter_ _ _ _ _",
+                "missingText": "acted",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "ideas",
+                "prefix": "id",
+                "displayText": "id_ _ _",
+                "missingText": "eas",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-01-b-m2-ctw-q01-10-p01",
+                "answer": "contributed",
+                "prefix": "contr",
+                "displayText": "contr_ _ _ _ _ _",
+                "missingText": "ibuted",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1b-m2-rap-19",
+      "module": "rap",
+      "title": "Circadian Rhythm Disruption",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1B",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-01-b-m2-rap-p01",
+          "title": "Circadian Rhythm Disruption",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-01-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure. These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\" This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders. Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms. Such adaptations could inform potential human therapies.",
+              "rawText": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure. These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\" This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders. Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms. Such adaptations could inform potential human therapies.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\""
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Such adaptations could inform potential human therapies."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Recent studies suggest that manipulating light exposure can help reset circadian clocks. Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles. However, this approach is not universally effective. Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles.",
+              "rawText": "Recent studies suggest that manipulating light exposure can help reset circadian clocks. Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles. However, this approach is not universally effective. Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Recent studies suggest that manipulating light exposure can help reset circadian clocks."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, this approach is not universally effective."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms. This complex causal web requires a multidisciplinary approach to develop comprehensive solutions. Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles. Whether these efforts will yield sustainable treatment options remains to be seen.",
+              "rawText": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms. This complex causal web requires a multidisciplinary approach to develop comprehensive solutions. Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles. Whether these efforts will yield sustainable treatment options remains to be seen.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "This complex causal web requires a multidisciplinary approach to develop comprehensive solutions."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-b-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Whether these efforts will yield sustainable treatment options remains to be seen."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention the \"higher prevalence of metabolic disorders\"\"?",
+          "rawDisplayText": "11. Why does the author mention the \"higher prevalence of metabolic disorders\"\"?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "To explain why circadian misalignment. is increasing in urban environments"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "To suggest a causal relationship between metabolic iliness and sleep disturbances"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "To support the claim that circadian misalignment affects sleep patterns"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "To describe one effect of the disruption of circadian rhythms by artifical light"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why might some nocturnal animal adaptations be important for human therapies?",
+          "rawDisplayText": "12. Why might some nocturnal animal adaptations be important for human therapies?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "They provide evidence that light exposure is the greatest driver of circadian rhythms."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "They offer clues about thriving in conditions that cause circadian misalignment in people."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "They show that melatonin is not always effective in regulating sleep patterns."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "They prove that animals' melatonin production cycles closely resemble those of humans."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the author suggest about simulating natural light cycles as a way of resetting circadian clocks?",
+          "rawDisplayText": "13. What does the author suggest about simulating natural light cycles as a way of resetting circadian clocks?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "Most people experiencing circadian misalignment have seen no benefit from the treatment."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "Most researchers agree that this treatment is currently the only effective approach."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "The approach is most effective for people with a genetic predisposition for sleep disorders."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "This approach has been successfully used to help many Individuals restore their sleep patterns."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m2-q13-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the relationship between paragraph 2 and paragraph 3?",
+          "rawDisplayText": "14. What is the relationship between paragraph 2 and paragraph 3?",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "Paragraph 2 defines a concept; paragraph 3 provides more detail by discussing specific examples."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "Paragraph 2 evaluates a focused approach; paragraph 3 points to broader challenges and solutions."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "Paragraph 2 proposes a theory; paragraph 3 notes potential objections to itand suggests responses."
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "Paragraph 2 outlines a methodology; paragraph 3 reports the results of applying it to a problem."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"rectify\" in the passage is closest in meaning to",
+          "rawDisplayText": "15. The word \"rectify\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-01-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-b-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "disclose"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "approve"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "relieve"
+              },
+              {
+                "optionId": "reading-2026-06-01-b-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "document"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-b-m2-q15-opt-3"
+          }
+        }
+      ]
+    }
+  ]
+}

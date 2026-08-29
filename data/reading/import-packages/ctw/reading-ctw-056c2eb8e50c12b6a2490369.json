@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-056c2eb8e50c12b6a2490369",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "056c2eb8e50c12b6a2490369b0441f7c2f765b9d46fdd1cf5f8df3ec64cc0528",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-056c2eb8e50c12b6a2490369",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1A",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-056c2eb8e50c12b6a2490369-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-056c2eb8e50c12b6a2490369-q01",
+      "logicalItemId": "reading-ctw-056c2eb8e50c12b6a2490369",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The formation of river deltas is a geographical process that illustrates the dynamic interaction between land and water. When a river reaches a body of water, such as an oc_ _ _ or s_ _, it sl_ _ _ down, depos_ _ _ _ _ the mate_ _ _ _ _ it has car_ _ _ _ from upst_ _ _ _. Gradually, t_ _ sediments accum_ _ _ _ _ to cre_ _ _ deltas, which are fertile landforms that extend into the water. Deltas not only support diverse ecosystems but also provide rich agricultural land.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The formation of river deltas is a geographical process that illustrates the dynamic interaction between land and water. When a river reaches a body of water, such as an oc_ _ _ or s_ _, it sl_ _ _ down, depos_ _ _ _ _ the mate_ _ _ _ _ it has car_ _ _ _ from upst_ _ _ _. Gradually, t_ _ sediments accum_ _ _ _ _ to cre_ _ _ deltas, which are fertile landforms that extend into the water. Deltas not only support diverse ecosystems but also provide rich agricultural land.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The formation of river deltas is a geographical process that illustrates the dynamic interaction between land and water. When a river reaches a body of water, such as an "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " or "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", it "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " down, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " it has "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " from "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ". Gradually, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " sediments "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " deltas, which are fertile landforms that extend into the water. Deltas not only support diverse ecosystems but also provide rich agricultural land."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "ocean",
+            "prefix": "oc",
+            "displayText": "oc_ _ _",
+            "missingText": "ean",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "sea",
+            "prefix": "s",
+            "displayText": "s_ _",
+            "missingText": "ea",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "slows",
+            "prefix": "sl",
+            "displayText": "sl_ _ _",
+            "missingText": "ows",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "depositing",
+            "prefix": "depos",
+            "displayText": "depos_ _ _ _ _",
+            "missingText": "iting",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "materials",
+            "prefix": "mate",
+            "displayText": "mate_ _ _ _ _",
+            "missingText": "rials",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "carried",
+            "prefix": "car",
+            "displayText": "car_ _ _ _",
+            "missingText": "ried",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "upstream",
+            "prefix": "upst",
+            "displayText": "upst_ _ _ _",
+            "missingText": "ream",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "accumulate",
+            "prefix": "accum",
+            "displayText": "accum_ _ _ _ _",
+            "missingText": "ulate",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-056c2eb8e50c12b6a2490369-q01-p01",
+            "answer": "create",
+            "prefix": "cre",
+            "displayText": "cre_ _ _",
+            "missingText": "ate",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

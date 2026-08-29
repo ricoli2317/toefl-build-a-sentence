@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-ee972a1257686633a7bfb6c7",
+    "module": "rdl",
+    "title": "Serve & Shine: Volunteer Opportunities Expo",
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "ee972a1257686633a7bfb6c75209434afbb81ed1cbc328a1efc4902933a14176",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m1-rdl-10",
+      "logicalItemId": "reading-rdl-ee972a1257686633a7bfb6c7",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-049",
+      "title": "Serve & Shine: Volunteer Opportunities Expo",
+      "source": "material-index.json#RDL-049",
+      "sourceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-049/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-049/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01",
+      "logicalItemId": "reading-rdl-ee972a1257686633a7bfb6c7",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main purpose of the expo?",
+      "rawDisplayText": "28. What is the main purpose of the expo?",
+      "payload": {
+        "materialId": "RDL-049",
+        "options": [
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To promote eco-friendly initiatives"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To encourage personal connections among volunteers"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To help attendees connect with volunteer opportunities"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To recruit volunteers for clubs"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ee972a1257686633a7bfb6c7-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02",
+      "logicalItemId": "reading-rdl-ee972a1257686633a7bfb6c7",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "All of the following people are invited to attend the expo EXCEPT:",
+      "rawDisplayText": "29. All of the following people are invited to attend the expo EXCEPT:",
+      "payload": {
+        "materialId": "RDL-049",
+        "options": [
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02-opt-1",
+            "optionOrder": 1,
+            "text": "students"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02-opt-2",
+            "optionOrder": 2,
+            "text": "alumni"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02-opt-3",
+            "optionOrder": 3,
+            "text": "staff"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02-opt-4",
+            "optionOrder": 4,
+            "text": "faculty"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ee972a1257686633a7bfb6c7-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03",
+      "logicalItemId": "reading-rdl-ee972a1257686633a7bfb6c7",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "According to the flyer, expo participants should register in advance to",
+      "rawDisplayText": "30. According to the flyer, expo participants should register in advance to",
+      "payload": {
+        "materialId": "RDL-049",
+        "options": [
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03-opt-1",
+            "optionOrder": 1,
+            "text": "request accommodations"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03-opt-2",
+            "optionOrder": 2,
+            "text": "be eligible for leadership roles"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03-opt-3",
+            "optionOrder": 3,
+            "text": "benefit from priority check-in"
+          },
+          {
+            "optionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03-opt-4",
+            "optionOrder": 4,
+            "text": "receive an advance printed program"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ee972a1257686633a7bfb6c7-q03-opt-3"
+      }
+    }
+  ]
+}

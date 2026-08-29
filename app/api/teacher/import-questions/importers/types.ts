@@ -32,6 +32,7 @@ export type ImportResult = {
   logicalNewItemCount: number;
   logicalAutoMergeCount: number;
   logicalNeedsReviewCount: number;
+  possibleDuplicateCount?: number;
   occurrenceInsertedCount: number;
   failedCount: number;
   failedRows: FailedRow[];
@@ -50,6 +51,7 @@ export type ImporterContext = {
   rows: Array<Record<string, string>>;
   supabase: ImportSupabase;
   userId: string;
+  fileName?: string;
 };
 
 export type SupabaseLikeError = {

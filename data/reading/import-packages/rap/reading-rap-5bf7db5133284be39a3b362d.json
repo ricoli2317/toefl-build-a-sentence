@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+    "module": "rap",
+    "title": "Psychology of Laughter",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7C",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "5bf7db5133284be39a3b362d11b21ba5d19a6a2c4a23b047c1ca048cef44b650",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7c-m2-rap-19",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7C",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-5bf7db5133284be39a3b362d-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-5bf7db5133284be39a3b362d-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-5bf7db5133284be39a3b362d-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-5bf7db5133284be39a3b362d-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-5bf7db5133284be39a3b362d-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-5bf7db5133284be39a3b362d-passage-01",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "title": "Psychology of Laughter",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Laughter, a universal human behavior, plays a vital role in social harmony. Biologically, laughter triggers the release of endorphins, enhancing mood and resilience. This neurochemical response suggests an evolutionary advantage: laughter may have developed as a stress-coping mechanism, helping individuals endure hardship through shared emotional relief. This challenges the simplistic view of laughter as merely a reaction to humor. Instead, it reveals its deeper connection to emotional intelligence, mental health, and interpersonal communication.",
+          "rawText": "Laughter, a universal human behavior, plays a vital role in social harmony. Biologically, laughter triggers the release of endorphins, enhancing mood and resilience. This neurochemical response suggests an evolutionary advantage: laughter may have developed as a stress-coping mechanism, helping individuals endure hardship through shared emotional relief. This challenges the simplistic view of laughter as merely a reaction to humor. Instead, it reveals its deeper connection to emotional intelligence, mental health, and interpersonal communication.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Laughter, a universal human behavior, plays a vital role in social harmony."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Biologically, laughter triggers the release of endorphins, enhancing mood and resilience."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This neurochemical response suggests an evolutionary advantage: laughter may have developed as a stress-coping mechanism, helping individuals endure hardship through shared emotional relief."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This challenges the simplistic view of laughter as merely a reaction to humor."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Instead, it reveals its deeper connection to emotional intelligence, mental health, and interpersonal communication."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Our laughter is often triggered when we hear others laugh, and this contagiousness makes it pivotal in group dynamics. For example, in social gatherings, laughter often spreads rapidly, reinforcing a sense of collective identity and emotional synchrony. However, this contagiousness is not always straightforward. In some contexts, such as forced laughter in professional settings or laughter used to mask discomfort, its role becomes ambiguous and subject to interpretation.",
+          "rawText": "Our laughter is often triggered when we hear others laugh, and this contagiousness makes it pivotal in group dynamics. For example, in social gatherings, laughter often spreads rapidly, reinforcing a sense of collective identity and emotional synchrony. However, this contagiousness is not always straightforward. In some contexts, such as forced laughter in professional settings or laughter used to mask discomfort, its role becomes ambiguous and subject to interpretation.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Our laughter is often triggered when we hear others laugh, and this contagiousness makes it pivotal in group dynamics."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "For example, in social gatherings, laughter often spreads rapidly, reinforcing a sense of collective identity and emotional synchrony."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "However, this contagiousness is not always straightforward."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "In some contexts, such as forced laughter in professional settings or laughter used to mask discomfort, its role becomes ambiguous and subject to interpretation."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "While laughter can signal safety and shared understanding, it is complex and context-dependent. In relaxed environments, laughter often indicates trust and mutual comprehension. Yet, in tense situations, people may exhibit nervous laughter—such as during public speaking or conflict—which can mislead observers about their true emotional state. Research shows that identical laughter sounds can convey different meanings depending on social cues, tone, and setting, underscoring the importance of context in interpreting laughter.",
+          "rawText": "While laughter can signal safety and shared understanding, it is complex and context-dependent. In relaxed environments, laughter often indicates trust and mutual comprehension. Yet, in tense situations, people may exhibit nervous laughter—such as during public speaking or conflict—which can mislead observers about their true emotional state. Research shows that identical laughter sounds can convey different meanings depending on social cues, tone, and setting, underscoring the importance of context in interpreting laughter.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "While laughter can signal safety and shared understanding, it is complex and context-dependent."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "In relaxed environments, laughter often indicates trust and mutual comprehension."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Yet, in tense situations, people may exhibit nervous laughter—such as during public speaking or conflict—which can mislead observers about their true emotional state."
+            },
+            {
+              "sentenceId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Research shows that identical laughter sounds can convey different meanings depending on social cues, tone, and setting, underscoring the importance of context in interpreting laughter."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-5bf7db5133284be39a3b362d-q01",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What evidence does the passage present for the evolutionary advantages of laughter?",
+      "rawDisplayText": "11. What evidence does the passage present for the evolutionary advantages of laughter?",
+      "payload": {
+        "passageId": "reading-rap-5bf7db5133284be39a3b362d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Laughter can be used to deceive people in social settings."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Laughter triggers the release of chemicals that improve mood."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Laughter can be a sign of awareness of one's social context."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Laughter is a necessary tool for interpersonal communication."
+          }
+        ],
+        "correctOptionId": "reading-rap-5bf7db5133284be39a3b362d-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-5bf7db5133284be39a3b362d-q02",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the passage mention the contagiousness of laughter at social events?",
+      "rawDisplayText": "12. Why does the passage mention the contagiousness of laughter at social events?",
+      "payload": {
+        "passageId": "reading-rap-5bf7db5133284be39a3b362d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate the biological mechanism that causes laughter to spread among people in groups"
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To provide evidence for the claim that laughter is a universal human behavior"
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To show how laughter strengthens social bonds through shared group experiences"
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To suggest that laughter primarily reflects individual emotional states"
+          }
+        ],
+        "correctOptionId": "reading-rap-5bf7db5133284be39a3b362d-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-5bf7db5133284be39a3b362d-q03",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"straightforward\" in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word \"straightforward\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-5bf7db5133284be39a3b362d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q03-opt-1",
+            "optionOrder": 1,
+            "text": "clear"
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q03-opt-2",
+            "optionOrder": 2,
+            "text": "significant"
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q03-opt-3",
+            "optionOrder": 3,
+            "text": "consistent"
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q03-opt-4",
+            "optionOrder": 4,
+            "text": "effective"
+          }
+        ],
+        "correctOptionId": "reading-rap-5bf7db5133284be39a3b362d-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-5bf7db5133284be39a3b362d-q04",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest about how observers interpret nervous laughter?",
+      "rawDisplayText": "14. What does the passage suggest about how observers interpret nervous laughter?",
+      "payload": {
+        "passageId": "reading-rap-5bf7db5133284be39a3b362d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Observers may incorrectly interpret nervous laughter as a sign of amusement."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Observers usually interpret nervous laughter correctly in relaxed social environments."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Observers tend to interpret nervous laughter consistently across cultures."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Observers interpret nervous laughter primarily based on sound rather than on contextual cues."
+          }
+        ],
+        "correctOptionId": "reading-rap-5bf7db5133284be39a3b362d-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-5bf7db5133284be39a3b362d-q05",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following best summarizes the view of laughter presented in the passage?",
+      "rawDisplayText": "15. Which of the following best summarizes the view of laughter presented in the passage?",
+      "payload": {
+        "passageId": "reading-rap-5bf7db5133284be39a3b362d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q05-opt-1",
+            "optionOrder": 1,
+            "text": "Laughter is primarily a biological response that improves mood through chemical processes in the brain."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q05-opt-2",
+            "optionOrder": 2,
+            "text": "Laughter is a behavior whose meaning depends both on social context and on biological mechanisms."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q05-opt-3",
+            "optionOrder": 3,
+            "text": "Laughter spreads mainly because it is contagious and strengthens group identity in social settings."
+          },
+          {
+            "optionId": "reading-rap-5bf7db5133284be39a3b362d-q05-opt-4",
+            "optionOrder": 4,
+            "text": "Laughter reflects emotional intelligence by allowing individuals to express joy and relieve stress."
+          }
+        ],
+        "correctOptionId": "reading-rap-5bf7db5133284be39a3b362d-q05-opt-2"
+      }
+    }
+  ]
+}

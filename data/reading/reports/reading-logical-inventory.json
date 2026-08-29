@@ -1,0 +1,5994 @@
+{
+  "schemaVersion": 1,
+  "itemCount": 302,
+  "items": [
+    {
+      "logicalItemId": "reading-ctw-32f6add08532967d45a47746",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题001",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-04f3abe92e1b9dd9c9825c70",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题002",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e4bde146013059a02bff9f65",
+      "module": "rdl",
+      "title": "University Robotics Club Workshop",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目001",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-23a8ba850348c78488684dc3",
+      "module": "rdl",
+      "title": "Dorm Printer Setup Instructions",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目002",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-8a2b06d3d54b3dbbc242334d",
+      "module": "rdl",
+      "title": "Elena Rowe (4:44 P.M.)",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目003",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-2e985fa62a755425c2c4af46",
+      "module": "rdl",
+      "title": "IN TUNE WITH WELL-BEING: A Full-Spectrum Wellness Journey",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目004",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "module": "rap",
+      "title": "Noise Control in Urban Areas",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目001",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题003",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-a892b1f2362ab7405dd93573",
+      "module": "rap",
+      "title": "Person-Centered Therapy: A Shift in Focus",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目002",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3A",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-189d72820c22a80c73ad25fe",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题004",
+      "occurrenceCount": 4,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2cc38dbe1f91461daa045881",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题005",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-3e31a0eb787bfe6b1e950548",
+      "module": "rdl",
+      "title": "Discover Larkhaven, where lecture halls open to cobblestone courtyards abuzz with debate and steaming coffee.",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目005",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "module": "rdl",
+      "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目006",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-4f8833c13727320a3fbd20a9",
+      "module": "rap",
+      "title": "The Mysteries of Opal",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目003",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-bad55ea4a5cad4980668095d",
+      "module": "rap",
+      "title": "Quantum Computing",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目004",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题006",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-520073d086537b70cc6ba0fa",
+      "module": "rap",
+      "title": "Magnetic Confinement Fusion",
+      "firstSeenDate": "2026-05-03",
+      "firstSeenSourceLabel": "5.3B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目005",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.3B",
+          "occurrenceDate": "2026-05-03",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题007",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-521e98e18884ed6f75cbb22c",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题008",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+      "module": "rdl",
+      "title": "Fall Midterm Schedule",
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目007",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "module": "rdl",
+      "title": "Greetings from an Eliot fan",
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目008",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "module": "rap",
+      "title": "Floating Wind Turbines",
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目006",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "module": "rap",
+      "title": "A Unique Advantage of Spicy Cuisine",
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目007",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-52549c510ac4b0537f16d7d5",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题009",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "module": "rap",
+      "title": "Gravitational Physics and Its Practical Applications",
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目008",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5A",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        },
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-7e42c45a582fad63b93f259a",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题010",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-0dd51c79faabdb5cfd63f07e",
+      "module": "rap",
+      "title": "Traffic Psychology",
+      "firstSeenDate": "2026-05-05",
+      "firstSeenSourceLabel": "5.5B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目009",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.5B",
+          "occurrenceDate": "2026-05-05",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-acf2beb7a85723ad2886d935",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题011",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-aeb5d9b6338e7119391ea643",
+      "module": "rdl",
+      "title": "Mystery is a Must-See",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目009",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-31b26c1c58817872c3cb29f1",
+      "module": "rdl",
+      "title": "ON MARCH 18, FILM STUDIES MAJORS PRESENTED THEIR WORK AT ADLER AUDITORIUM.",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目010",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "module": "rap",
+      "title": "Radio Astronomy: A New Perspective",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目010",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-65673b292aab5d2297ddb13f",
+      "module": "rap",
+      "title": "Data Visualization in Action",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目011",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-8e143b7ea8c13aa127f69e30",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题012",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "module": "rap",
+      "title": "Language in Primates",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目012",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6A",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-46d04c6f807b591853f9b8e9",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题013",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-deffbdd06fda5383320dbbe9",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题014",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-c51947ee8d9fb0773388263f",
+      "module": "rdl",
+      "title": "Dormitory Quiet Hours",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目011",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f819c5907ab5746b21bccaef",
+      "module": "rdl",
+      "title": "Stay Healthy During Cold And Flu Season",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目012",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "module": "rap",
+      "title": "Unveiling Earth’s Core",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目013",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-56a3ab65ccd7e8e011a29a92",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题015",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "module": "rap",
+      "title": "Spider Silk in Medicine",
+      "firstSeenDate": "2026-05-06",
+      "firstSeenSourceLabel": "5.6B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目014",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.6B",
+          "occurrenceDate": "2026-05-06",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-e16b7b77dd9ba899a9448531",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题016",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-0cace9e500cd44402d821f51",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题017",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-590c3732c15f9453625de6d7",
+      "module": "rdl",
+      "title": "★ ★ ★  Tasty Bites  ★ ★ ★",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目013",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-4173e5fbe41ba56d482f6c87",
+      "module": "rdl",
+      "title": "Revitalizing Campus Life at Ridgeview University",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目014",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "module": "rap",
+      "title": "The Mysteries of Opal",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目015",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "module": "rap",
+      "title": "Microseisms: The Earth’s Subtle Vibrations",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目016",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-59738805c751267138c354eb",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题018",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "module": "rap",
+      "title": "Polarized Light’s Surprising Applications",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目017",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10A",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        },
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-a4862163fd625c68397e6b66",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题019",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2ab97b6850f8e0c41aa70028",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题020",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-41b5c8556113647593c73b66",
+      "module": "rdl",
+      "title": "GoodBooks shipment",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目015",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-b173120bab5a5345b1a83638",
+      "module": "rdl",
+      "title": "Literature 201: Introduction to World Literature",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目016",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-75ae12fd735b71b1b761a4d6",
+      "module": "rdl",
+      "title": "Sandeep Patel (10:00 A.M.)",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目017",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e5e2c3ce49c8c0b2aa787ffa",
+      "module": "rdl",
+      "title": "Internship fair follow-up",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目018",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "module": "rap",
+      "title": "Sociocybernetics: Understanding Complex Social Systems",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目018",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-e2e7bcb336759346dd1e5f00",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题021",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "module": "rap",
+      "title": "The Power of Music",
+      "firstSeenDate": "2026-05-10",
+      "firstSeenSourceLabel": "5.10B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目019",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.10B",
+          "occurrenceDate": "2026-05-10",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-27719fdcec5f88a285c67688",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题022",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题023",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-66d60929c89dcd51b79a2602",
+      "module": "rdl",
+      "title": "ENGL 102: Introduction to Literature II",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目019",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-c8ac4a14961a0f4a8f350ec1",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目020",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-0d183f45c45258e1f082cc43",
+      "module": "rdl",
+      "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目021",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        },
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-39ef36e25995b6df181ec609",
+      "module": "rdl",
+      "title": "CAMPUS RESEARCHERS “CRACK” THE CONCRETE CODE",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目022",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-4e7f36defd8417687e29e829",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题024",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-ac764d47560f731d32d42a93",
+      "module": "rap",
+      "title": "Microseisms: The Earth’s Subtle Vibrations",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目020",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11A",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5a283c718affa85202b1e0b8",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题025",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-78ba838a1ace8abb5f8bdeb2",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题026",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-1a583c195cab8b8638db55c7",
+      "module": "rdl",
+      "title": "Organic Chemistry I",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目023",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ddc016d127ad461b5baa9a13",
+      "module": "rdl",
+      "title": "Dear Club Coordinator,",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目024",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-fdeb6000ce9ff3558cc559b5",
+      "module": "rap",
+      "title": "Free Will and Determinism",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目021",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-a6a1d2431d2335daacfac1f5",
+      "module": "rap",
+      "title": "Evolutionary Trends in Graphic Design",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目022",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-81519ae9670cf050c9e7e35b",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题027",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "module": "rap",
+      "title": "Optical Astronomy’s Adaptive Revolution",
+      "firstSeenDate": "2026-05-11",
+      "firstSeenSourceLabel": "5.11B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目023",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.11B",
+          "occurrenceDate": "2026-05-11",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-49382781292c38dd598ab6f8",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题028",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-0753e6d19d3b27e584569787",
+      "module": "rdl",
+      "title": "Welcome to the Williamsville College Gardening Club!",
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目025",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-67b206fb484942017750a06b",
+      "module": "rdl",
+      "title": "Award Winner Returns to Alma Mater By Kevin Martin",
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目026",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-a67642faa0d4a3f2aca802b5",
+      "module": "rap",
+      "title": "Cybernetic Prosthetics",
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目024",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-e7ce2874e8c366c253f0bed0",
+      "module": "rap",
+      "title": "Urban Resilience",
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目025",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-492a8c9b6622cc67813870cb",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题029",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "module": "rap",
+      "title": "Creative Waste Transformation",
+      "firstSeenDate": "2026-05-12",
+      "firstSeenSourceLabel": "5.12",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目026",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.12",
+          "occurrenceDate": "2026-05-12",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5bf3b191a93086047a1d5b60",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题030",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-00948b985cdad27912ef0bc5",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题031",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-bac2fc5c1efe71530f7c7ea6",
+      "module": "rdl",
+      "title": "GoodBooks shipment",
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目027",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-519b7ecfe106d69324a0ed4b",
+      "module": "rdl",
+      "title": "Student Center Closure",
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目028",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-6e75b6dffa4144d74cdb43de",
+      "module": "rdl",
+      "title": "DORM STARTUP GOES VIRAL",
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目029",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "module": "rap",
+      "title": "Plant Communication",
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目027",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-627675f5ac31c99284828a49",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题032",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "module": "rap",
+      "title": "The Power of Placebos",
+      "firstSeenDate": "2026-05-13",
+      "firstSeenSourceLabel": "5.13",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目028",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.13",
+          "occurrenceDate": "2026-05-13",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-fdcbd211e823a548b33c1fee",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题033",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-8a63fc7097cf9e8d866a52c7",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题034",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-8b43b554eea38e0f2cc6bae4",
+      "module": "rdl",
+      "title": "Booking inquiry",
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目030",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-43cc9aa7d02ea4bf7faad149",
+      "module": "rdl",
+      "title": "Reviews and Opinions @CampusDaily Review of The Kansas Kerfuffle",
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目031",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-c70b5205e7cc1b2295352734",
+      "module": "rdl",
+      "title": "My thesis proposal",
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目032",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-602984a3fd83793f8d8ce5ed",
+      "module": "rdl",
+      "title": "Angela Kim (5:00 P.M.)",
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目033",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5817366a9ff4cc9c334fb39a",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目029",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-bda0de4e31f7377319b55fa0",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题035",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "module": "rap",
+      "title": "Video Evidence in U.S. Courts",
+      "firstSeenDate": "2026-05-17",
+      "firstSeenSourceLabel": "5.17",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目030",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.17",
+          "occurrenceDate": "2026-05-17",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-d909ab3d5456055019f65b9c",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题036",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-98bf443f98f8c842cd7faaf0",
+      "module": "rdl",
+      "title": "Membership Application Form First Name: ____________________",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目034",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-93162d8f9d1db0491ad81016",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目035",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-cb3cd375aebae1a5539edb81",
+      "module": "rap",
+      "title": "Libertarianism and Personal Freedom",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目031",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-1d9b63b9ea4ccc675d195cba",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题037",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18A",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-e6c32ca542e87217d460261e",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题038",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-7a14222976bd3bd3d5fd9649",
+      "module": "rdl",
+      "title": "BIOL 101 Introduction to Biology",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目036",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e64b82f38481e57ad7aea170",
+      "module": "rdl",
+      "title": "Welcome to Movie Mania",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目037",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-eedb6ddc51543962fd16cb93",
+      "module": "rdl",
+      "title": "David White",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目038",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        },
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-25140f617f981938f89b04ef",
+      "module": "rdl",
+      "title": "English 202: The Sonnet",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目039",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-18254e6c2471afbb626c22b4",
+      "module": "rap",
+      "title": "Data Science and the Buildings of Tomorrow",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目032",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-a7179f304921ee39c541625c",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题039",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-08b62a981873c3e2eef76ff4",
+      "module": "rap",
+      "title": "The Benefits of Music Education",
+      "firstSeenDate": "2026-05-18",
+      "firstSeenSourceLabel": "5.18B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目033",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.18B",
+          "occurrenceDate": "2026-05-18",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c754230429405fc06cf1629e",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题040",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-87a28535ee532a7cca43f933",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题041",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-b97ece949b5007a971ae6355",
+      "module": "rdl",
+      "title": "Welcome to Movie Mania",
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目040",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-0f91bfb6509c76a6a8e7dbc3",
+      "module": "rdl",
+      "title": "Solar panels for university library",
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目041",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-98193cbd135dfc828aeb8c3e",
+      "module": "rdl",
+      "title": "ON MARCH 18, FILM STUDIES MAJORS PRESENTED THEIR WORK AT ADLER AUDITORIUM.",
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目042",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-199501db577904fb79815267",
+      "module": "rap",
+      "title": "Data Visualization in Action",
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目034",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-9a53845acb25e178f8d69c78",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-19",
+      "firstSeenSourceLabel": "5.19",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题042",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.19",
+          "occurrenceDate": "2026-05-19",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-b12424f5e4a1c2fa81a6b436",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题043",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-f4d8a1d7c701f5c647bd40cb",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题044",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f2d78b3e065372b894c1b5cf",
+      "module": "rdl",
+      "title": "SIGN LANGUAGE INTERPRETER NEEDED",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目043",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f776913db0be9454639b9aa2",
+      "module": "rdl",
+      "title": "Frankson Library Renovation and Temporary Relocation",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目044",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "module": "rap",
+      "title": "Parallel Algorithms: From Challenges to Opportunities",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目035",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-fe28222ab039cb292eb73848",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题045",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-cc8108658460dd4758f81cea",
+      "module": "rap",
+      "title": "The Ascent of the Italian Lute Song",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目036",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20A",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2fd70b0367f4cea79b5cda34",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题046",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-b68fc93277cc216b6eb4b369",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题047",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5e8a0ebab774098881d98110",
+      "module": "rdl",
+      "title": "Ella Bottled Water (1 Case)",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目045",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f48720226dc0017591cb3b9e",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目046",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-130cb0b27157e6b57ad263f5",
+      "module": "rdl",
+      "title": "Downtown School of Data Skills",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目047",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-c849d537afb39dac106e67a6",
+      "module": "rdl",
+      "title": "Study Abroad Expo - Session Schedule",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目048",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-32dfd66933015b7ed7716a89",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题048",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "module": "rap",
+      "title": "Theater Lighting Innovations",
+      "firstSeenDate": "2026-05-20",
+      "firstSeenSourceLabel": "5.20B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目037",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.20B",
+          "occurrenceDate": "2026-05-20",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        },
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c6dd53c04e26afe96e10bca7",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题049",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-9487bcf1edeee3747f0b9865",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题050",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-01323265f05c769ce502c5ca",
+      "module": "rdl",
+      "title": "☆ ☆ ☆  MISHTI  ☆ ☆ ☆ Exciting Indian Cuisine Near Campus",
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目049",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-d7cff4d1c3f5fbdc819182c0",
+      "module": "rdl",
+      "title": "Dental appointment",
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目050",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目051",
+      "occurrenceCount": 4,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        },
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        },
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ee972a1257686633a7bfb6c7",
+      "module": "rdl",
+      "title": "Serve & Shine: Volunteer Opportunities Expo",
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目052",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5a81148008bacafa3de4b7b0",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题051",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "module": "rap",
+      "title": "Ancient Air in Glaciers",
+      "firstSeenDate": "2026-05-23",
+      "firstSeenSourceLabel": "5.23",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目038",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.23",
+          "occurrenceDate": "2026-05-23",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题052",
+      "occurrenceCount": 5,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-38157809495f0f9430021f61",
+      "module": "rdl",
+      "title": "Welcome, Study-Abroad Students!",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目053",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-037189a85dc9e05fe6daf88b",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目054",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5e0859fbc2e185e743d11c4b",
+      "module": "rap",
+      "title": "Radio Astronomy: A New Perspective",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目039",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "module": "rap",
+      "title": "Value Theory",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目040",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-06f04421a7698d267f2f9b5e",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题053",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-c2f68bcc6afcbbe710f5c87d",
+      "module": "rap",
+      "title": "Hidden Structures in Discrete Geometry",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目041",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24A",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-be034d62663a3ca6d9a1e2ef",
+      "module": "rdl",
+      "title": "North Bay",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目055",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-502044d303afa26e7d169993",
+      "module": "rdl",
+      "title": "Time Capsule Unearthed During Dorm Renovation",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目056",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目042",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-481ab058d662d104ee1f96f5",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-24",
+      "firstSeenSourceLabel": "5.24B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题054",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.24B",
+          "occurrenceDate": "2026-05-24",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-d9b37e245b444ad1963e6bc1",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题055",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-8797005f16424c6ffd298a0f",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题056",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-160238dcfdb107776b8b8cbd",
+      "module": "rdl",
+      "title": "Annual dormitory room maintenance will occur from",
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目057",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f198eacd96a87c8361d25e01",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目058",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-c9c3cdf73cda4d62e888e2fe",
+      "module": "rdl",
+      "title": "Student Housing Dilemma: A Shortage of Affordable Options",
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目059",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-79a7fed6dab3ea6be215f43a",
+      "module": "rdl",
+      "title": "Sandeep Patel (10:00 A.M.)",
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目060",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-fe9caa2af2e2e6e581d4400b",
+      "module": "rap",
+      "title": "Genetically Modified Foods",
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目043",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "module": "rap",
+      "title": "Coastal Erosion Challenges",
+      "firstSeenDate": "2026-05-28",
+      "firstSeenSourceLabel": "5.28",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目044",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.28",
+          "occurrenceDate": "2026-05-28",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-6c86e758a075394842fbe92a",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题057",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-d1e217aa22191c2dd978e73c",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题058",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-8d02103673ffb3a79bdebd05",
+      "module": "rdl",
+      "title": "Library News University Library Update",
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目061",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e86f14f23f34ef4011fe3f95",
+      "module": "rdl",
+      "title": "Study Smarter: Academic Success Workshop",
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目062",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "module": "rap",
+      "title": "The Mystery of Dark Galaxies",
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目045",
+      "occurrenceCount": 4,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-abbaa31d86752b3354e340c3",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题059",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-af29507332d217f7c7b827a7",
+      "module": "rap",
+      "title": "Traffic Psychology",
+      "firstSeenDate": "2026-05-31",
+      "firstSeenSourceLabel": "5.31",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目046",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "5.31",
+          "occurrenceDate": "2026-05-31",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-e3dacd3f358e1ab8d1a2f76d",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题060",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-bb133608b0c69c743311daac",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题061",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-86b78f11c4fb9ed8356d7380",
+      "module": "rdl",
+      "title": "Mental Well-Being Workshops",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目063",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-7f0ecb70e33eb9aa07e717d8",
+      "module": "rdl",
+      "title": "CampusConnect — We make campus commuting simple!",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目064",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-634cdcba16cac603d9436627",
+      "module": "rap",
+      "title": "The Mysteries of Opal",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目047",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "module": "rap",
+      "title": "Veganism in the United States",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目048",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-056c2eb8e50c12b6a2490369",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题062",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "module": "rap",
+      "title": "Linguistic Structural Diversity",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目049",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1A",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-ecce0c72b3beabdb3877b965",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题063",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-6f850b90dd0230ea47620578",
+      "module": "rdl",
+      "title": "POLS 201 Comparative Political Thought",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目065",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5de606d5f8a114ba9be15497",
+      "module": "rdl",
+      "title": "Momentum Meet-up: Networking Mixer for Students",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目066",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-f9e62e69f26b24ec00d4aa76",
+      "module": "rap",
+      "title": "Veganism in the United States",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目050",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-2b14b33aacc064d75314fa53",
+      "module": "rap",
+      "title": "Noise Control in Urban Areas",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目051",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-aa8a741b5fa552e261cc5502",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题064",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "module": "rap",
+      "title": "Circadian Rhythm Disruption",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目052",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1B",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-da4d0bcd4a0e98068c401337",
+      "module": "rdl",
+      "title": "Organic Chemistry I",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1C",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目067",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-6eb44c071629b60c25e1c070",
+      "module": "rdl",
+      "title": "Dear Club Coordinator,",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1C",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目068",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "module": "rap",
+      "title": "Free Will and Determinism",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1C",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目053",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "module": "rap",
+      "title": "Evolutionary Trends in Graphic Design",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1C",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目054",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-25e10401a0a3eeb038f2636e",
+      "module": "rap",
+      "title": "Microseisms: The Earth's Subtle Vibrations",
+      "firstSeenDate": "2026-06-01",
+      "firstSeenSourceLabel": "6.1C",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目055",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.1C",
+          "occurrenceDate": "2026-06-01",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        },
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-84e32c9db06e86a3d21877d0",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题065",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-0c21d916dc139145ff813a22",
+      "module": "rdl",
+      "title": "Library Hours and guidelines",
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "题目069",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-86ce84da0d4429addd4ec766",
+      "module": "rdl",
+      "title": "Japan Study Abroad Program",
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 4,
+      "dynamicDisplayLabel": "题目070",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m1",
+          "sourceOrder": 4
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "module": "rap",
+      "title": "Quantum Computing",
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目056",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "module": "rap",
+      "title": "The Flynn Effect",
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 12,
+      "dynamicDisplayLabel": "题目057",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m1",
+          "sourceOrder": 12
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 17,
+      "dynamicDisplayLabel": "套题066",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m2",
+          "sourceOrder": 17
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-e9f22c72c388b25c9ccc03d8",
+      "module": "rap",
+      "title": "The Power of Music",
+      "firstSeenDate": "2026-06-02",
+      "firstSeenSourceLabel": "6.2",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "题目058",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.2",
+          "occurrenceDate": "2026-06-02",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-66548232c3cfa2337a085c50",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题067",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-6ca47f055e2571cb934669b3",
+      "module": "rdl",
+      "title": "Sidewalk Repair Project",
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目071",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-4e1dc8a89389627aca7cf10f",
+      "module": "rdl",
+      "title": "Colin / Priya / Mateo remote-learning assignment messages",
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目072",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-6832cb7ccf74f003a2ef7628",
+      "module": "rap",
+      "title": "Data Science and the Buildings of Tomorrow",
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目059",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "module": "rap",
+      "title": "Carthage's Trade Network",
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目060",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题068",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-1f5a2a094976c7046412177a",
+      "module": "rap",
+      "title": "Hidden Structures in Discrete Geometry",
+      "firstSeenDate": "2026-06-03",
+      "firstSeenSourceLabel": "6.3",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目061",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.3",
+          "occurrenceDate": "2026-06-03",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-dbb5edec85e50734f930693e",
+      "module": "rap",
+      "title": "Quantum Computing",
+      "firstSeenDate": "2026-06-06",
+      "firstSeenSourceLabel": "6.6A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目062",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "module": "rap",
+      "title": "Magnetic Confinement Fusion",
+      "firstSeenDate": "2026-06-06",
+      "firstSeenSourceLabel": "6.6A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目063",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.6A",
+          "occurrenceDate": "2026-06-06",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-7e08b910550bb287d6aed1f6",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题069",
+      "occurrenceCount": 4,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-eda179be352d1ea66707817f",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题070",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-618bf4056104c302387d73c6",
+      "module": "rdl",
+      "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目073",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-bd7b74dc185dffd78d80469b",
+      "module": "rdl",
+      "title": "Summit View University Arts Week flash mob",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目074",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "module": "rap",
+      "title": "Growth Mindset in Education",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目064",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-4b27639d9b03fa08d60a4567",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题071",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "module": "rap",
+      "title": "Libertarianism and Personal Freedom",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目065",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7A",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-4e019fb07512c8980a703524",
+      "module": "rdl",
+      "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目075",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "module": "rap",
+      "title": "Health Informatics: Revolutionizing Patient Care",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目066",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7B",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-983e7384d47b1d57b3e34713",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题072",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-adfa12a0bcbd90e2ef80f025",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题073",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-6c6546f79c781b9849ca098d",
+      "module": "rdl",
+      "title": "Dental appointment",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目076",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f40ed125b66e539ea9e27f84",
+      "module": "rdl",
+      "title": "Extended Library Hours for Final Exams",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目077",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-7f007312dcc8c01ad8e20983",
+      "module": "rdl",
+      "title": "Supporting information needed",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目078",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目079",
+      "occurrenceCount": 3,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        },
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        },
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "module": "rap",
+      "title": "Sleep and Memory",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目067",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "module": "rap",
+      "title": "Psychology of Laughter",
+      "firstSeenDate": "2026-06-07",
+      "firstSeenSourceLabel": "6.7C",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目068",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.7C",
+          "occurrenceDate": "2026-06-07",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2bcc305310c7f03fe386e644",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题074",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目080",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-84169206138631781d46b7f7",
+      "module": "rdl",
+      "title": "SIGN LANGUAGE INTERPRETER NEEDED",
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目081",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-3f2e2f68b3b4158d181cf073",
+      "module": "rdl",
+      "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目082",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ad6e5c3587f5a63bb2d6563f",
+      "module": "rdl",
+      "title": "CULN 310 Advanced Techniques: Sous Vide",
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目083",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-c0a09dd368b968fd01c859ed",
+      "module": "rap",
+      "title": "Data Visualization in Action",
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目069",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-934dc674ac51eaeb937e0af4",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题075",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-4042fb1dc21bdf042d6ea366",
+      "module": "rap",
+      "title": "The Shifting Art of Playwriting",
+      "firstSeenDate": "2026-06-09",
+      "firstSeenSourceLabel": "6.9",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目070",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.9",
+          "occurrenceDate": "2026-06-09",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-68f7df919c88e674b2f0411d",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题076",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-cc06dbb993d7328ae1b39da1",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题077",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e673b7175d705d8132c6aec3",
+      "module": "rdl",
+      "title": "University STEM Peer Support Group",
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目084",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-1e5fb8b266e062b014792d3c",
+      "module": "rdl",
+      "title": "Internship fair follow-up",
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目085",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-148c9722abd9aaa17f9726fd",
+      "module": "rdl",
+      "title": "Elena Rowe (4:44 P.M.)",
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目086",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "module": "rap",
+      "title": "Thermodynamics and Ecosystems",
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目071",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-fb7a52904b0e83cba0514151",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题078",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "module": "rap",
+      "title": "The Getty Kouros",
+      "firstSeenDate": "2026-06-10",
+      "firstSeenSourceLabel": "6.10",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目072",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.10",
+          "occurrenceDate": "2026-06-10",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2",
+      "module": "rdl",
+      "title": "Gym World membership email",
+      "firstSeenDate": "2026-06-14",
+      "firstSeenSourceLabel": "6.14",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目087",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5d29cce150b67dbf0724d9b6",
+      "module": "rdl",
+      "title": "ENGL 101 Introduction to Literature",
+      "firstSeenDate": "2026-06-14",
+      "firstSeenSourceLabel": "6.14",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目088",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-a057307eae4548034a143578",
+      "module": "rdl",
+      "title": "Urgent: Campus Transport and Traffic Advisory",
+      "firstSeenDate": "2026-06-14",
+      "firstSeenSourceLabel": "6.14",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目089",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "module": "rap",
+      "title": "Demographic Dynamics",
+      "firstSeenDate": "2026-06-14",
+      "firstSeenSourceLabel": "6.14",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目073",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-dd212c791f6731d64c8ef51f",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-14",
+      "firstSeenSourceLabel": "6.14",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题079",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "module": "rap",
+      "title": "The Political Legacy of the Roman Empire",
+      "firstSeenDate": "2026-06-14",
+      "firstSeenSourceLabel": "6.14",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目074",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.14",
+          "occurrenceDate": "2026-06-14",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5c8a673a20671fe9840f6390",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-15",
+      "firstSeenSourceLabel": "6.15",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题080",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-80e0d016a21881694ab06335",
+      "module": "rap",
+      "title": "Value Theory",
+      "firstSeenDate": "2026-06-15",
+      "firstSeenSourceLabel": "6.15",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目075",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-668702bfa1634d0e0a73a4d1",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "firstSeenDate": "2026-06-15",
+      "firstSeenSourceLabel": "6.15",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目076",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-63f40499a4cb42080d150c60",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-15",
+      "firstSeenSourceLabel": "6.15",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题081",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-c3233ad427c0e207ebb6a110",
+      "module": "rap",
+      "title": "Carthage's Trade Network",
+      "firstSeenDate": "2026-06-15",
+      "firstSeenSourceLabel": "6.15",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目077",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.15",
+          "occurrenceDate": "2026-06-15",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-f1ccfc79e358e55f2ee63181",
+      "module": "rap",
+      "title": "Radio Astronomy: A New Perspective",
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目078",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-2662811490d7e1cb8ef50753",
+      "module": "rap",
+      "title": "Value Theory",
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目079",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-924b6cb5f426c56b7b118b8e",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题082",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5a8c27c074aa0513d04f572b",
+      "module": "rap",
+      "title": "Theater Lighting Innovations",
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目080",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16A",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-7066f8dd9b44a5d1e065719d",
+      "module": "rap",
+      "title": "Value Theory",
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16B",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目081",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-8ef2e4aefe74c7b7cdc2b9e1",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16B",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目082",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-43fe10b35ebdf733d430c751",
+      "module": "rap",
+      "title": "Carthage's Trade Network",
+      "firstSeenDate": "2026-06-16",
+      "firstSeenSourceLabel": "6.16B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目083",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.16B",
+          "occurrenceDate": "2026-06-16",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-ac11e70fdf918145b0cd10e1",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-17",
+      "firstSeenSourceLabel": "6.17",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题083",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2b24ff373eadb4aa347d88a1",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-17",
+      "firstSeenSourceLabel": "6.17",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题084",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e393062dd76c19aca3356b28",
+      "module": "rdl",
+      "title": "Housing renewal application",
+      "firstSeenDate": "2026-06-17",
+      "firstSeenSourceLabel": "6.17",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目090",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ff9732e0a3a17e71921ad1d5",
+      "module": "rdl",
+      "title": "Revitalizing Campus Life at Ridgeview University",
+      "firstSeenDate": "2026-06-17",
+      "firstSeenSourceLabel": "6.17",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目091",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-7376725d12c740d20c276738",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-17",
+      "firstSeenSourceLabel": "6.17",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题085",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "module": "rap",
+      "title": "Data Science and the Buildings of Tomorrow",
+      "firstSeenDate": "2026-06-17",
+      "firstSeenSourceLabel": "6.17",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目084",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.17",
+          "occurrenceDate": "2026-06-17",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c243c35727fc3b252fc781bb",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题086",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5742f88ad3912409154da83d",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题087",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-29ecc94b793b79bd2331c0a8",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目092",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        },
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-dc21043fcf9a1dbbf0638d8e",
+      "module": "rdl",
+      "title": "Bella Italia campus dining notice",
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目093",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5477133100b2982be0a02471",
+      "module": "rdl",
+      "title": "Kintsugi",
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目094",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "module": "rap",
+      "title": "The Benefits of Music Education",
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目085",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        },
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-e12835c96f7207294b51eadd",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题088",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "module": "rap",
+      "title": "Antimicrobial Resistance Challenges",
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目086",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21A",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "module": "rap",
+      "title": "The New Dimensions of Choreography",
+      "firstSeenDate": "2026-06-21",
+      "firstSeenSourceLabel": "6.21B",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目087",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.21B",
+          "occurrenceDate": "2026-06-21",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-00e19a191755f2737517ce6f",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题089",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-840cfe437447465d451bdb63",
+      "module": "rdl",
+      "title": "MATH 101 Calculus I",
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目095",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-1d890dd246a10beef9c98c91",
+      "module": "rdl",
+      "title": "Discover Estonia's Timeless Charm",
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目096",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-bf33fe2c2695a9b1bffcbb13",
+      "module": "rdl",
+      "title": "Elena Rowe (4:44 P.M.)",
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目097",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-abf7cca7bbd44e6e78417d21",
+      "module": "rap",
+      "title": "Harmonic Analysis: Unveiling the Hidden Structures",
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目088",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-ebf1f22756ab4f4d4b26a715",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题090",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-bbe98bba9b4c8463d35912f4",
+      "module": "rap",
+      "title": "Beyond Philosophy's Borders",
+      "firstSeenDate": "2026-06-22",
+      "firstSeenSourceLabel": "6.22",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目089",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.22",
+          "occurrenceDate": "2026-06-22",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5a237b5275653365e1f049c4",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "firstSeenDate": "2026-06-23",
+      "firstSeenSourceLabel": "6.23",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目098",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-eaf7a62bfcd01cc442557cb2",
+      "module": "rdl",
+      "title": "Brison College Poetry Magazine",
+      "firstSeenDate": "2026-06-23",
+      "firstSeenSourceLabel": "6.23",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目099",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5dded3a998e1aa70151d92c3",
+      "module": "rdl",
+      "title": "The Rise of Sustainable Living in University Housing",
+      "firstSeenDate": "2026-06-23",
+      "firstSeenSourceLabel": "6.23",
+      "firstSeenSourceOrder": 10,
+      "dynamicDisplayLabel": "题目100",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 10
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "module": "rap",
+      "title": "The Great Smog of London",
+      "firstSeenDate": "2026-06-23",
+      "firstSeenSourceLabel": "6.23",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目090",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-39407462fa539e7056c4b3d0",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-23",
+      "firstSeenSourceLabel": "6.23",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题091",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-8371c3948e75cac783023b5c",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "firstSeenDate": "2026-06-23",
+      "firstSeenSourceLabel": "6.23",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目091",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.23",
+          "occurrenceDate": "2026-06-23",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-be0955e0e1634b6b57c6f548",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题092",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-731bd82754134f96b269364b",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 2,
+      "dynamicDisplayLabel": "套题093",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m1",
+          "sourceOrder": 2
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-9efd64ca139dbb72631850ed",
+      "module": "rdl",
+      "title": "Bridgeford University Music & Culture Night",
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目101",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-9f9f5933fa04885896877289",
+      "module": "rdl",
+      "title": "University nuclear research reactor article",
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目102",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "module": "rap",
+      "title": "Urban Resilience",
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目092",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "module": "rap",
+      "title": "Hidden Structures in Discrete Geometry",
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目093",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5964b4b1bd76214ba5c4d908",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题094",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "module": "rap",
+      "title": "Cooperative Education",
+      "firstSeenDate": "2026-06-24",
+      "firstSeenSourceLabel": "6.24",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目094",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.24",
+          "occurrenceDate": "2026-06-24",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-6cd25d7e2010341609c5c804",
+      "module": "rdl",
+      "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+      "firstSeenDate": "2026-06-29",
+      "firstSeenSourceLabel": "6.29",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目103",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.29",
+          "occurrenceDate": "2026-06-29",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-0b6b818c2571477de56cc3ec",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题095",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-589f75fce3a803451291ba2d",
+      "module": "rdl",
+      "title": "Campus Volunteer Day",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目104",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-72408ea6914bc556a20ce824",
+      "module": "rdl",
+      "title": "Blackout Brings Creativity to Finals Week",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目105",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "module": "rap",
+      "title": "Social Role Theory",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 8,
+      "dynamicDisplayLabel": "题目095",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 8
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "module": "rap",
+      "title": "The Shifting Art of Playwriting",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 13,
+      "dynamicDisplayLabel": "题目096",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 13
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-d582ad24a18454b33618a743",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 18,
+      "dynamicDisplayLabel": "套题096",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        },
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m2",
+          "sourceOrder": 18
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-08f66e6c2b3e25bd34fa0651",
+      "module": "rap",
+      "title": "Optical Astronomy's Adaptive Revolution",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30A",
+      "firstSeenSourceOrder": 19,
+      "dynamicDisplayLabel": "题目097",
+      "occurrenceCount": 2,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30A",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        },
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m2",
+          "sourceOrder": 19
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-93d71a6a1056123406a5c3cc",
+      "module": "ctw",
+      "title": null,
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30B",
+      "firstSeenSourceOrder": 1,
+      "dynamicDisplayLabel": "套题097",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 1
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5aff4b8348d3b6c1f134523a",
+      "module": "rdl",
+      "title": "Dorm Printer Setup Instructions",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30B",
+      "firstSeenSourceOrder": 3,
+      "dynamicDisplayLabel": "题目106",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 3
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-e47299f57a8775477cec8e31",
+      "module": "rdl",
+      "title": "LIT 304 Shakespeare's Kings",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30B",
+      "firstSeenSourceOrder": 5,
+      "dynamicDisplayLabel": "题目107",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 5
+        }
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-b88f4c4d1a372e13aad0e93c",
+      "module": "rdl",
+      "title": "Student council meeting text-message chain",
+      "firstSeenDate": "2026-06-30",
+      "firstSeenSourceLabel": "6.30B",
+      "firstSeenSourceOrder": 7,
+      "dynamicDisplayLabel": "题目108",
+      "occurrenceCount": 1,
+      "occurrences": [
+        {
+          "sourceLabel": "6.30B",
+          "occurrenceDate": "2026-06-30",
+          "sourceModule": "m1",
+          "sourceOrder": 7
+        }
+      ]
+    }
+  ]
+}

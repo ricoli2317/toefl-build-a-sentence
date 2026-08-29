@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-fb7a52904b0e83cba0514151",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-10",
+    "firstSeenSourceLabel": "6.10",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "fb7a52904b0e83cba05141517242e6b3c4b1f1b170b06ab88212e62369dd3bf0",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-10-m2-ctw-18",
+      "logicalItemId": "reading-ctw-fb7a52904b0e83cba0514151",
+      "sourceKind": "docx",
+      "sourceLabel": "6.10",
+      "occurrenceDate": "2026-06-10",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-fb7a52904b0e83cba0514151-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-fb7a52904b0e83cba0514151-q01",
+      "logicalItemId": "reading-ctw-fb7a52904b0e83cba0514151",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The cultural exchange between Europe and the Near East during the medieval period had a lasting impact on art, science, and philosophy. Although the Crusades were primarily military campaigns, they facil_ _ _ _ _ _ contact th_ _ led t_ the tran_ _ _ _ of id_ _ _ and techno_ _ _ _ _ _. European scho_ _ _ _ gained acc_ _ _ to adva_ _ _ _ knowledge i_ mathematics and medicine from the Islamic world, sparking renewed intellectual activity. Translations of Arabic philosophical texts, including commentaries on Aristotle, challenged existing doctrines and inspired new schools of thought. This exchange helped reshape European intellectual life.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The cultural exchange between Europe and the Near East during the medieval period had a lasting impact on art, science, and philosophy. Although the Crusades were primarily military campaigns, they facil_ _ _ _ _ _ contact th_ _ led t_ the tran_ _ _ _ of id_ _ _ and techno_ _ _ _ _ _. European scho_ _ _ _ gained acc_ _ _ to adva_ _ _ _ knowledge i_ mathematics and medicine from the Islamic world, sparking renewed intellectual activity. Translations of Arabic philosophical texts, including commentaries on Aristotle, challenged existing doctrines and inspired new schools of thought. This exchange helped reshape European intellectual life.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The cultural exchange between Europe and the Near East during the medieval period had a lasting impact on art, science, and philosophy. Although the Crusades were primarily military campaigns, they "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " contact "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " led "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": ". European "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " gained "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " knowledge "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " mathematics and medicine from the Islamic world, sparking renewed intellectual activity. Translations of Arabic philosophical texts, including commentaries on Aristotle, challenged existing doctrines and inspired new schools of thought. This exchange helped reshape European intellectual life."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "facilitated",
+            "prefix": "facil",
+            "displayText": "facil_ _ _ _ _ _",
+            "missingText": "itated",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "that",
+            "prefix": "th",
+            "displayText": "th_ _",
+            "missingText": "at",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "transfer",
+            "prefix": "tran",
+            "displayText": "tran_ _ _ _",
+            "missingText": "sfer",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "ideas",
+            "prefix": "id",
+            "displayText": "id_ _ _",
+            "missingText": "eas",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "technologies",
+            "prefix": "techno",
+            "displayText": "techno_ _ _ _ _ _",
+            "missingText": "logies",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "scholars",
+            "prefix": "scho",
+            "displayText": "scho_ _ _ _",
+            "missingText": "lars",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "access",
+            "prefix": "acc",
+            "displayText": "acc_ _ _",
+            "missingText": "ess",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "advanced",
+            "prefix": "adva",
+            "displayText": "adva_ _ _ _",
+            "missingText": "nced",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-fb7a52904b0e83cba0514151-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-fb7a52904b0e83cba0514151-q01-p01",
+            "answer": "in",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "n",
+            "missingLength": 1
+          }
+        ]
+      }
+    }
+  ]
+}

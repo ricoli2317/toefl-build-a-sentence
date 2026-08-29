@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-adfa12a0bcbd90e2ef80f025",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7C",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "adfa12a0bcbd90e2ef80f02510f7df0f3c484b00bb2ef77c633d8f76bd272e30",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7c-m1-ctw-02",
+      "logicalItemId": "reading-ctw-adfa12a0bcbd90e2ef80f025",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7C",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01",
+      "logicalItemId": "reading-ctw-adfa12a0bcbd90e2ef80f025",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Attachment theory, developed by John Bowlby, emphasizes the importance of early emotional bonds between infants and caregivers and how they impact future social and emotional outcomes. Secure attachment, formed through consistent and responsive caregiving, fos_ _ _ _ confidence, suppo_ _ _ _ _ relationships, a_ _ emotional regulation. Alternatively, inse_ _ _ _ attachment c_ _ lead t_ anxiety, po_ _ social ski_ _ _, and men_ _ _ health chall_ _ _ _ _. Researchers have linked attachment styles to long-term personality development and psychological outcomes. These insights inform parenting strategies and early interventions that promote better developmental paths.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Attachment theory, developed by John Bowlby, emphasizes the importance of early emotional bonds between infants and caregivers and how they impact future social and emotional outcomes. Secure attachment, formed through consistent and responsive caregiving, fos_ _ _ _ confidence, suppo_ _ _ _ _ relationships, a_ _ emotional regulation. Alternatively, inse_ _ _ _ attachment c_ _ lead t_ anxiety, po_ _ social ski_ _ _, and men_ _ _ health chall_ _ _ _ _. Researchers have linked attachment styles to long-term personality development and psychological outcomes. These insights inform parenting strategies and early interventions that promote better developmental paths.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Attachment theory, developed by John Bowlby, emphasizes the importance of early emotional bonds between infants and caregivers and how they impact future social and emotional outcomes. Secure attachment, formed through consistent and responsive caregiving, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " confidence, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " relationships, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " emotional regulation. Alternatively, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " attachment "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " lead "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " anxiety, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " social "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " health "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": ". Researchers have linked attachment styles to long-term personality development and psychological outcomes. These insights inform parenting strategies and early interventions that promote better developmental paths."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "fosters",
+            "prefix": "fos",
+            "displayText": "fos_ _ _ _",
+            "missingText": "ters",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "supportive",
+            "prefix": "suppo",
+            "displayText": "suppo_ _ _ _ _",
+            "missingText": "rtive",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "insecure",
+            "prefix": "inse",
+            "displayText": "inse_ _ _ _",
+            "missingText": "cure",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "can",
+            "prefix": "c",
+            "displayText": "c_ _",
+            "missingText": "an",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "poor",
+            "prefix": "po",
+            "displayText": "po_ _",
+            "missingText": "or",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "skills",
+            "prefix": "ski",
+            "displayText": "ski_ _ _",
+            "missingText": "lls",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "mental",
+            "prefix": "men",
+            "displayText": "men_ _ _",
+            "missingText": "tal",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-adfa12a0bcbd90e2ef80f025-q01-p01",
+            "answer": "challenges",
+            "prefix": "chall",
+            "displayText": "chall_ _ _ _ _",
+            "missingText": "enges",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

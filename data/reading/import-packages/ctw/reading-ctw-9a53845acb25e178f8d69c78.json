@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-9a53845acb25e178f8d69c78",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-19",
+    "firstSeenSourceLabel": "5.19",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "9a53845acb25e178f8d69c78d6508e4a8343b2df465ca19d14ae1a28de190723",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-19-m2-ctw-18",
+      "logicalItemId": "reading-ctw-9a53845acb25e178f8d69c78",
+      "sourceKind": "docx",
+      "sourceLabel": "5.19",
+      "occurrenceDate": "2026-05-19",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.19.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.19_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-9a53845acb25e178f8d69c78-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-9a53845acb25e178f8d69c78-q01",
+      "logicalItemId": "reading-ctw-9a53845acb25e178f8d69c78",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Climate change is one of the biggest problems facing the world today. It results from changes in Earth’s atmos_ _ _ _ _, oceans, a_ _ human activ_ _ _ _ _, especially bur_ _ _ _ fossil fu_ _ _. These act_ _ _ _ release ga_ _ _ that t_ _ _ heat, cau_ _ _ _ the pla_ _ _ to warm up. This warming disrupts weather patterns and ecosystems. To mitigate these changes, scientists advocate for strategies such as reducing carbon emissions and investing in renewable energy. Climate models help experts understand what might happen in the future.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Climate change is one of the biggest problems facing the world today. It results from changes in Earth’s atmos_ _ _ _ _, oceans, a_ _ human activ_ _ _ _ _, especially bur_ _ _ _ fossil fu_ _ _. These act_ _ _ _ release ga_ _ _ that t_ _ _ heat, cau_ _ _ _ the pla_ _ _ to warm up. This warming disrupts weather patterns and ecosystems. To mitigate these changes, scientists advocate for strategies such as reducing carbon emissions and investing in renewable energy. Climate models help experts understand what might happen in the future.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Climate change is one of the biggest problems facing the world today. It results from changes in Earth’s "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": ", oceans, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " human "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": ", especially "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " fossil "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ". These "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " release "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " heat, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " to warm up. This warming disrupts weather patterns and ecosystems. To mitigate these changes, scientists advocate for strategies such as reducing carbon emissions and investing in renewable energy. Climate models help experts understand what might happen in the future."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "atmosphere",
+            "prefix": "atmos",
+            "displayText": "atmos_ _ _ _ _",
+            "missingText": "phere",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "activities",
+            "prefix": "activ",
+            "displayText": "activ_ _ _ _ _",
+            "missingText": "ities",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "burning",
+            "prefix": "bur",
+            "displayText": "bur_ _ _ _",
+            "missingText": "ning",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "fuels",
+            "prefix": "fu",
+            "displayText": "fu_ _ _",
+            "missingText": "els",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "actions",
+            "prefix": "act",
+            "displayText": "act_ _ _ _",
+            "missingText": "ions",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "gases",
+            "prefix": "ga",
+            "displayText": "ga_ _ _",
+            "missingText": "ses",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "trap",
+            "prefix": "t",
+            "displayText": "t_ _ _",
+            "missingText": "rap",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "causing",
+            "prefix": "cau",
+            "displayText": "cau_ _ _ _",
+            "missingText": "sing",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-9a53845acb25e178f8d69c78-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-9a53845acb25e178f8d69c78-q01-p01",
+            "answer": "planet",
+            "prefix": "pla",
+            "displayText": "pla_ _ _",
+            "missingText": "net",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

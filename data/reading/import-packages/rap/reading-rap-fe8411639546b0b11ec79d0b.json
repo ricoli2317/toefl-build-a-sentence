@@ -1,0 +1,423 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+    "module": "rap",
+    "title": "Growth Mindset in Education",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7A",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "fe8411639546b0b11ec79d0baf1f1d385f0836b8a6e57c53a7ffe0fd0a1bfad7",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7a-m1-rap-08",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7A",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-7b-m1-rap-08",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7B",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-29-m1-rap-08",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.29",
+      "occurrenceDate": "2026-06-29",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "title": "Growth Mindset in Education",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The concept of a growth mindset has gained attention in educational psychology. Coined by Carol Dweck, the phrase \"growth mindset\" refers to the belief that abilities and intelligence can be developed through dedication and hard work. This contrasts with a fixed mindset, where individuals believe their abilities are static.",
+          "rawText": "The concept of a growth mindset has gained attention in educational psychology. Coined by Carol Dweck, the phrase \"growth mindset\" refers to the belief that abilities and intelligence can be developed through dedication and hard work. This contrasts with a fixed mindset, where individuals believe their abilities are static.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The concept of a growth mindset has gained attention in educational psychology."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Coined by Carol Dweck, the phrase \"growth mindset\" refers to the belief that abilities and intelligence can be developed through dedication and hard work."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This contrasts with a fixed mindset, where individuals believe their abilities are static."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Research suggests that students with a growth mindset are more likely to embrace challenges, persevere through difficulties, and see effort as a path to mastery. For example, a student who struggles with math but believes they can improve with practice is displaying a growth mindset. This belief encourages resilience and a positive attitude towards learning.",
+          "rawText": "Research suggests that students with a growth mindset are more likely to embrace challenges, persevere through difficulties, and see effort as a path to mastery. For example, a student who struggles with math but believes they can improve with practice is displaying a growth mindset. This belief encourages resilience and a positive attitude towards learning.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Research suggests that students with a growth mindset are more likely to embrace challenges, persevere through difficulties, and see effort as a path to mastery."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "For example, a student who struggles with math but believes they can improve with practice is displaying a growth mindset."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "This belief encourages resilience and a positive attitude towards learning."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Educators play a crucial role in fostering a growth mindset in their students. Techniques such as praising effort rather than innate ability and providing constructive feedback can help students develop this mindset. Creating a classroom environment that celebrates mistakes as learning opportunities can reinforce the growth mindset philosophy.",
+          "rawText": "Educators play a crucial role in fostering a growth mindset in their students. Techniques such as praising effort rather than innate ability and providing constructive feedback can help students develop this mindset. Creating a classroom environment that celebrates mistakes as learning opportunities can reinforce the growth mindset philosophy.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Educators play a crucial role in fostering a growth mindset in their students."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Techniques such as praising effort rather than innate ability and providing constructive feedback can help students develop this mindset."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Creating a classroom environment that celebrates mistakes as learning opportunities can reinforce the growth mindset philosophy."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "However, implementing growth mindset strategies is not without challenges. Some students may find it difficult to change how they view their abilities, especially if they have been accustomed to a fixed mindset for a long time. Additionally, educators themselves must genuinely believe in the growth mindset principles to effectively convey them to their students.",
+          "rawText": "■ However, implementing growth mindset strategies is not without challenges. ■ Some students may find it difficult to change how they view their abilities, especially if they have been accustomed to a fixed mindset for a long time. ■ Additionally, educators themselves must genuinely believe in the growth mindset principles to effectively convey them to their students. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "However, implementing growth mindset strategies is not without challenges."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Some students may find it difficult to change how they view their abilities, especially if they have been accustomed to a fixed mindset for a long time."
+            },
+            {
+              "sentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "Additionally, educators themselves must genuinely believe in the growth mindset principles to effectively convey them to their students."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q01",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"persevere\" in the passage is closest in meaning to",
+      "rawDisplayText": "26. The word \"persevere\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q01-opt-1",
+            "optionOrder": 1,
+            "text": "hurry"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q01-opt-2",
+            "optionOrder": 2,
+            "text": "change"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q01-opt-3",
+            "optionOrder": 3,
+            "text": "hesitate"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q01-opt-4",
+            "optionOrder": 4,
+            "text": "persist"
+          }
+        ],
+        "correctOptionId": "reading-rap-fe8411639546b0b11ec79d0b-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q02",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, which of the following is true about students with a growth mindset?",
+      "rawDisplayText": "27. According to the passage, which of the following is true about students with a growth mindset?",
+      "payload": {
+        "passageId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They believe their intelligence is unchangeable."
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They avoid challenges."
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They view effort as a means to improve."
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They are naturally talented."
+          }
+        ],
+        "correctOptionId": "reading-rap-fe8411639546b0b11ec79d0b-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q03",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are mentioned in the passage as ways educators can foster a growth mindset EXCEPT by",
+      "rawDisplayText": "28. All of the following are mentioned in the passage as ways educators can foster a growth mindset EXCEPT by",
+      "payload": {
+        "passageId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q03-opt-1",
+            "optionOrder": 1,
+            "text": "commending students' efforts"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q03-opt-2",
+            "optionOrder": 2,
+            "text": "praising students' innate abilities"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q03-opt-3",
+            "optionOrder": 3,
+            "text": "giving constructive feedback"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q03-opt-4",
+            "optionOrder": 4,
+            "text": "using mistakes as learning opportunities"
+          }
+        ],
+        "correctOptionId": "reading-rap-fe8411639546b0b11ec79d0b-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q04",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, the implementation of growth mindset strategies may be challenging because of",
+      "rawDisplayText": "29. According to the passage, the implementation of growth mindset strategies may be challenging because of",
+      "payload": {
+        "passageId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q04-opt-1",
+            "optionOrder": 1,
+            "text": "difficulty in changing students' attitudes"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q04-opt-2",
+            "optionOrder": 2,
+            "text": "lack of support from students' parents"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q04-opt-3",
+            "optionOrder": 3,
+            "text": "insufficient research on growth mindset"
+          },
+          {
+            "optionId": "reading-rap-fe8411639546b0b11ec79d0b-q04-opt-4",
+            "optionOrder": 4,
+            "text": "overemphasis on academic performance"
+          }
+        ],
+        "correctOptionId": "reading-rap-fe8411639546b0b11ec79d0b-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q05",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01",
+        "insertSentence": "This reluctance can be further compounded by a lack of immediate, visible progress, which may discourage continued effort.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-fe8411639546b0b11ec79d0b-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-fe8411639546b0b11ec79d0b-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04-s01"
+          },
+          {
+            "anchorId": "reading-rap-fe8411639546b0b11ec79d0b-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04-s02"
+          },
+          {
+            "anchorId": "reading-rap-fe8411639546b0b11ec79d0b-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p04-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-fe8411639546b0b11ec79d0b-q05-anchor-3"
+      }
+    }
+  ]
+}

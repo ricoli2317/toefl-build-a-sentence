@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-e393062dd76c19aca3356b28",
+    "module": "rdl",
+    "title": "Housing renewal application",
+    "firstSeenDate": "2026-06-17",
+    "firstSeenSourceLabel": "6.17",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "e393062dd76c19aca3356b284fbea54da416f3e3c9c595d6ed06468e5f031b88",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-17-m1-rdl-03",
+      "logicalItemId": "reading-rdl-e393062dd76c19aca3356b28",
+      "sourceKind": "docx",
+      "sourceLabel": "6.17",
+      "occurrenceDate": "2026-06-17",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.17_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-e393062dd76c19aca3356b28-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-e393062dd76c19aca3356b28-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-073",
+      "title": "Housing renewal application",
+      "source": "material-index.json#RDL-073",
+      "sourceDate": "2026-06-17",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-073/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-073/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-e393062dd76c19aca3356b28-q01",
+      "logicalItemId": "reading-rdl-e393062dd76c19aca3356b28",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Why does Alex mention his position as student council chairperson?",
+      "rawDisplayText": "21. Why does Alex mention his position as student council chairperson?",
+      "payload": {
+        "materialId": "RDL-073",
+        "options": [
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To confirm that he meets a residency requirement"
+          },
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To apply for a new leadership position"
+          },
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To request priority consideration for his application"
+          },
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To convince Ms. Lawson of his trustworthiness"
+          }
+        ],
+        "correctOptionId": "reading-rdl-e393062dd76c19aca3356b28-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-e393062dd76c19aca3356b28-q02",
+      "logicalItemId": "reading-rdl-e393062dd76c19aca3356b28",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Alex asks Ms. Lawson to provide information about all of the following EXCEPT",
+      "rawDisplayText": "22. Alex asks Ms. Lawson to provide information about all of the following EXCEPT",
+      "payload": {
+        "materialId": "RDL-073",
+        "options": [
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q02-opt-1",
+            "optionOrder": 1,
+            "text": "the cost of fall housing"
+          },
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q02-opt-2",
+            "optionOrder": 2,
+            "text": "the application deadline"
+          },
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q02-opt-3",
+            "optionOrder": 3,
+            "text": "the forms to be submitted"
+          },
+          {
+            "optionId": "reading-rdl-e393062dd76c19aca3356b28-q02-opt-4",
+            "optionOrder": 4,
+            "text": "the availability of room 213"
+          }
+        ],
+        "correctOptionId": "reading-rdl-e393062dd76c19aca3356b28-q02-opt-4"
+      }
+    }
+  ]
+}

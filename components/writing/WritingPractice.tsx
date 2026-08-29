@@ -5,9 +5,7 @@ import {
   Clock3,
   DoorOpen,
   List,
-  Save,
   Scissors,
-  Send,
   Undo2,
   Redo2,
   RotateCcw,
@@ -73,6 +71,7 @@ import {
   logStudentPerformance,
   measureStudentRequest
 } from "@/lib/studentPerformance.client";
+import { WritingPracticeActions } from "@/components/writing/WritingPracticeActions";
 
 type PracticePayload = {
   assignment_available?: boolean;
@@ -1029,35 +1028,6 @@ function EditorButton({
       <Icon aria-hidden="true" size={compact ? 16 : 18} />
       <span className="hidden sm:inline">{label}</span>
     </button>
-  );
-}
-
-function WritingPracticeActions({
-  compact = false,
-  disabled,
-  onSave,
-  onSubmit
-}: {
-  compact?: boolean;
-  disabled: boolean;
-  onSave: () => void;
-  onSubmit: () => void;
-}) {
-  return (
-    <div
-      className={`flex shrink-0 items-center justify-end gap-3 ${
-        compact ? "px-0 py-1" : "px-4 py-4 sm:px-5"
-      }`}
-    >
-      <button className="writing-action-secondary" disabled={disabled} onClick={onSave} type="button">
-        <Save aria-hidden="true" size={19} />
-        Save Draft
-      </button>
-      <button className="writing-action-primary" disabled={disabled} onClick={onSubmit} type="button">
-        <Send aria-hidden="true" size={19} />
-        Submit
-      </button>
-    </div>
   );
 }
 

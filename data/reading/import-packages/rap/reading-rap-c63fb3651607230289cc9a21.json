@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+    "module": "rap",
+    "title": "Sleep and Memory",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7C",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "c63fb3651607230289cc9a21f5fc195a3225f9768107b193df356a81fd198f97",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7c-m1-rap-13",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7C",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-c63fb3651607230289cc9a21-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-c63fb3651607230289cc9a21-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-c63fb3651607230289cc9a21-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-c63fb3651607230289cc9a21-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-c63fb3651607230289cc9a21-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-c63fb3651607230289cc9a21-passage-01",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "title": "Sleep and Memory",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Sleep is not merely a passive period of rest; it plays an active role in the consolidation of memory, a process that has been extensively examined by neuroscientists over several decades. During sleep, distinct stages—most notably rapid-eye-movement (REM) sleep and deep sleep—contribute in different ways to how memories are stored and organized. Experimental research suggests that while REM sleep strengthens emotionally charged memories, deep sleep supports the retention of factual knowledge and the acquisition of skills.",
+          "rawText": "Sleep is not merely a passive period of rest; it plays an active role in the consolidation of memory, a process that has been extensively examined by neuroscientists over several decades. During sleep, distinct stages—most notably rapid-eye-movement (REM) sleep and deep sleep—contribute in different ways to how memories are stored and organized. Experimental research suggests that while REM sleep strengthens emotionally charged memories, deep sleep supports the retention of factual knowledge and the acquisition of skills. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Sleep is not merely a passive period of rest; it plays an active role in the consolidation of memory, a process that has been extensively examined by neuroscientists over several decades."
+            },
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "During sleep, distinct stages—most notably rapid-eye-movement (REM) sleep and deep sleep—contribute in different ways to how memories are stored and organized."
+            },
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Experimental research suggests that while REM sleep strengthens emotionally charged memories, deep sleep supports the retention of factual knowledge and the acquisition of skills."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Some researchers further propose that sleep functions as a kind of neural \"data management\" system. While awake, the brain continuously forms new connections as it processes incoming information, creating a dense and potentially inefficient network. During sleep, however, unnecessary connections are trimmed, whereas essential ones are reinforced, a reorganization that enhances the brain's ability to retrieve information accurately.",
+          "rawText": "Some researchers further propose that sleep functions as a kind of neural \"data management\" system. ■ While awake, the brain continuously forms new connections as it processes incoming information, creating a dense and potentially inefficient network. ■ During sleep, however, unnecessary connections are trimmed, whereas essential ones are reinforced, a reorganization that enhances the brain's ability to retrieve information accurately. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Some researchers further propose that sleep functions as a kind of neural \"data management\" system."
+            },
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "While awake, the brain continuously forms new connections as it processes incoming information, creating a dense and potentially inefficient network."
+            },
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "During sleep, however, unnecessary connections are trimmed, whereas essential ones are reinforced, a reorganization that enhances the brain's ability to retrieve information accurately."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Not surprisingly, sleep deprivation has been shown to impair memory retention and conceptual integration. Even a single night of lost sleep can reduce recall and interfere with learning. Nevertheless, studies also indicate that recovery sleep—particularly when it is deep and uninterrupted—can partially reverse these effects, suggesting that although sleep is critical for memory, the brain retains a limited capacity to adapt to disruption.",
+          "rawText": "Not surprisingly, sleep deprivation has been shown to impair memory retention and conceptual integration. Even a single night of lost sleep can reduce recall and interfere with learning. Nevertheless, studies also indicate that recovery sleep—particularly when it is deep and uninterrupted—can partially reverse these effects, suggesting that although sleep is critical for memory, the brain retains a limited capacity to adapt to disruption.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Not surprisingly, sleep deprivation has been shown to impair memory retention and conceptual integration."
+            },
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Even a single night of lost sleep can reduce recall and interfere with learning."
+            },
+            {
+              "sentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Nevertheless, studies also indicate that recovery sleep—particularly when it is deep and uninterrupted—can partially reverse these effects, suggesting that although sleep is critical for memory, the brain retains a limited capacity to adapt to disruption."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q01",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"retention\" in the passage is closest in meaning to",
+      "rawDisplayText": "31. The word \"retention\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-c63fb3651607230289cc9a21-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q01-opt-1",
+            "optionOrder": 1,
+            "text": "creation"
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q01-opt-2",
+            "optionOrder": 2,
+            "text": "replacement"
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q01-opt-3",
+            "optionOrder": 3,
+            "text": "transfer"
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q01-opt-4",
+            "optionOrder": 4,
+            "text": "preservation"
+          }
+        ],
+        "correctOptionId": "reading-rap-c63fb3651607230289cc9a21-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q02",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "REM sleep and deep sleep differ in which of the following ways?",
+      "rawDisplayText": "32. REM sleep and deep sleep differ in which of the following ways?",
+      "payload": {
+        "passageId": "reading-rap-c63fb3651607230289cc9a21-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Deep sleep is limited to the early stages of the sleep cycle, while REM sleep is not."
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q02-opt-2",
+            "optionOrder": 2,
+            "text": "REM sleep is more important for skill development than deep sleep."
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q02-opt-3",
+            "optionOrder": 3,
+            "text": "REM sleep involves less brain activity than deep sleep."
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q02-opt-4",
+            "optionOrder": 4,
+            "text": "REM sleep and deep sleep are each linked to separate types of memory."
+          }
+        ],
+        "correctOptionId": "reading-rap-c63fb3651607230289cc9a21-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q03",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage suggests which of the following about the effect of sleep on memory?",
+      "rawDisplayText": "33. The passage suggests which of the following about the effect of sleep on memory?",
+      "payload": {
+        "passageId": "reading-rap-c63fb3651607230289cc9a21-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Sleep Improves memory primarily by increasing the total number of neural connections."
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Sleep improves memory by selectively eliminating some neural connections."
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Sleep affects the strength of memories only during the rapid eye movemenr (REM) stage."
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Sleep strengthens the memory of emotionally charged events but not of factual information."
+          }
+        ],
+        "correctOptionId": "reading-rap-c63fb3651607230289cc9a21-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q04",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author use the phrase \"Not surprisingly\" to begin paragraph 32",
+      "rawDisplayText": "34. Why does the author use the phrase \"Not surprisingly\" to begin paragraph 32",
+      "payload": {
+        "passageId": "reading-rap-c63fb3651607230289cc9a21-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that the effects of sleep deprivation follow logically from earlier claims"
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To emphasize that people are often conscious of memory lapses after a perlod of poor sleep"
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To point out a reason for scientists' interest In establishing a link between sleep and memory"
+          },
+          {
+            "optionId": "reading-rap-c63fb3651607230289cc9a21-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To acknowledge that sleep quality is as essential to memory retention as sleep quantity"
+          }
+        ],
+        "correctOptionId": "reading-rap-c63fb3651607230289cc9a21-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q05",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-c63fb3651607230289cc9a21-passage-01",
+        "insertSentence": "This interpretation focuses on the vital role sleep plays in helping the brain function in an optimal way.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-c63fb3651607230289cc9a21-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01-s03"
+          },
+          {
+            "anchorId": "reading-rap-c63fb3651607230289cc9a21-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02-s01"
+          },
+          {
+            "anchorId": "reading-rap-c63fb3651607230289cc9a21-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02-s02"
+          },
+          {
+            "anchorId": "reading-rap-c63fb3651607230289cc9a21-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p02-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-c63fb3651607230289cc9a21-q05-anchor-2"
+      }
+    }
+  ]
+}

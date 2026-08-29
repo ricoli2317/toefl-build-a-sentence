@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+    "module": "rap",
+    "title": "Urban Resilience",
+    "firstSeenDate": "2026-06-24",
+    "firstSeenSourceLabel": "6.24",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "bd88c39e1718f0046a3df1882bf3b351fcb3a0294ea4920e305a52646dad1651",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-24-m1-rap-08",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "sourceKind": "docx",
+      "sourceLabel": "6.24",
+      "occurrenceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-bd88c39e1718f0046a3df188-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-bd88c39e1718f0046a3df188-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-bd88c39e1718f0046a3df188-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-bd88c39e1718f0046a3df188-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-bd88c39e1718f0046a3df188-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-bd88c39e1718f0046a3df188-passage-01",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "title": "Urban Resilience",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals. This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas. Cities are implementing various strategies to enhance resilience. For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding. Renewable energy sources, such as solar and wind, reduce dependence on non- renewable resources and improve energy security.",
+          "rawText": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals. This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas. Cities are implementing various strategies to enhance resilience. For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding. Renewable energy sources, such as solar and wind, reduce dependence on non- renewable resources and improve energy security.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Cities are implementing various strategies to enhance resilience."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Renewable energy sources, such as solar and wind, reduce dependence on non- renewable resources and improve energy security."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Community engagement is another critical component of urban resilience. Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met. This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies. Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems.",
+          "rawText": "Community engagement is another critical component of urban resilience. Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met. This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies. Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Community engagement is another critical component of urban resilience."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Nonetheless, building urban resilience is not without obstacles. Budget constraints and political disagreements can hinder the implementation of necessary measures. Additionally, the integration of new technologies requires substantial investment and training. Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide.",
+          "rawText": "Nonetheless, building urban resilience is not without obstacles. ■ Budget constraints and political disagreements can hinder the implementation of necessary measures. ■ Additionally, the integration of new technologies requires substantial investment and training. ■ Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Nonetheless, building urban resilience is not without obstacles."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Budget constraints and political disagreements can hinder the implementation of necessary measures."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Additionally, the integration of new technologies requires substantial investment and training."
+            },
+            {
+              "sentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-bd88c39e1718f0046a3df188-q01",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is the purpose of green infrastructure like parks and green roofs?",
+      "rawDisplayText": "26. What is the purpose of green infrastructure like parks and green roofs?",
+      "payload": {
+        "passageId": "reading-rap-bd88c39e1718f0046a3df188-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To increase urban density"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To prevent.Flooding"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To foster community engagement"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To generate renewable energy"
+          }
+        ],
+        "correctOptionId": "reading-rap-bd88c39e1718f0046a3df188-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-bd88c39e1718f0046a3df188-q02",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"fosters\" in the passage is closest in meaning to",
+      "rawDisplayText": "27. The word \"fosters\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-bd88c39e1718f0046a3df188-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q02-opt-1",
+            "optionOrder": 1,
+            "text": "describes"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q02-opt-2",
+            "optionOrder": 2,
+            "text": "neglects"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q02-opt-3",
+            "optionOrder": 3,
+            "text": "encourages"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q02-opt-4",
+            "optionOrder": 4,
+            "text": "replaces"
+          }
+        ],
+        "correctOptionId": "reading-rap-bd88c39e1718f0046a3df188-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-bd88c39e1718f0046a3df188-q03",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest is essential for resilience strategies to be fully effective?",
+      "rawDisplayText": "28. What does the passage suggest is essential for resilience strategies to be fully effective?",
+      "payload": {
+        "passageId": "reading-rap-bd88c39e1718f0046a3df188-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Discouraging the uncontrolled growth of urban populations"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q03-opt-2",
+            "optionOrder": 2,
+            "text": "The involvement of local government and citizens"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Less reliance on smart technology"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Limiting the number of structures in urban areas"
+          }
+        ],
+        "correctOptionId": "reading-rap-bd88c39e1718f0046a3df188-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-bd88c39e1718f0046a3df188-q04",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following is NOT mentioned as a challenge for urban resilience?",
+      "rawDisplayText": "29. Which of the following is NOT mentioned as a challenge for urban resilience?",
+      "payload": {
+        "passageId": "reading-rap-bd88c39e1718f0046a3df188-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Financial limitations."
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Political disagreements"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Integration of new technologies"
+          },
+          {
+            "optionId": "reading-rap-bd88c39e1718f0046a3df188-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Community participation"
+          }
+        ],
+        "correctOptionId": "reading-rap-bd88c39e1718f0046a3df188-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-bd88c39e1718f0046a3df188-q05",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-bd88c39e1718f0046a3df188-passage-01",
+        "insertSentence": "For example, Singapore's Intelligent Transport System incorporates artificial intelligence (AI) to predict real-time traffic conditions, effectively manage road congestion, and optimize routes.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-bd88c39e1718f0046a3df188-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02-s04"
+          },
+          {
+            "anchorId": "reading-rap-bd88c39e1718f0046a3df188-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-bd88c39e1718f0046a3df188-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-bd88c39e1718f0046a3df188-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-bd88c39e1718f0046a3df188-q05-anchor-1"
+      }
+    }
+  ]
+}

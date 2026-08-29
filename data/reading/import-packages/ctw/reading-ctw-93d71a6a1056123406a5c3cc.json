@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-93d71a6a1056123406a5c3cc",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-30",
+    "firstSeenSourceLabel": "6.30B",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "93d71a6a1056123406a5c3cc765bd7247ff8b3c0e89b16d0225506937e5416c6",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-30b-m1-ctw-01",
+      "logicalItemId": "reading-ctw-93d71a6a1056123406a5c3cc",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30B",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-93d71a6a1056123406a5c3cc-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-93d71a6a1056123406a5c3cc-q01",
+      "logicalItemId": "reading-ctw-93d71a6a1056123406a5c3cc",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Museums play a crucial role in preserving and showcasing art, history, and culture. They pro_ _ _ _ a sp_ _ _ where peo_ _ _ can eng_ _ _ with mult_ _ _ _ forms o_ artistic expre_ _ _ _ _ and histo_ _ _ _ _ artifacts. Ma_ _ museums al_ _ offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Museums play a crucial role in preserving and showcasing art, history, and culture. They pro_ _ _ _ a sp_ _ _ where peo_ _ _ can eng_ _ _ with mult_ _ _ _ forms o_ artistic expre_ _ _ _ _ and histo_ _ _ _ _ artifacts. Ma_ _ museums al_ _ offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Museums play a crucial role in preserving and showcasing art, history, and culture. They "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " where "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " can "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " with "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " forms "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " artistic "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " artifacts. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " museums "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "provide",
+            "prefix": "pro",
+            "displayText": "pro_ _ _ _",
+            "missingText": "vide",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "space",
+            "prefix": "sp",
+            "displayText": "sp_ _ _",
+            "missingText": "ace",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "people",
+            "prefix": "peo",
+            "displayText": "peo_ _ _",
+            "missingText": "ple",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "engage",
+            "prefix": "eng",
+            "displayText": "eng_ _ _",
+            "missingText": "age",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "multiple",
+            "prefix": "mult",
+            "displayText": "mult_ _ _ _",
+            "missingText": "iple",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "expression",
+            "prefix": "expre",
+            "displayText": "expre_ _ _ _ _",
+            "missingText": "ssion",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "historical",
+            "prefix": "histo",
+            "displayText": "histo_ _ _ _ _",
+            "missingText": "rical",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "Many",
+            "prefix": "Ma",
+            "displayText": "Ma_ _",
+            "missingText": "ny",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-93d71a6a1056123406a5c3cc-q01-p01",
+            "answer": "also",
+            "prefix": "al",
+            "displayText": "al_ _",
+            "missingText": "so",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

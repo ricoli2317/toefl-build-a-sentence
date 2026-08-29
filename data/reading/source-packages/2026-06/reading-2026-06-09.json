@@ -1,0 +1,1751 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.9",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Mushrooms are made up of two main parts: the mycelium and the fruiting body. The mycelium i_ long-lived, wh_ _ _ the fruiting body app_ _ _ _ only wh_ _ conditions a_ _ ideal f_ _ reproduction (li_ _ after ra_ _). Usually under_ _ _ _ _ _, the mycelium cons_ _ _ _ of a network of thread-like structures that absorb nutrients from the soil. The fruiting body is above ground and responsible for producing and spreading spores. These spores are released into the air to help the mushroom reproduce.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Mushrooms are made up of two main parts: the mycelium and the fruiting body. The mycelium i_ long-lived, wh_ _ _ the fruiting body app_ _ _ _ only wh_ _ conditions a_ _ ideal f_ _ reproduction (li_ _ after ra_ _). Usually under_ _ _ _ _ _, the mycelium cons_ _ _ _ of a network of thread-like structures that absorb nutrients from the soil. The fruiting body is above ground and responsible for producing and spreading spores. These spores are released into the air to help the mushroom reproduce.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Mushrooms are made up of two main parts: the mycelium and the fruiting body. The mycelium "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " long-lived, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the fruiting body "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " only "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " conditions "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ideal "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " reproduction ("
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " after "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": "). Usually "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", the mycelium "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of a network of thread-like structures that absorb nutrients from the soil. The fruiting body is above ground and responsible for producing and spreading spores. These spores are released into the air to help the mushroom reproduce."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "is",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "s",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "while",
+                "prefix": "wh",
+                "displayText": "wh_ _ _",
+                "missingText": "ile",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "appears",
+                "prefix": "app",
+                "displayText": "app_ _ _ _",
+                "missingText": "ears",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "when",
+                "prefix": "wh",
+                "displayText": "wh_ _",
+                "missingText": "en",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "are",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "for",
+                "prefix": "f",
+                "displayText": "f_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "like",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "rain",
+                "prefix": "ra",
+                "displayText": "ra_ _",
+                "missingText": "in",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "underground",
+                "prefix": "under",
+                "displayText": "under_ _ _ _ _ _",
+                "missingText": "ground",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q01-10-p01",
+                "answer": "consists",
+                "prefix": "cons",
+                "displayText": "cons_ _ _ _",
+                "missingText": "ists",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When the_ _ is mo_ _ demand f_ _ a pro_ _ _ _, suppliers m_ _ make i_ more expe_ _ _ _ _ to incr_ _ _ _ profits. Conve_ _ _ _ _, an exc_ _ _ supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When the_ _ is mo_ _ demand f_ _ a pro_ _ _ _, suppliers m_ _ make i_ more expe_ _ _ _ _ to incr_ _ _ _ profits. Conve_ _ _ _ _, an exc_ _ _ supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " is "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " demand "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", suppliers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " make "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " more "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " profits. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", an "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "there",
+                "prefix": "the",
+                "displayText": "the_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "more",
+                "prefix": "mo",
+                "displayText": "mo_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "for",
+                "prefix": "f",
+                "displayText": "f_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "product",
+                "prefix": "pro",
+                "displayText": "pro_ _ _ _",
+                "missingText": "duct",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "may",
+                "prefix": "m",
+                "displayText": "m_ _",
+                "missingText": "ay",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "it",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "expensive",
+                "prefix": "expe",
+                "displayText": "expe_ _ _ _ _",
+                "missingText": "nsive",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "increase",
+                "prefix": "incr",
+                "displayText": "incr_ _ _ _",
+                "missingText": "ease",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "Conversely",
+                "prefix": "Conve",
+                "displayText": "Conve_ _ _ _ _",
+                "missingText": "rsely",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-09-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-09-m1-ctw-q11-20-p01",
+                "answer": "excess",
+                "prefix": "exc",
+                "displayText": "exc_ _ _",
+                "missingText": "ess",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-rdl-03",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-020",
+          "title": "Instructions for Resetting Your Dorm Room Router",
+          "source": "material-index.json#RDL-020",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-020/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-020/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What should be done first to reset the router?",
+          "rawDisplayText": "21. What should be done first to reset the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Disconnect the router from electrical power"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Wait for the router to restart automatically"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Wait for 30 seconds for the router to cool"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Plug the router back in and push the start button"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the final step to resetting the router?",
+          "rawDisplayText": "22. What is the final step to resetting the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Unplug the router from the power source"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Wait until the router has completely started again"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Plug the router into a different power source"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Wait for 30 seconds or until the light flashes"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-rdl-05",
+      "module": "rdl",
+      "title": "SIGN LANGUAGE INTERPRETER NEEDED",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-040",
+          "title": "SIGN LANGUAGE INTERPRETER NEEDED",
+          "source": "material-index.json#RDL-040",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-040/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-040/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "A successful applicant must meet all of the following criteria EXCEPT",
+          "rawDisplayText": "23. A successful applicant must meet all of the following criteria EXCEPT",
+          "payload": {
+            "materialId": "RDL-040",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "be available on Wednesday afternoons"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "know American Sign Language"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "be a student council member"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "study full-time"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "According to the advertisement, what must a student do to apply?",
+          "rawDisplayText": "24. According to the advertisement, what must a student do to apply?",
+          "payload": {
+            "materialId": "RDL-040",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Interpret a short conversation"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Send in two references"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Attend the next student council meeting"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Contact the department that posted the job."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q24-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-rdl-07",
+      "module": "rdl",
+      "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-021",
+          "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+          "source": "material-index.json#RDL-021",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-021/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-021/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the advertisement?",
+          "rawDisplayText": "25. What is the main purpose of the advertisement?",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "To advertise improvements to products"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "To announce an event"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "To promote live music"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "To introduce a new menu"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "The word \"complimentary\" in the first paragraph is closest in meaning to",
+          "rawDisplayText": "26. The word \"complimentary\" in the first paragraph is closest in meaning to",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "pleasing"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "discounted"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "free"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "limited"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "What is necessary for an extra 20 percent off one's first service?",
+          "rawDisplayText": "27. What is necessary for an extra 20 percent off one's first service?",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Cash for payment"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Proof of being a student"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "A reservation"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "A consultation"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q27-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-rdl-10",
+      "module": "rdl",
+      "title": "CULN 310 Advanced Techniques: Sous Vide",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-084",
+          "title": "CULN 310 Advanced Techniques: Sous Vide",
+          "source": "material-index.json#RDL-084",
+          "sourceDate": "2026-06-09",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-084/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-084/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "What is indicated about the skills students will develop from taking the CULN 310 course?",
+          "rawDisplayText": "28. What is indicated about the skills students will develop from taking the CULN 310 course?",
+          "payload": {
+            "materialId": "RDL-084",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "They will gain expertise in general culinary management techniques."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "They will become proficient in the use of a technically complex cooking technique."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "They will learn to critique historical culinary trends as restaurant critics."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "They will become experts in the practical applications of plant-based ingredients."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What is indicated about the eligibility criteria for enrolling in CULN 310?",
+          "rawDisplayText": "29. What is indicated about the eligibility criteria for enrolling in CULN 310?",
+          "payload": {
+            "materialId": "RDL-084",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Enrollment is open to all students with an interest in gastronomic science."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Admission requires an advanced understanding of the sous vide technique."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "Candidates must have completed two introductory courses in the department."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "Students are required to possess prior work experience in an industrial kitchen."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Which aspect of sous vide does the syllabus suggest will be a significant component of the course?",
+          "rawDisplayText": "30. Which aspect of sous vide does the syllabus suggest will be a significant component of the course?",
+          "payload": {
+            "materialId": "RDL-084",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "The financial implications of sous vide in restaurant operations"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "The cultural influences on the evolution of sous vide"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "The technological development of sous vide techniques over time"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "The ethical considerations of using sous vide techniques"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q30-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m1-rap-13",
+      "module": "rap",
+      "title": "Data Visualization in Action",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-09-m1-rap-p01",
+          "title": "Data Visualization in Action",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-09-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Data visualization is transforming how we interpret complex datasets, moving beyond traditional charts, such as static charts and graphs, to dynamic graphical representations, such as heat maps, time-lapse animations, and network graphs. This shift allows for the discovery of patterns and anomalies otherwise hidden in raw data. For example, when studying climate change impacts, a time-lapse heat map might reveal unexpected temperature shifts over decades that spreadsheets alone could not capture.",
+              "rawText": "Data visualization is transforming how we interpret complex datasets, moving beyond traditional charts, such as static charts and graphs, to dynamic graphical representations, such as heat maps, time-lapse animations, and network graphs. This shift allows for the discovery of patterns and anomalies otherwise hidden in raw data. For example, when studying climate change impacts, a time-lapse heat map might reveal unexpected temperature shifts over decades that spreadsheets alone could not capture.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Data visualization is transforming how we interpret complex datasets, moving beyond traditional charts, such as static charts and graphs, to dynamic graphical representations, such as heat maps, time-lapse animations, and network graphs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This shift allows for the discovery of patterns and anomalies otherwise hidden in raw data."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "For example, when studying climate change impacts, a time-lapse heat map might reveal unexpected temperature shifts over decades that spreadsheets alone could not capture."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-09-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "A significant development in this field is the use of interactive dashboards. These tools not only display data but also allow users to manipulate variables to explore different scenarios. In the business sector, decision-makers use dashboards to simulate market conditions, adjusting factors like demand and supply to forecast outcomes. However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming.",
+              "rawText": "A significant development in this field is the use of interactive dashboards. These tools not only display data but also allow users to manipulate variables to explore different scenarios. In the business sector, decision-makers use dashboards to simulate market conditions, adjusting factors like demand and supply to forecast outcomes. However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "A significant development in this field is the use of interactive dashboards."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These tools not only display data but also allow users to manipulate variables to explore different scenarios."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "In the business sector, decision-makers use dashboards to simulate market conditions, adjusting factors like demand and supply to forecast outcomes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-09-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "In the realm of public health, data visualization has proven invaluable in tracking disease spread. The combination of geographical maps and timelines helps analysts predict outbreak hot spots. Nonetheless, this predictive power depends heavily on the quality of data inputs. Still, data visualization tools help public health officials to act before a situation becomes unmanageable.",
+              "rawText": "In the realm of public health, data visualization has proven invaluable in tracking disease spread. ■ The combination of geographical maps and timelines helps analysts predict outbreak hot spots. ■ Nonetheless, this predictive power depends heavily on the quality of data inputs. ■ Still, data visualization tools help public health officials to act before a situation becomes unmanageable. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "In the realm of public health, data visualization has proven invaluable in tracking disease spread."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "The combination of geographical maps and timelines helps analysts predict outbreak hot spots."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Nonetheless, this predictive power depends heavily on the quality of data inputs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Still, data visualization tools help public health officials to act before a situation becomes unmanageable."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"anomalies\" in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word \"anomalies\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-09-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "irregularities"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "indications"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "solutions"
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "links"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q31-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about traditional data charts?",
+          "rawDisplayText": "32. What does the passage suggest about traditional data charts?",
+          "payload": {
+            "passageId": "reading-2026-06-09-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "They reveal some important features hidden in raw data."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "They are limited in how effectively they convey complex information."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "They are especially helpful in capturing data related to climate change."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "They include heat maps, time-lapse animations, and network graphs."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 2 that highlights a limitation of interactive dashboards. Select the sentence to make your choice.",
+          "rawDisplayText": "33. Identify the sentence in paragraph 2 that highlights a limitation of interactive dashboards. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-09-m1-rap-p01",
+            "targetParagraphId": "reading-2026-06-09-m1-rap-p01-p02",
+            "correctSentenceId": "reading-2026-06-09-m1-rap-p01-p02-s04"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage mentions all the following about interactive dashboards EXCEPT:",
+          "rawDisplayText": "34. The passage mentions all the following about interactive dashboards EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-06-09-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "They represent an important development in data analysis tools."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "They let users change variables to see different outcomes."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "They can be used to explore how markets might behave."
+              },
+              {
+                "optionId": "reading-2026-06-09-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "They help business leaders interact more effectively with one another."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-09-m1-rap-p01",
+            "insertSentence": "Incomplete or biased data can lead to misleading conclusions, potentially hampering response efforts.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-09-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-09-m1-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-09-m1-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-09-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-09-m1-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-09-m1-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-09-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-09-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-09-m1-rap-p01-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-09-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-09-m1-rap-p01-p03",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-09-m1-rap-p01-p03-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-09-m1-q35-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Archaeological evidence suggests that Homo sapiens first emerged in Africa approximately 300,000 years ago. These early humans were adept at utilizing the resources available to them, including plants and animals that supplied materials for food, clothing, and shelter. They crafted to_ _ _ from st_ _ _ and ani_ _ _ bones a_ _ adapted th_ _ _ hunting techn_ _ _ _ _ to t_ _ changing clim_ _ _ _ and lands_ _ _ _ _, thus ensu_ _ _ _ their survival. As they migrated out of Africa, they encountered diverse environments, leading to cultural and technological innovations.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Archaeological evidence suggests that Homo sapiens first emerged in Africa approximately 300,000 years ago. These early humans were adept at utilizing the resources available to them, including plants and animals that supplied materials for food, clothing, and shelter. They crafted to_ _ _ from st_ _ _ and ani_ _ _ bones a_ _ adapted th_ _ _ hunting techn_ _ _ _ _ to t_ _ changing clim_ _ _ _ and lands_ _ _ _ _, thus ensu_ _ _ _ their survival. As they migrated out of Africa, they encountered diverse environments, leading to cultural and technological innovations.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Archaeological evidence suggests that Homo sapiens first emerged in Africa approximately 300,000 years ago. These early humans were adept at utilizing the resources available to them, including plants and animals that supplied materials for food, clothing, and shelter. They crafted "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " from "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " bones "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " adapted "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " hunting "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " changing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", thus "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " their survival. As they migrated out of Africa, they encountered diverse environments, leading to cultural and technological innovations."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "tools",
+                "prefix": "to",
+                "displayText": "to_ _ _",
+                "missingText": "ols",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "stone",
+                "prefix": "st",
+                "displayText": "st_ _ _",
+                "missingText": "one",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "animal",
+                "prefix": "ani",
+                "displayText": "ani_ _ _",
+                "missingText": "mal",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "their",
+                "prefix": "th",
+                "displayText": "th_ _ _",
+                "missingText": "eir",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "techniques",
+                "prefix": "techn",
+                "displayText": "techn_ _ _ _ _",
+                "missingText": "iques",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "climates",
+                "prefix": "clim",
+                "displayText": "clim_ _ _ _",
+                "missingText": "ates",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "landscapes",
+                "prefix": "lands",
+                "displayText": "lands_ _ _ _ _",
+                "missingText": "capes",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-09-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-09-m2-ctw-q01-10-p01",
+                "answer": "ensuring",
+                "prefix": "ensu",
+                "displayText": "ensu_ _ _ _",
+                "missingText": "ring",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-9-m2-rap-19",
+      "module": "rap",
+      "title": "The Shifting Art of Playwriting",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.9",
+        "occurrenceDate": "2026-06-09",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-09-m2-rap-p01",
+          "title": "The Shifting Art of Playwriting",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-09-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Innovative playwriting techniques have transformed the theatrical landscape by challenging linear storytelling and passive spectatorship. Nonlinear narratives, seen in plays like Harold Pinter's Betrayal, disrupt chronological order to reflect the fragmented nature of memory and emotion. This structure invites audiences to actively reconstruct the story, deepening their engagement.",
+              "rawText": "Innovative playwriting techniques have transformed the theatrical landscape by challenging linear storytelling and passive spectatorship. Nonlinear narratives, seen in plays like Harold Pinter's Betrayal, disrupt chronological order to reflect the fragmented nature of memory and emotion. This structure invites audiences to actively reconstruct the story, deepening their engagement.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Innovative playwriting techniques have transformed the theatrical landscape by challenging linear storytelling and passive spectatorship."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Nonlinear narratives, seen in plays like Harold Pinter's Betrayal, disrupt chronological order to reflect the fragmented nature of memory and emotion."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This structure invites audiences to actively reconstruct the story, deepening their engagement."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-09-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Another innovation is the so-called breaking of the fourth wall, where characters directly address the audience. Used by Bertolt Brecht in Mother Courage and Her Children, this technique encourages viewers to reflect critically rather than become absorbed in illusion. Fully interactive theater, exemplified by the British production Sleep No More, goes further by allowing viewers to physically move through the performance space, personalizing the experience and making each viewing unique.",
+              "rawText": "Another innovation is the so-called breaking of the fourth wall, where characters directly address the audience. Used by Bertolt Brecht in Mother Courage and Her Children, this technique encourages viewers to reflect critically rather than become absorbed in illusion. Fully interactive theater, exemplified by the British production Sleep No More, goes further by allowing viewers to physically move through the performance space, personalizing the experience and making each viewing unique.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Another innovation is the so-called breaking of the fourth wall, where characters directly address the audience."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Used by Bertolt Brecht in Mother Courage and Her Children, this technique encourages viewers to reflect critically rather than become absorbed in illusion."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Fully interactive theater, exemplified by the British production Sleep No More, goes further by allowing viewers to physically move through the performance space, personalizing the experience and making each viewing unique."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-09-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "These techniques suggest a broader hypothesis: that theatrical form is not merely a container for content but a vital part of creating meaning. By reshaping narrative structure and audience dynamics, playwrights can evoke new emotional and intellectual responses, revealing complex aspects of the human condition.",
+              "rawText": "These techniques suggest a broader hypothesis: that theatrical form is not merely a container for content but a vital part of creating meaning. By reshaping narrative structure and audience dynamics, playwrights can evoke new emotional and intellectual responses, revealing complex aspects of the human condition.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "These techniques suggest a broader hypothesis: that theatrical form is not merely a container for content but a vital part of creating meaning."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "By reshaping narrative structure and audience dynamics, playwrights can evoke new emotional and intellectual responses, revealing complex aspects of the human condition."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-09-m2-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Of course, such innovations may confuse rather than enlighten more traditional-minded theater audiences and also disrupt their emotional immersion and fragment the narrative. Thus, while these techniques can serve as powerful tools, their success depends on thoughtful execution and a clear artistic purpose.",
+              "rawText": "Of course, such innovations may confuse rather than enlighten more traditional-minded theater audiences and also disrupt their emotional immersion and fragment the narrative. Thus, while these techniques can serve as powerful tools, their success depends on thoughtful execution and a clear artistic purpose.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Of course, such innovations may confuse rather than enlighten more traditional-minded theater audiences and also disrupt their emotional immersion and fragment the narrative."
+                },
+                {
+                  "sentenceId": "reading-2026-06-09-m2-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Thus, while these techniques can serve as powerful tools, their success depends on thoughtful execution and a clear artistic purpose."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-09-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the passage mainly about?",
+          "rawDisplayText": "11. What is the passage mainly about?",
+          "payload": {
+            "passageId": "reading-2026-06-09-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "The influence of traditional theater on modern audiences"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "The role of audience participation in theatrical performances"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "New approaches to theatrical storytelling and audience involvement"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "The challenges of interpreting nonlinear narratives in drama"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m2-q11-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is a key difference between Mother Courage and Her Children and Sleep No More?",
+          "rawDisplayText": "12. According to the passage, what is a key difference between Mother Courage and Her Children and Sleep No More?",
+          "payload": {
+            "passageId": "reading-2026-06-09-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "Mother Courage and Her Children uses audience interaction to create emotional immersion, while Sleep No More avoids direct engagement."
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "Mother Courage and Her Children involves some interaction with the audience, while Sleep No More involves actual audience participation."
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "Mother Courage and Her Children is based on historical events, while Sleep No More is entirely fictional."
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "Mother Courage and Her Children presents a fragmented narrative, while Sleep No More follows a linear storyline."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following best describes the function of paragraph 3 in the passage?",
+          "rawDisplayText": "13. Which of the following best describes the function of paragraph 3 in the passage?",
+          "payload": {
+            "passageId": "reading-2026-06-09-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "It offers a conjecture about what new playwriting techniques mean for theater."
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "It summarizes the historical development of experimental theater techniques."
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "It critiques the effectiveness of audience-centered performance styles."
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "It introduces a counterargument to the use of nonlinear narratives in drama."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"evoke\" in the passage is closest in meaning to",
+          "rawDisplayText": "14. The word \"evoke\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-09-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "measure"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "produce"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "compare"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "anticipate"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-09-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage introduces all of the following innovative approaches to playwriting EXCEPT",
+          "rawDisplayText": "15. The passage introduces all of the following innovative approaches to playwriting EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-09-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-09-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "presenting events out of order"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "actors speaking to audiences"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "viewers walking onto the stage"
+              },
+              {
+                "optionId": "reading-2026-06-09-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "playwrights joining the cast"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-09-m2-q15-opt-4"
+          }
+        }
+      ]
+    }
+  ]
+}

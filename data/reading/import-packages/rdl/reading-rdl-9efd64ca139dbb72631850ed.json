@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-9efd64ca139dbb72631850ed",
+    "module": "rdl",
+    "title": "Bridgeford University Music & Culture Night",
+    "firstSeenDate": "2026-06-24",
+    "firstSeenSourceLabel": "6.24",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "9efd64ca139dbb72631850ed6840dad5ae6d8cfc54930de1551f91f7e570c734",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-24-m1-rdl-03",
+      "logicalItemId": "reading-rdl-9efd64ca139dbb72631850ed",
+      "sourceKind": "docx",
+      "sourceLabel": "6.24",
+      "occurrenceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-9efd64ca139dbb72631850ed-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-9efd64ca139dbb72631850ed-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-078",
+      "title": "Bridgeford University Music & Culture Night",
+      "source": "material-index.json#RDL-078",
+      "sourceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-078/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-078/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-9efd64ca139dbb72631850ed-q01",
+      "logicalItemId": "reading-rdl-9efd64ca139dbb72631850ed",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Students who arrive late may have trouble getting",
+      "rawDisplayText": "21. Students who arrive late may have trouble getting",
+      "payload": {
+        "materialId": "RDL-078",
+        "options": [
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q01-opt-1",
+            "optionOrder": 1,
+            "text": "free admission"
+          },
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q01-opt-2",
+            "optionOrder": 2,
+            "text": "access to interpreters"
+          },
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q01-opt-3",
+            "optionOrder": 3,
+            "text": "a free souvenir"
+          },
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q01-opt-4",
+            "optionOrder": 4,
+            "text": "access to dining"
+          }
+        ],
+        "correctOptionId": "reading-rdl-9efd64ca139dbb72631850ed-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-9efd64ca139dbb72631850ed-q02",
+      "logicalItemId": "reading-rdl-9efd64ca139dbb72631850ed",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Showers are predicted shortly before 7:30 p.m. An attendee who is arriving at the event should proceed to which place?",
+      "rawDisplayText": "22. Showers are predicted shortly before 7:30 p.m. An attendee who is arriving at the event should proceed to which place?",
+      "payload": {
+        "materialId": "RDL-078",
+        "options": [
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Union Ballroom"
+          },
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Bridgeford Music Council Office"
+          },
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q02-opt-3",
+            "optionOrder": 3,
+            "text": "West Quad Amphitheater"
+          },
+          {
+            "optionId": "reading-rdl-9efd64ca139dbb72631850ed-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Café Azul"
+          }
+        ],
+        "correctOptionId": "reading-rdl-9efd64ca139dbb72631850ed-q02-opt-1"
+      }
+    }
+  ]
+}

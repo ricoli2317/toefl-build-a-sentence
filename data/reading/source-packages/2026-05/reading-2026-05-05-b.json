@@ -1,0 +1,1818 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.5B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous popul_ _ _ _ _ _ developed com_ _ _ _ societies wi_ _ rich tradi_ _ _ _ _ and soc_ _ _ structures. T_ _ region’s poli_ _ _ _ _ and econ_ _ _ _ landscapes exper_ _ _ _ _ _ profound cha_ _ _ _ following colonization by Europeans. Studying this history allows for a greater understanding of cultural interactions and the ongoing effects of historical events on contemporary South Pacific societies. Traditional navigation techniques using stars and ocean swells enabled remarkable voyaging achievements, while contemporary movements focus on cultural preservation, language revitalization, and addressing climate change impacts on island nations.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous popul_ _ _ _ _ _ developed com_ _ _ _ societies wi_ _ rich tradi_ _ _ _ _ and soc_ _ _ structures. T_ _ region’s poli_ _ _ _ _ and econ_ _ _ _ landscapes exper_ _ _ _ _ _ profound cha_ _ _ _ following colonization by Europeans. Studying this history allows for a greater understanding of cultural interactions and the ongoing effects of historical events on contemporary South Pacific societies. Traditional navigation techniques using stars and ocean swells enabled remarkable voyaging achievements, while contemporary movements focus on cultural preservation, language revitalization, and addressing climate change impacts on island nations.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " developed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " societies "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " rich "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " structures. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " region’s "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " landscapes "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " profound "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " following colonization by Europeans. Studying this history allows for a greater understanding of cultural interactions and the ongoing effects of historical events on contemporary South Pacific societies. Traditional navigation techniques using stars and ocean swells enabled remarkable voyaging achievements, while contemporary movements focus on cultural preservation, language revitalization, and addressing climate change impacts on island nations."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "populations",
+                "prefix": "popul",
+                "displayText": "popul_ _ _ _ _ _",
+                "missingText": "ations",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "complex",
+                "prefix": "com",
+                "displayText": "com_ _ _ _",
+                "missingText": "plex",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "with",
+                "prefix": "wi",
+                "displayText": "wi_ _",
+                "missingText": "th",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "traditions",
+                "prefix": "tradi",
+                "displayText": "tradi_ _ _ _ _",
+                "missingText": "tions",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "social",
+                "prefix": "soc",
+                "displayText": "soc_ _ _",
+                "missingText": "ial",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "The",
+                "prefix": "T",
+                "displayText": "T_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "political",
+                "prefix": "poli",
+                "displayText": "poli_ _ _ _ _",
+                "missingText": "tical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "economic",
+                "prefix": "econ",
+                "displayText": "econ_ _ _ _",
+                "missingText": "omic",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "experienced",
+                "prefix": "exper",
+                "displayText": "exper_ _ _ _ _ _",
+                "missingText": "ienced",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q01-10-p01",
+                "answer": "changes",
+                "prefix": "cha",
+                "displayText": "cha_ _ _ _",
+                "missingText": "nges",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Camels live in the desert where the weather is hot and dry. Sometimes i_ the des_ _ _, camels ha_ _ to tra_ _ _ for a lo_ _ time wit_ _ _ _ finding a_ _ food o_ water. S_ when cam_ _ _ do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Camels live in the desert where the weather is hot and dry. Sometimes i_ the des_ _ _, camels ha_ _ to tra_ _ _ for a lo_ _ time wit_ _ _ _ finding a_ _ food o_ water. S_ when cam_ _ _ do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Camels live in the desert where the weather is hot and dry. Sometimes "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", camels "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " time "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " finding "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " food "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " water. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " when "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "desert",
+                "prefix": "des",
+                "displayText": "des_ _ _",
+                "missingText": "ert",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "have",
+                "prefix": "ha",
+                "displayText": "ha_ _",
+                "missingText": "ve",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "travel",
+                "prefix": "tra",
+                "displayText": "tra_ _ _",
+                "missingText": "vel",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "long",
+                "prefix": "lo",
+                "displayText": "lo_ _",
+                "missingText": "ng",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "without",
+                "prefix": "wit",
+                "displayText": "wit_ _ _ _",
+                "missingText": "hout",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "any",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "ny",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "or",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "r",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "So",
+                "prefix": "S",
+                "displayText": "S_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-05-b-m1-ctw-q11-20-p01",
+                "answer": "camels",
+                "prefix": "cam",
+                "displayText": "cam_ _ _",
+                "missingText": "els",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m1-rdl-03",
+      "module": "rdl",
+      "title": "Fall Midterm Schedule",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-007",
+          "title": "Fall Midterm Schedule",
+          "source": "material-index.json#RDL-007",
+          "sourceDate": "2026-05-05",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-007/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-007/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What does the notice indicate about the fall midterm exam schedule?",
+          "rawDisplayText": "21. What does the notice indicate about the fall midterm exam schedule?",
+          "payload": {
+            "materialId": "RDL-007",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Some academic divisions will start giving exams on October 1."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Some science courses have a later exam slot than other science courses."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "To find exam location information, students must go online."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Exam date information must be requested from the professor."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q21-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "A student has a lab course midterm and an engineering midterm scheduled on the same day. According to the notice, what is she required to do?",
+          "rawDisplayText": "22. A student has a lab course midterm and an engineering midterm scheduled on the same day. According to the notice, what is she required to do?",
+          "payload": {
+            "materialId": "RDL-007",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Ask her engineering professor to move the exam to another day"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Inform the Registrar of the situation no later than October 1"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Ask her science professor for permission to start her exam early"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Inform the science and engineering divisions by October 20"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m1-rdl-05",
+      "module": "rdl",
+      "title": "Greetings from an Eliot fan",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-008",
+          "title": "Greetings from an Eliot fan",
+          "source": "material-index.json#RDL-008",
+          "sourceDate": "2026-05-05",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-008/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-008/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "The main purpose of the email message is to",
+          "rawDisplayText": "23. The main purpose of the email message is to",
+          "payload": {
+            "materialId": "RDL-008",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "ask about requirements pertaining to independent studies"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "express appreciation to a professor for a course that Alyssa took in the past"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "ask a faculty member for guidance on a research project"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "explain why Alyssa wishes that more classes were offered on a particular novelist"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Alyssa mentions the length of three of George Eliot’s novels primarily to",
+          "rawDisplayText": "24. Alyssa mentions the length of three of George Eliot’s novels primarily to",
+          "payload": {
+            "materialId": "RDL-008",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "explain why it may be difficult to complete an assignment she is currently working on"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "cite a reason why there are no courses being offered that assign these novels"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "emphasize that these novels will provide plenty of material for a proposed paper"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "address potential concerns about whether she can finish the reading for a project on time"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q24-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "The email indicates which of the following about Alyssa?",
+          "rawDisplayText": "25. The email indicates which of the following about Alyssa?",
+          "payload": {
+            "materialId": "RDL-008",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "She has read some biographies of George Eliot."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "She has completed independent research for credit in the past."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "She has previously taken a course taught by Professor Stoll."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "She was referred to Professor Stoll by another faculty member."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q25-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m1-rap-08",
+      "module": "rap",
+      "title": "Floating Wind Turbines",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-05-b-m1-rap-p01",
+          "title": "Floating Wind Turbines",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Wind turbines are large devices with long blades that capture wind energy and convert it into electricity. Floating wind turbines are a special type of wind turbines because they are not fixed to the seabed but are anchored using advanced mooring systems, allowing placement in deeper waters where winds are more consistent. In this context, anchoring refers to securing the turbine in place using cables or chains connected to weighted structures or anchors on the ocean floor, ensuring stability despite the lack of a fixed foundation. The deeper placement means the wind turbines can harness untapped wind resources that traditional turbines cannot access.",
+              "rawText": "Wind turbines are large devices with long blades that capture wind energy and convert it into electricity. Floating wind turbines are a special type of wind turbines because they are not fixed to the seabed but are anchored using advanced mooring systems, allowing placement in deeper waters where winds are more consistent. In this context, anchoring refers to securing the turbine in place using cables or chains connected to weighted structures or anchors on the ocean floor, ensuring stability despite the lack of a fixed foundation. The deeper placement means the wind turbines can harness untapped wind resources that traditional turbines cannot access.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Wind turbines are large devices with long blades that capture wind energy and convert it into electricity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Floating wind turbines are a special type of wind turbines because they are not fixed to the seabed but are anchored using advanced mooring systems, allowing placement in deeper waters where winds are more consistent."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "In this context, anchoring refers to securing the turbine in place using cables or chains connected to weighted structures or anchors on the ocean floor, ensuring stability despite the lack of a fixed foundation."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "The deeper placement means the wind turbines can harness untapped wind resources that traditional turbines cannot access."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Engineering floating turbines involves unique challenges. They rely on buoyancy principles rather than on solid ground, making their design and maintenance complex. Despite the increased costs, their ability to reduce visual and noise pollution makes them an attractive option for distant offshore locations. However, their long-term viability is threatened by harsh marine conditions that can accelerate wear and tear.",
+              "rawText": "Engineering floating turbines involves unique challenges. They rely on buoyancy principles rather than on solid ground, making their design and maintenance complex. Despite the increased costs, their ability to reduce visual and noise pollution makes them an attractive option for distant offshore locations. However, their long-term viability is threatened by harsh marine conditions that can accelerate wear and tear.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Engineering floating turbines involves unique challenges."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "They rely on buoyancy principles rather than on solid ground, making their design and maintenance complex."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Despite the increased costs, their ability to reduce visual and noise pollution makes them an attractive option for distant offshore locations."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, their long-term viability is threatened by harsh marine conditions that can accelerate wear and tear."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Research continues to explore solutions for these problems. Some experts are investigating materials and designs to enhance durability. As efforts to capitalize on deeper offshore wind resources persist, floating turbines represent both a promising opportunity and a complex engineering puzzle.",
+              "rawText": "■ Research continues to explore solutions for these problems. ■ Some experts are investigating materials and designs to enhance durability. ■ As efforts to capitalize on deeper offshore wind resources persist, floating turbines represent both a promising opportunity and a complex engineering puzzle. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Research continues to explore solutions for these problems."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some experts are investigating materials and designs to enhance durability."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "As efforts to capitalize on deeper offshore wind resources persist, floating turbines represent both a promising opportunity and a complex engineering puzzle."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “harness” in the passage is closest in meaning to",
+          "rawDisplayText": "26. The word “harness” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "limit"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "distribute"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "release"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "exploit"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "What unique advantage do floating wind turbines have over traditional turbines?",
+          "rawDisplayText": "27. What unique advantage do floating wind turbines have over traditional turbines?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "They are larger in size and have longer blades."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "They require less maintenance."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "They can be placed in deeper waters."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "They are easier to design."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q27-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “buoyancy principles”?",
+          "rawDisplayText": "28. Why does the author mention “buoyancy principles”?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "To point out a challenge of creating floating turbines"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "To suggest a new area for future research into floating turbines"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "To emphasize the greater flexibility of floating turbines compared with traditional turbines"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "To provide an example of cost-saving measures related to floating turbines"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q28-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about the acceleration of “wear and tear” in floating turbines?",
+          "rawDisplayText": "29. What can be inferred about the acceleration of “wear and tear” in floating turbines?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Any attempts to reduce it will likely prove to be unsuccessful."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Scientists are working to control it through better designs and materials."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "It is prompting engineers to place floating wind turbines closer to shore."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "It makes floating turbines especially unattractive to look at."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q29-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p01",
+            "insertSentence": "Others assess economic models that might offset higher initial expenses.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-05-b-m1-q30-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p03",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-05-05-b-m1-q30-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-05-b-m1-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-05-b-m1-q30-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-05-b-m1-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-05-b-m1-q30-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-05-b-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-05-b-m1-rap-p01-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-05-b-m1-q30-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m1-rap-13",
+      "module": "rap",
+      "title": "A Unique Advantage of Spicy Cuisine",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-05-b-m1-rap-p02",
+          "title": "A Unique Advantage of Spicy Cuisine",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-05-b-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Are you fond of spicy food? Spices have been used for thousands of years to enhance the flavor of food, originally in cultures where spice plants were native to the area. Today, spice use is widespread across cultures, though certain spices are more prevalent in some cuisines. Indeed, scientists have suggested that hot-climate cuisines feature a greater amount and variety of spices. For example, a recent study found that the number of different spices was much greater in traditional recipes from Southeast Asian countries than in those from northern Europe.",
+              "rawText": "Are you fond of spicy food? Spices have been used for thousands of years to enhance the flavor of food, originally in cultures where spice plants were native to the area. Today, spice use is widespread across cultures, though certain spices are more prevalent in some cuisines. Indeed, scientists have suggested that hot-climate cuisines feature a greater amount and variety of spices. For example, a recent study found that the number of different spices was much greater in traditional recipes from Southeast Asian countries than in those from northern Europe.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Are you fond of spicy food?"
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Spices have been used for thousands of years to enhance the flavor of food, originally in cultures where spice plants were native to the area."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Today, spice use is widespread across cultures, though certain spices are more prevalent in some cuisines."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Indeed, scientists have suggested that hot-climate cuisines feature a greater amount and variety of spices."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "For example, a recent study found that the number of different spices was much greater in traditional recipes from Southeast Asian countries than in those from northern Europe."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-05-b-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Why do hot-climate cuisines feature more spices? Some believe that spice consumption is related to cultural preferences. While culture certainly plays a part, scientists have recently suggested that the antimicrobial properties of spices, which prevent the growth of dangerous foodborne microorganisms, ensured their widespread use in hot climates. In such climates, food spoilage was a concern before the availability of refrigeration. Spices with greater antimicrobial or antibacterial properties, such as allspice, cinnamon, cumin, garlic, and onions, were frequently featured in the traditional recipes of hot-climate cuisines and in different combinations. Scientists concluded that food safety precipitated the use of many and multiple spices in hot regions.",
+              "rawText": "Why do hot-climate cuisines feature more spices? Some believe that spice consumption is related to cultural preferences. While culture certainly plays a part, scientists have recently suggested that the antimicrobial properties of spices, which prevent the growth of dangerous foodborne microorganisms, ensured their widespread use in hot climates. In such climates, food spoilage was a concern before the availability of refrigeration. Spices with greater antimicrobial or antibacterial properties, such as allspice, cinnamon, cumin, garlic, and onions, were frequently featured in the traditional recipes of hot-climate cuisines and in different combinations. Scientists concluded that food safety precipitated the use of many and multiple spices in hot regions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Why do hot-climate cuisines feature more spices?"
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some believe that spice consumption is related to cultural preferences."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "While culture certainly plays a part, scientists have recently suggested that the antimicrobial properties of spices, which prevent the growth of dangerous foodborne microorganisms, ensured their widespread use in hot climates."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "In such climates, food spoilage was a concern before the availability of refrigeration."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Spices with greater antimicrobial or antibacterial properties, such as allspice, cinnamon, cumin, garlic, and onions, were frequently featured in the traditional recipes of hot-climate cuisines and in different combinations."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m1-rap-p02-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "Scientists concluded that food safety precipitated the use of many and multiple spices in hot regions."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The main purpose of the passage is to",
+          "rawDisplayText": "31. The main purpose of the passage is to",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "share research findings related to spice use"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "promote the widespread use of specific spices"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "describe an outdated theory of spice consumption"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "contrast traditional and contemporary spice consumption"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q31-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What data did the scientists most likely collect for the study mentioned in the first paragraph?",
+          "rawDisplayText": "32. What data did the scientists most likely collect for the study mentioned in the first paragraph?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "The number of spices used in a variety of countries"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "The types of microorganisms found on different spices"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "The food preferences of customers at traditional restaurants"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "The number of traditional Southeast Asian recipes used in Europe"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q32-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is suggested about spice usage?",
+          "rawDisplayText": "33. What is suggested about spice usage?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "Spices were used to conceal the odor of spoiled food."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "Spice consumption caused a rise in demand for native plants."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "Spices may prevent bacteria on food from developing."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "Spice use has decreased substantially in Southeast Asia."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are mentioned about spices EXCEPT:",
+          "rawDisplayText": "34. All of the following are mentioned about spices EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "They are derived from plant products."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "They require refrigeration to maintain their function."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "They are associated with cultural practices."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "Their use varies considerably by cuisine."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q34-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “precipitated” in the passage is closest in meaning to",
+          "rawDisplayText": "35. The word “precipitated” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "threw"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "separated"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "caused"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "rained"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m1-q35-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The Ottoman Empire, which lasted from 1299 to 1922, was a formidable force that reshaped the political and cultural landscapes of Europe, the Middle East, and North Africa. Renowned for its mili_ _ _ _ prowess a_ _ strategic conq_ _ _ _ _, the emp_ _ _ reached i_ _ zenith un_ _ _ the re_ _ _ of Suleyman the Magnificent, dur_ _ _ which ar_ _ and archit_ _ _ _ _ _ flourished. The Ottomans also played a pivotal role in global commerce, controlling key trade routes that linked the spice markets of Asia with the merchant hubs of Europe.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The Ottoman Empire, which lasted from 1299 to 1922, was a formidable force that reshaped the political and cultural landscapes of Europe, the Middle East, and North Africa. Renowned for its mili_ _ _ _ prowess a_ _ strategic conq_ _ _ _ _, the emp_ _ _ reached i_ _ zenith un_ _ _ the re_ _ _ of Suleyman the Magnificent, dur_ _ _ which ar_ _ and archit_ _ _ _ _ _ flourished. The Ottomans also played a pivotal role in global commerce, controlling key trade routes that linked the spice markets of Asia with the merchant hubs of Europe.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The Ottoman Empire, which lasted from 1299 to 1922, was a formidable force that reshaped the political and cultural landscapes of Europe, the Middle East, and North Africa. Renowned for its "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " prowess "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " strategic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " reached "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " zenith "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of Suleyman the Magnificent, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " which "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " flourished. The Ottomans also played a pivotal role in global commerce, controlling key trade routes that linked the spice markets of Asia with the merchant hubs of Europe."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "military",
+                "prefix": "mili",
+                "displayText": "mili_ _ _ _",
+                "missingText": "tary",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "conquests",
+                "prefix": "conq",
+                "displayText": "conq_ _ _ _ _",
+                "missingText": "uests",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "empire",
+                "prefix": "emp",
+                "displayText": "emp_ _ _",
+                "missingText": "ire",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "its",
+                "prefix": "i",
+                "displayText": "i_ _",
+                "missingText": "ts",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "under",
+                "prefix": "un",
+                "displayText": "un_ _ _",
+                "missingText": "der",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "reign",
+                "prefix": "re",
+                "displayText": "re_ _ _",
+                "missingText": "ign",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "during",
+                "prefix": "dur",
+                "displayText": "dur_ _ _",
+                "missingText": "ing",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "arts",
+                "prefix": "ar",
+                "displayText": "ar_ _",
+                "missingText": "ts",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-05-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-05-b-m2-ctw-q01-10-p01",
+                "answer": "architecture",
+                "prefix": "archit",
+                "displayText": "archit_ _ _ _ _ _",
+                "missingText": "ecture",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-5b-m2-rap-19",
+      "module": "rap",
+      "title": "Traffic Psychology",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.5B",
+        "occurrenceDate": "2026-05-05",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-05-b-m2-rap-p01",
+          "title": "Traffic Psychology",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Traffic psychology explores how individual differences and social contexts shape driving behavior, often in counterintuitive ways. While traits like impulsivity are frequently linked to risky driving, research shows that this connection is not always straightforward. For instance, impulsive individuals may drive cautiously in familiar environments but exhibit recklessness when faced with novel or stressful situations. Moreover, environmental cues—such as heavy traffic or aggressive drivers—can amplify underlying character traits.",
+              "rawText": "Traffic psychology explores how individual differences and social contexts shape driving behavior, often in counterintuitive ways. ■ While traits like impulsivity are frequently linked to risky driving, research shows that this connection is not always straightforward. ■ For instance, impulsive individuals may drive cautiously in familiar environments but exhibit recklessness when faced with novel or stressful situations. ■ Moreover, environmental cues—such as heavy traffic or aggressive drivers—can amplify underlying character traits. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Traffic psychology explores how individual differences and social contexts shape driving behavior, often in counterintuitive ways."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "While traits like impulsivity are frequently linked to risky driving, research shows that this connection is not always straightforward."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "For instance, impulsive individuals may drive cautiously in familiar environments but exhibit recklessness when faced with novel or stressful situations."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Moreover, environmental cues—such as heavy traffic or aggressive drivers—can amplify underlying character traits."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Social influences further complicate the picture. Young drivers, for example, may engage in riskier maneuvers when accompanied by peers, driven by a desire to impress or conform. However, this effect is not universal. The presence of a vigilant passenger—such as a parent or responsible friend—can counteract impulsive tendencies and promote safer driving. This raises questions about how social roles and expectations modulate behavior.",
+              "rawText": "Social influences further complicate the picture. Young drivers, for example, may engage in riskier maneuvers when accompanied by peers, driven by a desire to impress or conform. However, this effect is not universal. The presence of a vigilant passenger—such as a parent or responsible friend—can counteract impulsive tendencies and promote safer driving. This raises questions about how social roles and expectations modulate behavior.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Social influences further complicate the picture."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Young drivers, for example, may engage in riskier maneuvers when accompanied by peers, driven by a desire to impress or conform."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, this effect is not universal."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "The presence of a vigilant passenger—such as a parent or responsible friend—can counteract impulsive tendencies and promote safer driving."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "This raises questions about how social roles and expectations modulate behavior."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Some researchers argue that focusing too heavily on personality overlooks structural factors like road design or traffic law enforcement, which may exert a stronger influence on safety outcomes. Yet, understanding the psychological underpinnings of driving remains crucial for designing effective interventions. By integrating insights from personality psychology, social dynamics, and environmental design, traffic psychology offers a nuanced framework for improving road safety.",
+              "rawText": "Some researchers argue that focusing too heavily on personality overlooks structural factors like road design or traffic law enforcement, which may exert a stronger influence on safety outcomes. Yet, understanding the psychological underpinnings of driving remains crucial for designing effective interventions. By integrating insights from personality psychology, social dynamics, and environmental design, traffic psychology offers a nuanced framework for improving road safety.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Some researchers argue that focusing too heavily on personality overlooks structural factors like road design or traffic law enforcement, which may exert a stronger influence on safety outcomes."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Yet, understanding the psychological underpinnings of driving remains crucial for designing effective interventions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-05-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "By integrating insights from personality psychology, social dynamics, and environmental design, traffic psychology offers a nuanced framework for improving road safety."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-05-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage mentions all of the following as factors influencing road safety EXCEPT",
+          "rawDisplayText": "11. The passage mentions all of the following as factors influencing road safety EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "social influences"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "personality traits"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "environmental conditions"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "vehicle maintenance"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “vigilant” in the passage is closest in meaning to",
+          "rawDisplayText": "12. The word “vigilant” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "watchful"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "experienced"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "considerate"
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "assertive"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m2-q12-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "Based on the second paragraph, what can be inferred about the role of passengers in promoting safer driving?",
+          "rawDisplayText": "13. Based on the second paragraph, what can be inferred about the role of passengers in promoting safer driving?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "Passengers usually encourage drivers to undertake riskier maneuvers."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "Passengers can influence drivers in a positive way, but this is not always the case."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "Passengers exert a stronger influence on drivers than structural factors do."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "The presence of passengers has no measurable effect on driving behavior."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about structural factors?",
+          "rawDisplayText": "14. What does the passage suggest about structural factors?",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-05-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "They are the main cause of traffic accidents."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "Their importance is debated by researchers."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "They influence younger drivers the most."
+              },
+              {
+                "optionId": "reading-2026-05-05-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "They are the foundation of traffic psychology."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-05-b-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-05-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-05-b-m2-rap-p01",
+            "insertSentence": "These findings suggest that drivers’ behavior is not solely rooted in personality.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-05-b-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-05-b-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p01",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-05-b-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-05-b-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-05-b-m2-rap-p01-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-05-b-m2-rap-p01-p01-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-05-b-m2-q15-anchor-3"
+          }
+        }
+      ]
+    }
+  ]
+}

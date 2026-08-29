@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-1e5fb8b266e062b014792d3c",
+    "module": "rdl",
+    "title": "Internship fair follow-up",
+    "firstSeenDate": "2026-06-10",
+    "firstSeenSourceLabel": "6.10",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "1e5fb8b266e062b014792d3cb651291975f28f9e5fb748955273a0e6ed3d2558",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-10-m1-rdl-07",
+      "logicalItemId": "reading-rdl-1e5fb8b266e062b014792d3c",
+      "sourceKind": "docx",
+      "sourceLabel": "6.10",
+      "occurrenceDate": "2026-06-10",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-018",
+      "title": "Internship fair follow-up",
+      "source": "material-index.json#RDL-018",
+      "sourceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-018/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-018/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01",
+      "logicalItemId": "reading-rdl-1e5fb8b266e062b014792d3c",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is most likely true about Nia's level of interest in BrightPath Analytics?",
+      "rawDisplayText": "25. What is most likely true about Nia's level of interest in BrightPath Analytics?",
+      "payload": {
+        "materialId": "RDL-018",
+        "options": [
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01-opt-1",
+            "optionOrder": 1,
+            "text": "She is unsure whether she wants to continue the application process."
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01-opt-2",
+            "optionOrder": 2,
+            "text": "She is enthusiastic about the opportunity and hopes to move forward."
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01-opt-3",
+            "optionOrder": 3,
+            "text": "She prefers another company whose representative she met at the fair."
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01-opt-4",
+            "optionOrder": 4,
+            "text": "She is only applying because her advisor recommended that she do it."
+          }
+        ],
+        "correctOptionId": "reading-rdl-1e5fb8b266e062b014792d3c-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02",
+      "logicalItemId": "reading-rdl-1e5fb8b266e062b014792d3c",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "According to her email, Nia gained skills that will help her succeed as an intern at BrightPath Analytics from",
+      "rawDisplayText": "26. According to her email, Nia gained skills that will help her succeed as an intern at BrightPath Analytics from",
+      "payload": {
+        "materialId": "RDL-018",
+        "options": [
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02-opt-1",
+            "optionOrder": 1,
+            "text": "hardware design case studies that she has done"
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02-opt-2",
+            "optionOrder": 2,
+            "text": "creative writing classes that she has taken"
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02-opt-3",
+            "optionOrder": 3,
+            "text": "her major subject and minor subject coursework"
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02-opt-4",
+            "optionOrder": 4,
+            "text": "her previous work experience in marketing"
+          }
+        ],
+        "correctOptionId": "reading-rdl-1e5fb8b266e062b014792d3c-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03",
+      "logicalItemId": "reading-rdl-1e5fb8b266e062b014792d3c",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Nia expects which of the following to be a part of the application process?",
+      "rawDisplayText": "27. Nia expects which of the following to be a part of the application process?",
+      "payload": {
+        "materialId": "RDL-018",
+        "options": [
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03-opt-1",
+            "optionOrder": 1,
+            "text": "An interview at BrightPath Analytics headquarters"
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03-opt-2",
+            "optionOrder": 2,
+            "text": "The completion of a brief screening exam"
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The successful completion of a trial work period"
+          },
+          {
+            "optionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03-opt-4",
+            "optionOrder": 4,
+            "text": "The submission of a recommendation letter"
+          }
+        ],
+        "correctOptionId": "reading-rdl-1e5fb8b266e062b014792d3c-q03-opt-4"
+      }
+    }
+  ]
+}

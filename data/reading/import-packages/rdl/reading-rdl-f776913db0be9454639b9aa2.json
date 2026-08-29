@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-f776913db0be9454639b9aa2",
+    "module": "rdl",
+    "title": "Frankson Library Renovation and Temporary Relocation",
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20A",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "f776913db0be9454639b9aa2acf7ccf9c296bdb730477cb6ce177e81753124a0",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-f776913db0be9454639b9aa2",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20A",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-f776913db0be9454639b9aa2-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-f776913db0be9454639b9aa2-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-f776913db0be9454639b9aa2-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-041",
+      "title": "Frankson Library Renovation and Temporary Relocation",
+      "source": "material-index.json#RDL-041",
+      "sourceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-041/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-041/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-f776913db0be9454639b9aa2-q01",
+      "logicalItemId": "reading-rdl-f776913db0be9454639b9aa2",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Where can students check out and return books during the renovation?",
+      "rawDisplayText": "23. Where can students check out and return books during the renovation?",
+      "payload": {
+        "materialId": "RDL-041",
+        "options": [
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q01-opt-1",
+            "optionOrder": 1,
+            "text": "In the Main Building"
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q01-opt-2",
+            "optionOrder": 2,
+            "text": "In the Meyer Student Union Building"
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q01-opt-3",
+            "optionOrder": 3,
+            "text": "In the Frankson Library"
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q01-opt-4",
+            "optionOrder": 4,
+            "text": "On the Main Quad"
+          }
+        ],
+        "correctOptionId": "reading-rdl-f776913db0be9454639b9aa2-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-f776913db0be9454639b9aa2-q02",
+      "logicalItemId": "reading-rdl-f776913db0be9454639b9aa2",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What does the notice imply about the university’s digital resources?",
+      "rawDisplayText": "24. What does the notice imply about the university’s digital resources?",
+      "payload": {
+        "materialId": "RDL-041",
+        "options": [
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They can be accessed only during the temporary library’s operating hours."
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They may compensate for reduced convenience during the renovation."
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They were developed specifically in response to the renovation project."
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They will be accessible only to students who register through the online portal."
+          }
+        ],
+        "correctOptionId": "reading-rdl-f776913db0be9454639b9aa2-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-f776913db0be9454639b9aa2-q03",
+      "logicalItemId": "reading-rdl-f776913db0be9454639b9aa2",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What can be inferred from the notice about the Meyer Student Union Building?",
+      "rawDisplayText": "25. What can be inferred from the notice about the Meyer Student Union Building?",
+      "payload": {
+        "materialId": "RDL-041",
+        "options": [
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It is not close to the university’s Main Building."
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It is the only campus building large enough to house library services."
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It is not within easy walking distance of the Main Quad."
+          },
+          {
+            "optionId": "reading-rdl-f776913db0be9454639b9aa2-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It does not normally offer study spaces for students."
+          }
+        ],
+        "correctOptionId": "reading-rdl-f776913db0be9454639b9aa2-q03-opt-3"
+      }
+    }
+  ]
+}

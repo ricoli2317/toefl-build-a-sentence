@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-32f6add08532967d45a47746",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-03",
+    "firstSeenSourceLabel": "5.3A",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "32f6add08532967d45a477464c3dc066151ab38d9ecd46837c3b1adb80a97967",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-3a-m1-ctw-01",
+      "logicalItemId": "reading-ctw-32f6add08532967d45a47746",
+      "sourceKind": "docx",
+      "sourceLabel": "5.3A",
+      "occurrenceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-32f6add08532967d45a47746-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-32f6add08532967d45a47746-q01",
+      "logicalItemId": "reading-ctw-32f6add08532967d45a47746",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Archaeological excavations often reveal artifacts such as pottery, tools, and architectural structures, which can suggest cultural practices and societal norms. Advanced methods, including DNA analysis, radiocarbon dating, a_ _ stratigraphy, al_ _ _ archaeologists t_ trace hu_ _ _ migration patt_ _ _ _ and cons_ _ _ _ _ chronologies. How_ _ _ _, interpreting t_ _ findings requ_ _ _ _ careful consid_ _ _ _ _ _ _ of context and limitations, as the preservation and availability of artifacts can significantly influence conclusions. Thus, archaeology remains a vital discipline for understanding the complexities of human history and cultural development across millennia.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Archaeological excavations often reveal artifacts such as pottery, tools, and architectural structures, which can suggest cultural practices and societal norms. Advanced methods, including DNA analysis, radiocarbon dating, a_ _ stratigraphy, al_ _ _ archaeologists t_ trace hu_ _ _ migration patt_ _ _ _ and cons_ _ _ _ _ chronologies. How_ _ _ _, interpreting t_ _ findings requ_ _ _ _ careful consid_ _ _ _ _ _ _ of context and limitations, as the preservation and availability of artifacts can significantly influence conclusions. Thus, archaeology remains a vital discipline for understanding the complexities of human history and cultural development across millennia.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Archaeological excavations often reveal artifacts such as pottery, tools, and architectural structures, which can suggest cultural practices and societal norms. Advanced methods, including DNA analysis, radiocarbon dating, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " stratigraphy, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " archaeologists "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " trace "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " migration "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " chronologies. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ", interpreting "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " findings "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " careful "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " of context and limitations, as the preservation and availability of artifacts can significantly influence conclusions. Thus, archaeology remains a vital discipline for understanding the complexities of human history and cultural development across millennia."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "allow",
+            "prefix": "al",
+            "displayText": "al_ _ _",
+            "missingText": "low",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "human",
+            "prefix": "hu",
+            "displayText": "hu_ _ _",
+            "missingText": "man",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "patterns",
+            "prefix": "patt",
+            "displayText": "patt_ _ _ _",
+            "missingText": "erns",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "construct",
+            "prefix": "cons",
+            "displayText": "cons_ _ _ _ _",
+            "missingText": "truct",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "However",
+            "prefix": "How",
+            "displayText": "How_ _ _ _",
+            "missingText": "ever",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "requires",
+            "prefix": "requ",
+            "displayText": "requ_ _ _ _",
+            "missingText": "ires",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-32f6add08532967d45a47746-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-32f6add08532967d45a47746-q01-p01",
+            "answer": "consideration",
+            "prefix": "consid",
+            "displayText": "consid_ _ _ _ _ _ _",
+            "missingText": "eration",
+            "missingLength": 7
+          }
+        ]
+      }
+    }
+  ]
+}

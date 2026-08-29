@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+    "module": "rap",
+    "title": "Evolutionary Trends in Graphic Design",
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1C",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "d27de865cadb77d67537807544ea93a451da7b8c2ce8bc49510776a11977cb04",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1c-m1-rap-13",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1C",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1C_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-17-m1-rap-13",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "sourceKind": "docx",
+      "sourceLabel": "6.17",
+      "occurrenceDate": "2026-06-17",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.17_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-d27de865cadb77d675378075-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-d27de865cadb77d675378075-passage-01",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "title": "Evolutionary Trends in Graphic Design",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Graphic design has transformed repeatedly throughout history, influenced by both cultural shifts and technological advancements. In Europe, during the Middle Ages (the fifth to fifteenth centuries), the creation of intricate manuscripts was predominant. The advent of the printing press in the fifteenth century altered these dynamics, facilitating mass production and broadening public access to designed materials. Such technological shifts not only changed the way art was produced but also how it was perceived.",
+          "rawText": "Graphic design has transformed repeatedly throughout history, influenced by both cultural shifts and technological advancements. In Europe, during the Middle Ages (the fifth to fifteenth centuries), the creation of intricate manuscripts was predominant. The advent of the printing press in the fifteenth century altered these dynamics, facilitating mass production and broadening public access to designed materials. Such technological shifts not only changed the way art was produced but also how it was perceived.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Graphic design has transformed repeatedly throughout history, influenced by both cultural shifts and technological advancements."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "In Europe, during the Middle Ages (the fifth to fifteenth centuries), the creation of intricate manuscripts was predominant."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "The advent of the printing press in the fifteenth century altered these dynamics, facilitating mass production and broadening public access to designed materials."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Such technological shifts not only changed the way art was produced but also how it was perceived."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "By the mid-twentieth century, Swiss design emerged as a response to the chaotic visual landscape, introducing principles of minimalism and functionality. Heavily influenced by the Bauhaus movement, designers like Josef Müller-Brockmann advocated for simplicity and rationality. Their grid-based approach brought order and readability to what often seemed to be overwhelming visuals. Some critics argue that the rigid structure, while effective, limited expressive possibilities and emotional resonance in design.",
+          "rawText": "By the mid-twentieth century, Swiss design emerged as a response to the chaotic visual landscape, introducing principles of minimalism and functionality. ■ Heavily influenced by the Bauhaus movement, designers like Josef Müller-Brockmann advocated for simplicity and rationality. ■ Their grid-based approach brought order and readability to what often seemed to be overwhelming visuals. ■ Some critics argue that the rigid structure, while effective, limited expressive possibilities and emotional resonance in design. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "By the mid-twentieth century, Swiss design emerged as a response to the chaotic visual landscape, introducing principles of minimalism and functionality."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Heavily influenced by the Bauhaus movement, designers like Josef Müller-Brockmann advocated for simplicity and rationality."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Their grid-based approach brought order and readability to what often seemed to be overwhelming visuals."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Some critics argue that the rigid structure, while effective, limited expressive possibilities and emotional resonance in design."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Today, graphic design stands at the intersection of tradition and innovation. While digital tools democratize access and encourage experimentation, designers grapple with preserving artistic integrity. The challenge lies in blending the precision of technology with the warmth of human creativity. Thus, graphic design continues to evolve, reflecting broader cultural debates about art and technology.",
+          "rawText": "Today, graphic design stands at the intersection of tradition and innovation. While digital tools democratize access and encourage experimentation, designers grapple with preserving artistic integrity. The challenge lies in blending the precision of technology with the warmth of human creativity. Thus, graphic design continues to evolve, reflecting broader cultural debates about art and technology.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Today, graphic design stands at the intersection of tradition and innovation."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "While digital tools democratize access and encourage experimentation, designers grapple with preserving artistic integrity."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "The challenge lies in blending the precision of technology with the warmth of human creativity."
+            },
+            {
+              "sentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Thus, graphic design continues to evolve, reflecting broader cultural debates about art and technology."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q01",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about intricate manuscripts during the Middle Ages?",
+      "rawDisplayText": "31. What can be inferred about intricate manuscripts during the Middle Ages?",
+      "payload": {
+        "passageId": "reading-rap-d27de865cadb77d675378075-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q01-opt-1",
+            "optionOrder": 1,
+            "text": "They were individually made."
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q01-opt-2",
+            "optionOrder": 2,
+            "text": "They were produced using the printing press."
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q01-opt-3",
+            "optionOrder": 3,
+            "text": "They were widely available to the general public."
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q01-opt-4",
+            "optionOrder": 4,
+            "text": "They depicted mostly landscapes."
+          }
+        ],
+        "correctOptionId": "reading-rap-d27de865cadb77d675378075-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q02",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The phrase \"advocated for\" in the passage is closest in meaning to",
+      "rawDisplayText": "32. The phrase \"advocated for\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-d27de865cadb77d675378075-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q02-opt-1",
+            "optionOrder": 1,
+            "text": "mentioned"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q02-opt-2",
+            "optionOrder": 2,
+            "text": "promoted"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q02-opt-3",
+            "optionOrder": 3,
+            "text": "debated"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q02-opt-4",
+            "optionOrder": 4,
+            "text": "inspired"
+          }
+        ],
+        "correctOptionId": "reading-rap-d27de865cadb77d675378075-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q03",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author discuss the \"grid-based approach\"?",
+      "rawDisplayText": "33. Why does the author discuss the \"grid-based approach\"?",
+      "payload": {
+        "passageId": "reading-rap-d27de865cadb77d675378075-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To argue that the approach should be adopted more widely"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To question the relevance of the approach in modern design"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To show how the principles of minimalism and functionality were used by Swiss designers"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To indicate how Swiss designers differed from the majority of Bauhaus designers"
+          }
+        ],
+        "correctOptionId": "reading-rap-d27de865cadb77d675378075-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q04",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "It can be inferred that many of today's graphic designers are concerned that digital tools",
+      "rawDisplayText": "34. It can be inferred that many of today's graphic designers are concerned that digital tools",
+      "payload": {
+        "passageId": "reading-rap-d27de865cadb77d675378075-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q04-opt-1",
+            "optionOrder": 1,
+            "text": "undermine the democratization of the arts"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q04-opt-2",
+            "optionOrder": 2,
+            "text": "are not responsive to public debates in the arts"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q04-opt-3",
+            "optionOrder": 3,
+            "text": "are not precise enough to be useful in the design process"
+          },
+          {
+            "optionId": "reading-rap-d27de865cadb77d675378075-q04-opt-4",
+            "optionOrder": 4,
+            "text": "do not always reflect the warmth of human creativity"
+          }
+        ],
+        "correctOptionId": "reading-rap-d27de865cadb77d675378075-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q05",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-d27de865cadb77d675378075-passage-01",
+        "insertSentence": "However, this clarity sometimes came at the cost of creativity.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-d27de865cadb77d675378075-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s01"
+          },
+          {
+            "anchorId": "reading-rap-d27de865cadb77d675378075-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s02"
+          },
+          {
+            "anchorId": "reading-rap-d27de865cadb77d675378075-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s03"
+          },
+          {
+            "anchorId": "reading-rap-d27de865cadb77d675378075-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-d27de865cadb77d675378075-passage-01-p02-s04"
+          }
+        ],
+        "correctAnchorId": "reading-rap-d27de865cadb77d675378075-q05-anchor-3"
+      }
+    }
+  ]
+}

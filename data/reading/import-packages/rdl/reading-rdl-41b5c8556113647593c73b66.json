@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-41b5c8556113647593c73b66",
+    "module": "rdl",
+    "title": "GoodBooks shipment",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10B",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "41b5c8556113647593c73b668b04fc8b7fc1716e41311f1ef5a8421605443b5c",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10b-m1-rdl-03",
+      "logicalItemId": "reading-rdl-41b5c8556113647593c73b66",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10B",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-41b5c8556113647593c73b66-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-41b5c8556113647593c73b66-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-015",
+      "title": "GoodBooks shipment",
+      "source": "material-index.json#RDL-015",
+      "sourceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-015/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-015/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-41b5c8556113647593c73b66-q01",
+      "logicalItemId": "reading-rdl-41b5c8556113647593c73b66",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What will Mr. Brown receive for free?",
+      "rawDisplayText": "21. What will Mr. Brown receive for free?",
+      "payload": {
+        "materialId": "RDL-015",
+        "options": [
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q01-opt-1",
+            "optionOrder": 1,
+            "text": "A bookmark"
+          },
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q01-opt-2",
+            "optionOrder": 2,
+            "text": "A newsletter"
+          },
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q01-opt-3",
+            "optionOrder": 3,
+            "text": "A book"
+          },
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q01-opt-4",
+            "optionOrder": 4,
+            "text": "A catalog"
+          }
+        ],
+        "correctOptionId": "reading-rdl-41b5c8556113647593c73b66-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-41b5c8556113647593c73b66-q02",
+      "logicalItemId": "reading-rdl-41b5c8556113647593c73b66",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "On what basis did GoodBooks make a decision?",
+      "rawDisplayText": "22. On what basis did GoodBooks make a decision?",
+      "payload": {
+        "materialId": "RDL-015",
+        "options": [
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q02-opt-1",
+            "optionOrder": 1,
+            "text": "A purchasing history"
+          },
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q02-opt-2",
+            "optionOrder": 2,
+            "text": "A limited budget"
+          },
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q02-opt-3",
+            "optionOrder": 3,
+            "text": "A reduced inventory"
+          },
+          {
+            "optionId": "reading-rdl-41b5c8556113647593c73b66-q02-opt-4",
+            "optionOrder": 4,
+            "text": "A completed survey"
+          }
+        ],
+        "correctOptionId": "reading-rdl-41b5c8556113647593c73b66-q02-opt-1"
+      }
+    }
+  ]
+}

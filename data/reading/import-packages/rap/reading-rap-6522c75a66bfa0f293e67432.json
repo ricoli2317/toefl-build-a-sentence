@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+    "module": "rap",
+    "title": "The Power of Music",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "6522c75a66bfa0f293e6743274b47936bd0af53bbd9ef1b28b8703f2e6106a8b",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10b-m2-rap-19",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10B",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-6522c75a66bfa0f293e67432-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-6522c75a66bfa0f293e67432-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-6522c75a66bfa0f293e67432-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-6522c75a66bfa0f293e67432-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-6522c75a66bfa0f293e67432-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-6522c75a66bfa0f293e67432-passage-01",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "title": "The Power of Music",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Music is often hailed as a universal language. Philosophers and neuroscientists alike have explored music’s power to convey emotions without words. While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions. This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression.",
+          "rawText": "Music is often hailed as a universal language. Philosophers and neuroscientists alike have explored music’s power to convey emotions without words. While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions. This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Music is often hailed as a universal language."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Philosophers and neuroscientists alike have explored music’s power to convey emotions without words."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Historically, figures like the ancient Greek philosopher Aristotle argued for music’s ethical influence, positing that different musical modes could either promote virtue or incite vice. Modern research, however, leans toward music’s role in emotional regulation rather than moral alteration. Researchers have investigated how music interacts with human psychology beyond mere enjoyment. For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music’s therapeutic potential.",
+          "rawText": "Historically, figures like the ancient Greek philosopher Aristotle argued for music’s ethical influence, positing that different musical modes could either promote virtue or incite vice. Modern research, however, leans toward music’s role in emotional regulation rather than moral alteration. Researchers have investigated how music interacts with human psychology beyond mere enjoyment. For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music’s therapeutic potential.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Historically, figures like the ancient Greek philosopher Aristotle argued for music’s ethical influence, positing that different musical modes could either promote virtue or incite vice."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Modern research, however, leans toward music’s role in emotional regulation rather than moral alteration."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Researchers have investigated how music interacts with human psychology beyond mere enjoyment."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music’s therapeutic potential."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts. Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression. This universality has sparked inquiries into music’s evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development.",
+          "rawText": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts. Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression. This universality has sparked inquiries into music’s evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression."
+            },
+            {
+              "sentenceId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "This universality has sparked inquiries into music’s evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q01",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “interplay” in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word “interplay” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-6522c75a66bfa0f293e67432-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q01-opt-1",
+            "optionOrder": 1,
+            "text": "interaction"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q01-opt-2",
+            "optionOrder": 2,
+            "text": "interpretation"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q01-opt-3",
+            "optionOrder": 3,
+            "text": "interval"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q01-opt-4",
+            "optionOrder": 4,
+            "text": "intervention"
+          }
+        ],
+        "correctOptionId": "reading-rap-6522c75a66bfa0f293e67432-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q02",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "It can be inferred that music is similar to language in that music",
+      "rawDisplayText": "12. It can be inferred that music is similar to language in that music",
+      "payload": {
+        "passageId": "reading-rap-6522c75a66bfa0f293e67432-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q02-opt-1",
+            "optionOrder": 1,
+            "text": "matches the precision of written language"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q02-opt-2",
+            "optionOrder": 2,
+            "text": "engages only those areas of the brain that language engages"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q02-opt-3",
+            "optionOrder": 3,
+            "text": "has rules that are very similar to the rules of spoken language"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q02-opt-4",
+            "optionOrder": 4,
+            "text": "is a medium of expression that conveys complex emotions"
+          }
+        ],
+        "correctOptionId": "reading-rap-6522c75a66bfa0f293e67432-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q03",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention ancient Greek philosopher Aristotle?",
+      "rawDisplayText": "13. Why does the author mention ancient Greek philosopher Aristotle?",
+      "payload": {
+        "passageId": "reading-rap-6522c75a66bfa0f293e67432-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To point out that music was once thought to have a significant moral influence"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To support the point that music is a powerful tool for emotional regulation"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To suggest that ancient philosophers had a more nuanced understanding of music than modern researchers do"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To identify the person who founded the academic field known as music theory"
+          }
+        ],
+        "correctOptionId": "reading-rap-6522c75a66bfa0f293e67432-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q04",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “patients before surgery”?",
+      "rawDisplayText": "14. Why does the author mention “patients before surgery”?",
+      "payload": {
+        "passageId": "reading-rap-6522c75a66bfa0f293e67432-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To demonstrate that the ancient Greek understanding of music was incorrect"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To argue that emotional states affect the enjoyment of music"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To provide an example of how music regulates emotions"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To suggest that slow-tempo classical music can lead to anxiety"
+          }
+        ],
+        "correctOptionId": "reading-rap-6522c75a66bfa0f293e67432-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q05",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, the existence of an innate human aptitude for musical expression suggests that",
+      "rawDisplayText": "15. According to the passage, the existence of an innate human aptitude for musical expression suggests that",
+      "payload": {
+        "passageId": "reading-rap-6522c75a66bfa0f293e67432-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q05-opt-1",
+            "optionOrder": 1,
+            "text": "music should only be seen as a form of art"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q05-opt-2",
+            "optionOrder": 2,
+            "text": "music may have played an important role in human development"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q05-opt-3",
+            "optionOrder": 3,
+            "text": "music that expresses joy is more universally appreciated than music that expresses sorrow"
+          },
+          {
+            "optionId": "reading-rap-6522c75a66bfa0f293e67432-q05-opt-4",
+            "optionOrder": 4,
+            "text": "music is not understood in the same way across different cultures"
+          }
+        ],
+        "correctOptionId": "reading-rap-6522c75a66bfa0f293e67432-q05-opt-2"
+      }
+    }
+  ]
+}

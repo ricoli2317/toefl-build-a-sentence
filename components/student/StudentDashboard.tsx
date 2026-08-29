@@ -5,7 +5,6 @@ import Image from "next/image";
 import {
   ArrowRight,
   BookOpen,
-  BookText,
   CalendarCheck,
   CalendarDays,
   FileText,
@@ -16,6 +15,7 @@ import {
   Puzzle,
   type LucideIcon
 } from "lucide-react";
+import { CompleteTheWordsIcon } from "@/components/icons/CompleteTheWordsIcon";
 import {
   STUDENT_DASHBOARD_SUMMARY_CACHE_KEY,
   useStudentCachedData,
@@ -30,8 +30,10 @@ import {
 import { WRITING_TASK_CONFIG } from "@/lib/writing";
 import type {
   StudentDashboardDraftSummary,
+  StudentDashboardReadingProgressSummary,
   StudentDashboardSummary
 } from "@/lib/studentDashboardSummary";
+import type { ReadingModule } from "@/lib/reading/types";
 
 export function StudentDashboard() {
   const state = useStudentCachedData<StudentDashboardSummary>(
@@ -83,6 +85,7 @@ export function StudentDashboard() {
                 ? undefined
                 : `本月 ${summary?.buildSentence.currentMonthSetCount ?? 0} 套`
             }
+            theme="writing"
             title="Build a Sentence"
           />
           <WritingHomeCard draft={summary?.drafts.email ?? null} loading={state.loading} taskType="email" />
@@ -96,9 +99,9 @@ export function StudentDashboard() {
 
       <DashboardSection title="阅读练习" tone="blue">
         <div className="grid gap-4 lg:grid-cols-3">
-          <ReadingHomeCard description="填词题练习" icon={BookText} title="Complete the Words" />
-          <ReadingHomeCard description="日常生活阅读练习" icon={FileText} title="Read in Daily Life" />
-          <ReadingHomeCard description="学术文章阅读练习" icon={BookOpen} title="Read an Academic Passage" />
+          <ReadingHomeCard loading={state.loading} progress={summary?.readingProgress.ctw} taskType="ctw" />
+          <ReadingHomeCard loading={state.loading} progress={summary?.readingProgress.rdl} taskType="rdl" />
+          <ReadingHomeCard loading={state.loading} progress={summary?.readingProgress.rap} taskType="rap" />
         </div>
       </DashboardSection>
 
@@ -146,7 +149,64 @@ function WritingHomeCard({
             : "暂无草稿"
       }
       secondaryMeta={draft ? `${draft.wordCount} words · 已保存` : undefined}
+      theme="writing"
       title={config.label}
+    />
+  );
+}
+
+const READING_HOME_CARD_CONFIG: Record<
+  ReadingModule,
+  { description: string; href: string; icon: PracticeHomeCardIcon; title: string }
+> = {
+  ctw: {
+    description: "填词题练习",
+    href: STUDENT_ROUTES.readingCtw,
+    icon: CompleteTheWordsIcon,
+    title: "Complete the Words"
+  },
+  rdl: {
+    description: "日常生活阅读练习",
+    href: STUDENT_ROUTES.readingRdl,
+    icon: FileText,
+    title: "Read in Daily Life"
+  },
+  rap: {
+    description: "学术文章阅读练习",
+    href: STUDENT_ROUTES.readingRap,
+    icon: BookOpen,
+    title: "Read an Academic Passage"
+  }
+};
+
+function ReadingHomeCard({
+  loading,
+  progress,
+  taskType
+}: {
+  loading: boolean;
+  progress?: StudentDashboardReadingProgressSummary;
+  taskType: ReadingModule;
+}) {
+  const config = READING_HOME_CARD_CONFIG[taskType];
+  const resumableAttemptCount = progress?.resumableAttemptCount ?? 0;
+  const canResume = resumableAttemptCount > 0;
+  return (
+    <PracticeHomeCard
+      actionLabel={canResume ? "继续练习" : "开始练习"}
+      description={config.description}
+      href={config.href}
+      icon={config.icon}
+      meta={
+        loading
+          ? "正在加载进度..."
+          : canResume
+            ? `有 ${resumableAttemptCount} 项未完成练习`
+            : "暂无未完成练习"
+      }
+      secondaryMeta={canResume ? "最近进度已保存" : undefined}
+      theme="reading"
+      title={config.title}
     />
   );
 }
@@ -158,24 +218,27 @@ function PracticeHomeCard({
   icon: Icon,
   meta,
   secondaryMeta,
+  theme,
   title
 }: {
   actionLabel: string;
   description: string;
   href: string;
-  icon: LucideIcon;
+  icon: PracticeHomeCardIcon;
   meta: string;
   secondaryMeta?: string;
+  theme: "reading" | "writing";
   title: string;
 }) {
+  const reading = theme === "reading";
   return (
-    <article className="flex min-h-[178px] flex-col rounded-2xl border border-student-primary-border bg-white p-4 shadow-[0_4px_18px_rgba(60,47,119,0.055)]">
+    <article className={`flex min-h-[178px] flex-col rounded-2xl border bg-white p-4 ${reading ? "border-blue-100 shadow-[0_4px_18px_rgba(52,127,220,0.07)]" : "border-student-primary-border shadow-[0_4px_18px_rgba(60,47,119,0.055)]"}`}>
       <div className="flex items-center gap-3">
-        <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
+        <span className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${reading ? "bg-blue-50 text-[#347fdc]" : "bg-student-primary-soft text-student-primary"}`}>
           <Icon aria-hidden="true" size={25} strokeWidth={1.9} />
         </span>
         <div>
-          <h3 className="text-lg font-bold text-student-primary">{title}</h3>
+          <h3 className={`text-lg font-bold ${reading ? "text-[#347fdc]" : "text-student-primary"}`}>{title}</h3>
           <p className="mt-1 text-sm text-student-text">{description}</p>
         </div>
       </div>
@@ -185,7 +248,9 @@ function PracticeHomeCard({
         {secondaryMeta ? <p>{secondaryMeta}</p> : null}
       </div>
       <Link
-        className="student-button-primary mt-2 min-h-[42px] w-full py-1.5"
+        className={reading
+          ? "mt-2 inline-flex min-h-[42px] w-full items-center justify-center gap-2 rounded-xl bg-[#347fdc] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2d70c5]"
+          : "student-button-primary mt-2 min-h-[42px] w-full py-1.5"}
         href={href}
         onClick={() => beginStudentNavigationTrace(href)}
       >
@@ -196,30 +261,12 @@ function PracticeHomeCard({
   );
 }
 
-function ReadingHomeCard({
-  description,
-  icon: Icon,
-  title
-}: {
-  description: string;
-  icon: LucideIcon;
-  title: string;
-}) {
-  return (
-    <article className="flex min-h-[132px] flex-col rounded-2xl border border-[#d7e6fb] bg-white px-4 py-3 opacity-75">
-      <div className="flex items-center gap-3">
-        <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#edf5ff] text-[#4b8fe8]">
-          <Icon aria-hidden="true" size={25} strokeWidth={1.9} />
-        </span>
-        <div>
-          <h3 className="text-lg font-bold text-[#347fdc]">{title}</h3>
-          <p className="mt-1 text-sm text-student-text">{description}</p>
-        </div>
-      </div>
-      <button className="mt-auto min-h-9 rounded-[10px] bg-[#edf5ff] text-sm font-semibold text-[#4b8fe8]" disabled type="button">即将上线</button>
-    </article>
-  );
-}
+type PracticeHomeCardIcon = React.ComponentType<{
+  "aria-hidden"?: boolean | "true" | "false";
+  className?: string;
+  size?: number | string;
+  strokeWidth?: number | string;
+}>;
 
 function DashboardSection({
   children,

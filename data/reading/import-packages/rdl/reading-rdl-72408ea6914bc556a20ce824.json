@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-72408ea6914bc556a20ce824",
+    "module": "rdl",
+    "title": "Blackout Brings Creativity to Finals Week",
+    "firstSeenDate": "2026-06-30",
+    "firstSeenSourceLabel": "6.30A",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "72408ea6914bc556a20ce8246e7fe704c3242decf6e662b860cb89e3acab781b",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-30a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-72408ea6914bc556a20ce824",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30A",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-72408ea6914bc556a20ce824-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-72408ea6914bc556a20ce824-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-72408ea6914bc556a20ce824-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-081",
+      "title": "Blackout Brings Creativity to Finals Week",
+      "source": "material-index.json#RDL-081",
+      "sourceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-081/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-081/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-72408ea6914bc556a20ce824-q01",
+      "logicalItemId": "reading-rdl-72408ea6914bc556a20ce824",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main topic of the article?",
+      "rawDisplayText": "23. What is the main topic of the article?",
+      "payload": {
+        "materialId": "RDL-081",
+        "options": [
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q01-opt-1",
+            "optionOrder": 1,
+            "text": "A new energy-saving initiative"
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q01-opt-2",
+            "optionOrder": 2,
+            "text": "A community's resilience during a disruption"
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q01-opt-3",
+            "optionOrder": 3,
+            "text": "A musical event on campus"
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q01-opt-4",
+            "optionOrder": 4,
+            "text": "An announcement about a technology upgrade"
+          }
+        ],
+        "correctOptionId": "reading-rdl-72408ea6914bc556a20ce824-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-72408ea6914bc556a20ce824-q02",
+      "logicalItemId": "reading-rdl-72408ea6914bc556a20ce824",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is indicated about the outage?",
+      "rawDisplayText": "24. What is indicated about the outage?",
+      "payload": {
+        "materialId": "RDL-081",
+        "options": [
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It led to the cancellation of final exams."
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It was planned for routine maintenance."
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It was caused by an equipment failure."
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It was limited to a single dormitory."
+          }
+        ],
+        "correctOptionId": "reading-rdl-72408ea6914bc556a20ce824-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-72408ea6914bc556a20ce824-q03",
+      "logicalItemId": "reading-rdl-72408ea6914bc556a20ce824",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "How might student behavior during the blackout be best described?",
+      "rawDisplayText": "25. How might student behavior during the blackout be best described?",
+      "payload": {
+        "materialId": "RDL-081",
+        "options": [
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q03-opt-1",
+            "optionOrder": 1,
+            "text": "They largely abandoned their studies."
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q03-opt-2",
+            "optionOrder": 2,
+            "text": "They found creative solutions and even enjoyed themselves."
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q03-opt-3",
+            "optionOrder": 3,
+            "text": "They posted angry comments on social media."
+          },
+          {
+            "optionId": "reading-rdl-72408ea6914bc556a20ce824-q03-opt-4",
+            "optionOrder": 4,
+            "text": "They left campus in large numbers."
+          }
+        ],
+        "correctOptionId": "reading-rdl-72408ea6914bc556a20ce824-q03-opt-2"
+      }
+    }
+  ]
+}

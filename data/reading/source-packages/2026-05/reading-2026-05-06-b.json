@@ -1,0 +1,1783 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.6B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The atmosphere is a dynamic and complex system, shaped by countless interacting variables such as solar radiation, air pressure, and moisture levels. Meteorologists use advanced mod_ _ _ to simu_ _ _ _ these intera_ _ _ _ _ _, but predi_ _ _ _ _ weather rem_ _ _ _ a chal_ _ _ _ _ due t_ the inher_ _ _ _ _ chaotic nat_ _ _ of atmos_ _ _ _ _ _ processes. Small changes in initial conditions can lead to vastly different outcomes, making long-term forecasts especially uncertain. Despite technological progress, the atmosphere’s unpredictability continues to pose limits to accurate and consistent weather prediction.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The atmosphere is a dynamic and complex system, shaped by countless interacting variables such as solar radiation, air pressure, and moisture levels. Meteorologists use advanced mod_ _ _ to simu_ _ _ _ these intera_ _ _ _ _ _, but predi_ _ _ _ _ weather rem_ _ _ _ a chal_ _ _ _ _ due t_ the inher_ _ _ _ _ chaotic nat_ _ _ of atmos_ _ _ _ _ _ processes. Small changes in initial conditions can lead to vastly different outcomes, making long-term forecasts especially uncertain. Despite technological progress, the atmosphere’s unpredictability continues to pose limits to accurate and consistent weather prediction.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The atmosphere is a dynamic and complex system, shaped by countless interacting variables such as solar radiation, air pressure, and moisture levels. Meteorologists use advanced "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " these "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", but "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " weather "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " due "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " chaotic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " processes. Small changes in initial conditions can lead to vastly different outcomes, making long-term forecasts especially uncertain. Despite technological progress, the atmosphere’s unpredictability continues to pose limits to accurate and consistent weather prediction."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "models",
+                "prefix": "mod",
+                "displayText": "mod_ _ _",
+                "missingText": "els",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "simulate",
+                "prefix": "simu",
+                "displayText": "simu_ _ _ _",
+                "missingText": "late",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "interactions",
+                "prefix": "intera",
+                "displayText": "intera_ _ _ _ _ _",
+                "missingText": "ctions",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "predicting",
+                "prefix": "predi",
+                "displayText": "predi_ _ _ _ _",
+                "missingText": "cting",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "remains",
+                "prefix": "rem",
+                "displayText": "rem_ _ _ _",
+                "missingText": "ains",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "challenge",
+                "prefix": "chal",
+                "displayText": "chal_ _ _ _ _",
+                "missingText": "lenge",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "inherently",
+                "prefix": "inher",
+                "displayText": "inher_ _ _ _ _",
+                "missingText": "ently",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "nature",
+                "prefix": "nat",
+                "displayText": "nat_ _ _",
+                "missingText": "ure",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q01-10-p01",
+                "answer": "atmospheric",
+                "prefix": "atmos",
+                "displayText": "atmos_ _ _ _ _ _",
+                "missingText": "pheric",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The study of geological formations provides insights into Earth’s dynamic processes. Metamorphic rocks are rocks that have been transformed by heat and pressure. Sedimentary rocks fo_ _ as lay_ _ _ of mate_ _ _ _ build u_ over ti_ _ and a_ _ eventually pre_ _ _ _ and fu_ _ _ together t_ create so_ _ _ rock. The strata inside these formations serve as historical records of environmental conditions, revealing changes in climate, sea levels, and biological evolution. Analyzing rocks allows geologists to reconstruct past geological events.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "The study of geological formations provides insights into Earth’s dynamic processes. Metamorphic rocks are rocks that have been transformed by heat and pressure. Sedimentary rocks fo_ _ as lay_ _ _ of mate_ _ _ _ build u_ over ti_ _ and a_ _ eventually pre_ _ _ _ and fu_ _ _ together t_ create so_ _ _ rock. The strata inside these formations serve as historical records of environmental conditions, revealing changes in climate, sea levels, and biological evolution. Analyzing rocks allows geologists to reconstruct past geological events.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The study of geological formations provides insights into Earth’s dynamic processes. Metamorphic rocks are rocks that have been transformed by heat and pressure. Sedimentary rocks "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " as "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " build "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " over "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " eventually "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " together "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " create "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " rock. The strata inside these formations serve as historical records of environmental conditions, revealing changes in climate, sea levels, and biological evolution. Analyzing rocks allows geologists to reconstruct past geological events."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "form",
+                "prefix": "fo",
+                "displayText": "fo_ _",
+                "missingText": "rm",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "layers",
+                "prefix": "lay",
+                "displayText": "lay_ _ _",
+                "missingText": "ers",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "material",
+                "prefix": "mate",
+                "displayText": "mate_ _ _ _",
+                "missingText": "rial",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "up",
+                "prefix": "u",
+                "displayText": "u_",
+                "missingText": "p",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "time",
+                "prefix": "ti",
+                "displayText": "ti_ _",
+                "missingText": "me",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "are",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "pressed",
+                "prefix": "pre",
+                "displayText": "pre_ _ _ _",
+                "missingText": "ssed",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "fused",
+                "prefix": "fu",
+                "displayText": "fu_ _ _",
+                "missingText": "sed",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-06-b-m1-ctw-q11-20-p01",
+                "answer": "solid",
+                "prefix": "so",
+                "displayText": "so_ _ _",
+                "missingText": "lid",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m1-rdl-03",
+      "module": "rdl",
+      "title": "Dormitory Quiet Hours",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-011",
+          "title": "Dormitory Quiet Hours",
+          "source": "material-index.json#RDL-011",
+          "sourceDate": "2026-05-06",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-011/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-011/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Which statement best captures what the notice expects residents to do?",
+          "rawDisplayText": "21. Which statement best captures what the notice expects residents to do?",
+          "payload": {
+            "materialId": "RDL-011",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Follow quiet hour rules and keep noise low in shared and private spaces"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Use a new complaint procedure to report loud neighbors"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Attend a floor meeting to plan university-sponsored weekend activities"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Vote on changes to the university’s student housing contract"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "Which situation would result in a violation under this policy?",
+          "rawDisplayText": "22. Which situation would result in a violation under this policy?",
+          "payload": {
+            "materialId": "RDL-011",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Talking softly with friends in the hallway at 9:50 P.M. on Tuesday"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Playing a movie at normal volume in the lounge at 1:10 A.M. on Saturday"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Listening to quiet music alone in a room at 11:30 P.M. on Friday"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Using a meditation app in a room with headphones at 10:05 P.M. on Sunday"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m1-rdl-05",
+      "module": "rdl",
+      "title": "Stay Healthy During Cold And Flu Season",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-012",
+          "title": "Stay Healthy During Cold And Flu Season",
+          "source": "material-index.json#RDL-012",
+          "sourceDate": "2026-05-06",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-012/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-012/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "The purpose of the notice is to",
+          "rawDisplayText": "23. The purpose of the notice is to",
+          "payload": {
+            "materialId": "RDL-012",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "offer recommendations"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "describe a treatment"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "advertise a product"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "explain a process"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q23-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What can be inferred from the notice?",
+          "rawDisplayText": "24. What can be inferred from the notice?",
+          "payload": {
+            "materialId": "RDL-012",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "The Campus Health Services office is open 24 hours a day to provide medical care."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "There have been more cases of flu on campus during the current year than in the previous year."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Campus Health Services doctors do not prescribe antiviral medication to all flu patients."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "The symptoms of the flu are quite different from those of other respiratory infections."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q24-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "The notice mentions all of the following EXCEPT",
+          "rawDisplayText": "25. The notice mentions all of the following EXCEPT",
+          "payload": {
+            "materialId": "RDL-012",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "symptoms that are common to both colds and flu"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "measures people can take to protect their health"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "where students can get a flu vaccination"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "how to make an appointment at Campus Health Services"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m1-rap-08",
+      "module": "rap",
+      "title": "Radio Astronomy: A New Perspective",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-06-b-m1-rap-p01",
+          "title": "Radio Astronomy: A New Perspective",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-06-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Radio astronomy is the study of celestial objects using radio waves rather than visible light. Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments. This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe’s early conditions.",
+              "rawText": "Radio astronomy is the study of celestial objects using radio waves rather than visible light. Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments. This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe’s early conditions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Radio astronomy is the study of celestial objects using radio waves rather than visible light."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe’s early conditions."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967. These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals. Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions.",
+              "rawText": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967. These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals. Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "However, radio astronomy faces growing challenges due to technological interference. Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect. This “radio frequency pollution” makes it increasingly difficult to isolate genuine astronomical data. To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat.",
+              "rawText": "However, radio astronomy faces growing challenges due to technological interference. Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect. This “radio frequency pollution” makes it increasingly difficult to isolate genuine astronomical data. To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, radio astronomy faces growing challenges due to technological interference."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "This “radio frequency pollution” makes it increasingly difficult to isolate genuine astronomical data."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the comparison of optical and radio telescopes suggest?",
+          "rawDisplayText": "26. What does the comparison of optical and radio telescopes suggest?",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Traditional instruments are more susceptible to damage."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "Dust often interferes with the optical detection of objects in space."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Radio telescopes are best for detecting massive stars."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Optical telescopes were the first to detect cosmic microwave background radiation."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “transformative” in the passage is closest in meaning to",
+          "rawDisplayText": "27. The word “transformative” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "groundbreaking"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "exciting"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "concerning"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "startling"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q27-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, radio astronomy helps scientists study all of the following EXCEPT",
+          "rawDisplayText": "28. According to the passage, radio astronomy helps scientists study all of the following EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "the beginnings of the universe"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "how to prevent the explosions of large stars"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "the last stages of stars"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "the way matter behaves under extreme conditions"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “the global spread of wireless technology”?",
+          "rawDisplayText": "29. Why does the author mention “the global spread of wireless technology”?",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that the issue of technological interference is not likely to end soon"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "To argue that technological interference is not as severe as was once thought"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "To support the argument that optical telescopes are more reliable than radio telescopes"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "To highlight the sophisticated tools astronomers use to detect cosmic signals"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is one way to address the issue of technological interference?",
+          "rawDisplayText": "30. According to the passage, what is one way to address the issue of technological interference?",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "Revive the use of optical telescopes"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Limit wireless routers to certain frequencies"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Place observatories far away from urban areas"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Mandate specific quiet times when the use of wireless technology is prohibited"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q30-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m1-rap-13",
+      "module": "rap",
+      "title": "Unveiling Earth’s Core",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-06-b-m1-rap-p02",
+          "title": "Unveiling Earth’s Core",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-06-b-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Geophysicists have long been intrigued by Earth’s core (the center of Earth). When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world. Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed. Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter.",
+              "rawText": "Geophysicists have long been intrigued by Earth’s core (the center of Earth). When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world. Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed. Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Geophysicists have long been intrigued by Earth’s core (the center of Earth)."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions. These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies. Collectively, these findings portray a core in constant motion.",
+              "rawText": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions. These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies. Collectively, these findings portray a core in constant motion.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Collectively, these findings portray a core in constant motion."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "But is this picture complete? Some researchers argue that these models rely on overly simplified assumptions. Truly understanding the inner core demands cutting-edge technology and fresh perspectives. The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it.",
+              "rawText": "But is this picture complete? Some researchers argue that these models rely on overly simplified assumptions. Truly understanding the inner core demands cutting-edge technology and fresh perspectives. The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "But is this picture complete?"
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some researchers argue that these models rely on overly simplified assumptions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Truly understanding the inner core demands cutting-edge technology and fresh perspectives."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss earthquakes in paragraph 1?",
+          "rawDisplayText": "31. Why does the author discuss earthquakes in paragraph 1?",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "To demonstrate the fascination of geophysicists with Earth’s core"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "To explain one way scientists gain insights into Earth’s core"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "To highlight the destructive effects of seismic waves on Earth’s core"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "To challenge the idea that Earth’s core is a mysterious world"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why might seismic waves slow down when passing through Earth’s core?",
+          "rawDisplayText": "32. Why might seismic waves slow down when passing through Earth’s core?",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "Because of the solid nature of the core"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "Because of the presence of iron and nickel"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "Because of the possible presence of molten layers or unusual elements"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "Because of the strength of the elements that make up the core"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q32-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “Collectively” in the passage is closest in meaning to",
+          "rawDisplayText": "33. The word “Collectively” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "generally"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "together"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "somehow"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "interestingly"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Advanced computer models suggest all of the following about Earth’s core EXCEPT:",
+          "rawDisplayText": "34. Advanced computer models suggest all of the following about Earth’s core EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "Earth’s core has different layers."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "The inner part of Earth’s core rotates a little faster than other parts of Earth do."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "Wave behavior in Earth’s core shows directional differences."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "The super-rotation of Earth’s core is caused by anisotropies."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 3 that describes a specific criticism of computer models of the inner core. Select the sentence to make your choice.",
+          "rawDisplayText": "35. Identify the sentence in paragraph 3 that describes a specific criticism of computer models of the inner core. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m1-rap-p02",
+            "targetParagraphId": "reading-2026-05-06-b-m1-rap-p02-p03",
+            "correctSentenceId": "reading-2026-05-06-b-m1-rap-p02-p03-s02"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Music has long served as a powerful tool for cultural expression and social change. Comp_ _ _ _ _ and musi_ _ _ _ _ have us_ _ their wo_ _ _ to chal_ _ _ _ _ norms a_ _ reflect poli_ _ _ _ _ realities. Beethoven’s symph_ _ _ _ _, for exa_ _ _ _, echoed t_ _ revolutionary spirit of his time. In the twentieth century, protest songs became anthems for civil rights and anti-war movements, helping to mobilize public sentiment. These examples show how music can influence thought and action. Studying these intersections reveals music’s lasting role in shaping cultural and ideological shifts throughout history.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Music has long served as a powerful tool for cultural expression and social change. Comp_ _ _ _ _ and musi_ _ _ _ _ have us_ _ their wo_ _ _ to chal_ _ _ _ _ norms a_ _ reflect poli_ _ _ _ _ realities. Beethoven’s symph_ _ _ _ _, for exa_ _ _ _, echoed t_ _ revolutionary spirit of his time. In the twentieth century, protest songs became anthems for civil rights and anti-war movements, helping to mobilize public sentiment. These examples show how music can influence thought and action. Studying these intersections reveals music’s lasting role in shaping cultural and ideological shifts throughout history.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Music has long served as a powerful tool for cultural expression and social change. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " have "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " their "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " norms "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " reflect "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " realities. Beethoven’s "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", echoed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " revolutionary spirit of his time. In the twentieth century, protest songs became anthems for civil rights and anti-war movements, helping to mobilize public sentiment. These examples show how music can influence thought and action. Studying these intersections reveals music’s lasting role in shaping cultural and ideological shifts throughout history."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "Composers",
+                "prefix": "Comp",
+                "displayText": "Comp_ _ _ _ _",
+                "missingText": "osers",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "musicians",
+                "prefix": "musi",
+                "displayText": "musi_ _ _ _ _",
+                "missingText": "cians",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "used",
+                "prefix": "us",
+                "displayText": "us_ _",
+                "missingText": "ed",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "works",
+                "prefix": "wo",
+                "displayText": "wo_ _ _",
+                "missingText": "rks",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "challenge",
+                "prefix": "chal",
+                "displayText": "chal_ _ _ _ _",
+                "missingText": "lenge",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "political",
+                "prefix": "poli",
+                "displayText": "poli_ _ _ _ _",
+                "missingText": "tical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "symphonies",
+                "prefix": "symph",
+                "displayText": "symph_ _ _ _ _",
+                "missingText": "onies",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "example",
+                "prefix": "exa",
+                "displayText": "exa_ _ _ _",
+                "missingText": "mple",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-06-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-06-b-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-6b-m2-rap-19",
+      "module": "rap",
+      "title": "Spider Silk in Medicine",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.6B",
+        "occurrenceDate": "2026-05-06",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-06-b-m2-rap-p01",
+          "title": "Spider Silk in Medicine",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Spider silk is one of nature’s most remarkable materials, known for its strength and elasticity. Stronger than steel and highly stretchable, spider silk has inspired researchers to explore its medical potential.",
+              "rawText": "Spider silk is one of nature’s most remarkable materials, known for its strength and elasticity. Stronger than steel and highly stretchable, spider silk has inspired researchers to explore its medical potential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Spider silk is one of nature’s most remarkable materials, known for its strength and elasticity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Stronger than steel and highly stretchable, spider silk has inspired researchers to explore its medical potential."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection. Spider silk meets this criterion exceptionally well. It integrates smoothly with human tissues, minimizing immune response and promoting faster healing. Additionally, its natural elasticity helps the sutures adapt to bodily movements, reducing the risk of sutures rupturing under tension.",
+              "rawText": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection. Spider silk meets this criterion exceptionally well. It integrates smoothly with human tissues, minimizing immune response and promoting faster healing. Additionally, its natural elasticity helps the sutures adapt to bodily movements, reducing the risk of sutures rupturing under tension.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Spider silk meets this criterion exceptionally well."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "It integrates smoothly with human tissues, minimizing immune response and promoting faster healing."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Additionally, its natural elasticity helps the sutures adapt to bodily movements, reducing the risk of sutures rupturing under tension."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Spider silk has been woven into advanced dressings for wounds that accelerate recovery. Spider silk’s biocompatibility and ability to retain moisture make it ideal for treating chronic wounds and joint injuries. Spider silk-based bandages can also be infused with medications for localized drug delivery, reducing infection risk and improving treatment outcomes.",
+              "rawText": "Spider silk has been woven into advanced dressings for wounds that accelerate recovery. Spider silk’s biocompatibility and ability to retain moisture make it ideal for treating chronic wounds and joint injuries. Spider silk-based bandages can also be infused with medications for localized drug delivery, reducing infection risk and improving treatment outcomes.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Spider silk has been woven into advanced dressings for wounds that accelerate recovery."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Spider silk’s biocompatibility and ability to retain moisture make it ideal for treating chronic wounds and joint injuries."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Spider silk-based bandages can also be infused with medications for localized drug delivery, reducing infection risk and improving treatment outcomes."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "However, large-scale production is challenging. Spiders are territorial and cannibalistic, making farming them for silk impractical. Scientists have turned to synthetic methods of producing spider silk using genetically modified bacteria and yeast, but scaling up these techniques remains difficult. Researchers continue refining techniques to make spider silk more accessible.",
+              "rawText": "However, large-scale production is challenging. ■ Spiders are territorial and cannibalistic, making farming them for silk impractical. ■ Scientists have turned to synthetic methods of producing spider silk using genetically modified bacteria and yeast, but scaling up these techniques remains difficult. ■ Researchers continue refining techniques to make spider silk more accessible. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, large-scale production is challenging."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Spiders are territorial and cannibalistic, making farming them for silk impractical."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Scientists have turned to synthetic methods of producing spider silk using genetically modified bacteria and yeast, but scaling up these techniques remains difficult."
+                },
+                {
+                  "sentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s04",
+                  "sentenceOrder": 4,
+                  "text": "Researchers continue refining techniques to make spider silk more accessible."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-06-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “remarkable” in the passage is closest in meaning to",
+          "rawDisplayText": "11. The word “remarkable” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "mysterious"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "abundant"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "analyzed"
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "extraordinary"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 2 that contains the definition of a term. Select the sentence to make your choice.",
+          "rawDisplayText": "12. Identify the sentence in paragraph 2 that contains the definition of a term. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m2-rap-p01",
+            "targetParagraphId": "reading-2026-05-06-b-m2-rap-p01-p02",
+            "correctSentenceId": "reading-2026-05-06-b-m2-rap-p01-p02-s01"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates all of the following about spider silk-based sutures EXCEPT:",
+          "rawDisplayText": "13. The passage indicates all of the following about spider silk-based sutures EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "They are less likely to cause inflammation."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "They are easily incorporated into human tissues."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "They are less expensive than traditional sutures."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "They are less likely to fail when placed under stress."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m2-q13-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are benefits of wound dressings made from spider silk EXCEPT:",
+          "rawDisplayText": "14. All of the following are benefits of wound dressings made from spider silk EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-06-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "They speed up the recovery process."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "They are simple to prepare and apply."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "They do not dry out as quickly as other dressings."
+              },
+              {
+                "optionId": "reading-2026-05-06-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "They make localized drug delivery easy."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-06-b-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-06-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-06-b-m2-rap-p01",
+            "insertSentence": "By contrast, silkworms, traditionally used for obtaining silk, are domesticated and easy to manage.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-06-b-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p04",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-06-b-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p04",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-06-b-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p04",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-06-b-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-06-b-m2-rap-p01-p04",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-06-b-m2-rap-p01-p04-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-06-b-m2-q15-anchor-2"
+          }
+        }
+      ]
+    }
+  ]
+}

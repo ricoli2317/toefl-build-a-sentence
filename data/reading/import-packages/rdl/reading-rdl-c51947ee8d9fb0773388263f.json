@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-c51947ee8d9fb0773388263f",
+    "module": "rdl",
+    "title": "Dormitory Quiet Hours",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6B",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "c51947ee8d9fb0773388263f2813b68ed47c55553d47ad3a9f8df744fc735306",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6b-m1-rdl-03",
+      "logicalItemId": "reading-rdl-c51947ee8d9fb0773388263f",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6B",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-c51947ee8d9fb0773388263f-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-c51947ee8d9fb0773388263f-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-011",
+      "title": "Dormitory Quiet Hours",
+      "source": "material-index.json#RDL-011",
+      "sourceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-011/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-011/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-c51947ee8d9fb0773388263f-q01",
+      "logicalItemId": "reading-rdl-c51947ee8d9fb0773388263f",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Which statement best captures what the notice expects residents to do?",
+      "rawDisplayText": "21. Which statement best captures what the notice expects residents to do?",
+      "payload": {
+        "materialId": "RDL-011",
+        "options": [
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Follow quiet hour rules and keep noise low in shared and private spaces"
+          },
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Use a new complaint procedure to report loud neighbors"
+          },
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Attend a floor meeting to plan university-sponsored weekend activities"
+          },
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Vote on changes to the university’s student housing contract"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c51947ee8d9fb0773388263f-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c51947ee8d9fb0773388263f-q02",
+      "logicalItemId": "reading-rdl-c51947ee8d9fb0773388263f",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Which situation would result in a violation under this policy?",
+      "rawDisplayText": "22. Which situation would result in a violation under this policy?",
+      "payload": {
+        "materialId": "RDL-011",
+        "options": [
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Talking softly with friends in the hallway at 9:50 P.M. on Tuesday"
+          },
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Playing a movie at normal volume in the lounge at 1:10 A.M. on Saturday"
+          },
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Listening to quiet music alone in a room at 11:30 P.M. on Friday"
+          },
+          {
+            "optionId": "reading-rdl-c51947ee8d9fb0773388263f-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Using a meditation app in a room with headphones at 10:05 P.M. on Sunday"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c51947ee8d9fb0773388263f-q02-opt-2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-c70b5205e7cc1b2295352734",
+    "module": "rdl",
+    "title": "My thesis proposal",
+    "firstSeenDate": "2026-05-17",
+    "firstSeenSourceLabel": "5.17",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "c70b5205e7cc1b22953527341c60f7d6697f49f1d10bfacea7c0004a5a9e2fa3",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-17-m1-rdl-07",
+      "logicalItemId": "reading-rdl-c70b5205e7cc1b2295352734",
+      "sourceKind": "docx",
+      "sourceLabel": "5.17",
+      "occurrenceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-c70b5205e7cc1b2295352734-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-c70b5205e7cc1b2295352734-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-c70b5205e7cc1b2295352734-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-031",
+      "title": "My thesis proposal",
+      "source": "material-index.json#RDL-031",
+      "sourceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-031/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-031/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-c70b5205e7cc1b2295352734-q01",
+      "logicalItemId": "reading-rdl-c70b5205e7cc1b2295352734",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main purpose of the email?",
+      "rawDisplayText": "25. What is the main purpose of the email?",
+      "payload": {
+        "materialId": "RDL-031",
+        "options": [
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To confirm the deadline for an assignment"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To ask for an extension on a project"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To thank a faculty member for their help"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To ask for comments on a paper"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c70b5205e7cc1b2295352734-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c70b5205e7cc1b2295352734-q02",
+      "logicalItemId": "reading-rdl-c70b5205e7cc1b2295352734",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "The message mentions Professor Carter doing each of the following EXCEPT",
+      "rawDisplayText": "26. The message mentions Professor Carter doing each of the following EXCEPT",
+      "payload": {
+        "materialId": "RDL-031",
+        "options": [
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q02-opt-1",
+            "optionOrder": 1,
+            "text": "meeting Micah during office hours"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q02-opt-2",
+            "optionOrder": 2,
+            "text": "reading Micah’s thesis proposal"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q02-opt-3",
+            "optionOrder": 3,
+            "text": "providing extra materials to Micah"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q02-opt-4",
+            "optionOrder": 4,
+            "text": "helping Micah choose a thesis topic"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c70b5205e7cc1b2295352734-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c70b5205e7cc1b2295352734-q03",
+      "logicalItemId": "reading-rdl-c70b5205e7cc1b2295352734",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "In the next few days, Micah will most likely",
+      "rawDisplayText": "27. In the next few days, Micah will most likely",
+      "payload": {
+        "materialId": "RDL-031",
+        "options": [
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q03-opt-1",
+            "optionOrder": 1,
+            "text": "seek feedback from another professor"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q03-opt-2",
+            "optionOrder": 2,
+            "text": "update his proposal outline"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q03-opt-3",
+            "optionOrder": 3,
+            "text": "meet with Professor Carter again"
+          },
+          {
+            "optionId": "reading-rdl-c70b5205e7cc1b2295352734-q03-opt-4",
+            "optionOrder": 4,
+            "text": "continue revising his entire proposal"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c70b5205e7cc1b2295352734-q03-opt-4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-4e1dc8a89389627aca7cf10f",
+    "module": "rdl",
+    "title": "Colin / Priya / Mateo remote-learning assignment messages",
+    "firstSeenDate": "2026-06-03",
+    "firstSeenSourceLabel": "6.3",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "4e1dc8a89389627aca7cf10f761e7359eb9647a03642e89d4d0f73e63616bbd7",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-3-m1-rdl-05",
+      "logicalItemId": "reading-rdl-4e1dc8a89389627aca7cf10f",
+      "sourceKind": "docx",
+      "sourceLabel": "6.3",
+      "occurrenceDate": "2026-06-03",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-064",
+      "title": "Colin / Priya / Mateo remote-learning assignment messages",
+      "source": "material-index.json#RDL-064",
+      "sourceDate": "2026-06-03",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-064/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-064/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01",
+      "logicalItemId": "reading-rdl-4e1dc8a89389627aca7cf10f",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main problem that Colin expresses about the assignment?",
+      "rawDisplayText": "23. What is the main problem that Colin expresses about the assignment?",
+      "payload": {
+        "materialId": "RDL-064",
+        "options": [
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01-opt-1",
+            "optionOrder": 1,
+            "text": "He believes the topic is unimportant."
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01-opt-2",
+            "optionOrder": 2,
+            "text": "He finds the topic too general to approach easily."
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01-opt-3",
+            "optionOrder": 3,
+            "text": "He believes that the prompt makes false assumptions."
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01-opt-4",
+            "optionOrder": 4,
+            "text": "He does not understand the assignment."
+          }
+        ],
+        "correctOptionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02",
+      "logicalItemId": "reading-rdl-4e1dc8a89389627aca7cf10f",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What does Priya suggest is the purpose of the assignment?",
+      "rawDisplayText": "24. What does Priya suggest is the purpose of the assignment?",
+      "payload": {
+        "materialId": "RDL-064",
+        "options": [
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To summarize existing research on remote learning"
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To criticize existing research on remote learning"
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To choose a viewpoint and support it with arguments"
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To analyze one's personal experience with online courses"
+          }
+        ],
+        "correctOptionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03",
+      "logicalItemId": "reading-rdl-4e1dc8a89389627aca7cf10f",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What does Colin struggle with when reviewing the research?",
+      "rawDisplayText": "25. What does Colin struggle with when reviewing the research?",
+      "payload": {
+        "materialId": "RDL-064",
+        "options": [
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It discusses too many topics."
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It contradicts his own experience."
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It relies too heavily on theory."
+          },
+          {
+            "optionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It is intended for experts only."
+          }
+        ],
+        "correctOptionId": "reading-rdl-4e1dc8a89389627aca7cf10f-q03-opt-1"
+      }
+    }
+  ]
+}

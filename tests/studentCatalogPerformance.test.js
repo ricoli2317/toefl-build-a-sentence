@@ -89,6 +89,11 @@ test("dashboard summary keeps only the lightweight counts and latest free-practi
     draftDisplayNames: { email: "最新邮件题" },
     now: new Date("2026-08-25T12:00:00.000Z"),
     pendingFeedbackCount: 3,
+    readingAttempts: [
+      { task_type: "ctw", status: "draft" },
+      { task_type: "ctw", status: "submitted" },
+      { task_type: "rap", status: "draft" }
+    ],
     writingAttempts
   });
 
@@ -99,6 +104,11 @@ test("dashboard summary keeps only the lightweight counts and latest free-practi
   });
   assert.deepEqual(summary.drafts.email, { displayName: "最新邮件题", wordCount: 42 });
   assert.equal(summary.drafts.academic_discussion, null);
+  assert.deepEqual(summary.readingProgress, {
+    ctw: { resumableAttemptCount: 1 },
+    rdl: { resumableAttemptCount: 0 },
+    rap: { resumableAttemptCount: 1 }
+  });
   assert.deepEqual(summary.overview, {
     currentMonthPracticeCount: 3,
     learningDayCount: 3,
@@ -140,6 +150,8 @@ test("student home uses one summary request instead of the five legacy detail re
   ]) assert.equal(dashboard.includes(legacy), false);
   assert.match(route, /Promise\.all\(\[/);
   assert.match(route, /attempt_id,assignment_id,task_type,question_id,word_count,status/);
+  assert.match(route, /\.from\("reading_attempts"\)[\s\S]*\.select\("task_type,status"\)/);
+  assert.match(route, /\.eq\("status", "draft"\)/);
   assert.doesNotMatch(route, /prompt|sentence_template|correct_order_text|options_text/);
 });
 

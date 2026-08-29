@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "occurrenceMonth": "2026-06",
+  "command": "pnpm import:reading -- data/reading/import-packages --dry-run --occurrence-month 2026-06",
+  "valid": true,
+  "packageCount": 159,
+  "occurrenceCount": 200,
+  "sourceQuestionRowCount": 551,
+  "sourceScoredItemCount": 1190,
+  "logicalQuestionRowCount": 446,
+  "logicalScoredItemCount": 923,
+  "pendingMaterialIds": [],
+  "databaseConnectionOpened": false
+}

@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-66548232c3cfa2337a085c50",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-03",
+    "firstSeenSourceLabel": "6.3",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "66548232c3cfa2337a085c503a4b023a0cd7bb209c0d5d4072851c45b9adf814",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-3-m1-ctw-02",
+      "logicalItemId": "reading-ctw-66548232c3cfa2337a085c50",
+      "sourceKind": "docx",
+      "sourceLabel": "6.3",
+      "occurrenceDate": "2026-06-03",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-66548232c3cfa2337a085c50-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-66548232c3cfa2337a085c50-q01",
+      "logicalItemId": "reading-ctw-66548232c3cfa2337a085c50",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "At the dawn of civilization, humans relied heavily on their natural surroundings to meet basic needs. Early humans were primarily hunters and gatherers, foraging for edible plants and hunting wild animals. This required humans to move often to find food. Over ti_ _, they obse_ _ _ _ natural patt_ _ _ _ and be_ _ _ planting se_ _ _, sparking t_ _ agricultural revol_ _ _ _ _. This cha_ _ _ allowed perm_ _ _ _ _ settlements a_ _ growing communities. With larger populations came complex social structures, trade, and specialized crafts.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "At the dawn of civilization, humans relied heavily on their natural surroundings to meet basic needs. Early humans were primarily hunters and gatherers, foraging for edible plants and hunting wild animals. This required humans to move often to find food. Over ti_ _, they obse_ _ _ _ natural patt_ _ _ _ and be_ _ _ planting se_ _ _, sparking t_ _ agricultural revol_ _ _ _ _. This cha_ _ _ allowed perm_ _ _ _ _ settlements a_ _ growing communities. With larger populations came complex social structures, trade, and specialized crafts.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "At the dawn of civilization, humans relied heavily on their natural surroundings to meet basic needs. Early humans were primarily hunters and gatherers, foraging for edible plants and hunting wild animals. This required humans to move often to find food. Over "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": ", they "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " natural "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " planting "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", sparking "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " agricultural "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ". This "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " allowed "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " settlements "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " growing communities. With larger populations came complex social structures, trade, and specialized crafts."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "time",
+            "prefix": "ti",
+            "displayText": "ti_ _",
+            "missingText": "me",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "observed",
+            "prefix": "obse",
+            "displayText": "obse_ _ _ _",
+            "missingText": "rved",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "patterns",
+            "prefix": "patt",
+            "displayText": "patt_ _ _ _",
+            "missingText": "erns",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "began",
+            "prefix": "be",
+            "displayText": "be_ _ _",
+            "missingText": "gan",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "seeds",
+            "prefix": "se",
+            "displayText": "se_ _ _",
+            "missingText": "eds",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "revolution",
+            "prefix": "revol",
+            "displayText": "revol_ _ _ _ _",
+            "missingText": "ution",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "change",
+            "prefix": "cha",
+            "displayText": "cha_ _ _",
+            "missingText": "nge",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "permanent",
+            "prefix": "perm",
+            "displayText": "perm_ _ _ _ _",
+            "missingText": "anent",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-66548232c3cfa2337a085c50-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-66548232c3cfa2337a085c50-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

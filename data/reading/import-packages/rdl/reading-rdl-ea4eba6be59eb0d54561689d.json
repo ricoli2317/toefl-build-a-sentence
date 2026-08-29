@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+    "module": "rdl",
+    "title": "The University Photography Club",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7C",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "ea4eba6be59eb0d54561689d7618ce55e8ad4bffd0c44d6ba0f84a15e13d35c5",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7c-m1-rdl-10",
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7C",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-23-m1-rdl-07",
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "sourceKind": "docx",
+      "sourceLabel": "6.23",
+      "occurrenceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-30b-m1-rdl-10",
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30B",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-034",
+      "title": "The University Photography Club",
+      "source": "material-index.json#RDL-034",
+      "sourceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-034/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-034/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01",
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "The notice suggests that",
+      "rawDisplayText": "28. The notice suggests that",
+      "payload": {
+        "materialId": "RDL-034",
+        "options": [
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01-opt-1",
+            "optionOrder": 1,
+            "text": "people new to photography can benefit from the workshop"
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01-opt-2",
+            "optionOrder": 2,
+            "text": "participants must pay an entrance fee"
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01-opt-3",
+            "optionOrder": 3,
+            "text": "participants will leave campus to take pictures"
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01-opt-4",
+            "optionOrder": 4,
+            "text": "students can learn fashion photography"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ea4eba6be59eb0d54561689d-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02",
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+      "rawDisplayText": "29. What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+      "payload": {
+        "materialId": "RDL-034",
+        "options": [
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02-opt-1",
+            "optionOrder": 1,
+            "text": "An exhibition of participants' photography"
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02-opt-2",
+            "optionOrder": 2,
+            "text": "A sale of used photo equipment"
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02-opt-3",
+            "optionOrder": 3,
+            "text": "A lecture by a university visual arts professor"
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02-opt-4",
+            "optionOrder": 4,
+            "text": "An opportunity to learn more photography techniques"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ea4eba6be59eb0d54561689d-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03",
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Which of the following is NOT true about the photography workshop?",
+      "rawDisplayText": "30. Which of the following is NOT true about the photography workshop?",
+      "payload": {
+        "materialId": "RDL-034",
+        "options": [
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03-opt-1",
+            "optionOrder": 1,
+            "text": "There will be a photography competition."
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Photo editing methods will be presented."
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Multiple photography genres will be featured."
+          },
+          {
+            "optionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Participants must pay for lunch."
+          }
+        ],
+        "correctOptionId": "reading-rdl-ea4eba6be59eb0d54561689d-q03-opt-4"
+      }
+    }
+  ]
+}

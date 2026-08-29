@@ -1,0 +1,1744 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.21A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity. We mi_ _ _ think th_ _ prehistoric peo_ _ _ concentrated on_ _ on t_ _ basic wo_ _ that w_ _ required f_ _ survival: hun_ _ _ _, gathering fo_ _, and making weapons and garments. However, it is clear from the record that group dancing was important to them. They made masks and costumes; they used much energy in the process of dancing; they recorded more drawings of dancing than of any other group activity.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity. We mi_ _ _ think th_ _ prehistoric peo_ _ _ concentrated on_ _ on t_ _ basic wo_ _ that w_ _ required f_ _ survival: hun_ _ _ _, gathering fo_ _, and making weapons and garments. However, it is clear from the record that group dancing was important to them. They made masks and costumes; they used much energy in the process of dancing; they recorded more drawings of dancing than of any other group activity.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity. We "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " think "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " prehistoric "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " concentrated "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " on "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " basic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " required "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " survival: "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", gathering "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and making weapons and garments. However, it is clear from the record that group dancing was important to them. They made masks and costumes; they used much energy in the process of dancing; they recorded more drawings of dancing than of any other group activity."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "might",
+                "prefix": "mi",
+                "displayText": "mi_ _ _",
+                "missingText": "ght",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "that",
+                "prefix": "th",
+                "displayText": "th_ _",
+                "missingText": "at",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "people",
+                "prefix": "peo",
+                "displayText": "peo_ _ _",
+                "missingText": "ple",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "only",
+                "prefix": "on",
+                "displayText": "on_ _",
+                "missingText": "ly",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "work",
+                "prefix": "wo",
+                "displayText": "wo_ _",
+                "missingText": "rk",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "was",
+                "prefix": "w",
+                "displayText": "w_ _",
+                "missingText": "as",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "for",
+                "prefix": "f",
+                "displayText": "f_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "hunting",
+                "prefix": "hun",
+                "displayText": "hun_ _ _ _",
+                "missingText": "ting",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q01-10-p01",
+                "answer": "food",
+                "prefix": "fo",
+                "displayText": "fo_ _",
+                "missingText": "od",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Wind currents form due to differences in atmospheric pressure, which arise from uneven solar heating across Earth's surface. As warmer air rises and cooler air sinks, pressure differentials are created, driving horizontal air movement known as wind. Wind currents transport mois_ _ _ _ and infl_ _ _ _ _ temperature, pla_ _ _ _ a k_ _ role i_ shaping wea_ _ _ _ patterns. T_ _ Coriolis eff_ _ _ caused b_ Earth's rota_ _ _ _ further alters wind direction, creating prevailing winds that impact regional climates and storm systems. Understanding these interactions is crucial for accurate forecasting.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Wind currents form due to differences in atmospheric pressure, which arise from uneven solar heating across Earth's surface. As warmer air rises and cooler air sinks, pressure differentials are created, driving horizontal air movement known as wind. Wind currents transport mois_ _ _ _ and infl_ _ _ _ _ temperature, pla_ _ _ _ a k_ _ role i_ shaping wea_ _ _ _ patterns. T_ _ Coriolis eff_ _ _ caused b_ Earth's rota_ _ _ _ further alters wind direction, creating prevailing winds that impact regional climates and storm systems. Understanding these interactions is crucial for accurate forecasting.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Wind currents form due to differences in atmospheric pressure, which arise from uneven solar heating across Earth's surface. As warmer air rises and cooler air sinks, pressure differentials are created, driving horizontal air movement known as wind. Wind currents transport "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " temperature, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " role "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " shaping "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " patterns. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Coriolis "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " caused "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Earth's "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " further alters wind direction, creating prevailing winds that impact regional climates and storm systems. Understanding these interactions is crucial for accurate forecasting."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "moisture",
+                "prefix": "mois",
+                "displayText": "mois_ _ _ _",
+                "missingText": "ture",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "influence",
+                "prefix": "infl",
+                "displayText": "infl_ _ _ _ _",
+                "missingText": "uence",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "playing",
+                "prefix": "pla",
+                "displayText": "pla_ _ _ _",
+                "missingText": "ying",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "key",
+                "prefix": "k",
+                "displayText": "k_ _",
+                "missingText": "ey",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "weather",
+                "prefix": "wea",
+                "displayText": "wea_ _ _ _",
+                "missingText": "ther",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "The",
+                "prefix": "T",
+                "displayText": "T_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "effect",
+                "prefix": "eff",
+                "displayText": "eff_ _ _",
+                "missingText": "ect",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "by",
+                "prefix": "b",
+                "displayText": "b_",
+                "missingText": "y",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-21-a-m1-ctw-q11-20-p01",
+                "answer": "rotation",
+                "prefix": "rota",
+                "displayText": "rota_ _ _ _",
+                "missingText": "tion",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-rdl-03",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-020",
+          "title": "Instructions for Resetting Your Dorm Room Router",
+          "source": "material-index.json#RDL-020",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-020/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-020/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What should be done first to reset the router?",
+          "rawDisplayText": "21. What should be done first to reset the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Disconnect the router from electrical power"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Plug the router back in and push the start button"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Wait for the router to restart automatically"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Wait for 30 seconds for the router to cool"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the final step to resetting the router?",
+          "rawDisplayText": "22. What is the final step to resetting the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Unplug the router from the power source"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Wait until the router has completely started again"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Plug the router into a different power source"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Wait for 30 seconds or until the light flashes"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-rdl-05",
+      "module": "rdl",
+      "title": "Bella Italia campus dining notice",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-074",
+          "title": "Bella Italia campus dining notice",
+          "source": "material-index.json#RDL-074",
+          "sourceDate": "2026-06-21",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-074/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-074/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the primary intention of this notice?",
+          "rawDisplayText": "23. What is the primary intention of this notice?",
+          "payload": {
+            "materialId": "RDL-074",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "To advertise the weekly Chef's Special"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "To inform diners of the reservation policy"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "To promote a recently opened restaurant"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "To request information from future diners"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What are customers asked to do?",
+          "rawDisplayText": "24. What are customers asked to do?",
+          "payload": {
+            "materialId": "RDL-074",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Reserve a table for groups of more than four"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Order the weekly Chef's Special"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Visit Bella Italia's new off-campus location"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Alert the restaurant to special dietary needs"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q24-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-rdl-07",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-048",
+          "title": "Attention Residents!",
+          "source": "material-index.json#RDL-048",
+          "sourceDate": "2026-05-23",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-048/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-048/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is the notice primarily about?",
+          "rawDisplayText": "25. What is the notice primarily about?",
+          "payload": {
+            "materialId": "RDL-048",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "Providing safety tips during a storm"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Announcing a disruption to a service"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Providing after-installation instructions for a new appliance"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Promoting a community water park opening"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "What should residents do beforehand?",
+          "rawDisplayText": "26. What should residents do beforehand?",
+          "payload": {
+            "materialId": "RDL-048",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Plan for power outages"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "Disconnect all water appliances"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Inspect faucets and showers for leaks"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Ensure enough water is stored for one day"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the event described in the announcement?",
+          "rawDisplayText": "27. What can be inferred about the event described in the announcement?",
+          "payload": {
+            "materialId": "RDL-048",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "It can be postponed to a different day by calling the maintenance department."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "It is required for infrastructure upgrades."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "It will occur weekly."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "It is due to a natural disaster."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q27-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-rdl-10",
+      "module": "rdl",
+      "title": "Kintsugi",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-085",
+          "title": "Kintsugi",
+          "source": "material-index.json#RDL-085",
+          "sourceDate": "2026-06-21",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-085/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-085/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "According to the article, what philosophical perspective does kintsugi promote?",
+          "rawDisplayText": "28. According to the article, what philosophical perspective does kintsugi promote?",
+          "payload": {
+            "materialId": "RDL-085",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "Minimalism, emphasizing simplicity and the elimination of excess"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "Ethics, focusing on honor and discipline in craftsmanship"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "Humility, valuing imperfection and the transient nature of life"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Purity, highlighting spiritual cleanliness and ritual renewal"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q28-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What does the article suggest about the symbolic meaning of repairing pottery with precious metals?",
+          "rawDisplayText": "29. What does the article suggest about the symbolic meaning of repairing pottery with precious metals?",
+          "payload": {
+            "materialId": "RDL-085",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Wealth and luxury are essential for authentic art."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Flaws can be turned into sources of value and beauty."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "Artisans prioritize aesthetics over philosophical significance."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "Objects lose their cultural value when restored with cheap materials."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q29-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Why does the author of the article mention \"a perfection-driven world\"?",
+          "rawDisplayText": "30. Why does the author of the article mention \"a perfection-driven world\"?",
+          "payload": {
+            "materialId": "RDL-085",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "To argue that modern society has completely abandoned traditional art forms"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "To suggest that flawless craftsmanship is the goal of contemporary design"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "To contrast kintsugi's philosophical message with a common present-day attitude"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "To explain why kintsugi techniques are rarely used in professional pottery today"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q30-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m1-rap-13",
+      "module": "rap",
+      "title": "The Benefits of Music Education",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-21-a-m1-rap-p01",
+          "title": "The Benefits of Music Education",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-21-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "In the United States, music education has been consistently linked to enhanced cognitive development. Studies such as those by the National Association for Music Education (NAfME) and research published in Frontiers in Psychology have shown that children who study music often demonstrate improvements in memory, language acquisition, and spatial-temporal reasoning. These cognitive gains are attributed to the discipline and structured practice inherent in learning music, which strengthens neural pathways associated with attention and processing.",
+              "rawText": "In the United States, music education has been consistently linked to enhanced cognitive development. Studies such as those by the National Association for Music Education (NAfME) and research published in Frontiers in Psychology have shown that children who study music often demonstrate improvements in memory, language acquisition, and spatial-temporal reasoning. These cognitive gains are attributed to the discipline and structured practice inherent in learning music, which strengthens neural pathways associated with attention and processing.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "In the United States, music education has been consistently linked to enhanced cognitive development."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Studies such as those by the National Association for Music Education (NAfME) and research published in Frontiers in Psychology have shown that children who study music often demonstrate improvements in memory, language acquisition, and spatial-temporal reasoning."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "These cognitive gains are attributed to the discipline and structured practice inherent in learning music, which strengthens neural pathways associated with attention and processing."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-21-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Beyond cognition, music education contributes meaningfully to social development. Participation in an ensemble—a group of musicians performing together—requires active collaboration, listening, and nonverbal communication, fostering empathy and cooperative behavior. This group dynamic differs from traditional classroom settings and can support the development of interpersonal skills. Moreover, music provides a safe space for emotional exploration. Students engage with complex emotions, both their own and those conveyed by others, through the expressive nature of music itself. This experience can enhance emotional intelligence and serve as a constructive outlet for stress.",
+              "rawText": "Beyond cognition, music education contributes meaningfully to social development. Participation in an ensemble—a group of musicians performing together—requires active collaboration, listening, and nonverbal communication, fostering empathy and cooperative behavior. This group dynamic differs from traditional classroom settings and can support the development of interpersonal skills. Moreover, music provides a safe space for emotional exploration. Students engage with complex emotions, both their own and those conveyed by others, through the expressive nature of music itself. This experience can enhance emotional intelligence and serve as a constructive outlet for stress.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Beyond cognition, music education contributes meaningfully to social development."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Participation in an ensemble—a group of musicians performing together—requires active collaboration, listening, and nonverbal communication, fostering empathy and cooperative behavior."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This group dynamic differs from traditional classroom settings and can support the development of interpersonal skills."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Moreover, music provides a safe space for emotional exploration."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Students engage with complex emotions, both their own and those conveyed by others, through the expressive nature of music itself."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "This experience can enhance emotional intelligence and serve as a constructive outlet for stress."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-21-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Despite these documented benefits, music programs in U.S. schools are often viewed as nonessential compared to core academic subjects and thus vulnerable to budget cuts. This reduction may disproportionately affect students who could benefit most from music's holistic contributions, potentially limiting their cognitive, social, and emotional growth.",
+              "rawText": "Despite these documented benefits, music programs in U.S. schools are often viewed as nonessential compared to core academic subjects and thus vulnerable to budget cuts. This reduction may disproportionately affect students who could benefit most from music's holistic contributions, potentially limiting their cognitive, social, and emotional growth.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Despite these documented benefits, music programs in U.S. schools are often viewed as nonessential compared to core academic subjects and thus vulnerable to budget cuts."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "This reduction may disproportionately affect students who could benefit most from music's holistic contributions, potentially limiting their cognitive, social, and emotional growth."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"neural pathways associated with attention and processing\"?",
+          "rawDisplayText": "31. Why does the author mention \"neural pathways associated with attention and processing\"?",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "To explain one way in which music might improve certain mental skills"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "To highlight the parts of the brain used when listening to music"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "To contradict the results of a study in Frontiers in Psychology"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that music education has little effect on cognitive development"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q31-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Based on the discussion in the passage, what type of musical activity would be least likely to support social development?",
+          "rawDisplayText": "32. Based on the discussion in the passage, what type of musical activity would be least likely to support social development?",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "Playing in an orchestra"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "Singing in a choir"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "Calming oneself with peaceful music"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "Being a band member"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q32-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, music education promotes social development in all of the following ways EXCEPT",
+          "rawDisplayText": "33. According to the passage, music education promotes social development in all of the following ways EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "by developing listening skills"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "by teaching students to communicate non-verbally"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "by encouraging cooperative behavior"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "by setting high standards for performance quality"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q33-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about music education in the United States?",
+          "rawDisplayText": "34. What does the passage suggest about music education in the United States?",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "It is acknowledged to be a necessary part of the school curriculum."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "It is at greater risk of losing its funding than other school subjects are."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "Some parents fear that time and money spent on music programs will limit their children's academic growth."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "Some parents want to see further studies done on the benefits of music education."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q34-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"holistic\" in the passage is closest in meaning to",
+          "rawDisplayText": "35. The word \"holistic\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "documented"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "celebrated"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "comprehensive"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "well-known"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m1-q35-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In studying animal behavior, it becomes apparent that social hierarchies play a significant role in the lives of many terrestrial mammals. These hierarchies, often established through displays of dominance and submission, dictate ac_ _ _ _ to reso_ _ _ _ _ such a_ food, ma_ _ _, and she_ _ _ _, thereby influ_ _ _ _ _ _ survival a_ _ reproductive suc_ _ _ _. Behavioral ecolo_ _ _ _ _ have obse_ _ _ _ that such complex social structures can lead to increased group stability, as roles are clearly defined, reducing the frequency of potentially harmful disputes and promoting cooperation among group members.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "In studying animal behavior, it becomes apparent that social hierarchies play a significant role in the lives of many terrestrial mammals. These hierarchies, often established through displays of dominance and submission, dictate ac_ _ _ _ to reso_ _ _ _ _ such a_ food, ma_ _ _, and she_ _ _ _, thereby influ_ _ _ _ _ _ survival a_ _ reproductive suc_ _ _ _. Behavioral ecolo_ _ _ _ _ have obse_ _ _ _ that such complex social structures can lead to increased group stability, as roles are clearly defined, reducing the frequency of potentially harmful disputes and promoting cooperation among group members.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In studying animal behavior, it becomes apparent that social hierarchies play a significant role in the lives of many terrestrial mammals. These hierarchies, often established through displays of dominance and submission, dictate "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " such "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " food, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", thereby "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " survival "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " reproductive "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Behavioral "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " have "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that such complex social structures can lead to increased group stability, as roles are clearly defined, reducing the frequency of potentially harmful disputes and promoting cooperation among group members."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "access",
+                "prefix": "ac",
+                "displayText": "ac_ _ _ _",
+                "missingText": "cess",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "resources",
+                "prefix": "reso",
+                "displayText": "reso_ _ _ _ _",
+                "missingText": "urces",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "as",
+                "prefix": "a",
+                "displayText": "a_",
+                "missingText": "s",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "mates",
+                "prefix": "ma",
+                "displayText": "ma_ _ _",
+                "missingText": "tes",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "shelter",
+                "prefix": "she",
+                "displayText": "she_ _ _ _",
+                "missingText": "lter",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "influencing",
+                "prefix": "influ",
+                "displayText": "influ_ _ _ _ _ _",
+                "missingText": "encing",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "success",
+                "prefix": "suc",
+                "displayText": "suc_ _ _ _",
+                "missingText": "cess",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "ecologists",
+                "prefix": "ecolo",
+                "displayText": "ecolo_ _ _ _ _",
+                "missingText": "gists",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-21-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-21-a-m2-ctw-q01-10-p01",
+                "answer": "observed",
+                "prefix": "obse",
+                "displayText": "obse_ _ _ _",
+                "missingText": "rved",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-21a-m2-rap-19",
+      "module": "rap",
+      "title": "Antimicrobial Resistance Challenges",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.21A",
+        "occurrenceDate": "2026-06-21",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-21-a-m2-rap-p01",
+          "title": "Antimicrobial Resistance Challenges",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-21-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Antimicrobial resistance (AMR)—the ability of microorganisms to withstand drugs that once killed them—threatens to reverse decades of medical advancement, posing an urgent public health challenge globally. In particular, the widespread and often indiscriminate use of antibiotics in medicine and agriculture has accelerated the emergence of resistant bacteria. Recognizing the gravity of AMR, the World Health Organization classifies it among the top global health threats, underscoring the critical need for immediate action.",
+              "rawText": "Antimicrobial resistance (AMR)—the ability of microorganisms to withstand drugs that once killed them—threatens to reverse decades of medical advancement, posing an urgent public health challenge globally. In particular, the widespread and often indiscriminate use of antibiotics in medicine and agriculture has accelerated the emergence of resistant bacteria. Recognizing the gravity of AMR, the World Health Organization classifies it among the top global health threats, underscoring the critical need for immediate action.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Antimicrobial resistance (AMR)—the ability of microorganisms to withstand drugs that once killed them—threatens to reverse decades of medical advancement, posing an urgent public health challenge globally."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "In particular, the widespread and often indiscriminate use of antibiotics in medicine and agriculture has accelerated the emergence of resistant bacteria."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Recognizing the gravity of AMR, the World Health Organization classifies it among the top global health threats, underscoring the critical need for immediate action."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-21-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate. Unfortunately, the pharmaceutical industry has been slow to produce new antibiotics, hampered by both scientific obstacles and economic disincentives. Antibiotics often yield lower financial returns compared to medications for chronic diseases. Therefore, they receive less investment.",
+              "rawText": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate. Unfortunately, the pharmaceutical industry has been slow to produce new antibiotics, hampered by both scientific obstacles and economic disincentives. Antibiotics often yield lower financial returns compared to medications for chronic diseases. Therefore, they receive less investment.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unfortunately, the pharmaceutical industry has been slow to produce new antibiotics, hampered by both scientific obstacles and economic disincentives."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Antibiotics often yield lower financial returns compared to medications for chronic diseases."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Therefore, they receive less investment."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-21-a-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Addressing AMR requires a comprehensive and coordinated international strategy. Implementing stringent regulations on antibiotic prescriptions can curb misuse but might not eliminate it completely. Financial incentives for pharmaceutical companies could stimulate the development of novel antibiotics. However, this approach remains contentious due to the varying perspectives on economic feasibility. Public health campaigns aimed at educating communities about judicious antibiotic use are vital, but experts continue to debate the most effective",
+              "rawText": "Addressing AMR requires a comprehensive and coordinated international strategy. Implementing stringent regulations on antibiotic prescriptions can curb misuse but might not eliminate it completely. Financial incentives for pharmaceutical companies could stimulate the development of novel antibiotics. However, this approach remains contentious due to the varying perspectives on economic feasibility. Public health campaigns aimed at educating communities about judicious antibiotic use are vital, but experts continue to debate the most effective",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Addressing AMR requires a comprehensive and coordinated international strategy."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Implementing stringent regulations on antibiotic prescriptions can curb misuse but might not eliminate it completely."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Financial incentives for pharmaceutical companies could stimulate the development of novel antibiotics."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, this approach remains contentious due to the varying perspectives on economic feasibility."
+                },
+                {
+                  "sentenceId": "reading-2026-06-21-a-m2-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "Public health campaigns aimed at educating communities about judicious antibiotic use are vital, but experts continue to debate the most effective"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-21-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention the \"indiscriminate use of antibiotics\"?",
+          "rawDisplayText": "11. Why does the author mention the \"indiscriminate use of antibiotics\"?",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that the AMR crisis can be easily solved"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "To argue that the World Health Organization has underestimated the extent of the problem"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "To make a distinction between how antibiotics are used in healthcare and agriculture"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "To explain why AMR is becoming a global health challenge"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 2 that explains how antimicrobial resistance works. Select the sentence to make your choice.",
+          "rawDisplayText": "12. Identify the sentence in paragraph 2 that explains how antimicrobial resistance works. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m2-rap-p01",
+            "targetParagraphId": "reading-2026-06-21-a-m2-rap-p01-p02",
+            "correctSentenceId": "reading-2026-06-21-a-m2-rap-p01-p02-s01"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which obstacle to the development of new antibiotics is mentioned in the passage?",
+          "rawDisplayText": "13. Which obstacle to the development of new antibiotics is mentioned in the passage?",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "Insurance companies do not support the necessary investment."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "Antibiotics are typically less profitable than some other drugs."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "The pace of bacterial gene mutation is too rapid to keep up with."
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "Medications for chronic diseases are less complex to produce."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"comprehensive\" in the passage is closest in meaning to",
+          "rawDisplayText": "14. The word \"comprehensive\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "understandable"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "well-researched"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "thorough"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "cost-effective"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-21-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage mentions each of the following strategies for addressing antimicrobial resistance EXCEPT",
+          "rawDisplayText": "15. The passage mentions each of the following strategies for addressing antimicrobial resistance EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-21-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-21-a-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "increasing investment in measures for preventing infections"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "strengthening regulations that govern antibiotic prescriptions"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "offering financial incentives to drugmakers to develop new antibiotics"
+              },
+              {
+                "optionId": "reading-2026-06-21-a-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "educating people worldwide about limiting the use of antibiotics"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-21-a-m2-q15-opt-1"
+          }
+        }
+      ]
+    }
+  ]
+}

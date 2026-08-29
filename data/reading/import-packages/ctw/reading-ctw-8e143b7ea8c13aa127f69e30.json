@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-8e143b7ea8c13aa127f69e30",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "8e143b7ea8c13aa127f69e302d5593c1aa18ac66adfe934617802eb2dceadc18",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-8e143b7ea8c13aa127f69e30",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6A",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01",
+      "logicalItemId": "reading-ctw-8e143b7ea8c13aa127f69e30",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "In the prehistoric era, social organization was intricately linked to the prevailing environmental conditions, which dictated the migratory patterns and settlement choices of early human groups. These commu_ _ _ _ _ _ often deve_ _ _ _ _ cohesive un_ _ _ based o_ kinship ti_ _, establishing a sim_ _ _ social stru_ _ _ _ _ that facil_ _ _ _ _ _ cooperative hun_ _ _ _ and gath_ _ _ _ _ of food. Leadership roles emerged naturally, typically assumed by individuals possessing superior survival skills or profound knowledge of the terrain. The distribution of resources, particularly food, was a critical factor, often determining the power dynamics within the group.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "In the prehistoric era, social organization was intricately linked to the prevailing environmental conditions, which dictated the migratory patterns and settlement choices of early human groups. These commu_ _ _ _ _ _ often deve_ _ _ _ _ cohesive un_ _ _ based o_ kinship ti_ _, establishing a sim_ _ _ social stru_ _ _ _ _ that facil_ _ _ _ _ _ cooperative hun_ _ _ _ and gath_ _ _ _ _ of food. Leadership roles emerged naturally, typically assumed by individuals possessing superior survival skills or profound knowledge of the terrain. The distribution of resources, particularly food, was a critical factor, often determining the power dynamics within the group.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "In the prehistoric era, social organization was intricately linked to the prevailing environmental conditions, which dictated the migratory patterns and settlement choices of early human groups. These "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " often "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " cohesive "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " based "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " kinship "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", establishing a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " social "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " cooperative "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " of food. Leadership roles emerged naturally, typically assumed by individuals possessing superior survival skills or profound knowledge of the terrain. The distribution of resources, particularly food, was a critical factor, often determining the power dynamics within the group."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "communities",
+            "prefix": "commu",
+            "displayText": "commu_ _ _ _ _ _",
+            "missingText": "nities",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "developed",
+            "prefix": "deve",
+            "displayText": "deve_ _ _ _ _",
+            "missingText": "loped",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "units",
+            "prefix": "un",
+            "displayText": "un_ _ _",
+            "missingText": "its",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "on",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "ties",
+            "prefix": "ti",
+            "displayText": "ti_ _",
+            "missingText": "es",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "simple",
+            "prefix": "sim",
+            "displayText": "sim_ _ _",
+            "missingText": "ple",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "structure",
+            "prefix": "stru",
+            "displayText": "stru_ _ _ _ _",
+            "missingText": "cture",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "facilitated",
+            "prefix": "facil",
+            "displayText": "facil_ _ _ _ _ _",
+            "missingText": "itated",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "hunting",
+            "prefix": "hun",
+            "displayText": "hun_ _ _ _",
+            "missingText": "ting",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-8e143b7ea8c13aa127f69e30-q01-p01",
+            "answer": "gathering",
+            "prefix": "gath",
+            "displayText": "gath_ _ _ _ _",
+            "missingText": "ering",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

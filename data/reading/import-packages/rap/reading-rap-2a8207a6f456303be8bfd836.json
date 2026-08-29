@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+    "module": "rap",
+    "title": "Social Role Theory",
+    "firstSeenDate": "2026-06-30",
+    "firstSeenSourceLabel": "6.30A",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "2a8207a6f456303be8bfd83698f98ce36865e6d7a66206d7699096fed5f6d81e",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-30a-m1-rap-08",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30A",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-2a8207a6f456303be8bfd836-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-2a8207a6f456303be8bfd836-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-2a8207a6f456303be8bfd836-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-2a8207a6f456303be8bfd836-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-2a8207a6f456303be8bfd836-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-2a8207a6f456303be8bfd836-passage-01",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "title": "Social Role Theory",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Social role theory is a significant framework in theoretical sociology, explaining how individuals adopt roles based on societal expectations. Society is structured by roles, each with specific behaviors and norms. A key aspect of social role theory is role conflict, which occurs when the expectations of one role clash with those of another. For instance, a person who is both a parent and an employee might struggle to balance caring for their children and meeting work obligations. This conflict can lead to stress and decreased performance in one or both roles. Another important concept is role strain, which is stress within a single role due to competing demands or insufficient resources. An example is a teacher who feels overwhelmed by the need to manage classroom behavior while also keeping lessons engaging. Social role theory also addresses how roles change over time. As society evolves, the expectations attached to roles can shift. For example, the role of women in the workforce has changed dramatically, with increasing acceptance of women in leadership. Understanding these dynamics is crucial for analyzing how social structures impact individual behavior and societal change.",
+          "rawText": "Social role theory is a significant framework in theoretical sociology, explaining how individuals adopt roles based on societal expectations. Society is structured by roles, each with specific behaviors and norms. ■ A key aspect of social role theory is role conflict, which occurs when the expectations of one role clash with those of another. For instance, a person who is both a parent and an employee might struggle to balance caring for their children and meeting work obligations. This conflict can lead to stress and decreased performance in one or both roles. ■ Another important concept is role strain, which is stress within a single role due to competing demands or insufficient resources. An example is a teacher who feels overwhelmed by the need to manage classroom behavior while also keeping lessons engaging. Social role theory also addresses how roles change over time. ■ As society evolves, the expectations attached to roles can shift. For example, the role of women in the workforce has changed dramatically, with increasing acceptance of women in leadership. Understanding these dynamics is crucial for analyzing how social structures impact individual behavior and societal change. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Social role theory is a significant framework in theoretical sociology, explaining how individuals adopt roles based on societal expectations."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Society is structured by roles, each with specific behaviors and norms."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "A key aspect of social role theory is role conflict, which occurs when the expectations of one role clash with those of another."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "For instance, a person who is both a parent and an employee might struggle to balance caring for their children and meeting work obligations."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "This conflict can lead to stress and decreased performance in one or both roles."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s06",
+              "sentenceOrder": 6,
+              "text": "Another important concept is role strain, which is stress within a single role due to competing demands or insufficient resources."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s07",
+              "sentenceOrder": 7,
+              "text": "An example is a teacher who feels overwhelmed by the need to manage classroom behavior while also keeping lessons engaging."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s08",
+              "sentenceOrder": 8,
+              "text": "Social role theory also addresses how roles change over time."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s09",
+              "sentenceOrder": 9,
+              "text": "As society evolves, the expectations attached to roles can shift."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s10",
+              "sentenceOrder": 10,
+              "text": "For example, the role of women in the workforce has changed dramatically, with increasing acceptance of women in leadership."
+            },
+            {
+              "sentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s11",
+              "sentenceOrder": 11,
+              "text": "Understanding these dynamics is crucial for analyzing how social structures impact individual behavior and societal change."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q01",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"norms\" in the passage is closest in meaning to",
+      "rawDisplayText": "26. The word \"norms\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-2a8207a6f456303be8bfd836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q01-opt-1",
+            "optionOrder": 1,
+            "text": "long histories"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q01-opt-2",
+            "optionOrder": 2,
+            "text": "hidden benefits"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q01-opt-3",
+            "optionOrder": 3,
+            "text": "practical effects"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q01-opt-4",
+            "optionOrder": 4,
+            "text": "unwritten rules"
+          }
+        ],
+        "correctOptionId": "reading-rap-2a8207a6f456303be8bfd836-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q02",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the passage mention \"a person who is both a parent and an employee\"?",
+      "rawDisplayText": "27. Why does the passage mention \"a person who is both a parent and an employee\"?",
+      "payload": {
+        "passageId": "reading-rap-2a8207a6f456303be8bfd836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To show how a person can balance multiple obligations"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To imply that roles are not always rigidly defined"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To illustrate the concept of role conflict"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To emphasize the importance of good childcare"
+          }
+        ],
+        "correctOptionId": "reading-rap-2a8207a6f456303be8bfd836-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q03",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the passage mention \"a teacher\"?",
+      "rawDisplayText": "28. Why does the passage mention \"a teacher\"?",
+      "payload": {
+        "passageId": "reading-rap-2a8207a6f456303be8bfd836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To support the idea that social role theory is often difficult to understand"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To explain how a person might experience competing demands within a role"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To imply that the resources provided to teachers are often insufficient"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To demonstrate how behavioral issues make learning difficult for everyone"
+          }
+        ],
+        "correctOptionId": "reading-rap-2a8207a6f456303be8bfd836-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q04",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The phrase \"these dynamics\" in the passage refers to",
+      "rawDisplayText": "29. The phrase \"these dynamics\" in the passage refers to",
+      "payload": {
+        "passageId": "reading-rap-2a8207a6f456303be8bfd836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q04-opt-1",
+            "optionOrder": 1,
+            "text": "the evolution of social roles over time"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q04-opt-2",
+            "optionOrder": 2,
+            "text": "competition for leadership positions"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q04-opt-3",
+            "optionOrder": 3,
+            "text": "interactions between men and women in the workforce"
+          },
+          {
+            "optionId": "reading-rap-2a8207a6f456303be8bfd836-q04-opt-4",
+            "optionOrder": 4,
+            "text": "decreasing prestige of some social roles"
+          }
+        ],
+        "correctOptionId": "reading-rap-2a8207a6f456303be8bfd836-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q05",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-2a8207a6f456303be8bfd836-passage-01",
+        "insertSentence": "For example, a parent is expected to offer affection and emotional stability to their children, while a soldier is expected to follow orders.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-2a8207a6f456303be8bfd836-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s02"
+          },
+          {
+            "anchorId": "reading-rap-2a8207a6f456303be8bfd836-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s05"
+          },
+          {
+            "anchorId": "reading-rap-2a8207a6f456303be8bfd836-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+            "boundaryIndex": 8,
+            "afterSentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s08"
+          },
+          {
+            "anchorId": "reading-rap-2a8207a6f456303be8bfd836-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+            "boundaryIndex": 11,
+            "afterSentenceId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01-s11"
+          }
+        ],
+        "correctAnchorId": "reading-rap-2a8207a6f456303be8bfd836-q05-anchor-1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-f48720226dc0017591cb3b9e",
+    "module": "rdl",
+    "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20B",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "f48720226dc0017591cb3b9e86dcb5c0f12defa79385bf1365daec33ef23b587",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20b-m1-rdl-05",
+      "logicalItemId": "reading-rdl-f48720226dc0017591cb3b9e",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20B",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 24,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-f48720226dc0017591cb3b9e-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-f48720226dc0017591cb3b9e-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-043",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "source": "material-index.json#RDL-043",
+      "sourceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-043/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-043/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-f48720226dc0017591cb3b9e-q01",
+      "logicalItemId": "reading-rdl-f48720226dc0017591cb3b9e",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the most likely subject of the course?",
+      "rawDisplayText": "23. What is the most likely subject of the course?",
+      "payload": {
+        "materialId": "RDL-043",
+        "options": [
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Biology"
+          },
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Calculus"
+          },
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Physics"
+          },
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Sociology"
+          }
+        ],
+        "correctOptionId": "reading-rdl-f48720226dc0017591cb3b9e-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-f48720226dc0017591cb3b9e-q02",
+      "logicalItemId": "reading-rdl-f48720226dc0017591cb3b9e",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is NOT mentioned as an assessment method?",
+      "rawDisplayText": "24. What is NOT mentioned as an assessment method?",
+      "payload": {
+        "materialId": "RDL-043",
+        "options": [
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Weekly exercises"
+          },
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Lab reports"
+          },
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Tests"
+          },
+          {
+            "optionId": "reading-rdl-f48720226dc0017591cb3b9e-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Essays"
+          }
+        ],
+        "correctOptionId": "reading-rdl-f48720226dc0017591cb3b9e-q02-opt-4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-a4862163fd625c68397e6b66",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10B",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "a4862163fd625c68397e6b66739a65336bc27599ad56dd93b91ecdac8ba80e41",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10b-m1-ctw-01",
+      "logicalItemId": "reading-ctw-a4862163fd625c68397e6b66",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10B",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-a4862163fd625c68397e6b66-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-a4862163fd625c68397e6b66-q01",
+      "logicalItemId": "reading-ctw-a4862163fd625c68397e6b66",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Economics is the social science that studies the production, distribution, and consumption of goods and services. It exam_ _ _ _ how indiv_ _ _ _ _ _, households, busin_ _ _ _ _, and gover_ _ _ _ _ make cho_ _ _ _ about reso_ _ _ _ allocation a_ _ how su_ _ decisions aff_ _ _ overall stab_ _ _ _ _ and growth in the economy. Through the application of theoretical models and the collection of empirical data, economists can help policymakers formulate strategies to address issues such as inflation, unemployment, and trade imbalances, thereby improving societal well-being.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Economics is the social science that studies the production, distribution, and consumption of goods and services. It exam_ _ _ _ how indiv_ _ _ _ _ _, households, busin_ _ _ _ _, and gover_ _ _ _ _ make cho_ _ _ _ about reso_ _ _ _ allocation a_ _ how su_ _ decisions aff_ _ _ overall stab_ _ _ _ _ and growth in the economy. Through the application of theoretical models and the collection of empirical data, economists can help policymakers formulate strategies to address issues such as inflation, unemployment, and trade imbalances, thereby improving societal well-being.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Economics is the social science that studies the production, distribution, and consumption of goods and services. It "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " how "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", households, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " make "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " about "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " allocation "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " how "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " decisions "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " overall "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " and growth in the economy. Through the application of theoretical models and the collection of empirical data, economists can help policymakers formulate strategies to address issues such as inflation, unemployment, and trade imbalances, thereby improving societal well-being."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "examines",
+            "prefix": "exam",
+            "displayText": "exam_ _ _ _",
+            "missingText": "ines",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "individuals",
+            "prefix": "indiv",
+            "displayText": "indiv_ _ _ _ _ _",
+            "missingText": "iduals",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "businesses",
+            "prefix": "busin",
+            "displayText": "busin_ _ _ _ _",
+            "missingText": "esses",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "government",
+            "prefix": "gover",
+            "displayText": "gover_ _ _ _ _",
+            "missingText": "nment",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "choices",
+            "prefix": "cho",
+            "displayText": "cho_ _ _ _",
+            "missingText": "ices",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "resource",
+            "prefix": "reso",
+            "displayText": "reso_ _ _ _",
+            "missingText": "urce",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "such",
+            "prefix": "su",
+            "displayText": "su_ _",
+            "missingText": "ch",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "affect",
+            "prefix": "aff",
+            "displayText": "aff_ _ _",
+            "missingText": "ect",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-a4862163fd625c68397e6b66-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-a4862163fd625c68397e6b66-q01-p01",
+            "answer": "stability",
+            "prefix": "stab",
+            "displayText": "stab_ _ _ _ _",
+            "missingText": "ility",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+    "module": "rap",
+    "title": "The Shifting Art of Playwriting",
+    "firstSeenDate": "2026-06-30",
+    "firstSeenSourceLabel": "6.30A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "5773e5b9a84f86d3ac356a4503815f5a1bcf781999277236e19f23a9a90edd66",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-30a-m1-rap-13",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30A",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "title": "The Shifting Art of Playwriting",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Innovative playwriting techniques have transformed the theatrical landscape by challenging linear storytelling and passive spectatorship. Nonlinear narratives, seen in plays like Harold Pinter's Betrayal, disrupt chronological order to reflect the fragmented nature of memory and emotion. This structure invites audiences to actively reconstruct the story, deepening their engagement.",
+          "rawText": "Innovative playwriting techniques have transformed the theatrical landscape by challenging linear storytelling and passive spectatorship. Nonlinear narratives, seen in plays like Harold Pinter's Betrayal, disrupt chronological order to reflect the fragmented nature of memory and emotion. This structure invites audiences to actively reconstruct the story, deepening their engagement.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Innovative playwriting techniques have transformed the theatrical landscape by challenging linear storytelling and passive spectatorship."
+            },
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Nonlinear narratives, seen in plays like Harold Pinter's Betrayal, disrupt chronological order to reflect the fragmented nature of memory and emotion."
+            },
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This structure invites audiences to actively reconstruct the story, deepening their engagement."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Another innovation is the so-called breaking of the fourth wall, where characters directly address the audience. Used by Bertolt Brecht in Mother Courage and Her Children, this technique encourages viewers to reflect critically rather than become absorbed in illusion. Fully interactive theater, exemplified by the British production Sleep No More, goes further by allowing viewers to physically move through the performance space, personalizing the experience and making each viewing unique.",
+          "rawText": "Another innovation is the so-called breaking of the fourth wall, where characters directly address the audience. Used by Bertolt Brecht in Mother Courage and Her Children, this technique encourages viewers to reflect critically rather than become absorbed in illusion. Fully interactive theater, exemplified by the British production Sleep No More, goes further by allowing viewers to physically move through the performance space, personalizing the experience and making each viewing unique.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Another innovation is the so-called breaking of the fourth wall, where characters directly address the audience."
+            },
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Used by Bertolt Brecht in Mother Courage and Her Children, this technique encourages viewers to reflect critically rather than become absorbed in illusion."
+            },
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Fully interactive theater, exemplified by the British production Sleep No More, goes further by allowing viewers to physically move through the performance space, personalizing the experience and making each viewing unique."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "These techniques suggest a broader hypothesis: that theatrical form is not merely a container for content but a vital part of creating meaning. By reshaping narrative structure and audience dynamics, playwrights can evoke new emotional and intellectual responses, revealing complex aspects of the human condition.",
+          "rawText": "These techniques suggest a broader hypothesis: that theatrical form is not merely a container for content but a vital part of creating meaning. By reshaping narrative structure and audience dynamics, playwrights can evoke new emotional and intellectual responses, revealing complex aspects of the human condition.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "These techniques suggest a broader hypothesis: that theatrical form is not merely a container for content but a vital part of creating meaning."
+            },
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "By reshaping narrative structure and audience dynamics, playwrights can evoke new emotional and intellectual responses, revealing complex aspects of the human condition."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "Of course, such innovations may confuse rather than enlighten more traditional-minded theater audiences and also disrupt their emotional immersion and fragment the narrative. Thus, while these techniques can serve as powerful tools, their success depends on thoughtful execution and a clear artistic purpose.",
+          "rawText": "Of course, such innovations may confuse rather than enlighten more traditional-minded theater audiences and also disrupt their emotional immersion and fragment the narrative. Thus, while these techniques can serve as powerful tools, their success depends on thoughtful execution and a clear artistic purpose.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "Of course, such innovations may confuse rather than enlighten more traditional-minded theater audiences and also disrupt their emotional immersion and fragment the narrative."
+            },
+            {
+              "sentenceId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Thus, while these techniques can serve as powerful tools, their success depends on thoughtful execution and a clear artistic purpose."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is the passage mainly about?",
+      "rawDisplayText": "31. What is the passage mainly about?",
+      "payload": {
+        "passageId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01-opt-1",
+            "optionOrder": 1,
+            "text": "The influence of traditional theater on modern audiences"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01-opt-2",
+            "optionOrder": 2,
+            "text": "The role of audience participation in theatrical performances"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01-opt-3",
+            "optionOrder": 3,
+            "text": "New approaches to theatrical storytelling and audience involvement"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01-opt-4",
+            "optionOrder": 4,
+            "text": "The challenges of interpreting nonlinear narratives in drama"
+          }
+        ],
+        "correctOptionId": "reading-rap-5773e5b9a84f86d3ac356a45-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is a key difference between Mother Courage and Her Children and Sleep No More?",
+      "rawDisplayText": "32. According to the passage, what is a key difference between Mother Courage and Her Children and Sleep No More?",
+      "payload": {
+        "passageId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Mother Courage and Her Children uses audience interaction to create emotional immersion, while Sleep No More avoids direct engagement."
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Mother Courage and Her Children involves some interaction with the audience, while Sleep No More involves actual audience participation."
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Mother Courage and Her Children presents a fragmented narrative, while Sleep No More follows a linear storyline."
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Mother Courage and Her Children is based on historical events, while Sleep No More is entirely fictional."
+          }
+        ],
+        "correctOptionId": "reading-rap-5773e5b9a84f86d3ac356a45-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following best describes the function of paragraph 3 in the passage?",
+      "rawDisplayText": "33. Which of the following best describes the function of paragraph 3 in the passage?",
+      "payload": {
+        "passageId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It offers a conjecture about what new playwriting techniques mean for theater."
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It summarizes the historical development of experimental theater techniques."
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It critiques the effectiveness of audience-centered performance styles."
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It introduces a counterargument to the use of nonlinear narratives in drama."
+          }
+        ],
+        "correctOptionId": "reading-rap-5773e5b9a84f86d3ac356a45-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"evoke\" in the passage is closest in meaning to",
+      "rawDisplayText": "34. The word \"evoke\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04-opt-1",
+            "optionOrder": 1,
+            "text": "measure"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04-opt-2",
+            "optionOrder": 2,
+            "text": "produce"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04-opt-3",
+            "optionOrder": 3,
+            "text": "compare"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04-opt-4",
+            "optionOrder": 4,
+            "text": "anticipate"
+          }
+        ],
+        "correctOptionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage introduces all of the following innovative approaches to playwriting EXCEPT",
+      "rawDisplayText": "35. The passage introduces all of the following innovative approaches to playwriting EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05-opt-1",
+            "optionOrder": 1,
+            "text": "presenting events out of order"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05-opt-2",
+            "optionOrder": 2,
+            "text": "actors speaking to audiences"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05-opt-3",
+            "optionOrder": 3,
+            "text": "viewers walking onto the stage"
+          },
+          {
+            "optionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05-opt-4",
+            "optionOrder": 4,
+            "text": "playwrights joining the cast"
+          }
+        ],
+        "correctOptionId": "reading-rap-5773e5b9a84f86d3ac356a45-q05-opt-4"
+      }
+    }
+  ]
+}

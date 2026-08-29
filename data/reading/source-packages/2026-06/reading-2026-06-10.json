@@ -1,0 +1,1711 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.10",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Rock formations offer valuable insights into Earth's history. Sedimentary layers, for example, reveal past environments. By analyzing their composition and arrangement, geologists can determine if an area was once underwater or exposed. Over time, pressure trans_ _ _ _ _ sediments in_ _ solid ro_ _, preserving evid_ _ _ _ of anc_ _ _ _ climates a_ _ geological eve_ _ _. Fossils wit_ _ _ layers sh_ _ what orga_ _ _ _ _ once lived there. Through such studies, scientists reconstruct Earth's past and gain a deeper understanding of the dynamic processes that continue to shape the planet's surface.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Rock formations offer valuable insights into Earth's history. Sedimentary layers, for example, reveal past environments. By analyzing their composition and arrangement, geologists can determine if an area was once underwater or exposed. Over time, pressure trans_ _ _ _ _ sediments in_ _ solid ro_ _, preserving evid_ _ _ _ of anc_ _ _ _ climates a_ _ geological eve_ _ _. Fossils wit_ _ _ layers sh_ _ what orga_ _ _ _ _ once lived there. Through such studies, scientists reconstruct Earth's past and gain a deeper understanding of the dynamic processes that continue to shape the planet's surface.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Rock formations offer valuable insights into Earth's history. Sedimentary layers, for example, reveal past environments. By analyzing their composition and arrangement, geologists can determine if an area was once underwater or exposed. Over time, pressure "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " sediments "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " solid "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", preserving "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " climates "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " geological "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Fossils "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " layers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " what "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " once lived there. Through such studies, scientists reconstruct Earth's past and gain a deeper understanding of the dynamic processes that continue to shape the planet's surface."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "transforms",
+                "prefix": "trans",
+                "displayText": "trans_ _ _ _ _",
+                "missingText": "forms",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "into",
+                "prefix": "in",
+                "displayText": "in_ _",
+                "missingText": "to",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "rock",
+                "prefix": "ro",
+                "displayText": "ro_ _",
+                "missingText": "ck",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "evidence",
+                "prefix": "evid",
+                "displayText": "evid_ _ _ _",
+                "missingText": "ence",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "ancient",
+                "prefix": "anc",
+                "displayText": "anc_ _ _ _",
+                "missingText": "ient",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "events",
+                "prefix": "eve",
+                "displayText": "eve_ _ _",
+                "missingText": "nts",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "within",
+                "prefix": "wit",
+                "displayText": "wit_ _ _",
+                "missingText": "hin",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "show",
+                "prefix": "sh",
+                "displayText": "sh_ _",
+                "missingText": "ow",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q01-10-p01",
+                "answer": "organisms",
+                "prefix": "orga",
+                "displayText": "orga_ _ _ _ _",
+                "missingText": "nisms",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The urban heat island (UHI) effect is a phenomenon where urban areas experience significantly higher temperatures than surrounding rural regions. This temperature diffe_ _ _ _ _ is cau_ _ _ by t_ _ abundance o_ heat-absorbing surf_ _ _ _ like conc_ _ _ _, which ret_ _ _ heat dur_ _ _ the d_ _ and rel_ _ _ _ it slowly at night. Reduced vegetation and limited airflow in cities further intensify the effect, leading to increased energy consumption, elevated air pollution, and health risks, especially during heatwaves. Green spaces in urban areas play a critical role in combatting the effects of UHI.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "The urban heat island (UHI) effect is a phenomenon where urban areas experience significantly higher temperatures than surrounding rural regions. This temperature diffe_ _ _ _ _ is cau_ _ _ by t_ _ abundance o_ heat-absorbing surf_ _ _ _ like conc_ _ _ _, which ret_ _ _ heat dur_ _ _ the d_ _ and rel_ _ _ _ it slowly at night. Reduced vegetation and limited airflow in cities further intensify the effect, leading to increased energy consumption, elevated air pollution, and health risks, especially during heatwaves. Green spaces in urban areas play a critical role in combatting the effects of UHI.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The urban heat island (UHI) effect is a phenomenon where urban areas experience significantly higher temperatures than surrounding rural regions. This temperature "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " is "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " by "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " abundance "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " heat-absorbing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " like "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", which "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " heat "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " it slowly at night. Reduced vegetation and limited airflow in cities further intensify the effect, leading to increased energy consumption, elevated air pollution, and health risks, especially during heatwaves. Green spaces in urban areas play a critical role in combatting the effects of UHI."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "difference",
+                "prefix": "diffe",
+                "displayText": "diffe_ _ _ _ _",
+                "missingText": "rence",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "caused",
+                "prefix": "cau",
+                "displayText": "cau_ _ _",
+                "missingText": "sed",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "surfaces",
+                "prefix": "surf",
+                "displayText": "surf_ _ _ _",
+                "missingText": "aces",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "concrete",
+                "prefix": "conc",
+                "displayText": "conc_ _ _ _",
+                "missingText": "rete",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "retain",
+                "prefix": "ret",
+                "displayText": "ret_ _ _",
+                "missingText": "ain",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "during",
+                "prefix": "dur",
+                "displayText": "dur_ _ _",
+                "missingText": "ing",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "day",
+                "prefix": "d",
+                "displayText": "d_ _",
+                "missingText": "ay",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-10-m1-ctw-q11-20-p01",
+                "answer": "release",
+                "prefix": "rel",
+                "displayText": "rel_ _ _ _",
+                "missingText": "ease",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-rdl-03",
+      "module": "rdl",
+      "title": "University STEM Peer Support Group",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-069",
+          "title": "University STEM Peer Support Group",
+          "source": "material-index.json#RDL-069",
+          "sourceDate": "2026-06-10",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-069/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-069/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What is suggested about the group?",
+          "rawDisplayText": "21. What is suggested about the group?",
+          "payload": {
+            "materialId": "RDL-069",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Students who are challenged by STEM courses may benefit from participating."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Meetings are held every week in Armstrong Hall."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "The group is organized and led by STEM professors."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "The group regularly meets online."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is indicated about the study tips workshop?",
+          "rawDisplayText": "22. What is indicated about the study tips workshop?",
+          "payload": {
+            "materialId": "RDL-069",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "It is open to students from other universities."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "It includes faculty members as active participants."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "It focuses on test preparation."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "It provides individualized academic counseling."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q22-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-rdl-05",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-043",
+          "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+          "source": "material-index.json#RDL-043",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-043/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-043/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the most likely subject of the course?",
+          "rawDisplayText": "23. What is the most likely subject of the course?",
+          "payload": {
+            "materialId": "RDL-043",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Calculus"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Biology"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Physics"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Sociology"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is NOT mentioned as an assessment method?",
+          "rawDisplayText": "24. What is NOT mentioned as an assessment method?",
+          "payload": {
+            "materialId": "RDL-043",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Weekly exercises"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Lab reports"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Tests"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Essays"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q24-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-rdl-07",
+      "module": "rdl",
+      "title": "Internship fair follow-up",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-018",
+          "title": "Internship fair follow-up",
+          "source": "material-index.json#RDL-018",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-018/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-018/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is most likely true about Nia's level of interest in BrightPath Analytics?",
+          "rawDisplayText": "25. What is most likely true about Nia's level of interest in BrightPath Analytics?",
+          "payload": {
+            "materialId": "RDL-018",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "She is unsure whether she wants to continue the application process."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "She is enthusiastic about the opportunity and hopes to move forward."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "She prefers another company whose representative she met at the fair."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "She is only applying because her advisor recommended that she do it."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "According to her email, Nia gained skills that will help her succeed as an intern at BrightPath Analytics from",
+          "rawDisplayText": "26. According to her email, Nia gained skills that will help her succeed as an intern at BrightPath Analytics from",
+          "payload": {
+            "materialId": "RDL-018",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "hardware design case studies that she has done"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "creative writing classes that she has taken"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "her major subject and minor subject coursework"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "her previous work experience in marketing"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "Nia expects which of the following to be a part of the application process?",
+          "rawDisplayText": "27. Nia expects which of the following to be a part of the application process?",
+          "payload": {
+            "materialId": "RDL-018",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "An interview at BrightPath Analytics headquarters"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "The completion of a brief screening exam"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "The successful completion of a trial work period"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "The submission of a recommendation letter"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q27-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-rdl-10",
+      "module": "rdl",
+      "title": "Elena Rowe (4:44 P.M.)",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-003",
+          "title": "Elena Rowe (4:44 P.M.)",
+          "source": "material-index.json#RDL-003",
+          "sourceDate": "2026-05-03",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-003/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-003/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "What can be concluded about Eli?",
+          "rawDisplayText": "28. What can be concluded about Eli?",
+          "payload": {
+            "materialId": "RDL-003",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "He works at an appliance repair shop."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "He has repaired refrigerators in the past."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "He is studying to be a mechanical engineer."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "He meets with his math study group every week."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "At 4:48 p.m., what does Elena imply when she writes, \"My economics class starts at noon\"?",
+          "rawDisplayText": "29. At 4:48 p.m., what does Elena imply when she writes, \"My economics class starts at noon\"?",
+          "payload": {
+            "materialId": "RDL-003",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "She has to arrive early to her economics class."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Eli can work on the problem while she is in class."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "She cannot meet Eli at the time he has suggested."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "Her economics professor has changed the class start time."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "What does Eli suggest about Elena's refrigerator?",
+          "rawDisplayText": "30. What does Eli suggest about Elena's refrigerator?",
+          "payload": {
+            "materialId": "RDL-003",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "It needs a new part."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "It cannot be repaired."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "It is a low-quality model."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "It must be brought to a shop."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q30-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m1-rap-13",
+      "module": "rap",
+      "title": "Thermodynamics and Ecosystems",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-10-m1-rap-p01",
+          "title": "Thermodynamics and Ecosystems",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-10-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "When students first encounter the laws of thermodynamics, educators often rely on simplified analogies—billiard balls, falling stones—to convey foundational principles. Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems. The first law, which asserts that energy cannot be created or destroyed but only transformed, is clearly exemplified in nature: sunlight becomes chemical energy via photosynthesis, which fuels plants, then herbivores and, ultimately, carnivores. This cascading energy transfer underscores the conservation principle while revealing the intricate interdependence among trophic (food chain) levels, with each organism depending on the energy efficiency of those occupying the level below.",
+              "rawText": "When students first encounter the laws of thermodynamics, educators often rely on simplified analogies—billiard balls, falling stones—to convey foundational principles. Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems. The first law, which asserts that energy cannot be created or destroyed but only transformed, is clearly exemplified in nature: sunlight becomes chemical energy via photosynthesis, which fuels plants, then herbivores and, ultimately, carnivores. This cascading energy transfer underscores the conservation principle while revealing the intricate interdependence among trophic (food chain) levels, with each organism depending on the energy efficiency of those occupying the level below.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "When students first encounter the laws of thermodynamics, educators often rely on simplified analogies—billiard balls, falling stones—to convey foundational principles."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "The first law, which asserts that energy cannot be created or destroyed but only transformed, is clearly exemplified in nature: sunlight becomes chemical energy via photosynthesis, which fuels plants, then herbivores and, ultimately, carnivores."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This cascading energy transfer underscores the conservation principle while revealing the intricate interdependence among trophic (food chain) levels, with each organism depending on the energy efficiency of those occupying the level below."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-10-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "In contrast, the second law—which states that entropy, or disorder, tends to increase—illuminates why ecosystems evolve toward less efficient energy use. While simple organisms at the base of the food chain convert energy with relative efficiency, larger animals lose much of their energy intake. This disparity is not merely a biological curiosity; it reflects a fundamental thermodynamic constraint. As ecosystems mature, energy becomes increasingly fragmented and less available for productive work. Exceptions exist— some top predators exhibit surprising metabolic efficiency-but the general trend remains: Complexity breeds energy loss.",
+              "rawText": "In contrast, the second law—which states that entropy, or disorder, tends to increase—illuminates why ecosystems evolve toward less efficient energy use. While simple organisms at the base of the food chain convert energy with relative efficiency, larger animals lose much of their energy intake. This disparity is not merely a biological curiosity; it reflects a fundamental thermodynamic constraint. As ecosystems mature, energy becomes increasingly fragmented and less available for productive work. Exceptions exist— some top predators exhibit surprising metabolic efficiency-but the general trend remains: Complexity breeds energy loss.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "In contrast, the second law—which states that entropy, or disorder, tends to increase—illuminates why ecosystems evolve toward less efficient energy use."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "While simple organisms at the base of the food chain convert energy with relative efficiency, larger animals lose much of their energy intake."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This disparity is not merely a biological curiosity; it reflects a fundamental thermodynamic constraint."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "As ecosystems mature, energy becomes increasingly fragmented and less available for productive work."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Exceptions exist— some top predators exhibit surprising metabolic efficiency-but the general trend remains: Complexity breeds energy loss."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 1 that introduces the idea that thermodynamics has implications that the reader may not expect. Select the sentence to make your choice.",
+          "rawDisplayText": "31. Identify the sentence in paragraph 1 that introduces the idea that thermodynamics has implications that the reader may not expect. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-10-m1-rap-p01",
+            "targetParagraphId": "reading-2026-06-10-m1-rap-p01-p01",
+            "correctSentenceId": "reading-2026-06-10-m1-rap-p01-p01-s02"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author note that \"sunlight becomes chemical energy\"?",
+          "rawDisplayText": "32. Why does the author note that \"sunlight becomes chemical energy\"?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate the claim that educators rely on simple analogies when teaching thermodynamics"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "To challenge the idea that thermodynamics offers a way of understanding complex phenomena"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "To provide an example of increasing entropy in a biological system"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "To show how the first law of thermodynamics is applicable to food chains"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q32-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what principle explains the trend toward less efficient energy use in ecosystems?",
+          "rawDisplayText": "33. According to the passage, what principle explains the trend toward less efficient energy use in ecosystems?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "Smaller systems tend to combine into larger ones."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "As entropy increases, less energy is available for work."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "Energy is never lost but takes on many different forms."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "Top predators are vulnerable to changes in an ecosystem."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"disparity\" in the passage is closest in meaning to",
+          "rawDisplayText": "34. The word \"disparity\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-10-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "tendency"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "difference"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "comparison"
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "conclusion"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q34-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about top predators?",
+          "rawDisplayText": "35. What does the passage suggest about top predators?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "They are the most complex organisms in an ecosystem."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "They are metabolically more efficient than their prey."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "Their metabolic efficiency depends on their habitat."
+              },
+              {
+                "optionId": "reading-2026-06-10-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "They use up their energy more slowly as they mature."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m1-q35-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The cultural exchange between Europe and the Near East during the medieval period had a lasting impact on art, science, and philosophy. Although the Crusades were primarily military campaigns, they facil_ _ _ _ _ _ contact th_ _ led t_ the tran_ _ _ _ of id_ _ _ and techno_ _ _ _ _ _. European scho_ _ _ _ gained acc_ _ _ to adva_ _ _ _ knowledge i_ mathematics and medicine from the Islamic world, sparking renewed intellectual activity. Translations of Arabic philosophical texts, including commentaries on Aristotle, challenged existing doctrines and inspired new schools of thought. This exchange helped reshape European intellectual life.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The cultural exchange between Europe and the Near East during the medieval period had a lasting impact on art, science, and philosophy. Although the Crusades were primarily military campaigns, they facil_ _ _ _ _ _ contact th_ _ led t_ the tran_ _ _ _ of id_ _ _ and techno_ _ _ _ _ _. European scho_ _ _ _ gained acc_ _ _ to adva_ _ _ _ knowledge i_ mathematics and medicine from the Islamic world, sparking renewed intellectual activity. Translations of Arabic philosophical texts, including commentaries on Aristotle, challenged existing doctrines and inspired new schools of thought. This exchange helped reshape European intellectual life.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The cultural exchange between Europe and the Near East during the medieval period had a lasting impact on art, science, and philosophy. Although the Crusades were primarily military campaigns, they "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " contact "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " led "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". European "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " gained "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " knowledge "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " mathematics and medicine from the Islamic world, sparking renewed intellectual activity. Translations of Arabic philosophical texts, including commentaries on Aristotle, challenged existing doctrines and inspired new schools of thought. This exchange helped reshape European intellectual life."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "facilitated",
+                "prefix": "facil",
+                "displayText": "facil_ _ _ _ _ _",
+                "missingText": "itated",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "that",
+                "prefix": "th",
+                "displayText": "th_ _",
+                "missingText": "at",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "transfer",
+                "prefix": "tran",
+                "displayText": "tran_ _ _ _",
+                "missingText": "sfer",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "ideas",
+                "prefix": "id",
+                "displayText": "id_ _ _",
+                "missingText": "eas",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "technologies",
+                "prefix": "techno",
+                "displayText": "techno_ _ _ _ _ _",
+                "missingText": "logies",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "scholars",
+                "prefix": "scho",
+                "displayText": "scho_ _ _ _",
+                "missingText": "lars",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "access",
+                "prefix": "acc",
+                "displayText": "acc_ _ _",
+                "missingText": "ess",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "advanced",
+                "prefix": "adva",
+                "displayText": "adva_ _ _ _",
+                "missingText": "nced",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-10-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-10-m2-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-10-m2-rap-19",
+      "module": "rap",
+      "title": "The Getty Kouros",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.10",
+        "occurrenceDate": "2026-06-10",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-10-m2-rap-p01",
+          "title": "The Getty Kouros",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-10-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "In 1985, the J. Paul Getty Museum acquired what it believed to be a Greek kouros (a statue of a naked youth) dating from the Archaic period (650-480 B.C.E.), estimating the date of origin as approximately 530 B.C.E. The Getty Kouros's authenticity soon came into question, however. Supporters cited scientific analyses suggesting that the statue's marble is consistent with marble known to have come from ancient Greek quarries and that its surface shows chemical changes consistent with long. term burial. Some scholars also argue that peculiar inconsistencies in the statue's style—it incorporates features from different regions and periods—could reflect a transitional moment in Greek sculpture.",
+              "rawText": "In 1985, the J. Paul Getty Museum acquired what it believed to be a Greek kouros (a statue of a naked youth) dating from the Archaic period (650-480 B.C.E.), estimating the date of origin as approximately 530 B.C.E. The Getty Kouros's authenticity soon came into question, however. Supporters cited scientific analyses suggesting that the statue's marble is consistent with marble known to have come from ancient Greek quarries and that its surface shows chemical changes consistent with long. term burial. Some scholars also argue that peculiar inconsistencies in the statue's style—it incorporates features from different regions and periods—could reflect a transitional moment in Greek sculpture.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "In 1985, the J. Paul Getty Museum acquired what it believed to be a Greek kouros (a statue of a naked youth) dating from the Archaic period (650-480 B.C.E.), estimating the date of origin as approximately 530 B.C.E. The Getty Kouros's authenticity soon came into question, however."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Supporters cited scientific analyses suggesting that the statue's marble is consistent with marble known to have come from ancient Greek quarries and that its surface shows chemical changes consistent with long."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "term burial."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some scholars also argue that peculiar inconsistencies in the statue's style—it incorporates features from different regions and periods—could reflect a transitional moment in Greek sculpture."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-10-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Skeptics contend that these inconsistencies undermine the case for authenticity. The Kouros combines traits from several other known sixth-century B.C.E. kouroi in a way that appears too eclectic to be genuine. To these observers, the statue looks like a modern forger's creation—a confused imitation of Greek Archaic elements rather than the genuine product of a coherent sculptural tradition. Furthermore, scientists recognize that modern forgers can artificially age marble.",
+              "rawText": "Skeptics contend that these inconsistencies undermine the case for authenticity. The Kouros combines traits from several other known sixth-century B.C.E. kouroi in a way that appears too eclectic to be genuine. To these observers, the statue looks like a modern forger's creation—a confused imitation of Greek Archaic elements rather than the genuine product of a coherent sculptural tradition. Furthermore, scientists recognize that modern forgers can artificially age marble.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Skeptics contend that these inconsistencies undermine the case for authenticity."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "The Kouros combines traits from several other known sixth-century B.C.E. kouroi in a way that appears too eclectic to be genuine."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "To these observers, the statue looks like a modern forger's creation—a confused imitation of Greek Archaic elements rather than the genuine product of a coherent sculptural tradition."
+                },
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Furthermore, scientists recognize that modern forgers can artificially age marble."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-10-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Because neither scientific analysis nor stylistic evaluation yields decisive results, the question of the Kouros's authenticity remains unresolved.",
+              "rawText": "Because neither scientific analysis nor stylistic evaluation yields decisive results, the question of the Kouros's authenticity remains unresolved.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-10-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Because neither scientific analysis nor stylistic evaluation yields decisive results, the question of the Kouros's authenticity remains unresolved."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-10-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage indicate about the \"chemical changes\" in the marble of the Getty Kouros?",
+          "rawDisplayText": "11. What does the passage indicate about the \"chemical changes\" in the marble of the Getty Kouros?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "They could not have occurred naturally."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "They were caused by scientists testing the marble's age."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "They explain some inconsistencies in features of the Getty Kouros."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "They may suggest an ancient origin for the marble of the Getty Kouros."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author mentions \"a transitional moment in Greek sculpture\" primarily in order to",
+          "rawDisplayText": "12. The author mentions \"a transitional moment in Greek sculpture\" primarily in order to",
+          "payload": {
+            "passageId": "reading-2026-06-10-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "question a claim about sixth-century B.C.E. kouroi"
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "point out how some people explain the style of the Getty Kouros"
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "support the view that artistic styles evolve over time"
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "characterize sculptures typical of the Greek Archaic period"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the main reason that the authenticity of the Getty Kouros is in doubt?",
+          "rawDisplayText": "13. What is the main reason that the authenticity of the Getty Kouros is in doubt?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "Modern forgers are known to have created similar sculptures."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "The Greeks did not create many sculptures during the sixth century B.C.E."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "Observers may have misunderstood Greek Archaic elements."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "The Getty Kouros combines styles that are too diverse."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m2-q13-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is known about marble?",
+          "rawDisplayText": "14. According to the passage, what is known about marble?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "It can be quickly produced by forgers in large amounts."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "It is difficult for forgers to imitate."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "It can be made to appear older than it actually is."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "Its traits could affect the style of Greek sculptures."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-10-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following best expresses the main idea of the passage?",
+          "rawDisplayText": "15. Which of the following best expresses the main idea of the passage?",
+          "payload": {
+            "passageId": "reading-2026-06-10-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-10-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "The Getty Kouros is not typical of Greek kouroi and may or may not be genuine."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "The Getty Kouros is composed of marble that has probably been artificially aged."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "The Getty Kouros is probably of Greek origin but unlikely to be from the Archaic period."
+              },
+              {
+                "optionId": "reading-2026-06-10-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "The Getty Kouros was likely forged by a sculptor with limited knowledge of Greek sculptural traditions."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-10-m2-q15-opt-1"
+          }
+        }
+      ]
+    }
+  ]
+}

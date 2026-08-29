@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+    "module": "rap",
+    "title": "Video Evidence in U.S. Courts",
+    "firstSeenDate": "2026-05-17",
+    "firstSeenSourceLabel": "5.17",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "9597f97b9636121c0ef7ec58fcb6a1e349d75b53fd1a9d7fea70a3ab28743b88",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-17-m2-rap-19",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "sourceKind": "docx",
+      "sourceLabel": "5.17",
+      "occurrenceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "title": "Video Evidence in U.S. Courts",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "In the United States, as in some other countries, video evidence has become integral to the criminal justice system as technological advances have made cameras nearly ubiquitous. Police officers often wear body cameras, security cameras monitor public areas, and nearly everyone carries a smartphone capable of recording high-quality videos. While such recordings are widely seen as reliable evidentiary tools, they have certain limitations.",
+          "rawText": "In the United States, as in some other countries, video evidence has become integral to the criminal justice system as technological advances have made cameras nearly ubiquitous. Police officers often wear body cameras, security cameras monitor public areas, and nearly everyone carries a smartphone capable of recording high-quality videos. While such recordings are widely seen as reliable evidentiary tools, they have certain limitations.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "In the United States, as in some other countries, video evidence has become integral to the criminal justice system as technological advances have made cameras nearly ubiquitous."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Police officers often wear body cameras, security cameras monitor public areas, and nearly everyone carries a smartphone capable of recording high-quality videos."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "While such recordings are widely seen as reliable evidentiary tools, they have certain limitations."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "For example, videos are usually taken from a single vantage point, potentially giving viewers a misleading impression of events. A single camera angle might fail to capture what occurs just outside the frame, leading observers to misinterpret what they see. Additionally, video footage has no way of conveying interpersonal and emotional context: A person’s actions might appear antagonistic even if the person was acting in self-defense.",
+          "rawText": "For example, videos are usually taken from a single vantage point, potentially giving viewers a misleading impression of events. A single camera angle might fail to capture what occurs just outside the frame, leading observers to misinterpret what they see. Additionally, video footage has no way of conveying interpersonal and emotional context: A person’s actions might appear antagonistic even if the person was acting in self-defense.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "For example, videos are usually taken from a single vantage point, potentially giving viewers a misleading impression of events."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "A single camera angle might fail to capture what occurs just outside the frame, leading observers to misinterpret what they see."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Additionally, video footage has no way of conveying interpersonal and emotional context: A person’s actions might appear antagonistic even if the person was acting in self-defense."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Despite these limitations, legal experts emphasize that video evidence plays a significant role in courtrooms. Jurors (people chosen to consider evidence and decide a case) might dismiss eyewitness testimonies as unreliable or perceive oral accounts as inconsistent, while videos show events more directly. When multiple recordings are available from different angles, an even more reliable sense of an incident can emerge. Nevertheless, courts often remind jurors to evaluate video evidence cautiously.",
+          "rawText": "Despite these limitations, legal experts emphasize that video evidence plays a significant role in courtrooms. Jurors (people chosen to consider evidence and decide a case) might dismiss eyewitness testimonies as unreliable or perceive oral accounts as inconsistent, while videos show events more directly. When multiple recordings are available from different angles, an even more reliable sense of an incident can emerge. Nevertheless, courts often remind jurors to evaluate video evidence cautiously.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Despite these limitations, legal experts emphasize that video evidence plays a significant role in courtrooms."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Jurors (people chosen to consider evidence and decide a case) might dismiss eyewitness testimonies as unreliable or perceive oral accounts as inconsistent, while videos show events more directly."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "When multiple recordings are available from different angles, an even more reliable sense of an incident can emerge."
+            },
+            {
+              "sentenceId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Nevertheless, courts often remind jurors to evaluate video evidence cautiously."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q01",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is the relationship between the first sentence and the second sentence of the passage?",
+      "rawDisplayText": "11. What is the relationship between the first sentence and the second sentence of the passage?",
+      "payload": {
+        "passageId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q01-opt-1",
+            "optionOrder": 1,
+            "text": "The first sentence makes a generalization, and the second sentence introduces exceptions to the generalization."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q01-opt-2",
+            "optionOrder": 2,
+            "text": "The first sentence introduces a question, and the second sentence offers possible answers to the question."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q01-opt-3",
+            "optionOrder": 3,
+            "text": "The first sentence makes a claim, and the second sentence provides examples to illustrate that claim."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q01-opt-4",
+            "optionOrder": 4,
+            "text": "The first sentence presents one view of a subject, and the second sentence presents a contrasting view."
+          }
+        ],
+        "correctOptionId": "reading-rap-9597f97b9636121c0ef7ec58-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q02",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage suggests which of the following about viewers of videos?",
+      "rawDisplayText": "12. The passage suggests which of the following about viewers of videos?",
+      "payload": {
+        "passageId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They may not see actions that are critical to understanding an incident because of the way the video is framed."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They may not find a video recording of an incident as revealing as an eyewitness account of the event."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They are more likely to trust the accuracy of a video recorded on a police officer’s body camera than one taken with a smartphone."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They are likely to regard video recordings skeptically because they know that videos can be misleading."
+          }
+        ],
+        "correctOptionId": "reading-rap-9597f97b9636121c0ef7ec58-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q03",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the author point out when discussing “context”?",
+      "rawDisplayText": "13. What does the author point out when discussing “context”?",
+      "payload": {
+        "passageId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q03-opt-1",
+            "optionOrder": 1,
+            "text": "The setting in which a video is viewed may affect the way viewers perceive the recorded events."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q03-opt-2",
+            "optionOrder": 2,
+            "text": "People may draw incorrect conclusions about others’ motivations from what they observe in a video."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Video recordings can be used either to defend an individual’s actions or to depict the individual as an aggressor."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q03-opt-4",
+            "optionOrder": 4,
+            "text": "The reliability of video recordings of events should be compared to the reliability of oral accounts of those events."
+          }
+        ],
+        "correctOptionId": "reading-rap-9597f97b9636121c0ef7ec58-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q04",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage indicates that “legal experts” hold which of the following views?",
+      "rawDisplayText": "14. The passage indicates that “legal experts” hold which of the following views?",
+      "payload": {
+        "passageId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Jurors are likely to accept videos as objective depictions of events whereas they view witness testimony with skepticism."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Recent improvements in technology have made it so easy to display video evidence to jurors that other kinds of evidence may be neglected."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Video recordings should not be used as evidence in courtrooms unless multiple recordings taken from different vantage points can be shown."
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Courts should not undermine jurors’ confidence in their abilities by overemphasizing the possibility of misinterpreting videos."
+          }
+        ],
+        "correctOptionId": "reading-rap-9597f97b9636121c0ef7ec58-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q05",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “cautiously” in the passage is closest in meaning to",
+      "rawDisplayText": "15. The word “cautiously” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q05-opt-1",
+            "optionOrder": 1,
+            "text": "reluctantly"
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q05-opt-2",
+            "optionOrder": 2,
+            "text": "carefully"
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q05-opt-3",
+            "optionOrder": 3,
+            "text": "decisively"
+          },
+          {
+            "optionId": "reading-rap-9597f97b9636121c0ef7ec58-q05-opt-4",
+            "optionOrder": 4,
+            "text": "confidently"
+          }
+        ],
+        "correctOptionId": "reading-rap-9597f97b9636121c0ef7ec58-q05-opt-2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+    "module": "rdl",
+    "title": "Fall Midterm Schedule",
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "52cf08e9825eabdbeb06b412324198113099d5b75e91dccbce95ffcd7d32fe2d",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m1-rdl-03",
+      "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-5b-m1-rdl-03",
+      "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5B",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-007",
+      "title": "Fall Midterm Schedule",
+      "source": "material-index.json#RDL-007",
+      "sourceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-007/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-007/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01",
+      "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What does the notice indicate about the fall midterm exam schedule?",
+      "rawDisplayText": "21. What does the notice indicate about the fall midterm exam schedule?",
+      "payload": {
+        "materialId": "RDL-007",
+        "options": [
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Some academic divisions will start giving exams on October 1."
+          },
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Some science courses have a later exam slot than other science courses."
+          },
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To find exam location information, students must go online."
+          },
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Exam date information must be requested from the professor."
+          }
+        ],
+        "correctOptionId": "reading-rdl-52cf08e9825eabdbeb06b412-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02",
+      "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "A student has a lab course midterm and an engineering midterm scheduled on the same day. According to the notice, what is she required to do?",
+      "rawDisplayText": "22. A student has a lab course midterm and an engineering midterm scheduled on the same day. According to the notice, what is she required to do?",
+      "payload": {
+        "materialId": "RDL-007",
+        "options": [
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Ask her engineering professor to move the exam to another day"
+          },
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Inform the Registrar of the situation no later than October 1"
+          },
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Ask her science professor for permission to start her exam early"
+          },
+          {
+            "optionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Inform the science and engineering divisions by October 20"
+          }
+        ],
+        "correctOptionId": "reading-rdl-52cf08e9825eabdbeb06b412-q02-opt-2"
+      }
+    }
+  ]
+}

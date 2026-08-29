@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-00948b985cdad27912ef0bc5",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-13",
+    "firstSeenSourceLabel": "5.13",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "00948b985cdad27912ef0bc5708afdc3ef553f68b79eb2ef5826835b28dfc61b",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-13-m1-ctw-02",
+      "logicalItemId": "reading-ctw-00948b985cdad27912ef0bc5",
+      "sourceKind": "docx",
+      "sourceLabel": "5.13",
+      "occurrenceDate": "2026-05-13",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-00948b985cdad27912ef0bc5-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-00948b985cdad27912ef0bc5-q01",
+      "logicalItemId": "reading-ctw-00948b985cdad27912ef0bc5",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Initially, humans used naturally occurring objects as tools (for instance, a sharp stone or a forked stick). Later, peo_ _ _ began purpos_ _ _ _ _ _ to sh_ _ _ wood a_ _ stone in_ _ tools. Bec_ _ _ _ of t_ _ perishable nat_ _ _ of wo_ _, modern know_ _ _ _ _ of how it was used in prehistoric times is largely a matter of inference. With tools of stone, however, archaeologists are on firmer ground; there are a vast number of surviving artifacts. Throughout the world, flint was a favored material because of its unusual physical properties.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Initially, humans used naturally occurring objects as tools (for instance, a sharp stone or a forked stick). Later, peo_ _ _ began purpos_ _ _ _ _ _ to sh_ _ _ wood a_ _ stone in_ _ tools. Bec_ _ _ _ of t_ _ perishable nat_ _ _ of wo_ _, modern know_ _ _ _ _ of how it was used in prehistoric times is largely a matter of inference. With tools of stone, however, archaeologists are on firmer ground; there are a vast number of surviving artifacts. Throughout the world, flint was a favored material because of its unusual physical properties.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Initially, humans used naturally occurring objects as tools (for instance, a sharp stone or a forked stick). Later, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " began "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " wood "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " stone "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " tools. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " perishable "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ", modern "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " of how it was used in prehistoric times is largely a matter of inference. With tools of stone, however, archaeologists are on firmer ground; there are a vast number of surviving artifacts. Throughout the world, flint was a favored material because of its unusual physical properties."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "people",
+            "prefix": "peo",
+            "displayText": "peo_ _ _",
+            "missingText": "ple",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "purposefully",
+            "prefix": "purpos",
+            "displayText": "purpos_ _ _ _ _ _",
+            "missingText": "efully",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "shape",
+            "prefix": "sh",
+            "displayText": "sh_ _ _",
+            "missingText": "ape",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "into",
+            "prefix": "in",
+            "displayText": "in_ _",
+            "missingText": "to",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "Because",
+            "prefix": "Bec",
+            "displayText": "Bec_ _ _ _",
+            "missingText": "ause",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "nature",
+            "prefix": "nat",
+            "displayText": "nat_ _ _",
+            "missingText": "ure",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "wood",
+            "prefix": "wo",
+            "displayText": "wo_ _",
+            "missingText": "od",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-00948b985cdad27912ef0bc5-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-00948b985cdad27912ef0bc5-q01-p01",
+            "answer": "knowledge",
+            "prefix": "know",
+            "displayText": "know_ _ _ _ _",
+            "missingText": "ledge",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

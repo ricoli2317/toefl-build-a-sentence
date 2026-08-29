@@ -1,0 +1,5171 @@
+{
+  "schema_version": 2,
+  "image_file": "material_final.png",
+  "image_sha256": "d7112f4f8de79bbc5ec55a7aa3764fcb991dfe7dfae77f034aae261e248eb032",
+  "canvas_width": 1615,
+  "canvas_height": 1052,
+  "coordinate_space": "normalized_top_left_xywh_0_1",
+  "ocr_engine": "Apple Vision VNRecognizeTextRequest + boundingBoxForRange",
+  "language_correction": false,
+  "character_positioning": "deterministic glyph segmentation; no uniform-width boxes",
+  "counts": {
+    "lines": 9,
+    "words": 51,
+    "chars": 267,
+    "needs_review_words": 0,
+    "needs_review_chars": 0
+  },
+  "lines": [
+    {
+      "line_index": 0,
+      "text": "NOTICE",
+      "bbox": {
+        "x": 0.41855964,
+        "y": 0.14920869,
+        "width": 0.17305514,
+        "height": 0.0542612
+      },
+      "confidence": 1.0,
+      "break_after": "paragraph",
+      "words": [
+        {
+          "id": "l0w0",
+          "line_index": 0,
+          "word_index": 0,
+          "text": "NOTICE",
+          "bbox": {
+            "x": 0.41855964,
+            "y": 0.14920869,
+            "width": 0.17305514,
+            "height": 0.0542612
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.27438,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w0c0",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 0,
+              "char": "N",
+              "bbox": {
+                "x": 0.41795666,
+                "y": 0.14920869,
+                "width": 0.03529412,
+                "height": 0.0542612
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c1",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 1,
+              "char": "O",
+              "bbox": {
+                "x": 0.45325077,
+                "y": 0.14920869,
+                "width": 0.03405573,
+                "height": 0.0542612
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c2",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 2,
+              "char": "T",
+              "bbox": {
+                "x": 0.4873065,
+                "y": 0.14920869,
+                "width": 0.02910217,
+                "height": 0.0542612
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c3",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 3,
+              "char": "I",
+              "bbox": {
+                "x": 0.51640867,
+                "y": 0.14920869,
+                "width": 0.01609907,
+                "height": 0.0542612
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c4",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 4,
+              "char": "C",
+              "bbox": {
+                "x": 0.53250774,
+                "y": 0.14920869,
+                "width": 0.02972136,
+                "height": 0.0542612
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c5",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 5,
+              "char": "E",
+              "bbox": {
+                "x": 0.5622291,
+                "y": 0.14920869,
+                "width": 0.02972136,
+                "height": 0.0542612
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 1,
+      "text": "Welcome to Bella Italia, the new campus dining gem!",
+      "bbox": {
+        "x": 0.08709972,
+        "y": 0.27221316,
+        "width": 0.82881051,
+        "height": 0.0719614
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l1w0",
+          "line_index": 1,
+          "word_index": 0,
+          "text": "Welcome",
+          "bbox": {
+            "x": 0.08709972,
+            "y": 0.27790221,
+            "width": 0.14224386,
+            "height": 0.06627235
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16444,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w0c0",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 6,
+              "char": "W",
+              "bbox": {
+                "x": 0.08668731,
+                "y": 0.27790221,
+                "width": 0.03219814,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c1",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 7,
+              "char": "e",
+              "bbox": {
+                "x": 0.11888545,
+                "y": 0.27790221,
+                "width": 0.01671827,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c2",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 8,
+              "char": "l",
+              "bbox": {
+                "x": 0.13560372,
+                "y": 0.27790221,
+                "width": 0.01052632,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c3",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 9,
+              "char": "c",
+              "bbox": {
+                "x": 0.14613003,
+                "y": 0.27790221,
+                "width": 0.01609907,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c4",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 10,
+              "char": "o",
+              "bbox": {
+                "x": 0.1622291,
+                "y": 0.27790221,
+                "width": 0.01857585,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c5",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 11,
+              "char": "m",
+              "bbox": {
+                "x": 0.18080495,
+                "y": 0.27790221,
+                "width": 0.03095975,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c6",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 12,
+              "char": "e",
+              "bbox": {
+                "x": 0.21176471,
+                "y": 0.27790221,
+                "width": 0.01795666,
+                "height": 0.06627235
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w1",
+          "line_index": 1,
+          "word_index": 1,
+          "text": "to",
+          "bbox": {
+            "x": 0.23437481,
+            "y": 0.27755354,
+            "width": 0.03704576,
+            "height": 0.06494293
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13255,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w1c0",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 13,
+              "char": "t",
+              "bbox": {
+                "x": 0.23405573,
+                "y": 0.27755354,
+                "width": 0.01609907,
+                "height": 0.06494293
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c1",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 14,
+              "char": "o",
+              "bbox": {
+                "x": 0.2501548,
+                "y": 0.27755354,
+                "width": 0.02167183,
+                "height": 0.06494293
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w2",
+          "line_index": 1,
+          "word_index": 2,
+          "text": "Bella",
+          "bbox": {
+            "x": 0.27645341,
+            "y": 0.27685619,
+            "width": 0.07912435,
+            "height": 0.0652916
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18447,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w2c0",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 15,
+              "char": "B",
+              "bbox": {
+                "x": 0.27616099,
+                "y": 0.27685619,
+                "width": 0.02352941,
+                "height": 0.0652916
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c1",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 16,
+              "char": "e",
+              "bbox": {
+                "x": 0.2996904,
+                "y": 0.27685619,
+                "width": 0.01733746,
+                "height": 0.0652916
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c2",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 17,
+              "char": "l",
+              "bbox": {
+                "x": 0.31702786,
+                "y": 0.27685619,
+                "width": 0.01052632,
+                "height": 0.0652916
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c3",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 18,
+              "char": "l",
+              "bbox": {
+                "x": 0.32755418,
+                "y": 0.27685619,
+                "width": 0.00866873,
+                "height": 0.0652916
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c4",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 19,
+              "char": "a",
+              "bbox": {
+                "x": 0.33622291,
+                "y": 0.27685619,
+                "width": 0.01981424,
+                "height": 0.0652916
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w3",
+          "line_index": 1,
+          "word_index": 3,
+          "text": "Italia,",
+          "bbox": {
+            "x": 0.3606106,
+            "y": 0.2760281,
+            "width": 0.09490382,
+            "height": 0.06542236
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15983,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w3c0",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 20,
+              "char": "I",
+              "bbox": {
+                "x": 0.36037152,
+                "y": 0.2760281,
+                "width": 0.01609907,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c1",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 21,
+              "char": "t",
+              "bbox": {
+                "x": 0.37647059,
+                "y": 0.2760281,
+                "width": 0.00123839,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c2",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 22,
+              "char": "a",
+              "bbox": {
+                "x": 0.37770898,
+                "y": 0.2760281,
+                "width": 0.02724458,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c3",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 23,
+              "char": "l",
+              "bbox": {
+                "x": 0.40495356,
+                "y": 0.2760281,
+                "width": 0.00928793,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c4",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 24,
+              "char": "i",
+              "bbox": {
+                "x": 0.41424149,
+                "y": 0.2760281,
+                "width": 0.01052632,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c5",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 25,
+              "char": "a",
+              "bbox": {
+                "x": 0.4247678,
+                "y": 0.2760281,
+                "width": 0.01981424,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c6",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 26,
+              "char": ",",
+              "bbox": {
+                "x": 0.44458204,
+                "y": 0.2760281,
+                "width": 0.01114551,
+                "height": 0.06542236
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w4",
+          "line_index": 1,
+          "word_index": 4,
+          "text": "the",
+          "bbox": {
+            "x": 0.46054727,
+            "y": 0.27554867,
+            "width": 0.05282523,
+            "height": 0.06507368
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.1601,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w4c0",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 27,
+              "char": "t",
+              "bbox": {
+                "x": 0.46006192,
+                "y": 0.27554867,
+                "width": 0.01486068,
+                "height": 0.06507368
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c1",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 28,
+              "char": "h",
+              "bbox": {
+                "x": 0.4749226,
+                "y": 0.27554867,
+                "width": 0.02105263,
+                "height": 0.06507368
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c2",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 29,
+              "char": "e",
+              "bbox": {
+                "x": 0.49597523,
+                "y": 0.27554867,
+                "width": 0.01795666,
+                "height": 0.06507368
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w5",
+          "line_index": 1,
+          "word_index": 5,
+          "text": "new",
+          "bbox": {
+            "x": 0.51840534,
+            "y": 0.27493849,
+            "width": 0.0686047,
+            "height": 0.06520444
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14014,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w5c0",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 30,
+              "char": "n",
+              "bbox": {
+                "x": 0.51826625,
+                "y": 0.27493849,
+                "width": 0.02352941,
+                "height": 0.06520444
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w5c1",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 31,
+              "char": "e",
+              "bbox": {
+                "x": 0.54179567,
+                "y": 0.27493849,
+                "width": 0.01671827,
+                "height": 0.06520444
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w5c2",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 32,
+              "char": "w",
+              "bbox": {
+                "x": 0.55851393,
+                "y": 0.27493849,
+                "width": 0.02910217,
+                "height": 0.06520444
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w6",
+          "line_index": 1,
+          "word_index": 6,
+          "text": "campus",
+          "bbox": {
+            "x": 0.59204288,
+            "y": 0.27384889,
+            "width": 0.12646277,
+            "height": 0.06568386
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15178,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w6c0",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 33,
+              "char": "c",
+              "bbox": {
+                "x": 0.59195046,
+                "y": 0.27384889,
+                "width": 0.02043344,
+                "height": 0.06568386
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w6c1",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 34,
+              "char": "a",
+              "bbox": {
+                "x": 0.6123839,
+                "y": 0.27384889,
+                "width": 0.01795666,
+                "height": 0.06568386
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w6c2",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 35,
+              "char": "m",
+              "bbox": {
+                "x": 0.63034056,
+                "y": 0.27384889,
+                "width": 0.03034056,
+                "height": 0.06568386
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w6c3",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 36,
+              "char": "p",
+              "bbox": {
+                "x": 0.66068111,
+                "y": 0.27384889,
+                "width": 0.02105263,
+                "height": 0.06568386
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w6c4",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 37,
+              "char": "u",
+              "bbox": {
+                "x": 0.68173375,
+                "y": 0.27384889,
+                "width": 0.02167183,
+                "height": 0.06568386
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w6c5",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 5,
+              "global_index": 38,
+              "char": "s",
+              "bbox": {
+                "x": 0.70340557,
+                "y": 0.27384889,
+                "width": 0.01547988,
+                "height": 0.06568386
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w7",
+          "line_index": 1,
+          "word_index": 7,
+          "text": "dining",
+          "bbox": {
+            "x": 0.72353849,
+            "y": 0.27293362,
+            "width": 0.10542347,
+            "height": 0.06550953
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16934,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w7c0",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 39,
+              "char": "d",
+              "bbox": {
+                "x": 0.72321981,
+                "y": 0.27293362,
+                "width": 0.02414861,
+                "height": 0.06550953
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w7c1",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 40,
+              "char": "i",
+              "bbox": {
+                "x": 0.74736842,
+                "y": 0.27293362,
+                "width": 0.01052632,
+                "height": 0.06550953
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w7c2",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 2,
+              "global_index": 41,
+              "char": "n",
+              "bbox": {
+                "x": 0.75789474,
+                "y": 0.27293362,
+                "width": 0.02105263,
+                "height": 0.06550953
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w7c3",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 3,
+              "global_index": 42,
+              "char": "i",
+              "bbox": {
+                "x": 0.77894737,
+                "y": 0.27293362,
+                "width": 0.00990712,
+                "height": 0.06550953
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w7c4",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 4,
+              "global_index": 43,
+              "char": "n",
+              "bbox": {
+                "x": 0.78885449,
+                "y": 0.27293362,
+                "width": 0.02043344,
+                "height": 0.06550953
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w7c5",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 5,
+              "global_index": 44,
+              "char": "g",
+              "bbox": {
+                "x": 0.80928793,
+                "y": 0.27293362,
+                "width": 0.01981424,
+                "height": 0.06550953
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w8",
+          "line_index": 1,
+          "word_index": 8,
+          "text": "gem!",
+          "bbox": {
+            "x": 0.83399481,
+            "y": 0.27221316,
+            "width": 0.08191542,
+            "height": 0.06577245
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16375,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w8c0",
+              "line_index": 1,
+              "word_index": 8,
+              "char_index": 0,
+              "global_index": 45,
+              "char": "g",
+              "bbox": {
+                "x": 0.83343653,
+                "y": 0.27221316,
+                "width": 0.02352941,
+                "height": 0.06577245
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w8c1",
+              "line_index": 1,
+              "word_index": 8,
+              "char_index": 1,
+              "global_index": 46,
+              "char": "e",
+              "bbox": {
+                "x": 0.85696594,
+                "y": 0.27221316,
+                "width": 0.01671827,
+                "height": 0.06577245
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w8c2",
+              "line_index": 1,
+              "word_index": 8,
+              "char_index": 2,
+              "global_index": 47,
+              "char": "m",
+              "bbox": {
+                "x": 0.87368421,
+                "y": 0.27221316,
+                "width": 0.03219814,
+                "height": 0.06577245
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w8c3",
+              "line_index": 1,
+              "word_index": 8,
+              "char_index": 3,
+              "global_index": 48,
+              "char": "!",
+              "bbox": {
+                "x": 0.90588235,
+                "y": 0.27221316,
+                "width": 0.01052632,
+                "height": 0.06577245
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 2,
+      "text": "Please note that reservations are required on Fridays",
+      "bbox": {
+        "x": 0.08711146,
+        "y": 0.32563756,
+        "width": 0.81751984,
+        "height": 0.08476327
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l2w0",
+          "line_index": 2,
+          "word_index": 0,
+          "text": "Please",
+          "bbox": {
+            "x": 0.08711148,
+            "y": 0.32563756,
+            "width": 0.10058595,
+            "height": 0.06766288
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16099,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w0c0",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 49,
+              "char": "P",
+              "bbox": {
+                "x": 0.08668731,
+                "y": 0.32563756,
+                "width": 0.02167183,
+                "height": 0.06766288
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c1",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 50,
+              "char": "l",
+              "bbox": {
+                "x": 0.10835913,
+                "y": 0.32563756,
+                "width": 0.00928793,
+                "height": 0.06766288
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c2",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 51,
+              "char": "e",
+              "bbox": {
+                "x": 0.11764706,
+                "y": 0.32563756,
+                "width": 0.01733746,
+                "height": 0.06766288
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c3",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 52,
+              "char": "a",
+              "bbox": {
+                "x": 0.13498452,
+                "y": 0.32563756,
+                "width": 0.01795666,
+                "height": 0.06766288
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c4",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 53,
+              "char": "s",
+              "bbox": {
+                "x": 0.15294118,
+                "y": 0.32563756,
+                "width": 0.01424149,
+                "height": 0.06766288
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c5",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 54,
+              "char": "e",
+              "bbox": {
+                "x": 0.16718266,
+                "y": 0.32563756,
+                "width": 0.02105263,
+                "height": 0.06766288
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w1",
+          "line_index": 2,
+          "word_index": 1,
+          "text": "note",
+          "bbox": {
+            "x": 0.19230338,
+            "y": 0.32814646,
+            "width": 0.06902378,
+            "height": 0.06626177
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14867,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w1c0",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 55,
+              "char": "n",
+              "bbox": {
+                "x": 0.19195046,
+                "y": 0.32814646,
+                "width": 0.02167183,
+                "height": 0.06626177
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c1",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 56,
+              "char": "o",
+              "bbox": {
+                "x": 0.21362229,
+                "y": 0.32814646,
+                "width": 0.01857585,
+                "height": 0.06626177
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c2",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 57,
+              "char": "t",
+              "bbox": {
+                "x": 0.23219814,
+                "y": 0.32814646,
+                "width": 0.0123839,
+                "height": 0.06626177
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c3",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 58,
+              "char": "e",
+              "bbox": {
+                "x": 0.24458204,
+                "y": 0.32814646,
+                "width": 0.01733746,
+                "height": 0.06626177
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w2",
+          "line_index": 2,
+          "word_index": 2,
+          "text": "that",
+          "bbox": {
+            "x": 0.26593312,
+            "y": 0.32990268,
+            "width": 0.06376451,
+            "height": 0.06613633
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.1706,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w2c0",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 59,
+              "char": "t",
+              "bbox": {
+                "x": 0.26563467,
+                "y": 0.32990268,
+                "width": 0.00619195,
+                "height": 0.06613633
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w2c1",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 60,
+              "char": "h",
+              "bbox": {
+                "x": 0.27182663,
+                "y": 0.32990268,
+                "width": 0.02786378,
+                "height": 0.06613633
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w2c2",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 61,
+              "char": "a",
+              "bbox": {
+                "x": 0.2996904,
+                "y": 0.32990268,
+                "width": 0.01981424,
+                "height": 0.06613633
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w2c3",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 62,
+              "char": "t",
+              "bbox": {
+                "x": 0.31950464,
+                "y": 0.32990268,
+                "width": 0.01052632,
+                "height": 0.06613633
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w3",
+          "line_index": 2,
+          "word_index": 3,
+          "text": "reservations",
+          "bbox": {
+            "x": 0.3343036,
+            "y": 0.33153346,
+            "width": 0.19524618,
+            "height": 0.06927244
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13978,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w3c0",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 63,
+              "char": "r",
+              "bbox": {
+                "x": 0.33374613,
+                "y": 0.33153346,
+                "width": 0.00681115,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c1",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 64,
+              "char": "e",
+              "bbox": {
+                "x": 0.34055728,
+                "y": 0.33153346,
+                "width": 0.02972136,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c2",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 65,
+              "char": "s",
+              "bbox": {
+                "x": 0.37027864,
+                "y": 0.33153346,
+                "width": 0.01486068,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c3",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 66,
+              "char": "e",
+              "bbox": {
+                "x": 0.38513932,
+                "y": 0.33153346,
+                "width": 0.01671827,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c4",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 67,
+              "char": "r",
+              "bbox": {
+                "x": 0.40185759,
+                "y": 0.33153346,
+                "width": 0.01362229,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c5",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 68,
+              "char": "v",
+              "bbox": {
+                "x": 0.41547988,
+                "y": 0.33153346,
+                "width": 0.01919505,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c6",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 69,
+              "char": "a",
+              "bbox": {
+                "x": 0.43467492,
+                "y": 0.33153346,
+                "width": 0.01857585,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c7",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 7,
+              "global_index": 70,
+              "char": "t",
+              "bbox": {
+                "x": 0.45325077,
+                "y": 0.33153346,
+                "width": 0.01114551,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c8",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 8,
+              "global_index": 71,
+              "char": "i",
+              "bbox": {
+                "x": 0.46439628,
+                "y": 0.33153346,
+                "width": 0.00928793,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c9",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 9,
+              "global_index": 72,
+              "char": "o",
+              "bbox": {
+                "x": 0.47368421,
+                "y": 0.33153346,
+                "width": 0.01981424,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c10",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 10,
+              "global_index": 73,
+              "char": "n",
+              "bbox": {
+                "x": 0.49349845,
+                "y": 0.33153346,
+                "width": 0.02105263,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w3c11",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 11,
+              "global_index": 74,
+              "char": "s",
+              "bbox": {
+                "x": 0.51455108,
+                "y": 0.33153346,
+                "width": 0.01547988,
+                "height": 0.06927244
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w4",
+          "line_index": 2,
+          "word_index": 4,
+          "text": "are",
+          "bbox": {
+            "x": 0.53415574,
+            "y": 0.33630035,
+            "width": 0.05324597,
+            "height": 0.06588544
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.1368,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w4c0",
+              "line_index": 2,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 75,
+              "char": "a",
+              "bbox": {
+                "x": 0.53374613,
+                "y": 0.33630035,
+                "width": 0.02291022,
+                "height": 0.06588544
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w4c1",
+              "line_index": 2,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 76,
+              "char": "r",
+              "bbox": {
+                "x": 0.55665635,
+                "y": 0.33630035,
+                "width": 0.01362229,
+                "height": 0.06588544
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w4c2",
+              "line_index": 2,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 77,
+              "char": "e",
+              "bbox": {
+                "x": 0.57027864,
+                "y": 0.33630035,
+                "width": 0.01733746,
+                "height": 0.06588544
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w5",
+          "line_index": 2,
+          "word_index": 5,
+          "text": "required",
+          "bbox": {
+            "x": 0.59200768,
+            "y": 0.33768025,
+            "width": 0.13739424,
+            "height": 0.06789255
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15972,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w5c0",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 78,
+              "char": "r",
+              "bbox": {
+                "x": 0.59195046,
+                "y": 0.33768025,
+                "width": 0.0123839,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c1",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 79,
+              "char": "e",
+              "bbox": {
+                "x": 0.60433437,
+                "y": 0.33768025,
+                "width": 0.02167183,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c2",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 80,
+              "char": "q",
+              "bbox": {
+                "x": 0.62600619,
+                "y": 0.33768025,
+                "width": 0.01981424,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c3",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 81,
+              "char": "u",
+              "bbox": {
+                "x": 0.64582043,
+                "y": 0.33768025,
+                "width": 0.02043344,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c4",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 4,
+              "global_index": 82,
+              "char": "i",
+              "bbox": {
+                "x": 0.66625387,
+                "y": 0.33768025,
+                "width": 0.00990712,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c5",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 5,
+              "global_index": 83,
+              "char": "r",
+              "bbox": {
+                "x": 0.67616099,
+                "y": 0.33768025,
+                "width": 0.01424149,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c6",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 6,
+              "global_index": 84,
+              "char": "e",
+              "bbox": {
+                "x": 0.69040248,
+                "y": 0.33768025,
+                "width": 0.01671827,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w5c7",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 7,
+              "global_index": 85,
+              "char": "d",
+              "bbox": {
+                "x": 0.70712074,
+                "y": 0.33768025,
+                "width": 0.02229102,
+                "height": 0.06789255
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w6",
+          "line_index": 2,
+          "word_index": 6,
+          "text": "on",
+          "bbox": {
+            "x": 0.73400789,
+            "y": 0.34106725,
+            "width": 0.04272744,
+            "height": 0.06563455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13367,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w6c0",
+              "line_index": 2,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 86,
+              "char": "o",
+              "bbox": {
+                "x": 0.73374613,
+                "y": 0.34106725,
+                "width": 0.02167183,
+                "height": 0.06563455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w6c1",
+              "line_index": 2,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 87,
+              "char": "n",
+              "bbox": {
+                "x": 0.75541796,
+                "y": 0.34106725,
+                "width": 0.02167183,
+                "height": 0.06563455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w7",
+          "line_index": 2,
+          "word_index": 7,
+          "text": "Fridays",
+          "bbox": {
+            "x": 0.78133474,
+            "y": 0.34219625,
+            "width": 0.12329655,
+            "height": 0.06820458
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14616,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w7c0",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 88,
+              "char": "F",
+              "bbox": {
+                "x": 0.78080495,
+                "y": 0.34219625,
+                "width": 0.02352941,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w7c1",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 89,
+              "char": "r",
+              "bbox": {
+                "x": 0.80433437,
+                "y": 0.34219625,
+                "width": 0.01424149,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w7c2",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 2,
+              "global_index": 90,
+              "char": "i",
+              "bbox": {
+                "x": 0.81857585,
+                "y": 0.34219625,
+                "width": 0.00928793,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w7c3",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 3,
+              "global_index": 91,
+              "char": "d",
+              "bbox": {
+                "x": 0.82786378,
+                "y": 0.34219625,
+                "width": 0.02105263,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w7c4",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 4,
+              "global_index": 92,
+              "char": "a",
+              "bbox": {
+                "x": 0.84891641,
+                "y": 0.34219625,
+                "width": 0.01795666,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w7c5",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 5,
+              "global_index": 93,
+              "char": "y",
+              "bbox": {
+                "x": 0.86687307,
+                "y": 0.34219625,
+                "width": 0.01919505,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w7c6",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 6,
+              "global_index": 94,
+              "char": "s",
+              "bbox": {
+                "x": 0.88606811,
+                "y": 0.34219625,
+                "width": 0.01857585,
+                "height": 0.06820458
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 3,
+      "text": "and Saturdays.",
+      "bbox": {
+        "x": 0.08575582,
+        "y": 0.41254753,
+        "width": 0.23837209,
+        "height": 0.0608365
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l3w0",
+          "line_index": 3,
+          "word_index": 0,
+          "text": "and",
+          "bbox": {
+            "x": 0.08575582,
+            "y": 0.41254753,
+            "width": 0.06461547,
+            "height": 0.0608365
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16399,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w0c0",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 95,
+              "char": "a",
+              "bbox": {
+                "x": 0.08544892,
+                "y": 0.41254753,
+                "width": 0.01919505,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c1",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 96,
+              "char": "n",
+              "bbox": {
+                "x": 0.10464396,
+                "y": 0.41254753,
+                "width": 0.02105263,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c2",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 97,
+              "char": "d",
+              "bbox": {
+                "x": 0.12569659,
+                "y": 0.41254753,
+                "width": 0.0247678,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w1",
+          "line_index": 3,
+          "word_index": 1,
+          "text": "Saturdays.",
+          "bbox": {
+            "x": 0.15532178,
+            "y": 0.41254753,
+            "width": 0.16880613,
+            "height": 0.0608365
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16555,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w1c0",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 98,
+              "char": "S",
+              "bbox": {
+                "x": 0.15479876,
+                "y": 0.41254753,
+                "width": 0.02043344,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c1",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 99,
+              "char": "a",
+              "bbox": {
+                "x": 0.1752322,
+                "y": 0.41254753,
+                "width": 0.01795666,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c2",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 100,
+              "char": "t",
+              "bbox": {
+                "x": 0.19318885,
+                "y": 0.41254753,
+                "width": 0.01176471,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c3",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 101,
+              "char": "u",
+              "bbox": {
+                "x": 0.20495356,
+                "y": 0.41254753,
+                "width": 0.02105263,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c4",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 102,
+              "char": "r",
+              "bbox": {
+                "x": 0.22600619,
+                "y": 0.41254753,
+                "width": 0.01362229,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c5",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 103,
+              "char": "d",
+              "bbox": {
+                "x": 0.23962848,
+                "y": 0.41254753,
+                "width": 0.02043344,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c6",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 104,
+              "char": "a",
+              "bbox": {
+                "x": 0.26006192,
+                "y": 0.41254753,
+                "width": 0.01857585,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c7",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 105,
+              "char": "y",
+              "bbox": {
+                "x": 0.27863777,
+                "y": 0.41254753,
+                "width": 0.01857585,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c8",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 106,
+              "char": "s",
+              "bbox": {
+                "x": 0.29721362,
+                "y": 0.41254753,
+                "width": 0.01671827,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c9",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 107,
+              "char": ".",
+              "bbox": {
+                "x": 0.31393189,
+                "y": 0.41254753,
+                "width": 0.01052632,
+                "height": 0.0608365
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 4,
+      "text": "The weekly Chef's Special is sure to be a real treat.",
+      "bbox": {
+        "x": 0.08575582,
+        "y": 0.49330357,
+        "width": 0.79069768,
+        "height": 0.06943407
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l4w0",
+          "line_index": 4,
+          "word_index": 0,
+          "text": "The",
+          "bbox": {
+            "x": 0.08575583,
+            "y": 0.49330357,
+            "width": 0.06237227,
+            "height": 0.06943407
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15276,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w0c0",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 108,
+              "char": "T",
+              "bbox": {
+                "x": 0.08544892,
+                "y": 0.49330357,
+                "width": 0.02352941,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w0c1",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 109,
+              "char": "h",
+              "bbox": {
+                "x": 0.10897833,
+                "y": 0.49330357,
+                "width": 0.02043344,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w0c2",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 110,
+              "char": "e",
+              "bbox": {
+                "x": 0.12941176,
+                "y": 0.49330357,
+                "width": 0.01919505,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w1",
+          "line_index": 4,
+          "word_index": 1,
+          "text": "weekly",
+          "bbox": {
+            "x": 0.15377475,
+            "y": 0.49334601,
+            "width": 0.11857983,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14619,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w1c0",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 111,
+              "char": "w",
+              "bbox": {
+                "x": 0.15356037,
+                "y": 0.49334601,
+                "width": 0.03095975,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c1",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 112,
+              "char": "e",
+              "bbox": {
+                "x": 0.18452012,
+                "y": 0.49334601,
+                "width": 0.01671827,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c2",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 113,
+              "char": "e",
+              "bbox": {
+                "x": 0.20123839,
+                "y": 0.49334601,
+                "width": 0.01671827,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c3",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 114,
+              "char": "k",
+              "bbox": {
+                "x": 0.21795666,
+                "y": 0.49334601,
+                "width": 0.02972136,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c4",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 115,
+              "char": "l",
+              "bbox": {
+                "x": 0.24767802,
+                "y": 0.49334601,
+                "width": 0.0006192,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c5",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 116,
+              "char": "y",
+              "bbox": {
+                "x": 0.24829721,
+                "y": 0.49334601,
+                "width": 0.02414861,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w2",
+          "line_index": 4,
+          "word_index": 2,
+          "text": "Chef's",
+          "bbox": {
+            "x": 0.27800124,
+            "y": 0.49334601,
+            "width": 0.10163985,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15019,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w2c0",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 117,
+              "char": "C",
+              "bbox": {
+                "x": 0.27739938,
+                "y": 0.49334601,
+                "width": 0.02352941,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w2c1",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 118,
+              "char": "h",
+              "bbox": {
+                "x": 0.30092879,
+                "y": 0.49334601,
+                "width": 0.02105263,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w2c2",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 119,
+              "char": "e",
+              "bbox": {
+                "x": 0.32198142,
+                "y": 0.49334601,
+                "width": 0.01733746,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w2c3",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 120,
+              "char": "f",
+              "bbox": {
+                "x": 0.33931889,
+                "y": 0.49334601,
+                "width": 0.01486068,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w2c4",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 121,
+              "char": "'",
+              "bbox": {
+                "x": 0.35417957,
+                "y": 0.49334601,
+                "width": 0.00743034,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w2c5",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 5,
+              "global_index": 122,
+              "char": "s",
+              "bbox": {
+                "x": 0.36160991,
+                "y": 0.49334601,
+                "width": 0.01857585,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w3",
+          "line_index": 4,
+          "word_index": 3,
+          "text": "Special",
+          "bbox": {
+            "x": 0.38528775,
+            "y": 0.49334601,
+            "width": 0.11293317,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16528,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w3c0",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 123,
+              "char": "S",
+              "bbox": {
+                "x": 0.38513932,
+                "y": 0.49334601,
+                "width": 0.02105263,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w3c1",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 124,
+              "char": "p",
+              "bbox": {
+                "x": 0.40619195,
+                "y": 0.49334601,
+                "width": 0.02043344,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w3c2",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 125,
+              "char": "e",
+              "bbox": {
+                "x": 0.42662539,
+                "y": 0.49334601,
+                "width": 0.01733746,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w3c3",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 126,
+              "char": "c",
+              "bbox": {
+                "x": 0.44396285,
+                "y": 0.49334601,
+                "width": 0.01547988,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w3c4",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 127,
+              "char": "i",
+              "bbox": {
+                "x": 0.45944272,
+                "y": 0.49334601,
+                "width": 0.01052632,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w3c5",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 128,
+              "char": "a",
+              "bbox": {
+                "x": 0.46996904,
+                "y": 0.49334601,
+                "width": 0.01733746,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w3c6",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 129,
+              "char": "l",
+              "bbox": {
+                "x": 0.4873065,
+                "y": 0.49334601,
+                "width": 0.01114551,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w4",
+          "line_index": 4,
+          "word_index": 4,
+          "text": "is",
+          "bbox": {
+            "x": 0.50386757,
+            "y": 0.49334601,
+            "width": 0.02823329,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13495,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w4c0",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 130,
+              "char": "i",
+              "bbox": {
+                "x": 0.50340557,
+                "y": 0.49334601,
+                "width": 0.0130031,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w4c1",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 131,
+              "char": "s",
+              "bbox": {
+                "x": 0.51640867,
+                "y": 0.49334601,
+                "width": 0.01609907,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w5",
+          "line_index": 4,
+          "word_index": 5,
+          "text": "sure",
+          "bbox": {
+            "x": 0.53774752,
+            "y": 0.49334601,
+            "width": 0.0677599,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14521,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w5c0",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 132,
+              "char": "s",
+              "bbox": {
+                "x": 0.5374613,
+                "y": 0.49334601,
+                "width": 0.01857585,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w5c1",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 133,
+              "char": "u",
+              "bbox": {
+                "x": 0.55603715,
+                "y": 0.49334601,
+                "width": 0.02043344,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w5c2",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 134,
+              "char": "r",
+              "bbox": {
+                "x": 0.57647059,
+                "y": 0.49334601,
+                "width": 0.01362229,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w5c3",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 135,
+              "char": "e",
+              "bbox": {
+                "x": 0.59009288,
+                "y": 0.49334601,
+                "width": 0.01547988,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w6",
+          "line_index": 4,
+          "word_index": 6,
+          "text": "to",
+          "bbox": {
+            "x": 0.61115408,
+            "y": 0.49334601,
+            "width": 0.03387995,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13699,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w6c0",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 136,
+              "char": "t",
+              "bbox": {
+                "x": 0.61114551,
+                "y": 0.49334601,
+                "width": 0.01671827,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w6c1",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 137,
+              "char": "o",
+              "bbox": {
+                "x": 0.62786378,
+                "y": 0.49334601,
+                "width": 0.01733746,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w7",
+          "line_index": 4,
+          "word_index": 7,
+          "text": "be",
+          "bbox": {
+            "x": 0.65068069,
+            "y": 0.49334601,
+            "width": 0.03952661,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15553,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w7c0",
+              "line_index": 4,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 138,
+              "char": "b",
+              "bbox": {
+                "x": 0.6501548,
+                "y": 0.49334601,
+                "width": 0.02414861,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w7c1",
+              "line_index": 4,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 139,
+              "char": "e",
+              "bbox": {
+                "x": 0.67430341,
+                "y": 0.49334601,
+                "width": 0.01609907,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w8",
+          "line_index": 4,
+          "word_index": 8,
+          "text": "a",
+          "bbox": {
+            "x": 0.69585396,
+            "y": 0.49334601,
+            "width": 0.01693998,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.11195,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w8c0",
+              "line_index": 4,
+              "word_index": 8,
+              "char_index": 0,
+              "global_index": 140,
+              "char": "a",
+              "bbox": {
+                "x": 0.69535604,
+                "y": 0.49334601,
+                "width": 0.01795666,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w9",
+          "line_index": 4,
+          "word_index": 9,
+          "text": "real",
+          "bbox": {
+            "x": 0.71844059,
+            "y": 0.49334601,
+            "width": 0.0677599,
+            "height": 0.06939163
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13512,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w9c0",
+              "line_index": 4,
+              "word_index": 9,
+              "char_index": 0,
+              "global_index": 141,
+              "char": "r",
+              "bbox": {
+                "x": 0.71826625,
+                "y": 0.49334601,
+                "width": 0.00866873,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w9c1",
+              "line_index": 4,
+              "word_index": 9,
+              "char_index": 1,
+              "global_index": 142,
+              "char": "e",
+              "bbox": {
+                "x": 0.72693498,
+                "y": 0.49334601,
+                "width": 0.02972136,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w9c2",
+              "line_index": 4,
+              "word_index": 9,
+              "char_index": 2,
+              "global_index": 143,
+              "char": "a",
+              "bbox": {
+                "x": 0.75665635,
+                "y": 0.49334601,
+                "width": 0.01733746,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w9c3",
+              "line_index": 4,
+              "word_index": 9,
+              "char_index": 3,
+              "global_index": 144,
+              "char": "l",
+              "bbox": {
+                "x": 0.77399381,
+                "y": 0.49334601,
+                "width": 0.0123839,
+                "height": 0.06939163
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w10",
+          "line_index": 4,
+          "word_index": 10,
+          "text": "treat.",
+          "bbox": {
+            "x": 0.79184716,
+            "y": 0.49330357,
+            "width": 0.08460633,
+            "height": 0.06943407
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13132,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w10c0",
+              "line_index": 4,
+              "word_index": 10,
+              "char_index": 0,
+              "global_index": 145,
+              "char": "t",
+              "bbox": {
+                "x": 0.79133127,
+                "y": 0.49330357,
+                "width": 0.01362229,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w10c1",
+              "line_index": 4,
+              "word_index": 10,
+              "char_index": 1,
+              "global_index": 146,
+              "char": "r",
+              "bbox": {
+                "x": 0.80495356,
+                "y": 0.49330357,
+                "width": 0.01362229,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w10c2",
+              "line_index": 4,
+              "word_index": 10,
+              "char_index": 2,
+              "global_index": 147,
+              "char": "e",
+              "bbox": {
+                "x": 0.81857585,
+                "y": 0.49330357,
+                "width": 0.01671827,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w10c3",
+              "line_index": 4,
+              "word_index": 10,
+              "char_index": 3,
+              "global_index": 148,
+              "char": "a",
+              "bbox": {
+                "x": 0.83529412,
+                "y": 0.49330357,
+                "width": 0.01795666,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w10c4",
+              "line_index": 4,
+              "word_index": 10,
+              "char_index": 4,
+              "global_index": 149,
+              "char": "t",
+              "bbox": {
+                "x": 0.85325077,
+                "y": 0.49330357,
+                "width": 0.0123839,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w10c5",
+              "line_index": 4,
+              "word_index": 10,
+              "char_index": 5,
+              "global_index": 150,
+              "char": ".",
+              "bbox": {
+                "x": 0.86563467,
+                "y": 0.49330357,
+                "width": 0.01114551,
+                "height": 0.06943407
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 5,
+      "text": "Kindly communicate any dietary restrictions to staff",
+      "bbox": {
+        "x": 0.08333334,
+        "y": 0.57034221,
+        "width": 0.81666663,
+        "height": 0.07068344
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l5w0",
+          "line_index": 5,
+          "word_index": 0,
+          "text": "Kindly",
+          "bbox": {
+            "x": 0.08333333,
+            "y": 0.57034221,
+            "width": 0.10896246,
+            "height": 0.07068343
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16196,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w0c0",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 151,
+              "char": "K",
+              "bbox": {
+                "x": 0.08297214,
+                "y": 0.57034221,
+                "width": 0.02972136,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c1",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 152,
+              "char": "i",
+              "bbox": {
+                "x": 0.1126935,
+                "y": 0.57034221,
+                "width": 0.00928793,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c2",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 153,
+              "char": "n",
+              "bbox": {
+                "x": 0.12198142,
+                "y": 0.57034221,
+                "width": 0.02105263,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c3",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 154,
+              "char": "d",
+              "bbox": {
+                "x": 0.14303406,
+                "y": 0.57034221,
+                "width": 0.02105263,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c4",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 155,
+              "char": "l",
+              "bbox": {
+                "x": 0.16408669,
+                "y": 0.57034221,
+                "width": 0.00990712,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c5",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 156,
+              "char": "y",
+              "bbox": {
+                "x": 0.17399381,
+                "y": 0.57034221,
+                "width": 0.01857585,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w1",
+          "line_index": 5,
+          "word_index": 1,
+          "text": "communicate",
+          "bbox": {
+            "x": 0.1980198,
+            "y": 0.57034221,
+            "width": 0.21751238,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14138,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w1c0",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 157,
+              "char": "c",
+              "bbox": {
+                "x": 0.19752322,
+                "y": 0.57034221,
+                "width": 0.02167183,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c1",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 158,
+              "char": "o",
+              "bbox": {
+                "x": 0.21919505,
+                "y": 0.57034221,
+                "width": 0.01857585,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c2",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 159,
+              "char": "m",
+              "bbox": {
+                "x": 0.2377709,
+                "y": 0.57034221,
+                "width": 0.03095975,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c3",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 160,
+              "char": "m",
+              "bbox": {
+                "x": 0.26873065,
+                "y": 0.57034221,
+                "width": 0.03095975,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c4",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 161,
+              "char": "u",
+              "bbox": {
+                "x": 0.2996904,
+                "y": 0.57034221,
+                "width": 0.02043344,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c5",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 162,
+              "char": "n",
+              "bbox": {
+                "x": 0.32012384,
+                "y": 0.57034221,
+                "width": 0.02105263,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c6",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 163,
+              "char": "i",
+              "bbox": {
+                "x": 0.34117647,
+                "y": 0.57034221,
+                "width": 0.00990712,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c7",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 164,
+              "char": "c",
+              "bbox": {
+                "x": 0.35108359,
+                "y": 0.57034221,
+                "width": 0.01671827,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c8",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 165,
+              "char": "a",
+              "bbox": {
+                "x": 0.36780186,
+                "y": 0.57034221,
+                "width": 0.01733746,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c9",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 166,
+              "char": "t",
+              "bbox": {
+                "x": 0.38513932,
+                "y": 0.57034221,
+                "width": 0.01176471,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c10",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 10,
+              "global_index": 167,
+              "char": "e",
+              "bbox": {
+                "x": 0.39690402,
+                "y": 0.57034221,
+                "width": 0.01919505,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w2",
+          "line_index": 5,
+          "word_index": 2,
+          "text": "any",
+          "bbox": {
+            "x": 0.42125619,
+            "y": 0.57034221,
+            "width": 0.0572401,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14652,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w2c0",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 168,
+              "char": "a",
+              "bbox": {
+                "x": 0.42105263,
+                "y": 0.57034221,
+                "width": 0.01919505,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c1",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 169,
+              "char": "n",
+              "bbox": {
+                "x": 0.44024768,
+                "y": 0.57034221,
+                "width": 0.02043344,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c2",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 170,
+              "char": "y",
+              "bbox": {
+                "x": 0.46068111,
+                "y": 0.57034221,
+                "width": 0.01795666,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w3",
+          "line_index": 5,
+          "word_index": 3,
+          "text": "dietary",
+          "bbox": {
+            "x": 0.4842203,
+            "y": 0.57034221,
+            "width": 0.1144802,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15258,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w3c0",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 171,
+              "char": "d",
+              "bbox": {
+                "x": 0.48421053,
+                "y": 0.57034221,
+                "width": 0.025387,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w3c1",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 172,
+              "char": "i",
+              "bbox": {
+                "x": 0.50959752,
+                "y": 0.57034221,
+                "width": 0.00123839,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w3c2",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 173,
+              "char": "e",
+              "bbox": {
+                "x": 0.51083591,
+                "y": 0.57034221,
+                "width": 0.02724458,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w3c3",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 174,
+              "char": "t",
+              "bbox": {
+                "x": 0.5380805,
+                "y": 0.57034221,
+                "width": 0.01176471,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w3c4",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 175,
+              "char": "a",
+              "bbox": {
+                "x": 0.5498452,
+                "y": 0.57034221,
+                "width": 0.01733746,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w3c5",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 176,
+              "char": "r",
+              "bbox": {
+                "x": 0.56718266,
+                "y": 0.57034221,
+                "width": 0.01362229,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w3c6",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 177,
+              "char": "y",
+              "bbox": {
+                "x": 0.58080495,
+                "y": 0.57034221,
+                "width": 0.01795666,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w4",
+          "line_index": 5,
+          "word_index": 4,
+          "text": "restrictions",
+          "bbox": {
+            "x": 0.6044245,
+            "y": 0.57034221,
+            "width": 0.17744431,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14448,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w4c0",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 178,
+              "char": "r",
+              "bbox": {
+                "x": 0.60433437,
+                "y": 0.57034221,
+                "width": 0.0130031,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c1",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 179,
+              "char": "e",
+              "bbox": {
+                "x": 0.61733746,
+                "y": 0.57034221,
+                "width": 0.02167183,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c2",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 180,
+              "char": "s",
+              "bbox": {
+                "x": 0.63900929,
+                "y": 0.57034221,
+                "width": 0.01547988,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c3",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 181,
+              "char": "t",
+              "bbox": {
+                "x": 0.65448916,
+                "y": 0.57034221,
+                "width": 0.01114551,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c4",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 182,
+              "char": "r",
+              "bbox": {
+                "x": 0.66563467,
+                "y": 0.57034221,
+                "width": 0.01362229,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c5",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 183,
+              "char": "i",
+              "bbox": {
+                "x": 0.67925697,
+                "y": 0.57034221,
+                "width": 0.00990712,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c6",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 184,
+              "char": "c",
+              "bbox": {
+                "x": 0.68916409,
+                "y": 0.57034221,
+                "width": 0.01609907,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c7",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 185,
+              "char": "t",
+              "bbox": {
+                "x": 0.70526316,
+                "y": 0.57034221,
+                "width": 0.01114551,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c8",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 8,
+              "global_index": 186,
+              "char": "i",
+              "bbox": {
+                "x": 0.71640867,
+                "y": 0.57034221,
+                "width": 0.00804954,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c9",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 9,
+              "global_index": 187,
+              "char": "o",
+              "bbox": {
+                "x": 0.7244582,
+                "y": 0.57034221,
+                "width": 0.02043344,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c10",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 10,
+              "global_index": 188,
+              "char": "n",
+              "bbox": {
+                "x": 0.74489164,
+                "y": 0.57034221,
+                "width": 0.02043344,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c11",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 11,
+              "global_index": 189,
+              "char": "s",
+              "bbox": {
+                "x": 0.76532508,
+                "y": 0.57034221,
+                "width": 0.01671827,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w5",
+          "line_index": 5,
+          "word_index": 5,
+          "text": "to",
+          "bbox": {
+            "x": 0.78759282,
+            "y": 0.57034221,
+            "width": 0.02862005,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14111,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w5c0",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 190,
+              "char": "t",
+              "bbox": {
+                "x": 0.7869969,
+                "y": 0.57034221,
+                "width": 0.01424149,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c1",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 191,
+              "char": "o",
+              "bbox": {
+                "x": 0.80123839,
+                "y": 0.57034221,
+                "width": 0.01547988,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w6",
+          "line_index": 5,
+          "word_index": 6,
+          "text": "staff",
+          "bbox": {
+            "x": 0.82193688,
+            "y": 0.57034221,
+            "width": 0.0780631,
+            "height": 0.07068343
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14898,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w6c0",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 192,
+              "char": "s",
+              "bbox": {
+                "x": 0.82167183,
+                "y": 0.57034221,
+                "width": 0.02167183,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c1",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 193,
+              "char": "t",
+              "bbox": {
+                "x": 0.84334365,
+                "y": 0.57034221,
+                "width": 0.01176471,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c2",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 194,
+              "char": "a",
+              "bbox": {
+                "x": 0.85510836,
+                "y": 0.57034221,
+                "width": 0.01733746,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c3",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 195,
+              "char": "f",
+              "bbox": {
+                "x": 0.87244582,
+                "y": 0.57034221,
+                "width": 0.0123839,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c4",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 196,
+              "char": "f",
+              "bbox": {
+                "x": 0.88482972,
+                "y": 0.57034221,
+                "width": 0.01547988,
+                "height": 0.07068343
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 6,
+      "text": "upon your arrival.",
+      "bbox": {
+        "x": 0.08668995,
+        "y": 0.63972119,
+        "width": 0.28873432,
+        "height": 0.0634854
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l6w0",
+          "line_index": 6,
+          "word_index": 0,
+          "text": "upon",
+          "bbox": {
+            "x": 0.08668994,
+            "y": 0.64828017,
+            "width": 0.08698124,
+            "height": 0.05492642
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.1868,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w0c0",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 197,
+              "char": "u",
+              "bbox": {
+                "x": 0.08668731,
+                "y": 0.64828017,
+                "width": 0.02167183,
+                "height": 0.05492642
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w0c1",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 198,
+              "char": "p",
+              "bbox": {
+                "x": 0.10835913,
+                "y": 0.64828017,
+                "width": 0.02167183,
+                "height": 0.05492642
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w0c2",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 199,
+              "char": "o",
+              "bbox": {
+                "x": 0.13003096,
+                "y": 0.64828017,
+                "width": 0.01919505,
+                "height": 0.05492642
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w0c3",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 200,
+              "char": "n",
+              "bbox": {
+                "x": 0.14922601,
+                "y": 0.64828017,
+                "width": 0.0247678,
+                "height": 0.05492642
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w1",
+          "line_index": 6,
+          "word_index": 1,
+          "text": "your",
+          "bbox": {
+            "x": 0.1768474,
+            "y": 0.64480312,
+            "width": 0.07876867,
+            "height": 0.05366422
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17188,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w1c0",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 201,
+              "char": "y",
+              "bbox": {
+                "x": 0.17647059,
+                "y": 0.64480312,
+                "width": 0.02167183,
+                "height": 0.05366422
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c1",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 202,
+              "char": "o",
+              "bbox": {
+                "x": 0.19814241,
+                "y": 0.64480312,
+                "width": 0.01919505,
+                "height": 0.05366422
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c2",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 203,
+              "char": "u",
+              "bbox": {
+                "x": 0.21733746,
+                "y": 0.64480312,
+                "width": 0.02105263,
+                "height": 0.05366422
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c3",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 204,
+              "char": "r",
+              "bbox": {
+                "x": 0.23839009,
+                "y": 0.64480312,
+                "width": 0.01733746,
+                "height": 0.05366422
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w2",
+          "line_index": 6,
+          "word_index": 2,
+          "text": "arrival.",
+          "bbox": {
+            "x": 0.25880872,
+            "y": 0.63972119,
+            "width": 0.11661555,
+            "height": 0.05618359
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16721,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w2c0",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 205,
+              "char": "a",
+              "bbox": {
+                "x": 0.25820433,
+                "y": 0.63972119,
+                "width": 0.02043344,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c1",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 206,
+              "char": "r",
+              "bbox": {
+                "x": 0.27863777,
+                "y": 0.63972119,
+                "width": 0.01424149,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c2",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 207,
+              "char": "r",
+              "bbox": {
+                "x": 0.29287926,
+                "y": 0.63972119,
+                "width": 0.01362229,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c3",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 208,
+              "char": "i",
+              "bbox": {
+                "x": 0.30650155,
+                "y": 0.63972119,
+                "width": 0.00928793,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c4",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 209,
+              "char": "v",
+              "bbox": {
+                "x": 0.31578947,
+                "y": 0.63972119,
+                "width": 0.01981424,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c5",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 5,
+              "global_index": 210,
+              "char": "a",
+              "bbox": {
+                "x": 0.33560372,
+                "y": 0.63972119,
+                "width": 0.01795666,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c6",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 6,
+              "global_index": 211,
+              "char": "l",
+              "bbox": {
+                "x": 0.35356037,
+                "y": 0.63972119,
+                "width": 0.01114551,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c7",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 7,
+              "global_index": 212,
+              "char": ".",
+              "bbox": {
+                "x": 0.36470588,
+                "y": 0.63972119,
+                "width": 0.01114551,
+                "height": 0.05618359
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 7,
+      "text": "We anticipate your visit will be both satisfying",
+      "bbox": {
+        "x": 0.08333337,
+        "y": 0.71768061,
+        "width": 0.72916662,
+        "height": 0.07078093
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l7w0",
+          "line_index": 7,
+          "word_index": 0,
+          "text": "We",
+          "bbox": {
+            "x": 0.08333335,
+            "y": 0.71768061,
+            "width": 0.05172234,
+            "height": 0.07078093
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15514,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w0c0",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 213,
+              "char": "W",
+              "bbox": {
+                "x": 0.08297214,
+                "y": 0.71768061,
+                "width": 0.03653251,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w0c1",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 214,
+              "char": "e",
+              "bbox": {
+                "x": 0.11950464,
+                "y": 0.71768061,
+                "width": 0.01609907,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w1",
+          "line_index": 7,
+          "word_index": 1,
+          "text": "anticipate",
+          "bbox": {
+            "x": 0.1407797,
+            "y": 0.71768061,
+            "width": 0.16027228,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15215,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w1c0",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 215,
+              "char": "a",
+              "bbox": {
+                "x": 0.14055728,
+                "y": 0.71768061,
+                "width": 0.02167183,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c1",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 216,
+              "char": "n",
+              "bbox": {
+                "x": 0.1622291,
+                "y": 0.71768061,
+                "width": 0.02105263,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c2",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 217,
+              "char": "t",
+              "bbox": {
+                "x": 0.18328173,
+                "y": 0.71768061,
+                "width": 0.01176471,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c3",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 218,
+              "char": "i",
+              "bbox": {
+                "x": 0.19504644,
+                "y": 0.71768061,
+                "width": 0.00990712,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c4",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 219,
+              "char": "c",
+              "bbox": {
+                "x": 0.20495356,
+                "y": 0.71768061,
+                "width": 0.01609907,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c5",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 220,
+              "char": "i",
+              "bbox": {
+                "x": 0.22105263,
+                "y": 0.71768061,
+                "width": 0.00743034,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c6",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 221,
+              "char": "p",
+              "bbox": {
+                "x": 0.22848297,
+                "y": 0.71768061,
+                "width": 0.02352941,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c7",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 222,
+              "char": "a",
+              "bbox": {
+                "x": 0.25201238,
+                "y": 0.71768061,
+                "width": 0.01795666,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c8",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 223,
+              "char": "t",
+              "bbox": {
+                "x": 0.26996904,
+                "y": 0.71768061,
+                "width": 0.01176471,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c9",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 224,
+              "char": "e",
+              "bbox": {
+                "x": 0.28173375,
+                "y": 0.71768061,
+                "width": 0.01981424,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w2",
+          "line_index": 7,
+          "word_index": 2,
+          "text": "your",
+          "bbox": {
+            "x": 0.30677599,
+            "y": 0.71768061,
+            "width": 0.07441213,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13366,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w2c0",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 225,
+              "char": "y",
+              "bbox": {
+                "x": 0.30650155,
+                "y": 0.71768061,
+                "width": 0.02043344,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w2c1",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 226,
+              "char": "o",
+              "bbox": {
+                "x": 0.32693498,
+                "y": 0.71768061,
+                "width": 0.01857585,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w2c2",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 227,
+              "char": "u",
+              "bbox": {
+                "x": 0.34551084,
+                "y": 0.71768061,
+                "width": 0.02105263,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w2c3",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 228,
+              "char": "r",
+              "bbox": {
+                "x": 0.36656347,
+                "y": 0.71768061,
+                "width": 0.01486068,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w3",
+          "line_index": 7,
+          "word_index": 3,
+          "text": "visit",
+          "bbox": {
+            "x": 0.38691213,
+            "y": 0.71768061,
+            "width": 0.06868812,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.13988,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w3c0",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 229,
+              "char": "v",
+              "bbox": {
+                "x": 0.38637771,
+                "y": 0.71768061,
+                "width": 0.02229102,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c1",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 230,
+              "char": "i",
+              "bbox": {
+                "x": 0.40866873,
+                "y": 0.71768061,
+                "width": 0.00804954,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c2",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 231,
+              "char": "s",
+              "bbox": {
+                "x": 0.41671827,
+                "y": 0.71768061,
+                "width": 0.01795666,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c3",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 232,
+              "char": "i",
+              "bbox": {
+                "x": 0.43467492,
+                "y": 0.71768061,
+                "width": 0.00990712,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c4",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 233,
+              "char": "t",
+              "bbox": {
+                "x": 0.44458204,
+                "y": 0.71768061,
+                "width": 0.01114551,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w4",
+          "line_index": 7,
+          "word_index": 4,
+          "text": "will",
+          "bbox": {
+            "x": 0.46132426,
+            "y": 0.71768061,
+            "width": 0.06296411,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.15987,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w4c0",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 234,
+              "char": "w",
+              "bbox": {
+                "x": 0.46130031,
+                "y": 0.71768061,
+                "width": 0.03281734,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c1",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 235,
+              "char": "i",
+              "bbox": {
+                "x": 0.49411765,
+                "y": 0.71768061,
+                "width": 0.01052632,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c2",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 236,
+              "char": "l",
+              "bbox": {
+                "x": 0.50464396,
+                "y": 0.71768061,
+                "width": 0.00990712,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c3",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 237,
+              "char": "l",
+              "bbox": {
+                "x": 0.51455108,
+                "y": 0.71768061,
+                "width": 0.00990712,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w5",
+          "line_index": 7,
+          "word_index": 5,
+          "text": "be",
+          "bbox": {
+            "x": 0.53001238,
+            "y": 0.71768061,
+            "width": 0.04006807,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.14707,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w5c0",
+              "line_index": 7,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 238,
+              "char": "b",
+              "bbox": {
+                "x": 0.52941176,
+                "y": 0.71768061,
+                "width": 0.02414861,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w5c1",
+              "line_index": 7,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 239,
+              "char": "e",
+              "bbox": {
+                "x": 0.55356037,
+                "y": 0.71768061,
+                "width": 0.01671827,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w6",
+          "line_index": 7,
+          "word_index": 6,
+          "text": "both",
+          "bbox": {
+            "x": 0.57580446,
+            "y": 0.71768061,
+            "width": 0.07441213,
+            "height": 0.07034221
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16087,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w6c0",
+              "line_index": 7,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 240,
+              "char": "b",
+              "bbox": {
+                "x": 0.5752322,
+                "y": 0.71768061,
+                "width": 0.02352941,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w6c1",
+              "line_index": 7,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 241,
+              "char": "o",
+              "bbox": {
+                "x": 0.59876161,
+                "y": 0.71768061,
+                "width": 0.01981424,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w6c2",
+              "line_index": 7,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 242,
+              "char": "t",
+              "bbox": {
+                "x": 0.61857585,
+                "y": 0.71768061,
+                "width": 0.01176471,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w6c3",
+              "line_index": 7,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 243,
+              "char": "h",
+              "bbox": {
+                "x": 0.63034056,
+                "y": 0.71768061,
+                "width": 0.02043344,
+                "height": 0.07034221
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w7",
+          "line_index": 7,
+          "word_index": 7,
+          "text": "satisfying",
+          "bbox": {
+            "x": 0.65594059,
+            "y": 0.71768061,
+            "width": 0.15655941,
+            "height": 0.07078093
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.1505,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w7c0",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 244,
+              "char": "s",
+              "bbox": {
+                "x": 0.65572755,
+                "y": 0.71768061,
+                "width": 0.01857585,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c1",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 245,
+              "char": "a",
+              "bbox": {
+                "x": 0.67430341,
+                "y": 0.71768061,
+                "width": 0.01857585,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c2",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 2,
+              "global_index": 246,
+              "char": "t",
+              "bbox": {
+                "x": 0.69287926,
+                "y": 0.71768061,
+                "width": 0.01114551,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c3",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 3,
+              "global_index": 247,
+              "char": "i",
+              "bbox": {
+                "x": 0.70402477,
+                "y": 0.71768061,
+                "width": 0.00990712,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c4",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 4,
+              "global_index": 248,
+              "char": "s",
+              "bbox": {
+                "x": 0.71393189,
+                "y": 0.71768061,
+                "width": 0.01486068,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c5",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 5,
+              "global_index": 249,
+              "char": "f",
+              "bbox": {
+                "x": 0.72879257,
+                "y": 0.71768061,
+                "width": 0.01176471,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c6",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 6,
+              "global_index": 250,
+              "char": "y",
+              "bbox": {
+                "x": 0.74055728,
+                "y": 0.71768061,
+                "width": 0.01857585,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c7",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 7,
+              "global_index": 251,
+              "char": "i",
+              "bbox": {
+                "x": 0.75913313,
+                "y": 0.71768061,
+                "width": 0.00990712,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c8",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 8,
+              "global_index": 252,
+              "char": "n",
+              "bbox": {
+                "x": 0.76904025,
+                "y": 0.71768061,
+                "width": 0.02105263,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w7c9",
+              "line_index": 7,
+              "word_index": 7,
+              "char_index": 9,
+              "global_index": 253,
+              "char": "g",
+              "bbox": {
+                "x": 0.79009288,
+                "y": 0.71768061,
+                "width": 0.02291022,
+                "height": 0.07078093
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 8,
+      "text": "and memorable.",
+      "bbox": {
+        "x": 0.08549575,
+        "y": 0.78425384,
+        "width": 0.25954118,
+        "height": 0.0598555
+      },
+      "confidence": 1.0,
+      "break_after": "end",
+      "words": [
+        {
+          "id": "l8w0",
+          "line_index": 8,
+          "word_index": 0,
+          "text": "and",
+          "bbox": {
+            "x": 0.08549575,
+            "y": 0.78425384,
+            "width": 0.06442097,
+            "height": 0.05447259
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18621,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l8w0c0",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 254,
+              "char": "a",
+              "bbox": {
+                "x": 0.08544892,
+                "y": 0.78425384,
+                "width": 0.01919505,
+                "height": 0.05447259
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w0c1",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 255,
+              "char": "n",
+              "bbox": {
+                "x": 0.10464396,
+                "y": 0.78425384,
+                "width": 0.02105263,
+                "height": 0.05447259
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w0c2",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 256,
+              "char": "d",
+              "bbox": {
+                "x": 0.12569659,
+                "y": 0.78425384,
+                "width": 0.0247678,
+                "height": 0.05447259
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l8w1",
+          "line_index": 8,
+          "word_index": 1,
+          "text": "memorable.",
+          "bbox": {
+            "x": 0.15355408,
+            "y": 0.78613141,
+            "width": 0.19148285,
+            "height": 0.05797793
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17327,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l8w1c0",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 257,
+              "char": "m",
+              "bbox": {
+                "x": 0.15294118,
+                "y": 0.78613141,
+                "width": 0.03343653,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c1",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 258,
+              "char": "e",
+              "bbox": {
+                "x": 0.18637771,
+                "y": 0.78613141,
+                "width": 0.01733746,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c2",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 259,
+              "char": "m",
+              "bbox": {
+                "x": 0.20371517,
+                "y": 0.78613141,
+                "width": 0.03095975,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c3",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 260,
+              "char": "o",
+              "bbox": {
+                "x": 0.23467492,
+                "y": 0.78613141,
+                "width": 0.01919505,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c4",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 261,
+              "char": "r",
+              "bbox": {
+                "x": 0.25386997,
+                "y": 0.78613141,
+                "width": 0.01424149,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c5",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 262,
+              "char": "a",
+              "bbox": {
+                "x": 0.26811146,
+                "y": 0.78613141,
+                "width": 0.01671827,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c6",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 263,
+              "char": "b",
+              "bbox": {
+                "x": 0.28482972,
+                "y": 0.78613141,
+                "width": 0.02043344,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c7",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 264,
+              "char": "l",
+              "bbox": {
+                "x": 0.30526316,
+                "y": 0.78613141,
+                "width": 0.00990712,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c8",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 265,
+              "char": "e",
+              "bbox": {
+                "x": 0.31517028,
+                "y": 0.78613141,
+                "width": 0.01795666,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c9",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 266,
+              "char": ".",
+              "bbox": {
+                "x": 0.33312693,
+                "y": 0.78613141,
+                "width": 0.0123839,
+                "height": 0.05797793
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+    "module": "rap",
+    "title": "The Flynn Effect",
+    "firstSeenDate": "2026-06-02",
+    "firstSeenSourceLabel": "6.2",
+    "firstSeenSourceOrder": 12,
+    "dedupFingerprint": "7d5d0462cf877efd8ae523af2bf5a41be2b4efe2050afbe9e1a0986fc02eb27a",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-2-m1-rap-12",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "sourceKind": "docx",
+      "sourceLabel": "6.2",
+      "occurrenceDate": "2026-06-02",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 12,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "title": "The Flynn Effect",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Researchers have observed a phenomenon known as the Flynn Effect: a consistent increase in Intelligence Quotient (IQ) scores from one generation to the next. This trend, named after intelligence researcher James Flynn, shows that average IQ scores have risen by about three points per decade in many parts of the world.",
+          "rawText": "Researchers have observed a phenomenon known as the Flynn Effect: a consistent increase in Intelligence Quotient (IQ) scores from one generation to the next. This trend, named after intelligence researcher James Flynn, shows that average IQ scores have risen by about three points per decade in many parts of the world.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Researchers have observed a phenomenon known as the Flynn Effect: a consistent increase in Intelligence Quotient (IQ) scores from one generation to the next."
+            },
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "This trend, named after intelligence researcher James Flynn, shows that average IQ scores have risen by about three points per decade in many parts of the world."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Various theories have been proposed to explain this trend. One hypothesis is that improvements in nutrition and healthcare have enhanced brain development, leading to higher IQ scores. Another theory suggests that the complexity of modern life, with its increased cognitive demands, has driven this rise. The widespread use of technology and a more stimulating environment could also be contributing factors.",
+          "rawText": "Various theories have been proposed to explain this trend. One hypothesis is that improvements in nutrition and healthcare have enhanced brain development, leading to higher IQ scores. Another theory suggests that the complexity of modern life, with its increased cognitive demands, has driven this rise. The widespread use of technology and a more stimulating environment could also be contributing factors.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Various theories have been proposed to explain this trend."
+            },
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "One hypothesis is that improvements in nutrition and healthcare have enhanced brain development, leading to higher IQ scores."
+            },
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Another theory suggests that the complexity of modern life, with its increased cognitive demands, has driven this rise."
+            },
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "The widespread use of technology and a more stimulating environment could also be contributing factors."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "However, the Flynn Effect does not necessarily indicate that people are becoming more intelligent. Some researchers argue that the rise in IQ scores reflects better test-taking skills or familiarity with the types of tasks presented in IQ tests, rather than a genuine increase in cognitive abilities. Recent studies have shown that the Flynn Effect may be slowing down or even reversing in some countries, challenging the notion of a universal and perpetual increase in intelligence.",
+          "rawText": "■ However, the Flynn Effect does not necessarily indicate that people are becoming more intelligent. ■ Some researchers argue that the rise in IQ scores reflects better test-taking skills or familiarity with the types of tasks presented in IQ tests, rather than a genuine increase in cognitive abilities. ■ Recent studies have shown that the Flynn Effect may be slowing down or even reversing in some countries, challenging the notion of a universal and perpetual increase in intelligence. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "However, the Flynn Effect does not necessarily indicate that people are becoming more intelligent."
+            },
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Some researchers argue that the rise in IQ scores reflects better test-taking skills or familiarity with the types of tasks presented in IQ tests, rather than a genuine increase in cognitive abilities."
+            },
+            {
+              "sentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Recent studies have shown that the Flynn Effect may be slowing down or even reversing in some countries, challenging the notion of a universal and perpetual increase in intelligence."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q01",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"consistent\" in the passage is closest in meaning to",
+      "rawDisplayText": "31. The word \"consistent\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q01-opt-1",
+            "optionOrder": 1,
+            "text": "rapid"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q01-opt-2",
+            "optionOrder": 2,
+            "text": "steady"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q01-opt-3",
+            "optionOrder": 3,
+            "text": "large"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q01-opt-4",
+            "optionOrder": 4,
+            "text": "impressive"
+          }
+        ],
+        "correctOptionId": "reading-rap-7d5d0462cf877efd8ae523af-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q02",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are mentioned in the passage as possible contributors to the trend of IQ scores EXCEPT",
+      "rawDisplayText": "32. All of the following are mentioned in the passage as possible contributors to the trend of IQ scores EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q02-opt-1",
+            "optionOrder": 1,
+            "text": "better eating habits and medical care"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q02-opt-2",
+            "optionOrder": 2,
+            "text": "improvements in parental care"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q02-opt-3",
+            "optionOrder": 3,
+            "text": "the cognitive demands of contemporary life"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q02-opt-4",
+            "optionOrder": 4,
+            "text": "the extensive use of technology"
+          }
+        ],
+        "correctOptionId": "reading-rap-7d5d0462cf877efd8ae523af-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q03",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to some researchers, the Flynn Effect may be a sign",
+      "rawDisplayText": "33. According to some researchers, the Flynn Effect may be a sign",
+      "payload": {
+        "passageId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q03-opt-1",
+            "optionOrder": 1,
+            "text": "people are becoming better at taking tests!"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q03-opt-2",
+            "optionOrder": 2,
+            "text": "IQ tests have become easier over time"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q03-opt-3",
+            "optionOrder": 3,
+            "text": "test-takers thrive in stimulating environments"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q03-opt-4",
+            "optionOrder": 4,
+            "text": "school systems have developed better examinations"
+          }
+        ],
+        "correctOptionId": "reading-rap-7d5d0462cf877efd8ae523af-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q04",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention that the Flynn Effect may be slowing down or reversing in some countries?",
+      "rawDisplayText": "34. Why does the author mention that the Flynn Effect may be slowing down or reversing in some countries?",
+      "payload": {
+        "passageId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that there may not be a global increase in intelligence"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To argue that cognitive abilities are declining around the world"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To show that the Flynn Effect requires further research"
+          },
+          {
+            "optionId": "reading-rap-7d5d0462cf877efd8ae523af-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To argue that the challenges of modern life can have negative effects on intelligence"
+          }
+        ],
+        "correctOptionId": "reading-rap-7d5d0462cf877efd8ae523af-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q05",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01",
+        "insertSentence": "Changes in educational practices or shifts in societal values could account for the downturn.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-7d5d0462cf877efd8ae523af-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-7d5d0462cf877efd8ae523af-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-7d5d0462cf877efd8ae523af-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-7d5d0462cf877efd8ae523af-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-7d5d0462cf877efd8ae523af-q05-anchor-4"
+      }
+    }
+  ]
+}

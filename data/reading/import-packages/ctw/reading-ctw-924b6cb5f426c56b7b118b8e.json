@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-924b6cb5f426c56b7b118b8e",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-16",
+    "firstSeenSourceLabel": "6.16A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "924b6cb5f426c56b7b118b8e261d73da0951716a3da01dcdce3123049ef9a624",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-16a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-924b6cb5f426c56b7b118b8e",
+      "sourceKind": "docx",
+      "sourceLabel": "6.16A",
+      "occurrenceDate": "2026-06-16",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01",
+      "logicalItemId": "reading-ctw-924b6cb5f426c56b7b118b8e",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Shadow puppetry is an ancient form of storytelling that uses flat, articulated (movable) figures cast onto a screen by a light source. Shadow puppetry combi_ _ _ visual arti_ _ _ _ with dram_ _ _ _ narration, crea_ _ _ _ engaging perfor_ _ _ _ _ _ that con_ _ _ traditional ta_ _ _ and mo_ _ _ lessons. Th_ _ art fo_ _ originated in Asia and spread to various cultures around the world. The puppets are typically made of leather or paper and manipulated by sticks or strings. Performers narrate stories, often accompanied by music or sound effects.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Shadow puppetry is an ancient form of storytelling that uses flat, articulated (movable) figures cast onto a screen by a light source. Shadow puppetry combi_ _ _ visual arti_ _ _ _ with dram_ _ _ _ narration, crea_ _ _ _ engaging perfor_ _ _ _ _ _ that con_ _ _ traditional ta_ _ _ and mo_ _ _ lessons. Th_ _ art fo_ _ originated in Asia and spread to various cultures around the world. The puppets are typically made of leather or paper and manipulated by sticks or strings. Performers narrate stories, often accompanied by music or sound effects.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Shadow puppetry is an ancient form of storytelling that uses flat, articulated (movable) figures cast onto a screen by a light source. Shadow puppetry "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " visual "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " with "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " narration, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " engaging "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " traditional "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " lessons. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " art "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " originated in Asia and spread to various cultures around the world. The puppets are typically made of leather or paper and manipulated by sticks or strings. Performers narrate stories, often accompanied by music or sound effects."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "combines",
+            "prefix": "combi",
+            "displayText": "combi_ _ _",
+            "missingText": "nes",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "artistry",
+            "prefix": "arti",
+            "displayText": "arti_ _ _ _",
+            "missingText": "stry",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "dramatic",
+            "prefix": "dram",
+            "displayText": "dram_ _ _ _",
+            "missingText": "atic",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "creating",
+            "prefix": "crea",
+            "displayText": "crea_ _ _ _",
+            "missingText": "ting",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "performances",
+            "prefix": "perfor",
+            "displayText": "perfor_ _ _ _ _ _",
+            "missingText": "mances",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "convey",
+            "prefix": "con",
+            "displayText": "con_ _ _",
+            "missingText": "vey",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "tales",
+            "prefix": "ta",
+            "displayText": "ta_ _ _",
+            "missingText": "les",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "moral",
+            "prefix": "mo",
+            "displayText": "mo_ _ _",
+            "missingText": "ral",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "This",
+            "prefix": "Th",
+            "displayText": "Th_ _",
+            "missingText": "is",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-924b6cb5f426c56b7b118b8e-q01-p01",
+            "answer": "form",
+            "prefix": "fo",
+            "displayText": "fo_ _",
+            "missingText": "rm",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

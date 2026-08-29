@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-39ef36e25995b6df181ec609",
+    "module": "rdl",
+    "title": "CAMPUS RESEARCHERS “CRACK” THE CONCRETE CODE",
+    "firstSeenDate": "2026-05-11",
+    "firstSeenSourceLabel": "5.11A",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "39ef36e25995b6df181ec609c09cda61b239aac007ad108b0aa1aebedbb9c36e",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-11a-m1-rdl-10",
+      "logicalItemId": "reading-rdl-39ef36e25995b6df181ec609",
+      "sourceKind": "docx",
+      "sourceLabel": "5.11A",
+      "occurrenceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-39ef36e25995b6df181ec609-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-39ef36e25995b6df181ec609-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-39ef36e25995b6df181ec609-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-022",
+      "title": "CAMPUS RESEARCHERS “CRACK” THE CONCRETE CODE",
+      "source": "material-index.json#RDL-022",
+      "sourceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-022/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-022/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-39ef36e25995b6df181ec609-q01",
+      "logicalItemId": "reading-rdl-39ef36e25995b6df181ec609",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main topic of the article?",
+      "rawDisplayText": "28. What is the main topic of the article?",
+      "payload": {
+        "materialId": "RDL-022",
+        "options": [
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q01-opt-1",
+            "optionOrder": 1,
+            "text": "How students are learning about environmental responsibility"
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q01-opt-2",
+            "optionOrder": 2,
+            "text": "A debate over campus maintenance budgets"
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Campus research on a better building material"
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q01-opt-4",
+            "optionOrder": 4,
+            "text": "A plan to ban concrete use in new building projects"
+          }
+        ],
+        "correctOptionId": "reading-rdl-39ef36e25995b6df181ec609-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-39ef36e25995b6df181ec609-q02",
+      "logicalItemId": "reading-rdl-39ef36e25995b6df181ec609",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is indicated about self-healing concrete?",
+      "rawDisplayText": "29. What is indicated about self-healing concrete?",
+      "payload": {
+        "materialId": "RDL-022",
+        "options": [
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It is activated by alternating exposure to heat and cold."
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It uses liquid to reverse the effects of damage."
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It is the result of a collaboration between two universities."
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It is only suitable for indoor applications."
+          }
+        ],
+        "correctOptionId": "reading-rdl-39ef36e25995b6df181ec609-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-39ef36e25995b6df181ec609-q03",
+      "logicalItemId": "reading-rdl-39ef36e25995b6df181ec609",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What can be inferred about the potential impact of self-healing concrete?",
+      "rawDisplayText": "30. What can be inferred about the potential impact of self-healing concrete?",
+      "payload": {
+        "materialId": "RDL-022",
+        "options": [
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It will change the way bridges are designed."
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It could significantly reduce costs for the maintenance of public infrastructure."
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Its ultimate success will be determined by current trials on campus walkways."
+          },
+          {
+            "optionId": "reading-rdl-39ef36e25995b6df181ec609-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It will have its greatest impact as a construction material for university buildings."
+          }
+        ],
+        "correctOptionId": "reading-rdl-39ef36e25995b6df181ec609-q03-opt-2"
+      }
+    }
+  ]
+}

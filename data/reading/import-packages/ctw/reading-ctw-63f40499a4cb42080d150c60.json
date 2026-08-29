@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-63f40499a4cb42080d150c60",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-15",
+    "firstSeenSourceLabel": "6.15",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "63f40499a4cb42080d150c60f2f1e80cadfa703cb5592344d6af7776b0442761",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-15-m2-ctw-18",
+      "logicalItemId": "reading-ctw-63f40499a4cb42080d150c60",
+      "sourceKind": "docx",
+      "sourceLabel": "6.15",
+      "occurrenceDate": "2026-06-15",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-63f40499a4cb42080d150c60-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-16b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-63f40499a4cb42080d150c60",
+      "sourceKind": "docx",
+      "sourceLabel": "6.16B",
+      "occurrenceDate": "2026-06-16",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-63f40499a4cb42080d150c60-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-63f40499a4cb42080d150c60-q01",
+      "logicalItemId": "reading-ctw-63f40499a4cb42080d150c60",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The development of jazz music in the United States in the early twentieth century represents a significant cultural milestone. Originating in the African American communities of New Orleans, jazz blended elements of blues, ragtime, and European classical music. Reflecting shi_ _ _ in cul_ _ _ _, jazz empl_ _ _ _ innovative techn_ _ _ _ _ like improv_ _ _ _ _ _ _ that chall_ _ _ _ _ traditional mus_ _ _ _ conventions, allo_ _ _ _ musicians t_ express th_ _ _ individuality. Figures like Louis Armstrong and Ella Fitzgerald popularized jazz, playing pivotal roles in advancing its stylistic innovations. The genre's influence extended globally, shaping various musical forms and inspiring new generations of artists.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The development of jazz music in the United States in the early twentieth century represents a significant cultural milestone. Originating in the African American communities of New Orleans, jazz blended elements of blues, ragtime, and European classical music. Reflecting shi_ _ _ in cul_ _ _ _, jazz empl_ _ _ _ innovative techn_ _ _ _ _ like improv_ _ _ _ _ _ _ that chall_ _ _ _ _ traditional mus_ _ _ _ conventions, allo_ _ _ _ musicians t_ express th_ _ _ individuality. Figures like Louis Armstrong and Ella Fitzgerald popularized jazz, playing pivotal roles in advancing its stylistic innovations. The genre's influence extended globally, shaping various musical forms and inspiring new generations of artists.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The development of jazz music in the United States in the early twentieth century represents a significant cultural milestone. Originating in the African American communities of New Orleans, jazz blended elements of blues, ragtime, and European classical music. Reflecting "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " in "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", jazz "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " innovative "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " like "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " traditional "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " conventions, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " musicians "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " express "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " individuality. Figures like Louis Armstrong and Ella Fitzgerald popularized jazz, playing pivotal roles in advancing its stylistic innovations. The genre's influence extended globally, shaping various musical forms and inspiring new generations of artists."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "shifts",
+            "prefix": "shi",
+            "displayText": "shi_ _ _",
+            "missingText": "fts",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "culture",
+            "prefix": "cul",
+            "displayText": "cul_ _ _ _",
+            "missingText": "ture",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "employed",
+            "prefix": "empl",
+            "displayText": "empl_ _ _ _",
+            "missingText": "oyed",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "techniques",
+            "prefix": "techn",
+            "displayText": "techn_ _ _ _ _",
+            "missingText": "iques",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "improvisation",
+            "prefix": "improv",
+            "displayText": "improv_ _ _ _ _ _ _",
+            "missingText": "isation",
+            "missingLength": 7
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "challenged",
+            "prefix": "chall",
+            "displayText": "chall_ _ _ _ _",
+            "missingText": "enged",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "musical",
+            "prefix": "mus",
+            "displayText": "mus_ _ _ _",
+            "missingText": "ical",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "allowing",
+            "prefix": "allo",
+            "displayText": "allo_ _ _ _",
+            "missingText": "wing",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-63f40499a4cb42080d150c60-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-63f40499a4cb42080d150c60-q01-p01",
+            "answer": "their",
+            "prefix": "th",
+            "displayText": "th_ _ _",
+            "missingText": "eir",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

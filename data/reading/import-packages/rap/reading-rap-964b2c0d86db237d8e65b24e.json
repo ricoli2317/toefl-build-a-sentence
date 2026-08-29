@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+    "module": "rap",
+    "title": "The New Dimensions of Choreography",
+    "firstSeenDate": "2026-06-21",
+    "firstSeenSourceLabel": "6.21B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "964b2c0d86db237d8e65b24ee310f071423e3fdd24d0919b0502539bff278441",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-21b-m2-rap-19",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21B",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "title": "The New Dimensions of Choreography",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Choreography (the composition and arrangement of dance), once a ceremonial and courtly discipline rooted in ritualistic precision, has undergone a profound metamorphosis shaped by cultural shifts and artistic redefinition. Initially governed by strict formalism—particularly in classical ballet—it emphasized symmetry, control, and hierarchy. However, the 20th century witnessed a radical departure from these conventions. Visionaries like Martha Graham redefined dance as a medium for emotional expression and psychological depth, challenging ballet's aesthetic rigidity and introducing vocabularies of movement that embraced tension, release, and groundedness, which emphasizes a strong connection to the earth or floor. This evolution marked a transition from spectacle to narrative, with choreography becoming a conduit for storytelling and social commentary.",
+          "rawText": "Choreography (the composition and arrangement of dance), once a ceremonial and courtly discipline rooted in ritualistic precision, has undergone a profound metamorphosis shaped by cultural shifts and artistic redefinition. Initially governed by strict formalism—particularly in classical ballet—it emphasized symmetry, control, and hierarchy. However, the 20th century witnessed a radical departure from these conventions. Visionaries like Martha Graham redefined dance as a medium for emotional expression and psychological depth, challenging ballet's aesthetic rigidity and introducing vocabularies of movement that embraced tension, release, and groundedness, which emphasizes a strong connection to the earth or floor. This evolution marked a transition from spectacle to narrative, with choreography becoming a conduit for storytelling and social commentary.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Choreography (the composition and arrangement of dance), once a ceremonial and courtly discipline rooted in ritualistic precision, has undergone a profound metamorphosis shaped by cultural shifts and artistic redefinition."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Initially governed by strict formalism—particularly in classical ballet—it emphasized symmetry, control, and hierarchy."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "However, the 20th century witnessed a radical departure from these conventions."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Visionaries like Martha Graham redefined dance as a medium for emotional expression and psychological depth, challenging ballet's aesthetic rigidity and introducing vocabularies of movement that embraced tension, release, and groundedness, which emphasizes a strong connection to the earth or floor."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "This evolution marked a transition from spectacle to narrative, with choreography becoming a conduit for storytelling and social commentary."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Today, choreography increasingly reflects a decentralization of artistic authority. Rather than a single choreographer dictating movement, many contemporary works emerge from collaborative processes among dancers, composers, designers, and digital artists. This co-creative model not only democratizes authorship but also fosters performances that are adaptive and responsive—sometimes even improvised or altered in real time. The boundaries between creator and performer blur, yielding works that resist fixed interpretation. In this context, choreography becomes less a finished product and more a living dialogue among disciplines, identities, and ideas.",
+          "rawText": "Today, choreography increasingly reflects a decentralization of artistic authority. ■ Rather than a single choreographer dictating movement, many contemporary works emerge from collaborative processes among dancers, composers, designers, and digital artists. ■ This co-creative model not only democratizes authorship but also fosters performances that are adaptive and responsive—sometimes even improvised or altered in real time. The boundaries between creator and performer blur, yielding works that resist fixed interpretation. ■ In this context, choreography becomes less a finished product and more a living dialogue among disciplines, identities, and ideas. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Today, choreography increasingly reflects a decentralization of artistic authority."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Rather than a single choreographer dictating movement, many contemporary works emerge from collaborative processes among dancers, composers, designers, and digital artists."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "This co-creative model not only democratizes authorship but also fosters performances that are adaptive and responsive—sometimes even improvised or altered in real time."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "The boundaries between creator and performer blur, yielding works that resist fixed interpretation."
+            },
+            {
+              "sentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "In this context, choreography becomes less a finished product and more a living dialogue among disciplines, identities, and ideas."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q01",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"profound\" in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word \"profound\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q01-opt-1",
+            "optionOrder": 1,
+            "text": "gradual"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q01-opt-2",
+            "optionOrder": 2,
+            "text": "permanent"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q01-opt-3",
+            "optionOrder": 3,
+            "text": "complex"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q01-opt-4",
+            "optionOrder": 4,
+            "text": "fundamental"
+          }
+        ],
+        "correctOptionId": "reading-rap-964b2c0d86db237d8e65b24e-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q02",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author discuss Martha Graham's approach to dance?",
+      "rawDisplayText": "12. Why does the author discuss Martha Graham's approach to dance?",
+      "payload": {
+        "passageId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate an important shift from formalism to expressive movement"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To highlight the continuity between ceremonial dance and modern techniques"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To suggest that Graham's style was more technically demanding than ballet"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To argue that ballet remains the dominant form of choreography"
+          }
+        ],
+        "correctOptionId": "reading-rap-964b2c0d86db237d8e65b24e-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q03",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the author suggest about the role of the choreographer in contemporary dance?",
+      "rawDisplayText": "13. What does the author suggest about the role of the choreographer in contemporary dance?",
+      "payload": {
+        "passageId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q03-opt-1",
+            "optionOrder": 1,
+            "text": "The choreographer's role is increasingly shared with other contributors."
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q03-opt-2",
+            "optionOrder": 2,
+            "text": "The choreographer is solely responsible for all artistic decisions."
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The choreographer's relation to collaborators has become more hierarchical."
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q03-opt-4",
+            "optionOrder": 4,
+            "text": "The choreographer no longer participates in the creative process."
+          }
+        ],
+        "correctOptionId": "reading-rap-964b2c0d86db237d8e65b24e-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q04",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following best describes the evolution of choreography over time?",
+      "rawDisplayText": "14. Which of the following best describes the evolution of choreography over time?",
+      "payload": {
+        "passageId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q04-opt-1",
+            "optionOrder": 1,
+            "text": "A shift from narrative to social commentary"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q04-opt-2",
+            "optionOrder": 2,
+            "text": "A movement toward stricter formalism"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q04-opt-3",
+            "optionOrder": 3,
+            "text": "A transformation from rigid constraints to flexibility"
+          },
+          {
+            "optionId": "reading-rap-964b2c0d86db237d8e65b24e-q04-opt-4",
+            "optionOrder": 4,
+            "text": "A return to ceremonial traditions"
+          }
+        ],
+        "correctOptionId": "reading-rap-964b2c0d86db237d8e65b24e-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q05",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01",
+        "insertSentence": "In many cases, contributors shape the thematic and emotional direction of a piece, influencing its development from within the creative process.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-964b2c0d86db237d8e65b24e-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s01"
+          },
+          {
+            "anchorId": "reading-rap-964b2c0d86db237d8e65b24e-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s02"
+          },
+          {
+            "anchorId": "reading-rap-964b2c0d86db237d8e65b24e-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s04"
+          },
+          {
+            "anchorId": "reading-rap-964b2c0d86db237d8e65b24e-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p02-s05"
+          }
+        ],
+        "correctAnchorId": "reading-rap-964b2c0d86db237d8e65b24e-q05-anchor-2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-f40ed125b66e539ea9e27f84",
+    "module": "rdl",
+    "title": "Extended Library Hours for Final Exams",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7C",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "f40ed125b66e539ea9e27f84833bfac77ead977ce34c713a61aa7353e42fd878",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7c-m1-rdl-05",
+      "logicalItemId": "reading-rdl-f40ed125b66e539ea9e27f84",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7C",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 24,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-067",
+      "title": "Extended Library Hours for Final Exams",
+      "source": "material-index.json#RDL-067",
+      "sourceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-067/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-067/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01",
+      "logicalItemId": "reading-rdl-f40ed125b66e539ea9e27f84",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "How will the library's schedule change during final exams?",
+      "rawDisplayText": "23. How will the library's schedule change during final exams?",
+      "payload": {
+        "materialId": "RDL-067",
+        "options": [
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Study rooms will be unavailable after 10 p.m. starting April 22."
+          },
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01-opt-2",
+            "optionOrder": 2,
+            "text": "The library will begin opening an hour earlier starting April 22."
+          },
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Weekend hours will be reduced after April 22 to allow for maintenance."
+          },
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01-opt-4",
+            "optionOrder": 4,
+            "text": "The library's closing time will be later starting April 22."
+          }
+        ],
+        "correctOptionId": "reading-rdl-f40ed125b66e539ea9e27f84-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02",
+      "logicalItemId": "reading-rdl-f40ed125b66e539ea9e27f84",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Which feature is newly added to study rooms during the library's altered schedule for final exams?",
+      "rawDisplayText": "24. Which feature is newly added to study rooms during the library's altered schedule for final exams?",
+      "payload": {
+        "materialId": "RDL-067",
+        "options": [
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Additional drink choices"
+          },
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02-opt-2",
+            "optionOrder": 2,
+            "text": "The ability to print documents"
+          },
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Faster help from librarians"
+          },
+          {
+            "optionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Increased seating capacity"
+          }
+        ],
+        "correctOptionId": "reading-rdl-f40ed125b66e539ea9e27f84-q02-opt-3"
+      }
+    }
+  ]
+}

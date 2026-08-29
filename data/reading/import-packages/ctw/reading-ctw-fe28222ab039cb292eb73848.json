@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-fe28222ab039cb292eb73848",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "fe28222ab039cb292eb73848373f422a6948ebc2ff4f160d21fbe641a7d96f93",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-fe28222ab039cb292eb73848",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20A",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-fe28222ab039cb292eb73848-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-fe28222ab039cb292eb73848-q01",
+      "logicalItemId": "reading-ctw-fe28222ab039cb292eb73848",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The transition from Baroque to Classical music reflected broader cultural shifts in eighteenth-century Europe. Baroque music, with its elaborate textures and emotional intensity, mirrored the grandeur of monarchies and the Church. As Enlightenment ide_ _ _ gained infl_ _ _ _ _, Classical music eme_ _ _ _ with sim_ _ _ _, less orn_ _ _ structures, bala_ _ _ _ phrasing, and a fo_ _ _ on rea_ _ _ and or_ _ _. Composers li_ _ Haydn and Mozart embraced simplicity and symmetry, aligning with the era’s intellectual and political movements that favored rational thought over divine authority. This stylistic shift marked a move toward accessibility and elegance in musical expression.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The transition from Baroque to Classical music reflected broader cultural shifts in eighteenth-century Europe. Baroque music, with its elaborate textures and emotional intensity, mirrored the grandeur of monarchies and the Church. As Enlightenment ide_ _ _ gained infl_ _ _ _ _, Classical music eme_ _ _ _ with sim_ _ _ _, less orn_ _ _ structures, bala_ _ _ _ phrasing, and a fo_ _ _ on rea_ _ _ and or_ _ _. Composers li_ _ Haydn and Mozart embraced simplicity and symmetry, aligning with the era’s intellectual and political movements that favored rational thought over divine authority. This stylistic shift marked a move toward accessibility and elegance in musical expression.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The transition from Baroque to Classical music reflected broader cultural shifts in eighteenth-century Europe. Baroque music, with its elaborate textures and emotional intensity, mirrored the grandeur of monarchies and the Church. As Enlightenment "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " gained "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", Classical music "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " with "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ", less "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " structures, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " phrasing, and a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " on "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ". Composers "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " Haydn and Mozart embraced simplicity and symmetry, aligning with the era’s intellectual and political movements that favored rational thought over divine authority. This stylistic shift marked a move toward accessibility and elegance in musical expression."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "ideals",
+            "prefix": "ide",
+            "displayText": "ide_ _ _",
+            "missingText": "als",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "influence",
+            "prefix": "infl",
+            "displayText": "infl_ _ _ _ _",
+            "missingText": "uence",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "emerged",
+            "prefix": "eme",
+            "displayText": "eme_ _ _ _",
+            "missingText": "rged",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "simpler",
+            "prefix": "sim",
+            "displayText": "sim_ _ _ _",
+            "missingText": "pler",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "ornate",
+            "prefix": "orn",
+            "displayText": "orn_ _ _",
+            "missingText": "ate",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "balanced",
+            "prefix": "bala",
+            "displayText": "bala_ _ _ _",
+            "missingText": "nced",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "focus",
+            "prefix": "fo",
+            "displayText": "fo_ _ _",
+            "missingText": "cus",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "reason",
+            "prefix": "rea",
+            "displayText": "rea_ _ _",
+            "missingText": "son",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "order",
+            "prefix": "or",
+            "displayText": "or_ _ _",
+            "missingText": "der",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-fe28222ab039cb292eb73848-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-fe28222ab039cb292eb73848-q01-p01",
+            "answer": "like",
+            "prefix": "li",
+            "displayText": "li_ _",
+            "missingText": "ke",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

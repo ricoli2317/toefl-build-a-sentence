@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+    "module": "rap",
+    "title": "Ancient Air in Glaciers",
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "88bc32dacb3916e75ed13c095894c53359632a72611af3ba760b21bb6691d7c7",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m2-rap-19",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "title": "Ancient Air in Glaciers",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Glaciers, repositories of ancient ice, serve as frozen libraries of Earth’s climatic history. As snow accumulates and compresses over centuries, it traps air bubbles that create tiny atmospheric snapshots. These bubbles are crucial for understanding climate evolution. By analyzing the gases within the bubbles, researchers are able to reconstruct past concentrations of greenhouse gases like carbon dioxide and methane, revealing both natural climate cycles and the escalating impact of human activity.",
+          "rawText": "Glaciers, repositories of ancient ice, serve as frozen libraries of Earth’s climatic history. As snow accumulates and compresses over centuries, it traps air bubbles that create tiny atmospheric snapshots. These bubbles are crucial for understanding climate evolution. By analyzing the gases within the bubbles, researchers are able to reconstruct past concentrations of greenhouse gases like carbon dioxide and methane, revealing both natural climate cycles and the escalating impact of human activity.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Glaciers, repositories of ancient ice, serve as frozen libraries of Earth’s climatic history."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "As snow accumulates and compresses over centuries, it traps air bubbles that create tiny atmospheric snapshots."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "These bubbles are crucial for understanding climate evolution."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "By analyzing the gases within the bubbles, researchers are able to reconstruct past concentrations of greenhouse gases like carbon dioxide and methane, revealing both natural climate cycles and the escalating impact of human activity."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Though many glaciers are retreating due to rising temperatures, surviving ones offer a window into the past. Scientists drill deep into the ice to extract cylindrical cores, whose layers, much like tree rings, correspond to distinct time periods. These layers contain more than just gases: They hold chemical and physical markers of past environmental events. Ice cores can reveal data about volcanic eruptions via ash and sulfate layers, solar activity via isotopic changes, and forest fires via trapped particulates and black carbon.",
+          "rawText": "Though many glaciers are retreating due to rising temperatures, surviving ones offer a window into the past. Scientists drill deep into the ice to extract cylindrical cores, whose layers, much like tree rings, correspond to distinct time periods. These layers contain more than just gases: They hold chemical and physical markers of past environmental events. Ice cores can reveal data about volcanic eruptions via ash and sulfate layers, solar activity via isotopic changes, and forest fires via trapped particulates and black carbon.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Though many glaciers are retreating due to rising temperatures, surviving ones offer a window into the past."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Scientists drill deep into the ice to extract cylindrical cores, whose layers, much like tree rings, correspond to distinct time periods."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "These layers contain more than just gases: They hold chemical and physical markers of past environmental events."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Ice cores can reveal data about volcanic eruptions via ash and sulfate layers, solar activity via isotopic changes, and forest fires via trapped particulates and black carbon."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Recent studies underscore the precarious future of these icy archives. As glaciers melt, they contribute to rising sea levels, and the risk that invaluable climate data will be lost increases. The urgency to study and preserve these records grows. While scientists race against time, the question remains: what secrets do these frozen giants still hold?",
+          "rawText": "Recent studies underscore the precarious future of these icy archives. As glaciers melt, they contribute to rising sea levels, and the risk that invaluable climate data will be lost increases. The urgency to study and preserve these records grows. While scientists race against time, the question remains: what secrets do these frozen giants still hold?",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Recent studies underscore the precarious future of these icy archives."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "As glaciers melt, they contribute to rising sea levels, and the risk that invaluable climate data will be lost increases."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "The urgency to study and preserve these records grows."
+            },
+            {
+              "sentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "While scientists race against time, the question remains: what secrets do these frozen giants still hold?"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q01",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "questionOrder": 1,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 1 that explains the natural process by which climate data is preserved. Select the sentence to make your choice.",
+      "rawDisplayText": "11. Identify the sentence in paragraph 1 that explains the natural process by which climate data is preserved. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01",
+        "targetParagraphId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01",
+        "correctSentenceId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01-s02"
+      }
+    },
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q02",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “escalating” in the passage is closest in meaning to",
+      "rawDisplayText": "12. The word “escalating” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q02-opt-1",
+            "optionOrder": 1,
+            "text": "increasing"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q02-opt-2",
+            "optionOrder": 2,
+            "text": "continuing"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q02-opt-3",
+            "optionOrder": 3,
+            "text": "powerful"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q02-opt-4",
+            "optionOrder": 4,
+            "text": "damaging"
+          }
+        ],
+        "correctOptionId": "reading-rap-88bc32dacb3916e75ed13c09-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q03",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, all of the following are true about ice cores EXCEPT:",
+      "rawDisplayText": "13. According to the passage, all of the following are true about ice cores EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Ice cores are obtained by drilling far down into glaciers."
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Each layer in an ice core formed at a different point in time."
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Ice core layers are sometimes destroyed by severe environmental events."
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Ice cores can be used to identify when volcanoes erupted in the past."
+          }
+        ],
+        "correctOptionId": "reading-rap-88bc32dacb3916e75ed13c09-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q04",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “tree rings”?",
+      "rawDisplayText": "14. Why does the author mention “tree rings”?",
+      "payload": {
+        "passageId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To compare the usefulness of trees and ice cores for studying past climates"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To highlight the extreme age of some layers of ice cores"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To illustrate the layering that exists in ice cores"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To compare the physical markers present in tree rings with the chemical markers found in ice cores"
+          }
+        ],
+        "correctOptionId": "reading-rap-88bc32dacb3916e75ed13c09-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q05",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage implies that scientists should",
+      "rawDisplayText": "15. The passage implies that scientists should",
+      "payload": {
+        "passageId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q05-opt-1",
+            "optionOrder": 1,
+            "text": "look quickly for other sources of valuable climate data"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q05-opt-2",
+            "optionOrder": 2,
+            "text": "increase the size of the ice cores they drill"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q05-opt-3",
+            "optionOrder": 3,
+            "text": "find ways to limit the rise of sea levels"
+          },
+          {
+            "optionId": "reading-rap-88bc32dacb3916e75ed13c09-q05-opt-4",
+            "optionOrder": 4,
+            "text": "work as quickly as possible to collect more ice cores"
+          }
+        ],
+        "correctOptionId": "reading-rap-88bc32dacb3916e75ed13c09-q05-opt-4"
+      }
+    }
+  ]
+}

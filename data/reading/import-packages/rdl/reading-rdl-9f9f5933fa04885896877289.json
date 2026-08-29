@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-9f9f5933fa04885896877289",
+    "module": "rdl",
+    "title": "University nuclear research reactor article",
+    "firstSeenDate": "2026-06-24",
+    "firstSeenSourceLabel": "6.24",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "9f9f5933fa04885896877289c80f8f1e3747367e47b7f406f879dc6fc38e60cd",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-24-m1-rdl-05",
+      "logicalItemId": "reading-rdl-9f9f5933fa04885896877289",
+      "sourceKind": "docx",
+      "sourceLabel": "6.24",
+      "occurrenceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-9f9f5933fa04885896877289-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-9f9f5933fa04885896877289-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-9f9f5933fa04885896877289-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-079",
+      "title": "University nuclear research reactor article",
+      "source": "material-index.json#RDL-079",
+      "sourceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-079/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-079/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-9f9f5933fa04885896877289-q01",
+      "logicalItemId": "reading-rdl-9f9f5933fa04885896877289",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "All of the following are true of the new nuclear reactor EXCEPT",
+      "rawDisplayText": "23. All of the following are true of the new nuclear reactor EXCEPT",
+      "payload": {
+        "materialId": "RDL-079",
+        "options": [
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It is about the size of a classroom."
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It is located on the engineering quad."
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Its purpose is to provide power to the university."
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It has caused safety concerns among students."
+          }
+        ],
+        "correctOptionId": "reading-rdl-9f9f5933fa04885896877289-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-9f9f5933fa04885896877289-q02",
+      "logicalItemId": "reading-rdl-9f9f5933fa04885896877289",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What claim does the project lead make regarding the safety of the new reactor?",
+      "rawDisplayText": "24. What claim does the project lead make regarding the safety of the new reactor?",
+      "payload": {
+        "materialId": "RDL-079",
+        "options": [
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It exposes passersby to less radiation than they would receive on an airplane."
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It will provide opportunities for the university that override worries about safety."
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It is safer for students than are the industrial reactors located near campus."
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It is low-power, heavily shielded, and monitored under strict federal guidelines."
+          }
+        ],
+        "correctOptionId": "reading-rdl-9f9f5933fa04885896877289-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-9f9f5933fa04885896877289-q03",
+      "logicalItemId": "reading-rdl-9f9f5933fa04885896877289",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Which of the following best describes the attitude represented by the event planned by the Physics Club?",
+      "rawDisplayText": "25. Which of the following best describes the attitude represented by the event planned by the Physics Club?",
+      "payload": {
+        "materialId": "RDL-079",
+        "options": [
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Concerned but resigned"
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Hopeful but cautious"
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Critical and serious"
+          },
+          {
+            "optionId": "reading-rdl-9f9f5933fa04885896877289-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Lighthearted and celebratory"
+          }
+        ],
+        "correctOptionId": "reading-rdl-9f9f5933fa04885896877289-q03-opt-4"
+      }
+    }
+  ]
+}

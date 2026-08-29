@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-492a8c9b6622cc67813870cb",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-12",
+    "firstSeenSourceLabel": "5.12",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "492a8c9b6622cc67813870cb537180198e0f624915fb601cb4e6986383c5a003",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-12-m2-ctw-18",
+      "logicalItemId": "reading-ctw-492a8c9b6622cc67813870cb",
+      "sourceKind": "docx",
+      "sourceLabel": "5.12",
+      "occurrenceDate": "2026-05-12",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.12.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.12_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-492a8c9b6622cc67813870cb-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-492a8c9b6622cc67813870cb-q01",
+      "logicalItemId": "reading-ctw-492a8c9b6622cc67813870cb",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Language development in children is a complex process influenced by both genetics and environment. From bi_ _ _, infants be_ _ _ to recognize sou_ _ _ and patt_ _ _ _ in spe_ _ _. By o_ _ year o_ age, mo_ _ can s_ _ simple wo_ _ _ like “mama” or “dada.” As they grow, their vocabulary expands rapidly. Interacting with caregivers and peers plays a crucial role in this development. Reading to children and engaging in conversations are effective ways to support language acquisition.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Language development in children is a complex process influenced by both genetics and environment. From bi_ _ _, infants be_ _ _ to recognize sou_ _ _ and patt_ _ _ _ in spe_ _ _. By o_ _ year o_ age, mo_ _ can s_ _ simple wo_ _ _ like “mama” or “dada.” As they grow, their vocabulary expands rapidly. Interacting with caregivers and peers plays a crucial role in this development. Reading to children and engaging in conversations are effective ways to support language acquisition.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Language development in children is a complex process influenced by both genetics and environment. From "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": ", infants "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " to recognize "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " in "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ". By "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " year "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " age, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " can "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " simple "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " like “mama” or “dada.” As they grow, their vocabulary expands rapidly. Interacting with caregivers and peers plays a crucial role in this development. Reading to children and engaging in conversations are effective ways to support language acquisition."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "birth",
+            "prefix": "bi",
+            "displayText": "bi_ _ _",
+            "missingText": "rth",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "begin",
+            "prefix": "be",
+            "displayText": "be_ _ _",
+            "missingText": "gin",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "sounds",
+            "prefix": "sou",
+            "displayText": "sou_ _ _",
+            "missingText": "nds",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "patterns",
+            "prefix": "patt",
+            "displayText": "patt_ _ _ _",
+            "missingText": "erns",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "speech",
+            "prefix": "spe",
+            "displayText": "spe_ _ _",
+            "missingText": "ech",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "one",
+            "prefix": "o",
+            "displayText": "o_ _",
+            "missingText": "ne",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "most",
+            "prefix": "mo",
+            "displayText": "mo_ _",
+            "missingText": "st",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "say",
+            "prefix": "s",
+            "displayText": "s_ _",
+            "missingText": "ay",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-492a8c9b6622cc67813870cb-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-492a8c9b6622cc67813870cb-q01-p01",
+            "answer": "words",
+            "prefix": "wo",
+            "displayText": "wo_ _ _",
+            "missingText": "rds",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

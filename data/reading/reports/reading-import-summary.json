@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "months": {
+    "2026-05": {
+      "setCount": 23,
+      "questionRowCount": 529,
+      "scoredItemCount": 1150,
+      "typeCounts": {
+        "ctw": 69,
+        "rap_multiple_choice": 253,
+        "rap_sentence_insertion": 30,
+        "rap_sentence_selection": 12,
+        "rdl": 165
+      },
+      "ctwSlotCount": 690
+    },
+    "2026-06": {
+      "setCount": 24,
+      "questionRowCount": 551,
+      "scoredItemCount": 1190,
+      "typeCounts": {
+        "ctw": 71,
+        "rap_multiple_choice": 273,
+        "rap_sentence_insertion": 31,
+        "rap_sentence_selection": 11,
+        "rdl": 165
+      },
+      "ctwSlotCount": 710
+    }
+  },
+  "total": {
+    "setCount": 47,
+    "questionRowCount": 1080,
+    "scoredItemCount": 2340,
+    "typeCounts": {
+      "ctw": 140,
+      "rap_multiple_choice": 526,
+      "rap_sentence_insertion": 61,
+      "rap_sentence_selection": 23,
+      "rdl": 330
+    },
+    "ctwSlotCount": 1400
+  },
+  "rdlMaterialCount": 86,
+  "unresolvedCount": 1,
+  "packages": [
+    {
+      "setId": "reading-2026-05-03-a",
+      "source": "5.3A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-03-a.json"
+    },
+    {
+      "setId": "reading-2026-05-03-b",
+      "source": "5.3B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-03-b.json"
+    },
+    {
+      "setId": "reading-2026-05-05-a",
+      "source": "5.5A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-05-a.json"
+    },
+    {
+      "setId": "reading-2026-05-05-b",
+      "source": "5.5B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-05-b.json"
+    },
+    {
+      "setId": "reading-2026-05-06-a",
+      "source": "5.6A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-06-a.json"
+    },
+    {
+      "setId": "reading-2026-05-06-b",
+      "source": "5.6B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-06-b.json"
+    },
+    {
+      "setId": "reading-2026-05-10-a",
+      "source": "5.10A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-10-a.json"
+    },
+    {
+      "setId": "reading-2026-05-10-b",
+      "source": "5.10B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-10-b.json"
+    },
+    {
+      "setId": "reading-2026-05-11-a",
+      "source": "5.11A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-11-a.json"
+    },
+    {
+      "setId": "reading-2026-05-11-b",
+      "source": "5.11B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-11-b.json"
+    },
+    {
+      "setId": "reading-2026-05-12",
+      "source": "5.12",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-12.json"
+    },
+    {
+      "setId": "reading-2026-05-13",
+      "source": "5.13",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-13.json"
+    },
+    {
+      "setId": "reading-2026-05-17",
+      "source": "5.17",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-17.json"
+    },
+    {
+      "setId": "reading-2026-05-18-a",
+      "source": "5.18A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-18-a.json"
+    },
+    {
+      "setId": "reading-2026-05-18-b",
+      "source": "5.18B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-18-b.json"
+    },
+    {
+      "setId": "reading-2026-05-19",
+      "source": "5.19",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-19.json"
+    },
+    {
+      "setId": "reading-2026-05-20-a",
+      "source": "5.20A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-20-a.json"
+    },
+    {
+      "setId": "reading-2026-05-20-b",
+      "source": "5.20B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-20-b.json"
+    },
+    {
+      "setId": "reading-2026-05-23",
+      "source": "5.23",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-23.json"
+    },
+    {
+      "setId": "reading-2026-05-24-a",
+      "source": "5.24A",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-24-a.json"
+    },
+    {
+      "setId": "reading-2026-05-24-b",
+      "source": "5.24B",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-24-b.json"
+    },
+    {
+      "setId": "reading-2026-05-28",
+      "source": "5.28",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-28.json"
+    },
+    {
+      "setId": "reading-2026-05-31",
+      "source": "5.31",
+      "yearMonth": "2026-05",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-05/reading-2026-05-31.json"
+    },
+    {
+      "setId": "reading-2026-06-01-a",
+      "source": "6.1A",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-01-a.json"
+    },
+    {
+      "setId": "reading-2026-06-01-b",
+      "source": "6.1B",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-01-b.json"
+    },
+    {
+      "setId": "reading-2026-06-01-c",
+      "source": "6.1C",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-01-c.json"
+    },
+    {
+      "setId": "reading-2026-06-02",
+      "source": "6.2",
+      "yearMonth": "2026-06",
+      "questionCount": 22,
+      "scoredItemCount": 40,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-02.json"
+    },
+    {
+      "setId": "reading-2026-06-03",
+      "source": "6.3",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-03.json"
+    },
+    {
+      "setId": "reading-2026-06-06-a",
+      "source": "6.6A",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-06-a.json"
+    },
+    {
+      "setId": "reading-2026-06-07-a",
+      "source": "6.7A",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-07-a.json"
+    },
+    {
+      "setId": "reading-2026-06-07-b",
+      "source": "6.7B",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-07-b.json"
+    },
+    {
+      "setId": "reading-2026-06-07-c",
+      "source": "6.7C",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-07-c.json"
+    },
+    {
+      "setId": "reading-2026-06-09",
+      "source": "6.9",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-09.json"
+    },
+    {
+      "setId": "reading-2026-06-10",
+      "source": "6.10",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-10.json"
+    },
+    {
+      "setId": "reading-2026-06-14",
+      "source": "6.14",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-14.json"
+    },
+    {
+      "setId": "reading-2026-06-15",
+      "source": "6.15",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-15.json"
+    },
+    {
+      "setId": "reading-2026-06-16-a",
+      "source": "6.16A",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-16-a.json"
+    },
+    {
+      "setId": "reading-2026-06-16-b",
+      "source": "6.16B",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-16-b.json"
+    },
+    {
+      "setId": "reading-2026-06-17",
+      "source": "6.17",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-17.json"
+    },
+    {
+      "setId": "reading-2026-06-21-a",
+      "source": "6.21A",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-21-a.json"
+    },
+    {
+      "setId": "reading-2026-06-21-b",
+      "source": "6.21B",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-21-b.json"
+    },
+    {
+      "setId": "reading-2026-06-22",
+      "source": "6.22",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-22.json"
+    },
+    {
+      "setId": "reading-2026-06-23",
+      "source": "6.23",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-23.json"
+    },
+    {
+      "setId": "reading-2026-06-24",
+      "source": "6.24",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-24.json"
+    },
+    {
+      "setId": "reading-2026-06-29",
+      "source": "6.29",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-29.json"
+    },
+    {
+      "setId": "reading-2026-06-30-a",
+      "source": "6.30A",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-30-a.json"
+    },
+    {
+      "setId": "reading-2026-06-30-b",
+      "source": "6.30B",
+      "yearMonth": "2026-06",
+      "questionCount": 23,
+      "scoredItemCount": 50,
+      "path": "data/reading/source-packages/2026-06/reading-2026-06-30-b.json"
+    }
+  ]
+}

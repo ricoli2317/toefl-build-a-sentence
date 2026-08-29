@@ -233,7 +233,7 @@ test("BAS and writing history sorting remains actual attempt/submission time", (
 test("history React keys and URLs keep attempt_id rather than display_number", () => {
   const basUi = fs.readFileSync(path.join(projectRoot, "components/AttemptHistoryList.tsx"), "utf8");
   const writingUi = fs.readFileSync(path.join(projectRoot, "components/writing/WritingSubmissionHistory.tsx"), "utf8");
-  assert.match(writingUi, /key=\{attempt\.attempt_id\}/);
+  assert.match(writingUi, /id: attempt\.attempt_id/);
   assert.match(writingUi, /encodeURIComponent\(attempt\.attempt_id\)/);
   assert.doesNotMatch(writingUi, /key=\{[^}]*display_number/);
   assert.match(basUi, /attemptId/);

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-b173120bab5a5345b1a83638",
+    "module": "rdl",
+    "title": "Literature 201: Introduction to World Literature",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10B",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "b173120bab5a5345b1a83638dfc5e818e17774fc6c002c7dc013dd244482bc05",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10b-m1-rdl-05",
+      "logicalItemId": "reading-rdl-b173120bab5a5345b1a83638",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10B",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 24,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-b173120bab5a5345b1a83638-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-b173120bab5a5345b1a83638-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-016",
+      "title": "Literature 201: Introduction to World Literature",
+      "source": "material-index.json#RDL-016",
+      "sourceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-016/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-016/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-b173120bab5a5345b1a83638-q01",
+      "logicalItemId": "reading-rdl-b173120bab5a5345b1a83638",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main purpose of the excerpt?",
+      "rawDisplayText": "23. What is the main purpose of the excerpt?",
+      "payload": {
+        "materialId": "RDL-016",
+        "options": [
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To outline the grading criteria for course assignments"
+          },
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To summarize the course objectives and expectations"
+          },
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To provide a reading list for the course"
+          },
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To list all the major assignments for the course"
+          }
+        ],
+        "correctOptionId": "reading-rdl-b173120bab5a5345b1a83638-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-b173120bab5a5345b1a83638-q02",
+      "logicalItemId": "reading-rdl-b173120bab5a5345b1a83638",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is indicated about the guest lectures?",
+      "rawDisplayText": "24. What is indicated about the guest lectures?",
+      "payload": {
+        "materialId": "RDL-016",
+        "options": [
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They will be held every week."
+          },
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They will be delivered by professors from the university."
+          },
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They will feature writers who are well-known."
+          },
+          {
+            "optionId": "reading-rdl-b173120bab5a5345b1a83638-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They will include time for discussion."
+          }
+        ],
+        "correctOptionId": "reading-rdl-b173120bab5a5345b1a83638-q02-opt-3"
+      }
+    }
+  ]
+}

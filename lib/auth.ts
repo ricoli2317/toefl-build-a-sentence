@@ -23,12 +23,15 @@ export async function requireAuthenticatedAccount(
 
   const anon = createAnonSupabase(token);
   const {
-    data: { user },
-    error: userError
-  } = await measure(timing, "auth", "supabase_auth_get_user", () =>
-    anon.auth.getUser(token)
+    data: claimsData,
+    error: claimsError
+  } = await measure(timing, "auth", "supabase_auth_get_claims", () =>
+    anon.auth.getClaims(token)
   );
-  if (userError || !user) {
+  const userId = typeof claimsData?.claims.sub === "string"
+    ? claimsData.claims.sub
+    : null;
+  if (claimsError || !userId) {
     return { error: "Invalid session", userId: null, role: null };
   }
 
@@ -36,12 +39,12 @@ export async function requireAuthenticatedAccount(
     timing,
     "database",
     "profiles_role",
-    () => anon.from("profiles").select("role,is_active").eq("id", user.id).single()
+    () => anon.from("profiles").select("role,is_active").eq("id", userId).single()
   );
   if (profileError || !profile || profile.is_active === false || !isUserRole(profile.role)) {
     return { error: "Account configuration error", userId: null, role: null };
   }
-  return { error: null, userId: user.id, role: profile.role };
+  return { error: null, userId, role: profile.role };
 }
 
 export async function requireUserWithRole(

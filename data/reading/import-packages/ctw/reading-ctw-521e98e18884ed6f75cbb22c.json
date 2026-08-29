@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-521e98e18884ed6f75cbb22c",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "521e98e18884ed6f75cbb22c2b04d89c3bec48370ff9d9c6c7fa2c44a2262f5e",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m1-ctw-02",
+      "logicalItemId": "reading-ctw-521e98e18884ed6f75cbb22c",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-521e98e18884ed6f75cbb22c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-5b-m1-ctw-02",
+      "logicalItemId": "reading-ctw-521e98e18884ed6f75cbb22c",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5B",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-521e98e18884ed6f75cbb22c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-521e98e18884ed6f75cbb22c-q01",
+      "logicalItemId": "reading-ctw-521e98e18884ed6f75cbb22c",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Camels live in the desert where the weather is hot and dry. Sometimes i_ the des_ _ _, camels ha_ _ to tra_ _ _ for a lo_ _ time wit_ _ _ _ finding a_ _ food o_ water. S_ when cam_ _ _ do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Camels live in the desert where the weather is hot and dry. Sometimes i_ the des_ _ _, camels ha_ _ to tra_ _ _ for a lo_ _ time wit_ _ _ _ finding a_ _ food o_ water. S_ when cam_ _ _ do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Camels live in the desert where the weather is hot and dry. Sometimes "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", camels "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " for a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " time "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " finding "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " food "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " water. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " when "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " do find food, they are able to eat and drink a lot. Camels turn extra food into fat and store this fat in a special hump on their back. Then they change this fat into energy to help them cross the desert."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "in",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "desert",
+            "prefix": "des",
+            "displayText": "des_ _ _",
+            "missingText": "ert",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "have",
+            "prefix": "ha",
+            "displayText": "ha_ _",
+            "missingText": "ve",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "travel",
+            "prefix": "tra",
+            "displayText": "tra_ _ _",
+            "missingText": "vel",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "long",
+            "prefix": "lo",
+            "displayText": "lo_ _",
+            "missingText": "ng",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "without",
+            "prefix": "wit",
+            "displayText": "wit_ _ _ _",
+            "missingText": "hout",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "any",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "ny",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "or",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "r",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "So",
+            "prefix": "S",
+            "displayText": "S_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-521e98e18884ed6f75cbb22c-q01-p01",
+            "answer": "camels",
+            "prefix": "cam",
+            "displayText": "cam_ _ _",
+            "missingText": "els",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

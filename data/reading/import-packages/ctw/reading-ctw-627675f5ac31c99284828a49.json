@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-627675f5ac31c99284828a49",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-13",
+    "firstSeenSourceLabel": "5.13",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "627675f5ac31c99284828a49752a861ca2ce5529145f6e7ad5804aabaa04fdeb",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-13-m2-ctw-18",
+      "logicalItemId": "reading-ctw-627675f5ac31c99284828a49",
+      "sourceKind": "docx",
+      "sourceLabel": "5.13",
+      "occurrenceDate": "2026-05-13",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-627675f5ac31c99284828a49-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-627675f5ac31c99284828a49-q01",
+      "logicalItemId": "reading-ctw-627675f5ac31c99284828a49",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The extinction of the baiji dolphin, also known as the Yangtze River dolphin, serves as a stark reminder of the impact of human activities on freshwater ecosystems. Declared functi_ _ _ _ _ _ extinct i_ 2006, t_ _ baiji suff_ _ _ _ from hab_ _ _ _ loss a_ _ the eff_ _ _ _ of poll_ _ _ _ _. Conservationists atte_ _ _ _ _ rescue miss_ _ _ _ and breeding programs, but these efforts were hindered by the dolphin’s declining population and fragmented habitat. Studying the baiji’s extinction helps scientists develop strategies to protect other endangered freshwater species and highlights the need for sustainable practices.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The extinction of the baiji dolphin, also known as the Yangtze River dolphin, serves as a stark reminder of the impact of human activities on freshwater ecosystems. Declared functi_ _ _ _ _ _ extinct i_ 2006, t_ _ baiji suff_ _ _ _ from hab_ _ _ _ loss a_ _ the eff_ _ _ _ of poll_ _ _ _ _. Conservationists atte_ _ _ _ _ rescue miss_ _ _ _ and breeding programs, but these efforts were hindered by the dolphin’s declining population and fragmented habitat. Studying the baiji’s extinction helps scientists develop strategies to protect other endangered freshwater species and highlights the need for sustainable practices.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The extinction of the baiji dolphin, also known as the Yangtze River dolphin, serves as a stark reminder of the impact of human activities on freshwater ecosystems. Declared "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " extinct "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " 2006, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " baiji "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " from "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " loss "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": ". Conservationists "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " rescue "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " and breeding programs, but these efforts were hindered by the dolphin’s declining population and fragmented habitat. Studying the baiji’s extinction helps scientists develop strategies to protect other endangered freshwater species and highlights the need for sustainable practices."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "functionally",
+            "prefix": "functi",
+            "displayText": "functi_ _ _ _ _ _",
+            "missingText": "onally",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "in",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "suffered",
+            "prefix": "suff",
+            "displayText": "suff_ _ _ _",
+            "missingText": "ered",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "habitat",
+            "prefix": "hab",
+            "displayText": "hab_ _ _ _",
+            "missingText": "itat",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "effects",
+            "prefix": "eff",
+            "displayText": "eff_ _ _ _",
+            "missingText": "ects",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "pollution",
+            "prefix": "poll",
+            "displayText": "poll_ _ _ _ _",
+            "missingText": "ution",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "attempted",
+            "prefix": "atte",
+            "displayText": "atte_ _ _ _ _",
+            "missingText": "mpted",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-627675f5ac31c99284828a49-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-627675f5ac31c99284828a49-q01-p01",
+            "answer": "missions",
+            "prefix": "miss",
+            "displayText": "miss_ _ _ _",
+            "missingText": "ions",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

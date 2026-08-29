@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-c9c3cdf73cda4d62e888e2fe",
+    "module": "rdl",
+    "title": "Student Housing Dilemma: A Shortage of Affordable Options",
+    "firstSeenDate": "2026-05-28",
+    "firstSeenSourceLabel": "5.28",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "c9c3cdf73cda4d62e888e2fe70331f2406cc8ce33d437c61d79abd838e889bb3",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-28-m1-rdl-07",
+      "logicalItemId": "reading-rdl-c9c3cdf73cda4d62e888e2fe",
+      "sourceKind": "docx",
+      "sourceLabel": "5.28",
+      "occurrenceDate": "2026-05-28",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-054",
+      "title": "Student Housing Dilemma: A Shortage of Affordable Options",
+      "source": "material-index.json#RDL-054",
+      "sourceDate": "2026-05-28",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-054/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-054/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01",
+      "logicalItemId": "reading-rdl-c9c3cdf73cda4d62e888e2fe",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "According to the article, what was one major cause of the housing shortage at Bridgeford University?",
+      "rawDisplayText": "25. According to the article, what was one major cause of the housing shortage at Bridgeford University?",
+      "payload": {
+        "materialId": "RDL-054",
+        "options": [
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01-opt-1",
+            "optionOrder": 1,
+            "text": "A competitive off-campus housing market"
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01-opt-2",
+            "optionOrder": 2,
+            "text": "A pause in new dormitory construction"
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01-opt-3",
+            "optionOrder": 3,
+            "text": "A lack of interest in off-campus housing"
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01-opt-4",
+            "optionOrder": 4,
+            "text": "A poor understanding of tenant rights"
+          }
+        ],
+        "correctOptionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02",
+      "logicalItemId": "reading-rdl-c9c3cdf73cda4d62e888e2fe",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "How has the housing shortage affected Sarah Lee?",
+      "rawDisplayText": "26. How has the housing shortage affected Sarah Lee?",
+      "payload": {
+        "materialId": "RDL-054",
+        "options": [
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02-opt-1",
+            "optionOrder": 1,
+            "text": "She has to share a room with more people."
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02-opt-2",
+            "optionOrder": 2,
+            "text": "She had to go on a waiting list for housing."
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Her travel time from home to class has increased."
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Her rent has increased significantly."
+          }
+        ],
+        "correctOptionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03",
+      "logicalItemId": "reading-rdl-c9c3cdf73cda4d62e888e2fe",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What is suggested about the Student Union’s strategies?",
+      "rawDisplayText": "27. What is suggested about the Student Union’s strategies?",
+      "payload": {
+        "materialId": "RDL-054",
+        "options": [
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03-opt-1",
+            "optionOrder": 1,
+            "text": "They are more focused on long-term rather than immediate solutions."
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03-opt-2",
+            "optionOrder": 2,
+            "text": "They are trying to reduce competition in the off-campus market."
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03-opt-3",
+            "optionOrder": 3,
+            "text": "They are partly responsible for dormitory construction delays."
+          },
+          {
+            "optionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Their current focus is on educating and supporting students."
+          }
+        ],
+        "correctOptionId": "reading-rdl-c9c3cdf73cda4d62e888e2fe-q03-opt-4"
+      }
+    }
+  ]
+}

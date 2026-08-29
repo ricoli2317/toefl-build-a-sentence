@@ -1,0 +1,664 @@
+{
+  "schemaVersion": 1,
+  "documentCount": 94,
+  "documents": [
+    {
+      "set": "5.3A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3A.docx",
+      "sha256": "a1b30d256ed0ab6c56ebea0d94e9336d86f5bc88ebdc65780a5bbce38fb1c99b",
+      "copyVerified": true
+    },
+    {
+      "set": "5.3A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3A_Answers.docx",
+      "sha256": "72f86402c7eb3276970dd07a5fe123865826e0e81ed341bc1895ae795b2bd38e",
+      "copyVerified": true
+    },
+    {
+      "set": "5.3B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3B.docx",
+      "sha256": "3b45953f7d859f4c6f60ac17b66864a9316a499bd9062d31ee82f5f2450df0c4",
+      "copyVerified": true
+    },
+    {
+      "set": "5.3B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3B_Answers.docx",
+      "sha256": "6ad4bf7c25266e50ce9790738ca7ab70d9bdc40b849b7ffe38b64396ea5d0ef1",
+      "copyVerified": true
+    },
+    {
+      "set": "5.5A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sha256": "157234daf4ff245f4fe0eb1326af212df24243459bc5f31973d63c97aea98b5c",
+      "copyVerified": true
+    },
+    {
+      "set": "5.5A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sha256": "9978cdbc222809aa98486cfb664a9c48c7467193b0a4f8a86659cb06814e05aa",
+      "copyVerified": true
+    },
+    {
+      "set": "5.5B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sha256": "3c50803185897d029bce57eb13953b67baf7cb06bc0105bfdf3ba1dd3bfbc863",
+      "copyVerified": true
+    },
+    {
+      "set": "5.5B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sha256": "6c015d6b767393710e1f5bf936b9da9ec9bb38f55da8e804983dfa2d6c193426",
+      "copyVerified": true
+    },
+    {
+      "set": "5.6A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6A.docx",
+      "sha256": "bd14951655f79392ff97ebb1e25ffebae650f1f8d9c7503152502a2b88d381c6",
+      "copyVerified": true
+    },
+    {
+      "set": "5.6A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6A_Answers.docx",
+      "sha256": "e912e6b6f84aeaacfa79a23909ffe4dc5443a6165e3d9fc0dfa61efe949fc3c0",
+      "copyVerified": true
+    },
+    {
+      "set": "5.6B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sha256": "1ee8a25357ee2b7b48c23a37ca5531345226f0251c13db0d22dcab04ad1b94ff",
+      "copyVerified": true
+    },
+    {
+      "set": "5.6B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sha256": "fcb0d1b1bcabbbd3a4bc60ffff394dd10eb5dda0feaec987dd14b20ab9a595ed",
+      "copyVerified": true
+    },
+    {
+      "set": "5.10A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10A.docx",
+      "sha256": "ca4a5cf9c32dd7ce5986339894d1a99df9e5b27a1744275f863811090be5355d",
+      "copyVerified": true
+    },
+    {
+      "set": "5.10A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10A_Answers.docx",
+      "sha256": "6e85fa30ad613abdbef13d817afe5466333fb03918c0dc1ffcb29d3873c78447",
+      "copyVerified": true
+    },
+    {
+      "set": "5.10B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+      "sha256": "21761689993481716e98d77a658c04307d83ca8575f1aa63ad353d7607b974ee",
+      "copyVerified": true
+    },
+    {
+      "set": "5.10B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+      "sha256": "357c28d3bdda9d5c29d98b6f2f44a72fe94595b5f1e2a0b74ae44466341dbb27",
+      "copyVerified": true
+    },
+    {
+      "set": "5.11A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+      "sha256": "4a989ca768f1768e2ed5cd78c65f7254ff9c3e25d143dcd23c01ae85ce9da7b2",
+      "copyVerified": true
+    },
+    {
+      "set": "5.11A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+      "sha256": "b82f12a07da14da054dc653f830aaba48ab105813f9c815014977acc0e2277dc",
+      "copyVerified": true
+    },
+    {
+      "set": "5.11B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+      "sha256": "395732e8afd89ce01c9c59eef830261b3c2de19a54c8f11263b7e109ac4ac648",
+      "copyVerified": true
+    },
+    {
+      "set": "5.11B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+      "sha256": "9b55b3e01d68077f30a1545ea8a3e21c7a1ac941d37972d0f29a7033682efa79",
+      "copyVerified": true
+    },
+    {
+      "set": "5.12",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.12.docx",
+      "sha256": "ca5dd8e181fc86eb47214ca06fc0cb5af861e4b5e385f52aba46207b425f63f5",
+      "copyVerified": true
+    },
+    {
+      "set": "5.12",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.12_Answers.docx",
+      "sha256": "767bd2240cdd7eff2a13764aca7f7951ff4556a1a14cfc2b25c649898cdeab1e",
+      "copyVerified": true
+    },
+    {
+      "set": "5.13",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+      "sha256": "2f50d1dd6844ce0b00ae607e9663b33737d1339c315da5fb291ffc2b719f8f2b",
+      "copyVerified": true
+    },
+    {
+      "set": "5.13",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+      "sha256": "490f4355baabed84a3cd6562593a8a01d1c24c3142785bc3c4f7ee4aee64cf6c",
+      "copyVerified": true
+    },
+    {
+      "set": "5.17",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+      "sha256": "17c1e23cc4c81861e9cb1647aeeaeedcb6340a912a43f6d3cafb4f5761ddd9a9",
+      "copyVerified": true
+    },
+    {
+      "set": "5.17",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+      "sha256": "5ecb411a965c14b5780035c8f397b25e752165acf7ca0af7dd07a0b217dd9d4e",
+      "copyVerified": true
+    },
+    {
+      "set": "5.18A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+      "sha256": "ec0b96c7e9983af6fcd2d9199b3e13c780cb6452e88b5ed9ed5b35a475d18158",
+      "copyVerified": true
+    },
+    {
+      "set": "5.18A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+      "sha256": "cebf41fa9f6fe47633fdda04062f14edce73acf4529b6151b932c0d5c80b202a",
+      "copyVerified": true
+    },
+    {
+      "set": "5.18B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18B.docx",
+      "sha256": "081f8b76c8a996a460a11ebcae998ae290ba70b0e207e30ea5cf40de666cb0a2",
+      "copyVerified": true
+    },
+    {
+      "set": "5.18B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18B_Answers.docx",
+      "sha256": "c844ac9aa094f2a8d68546abdf2148bc4caa9d25a4f78c20c968705514f16a77",
+      "copyVerified": true
+    },
+    {
+      "set": "5.19",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.19.docx",
+      "sha256": "0781d286ac98f9c2c63cbd75d14ed26ded3821006b237a34a4c50ba76e502c60",
+      "copyVerified": true
+    },
+    {
+      "set": "5.19",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.19_Answers.docx",
+      "sha256": "f2a052553f8cccba38f408ed52540e34c4a504d26b9ef45eeb80547524b429f4",
+      "copyVerified": true
+    },
+    {
+      "set": "5.20A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+      "sha256": "a6b8a2bd46073686115639ae28346e1c24aa2b77e892a76a8c5084f26be1e9de",
+      "copyVerified": true
+    },
+    {
+      "set": "5.20A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+      "sha256": "695f6a05ddc147c469c87ee505ba06dd8ea220805f279da26778fcf0d77d0629",
+      "copyVerified": true
+    },
+    {
+      "set": "5.20B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+      "sha256": "9d4a8eb07e1b77e46a81bd010804d59b51398354a6bcec082e501195149397af",
+      "copyVerified": true
+    },
+    {
+      "set": "5.20B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+      "sha256": "b6c1fbf5e8c0a758b09e5727d8c564ac1f74abc91b4dee33fb417f472ed59009",
+      "copyVerified": true
+    },
+    {
+      "set": "5.23",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sha256": "bd0ec155363acd0cd49587b439ff5624c272fb96e3b7a55244dd7aef1d3082bb",
+      "copyVerified": true
+    },
+    {
+      "set": "5.23",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sha256": "e7e00b2e75a7aec77733ad44e7283494cd4a303e210da951b915fa12770718b5",
+      "copyVerified": true
+    },
+    {
+      "set": "5.24A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24A.docx",
+      "sha256": "17369c8b48a8aa8c50c6eecfde45edb664506efb49256a63ed7908d1187dda89",
+      "copyVerified": true
+    },
+    {
+      "set": "5.24A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24A_Answers.docx",
+      "sha256": "3904121adc6dae03e76db69db53db014f28d3a61f30684904faf3bd3935c17e1",
+      "copyVerified": true
+    },
+    {
+      "set": "5.24B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24B.docx",
+      "sha256": "ac3602938e10f33d3663e82fa13ba822f0a7a96934a58fd6a24ff550987e23ab",
+      "copyVerified": true
+    },
+    {
+      "set": "5.24B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24B_Answers.docx",
+      "sha256": "45e65d1a00f030bcc4575cca5773457220e65ea68d26361bcc560d40f872951d",
+      "copyVerified": true
+    },
+    {
+      "set": "5.28",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+      "sha256": "d8a8a227204edfd83ed34f3c4170348788985ac9036fa8a40af2a817e4d375c4",
+      "copyVerified": true
+    },
+    {
+      "set": "5.28",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+      "sha256": "89c011645e06df7496411fbafb3cf83773a430bbce5ab647d7a79bb8812314c0",
+      "copyVerified": true
+    },
+    {
+      "set": "5.31",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.31.docx",
+      "sha256": "03194910fec6935215188b68458f7e80654f34c558e663d8dc9291a87f62cebb",
+      "copyVerified": true
+    },
+    {
+      "set": "5.31",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.31_Answers.docx",
+      "sha256": "a50227886adc1d495d35cbcabdbbbc97a6817a44190d490ffd26fa71b23d7a5a",
+      "copyVerified": true
+    },
+    {
+      "set": "6.1A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+      "sha256": "f34b98d654499110e8da25e4523e12e3cc2677771ffaa2aacb354fd345e21524",
+      "copyVerified": true
+    },
+    {
+      "set": "6.1A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+      "sha256": "c98bcfc41df868b61e0fb719cb2d92e144d09936eb5fa9b89ce25edef980bb56",
+      "copyVerified": true
+    },
+    {
+      "set": "6.1B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+      "sha256": "7aa611fc21f2f3deedf5bec11a12ba4c2c144ea4e1769f51ee0e110e7a928d30",
+      "copyVerified": true
+    },
+    {
+      "set": "6.1B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+      "sha256": "6d2b9d8493c32a3b13dc02ad8920a960157d79911a4e641ffa7adb8190304ce3",
+      "copyVerified": true
+    },
+    {
+      "set": "6.1C",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1C.docx",
+      "sha256": "c10397a505121a3514a8273739d97b64bbbe4496357ad7452755f62959263644",
+      "copyVerified": true
+    },
+    {
+      "set": "6.1C",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1C_Answers.docx",
+      "sha256": "e01524cb3fdda875882955058c4ab517efddb7d766959d2079115b8e186a5daa",
+      "copyVerified": true
+    },
+    {
+      "set": "6.2",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+      "sha256": "d0ea756922ca278094a2067ccb85c6c80bd2a6bef6b8f8262c4a63fd7f36d1f7",
+      "copyVerified": true
+    },
+    {
+      "set": "6.2",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+      "sha256": "a9e27763dee782f1e0f0f943a6169f6d11ea141f82f56e242a1128e5326201ad",
+      "copyVerified": true
+    },
+    {
+      "set": "6.3",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+      "sha256": "e8bd4c1080bdbd7db3e5404fa70dd60d002aa8c53b76705ba3e12aabe2895dfd",
+      "copyVerified": true
+    },
+    {
+      "set": "6.3",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+      "sha256": "222bcc86234b6e9d8edae953253b5c9409f3be8b12f1d87f70a6f83a97bdb2f6",
+      "copyVerified": true
+    },
+    {
+      "set": "6.6A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+      "sha256": "8edd82006f3a3a3f0af99117456056c0983868a6cc20d808c544e7243e310468",
+      "copyVerified": true
+    },
+    {
+      "set": "6.6A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+      "sha256": "865bbb6808a1a23e2427718f1fed20ce6313722fe6deea7b3198d380a3140827",
+      "copyVerified": true
+    },
+    {
+      "set": "6.7A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7A.docx",
+      "sha256": "f006666f60a71c122aed066a8e2da6ceaf53cdca5225c22dd701c8d3f148fdb7",
+      "copyVerified": true
+    },
+    {
+      "set": "6.7A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7A_Answers.docx",
+      "sha256": "8c4cf7e4a60627498b11a1e41dae7297c16909de25e64ca6d98d355bd5adad2e",
+      "copyVerified": true
+    },
+    {
+      "set": "6.7B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7B.docx",
+      "sha256": "08cfde3980b3bcf4747f02514aa4071ae48f5064e55298df06c69d0596c8e26a",
+      "copyVerified": true
+    },
+    {
+      "set": "6.7B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7B_Answers.docx",
+      "sha256": "2dcdfbff1980c0e9e8b4fac3a926939442dfae64266cee62ab146cd8f8db6fff",
+      "copyVerified": true
+    },
+    {
+      "set": "6.7C",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+      "sha256": "e773473e1c957bf24c2b9e163cb6345e2316159fda078dc9dd4b7aa8ee27b21e",
+      "copyVerified": true
+    },
+    {
+      "set": "6.7C",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+      "sha256": "186e4541535c79daef9755837d292fd034156ea37374007a30670bfc10abdc5f",
+      "copyVerified": true
+    },
+    {
+      "set": "6.9",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+      "sha256": "38e8b34ad5d8b28c62aa82e8847ca430000ea1609ef9b1fbc9aafc59e99b579a",
+      "copyVerified": true
+    },
+    {
+      "set": "6.9",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+      "sha256": "63b94f2067f1e622a7329382fff901bf9f482afb5d5b73a52c62675fddf549e1",
+      "copyVerified": true
+    },
+    {
+      "set": "6.10",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+      "sha256": "3928aa85c3634989c4caa92b9f328efb96bd48e6d9c271402a65ce3bef8f82b8",
+      "copyVerified": true
+    },
+    {
+      "set": "6.10",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+      "sha256": "629b904b38aff6f3a5a4666ab6f75ba8560ce68c6f093574bdc414bf099da8f5",
+      "copyVerified": true
+    },
+    {
+      "set": "6.14",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.14.docx",
+      "sha256": "703f203e4ad55f1eb59a0b5aaeaa97dd0a070e7101852102e3cc15c11793ce4a",
+      "copyVerified": true
+    },
+    {
+      "set": "6.14",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.14_Answers.docx",
+      "sha256": "1ea477174e56d9740c4b02a91569abad49dd1232ca806d549ae243fbd3ba86ff",
+      "copyVerified": true
+    },
+    {
+      "set": "6.15",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+      "sha256": "6c7bdcfc15440480e688391454caac9b368f65b5b8466a4e088d7fe01a4ffbd7",
+      "copyVerified": true
+    },
+    {
+      "set": "6.15",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+      "sha256": "c3864c7b59d9aa0e5b2f9104e3591e5f914cfb5aa4a05b659ff793c7c035d285",
+      "copyVerified": true
+    },
+    {
+      "set": "6.16A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+      "sha256": "40122a8a7f28b1efaf0e4cf0df56025203f6c0616487d804712681e63b521193",
+      "copyVerified": true
+    },
+    {
+      "set": "6.16A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+      "sha256": "3250ebe2df33a7ee417988891442ac35333571a1eb0b0b0ab1099f0a351dfc19",
+      "copyVerified": true
+    },
+    {
+      "set": "6.16B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16B.docx",
+      "sha256": "eff83b854194e329ed6bd554a162945d481c097f779370a169f06274819ad9c8",
+      "copyVerified": true
+    },
+    {
+      "set": "6.16B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16B_Answers.docx",
+      "sha256": "7c08500e25d595a888aa92dfde99ae3c3cb5ea7d8e8402a5b22953db6a3f86a9",
+      "copyVerified": true
+    },
+    {
+      "set": "6.17",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.17.docx",
+      "sha256": "e87ff243330c93ab65eecd4017eba09b8ce1f1d02380e21f037edd33b2407e1c",
+      "copyVerified": true
+    },
+    {
+      "set": "6.17",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.17_Answers.docx",
+      "sha256": "e9d499da593604bec613b8b104cf2dd117775b45a7677a7e7be041677a43d5c0",
+      "copyVerified": true
+    },
+    {
+      "set": "6.21A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+      "sha256": "14673a391cd80494cadc1fb9f13d88bf9d2935af43b77d48d0564b9e5ce3f203",
+      "copyVerified": true
+    },
+    {
+      "set": "6.21A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+      "sha256": "91397886f874f5dfdd3742bf3bf374d2f3864728045dfa4560b4d4c408136528",
+      "copyVerified": true
+    },
+    {
+      "set": "6.21B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21B.docx",
+      "sha256": "3bf0a0512af7bfeef0779116a4797c42af44d90038f97cf799c4fe8a4965be27",
+      "copyVerified": true
+    },
+    {
+      "set": "6.21B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21B_Answers.docx",
+      "sha256": "807cc5322f7c751a2bc1023ca248ddfbc8f596a594ba313cab4cc2f34630429e",
+      "copyVerified": true
+    },
+    {
+      "set": "6.22",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.22.docx",
+      "sha256": "cd1881231a4d1a467f0acc86847c68e40d34ce93fdbf827ea7d816ce79fd0bde",
+      "copyVerified": true
+    },
+    {
+      "set": "6.22",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.22_Answers.docx",
+      "sha256": "b328f747b127b2000eb6c1b96970a58b1bfd0da934305934ed55907972020dc0",
+      "copyVerified": true
+    },
+    {
+      "set": "6.23",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+      "sha256": "08a891718741a1faab32a2e78638ff5c58230eac5a4db28b529b1c3930822da0",
+      "copyVerified": true
+    },
+    {
+      "set": "6.23",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+      "sha256": "11afb46b7619bda2cc72c276dbe4d4acad37586b31e4bb2fb6111a880ef00acc",
+      "copyVerified": true
+    },
+    {
+      "set": "6.24",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sha256": "142ed2c5254aa8a9dffde2070390d2995e63bb0ab191807dc542a4e52d5f6dd0",
+      "copyVerified": true
+    },
+    {
+      "set": "6.24",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sha256": "5a4c0484a0d522ea6c146d49ab71477e8cc80685157af31f961486aaa04cd109",
+      "copyVerified": true
+    },
+    {
+      "set": "6.29",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+      "sha256": "1360eadc134d8ebae99155dad5feabd859d9bfcc546e5813d222902afa517b50",
+      "copyVerified": true
+    },
+    {
+      "set": "6.29",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+      "sha256": "d4aa5d82c628895326d8d2ebc560def373ad07dbb6ac39d4ac515dee93a106f9",
+      "copyVerified": true
+    },
+    {
+      "set": "6.30A",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30A.docx",
+      "sha256": "ac1ec82a00417ec50784a19ae6f2335afe245def2d278a95eba55b3ff7be2e4f",
+      "copyVerified": true
+    },
+    {
+      "set": "6.30A",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30A_Answers.docx",
+      "sha256": "9d451873d70ba974a85aa0adb4df797e77f6515e1d91fbbfd98b8d18c89ec4fb",
+      "copyVerified": true
+    },
+    {
+      "set": "6.30B",
+      "kind": "question",
+      "archivedPath": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+      "sha256": "048666853b1aede7c518d9926a37552a3d7bac704740a2cb8494ad02c8a7e4c4",
+      "copyVerified": true
+    },
+    {
+      "set": "6.30B",
+      "kind": "answer",
+      "archivedPath": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+      "sha256": "f4097e9a89dbbc0c49d891523db300ab6e0e80830353667a172f1ad976ea7a13",
+      "copyVerified": true
+    }
+  ]
+}

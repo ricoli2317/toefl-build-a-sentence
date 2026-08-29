@@ -1,0 +1,5656 @@
+{
+  "schema_version": 2,
+  "image_file": "material_final.png",
+  "image_sha256": "ce1ad53aabad1946579964633f375a6bf9eb6d226959a6bce698bec6fcc7e57d",
+  "canvas_width": 1124,
+  "canvas_height": 880,
+  "coordinate_space": "normalized_top_left_xywh_0_1",
+  "ocr_engine": "Apple Vision VNRecognizeTextRequest + boundingBoxForRange",
+  "language_correction": false,
+  "character_positioning": "deterministic glyph segmentation; no uniform-width boxes",
+  "counts": {
+    "lines": 9,
+    "words": 49,
+    "chars": 302,
+    "needs_review_words": 0,
+    "needs_review_chars": 0
+  },
+  "lines": [
+    {
+      "line_index": 0,
+      "text": "Discover Larkhaven, where lecture halls open to",
+      "bbox": {
+        "x": 0.10142348,
+        "y": 0.17954545,
+        "width": 0.79715302,
+        "height": 0.04772727
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l0w0",
+          "line_index": 0,
+          "word_index": 0,
+          "text": "Discover",
+          "bbox": {
+            "x": 0.10142349,
+            "y": 0.17954545,
+            "width": 0.14479537,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19404,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w0c0",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 0,
+              "char": "D",
+              "bbox": {
+                "x": 0.10142349,
+                "y": 0.17954545,
+                "width": 0.02491103,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c1",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 1,
+              "char": "i",
+              "bbox": {
+                "x": 0.12633452,
+                "y": 0.17954545,
+                "width": 0.00800712,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c2",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 2,
+              "char": "s",
+              "bbox": {
+                "x": 0.13434164,
+                "y": 0.17954545,
+                "width": 0.01779359,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c3",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 3,
+              "char": "c",
+              "bbox": {
+                "x": 0.15213523,
+                "y": 0.17954545,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c4",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 4,
+              "char": "o",
+              "bbox": {
+                "x": 0.16903915,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c5",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 5,
+              "char": "v",
+              "bbox": {
+                "x": 0.18950178,
+                "y": 0.17954545,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c6",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 6,
+              "char": "e",
+              "bbox": {
+                "x": 0.20907473,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w0c7",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 7,
+              "char": "r",
+              "bbox": {
+                "x": 0.22953737,
+                "y": 0.17954545,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l0w1",
+          "line_index": 0,
+          "word_index": 1,
+          "text": "Larkhaven,",
+          "bbox": {
+            "x": 0.25088968,
+            "y": 0.17954545,
+            "width": 0.18683274,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18704,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w1c0",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 8,
+              "char": "L",
+              "bbox": {
+                "x": 0.25088968,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c1",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 9,
+              "char": "a",
+              "bbox": {
+                "x": 0.27135231,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c2",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 10,
+              "char": "r",
+              "bbox": {
+                "x": 0.29181495,
+                "y": 0.17954545,
+                "width": 0.01423488,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c3",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 11,
+              "char": "k",
+              "bbox": {
+                "x": 0.30604982,
+                "y": 0.17954545,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c4",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 12,
+              "char": "h",
+              "bbox": {
+                "x": 0.3247331,
+                "y": 0.17954545,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c5",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 13,
+              "char": "a",
+              "bbox": {
+                "x": 0.34608541,
+                "y": 0.17954545,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c6",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 14,
+              "char": "v",
+              "bbox": {
+                "x": 0.36565836,
+                "y": 0.17954545,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c7",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 15,
+              "char": "e",
+              "bbox": {
+                "x": 0.38434164,
+                "y": 0.17954545,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c8",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 16,
+              "char": "n",
+              "bbox": {
+                "x": 0.40569395,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w1c9",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 17,
+              "char": ",",
+              "bbox": {
+                "x": 0.42615658,
+                "y": 0.17954545,
+                "width": 0.01245552,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l0w2",
+          "line_index": 0,
+          "word_index": 2,
+          "text": "where",
+          "bbox": {
+            "x": 0.44239324,
+            "y": 0.17954545,
+            "width": 0.10742883,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19539,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w2c0",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 18,
+              "char": "w",
+              "bbox": {
+                "x": 0.44217082,
+                "y": 0.17954545,
+                "width": 0.03024911,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w2c1",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 19,
+              "char": "h",
+              "bbox": {
+                "x": 0.47241993,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w2c2",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 20,
+              "char": "e",
+              "bbox": {
+                "x": 0.49288256,
+                "y": 0.17954545,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w2c3",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 21,
+              "char": "r",
+              "bbox": {
+                "x": 0.51512456,
+                "y": 0.17954545,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w2c4",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 22,
+              "char": "e",
+              "bbox": {
+                "x": 0.52846975,
+                "y": 0.17954545,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l0w3",
+          "line_index": 0,
+          "word_index": 3,
+          "text": "lecture",
+          "bbox": {
+            "x": 0.55449288,
+            "y": 0.17954545,
+            "width": 0.12144128,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17773,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w3c0",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 23,
+              "char": "l",
+              "bbox": {
+                "x": 0.55427046,
+                "y": 0.17954545,
+                "width": 0.01067616,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w3c1",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 24,
+              "char": "e",
+              "bbox": {
+                "x": 0.56494662,
+                "y": 0.17954545,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w3c2",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 25,
+              "char": "c",
+              "bbox": {
+                "x": 0.58629893,
+                "y": 0.17954545,
+                "width": 0.01779359,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w3c3",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 26,
+              "char": "t",
+              "bbox": {
+                "x": 0.60409253,
+                "y": 0.17954545,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w3c4",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 27,
+              "char": "u",
+              "bbox": {
+                "x": 0.61743772,
+                "y": 0.17954545,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w3c5",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 28,
+              "char": "r",
+              "bbox": {
+                "x": 0.63967972,
+                "y": 0.17954545,
+                "width": 0.01423488,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w3c6",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 29,
+              "char": "e",
+              "bbox": {
+                "x": 0.65391459,
+                "y": 0.17954545,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l0w4",
+          "line_index": 0,
+          "word_index": 4,
+          "text": "halls",
+          "bbox": {
+            "x": 0.68060498,
+            "y": 0.17954545,
+            "width": 0.07940391,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.21032,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w4c0",
+              "line_index": 0,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 30,
+              "char": "h",
+              "bbox": {
+                "x": 0.6797153,
+                "y": 0.17954545,
+                "width": 0.02402135,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w4c1",
+              "line_index": 0,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 31,
+              "char": "a",
+              "bbox": {
+                "x": 0.70373665,
+                "y": 0.17954545,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w4c2",
+              "line_index": 0,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 32,
+              "char": "l",
+              "bbox": {
+                "x": 0.72330961,
+                "y": 0.17954545,
+                "width": 0.0088968,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w4c3",
+              "line_index": 0,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 33,
+              "char": "l",
+              "bbox": {
+                "x": 0.73220641,
+                "y": 0.17954545,
+                "width": 0.0088968,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w4c4",
+              "line_index": 0,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 34,
+              "char": "s",
+              "bbox": {
+                "x": 0.7411032,
+                "y": 0.17954545,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l0w5",
+          "line_index": 0,
+          "word_index": 5,
+          "text": "open",
+          "bbox": {
+            "x": 0.76467972,
+            "y": 0.17954545,
+            "width": 0.08874555,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19848,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w5c0",
+              "line_index": 0,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 35,
+              "char": "o",
+              "bbox": {
+                "x": 0.76423488,
+                "y": 0.17954545,
+                "width": 0.02580071,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w5c1",
+              "line_index": 0,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 36,
+              "char": "p",
+              "bbox": {
+                "x": 0.79003559,
+                "y": 0.17954545,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w5c2",
+              "line_index": 0,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 37,
+              "char": "e",
+              "bbox": {
+                "x": 0.8113879,
+                "y": 0.17954545,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w5c3",
+              "line_index": 0,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 38,
+              "char": "n",
+              "bbox": {
+                "x": 0.83185053,
+                "y": 0.17954545,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l0w6",
+          "line_index": 0,
+          "word_index": 6,
+          "text": "to",
+          "bbox": {
+            "x": 0.85809609,
+            "y": 0.17954545,
+            "width": 0.04048041,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16734,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l0w6c0",
+              "line_index": 0,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 39,
+              "char": "t",
+              "bbox": {
+                "x": 0.85765125,
+                "y": 0.17954545,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l0w6c1",
+              "line_index": 0,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 40,
+              "char": "o",
+              "bbox": {
+                "x": 0.87633452,
+                "y": 0.17954545,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 1,
+      "text": "cobblestone courtyards abuzz with debate and",
+      "bbox": {
+        "x": 0.10854092,
+        "y": 0.22954545,
+        "width": 0.78113879,
+        "height": 0.04545455
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l1w0",
+          "line_index": 1,
+          "word_index": 0,
+          "text": "cobblestone",
+          "bbox": {
+            "x": 0.10854093,
+            "y": 0.22954545,
+            "width": 0.20907473,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.20561,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w0c0",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 41,
+              "char": "c",
+              "bbox": {
+                "x": 0.10854093,
+                "y": 0.22954545,
+                "width": 0.01779359,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c1",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 42,
+              "char": "o",
+              "bbox": {
+                "x": 0.12633452,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c2",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 43,
+              "char": "b",
+              "bbox": {
+                "x": 0.14857651,
+                "y": 0.22954545,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c3",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 44,
+              "char": "b",
+              "bbox": {
+                "x": 0.16992883,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c4",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 45,
+              "char": "l",
+              "bbox": {
+                "x": 0.19217082,
+                "y": 0.22954545,
+                "width": 0.0088968,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c5",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 46,
+              "char": "e",
+              "bbox": {
+                "x": 0.20106762,
+                "y": 0.22954545,
+                "width": 0.01957295,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c6",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 47,
+              "char": "s",
+              "bbox": {
+                "x": 0.22064057,
+                "y": 0.22954545,
+                "width": 0.01690391,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c7",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 48,
+              "char": "t",
+              "bbox": {
+                "x": 0.23754448,
+                "y": 0.22954545,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c8",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 8,
+              "global_index": 49,
+              "char": "o",
+              "bbox": {
+                "x": 0.25088968,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c9",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 9,
+              "global_index": 50,
+              "char": "n",
+              "bbox": {
+                "x": 0.27313167,
+                "y": 0.22954545,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w0c10",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 10,
+              "global_index": 51,
+              "char": "e",
+              "bbox": {
+                "x": 0.29359431,
+                "y": 0.22954545,
+                "width": 0.02491103,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w1",
+          "line_index": 1,
+          "word_index": 1,
+          "text": "courtyards",
+          "bbox": {
+            "x": 0.32206406,
+            "y": 0.22954545,
+            "width": 0.18238434,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19186,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w1c0",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 52,
+              "char": "c",
+              "bbox": {
+                "x": 0.32206406,
+                "y": 0.22954545,
+                "width": 0.01868327,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c1",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 53,
+              "char": "o",
+              "bbox": {
+                "x": 0.34074733,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c2",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 54,
+              "char": "u",
+              "bbox": {
+                "x": 0.36298932,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c3",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 55,
+              "char": "r",
+              "bbox": {
+                "x": 0.38523132,
+                "y": 0.22954545,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c4",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 56,
+              "char": "t",
+              "bbox": {
+                "x": 0.39857651,
+                "y": 0.22954545,
+                "width": 0.01156584,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c5",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 57,
+              "char": "y",
+              "bbox": {
+                "x": 0.41014235,
+                "y": 0.22954545,
+                "width": 0.01957295,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c6",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 58,
+              "char": "a",
+              "bbox": {
+                "x": 0.4297153,
+                "y": 0.22954545,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c7",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 59,
+              "char": "r",
+              "bbox": {
+                "x": 0.45017794,
+                "y": 0.22954545,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c8",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 60,
+              "char": "d",
+              "bbox": {
+                "x": 0.46352313,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w1c9",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 61,
+              "char": "s",
+              "bbox": {
+                "x": 0.48576512,
+                "y": 0.22954545,
+                "width": 0.01957295,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w2",
+          "line_index": 1,
+          "word_index": 2,
+          "text": "abuzz",
+          "bbox": {
+            "x": 0.5088968,
+            "y": 0.22954545,
+            "width": 0.10231317,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19479,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w2c0",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 62,
+              "char": "a",
+              "bbox": {
+                "x": 0.5088968,
+                "y": 0.22954545,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c1",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 63,
+              "char": "b",
+              "bbox": {
+                "x": 0.53024911,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c2",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 64,
+              "char": "u",
+              "bbox": {
+                "x": 0.5524911,
+                "y": 0.22954545,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c3",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 65,
+              "char": "z",
+              "bbox": {
+                "x": 0.57384342,
+                "y": 0.22954545,
+                "width": 0.01868327,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w2c4",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 66,
+              "char": "z",
+              "bbox": {
+                "x": 0.59252669,
+                "y": 0.22954545,
+                "width": 0.01957295,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w3",
+          "line_index": 1,
+          "word_index": 3,
+          "text": "with",
+          "bbox": {
+            "x": 0.61565836,
+            "y": 0.22954545,
+            "width": 0.07562278,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.20142,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w3c0",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 67,
+              "char": "w",
+              "bbox": {
+                "x": 0.61476868,
+                "y": 0.22954545,
+                "width": 0.03202847,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c1",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 68,
+              "char": "i",
+              "bbox": {
+                "x": 0.64679715,
+                "y": 0.22954545,
+                "width": 0.00800712,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c2",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 69,
+              "char": "t",
+              "bbox": {
+                "x": 0.65480427,
+                "y": 0.22954545,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w3c3",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 70,
+              "char": "h",
+              "bbox": {
+                "x": 0.66814947,
+                "y": 0.22954545,
+                "width": 0.02402135,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w4",
+          "line_index": 1,
+          "word_index": 4,
+          "text": "debate",
+          "bbox": {
+            "x": 0.69572954,
+            "y": 0.22954545,
+            "width": 0.12010676,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.20781,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w4c0",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 71,
+              "char": "d",
+              "bbox": {
+                "x": 0.69572954,
+                "y": 0.22954545,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c1",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 72,
+              "char": "e",
+              "bbox": {
+                "x": 0.71886121,
+                "y": 0.22954545,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c2",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 73,
+              "char": "b",
+              "bbox": {
+                "x": 0.74021352,
+                "y": 0.22954545,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c3",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 74,
+              "char": "a",
+              "bbox": {
+                "x": 0.76245552,
+                "y": 0.22954545,
+                "width": 0.01957295,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c4",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 75,
+              "char": "t",
+              "bbox": {
+                "x": 0.78202847,
+                "y": 0.22954545,
+                "width": 0.01423488,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w4c5",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 76,
+              "char": "e",
+              "bbox": {
+                "x": 0.79626335,
+                "y": 0.22954545,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l1w5",
+          "line_index": 1,
+          "word_index": 5,
+          "text": "and",
+          "bbox": {
+            "x": 0.8202847,
+            "y": 0.22954545,
+            "width": 0.069395,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19109,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l1w5c0",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 77,
+              "char": "a",
+              "bbox": {
+                "x": 0.8202847,
+                "y": 0.22954545,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w5c1",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 78,
+              "char": "n",
+              "bbox": {
+                "x": 0.84341637,
+                "y": 0.22954545,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l1w5c2",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 79,
+              "char": "d",
+              "bbox": {
+                "x": 0.86654804,
+                "y": 0.22954545,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 2,
+      "text": "steaming coffee.",
+      "bbox": {
+        "x": 0.36250001,
+        "y": 0.28181818,
+        "width": 0.27916666,
+        "height": 0.04796905
+      },
+      "confidence": 1.0,
+      "break_after": "paragraph",
+      "words": [
+        {
+          "id": "l2w0",
+          "line_index": 2,
+          "word_index": 0,
+          "text": "steaming",
+          "bbox": {
+            "x": 0.36250001,
+            "y": 0.28181818,
+            "width": 0.15373664,
+            "height": 0.04796905
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.2069,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w0c0",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 80,
+              "char": "s",
+              "bbox": {
+                "x": 0.36209964,
+                "y": 0.28181818,
+                "width": 0.01601423,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c1",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 81,
+              "char": "t",
+              "bbox": {
+                "x": 0.37811388,
+                "y": 0.28181818,
+                "width": 0.0133452,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c2",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 82,
+              "char": "e",
+              "bbox": {
+                "x": 0.39145907,
+                "y": 0.28181818,
+                "width": 0.01957295,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c3",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 83,
+              "char": "a",
+              "bbox": {
+                "x": 0.41103203,
+                "y": 0.28181818,
+                "width": 0.02135231,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c4",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 84,
+              "char": "m",
+              "bbox": {
+                "x": 0.43238434,
+                "y": 0.28181818,
+                "width": 0.03291815,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c5",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 85,
+              "char": "i",
+              "bbox": {
+                "x": 0.46530249,
+                "y": 0.28181818,
+                "width": 0.0088968,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c6",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 86,
+              "char": "n",
+              "bbox": {
+                "x": 0.47419929,
+                "y": 0.28181818,
+                "width": 0.02046263,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w0c7",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 87,
+              "char": "g",
+              "bbox": {
+                "x": 0.49466192,
+                "y": 0.28181818,
+                "width": 0.02224199,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l2w1",
+          "line_index": 2,
+          "word_index": 1,
+          "text": "coffee.",
+          "bbox": {
+            "x": 0.52090747,
+            "y": 0.28181818,
+            "width": 0.1207592,
+            "height": 0.04796905
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17668,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l2w1c0",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 88,
+              "char": "c",
+              "bbox": {
+                "x": 0.52046263,
+                "y": 0.28181818,
+                "width": 0.02046263,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c1",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 89,
+              "char": "o",
+              "bbox": {
+                "x": 0.54092527,
+                "y": 0.28181818,
+                "width": 0.02135231,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c2",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 90,
+              "char": "f",
+              "bbox": {
+                "x": 0.56227758,
+                "y": 0.28181818,
+                "width": 0.01423488,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c3",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 91,
+              "char": "f",
+              "bbox": {
+                "x": 0.57651246,
+                "y": 0.28181818,
+                "width": 0.01067616,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c4",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 92,
+              "char": "e",
+              "bbox": {
+                "x": 0.58718861,
+                "y": 0.28181818,
+                "width": 0.01957295,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c5",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 93,
+              "char": "e",
+              "bbox": {
+                "x": 0.60676157,
+                "y": 0.28181818,
+                "width": 0.02135231,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l2w1c6",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 94,
+              "char": ".",
+              "bbox": {
+                "x": 0.62811388,
+                "y": 0.28181818,
+                "width": 0.01423488,
+                "height": 0.04796905
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 3,
+      "text": "Ivy-clad dorms echo with laughter and late-night",
+      "bbox": {
+        "x": 0.09608541,
+        "y": 0.38409091,
+        "width": 0.80782918,
+        "height": 0.04545455
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l3w0",
+          "line_index": 3,
+          "word_index": 0,
+          "text": "Ivy-clad",
+          "bbox": {
+            "x": 0.09608542,
+            "y": 0.38409091,
+            "width": 0.12900355,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.2003,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w0c0",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 95,
+              "char": "I",
+              "bbox": {
+                "x": 0.09608541,
+                "y": 0.38409091,
+                "width": 0.00978648,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c1",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 96,
+              "char": "v",
+              "bbox": {
+                "x": 0.10587189,
+                "y": 0.38409091,
+                "width": 0.01868327,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c2",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 97,
+              "char": "y",
+              "bbox": {
+                "x": 0.12455516,
+                "y": 0.38409091,
+                "width": 0.01868327,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c3",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 98,
+              "char": "-",
+              "bbox": {
+                "x": 0.14323843,
+                "y": 0.38409091,
+                "width": 0.01156584,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c4",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 99,
+              "char": "c",
+              "bbox": {
+                "x": 0.15480427,
+                "y": 0.38409091,
+                "width": 0.01779359,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c5",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 100,
+              "char": "l",
+              "bbox": {
+                "x": 0.17259786,
+                "y": 0.38409091,
+                "width": 0.00800712,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c6",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 101,
+              "char": "a",
+              "bbox": {
+                "x": 0.18060498,
+                "y": 0.38409091,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w0c7",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 102,
+              "char": "d",
+              "bbox": {
+                "x": 0.20106762,
+                "y": 0.38409091,
+                "width": 0.02491103,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w1",
+          "line_index": 3,
+          "word_index": 1,
+          "text": "dorms",
+          "bbox": {
+            "x": 0.22953737,
+            "y": 0.38409091,
+            "width": 0.11565836,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19084,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w1c0",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 103,
+              "char": "d",
+              "bbox": {
+                "x": 0.22953737,
+                "y": 0.38409091,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c1",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 104,
+              "char": "o",
+              "bbox": {
+                "x": 0.25266904,
+                "y": 0.38409091,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c2",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 105,
+              "char": "r",
+              "bbox": {
+                "x": 0.27580071,
+                "y": 0.38409091,
+                "width": 0.01423488,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c3",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 106,
+              "char": "m",
+              "bbox": {
+                "x": 0.29003559,
+                "y": 0.38409091,
+                "width": 0.03291815,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w1c4",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 107,
+              "char": "s",
+              "bbox": {
+                "x": 0.32295374,
+                "y": 0.38409091,
+                "width": 0.02313167,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w2",
+          "line_index": 3,
+          "word_index": 2,
+          "text": "echo",
+          "bbox": {
+            "x": 0.34964413,
+            "y": 0.38409091,
+            "width": 0.08007117,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.20976,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w2c0",
+              "line_index": 3,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 108,
+              "char": "e",
+              "bbox": {
+                "x": 0.34964413,
+                "y": 0.38409091,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w2c1",
+              "line_index": 3,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 109,
+              "char": "c",
+              "bbox": {
+                "x": 0.37010676,
+                "y": 0.38409091,
+                "width": 0.01779359,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w2c2",
+              "line_index": 3,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 110,
+              "char": "h",
+              "bbox": {
+                "x": 0.38790036,
+                "y": 0.38409091,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w2c3",
+              "line_index": 3,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 111,
+              "char": "o",
+              "bbox": {
+                "x": 0.40836299,
+                "y": 0.38409091,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w3",
+          "line_index": 3,
+          "word_index": 3,
+          "text": "with",
+          "bbox": {
+            "x": 0.4341637,
+            "y": 0.38409091,
+            "width": 0.08007117,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19807,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w3c0",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 112,
+              "char": "w",
+              "bbox": {
+                "x": 0.43327402,
+                "y": 0.38409091,
+                "width": 0.03380783,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w3c1",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 113,
+              "char": "i",
+              "bbox": {
+                "x": 0.46708185,
+                "y": 0.38409091,
+                "width": 0.0088968,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w3c2",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 114,
+              "char": "t",
+              "bbox": {
+                "x": 0.47597865,
+                "y": 0.38409091,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w3c3",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 115,
+              "char": "h",
+              "bbox": {
+                "x": 0.48932384,
+                "y": 0.38409091,
+                "width": 0.02491103,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w4",
+          "line_index": 3,
+          "word_index": 4,
+          "text": "laughter",
+          "bbox": {
+            "x": 0.51868327,
+            "y": 0.38409091,
+            "width": 0.14234875,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.22315,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w4c0",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 116,
+              "char": "l",
+              "bbox": {
+                "x": 0.51779359,
+                "y": 0.38409091,
+                "width": 0.00978648,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c1",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 117,
+              "char": "a",
+              "bbox": {
+                "x": 0.52758007,
+                "y": 0.38409091,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c2",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 118,
+              "char": "u",
+              "bbox": {
+                "x": 0.54893238,
+                "y": 0.38409091,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c3",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 119,
+              "char": "g",
+              "bbox": {
+                "x": 0.5702847,
+                "y": 0.38409091,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c4",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 120,
+              "char": "h",
+              "bbox": {
+                "x": 0.59163701,
+                "y": 0.38409091,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c5",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 121,
+              "char": "t",
+              "bbox": {
+                "x": 0.61209964,
+                "y": 0.38409091,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c6",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 122,
+              "char": "e",
+              "bbox": {
+                "x": 0.62544484,
+                "y": 0.38409091,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w4c7",
+              "line_index": 3,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 123,
+              "char": "r",
+              "bbox": {
+                "x": 0.64679715,
+                "y": 0.38409091,
+                "width": 0.01423488,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w5",
+          "line_index": 3,
+          "word_index": 5,
+          "text": "and",
+          "bbox": {
+            "x": 0.66548043,
+            "y": 0.38409091,
+            "width": 0.07117438,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19482,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w5c0",
+              "line_index": 3,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 124,
+              "char": "a",
+              "bbox": {
+                "x": 0.66548043,
+                "y": 0.38409091,
+                "width": 0.02402135,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w5c1",
+              "line_index": 3,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 125,
+              "char": "n",
+              "bbox": {
+                "x": 0.68950178,
+                "y": 0.38409091,
+                "width": 0.02135231,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w5c2",
+              "line_index": 3,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 126,
+              "char": "d",
+              "bbox": {
+                "x": 0.71085409,
+                "y": 0.38409091,
+                "width": 0.02669039,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l3w6",
+          "line_index": 3,
+          "word_index": 6,
+          "text": "late-night",
+          "bbox": {
+            "x": 0.7411032,
+            "y": 0.38409091,
+            "width": 0.16281139,
+            "height": 0.04545455
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.21249,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l3w6c0",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 127,
+              "char": "l",
+              "bbox": {
+                "x": 0.74021352,
+                "y": 0.38409091,
+                "width": 0.00978648,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c1",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 128,
+              "char": "a",
+              "bbox": {
+                "x": 0.75,
+                "y": 0.38409091,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c2",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 129,
+              "char": "t",
+              "bbox": {
+                "x": 0.77046263,
+                "y": 0.38409091,
+                "width": 0.0133452,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c3",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 130,
+              "char": "e",
+              "bbox": {
+                "x": 0.78380783,
+                "y": 0.38409091,
+                "width": 0.02046263,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c4",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 131,
+              "char": "-",
+              "bbox": {
+                "x": 0.80427046,
+                "y": 0.38409091,
+                "width": 0.01245552,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c5",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 5,
+              "global_index": 132,
+              "char": "n",
+              "bbox": {
+                "x": 0.81672598,
+                "y": 0.38409091,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c6",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 6,
+              "global_index": 133,
+              "char": "i",
+              "bbox": {
+                "x": 0.83896797,
+                "y": 0.38409091,
+                "width": 0.00622776,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c7",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 7,
+              "global_index": 134,
+              "char": "g",
+              "bbox": {
+                "x": 0.84519573,
+                "y": 0.38409091,
+                "width": 0.02224199,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c8",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 8,
+              "global_index": 135,
+              "char": "h",
+              "bbox": {
+                "x": 0.86743772,
+                "y": 0.38409091,
+                "width": 0.01957295,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l3w6c9",
+              "line_index": 3,
+              "word_index": 6,
+              "char_index": 9,
+              "global_index": 136,
+              "char": "t",
+              "bbox": {
+                "x": 0.88701068,
+                "y": 0.38409091,
+                "width": 0.01690391,
+                "height": 0.04545455
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 4,
+      "text": "study sessions.",
+      "bbox": {
+        "x": 0.37083333,
+        "y": 0.43617021,
+        "width": 0.25833334,
+        "height": 0.04255319
+      },
+      "confidence": 1.0,
+      "break_after": "paragraph",
+      "words": [
+        {
+          "id": "l4w0",
+          "line_index": 4,
+          "word_index": 0,
+          "text": "study",
+          "bbox": {
+            "x": 0.37083333,
+            "y": 0.43617021,
+            "width": 0.09480279,
+            "height": 0.04255319
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.21724,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w0c0",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 137,
+              "char": "s",
+              "bbox": {
+                "x": 0.37010676,
+                "y": 0.43617021,
+                "width": 0.01957295,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w0c1",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 138,
+              "char": "t",
+              "bbox": {
+                "x": 0.38967972,
+                "y": 0.43617021,
+                "width": 0.0133452,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w0c2",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 139,
+              "char": "u",
+              "bbox": {
+                "x": 0.40302491,
+                "y": 0.43617021,
+                "width": 0.02046263,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w0c3",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 140,
+              "char": "d",
+              "bbox": {
+                "x": 0.42348754,
+                "y": 0.43617021,
+                "width": 0.02224199,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w0c4",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 141,
+              "char": "y",
+              "bbox": {
+                "x": 0.44572954,
+                "y": 0.43617021,
+                "width": 0.02046263,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l4w1",
+          "line_index": 4,
+          "word_index": 1,
+          "text": "sessions.",
+          "bbox": {
+            "x": 0.46975089,
+            "y": 0.43617021,
+            "width": 0.15941576,
+            "height": 0.04255319
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19316,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l4w1c0",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 142,
+              "char": "s",
+              "bbox": {
+                "x": 0.46975089,
+                "y": 0.43617021,
+                "width": 0.02135231,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c1",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 143,
+              "char": "e",
+              "bbox": {
+                "x": 0.4911032,
+                "y": 0.43617021,
+                "width": 0.01957295,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c2",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 144,
+              "char": "s",
+              "bbox": {
+                "x": 0.51067616,
+                "y": 0.43617021,
+                "width": 0.01779359,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c3",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 145,
+              "char": "s",
+              "bbox": {
+                "x": 0.52846975,
+                "y": 0.43617021,
+                "width": 0.01779359,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c4",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 146,
+              "char": "i",
+              "bbox": {
+                "x": 0.54626335,
+                "y": 0.43617021,
+                "width": 0.00800712,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c5",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 147,
+              "char": "o",
+              "bbox": {
+                "x": 0.55427046,
+                "y": 0.43617021,
+                "width": 0.02224199,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c6",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 148,
+              "char": "n",
+              "bbox": {
+                "x": 0.57651246,
+                "y": 0.43617021,
+                "width": 0.02135231,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c7",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 149,
+              "char": "s",
+              "bbox": {
+                "x": 0.59786477,
+                "y": 0.43617021,
+                "width": 0.01779359,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l4w1c8",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 150,
+              "char": ".",
+              "bbox": {
+                "x": 0.61565836,
+                "y": 0.43617021,
+                "width": 0.01423488,
+                "height": 0.04255319
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 5,
+      "text": "For students seeking a semester abroad, this vibrant",
+      "bbox": {
+        "x": 0.06227758,
+        "y": 0.53636364,
+        "width": 0.87544484,
+        "height": 0.04772727
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l5w0",
+          "line_index": 5,
+          "word_index": 0,
+          "text": "For",
+          "bbox": {
+            "x": 0.06227759,
+            "y": 0.53636364,
+            "width": 0.05604981,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18383,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w0c0",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 151,
+              "char": "F",
+              "bbox": {
+                "x": 0.06227758,
+                "y": 0.53636364,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c1",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 152,
+              "char": "o",
+              "bbox": {
+                "x": 0.08096085,
+                "y": 0.53636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w0c2",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 153,
+              "char": "r",
+              "bbox": {
+                "x": 0.10320285,
+                "y": 0.53636364,
+                "width": 0.01512456,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w1",
+          "line_index": 5,
+          "word_index": 1,
+          "text": "students",
+          "bbox": {
+            "x": 0.12299822,
+            "y": 0.53636364,
+            "width": 0.14946619,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19843,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w1c0",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 154,
+              "char": "s",
+              "bbox": {
+                "x": 0.1227758,
+                "y": 0.53636364,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c1",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 155,
+              "char": "t",
+              "bbox": {
+                "x": 0.14234875,
+                "y": 0.53636364,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c2",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 156,
+              "char": "u",
+              "bbox": {
+                "x": 0.15569395,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c3",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 157,
+              "char": "d",
+              "bbox": {
+                "x": 0.17615658,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c4",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 158,
+              "char": "e",
+              "bbox": {
+                "x": 0.1975089,
+                "y": 0.53636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c5",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 159,
+              "char": "n",
+              "bbox": {
+                "x": 0.21975089,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c6",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 160,
+              "char": "t",
+              "bbox": {
+                "x": 0.2411032,
+                "y": 0.53636364,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w1c7",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 161,
+              "char": "s",
+              "bbox": {
+                "x": 0.2544484,
+                "y": 0.53636364,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w2",
+          "line_index": 5,
+          "word_index": 2,
+          "text": "seeking",
+          "bbox": {
+            "x": 0.27713523,
+            "y": 0.53636364,
+            "width": 0.13078292,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.2115,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w2c0",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 162,
+              "char": "s",
+              "bbox": {
+                "x": 0.27669039,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c1",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 163,
+              "char": "e",
+              "bbox": {
+                "x": 0.29715302,
+                "y": 0.53636364,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c2",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 164,
+              "char": "e",
+              "bbox": {
+                "x": 0.31672598,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c3",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 165,
+              "char": "k",
+              "bbox": {
+                "x": 0.33807829,
+                "y": 0.53636364,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c4",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 166,
+              "char": "i",
+              "bbox": {
+                "x": 0.35765125,
+                "y": 0.53636364,
+                "width": 0.00800712,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c5",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 5,
+              "global_index": 167,
+              "char": "n",
+              "bbox": {
+                "x": 0.36565836,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w2c6",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 6,
+              "global_index": 168,
+              "char": "g",
+              "bbox": {
+                "x": 0.386121,
+                "y": 0.53636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w3",
+          "line_index": 5,
+          "word_index": 3,
+          "text": "a",
+          "bbox": {
+            "x": 0.41258897,
+            "y": 0.53636364,
+            "width": 0.02335409,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.16882,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w3c0",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 169,
+              "char": "a",
+              "bbox": {
+                "x": 0.41192171,
+                "y": 0.53636364,
+                "width": 0.02402135,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w4",
+          "line_index": 5,
+          "word_index": 4,
+          "text": "semester",
+          "bbox": {
+            "x": 0.44061388,
+            "y": 0.53636364,
+            "width": 0.16347865,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18781,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w4c0",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 170,
+              "char": "s",
+              "bbox": {
+                "x": 0.44039146,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c1",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 171,
+              "char": "e",
+              "bbox": {
+                "x": 0.46174377,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c2",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 172,
+              "char": "m",
+              "bbox": {
+                "x": 0.48309609,
+                "y": 0.53636364,
+                "width": 0.03291815,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c3",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 173,
+              "char": "e",
+              "bbox": {
+                "x": 0.51601423,
+                "y": 0.53636364,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c4",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 174,
+              "char": "s",
+              "bbox": {
+                "x": 0.53558719,
+                "y": 0.53636364,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c5",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 175,
+              "char": "t",
+              "bbox": {
+                "x": 0.5524911,
+                "y": 0.53636364,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c6",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 176,
+              "char": "e",
+              "bbox": {
+                "x": 0.5658363,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w4c7",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 177,
+              "char": "r",
+              "bbox": {
+                "x": 0.58718861,
+                "y": 0.53636364,
+                "width": 0.01779359,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w5",
+          "line_index": 5,
+          "word_index": 5,
+          "text": "abroad,",
+          "bbox": {
+            "x": 0.60876335,
+            "y": 0.53636364,
+            "width": 0.13078292,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.20176,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w5c0",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 178,
+              "char": "a",
+              "bbox": {
+                "x": 0.60854093,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c1",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 179,
+              "char": "b",
+              "bbox": {
+                "x": 0.62989324,
+                "y": 0.53636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c2",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 180,
+              "char": "r",
+              "bbox": {
+                "x": 0.65213523,
+                "y": 0.53636364,
+                "width": 0.01423488,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c3",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 181,
+              "char": "o",
+              "bbox": {
+                "x": 0.66637011,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c4",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 4,
+              "global_index": 182,
+              "char": "a",
+              "bbox": {
+                "x": 0.68683274,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c5",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 5,
+              "global_index": 183,
+              "char": "d",
+              "bbox": {
+                "x": 0.70729537,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w5c6",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 6,
+              "global_index": 184,
+              "char": ",",
+              "bbox": {
+                "x": 0.72864769,
+                "y": 0.53636364,
+                "width": 0.01156584,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w6",
+          "line_index": 5,
+          "word_index": 6,
+          "text": "this",
+          "bbox": {
+            "x": 0.74421708,
+            "y": 0.53636364,
+            "width": 0.06539146,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19767,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w6c0",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 185,
+              "char": "t",
+              "bbox": {
+                "x": 0.74377224,
+                "y": 0.53636364,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c1",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 186,
+              "char": "h",
+              "bbox": {
+                "x": 0.76067616,
+                "y": 0.53636364,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c2",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 187,
+              "char": "i",
+              "bbox": {
+                "x": 0.78024911,
+                "y": 0.53636364,
+                "width": 0.0088968,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w6c3",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 188,
+              "char": "s",
+              "bbox": {
+                "x": 0.78914591,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l5w7",
+          "line_index": 5,
+          "word_index": 7,
+          "text": "vibrant",
+          "bbox": {
+            "x": 0.81427936,
+            "y": 0.53636364,
+            "width": 0.12344306,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18654,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l5w7c0",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 189,
+              "char": "v",
+              "bbox": {
+                "x": 0.81405694,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w7c1",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 190,
+              "char": "i",
+              "bbox": {
+                "x": 0.83540925,
+                "y": 0.53636364,
+                "width": 0.00800712,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w7c2",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 2,
+              "global_index": 191,
+              "char": "b",
+              "bbox": {
+                "x": 0.84341637,
+                "y": 0.53636364,
+                "width": 0.02402135,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w7c3",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 3,
+              "global_index": 192,
+              "char": "r",
+              "bbox": {
+                "x": 0.86743772,
+                "y": 0.53636364,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w7c4",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 4,
+              "global_index": 193,
+              "char": "a",
+              "bbox": {
+                "x": 0.88078292,
+                "y": 0.53636364,
+                "width": 0.02135231,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w7c5",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 5,
+              "global_index": 194,
+              "char": "n",
+              "bbox": {
+                "x": 0.90213523,
+                "y": 0.53636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l5w7c6",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 6,
+              "global_index": 195,
+              "char": "t",
+              "bbox": {
+                "x": 0.92259786,
+                "y": 0.53636364,
+                "width": 0.01601423,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 6,
+      "text": "town offers more than classes—it's a journey of",
+      "bbox": {
+        "x": 0.10320285,
+        "y": 0.58636364,
+        "width": 0.79537367,
+        "height": 0.04772727
+      },
+      "confidence": 1.0,
+      "break_after": "space",
+      "words": [
+        {
+          "id": "l6w0",
+          "line_index": 6,
+          "word_index": 0,
+          "text": "town",
+          "bbox": {
+            "x": 0.10320286,
+            "y": 0.58636364,
+            "width": 0.08407472,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18923,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w0c0",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 196,
+              "char": "t",
+              "bbox": {
+                "x": 0.10320285,
+                "y": 0.58636364,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w0c1",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 197,
+              "char": "o",
+              "bbox": {
+                "x": 0.11654804,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w0c2",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 198,
+              "char": "w",
+              "bbox": {
+                "x": 0.13701068,
+                "y": 0.58636364,
+                "width": 0.02846975,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w0c3",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 199,
+              "char": "n",
+              "bbox": {
+                "x": 0.16548043,
+                "y": 0.58636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w1",
+          "line_index": 6,
+          "word_index": 1,
+          "text": "offers",
+          "bbox": {
+            "x": 0.1919484,
+            "y": 0.58636364,
+            "width": 0.10275801,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.194,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w1c0",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 200,
+              "char": "o",
+              "bbox": {
+                "x": 0.19128114,
+                "y": 0.58636364,
+                "width": 0.02580071,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c1",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 201,
+              "char": "f",
+              "bbox": {
+                "x": 0.21708185,
+                "y": 0.58636364,
+                "width": 0.00088968,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c2",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 202,
+              "char": "f",
+              "bbox": {
+                "x": 0.21797153,
+                "y": 0.58636364,
+                "width": 0.01423488,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c3",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 203,
+              "char": "e",
+              "bbox": {
+                "x": 0.23220641,
+                "y": 0.58636364,
+                "width": 0.02935943,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c4",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 204,
+              "char": "r",
+              "bbox": {
+                "x": 0.26156584,
+                "y": 0.58636364,
+                "width": 0.01512456,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w1c5",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 205,
+              "char": "s",
+              "bbox": {
+                "x": 0.27669039,
+                "y": 0.58636364,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w2",
+          "line_index": 6,
+          "word_index": 2,
+          "text": "more",
+          "bbox": {
+            "x": 0.29937722,
+            "y": 0.58636364,
+            "width": 0.09341637,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17552,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w2c0",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 206,
+              "char": "m",
+              "bbox": {
+                "x": 0.29893238,
+                "y": 0.58636364,
+                "width": 0.03558719,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c1",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 207,
+              "char": "o",
+              "bbox": {
+                "x": 0.33451957,
+                "y": 0.58636364,
+                "width": 0.02313167,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c2",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 208,
+              "char": "r",
+              "bbox": {
+                "x": 0.35765125,
+                "y": 0.58636364,
+                "width": 0.01512456,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w2c3",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 209,
+              "char": "e",
+              "bbox": {
+                "x": 0.3727758,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w3",
+          "line_index": 6,
+          "word_index": 3,
+          "text": "than",
+          "bbox": {
+            "x": 0.39746441,
+            "y": 0.58636364,
+            "width": 0.08407473,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18266,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w3c0",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 210,
+              "char": "t",
+              "bbox": {
+                "x": 0.39679715,
+                "y": 0.58636364,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w3c1",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 211,
+              "char": "h",
+              "bbox": {
+                "x": 0.41548043,
+                "y": 0.58636364,
+                "width": 0.01957295,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w3c2",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 212,
+              "char": "a",
+              "bbox": {
+                "x": 0.43505338,
+                "y": 0.58636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w3c3",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 213,
+              "char": "n",
+              "bbox": {
+                "x": 0.45729537,
+                "y": 0.58636364,
+                "width": 0.02491103,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w4",
+          "line_index": 6,
+          "word_index": 4,
+          "text": "classes—it's",
+          "bbox": {
+            "x": 0.48620996,
+            "y": 0.58636364,
+            "width": 0.2008452,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17713,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w4c0",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 214,
+              "char": "c",
+              "bbox": {
+                "x": 0.48576512,
+                "y": 0.58636364,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c1",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 215,
+              "char": "l",
+              "bbox": {
+                "x": 0.5044484,
+                "y": 0.58636364,
+                "width": 0.00800712,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c2",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 216,
+              "char": "a",
+              "bbox": {
+                "x": 0.51245552,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c3",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 217,
+              "char": "s",
+              "bbox": {
+                "x": 0.53291815,
+                "y": 0.58636364,
+                "width": 0.01779359,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c4",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 218,
+              "char": "s",
+              "bbox": {
+                "x": 0.55071174,
+                "y": 0.58636364,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c5",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 219,
+              "char": "e",
+              "bbox": {
+                "x": 0.56761566,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c6",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 220,
+              "char": "s",
+              "bbox": {
+                "x": 0.58807829,
+                "y": 0.58636364,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c7",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 221,
+              "char": "—",
+              "bbox": {
+                "x": 0.60498221,
+                "y": 0.58636364,
+                "width": 0.03736655,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c8",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 8,
+              "global_index": 222,
+              "char": "i",
+              "bbox": {
+                "x": 0.64234875,
+                "y": 0.58636364,
+                "width": 0.00711744,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c9",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 9,
+              "global_index": 223,
+              "char": "t",
+              "bbox": {
+                "x": 0.64946619,
+                "y": 0.58636364,
+                "width": 0.0133452,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c10",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 10,
+              "global_index": 224,
+              "char": "'",
+              "bbox": {
+                "x": 0.66281139,
+                "y": 0.58636364,
+                "width": 0.00622776,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w4c11",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 11,
+              "global_index": 225,
+              "char": "s",
+              "bbox": {
+                "x": 0.66903915,
+                "y": 0.58636364,
+                "width": 0.01868327,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w5",
+          "line_index": 6,
+          "word_index": 5,
+          "text": "a",
+          "bbox": {
+            "x": 0.69172598,
+            "y": 0.58636364,
+            "width": 0.02335409,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17916,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w5c0",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 226,
+              "char": "a",
+              "bbox": {
+                "x": 0.69128114,
+                "y": 0.58636364,
+                "width": 0.02402135,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w6",
+          "line_index": 6,
+          "word_index": 6,
+          "text": "journey",
+          "bbox": {
+            "x": 0.71975089,
+            "y": 0.58636364,
+            "width": 0.13545374,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18893,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w6c0",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 227,
+              "char": "j",
+              "bbox": {
+                "x": 0.71975089,
+                "y": 0.58636364,
+                "width": 0.01156584,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w6c1",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 228,
+              "char": "o",
+              "bbox": {
+                "x": 0.73131673,
+                "y": 0.58636364,
+                "width": 0.02313167,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w6c2",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 229,
+              "char": "u",
+              "bbox": {
+                "x": 0.7544484,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w6c3",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 230,
+              "char": "r",
+              "bbox": {
+                "x": 0.77491103,
+                "y": 0.58636364,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w6c4",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 231,
+              "char": "n",
+              "bbox": {
+                "x": 0.79181495,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w6c5",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 5,
+              "global_index": 232,
+              "char": "e",
+              "bbox": {
+                "x": 0.81227758,
+                "y": 0.58636364,
+                "width": 0.02046263,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w6c6",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 6,
+              "global_index": 233,
+              "char": "y",
+              "bbox": {
+                "x": 0.83274021,
+                "y": 0.58636364,
+                "width": 0.02313167,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l6w7",
+          "line_index": 6,
+          "word_index": 7,
+          "text": "of",
+          "bbox": {
+            "x": 0.85987544,
+            "y": 0.58636364,
+            "width": 0.03870107,
+            "height": 0.04772727
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18288,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l6w7c0",
+              "line_index": 6,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 234,
+              "char": "o",
+              "bbox": {
+                "x": 0.8594306,
+                "y": 0.58636364,
+                "width": 0.02224199,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l6w7c1",
+              "line_index": 6,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 235,
+              "char": "f",
+              "bbox": {
+                "x": 0.8816726,
+                "y": 0.58636364,
+                "width": 0.01690391,
+                "height": 0.04772727
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 7,
+      "text": "ideas, friendships, and unforgettable experiences.",
+      "bbox": {
+        "x": 0.08007118,
+        "y": 0.63636364,
+        "width": 0.83807829,
+        "height": 0.05
+      },
+      "confidence": 1.0,
+      "break_after": "paragraph",
+      "words": [
+        {
+          "id": "l7w0",
+          "line_index": 7,
+          "word_index": 0,
+          "text": "ideas,",
+          "bbox": {
+            "x": 0.08007119,
+            "y": 0.63636364,
+            "width": 0.09786476,
+            "height": 0.05
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19399,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w0c0",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 236,
+              "char": "i",
+              "bbox": {
+                "x": 0.08007117,
+                "y": 0.63636364,
+                "width": 0.01067616,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w0c1",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 237,
+              "char": "d",
+              "bbox": {
+                "x": 0.09074733,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w0c2",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 238,
+              "char": "e",
+              "bbox": {
+                "x": 0.11209964,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w0c3",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 239,
+              "char": "a",
+              "bbox": {
+                "x": 0.13345196,
+                "y": 0.63636364,
+                "width": 0.01868327,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w0c4",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 240,
+              "char": "s",
+              "bbox": {
+                "x": 0.15213523,
+                "y": 0.63636364,
+                "width": 0.01868327,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w0c5",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 241,
+              "char": ",",
+              "bbox": {
+                "x": 0.17081851,
+                "y": 0.63636364,
+                "width": 0.00800712,
+                "height": 0.05
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w1",
+          "line_index": 7,
+          "word_index": 1,
+          "text": "friendships,",
+          "bbox": {
+            "x": 0.18282918,
+            "y": 0.63636364,
+            "width": 0.20551601,
+            "height": 0.05
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18467,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w1c0",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 242,
+              "char": "f",
+              "bbox": {
+                "x": 0.18238434,
+                "y": 0.63636364,
+                "width": 0.00622776,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c1",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 243,
+              "char": "r",
+              "bbox": {
+                "x": 0.1886121,
+                "y": 0.63636364,
+                "width": 0.01423488,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c2",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 244,
+              "char": "i",
+              "bbox": {
+                "x": 0.20284698,
+                "y": 0.63636364,
+                "width": 0.0133452,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c3",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 245,
+              "char": "e",
+              "bbox": {
+                "x": 0.21619217,
+                "y": 0.63636364,
+                "width": 0.02846975,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c4",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 246,
+              "char": "n",
+              "bbox": {
+                "x": 0.24466192,
+                "y": 0.63636364,
+                "width": 0.02046263,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c5",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 247,
+              "char": "d",
+              "bbox": {
+                "x": 0.26512456,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c6",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 248,
+              "char": "s",
+              "bbox": {
+                "x": 0.28736655,
+                "y": 0.63636364,
+                "width": 0.01779359,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c7",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 249,
+              "char": "h",
+              "bbox": {
+                "x": 0.30516014,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c8",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 250,
+              "char": "i",
+              "bbox": {
+                "x": 0.32651246,
+                "y": 0.63636364,
+                "width": 0.0088968,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c9",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 251,
+              "char": "p",
+              "bbox": {
+                "x": 0.33540925,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c10",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 10,
+              "global_index": 252,
+              "char": "s",
+              "bbox": {
+                "x": 0.35765125,
+                "y": 0.63636364,
+                "width": 0.01779359,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w1c11",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 11,
+              "global_index": 253,
+              "char": ",",
+              "bbox": {
+                "x": 0.37544484,
+                "y": 0.63636364,
+                "width": 0.0133452,
+                "height": 0.05
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w2",
+          "line_index": 7,
+          "word_index": 2,
+          "text": "and",
+          "bbox": {
+            "x": 0.39323843,
+            "y": 0.63636364,
+            "width": 0.0636121,
+            "height": 0.05
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19026,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w2c0",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 254,
+              "char": "a",
+              "bbox": {
+                "x": 0.39234875,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w2c1",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 255,
+              "char": "n",
+              "bbox": {
+                "x": 0.41370107,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w2c2",
+              "line_index": 7,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 256,
+              "char": "d",
+              "bbox": {
+                "x": 0.43594306,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w3",
+          "line_index": 7,
+          "word_index": 3,
+          "text": "unforgettable",
+          "bbox": {
+            "x": 0.46174377,
+            "y": 0.63636364,
+            "width": 0.23487544,
+            "height": 0.05
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19874,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w3c0",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 257,
+              "char": "u",
+              "bbox": {
+                "x": 0.46085409,
+                "y": 0.63636364,
+                "width": 0.02580071,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c1",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 258,
+              "char": "n",
+              "bbox": {
+                "x": 0.4866548,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c2",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 259,
+              "char": "f",
+              "bbox": {
+                "x": 0.5088968,
+                "y": 0.63636364,
+                "width": 0.00177936,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c3",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 260,
+              "char": "o",
+              "bbox": {
+                "x": 0.51067616,
+                "y": 0.63636364,
+                "width": 0.03291815,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c4",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 261,
+              "char": "r",
+              "bbox": {
+                "x": 0.54359431,
+                "y": 0.63636364,
+                "width": 0.0088968,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c5",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 262,
+              "char": "g",
+              "bbox": {
+                "x": 0.5524911,
+                "y": 0.63636364,
+                "width": 0.02669039,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c6",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 263,
+              "char": "e",
+              "bbox": {
+                "x": 0.57918149,
+                "y": 0.63636364,
+                "width": 0.01868327,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c7",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 7,
+              "global_index": 264,
+              "char": "t",
+              "bbox": {
+                "x": 0.59786477,
+                "y": 0.63636364,
+                "width": 0.0133452,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c8",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 8,
+              "global_index": 265,
+              "char": "t",
+              "bbox": {
+                "x": 0.61120996,
+                "y": 0.63636364,
+                "width": 0.0133452,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c9",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 9,
+              "global_index": 266,
+              "char": "a",
+              "bbox": {
+                "x": 0.62455516,
+                "y": 0.63636364,
+                "width": 0.01868327,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c10",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 10,
+              "global_index": 267,
+              "char": "b",
+              "bbox": {
+                "x": 0.64323843,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c11",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 11,
+              "global_index": 268,
+              "char": "l",
+              "bbox": {
+                "x": 0.66548043,
+                "y": 0.63636364,
+                "width": 0.0088968,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w3c12",
+              "line_index": 7,
+              "word_index": 3,
+              "char_index": 12,
+              "global_index": 269,
+              "char": "e",
+              "bbox": {
+                "x": 0.67437722,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l7w4",
+          "line_index": 7,
+          "word_index": 4,
+          "text": "experiences.",
+          "bbox": {
+            "x": 0.70151245,
+            "y": 0.63636364,
+            "width": 0.21663701,
+            "height": 0.05
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17714,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l7w4c0",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 270,
+              "char": "e",
+              "bbox": {
+                "x": 0.70106762,
+                "y": 0.63636364,
+                "width": 0.02224199,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c1",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 271,
+              "char": "x",
+              "bbox": {
+                "x": 0.72330961,
+                "y": 0.63636364,
+                "width": 0.01957295,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c2",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 272,
+              "char": "p",
+              "bbox": {
+                "x": 0.74288256,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c3",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 273,
+              "char": "e",
+              "bbox": {
+                "x": 0.76423488,
+                "y": 0.63636364,
+                "width": 0.02046263,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c4",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 274,
+              "char": "r",
+              "bbox": {
+                "x": 0.78469751,
+                "y": 0.63636364,
+                "width": 0.01512456,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c5",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 275,
+              "char": "i",
+              "bbox": {
+                "x": 0.79982206,
+                "y": 0.63636364,
+                "width": 0.00711744,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c6",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 276,
+              "char": "e",
+              "bbox": {
+                "x": 0.8069395,
+                "y": 0.63636364,
+                "width": 0.02135231,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c7",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 277,
+              "char": "n",
+              "bbox": {
+                "x": 0.82829181,
+                "y": 0.63636364,
+                "width": 0.02046263,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c8",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 8,
+              "global_index": 278,
+              "char": "c",
+              "bbox": {
+                "x": 0.84875445,
+                "y": 0.63636364,
+                "width": 0.01868327,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c9",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 9,
+              "global_index": 279,
+              "char": "e",
+              "bbox": {
+                "x": 0.86743772,
+                "y": 0.63636364,
+                "width": 0.02046263,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c10",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 10,
+              "global_index": 280,
+              "char": "s",
+              "bbox": {
+                "x": 0.88790036,
+                "y": 0.63636364,
+                "width": 0.01779359,
+                "height": 0.05
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l7w4c11",
+              "line_index": 7,
+              "word_index": 4,
+              "char_index": 11,
+              "global_index": 281,
+              "char": ".",
+              "bbox": {
+                "x": 0.90569395,
+                "y": 0.63636364,
+                "width": 0.01245552,
+                "height": 0.05
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 8,
+      "text": "Come learn and explore.",
+      "bbox": {
+        "x": 0.2948905,
+        "y": 0.73322148,
+        "width": 0.4121674,
+        "height": 0.055876
+      },
+      "confidence": 1.0,
+      "break_after": "end",
+      "words": [
+        {
+          "id": "l8w0",
+          "line_index": 8,
+          "word_index": 0,
+          "text": "Come",
+          "bbox": {
+            "x": 0.2948905,
+            "y": 0.73322148,
+            "width": 0.09795416,
+            "height": 0.04675472
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18855,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l8w0c0",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 282,
+              "char": "C",
+              "bbox": {
+                "x": 0.29448399,
+                "y": 0.73322148,
+                "width": 0.02224199,
+                "height": 0.04675472
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w0c1",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 283,
+              "char": "o",
+              "bbox": {
+                "x": 0.31672598,
+                "y": 0.73322148,
+                "width": 0.02224199,
+                "height": 0.04675472
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w0c2",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 284,
+              "char": "m",
+              "bbox": {
+                "x": 0.33896797,
+                "y": 0.73322148,
+                "width": 0.03202847,
+                "height": 0.04675472
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w0c3",
+              "line_index": 8,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 285,
+              "char": "e",
+              "bbox": {
+                "x": 0.37099644,
+                "y": 0.73322148,
+                "width": 0.02224199,
+                "height": 0.04675472
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l8w1",
+          "line_index": 8,
+          "word_index": 1,
+          "text": "learn",
+          "bbox": {
+            "x": 0.39630138,
+            "y": 0.73616494,
+            "width": 0.09371569,
+            "height": 0.04586884
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.17588,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l8w1c0",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 286,
+              "char": "l",
+              "bbox": {
+                "x": 0.39590747,
+                "y": 0.73616494,
+                "width": 0.00622776,
+                "height": 0.04586884
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c1",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 287,
+              "char": "e",
+              "bbox": {
+                "x": 0.40213523,
+                "y": 0.73616494,
+                "width": 0.02669039,
+                "height": 0.04586884
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c2",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 288,
+              "char": "a",
+              "bbox": {
+                "x": 0.42882562,
+                "y": 0.73616494,
+                "width": 0.02224199,
+                "height": 0.04586884
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c3",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 289,
+              "char": "r",
+              "bbox": {
+                "x": 0.45106762,
+                "y": 0.73616494,
+                "width": 0.01423488,
+                "height": 0.04586884
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w1c4",
+              "line_index": 8,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 290,
+              "char": "n",
+              "bbox": {
+                "x": 0.46530249,
+                "y": 0.73616494,
+                "width": 0.02491103,
+                "height": 0.04586884
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l8w2",
+          "line_index": 8,
+          "word_index": 2,
+          "text": "and",
+          "bbox": {
+            "x": 0.4934738,
+            "y": 0.73898575,
+            "width": 0.06836637,
+            "height": 0.04513298
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.19794,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l8w2c0",
+              "line_index": 8,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 291,
+              "char": "a",
+              "bbox": {
+                "x": 0.49288256,
+                "y": 0.73898575,
+                "width": 0.02313167,
+                "height": 0.04513298
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w2c1",
+              "line_index": 8,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 292,
+              "char": "n",
+              "bbox": {
+                "x": 0.51601423,
+                "y": 0.73898575,
+                "width": 0.02135231,
+                "height": 0.04513298
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w2c2",
+              "line_index": 8,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 293,
+              "char": "d",
+              "bbox": {
+                "x": 0.53736655,
+                "y": 0.73898575,
+                "width": 0.02491103,
+                "height": 0.04513298
+              },
+              "needs_review": false
+            }
+          ]
+        },
+        {
+          "id": "l8w3",
+          "line_index": 8,
+          "word_index": 3,
+          "text": "explore.",
+          "bbox": {
+            "x": 0.56528331,
+            "y": 0.74107069,
+            "width": 0.14177459,
+            "height": 0.04802679
+          },
+          "positioning": "glyph-advance-prior + foreground-projection refinement",
+          "metrics": {
+            "foreground_ratio": 0.18547,
+            "boundary_reliability": 1.0
+          },
+          "needs_review": false,
+          "chars": [
+            {
+              "id": "l8w3c0",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 294,
+              "char": "e",
+              "bbox": {
+                "x": 0.56494662,
+                "y": 0.74107069,
+                "width": 0.02313167,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c1",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 295,
+              "char": "x",
+              "bbox": {
+                "x": 0.58807829,
+                "y": 0.74107069,
+                "width": 0.01957295,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c2",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 296,
+              "char": "p",
+              "bbox": {
+                "x": 0.60765125,
+                "y": 0.74107069,
+                "width": 0.02224199,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c3",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 297,
+              "char": "l",
+              "bbox": {
+                "x": 0.62989324,
+                "y": 0.74107069,
+                "width": 0.00800712,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c4",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 298,
+              "char": "o",
+              "bbox": {
+                "x": 0.63790036,
+                "y": 0.74107069,
+                "width": 0.02313167,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c5",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 299,
+              "char": "r",
+              "bbox": {
+                "x": 0.66103203,
+                "y": 0.74107069,
+                "width": 0.0133452,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c6",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 300,
+              "char": "e",
+              "bbox": {
+                "x": 0.67437722,
+                "y": 0.74107069,
+                "width": 0.02046263,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            },
+            {
+              "id": "l8w3c7",
+              "line_index": 8,
+              "word_index": 3,
+              "char_index": 7,
+              "global_index": 301,
+              "char": ".",
+              "bbox": {
+                "x": 0.69483986,
+                "y": 0.74107069,
+                "width": 0.01245552,
+                "height": 0.04802679
+              },
+              "needs_review": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

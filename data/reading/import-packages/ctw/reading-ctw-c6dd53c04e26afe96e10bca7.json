@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-c6dd53c04e26afe96e10bca7",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "c6dd53c04e26afe96e10bca770ad3b9828ce89a23412f323bf5d79f70e559e44",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m1-ctw-01",
+      "logicalItemId": "reading-ctw-c6dd53c04e26afe96e10bca7",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01",
+      "logicalItemId": "reading-ctw-c6dd53c04e26afe96e10bca7",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Cities, with their diverse populations and large industrial and commercial sectors, offer unparalleled opportunities for innovation and cultural exchange. The concen_ _ _ _ _ _ _ of peo_ _ _ and reso_ _ _ _ _ in ur_ _ _ areas ma_ _ _ it eas_ _ _ for indiv_ _ _ _ _ _ and instit_ _ _ _ _ _ to con_ _ _ _, share id_ _ _, and work together, which in turn drives innovation and economic development. This constant interaction fuels creativity and problem-solving, making urban centers fertile ground for artistic expression, scientific breakthroughs, and the evolution of social norms.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Cities, with their diverse populations and large industrial and commercial sectors, offer unparalleled opportunities for innovation and cultural exchange. The concen_ _ _ _ _ _ _ of peo_ _ _ and reso_ _ _ _ _ in ur_ _ _ areas ma_ _ _ it eas_ _ _ for indiv_ _ _ _ _ _ and instit_ _ _ _ _ _ to con_ _ _ _, share id_ _ _, and work together, which in turn drives innovation and economic development. This constant interaction fuels creativity and problem-solving, making urban centers fertile ground for artistic expression, scientific breakthroughs, and the evolution of social norms.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Cities, with their diverse populations and large industrial and commercial sectors, offer unparalleled opportunities for innovation and cultural exchange. The "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " in "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " areas "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " it "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " for "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ", share "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": ", and work together, which in turn drives innovation and economic development. This constant interaction fuels creativity and problem-solving, making urban centers fertile ground for artistic expression, scientific breakthroughs, and the evolution of social norms."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "concentration",
+            "prefix": "concen",
+            "displayText": "concen_ _ _ _ _ _ _",
+            "missingText": "tration",
+            "missingLength": 7
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "people",
+            "prefix": "peo",
+            "displayText": "peo_ _ _",
+            "missingText": "ple",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "resources",
+            "prefix": "reso",
+            "displayText": "reso_ _ _ _ _",
+            "missingText": "urces",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "urban",
+            "prefix": "ur",
+            "displayText": "ur_ _ _",
+            "missingText": "ban",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "makes",
+            "prefix": "ma",
+            "displayText": "ma_ _ _",
+            "missingText": "kes",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "easier",
+            "prefix": "eas",
+            "displayText": "eas_ _ _",
+            "missingText": "ier",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "individuals",
+            "prefix": "indiv",
+            "displayText": "indiv_ _ _ _ _ _",
+            "missingText": "iduals",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "institutions",
+            "prefix": "instit",
+            "displayText": "instit_ _ _ _ _ _",
+            "missingText": "utions",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "connect",
+            "prefix": "con",
+            "displayText": "con_ _ _ _",
+            "missingText": "nect",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-c6dd53c04e26afe96e10bca7-q01-p01",
+            "answer": "ideas",
+            "prefix": "id",
+            "displayText": "id_ _ _",
+            "missingText": "eas",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

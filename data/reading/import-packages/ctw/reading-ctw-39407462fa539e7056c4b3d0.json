@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-39407462fa539e7056c4b3d0",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-23",
+    "firstSeenSourceLabel": "6.23",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "39407462fa539e7056c4b3d065372c0b41f67a511bcff8300ef8aec816c96f53",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-23-m2-ctw-18",
+      "logicalItemId": "reading-ctw-39407462fa539e7056c4b3d0",
+      "sourceKind": "docx",
+      "sourceLabel": "6.23",
+      "occurrenceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-39407462fa539e7056c4b3d0-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-39407462fa539e7056c4b3d0-q01",
+      "logicalItemId": "reading-ctw-39407462fa539e7056c4b3d0",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Ants display highly organized social behavior, characterized by a structured division of labor and cooperative interaction. Worker ants, which are sterile females, perform specialized tasks such as foraging, brood care, nest maintenance, and defense. These ro_ _ _ often va_ _ based o_ age o_ physical tra_ _ _, enhancing col_ _ _ efficiency. Commun_ _ _ _ _ _ _ occurs prim_ _ _ _ _ through chem_ _ _ _ signals cal_ _ _ pheromones, enabling coordination across large groups. The complexity of ant societies offers insight into how evolutionary pressures can produce adaptive social systems.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Ants display highly organized social behavior, characterized by a structured division of labor and cooperative interaction. Worker ants, which are sterile females, perform specialized tasks such as foraging, brood care, nest maintenance, and defense. These ro_ _ _ often va_ _ based o_ age o_ physical tra_ _ _, enhancing col_ _ _ efficiency. Commun_ _ _ _ _ _ _ occurs prim_ _ _ _ _ through chem_ _ _ _ signals cal_ _ _ pheromones, enabling coordination across large groups. The complexity of ant societies offers insight into how evolutionary pressures can produce adaptive social systems.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Ants display highly organized social behavior, characterized by a structured division of labor and cooperative interaction. Worker ants, which are sterile females, perform specialized tasks such as foraging, brood care, nest maintenance, and defense. These "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " often "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " based "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " age "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " physical "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", enhancing "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " efficiency. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " occurs "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " through "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " signals "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " pheromones, enabling coordination across large groups. The complexity of ant societies offers insight into how evolutionary pressures can produce adaptive social systems."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "roles",
+            "prefix": "ro",
+            "displayText": "ro_ _ _",
+            "missingText": "les",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "vary",
+            "prefix": "va",
+            "displayText": "va_ _",
+            "missingText": "ry",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "on",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "or",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "r",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "traits",
+            "prefix": "tra",
+            "displayText": "tra_ _ _",
+            "missingText": "its",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "colony",
+            "prefix": "col",
+            "displayText": "col_ _ _",
+            "missingText": "ony",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "Communication",
+            "prefix": "Commun",
+            "displayText": "Commun_ _ _ _ _ _ _",
+            "missingText": "ication",
+            "missingLength": 7
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "primarily",
+            "prefix": "prim",
+            "displayText": "prim_ _ _ _ _",
+            "missingText": "arily",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "chemical",
+            "prefix": "chem",
+            "displayText": "chem_ _ _ _",
+            "missingText": "ical",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-39407462fa539e7056c4b3d0-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-39407462fa539e7056c4b3d0-q01-p01",
+            "answer": "called",
+            "prefix": "cal",
+            "displayText": "cal_ _ _",
+            "missingText": "led",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

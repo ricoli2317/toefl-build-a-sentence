@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-7f0ecb70e33eb9aa07e717d8",
+    "module": "rdl",
+    "title": "CampusConnect — We make campus commuting simple!",
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1A",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "7f0ecb70e33eb9aa07e717d8e862756fc9508fc7ab3ca536e546dc5a8d3f45f7",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-7f0ecb70e33eb9aa07e717d8",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1A",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-058",
+      "title": "CampusConnect — We make campus commuting simple!",
+      "source": "material-index.json#RDL-058",
+      "sourceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-058/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-058/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01",
+      "logicalItemId": "reading-rdl-7f0ecb70e33eb9aa07e717d8",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main purpose of the webpage?",
+      "rawDisplayText": "23. What is the main purpose of the webpage?",
+      "payload": {
+        "materialId": "RDL-058",
+        "options": [
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To provide historical background on campus transportation systems"
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To critique existing public transit services available on campuses"
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To introduce a new mobile app designed to simplify campus commuting"
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To advertise rideshare companies to university students"
+          }
+        ],
+        "correctOptionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02",
+      "logicalItemId": "reading-rdl-7f0ecb70e33eb9aa07e717d8",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Who would benefit most from using the CampusConnect app?",
+      "rawDisplayText": "24. Who would benefit most from using the CampusConnect app?",
+      "payload": {
+        "materialId": "RDL-058",
+        "options": [
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02-opt-1",
+            "optionOrder": 1,
+            "text": "International tourists visiting large metropolitan areas"
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02-opt-2",
+            "optionOrder": 2,
+            "text": "University students, faculty, and staff who do not own a car"
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Professional city planners designing campus transit systems"
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Students employed part-time as rideshare drivers"
+          }
+        ],
+        "correctOptionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03",
+      "logicalItemId": "reading-rdl-7f0ecb70e33eb9aa07e717d8",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What can be inferred about CampusConnect's notification settings?",
+      "rawDisplayText": "25. What can be inferred about CampusConnect's notification settings?",
+      "payload": {
+        "materialId": "RDL-058",
+        "options": [
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03-opt-1",
+            "optionOrder": 1,
+            "text": "They are identical for all users in order to maintain consistency."
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03-opt-2",
+            "optionOrder": 2,
+            "text": "They are set to a predetermined default profile that cannot be altered by users."
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03-opt-3",
+            "optionOrder": 3,
+            "text": "They are designed to minimize user interaction with unnecessary alerts."
+          },
+          {
+            "optionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03-opt-4",
+            "optionOrder": 4,
+            "text": "They prioritize public transit notifications over rideshare notifications."
+          }
+        ],
+        "correctOptionId": "reading-rdl-7f0ecb70e33eb9aa07e717d8-q03-opt-3"
+      }
+    }
+  ]
+}

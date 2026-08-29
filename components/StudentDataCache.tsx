@@ -29,6 +29,9 @@ export const STUDENT_QUESTIONS_CACHE_PREFIX = "questions";
 export const STUDENT_WRONG_QUESTIONS_CACHE_PREFIX = "wrong-questions";
 export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
 export const STUDENT_ATTEMPT_CACHE_PREFIX = "attempt";
+export const STUDENT_READING_HISTORY_CACHE_PREFIX = "reading:history";
+export const STUDENT_READING_RESULT_CACHE_PREFIX = "reading:result";
+export const STUDENT_READING_CATALOG_CACHE_PREFIX = "reading:catalog";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
 export const STUDENT_WRITING_CATALOG_CACHE_PREFIX = "writing:catalog";
@@ -62,6 +65,14 @@ export function studentQuestionsCacheKey(setId: string) {
 
 export function studentAttemptCacheKey(attemptId: string) {
   return `${STUDENT_ATTEMPT_CACHE_PREFIX}:historical-display-v3:${attemptId}`;
+}
+
+export function studentReadingResultCacheKey(attemptId: string) {
+  return `${STUDENT_READING_RESULT_CACHE_PREFIX}:${attemptId}`;
+}
+
+export function studentReadingCatalogCacheKey(taskType: "ctw" | "rdl" | "rap") {
+  return `${STUDENT_READING_CATALOG_CACHE_PREFIX}:${taskType}`;
 }
 
 export function studentWritingAttemptCacheKey(attemptId: string) {
@@ -156,12 +167,19 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
   const invalidate = useCallback(
     (keyPrefix: string) => {
-      const prefixWithStudent = scopedKey(keyPrefix);
-      if (!prefixWithStudent) return;
+      const linkedPrefixes = keyPrefix.startsWith(STUDENT_READING_CATALOG_CACHE_PREFIX)
+        ? [keyPrefix, STUDENT_DASHBOARD_SUMMARY_CACHE_KEY]
+        : [keyPrefix];
+      const prefixesWithStudent = linkedPrefixes
+        .map((prefix) => scopedKey(prefix))
+        .filter((prefix): prefix is string => Boolean(prefix));
+      if (prefixesWithStudent.length === 0) return;
 
       let changed = false;
       entries.current.forEach((_entry, key) => {
-        if (key === prefixWithStudent || key.startsWith(`${prefixWithStudent}:`)) {
+        if (prefixesWithStudent.some(
+          (prefix) => key === prefix || key.startsWith(`${prefix}:`)
+        )) {
           entries.current.delete(key);
           generations.current.set(key, (generations.current.get(key) ?? 0) + 1);
           changed = true;

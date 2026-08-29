@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+    "module": "rdl",
+    "title": "Greetings from an Eliot fan",
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "ee5ee566c93478bba85e5d67a4d4ba4335a48eba6110a457bc9cc6158cfd559d",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-5b-m1-rdl-05",
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5B",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-008",
+      "title": "Greetings from an Eliot fan",
+      "source": "material-index.json#RDL-008",
+      "sourceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-008/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-008/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01",
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "The main purpose of the email message is to",
+      "rawDisplayText": "23. The main purpose of the email message is to",
+      "payload": {
+        "materialId": "RDL-008",
+        "options": [
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01-opt-1",
+            "optionOrder": 1,
+            "text": "ask about requirements pertaining to independent studies"
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01-opt-2",
+            "optionOrder": 2,
+            "text": "express appreciation to a professor for a course that Alyssa took in the past"
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01-opt-3",
+            "optionOrder": 3,
+            "text": "ask a faculty member for guidance on a research project"
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01-opt-4",
+            "optionOrder": 4,
+            "text": "explain why Alyssa wishes that more classes were offered on a particular novelist"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ee5ee566c93478bba85e5d67-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02",
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Alyssa mentions the length of three of George Eliot’s novels primarily to",
+      "rawDisplayText": "24. Alyssa mentions the length of three of George Eliot’s novels primarily to",
+      "payload": {
+        "materialId": "RDL-008",
+        "options": [
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02-opt-1",
+            "optionOrder": 1,
+            "text": "explain why it may be difficult to complete an assignment she is currently working on"
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02-opt-2",
+            "optionOrder": 2,
+            "text": "cite a reason why there are no courses being offered that assign these novels"
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02-opt-3",
+            "optionOrder": 3,
+            "text": "emphasize that these novels will provide plenty of material for a proposed paper"
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02-opt-4",
+            "optionOrder": 4,
+            "text": "address potential concerns about whether she can finish the reading for a project on time"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ee5ee566c93478bba85e5d67-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03",
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "The email indicates which of the following about Alyssa?",
+      "rawDisplayText": "25. The email indicates which of the following about Alyssa?",
+      "payload": {
+        "materialId": "RDL-008",
+        "options": [
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03-opt-1",
+            "optionOrder": 1,
+            "text": "She has read some biographies of George Eliot."
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03-opt-2",
+            "optionOrder": 2,
+            "text": "She has completed independent research for credit in the past."
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03-opt-3",
+            "optionOrder": 3,
+            "text": "She has previously taken a course taught by Professor Stoll."
+          },
+          {
+            "optionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03-opt-4",
+            "optionOrder": 4,
+            "text": "She was referred to Professor Stoll by another faculty member."
+          }
+        ],
+        "correctOptionId": "reading-rdl-ee5ee566c93478bba85e5d67-q03-opt-3"
+      }
+    }
+  ]
+}

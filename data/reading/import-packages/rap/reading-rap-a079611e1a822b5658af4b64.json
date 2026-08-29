@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+    "module": "rap",
+    "title": "Demographic Dynamics",
+    "firstSeenDate": "2026-06-14",
+    "firstSeenSourceLabel": "6.14",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "a079611e1a822b5658af4b6401f9901f295311c0e27ac1f1bd00605c775794e8",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-14-m1-rap-13",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "sourceKind": "docx",
+      "sourceLabel": "6.14",
+      "occurrenceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.14.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.14_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-a079611e1a822b5658af4b64-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-a079611e1a822b5658af4b64-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-a079611e1a822b5658af4b64-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-a079611e1a822b5658af4b64-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-a079611e1a822b5658af4b64-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-a079611e1a822b5658af4b64-passage-01",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "title": "Demographic Dynamics",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The demographic transition model (DTM) illustrates the shifting patterns of birth and death rates as societies evolve from agrarian to industrialized economies. Initially, both rates are high, resulting in slow population growth due to limited access to healthcare and sanitation. As countries develop, death rates decline sharply with advances in medical care and improved living conditions. Yet, birth rates often remain high, spurring rapid population growth that can strain resources. This transition highlights the tension between demographic momentum and societal capability to meet the growing needs.",
+          "rawText": "The demographic transition model (DTM) illustrates the shifting patterns of birth and death rates as societies evolve from agrarian to industrialized economies. Initially, both rates are high, resulting in slow population growth due to limited access to healthcare and sanitation. As countries develop, death rates decline sharply with advances in medical care and improved living conditions. Yet, birth rates often remain high, spurring rapid population growth that can strain resources. This transition highlights the tension between demographic momentum and societal capability to meet the growing needs. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The demographic transition model (DTM) illustrates the shifting patterns of birth and death rates as societies evolve from agrarian to industrialized economies."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Initially, both rates are high, resulting in slow population growth due to limited access to healthcare and sanitation."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "As countries develop, death rates decline sharply with advances in medical care and improved living conditions."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Yet, birth rates often remain high, spurring rapid population growth that can strain resources."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "This transition highlights the tension between demographic momentum and societal capability to meet the growing needs."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "A further decline in birth rates eventually occurs, influenced by greater access to education and changes in cultural norms. Families begin to view fewer children as advantageous, aligning with shifts toward economic and personal aspirations. However, this stage brings its own challenges, including the potential for an aging population and workforce shortages.",
+          "rawText": "A further decline in birth rates eventually occurs, influenced by greater access to education and changes in cultural norms. ■ Families begin to view fewer children as advantageous, aligning with shifts toward economic and personal aspirations. ■ However, this stage brings its own challenges, including the potential for an aging population and workforce shortages. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "A further decline in birth rates eventually occurs, influenced by greater access to education and changes in cultural norms."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Families begin to view fewer children as advantageous, aligning with shifts toward economic and personal aspirations."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "However, this stage brings its own challenges, including the potential for an aging population and workforce shortages."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Some demographers postulate a fifth stage, characterized by persistently low birth rates that might lead to population contraction. The implications of this are complex, ranging from economic innovation driven by necessity to increased strain on social institutions and intergenerational support systems. Understanding these transitions enables societies to better plan for future demographic realities, though the dynamic interplay of these factors is still unfolding.",
+          "rawText": "Some demographers postulate a fifth stage, characterized by persistently low birth rates that might lead to population contraction. The implications of this are complex, ranging from economic innovation driven by necessity to increased strain on social institutions and intergenerational support systems. Understanding these transitions enables societies to better plan for future demographic realities, though the dynamic interplay of these factors is still unfolding.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Some demographers postulate a fifth stage, characterized by persistently low birth rates that might lead to population contraction."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "The implications of this are complex, ranging from economic innovation driven by necessity to increased strain on social institutions and intergenerational support systems."
+            },
+            {
+              "sentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Understanding these transitions enables societies to better plan for future demographic realities, though the dynamic interplay of these factors is still unfolding."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-a079611e1a822b5658af4b64-q01",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to paragraph 1, what does the demographic transition model primarily demonstrate?",
+      "rawDisplayText": "31. According to paragraph 1, what does the demographic transition model primarily demonstrate?",
+      "payload": {
+        "passageId": "reading-rap-a079611e1a822b5658af4b64-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Decreasing birth rates as societies industrialize"
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Changing rates of birth and death as economies develop"
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Differences in healthcare access among societies"
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Consequences of rising death rates in industrial societies"
+          }
+        ],
+        "correctOptionId": "reading-rap-a079611e1a822b5658af4b64-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-a079611e1a822b5658af4b64-q02",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following can be inferred about agrarian societies?",
+      "rawDisplayText": "32. Which of the following can be inferred about agrarian societies?",
+      "payload": {
+        "passageId": "reading-rap-a079611e1a822b5658af4b64-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They are more prosperous than industrialized societies."
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They are an exception to the trends proposed by the demographic transition model."
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They experience high birth rates and also high death rates."
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They suffer sharp population declines as a result of high death rates."
+          }
+        ],
+        "correctOptionId": "reading-rap-a079611e1a822b5658af4b64-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-a079611e1a822b5658af4b64-q03",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"aspirations\" in the passage is closest in meaning to",
+      "rawDisplayText": "33. The word \"aspirations\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-a079611e1a822b5658af4b64-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q03-opt-1",
+            "optionOrder": 1,
+            "text": "goals"
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q03-opt-2",
+            "optionOrder": 2,
+            "text": "resources"
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q03-opt-3",
+            "optionOrder": 3,
+            "text": "changes"
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q03-opt-4",
+            "optionOrder": 4,
+            "text": "challenges"
+          }
+        ],
+        "correctOptionId": "reading-rap-a079611e1a822b5658af4b64-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-a079611e1a822b5658af4b64-q04",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following is NOT mentioned about low birth rates?",
+      "rawDisplayText": "34. Which of the following is NOT mentioned about low birth rates?",
+      "payload": {
+        "passageId": "reading-rap-a079611e1a822b5658af4b64-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Sustained low birth rates result in negative population growth."
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Demographic changes brought about by low birth rates can lead to societal tensions."
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Persistently low birth rates typically lead to economic decline."
+          },
+          {
+            "optionId": "reading-rap-a079611e1a822b5658af4b64-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Understanding demographic transitions linked to low birth rates helps societies plan for the future."
+          }
+        ],
+        "correctOptionId": "reading-rap-a079611e1a822b5658af4b64-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-a079611e1a822b5658af4b64-q05",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-a079611e1a822b5658af4b64-passage-01",
+        "insertSentence": "As societies navigate this demographic shift, proactive policies and innovations become essential to sustain economic growth and promote well-being among older adults.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-a079611e1a822b5658af4b64-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p01-s05"
+          },
+          {
+            "anchorId": "reading-rap-a079611e1a822b5658af4b64-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02-s01"
+          },
+          {
+            "anchorId": "reading-rap-a079611e1a822b5658af4b64-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02-s02"
+          },
+          {
+            "anchorId": "reading-rap-a079611e1a822b5658af4b64-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-a079611e1a822b5658af4b64-q05-anchor-4"
+      }
+    }
+  ]
+}

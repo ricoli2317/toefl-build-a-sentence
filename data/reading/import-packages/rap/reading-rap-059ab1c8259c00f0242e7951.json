@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+    "module": "rap",
+    "title": "Data Science and the Buildings of Tomorrow",
+    "firstSeenDate": "2026-06-17",
+    "firstSeenSourceLabel": "6.17",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "059ab1c8259c00f0242e7951ccff0ba852c0185b4713b58e9f04b06ae5930158",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-17-m2-rap-19",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "sourceKind": "docx",
+      "sourceLabel": "6.17",
+      "occurrenceDate": "2026-06-17",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.17_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-059ab1c8259c00f0242e7951-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-059ab1c8259c00f0242e7951-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-059ab1c8259c00f0242e7951-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-059ab1c8259c00f0242e7951-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-059ab1c8259c00f0242e7951-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-059ab1c8259c00f0242e7951-passage-01",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "title": "Data Science and the Buildings of Tomorrow",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Once static structures, buildings increasingly function as dynamic systems thanks to applications of data science to the built environment. Building data science uses sensors and Internet of Things (IoT) devices, such as smart thermostats, to collect and interpret data from buildings. This approach enables architects and planners to make informed decisions throughout a building's design, operation, and renovation phases.",
+          "rawText": "Once static structures, buildings increasingly function as dynamic systems thanks to applications of data science to the built environment. Building data science uses sensors and Internet of Things (IoT) devices, such as smart thermostats, to collect and interpret data from buildings. This approach enables architects and planners to make informed decisions throughout a building's design, operation, and renovation phases.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Once static structures, buildings increasingly function as dynamic systems thanks to applications of data science to the built environment."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Building data science uses sensors and Internet of Things (IoT) devices, such as smart thermostats, to collect and interpret data from buildings."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This approach enables architects and planners to make informed decisions throughout a building's design, operation, and renovation phases."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Sensors embedded in modern buildings track variables such as energy consumption, temperature, air quality, and occupancy patterns. These insights help optimize energy use, reduce operational costs, and enhance comfort. Smart HVAC (heating, ventilation, and air-conditioning) systems can adjust airflow based on real-time occupancy, improving efficiency. Monitoring space usage may conflict, however, with occupants' privacy concerns and dislike of being tracked without their consent.",
+          "rawText": "Sensors embedded in modern buildings track variables such as energy consumption, temperature, air quality, and occupancy patterns. These insights help optimize energy use, reduce operational costs, and enhance comfort. Smart HVAC (heating, ventilation, and air-conditioning) systems can adjust airflow based on real-time occupancy, improving efficiency. Monitoring space usage may conflict, however, with occupants' privacy concerns and dislike of being tracked without their consent.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Sensors embedded in modern buildings track variables such as energy consumption, temperature, air quality, and occupancy patterns."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "These insights help optimize energy use, reduce operational costs, and enhance comfort."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Smart HVAC (heating, ventilation, and air-conditioning) systems can adjust airflow based on real-time occupancy, improving efficiency."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Monitoring space usage may conflict, however, with occupants' privacy concerns and dislike of being tracked without their consent."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Despite high initial costs, building data science offers long-term benefits. Studies show that buildings using these systems can reduce energy consumption by up to 30 percent, making them attractive for sustainable development. As urban populations grow, building data science will be key to creating adaptable spaces. A skyscraper that adjusts its internal climate based on external weather conditions exemplifies this potential. Other applications include optimizing the layouts of hospitals for better patient flow or using occupancy data to redesign underutilized office spaces.",
+          "rawText": "Despite high initial costs, building data science offers long-term benefits. Studies show that buildings using these systems can reduce energy consumption by up to 30 percent, making them attractive for sustainable development. As urban populations grow, building data science will be key to creating adaptable spaces. A skyscraper that adjusts its internal climate based on external weather conditions exemplifies this potential. Other applications include optimizing the layouts of hospitals for better patient flow or using occupancy data to redesign underutilized office spaces.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Despite high initial costs, building data science offers long-term benefits."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Studies show that buildings using these systems can reduce energy consumption by up to 30 percent, making them attractive for sustainable development."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "As urban populations grow, building data science will be key to creating adaptable spaces."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "A skyscraper that adjusts its internal climate based on external weather conditions exemplifies this potential."
+            },
+            {
+              "sentenceId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03-s05",
+              "sentenceOrder": 5,
+              "text": "Other applications include optimizing the layouts of hospitals for better patient flow or using occupancy data to redesign underutilized office spaces."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q01",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"static\" in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word \"static\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-059ab1c8259c00f0242e7951-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q01-opt-1",
+            "optionOrder": 1,
+            "text": "impractical"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q01-opt-2",
+            "optionOrder": 2,
+            "text": "unchanging"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q01-opt-3",
+            "optionOrder": 3,
+            "text": "simple"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q01-opt-4",
+            "optionOrder": 4,
+            "text": "wasteful"
+          }
+        ],
+        "correctOptionId": "reading-rap-059ab1c8259c00f0242e7951-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q02",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage indicates all of the following about building data science EXCEPT:",
+      "rawDisplayText": "12. The passage indicates all of the following about building data science EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-059ab1c8259c00f0242e7951-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It uses data collected from Internet of Things devices."
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It requires special training in data analysis for architects who use it."
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It has an impact on how architects design new buildings."
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It can be used as a basis for decisions about a building's operations."
+          }
+        ],
+        "correctOptionId": "reading-rap-059ab1c8259c00f0242e7951-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q03",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is one drawback of the use of sensors?",
+      "rawDisplayText": "13. According to the passage, what is one drawback of the use of sensors?",
+      "payload": {
+        "passageId": "reading-rap-059ab1c8259c00f0242e7951-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Sensors are known for supplying inaccurate data."
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Sensors lead to greater energy use."
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The data collected is frequently hard to interpret."
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Some building occupants may not approve of their use."
+          }
+        ],
+        "correctOptionId": "reading-rap-059ab1c8259c00f0242e7951-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q04",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention \"hospitals\" and \"office spaces\"?",
+      "rawDisplayText": "14. Why does the author mention \"hospitals\" and \"office spaces\"?",
+      "payload": {
+        "passageId": "reading-rap-059ab1c8259c00f0242e7951-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To give examples of city structures that are often poorly designed"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To demonstrate how building data science can improve urban infrastructure"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To show the limitations of building data science"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To contradict the claim that building data science will be key to creating adaptable spaces"
+          }
+        ],
+        "correctOptionId": "reading-rap-059ab1c8259c00f0242e7951-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q05",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "Based on the passage, building data science can help most with which of the following?",
+      "rawDisplayText": "15. Based on the passage, building data science can help most with which of the following?",
+      "payload": {
+        "passageId": "reading-rap-059ab1c8259c00f0242e7951-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q05-opt-1",
+            "optionOrder": 1,
+            "text": "Increasing a building's office space"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q05-opt-2",
+            "optionOrder": 2,
+            "text": "Limiting a building's construction costs"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q05-opt-3",
+            "optionOrder": 3,
+            "text": "Reducing a building's environmental impact"
+          },
+          {
+            "optionId": "reading-rap-059ab1c8259c00f0242e7951-q05-opt-4",
+            "optionOrder": 4,
+            "text": "Enhancing a building's visual appeal"
+          }
+        ],
+        "correctOptionId": "reading-rap-059ab1c8259c00f0242e7951-q05-opt-3"
+      }
+    }
+  ]
+}

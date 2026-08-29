@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+    "module": "rap",
+    "title": "Magnetic Confinement Fusion",
+    "firstSeenDate": "2026-06-06",
+    "firstSeenSourceLabel": "6.6A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "44052a9cdd0f99d094526a4b56dd9fa34d76ae5ed25009e2aaf6486d9fc221b5",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-6a-m2-rap-19",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.6A",
+      "occurrenceDate": "2026-06-06",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "title": "Magnetic Confinement Fusion",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Magnetic confinement fusion is a promising approach for generating clean electricity. This technology fuses deuterium and tritium, heavy forms of hydrogen, to release energy while producing minimal radioactive waste when compared to current technologies to produce nuclear power. The basic principle was first demonstrated in 1957: powerful magnetic fields contain extremely hot plasma at temperatures reaching 150 million degrees Celsius—ten times hotter than the sun's core. Without magnetic containment, the plasma would instantly cool upon touching reactor walls, halting the fusion process.",
+          "rawText": "Magnetic confinement fusion is a promising approach for generating clean electricity. This technology fuses deuterium and tritium, heavy forms of hydrogen, to release energy while producing minimal radioactive waste when compared to current technologies to produce nuclear power. The basic principle was first demonstrated in 1957: powerful magnetic fields contain extremely hot plasma at temperatures reaching 150 million degrees Celsius—ten times hotter than the sun's core. Without magnetic containment, the plasma would instantly cool upon touching reactor walls, halting the fusion process.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Magnetic confinement fusion is a promising approach for generating clean electricity."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "This technology fuses deuterium and tritium, heavy forms of hydrogen, to release energy while producing minimal radioactive waste when compared to current technologies to produce nuclear power."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "The basic principle was first demonstrated in 1957: powerful magnetic fields contain extremely hot plasma at temperatures reaching 150 million degrees Celsius—ten times hotter than the sun's core."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Without magnetic containment, the plasma would instantly cool upon touching reactor walls, halting the fusion process."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Since those early breakthroughs, researchers have built increasingly sophisticated magnetic confinement reactors called tokamaks. The International Thermonuclear Experimental Reactor (ITER), currently under construction, represents the culmination of decades of magnetic confinement research. ITER aims to demonstrate sustained fusion reactions that produce more energy than they consume—a critical milestone called net energy gain.",
+          "rawText": "Since those early breakthroughs, researchers have built increasingly sophisticated magnetic confinement reactors called tokamaks. The International Thermonuclear Experimental Reactor (ITER), currently under construction, represents the culmination of decades of magnetic confinement research. ITER aims to demonstrate sustained fusion reactions that produce more energy than they consume—a critical milestone called net energy gain.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Since those early breakthroughs, researchers have built increasingly sophisticated magnetic confinement reactors called tokamaks."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "The International Thermonuclear Experimental Reactor (ITER), currently under construction, represents the culmination of decades of magnetic confinement research."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "ITER aims to demonstrate sustained fusion reactions that produce more energy than they consume—a critical milestone called net energy gain."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "However, significant challenges remain before magnetic fusion can generate commercial electricity. Current experiments require enormous energy inputs to maintain plasma conditions, and the intense neutron radiation gradually damages reactor materials. Additionally, converting fusion energy into usable electricity requires developing efficient heat-to-power conversion systems. Despite these obstacles, successful demonstration of net energy gain could pave the way for fusion power plants in the 2040s.",
+          "rawText": "However, significant challenges remain before magnetic fusion can generate commercial electricity. Current experiments require enormous energy inputs to maintain plasma conditions, and the intense neutron radiation gradually damages reactor materials. Additionally, converting fusion energy into usable electricity requires developing efficient heat-to-power conversion systems. Despite these obstacles, successful demonstration of net energy gain could pave the way for fusion power plants in the 2040s.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "However, significant challenges remain before magnetic fusion can generate commercial electricity."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Current experiments require enormous energy inputs to maintain plasma conditions, and the intense neutron radiation gradually damages reactor materials."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Additionally, converting fusion energy into usable electricity requires developing efficient heat-to-power conversion systems."
+            },
+            {
+              "sentenceId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Despite these obstacles, successful demonstration of net energy gain could pave the way for fusion power plants in the 2040s."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q01",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what significant achievement in fusion research occurred in 1957?",
+      "rawDisplayText": "11. According to the passage, what significant achievement in fusion research occurred in 1957?",
+      "payload": {
+        "passageId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Researchers successfully fused deuterium and tritium atoms for the first time."
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Researchers demonstrated that magnetic fields could contain extremely hot plasma."
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Researchers estimated the temperature of the sun's core to be 150 million degrees Celsius."
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Researchers discovered the basic principle that explains the existence of heavy forms of hydrogen."
+          }
+        ],
+        "correctOptionId": "reading-rap-44052a9cdd0f99d094526a4b-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q02",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention plasma touching reactor walls?",
+      "rawDisplayText": "12. Why does the author mention plasma touching reactor walls?",
+      "payload": {
+        "passageId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To explain how the plasma is contained within the reactor"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To point out how researchers cool plasma after heating it for experiments"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To demonstrate the final step in achieving nuclear fusion"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To clarify why magnetic confinement techniques are necessary"
+          }
+        ],
+        "correctOptionId": "reading-rap-44052a9cdd0f99d094526a4b-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q03",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"sophisticated\" in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word \"sophisticated\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q03-opt-1",
+            "optionOrder": 1,
+            "text": "advanced"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q03-opt-2",
+            "optionOrder": 2,
+            "text": "large"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q03-opt-3",
+            "optionOrder": 3,
+            "text": "expensive"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q03-opt-4",
+            "optionOrder": 4,
+            "text": "successful"
+          }
+        ],
+        "correctOptionId": "reading-rap-44052a9cdd0f99d094526a4b-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q04",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is ITER's primary objective?",
+      "rawDisplayText": "14. According to the passage, what is ITER's primary objective?",
+      "payload": {
+        "passageId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To generate commercial electricity for distribution to power grids"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To demonstrate that magnetic confinement techniques are not environmentally sustainable"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To prove that fusion reactions can produce more energy than they consume"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To challenge decades of magnetic confinement research"
+          }
+        ],
+        "correctOptionId": "reading-rap-44052a9cdd0f99d094526a4b-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q05",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following is mentioned as one factor that currently prevents magnetic fusion from generating commercial electricity?",
+      "rawDisplayText": "15. Which of the following is mentioned as one factor that currently prevents magnetic fusion from generating commercial electricity?",
+      "payload": {
+        "passageId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q05-opt-1",
+            "optionOrder": 1,
+            "text": "Insufficient global supplies of reactor materials"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q05-opt-2",
+            "optionOrder": 2,
+            "text": "Inability to achieve intense neutron radiation"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q05-opt-3",
+            "optionOrder": 3,
+            "text": "High energy demands for plasma maintenance"
+          },
+          {
+            "optionId": "reading-rap-44052a9cdd0f99d094526a4b-q05-opt-4",
+            "optionOrder": 4,
+            "text": "Lack of magnetic fields that are powerful enough"
+          }
+        ],
+        "correctOptionId": "reading-rap-44052a9cdd0f99d094526a4b-q05-opt-3"
+      }
+    }
+  ]
+}

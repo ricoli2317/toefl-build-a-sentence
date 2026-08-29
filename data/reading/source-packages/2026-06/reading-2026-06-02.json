@@ -1,0 +1,1584 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.2",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Oceanography is the study of the physical, chemical, and biological aspects of the ocean. This fi_ _ _ encompasses t_ _ exploration o_ ocean curr_ _ _ _, marine ecosy_ _ _ _ _, and geolo_ _ _ _ _ seabed struc_ _ _ _ _. Oceanographers u_ _ satellites a_ _ other adva_ _ _ _ technology to monitor and analyze ocean conditions. By tracking sea surface temperatures, currents, salinity, and other features, researchers contribute to our understanding of climate change. Their work is vital for sustaining ocean health and preserving marine biodiversity.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Oceanography is the study of the physical, chemical, and biological aspects of the ocean. This fi_ _ _ encompasses t_ _ exploration o_ ocean curr_ _ _ _, marine ecosy_ _ _ _ _, and geolo_ _ _ _ _ seabed struc_ _ _ _ _. Oceanographers u_ _ satellites a_ _ other adva_ _ _ _ technology to monitor and analyze ocean conditions. By tracking sea surface temperatures, currents, salinity, and other features, researchers contribute to our understanding of climate change. Their work is vital for sustaining ocean health and preserving marine biodiversity.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Oceanography is the study of the physical, chemical, and biological aspects of the ocean. This "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " encompasses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " exploration "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ocean "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", marine "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " seabed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Oceanographers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " satellites "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " other "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " technology to monitor and analyze ocean conditions. By tracking sea surface temperatures, currents, salinity, and other features, researchers contribute to our understanding of climate change. Their work is vital for sustaining ocean health and preserving marine biodiversity."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "field",
+                "prefix": "fi",
+                "displayText": "fi_ _ _",
+                "missingText": "eld",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "currents",
+                "prefix": "curr",
+                "displayText": "curr_ _ _ _",
+                "missingText": "ents",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "ecosystems",
+                "prefix": "ecosy",
+                "displayText": "ecosy_ _ _ _ _",
+                "missingText": "stems",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "geological",
+                "prefix": "geolo",
+                "displayText": "geolo_ _ _ _ _",
+                "missingText": "gical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "structures",
+                "prefix": "struc",
+                "displayText": "struc_ _ _ _ _",
+                "missingText": "tures",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "use",
+                "prefix": "u",
+                "displayText": "u_ _",
+                "missingText": "se",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-02-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-02-m1-ctw-q11-20-p01",
+                "answer": "advanced",
+                "prefix": "adva",
+                "displayText": "adva_ _ _ _",
+                "missingText": "nced",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m1-rdl-02",
+      "module": "rdl",
+      "title": "Library Hours and guidelines",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-061",
+          "title": "Library Hours and guidelines",
+          "source": "material-index.json#RDL-061",
+          "sourceDate": "2026-06-02",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-061/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-061/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Which activity is not permitted at the library?",
+          "rawDisplayText": "21. Which activity is not permitted at the library?",
+          "payload": {
+            "materialId": "RDL-061",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Making online purchases using a library computer"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Studying for exams"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Drinking water in designated zones"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Bringing personal belongings"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the library?",
+          "rawDisplayText": "22. What can be inferred about the library?",
+          "payload": {
+            "materialId": "RDL-061",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "It has a designated room for cell phone use"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "It has printers available for the public."
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "It allows food and drinks."
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "It hosts special events on Saturdays."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m1-rdl-04",
+      "module": "rdl",
+      "title": "Japan Study Abroad Program",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 4,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-062",
+          "title": "Japan Study Abroad Program",
+          "source": "material-index.json#RDL-062",
+          "sourceDate": "2026-06-02",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-062/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-062/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the webpage?",
+          "rawDisplayText": "23. What is the main purpose of the webpage?",
+          "payload": {
+            "materialId": "RDL-062",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "To encourage Japanese students to study abroad"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "To attract young travelers to Japanese tourist destinations"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "To advertise an academic program in Japan for foreigners"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "To encourage students to learn Japanese online"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Identify the sentence that highlights Japan's image.",
+          "rawDisplayText": "24. Identify the sentence that highlights Japan's image.",
+          "payload": {
+            "materialId": "RDL-062",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "A"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "B"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "C"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "D"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is true of the courses offered by the Japan SAP?",
+          "rawDisplayText": "25. What is true of the courses offered by the Japan SAP?",
+          "payload": {
+            "materialId": "RDL-062",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "Their focus is Japanese language and culture."
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "They emphasize Japan's role on the modern global stage."
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "They are taught by students and local experts."
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "They include a range of subjects taught in a variety of locations."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m1-rap-07",
+      "module": "rap",
+      "title": "Quantum Computing",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-02-m1-rap-p01",
+          "title": "Quantum Computing",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-02-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power. Traditional computers store data in binary bits, representing 0 or 1. Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition). This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers.",
+              "rawText": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power. Traditional computers store data in binary bits, representing 0 or 1. Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition). This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Quantum computing promises to revolutionize technology by delivering unprecedented computational power."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Traditional computers store data in binary bits, representing 0 or 1."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Quantum computers use qubits, which can represent 0, 1, or both simultaneously (a state called superposition)."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This allows quantum computers to process vast amounts of data simultaneously, solving complex problems much faster than classical computers."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-02-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages. Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break. Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques. Researchers are exploring such methods to secure data in a post-quantum world.",
+              "rawText": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages. Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break. Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques. Researchers are exploring such methods to secure data in a post-quantum world.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Quantum computing has promising applications in cryptography—techniques for encoding and decoding messages."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Current encryption (encoding) methods rely on complex algorithms that classical computers struggle to break."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Quantum computers could potentially break these encryption algorithms with ease, requiring new, quantum-resistant techniques."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Researchers are exploring such methods to secure data in a post-quantum world."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-02-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances. Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations. Despite the challenges, progress is accelerating. Scientists are developing error-correcting codes and stable qubit designs to address these issues. Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence.",
+              "rawText": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances. ■ Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations. ■ Despite the challenges, progress is accelerating. ■ Scientists are developing error-correcting codes and stable qubit designs to address these issues. ■ Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "One challenge to fully realizing quantum computing is that qubits are highly sensitive to external disturbances."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Maintaining coherence, the state needed by qubits to perform calculations, requires extremely low temperatures and isolation from environmental noise, such as magnetic or electric field fluctuations."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Despite the challenges, progress is accelerating."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Scientists are developing error-correcting codes and stable qubit designs to address these issues."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "Quantum computing holds promise for advancements in fields like medicine, finance, and artificial intelligence."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"revolutionize\" in the passage is closest in meaning to",
+          "rawDisplayText": "26. The word \"revolutionize\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "simplify"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "transform"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "study"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "use"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss binary bits and qubits?",
+          "rawDisplayText": "27. Why does the author discuss binary bits and qubits?",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "To explain why quantum computers are more powerful than classical computers are"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "To discuss the two ways in which quantum computers store data"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "To emphasize the fast pace at which computing technology is advancing"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "To explain what causes the state of superposition"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q27-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, new encryption techniques are needed in the post-quantum world because",
+          "rawDisplayText": "28. According to the passage, new encryption techniques are needed in the post-quantum world because",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "quantum computers are less secure"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "quantum computers store more valuable data than classical computers do"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "quantum computers can break existing encryption"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "quantum computers cannot process current encryption algorithms"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q28-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"external disturbances\"?",
+          "rawDisplayText": "29. Why does the author mention \"external disturbances\"?",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "To point out that qubits can only function in certain environmental conditions"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "To introduce a similarity between quantum computing and traditional computing"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "To explain how quantum computing creates unwanted fluctuations in magnetic or electric fields"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that quantum computing can be prohibitively expensive"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p01",
+            "insertSentence": "Seeing progress, companies and governments have begun to invest heavily in quantum research, aiming to unlock its potential.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-02-m1-q30-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-02-m1-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-02-m1-q30-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-02-m1-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-02-m1-q30-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-02-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p01-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-02-m1-q30-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-02-m1-rap-p01-p03",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p01-p03-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-02-m1-q30-anchor-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m1-rap-12",
+      "module": "rap",
+      "title": "The Flynn Effect",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 12,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-02-m1-rap-p02",
+          "title": "The Flynn Effect",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-02-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Researchers have observed a phenomenon known as the Flynn Effect: a consistent increase in Intelligence Quotient (IQ) scores from one generation to the next. This trend, named after intelligence researcher James Flynn, shows that average IQ scores have risen by about three points per decade in many parts of the world.",
+              "rawText": "Researchers have observed a phenomenon known as the Flynn Effect: a consistent increase in Intelligence Quotient (IQ) scores from one generation to the next. This trend, named after intelligence researcher James Flynn, shows that average IQ scores have risen by about three points per decade in many parts of the world.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Researchers have observed a phenomenon known as the Flynn Effect: a consistent increase in Intelligence Quotient (IQ) scores from one generation to the next."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This trend, named after intelligence researcher James Flynn, shows that average IQ scores have risen by about three points per decade in many parts of the world."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-02-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Various theories have been proposed to explain this trend. One hypothesis is that improvements in nutrition and healthcare have enhanced brain development, leading to higher IQ scores. Another theory suggests that the complexity of modern life, with its increased cognitive demands, has driven this rise. The widespread use of technology and a more stimulating environment could also be contributing factors.",
+              "rawText": "Various theories have been proposed to explain this trend. One hypothesis is that improvements in nutrition and healthcare have enhanced brain development, leading to higher IQ scores. Another theory suggests that the complexity of modern life, with its increased cognitive demands, has driven this rise. The widespread use of technology and a more stimulating environment could also be contributing factors.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Various theories have been proposed to explain this trend."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "One hypothesis is that improvements in nutrition and healthcare have enhanced brain development, leading to higher IQ scores."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Another theory suggests that the complexity of modern life, with its increased cognitive demands, has driven this rise."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "The widespread use of technology and a more stimulating environment could also be contributing factors."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-02-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "However, the Flynn Effect does not necessarily indicate that people are becoming more intelligent. Some researchers argue that the rise in IQ scores reflects better test-taking skills or familiarity with the types of tasks presented in IQ tests, rather than a genuine increase in cognitive abilities. Recent studies have shown that the Flynn Effect may be slowing down or even reversing in some countries, challenging the notion of a universal and perpetual increase in intelligence.",
+              "rawText": "■ However, the Flynn Effect does not necessarily indicate that people are becoming more intelligent. ■ Some researchers argue that the rise in IQ scores reflects better test-taking skills or familiarity with the types of tasks presented in IQ tests, rather than a genuine increase in cognitive abilities. ■ Recent studies have shown that the Flynn Effect may be slowing down or even reversing in some countries, challenging the notion of a universal and perpetual increase in intelligence. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, the Flynn Effect does not necessarily indicate that people are becoming more intelligent."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some researchers argue that the rise in IQ scores reflects better test-taking skills or familiarity with the types of tasks presented in IQ tests, rather than a genuine increase in cognitive abilities."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Recent studies have shown that the Flynn Effect may be slowing down or even reversing in some countries, challenging the notion of a universal and perpetual increase in intelligence."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"consistent\" in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word \"consistent\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "rapid"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "steady"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "large"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "impressive"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are mentioned in the passage as possible contributors to the trend of IQ scores EXCEPT",
+          "rawDisplayText": "32. All of the following are mentioned in the passage as possible contributors to the trend of IQ scores EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "better eating habits and medical care"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "improvements in parental care"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "the cognitive demands of contemporary life"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "the extensive use of technology"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to some researchers, the Flynn Effect may be a sign",
+          "rawDisplayText": "33. According to some researchers, the Flynn Effect may be a sign",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "people are becoming better at taking tests!"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "IQ tests have become easier over time"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "test-takers thrive in stimulating environments"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "school systems have developed better examinations"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q33-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention that the Flynn Effect may be slowing down or reversing in some countries?",
+          "rawDisplayText": "34. Why does the author mention that the Flynn Effect may be slowing down or reversing in some countries?",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that there may not be a global increase in intelligence"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "To argue that cognitive abilities are declining around the world"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "To show that the Flynn Effect requires further research"
+              },
+              {
+                "optionId": "reading-2026-06-02-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "To argue that the challenges of modern life can have negative effects on intelligence"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-02-m1-rap-p02",
+            "insertSentence": "Changes in educational practices or shifts in societal values could account for the downturn.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-02-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-02-m1-rap-p02-p03",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-06-02-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-02-m1-rap-p02-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p02-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-02-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-02-m1-rap-p02-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p02-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-02-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-02-m1-rap-p02-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-02-m1-rap-p02-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-02-m1-q35-anchor-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m2-ctw-17",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 17,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Logical reasoning is a cornerstone of academic methodology, providing a structured approach to analyzing arguments and evidence. Deductive reas_ _ _ _ _ starts wi_ _ general princ_ _ _ _ _ and der_ _ _ _ specific concl_ _ _ _ _ _, while indu_ _ _ _ _ thinking invo_ _ _ _ drawing br_ _ _ generalizations fr_ _ specific observ_ _ _ _ _ _. Critical thinking skills enable scholars to identify logical fallacies, assess the credibility of sources, and construct coherent arguments. The application of logic extends across disciplines, from mathematics to philosophy to the natural sciences. Developing proficiency in logical reasoning enhances the ability to solve complex problems and communicate effectively, fostering intellectual rigor and innovation.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Logical reasoning is a cornerstone of academic methodology, providing a structured approach to analyzing arguments and evidence. Deductive reas_ _ _ _ _ starts wi_ _ general princ_ _ _ _ _ and der_ _ _ _ specific concl_ _ _ _ _ _, while indu_ _ _ _ _ thinking invo_ _ _ _ drawing br_ _ _ generalizations fr_ _ specific observ_ _ _ _ _ _. Critical thinking skills enable scholars to identify logical fallacies, assess the credibility of sources, and construct coherent arguments. The application of logic extends across disciplines, from mathematics to philosophy to the natural sciences. Developing proficiency in logical reasoning enhances the ability to solve complex problems and communicate effectively, fostering intellectual rigor and innovation.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Logical reasoning is a cornerstone of academic methodology, providing a structured approach to analyzing arguments and evidence. Deductive "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " starts "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " general "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " specific "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", while "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " thinking "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " drawing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " generalizations "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " specific "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Critical thinking skills enable scholars to identify logical fallacies, assess the credibility of sources, and construct coherent arguments. The application of logic extends across disciplines, from mathematics to philosophy to the natural sciences. Developing proficiency in logical reasoning enhances the ability to solve complex problems and communicate effectively, fostering intellectual rigor and innovation."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "reasoning",
+                "prefix": "reas",
+                "displayText": "reas_ _ _ _ _",
+                "missingText": "oning",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "with",
+                "prefix": "wi",
+                "displayText": "wi_ _",
+                "missingText": "th",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "principles",
+                "prefix": "princ",
+                "displayText": "princ_ _ _ _ _",
+                "missingText": "iples",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "derives",
+                "prefix": "der",
+                "displayText": "der_ _ _ _",
+                "missingText": "ives",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "conclusions",
+                "prefix": "concl",
+                "displayText": "concl_ _ _ _ _ _",
+                "missingText": "usions",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "inductive",
+                "prefix": "indu",
+                "displayText": "indu_ _ _ _ _",
+                "missingText": "ctive",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "involves",
+                "prefix": "invo",
+                "displayText": "invo_ _ _ _",
+                "missingText": "lves",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "broad",
+                "prefix": "br",
+                "displayText": "br_ _ _",
+                "missingText": "oad",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "from",
+                "prefix": "fr",
+                "displayText": "fr_ _",
+                "missingText": "om",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-02-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-02-m2-ctw-q01-10-p01",
+                "answer": "observations",
+                "prefix": "observ",
+                "displayText": "observ_ _ _ _ _ _",
+                "missingText": "ations",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-2-m2-rap-18",
+      "module": "rap",
+      "title": "The Power of Music",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.2",
+        "occurrenceDate": "2026-06-02",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-02-m2-rap-p01",
+          "title": "The Power of Music",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-02-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Music is often hailed as a universal language. Philosophers and neuroscientists alike have explored music's power to convey emotions without words. While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions. This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression.",
+              "rawText": "Music is often hailed as a universal language. Philosophers and neuroscientists alike have explored music's power to convey emotions without words. While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions. This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Music is often hailed as a universal language."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Philosophers and neuroscientists alike have explored music's power to convey emotions without words."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-02-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Historically, figures like the ancient Greek philosopher Aristotle argued for music's ethical influence, positing that different musical modes could either promote virtue or incite vice. Modern research, however, leans toward music's role in emotional regulation rather than moral alteration. Researchers have investigated how music interacts with human psychology beyond mere enjoyment. For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music's therapeutic potential.",
+              "rawText": "Historically, figures like the ancient Greek philosopher Aristotle argued for music's ethical influence, positing that different musical modes could either promote virtue or incite vice. Modern research, however, leans toward music's role in emotional regulation rather than moral alteration. Researchers have investigated how music interacts with human psychology beyond mere enjoyment. For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music's therapeutic potential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Historically, figures like the ancient Greek philosopher Aristotle argued for music's ethical influence, positing that different musical modes could either promote virtue or incite vice."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Modern research, however, leans toward music's role in emotional regulation rather than moral alteration."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Researchers have investigated how music interacts with human psychology beyond mere enjoyment."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music's therapeutic potential."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-02-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts. Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression. This universality has sparked inquiries into music's evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development.",
+              "rawText": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts. Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression. This universality has sparked inquiries into music's evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression."
+                },
+                {
+                  "sentenceId": "reading-2026-06-02-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "This universality has sparked inquiries into music's evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-02-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"interplay\" in the passage is closest in meaning to",
+          "rawDisplayText": "11. The word \"interplay\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-02-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "interaction"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "interpretation"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "interval"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "intervention"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m2-q11-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "It can be inferred that music is similar to language in that music",
+          "rawDisplayText": "12. It can be inferred that music is similar to language in that music",
+          "payload": {
+            "passageId": "reading-2026-06-02-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "matches the precision of written language"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "has rules that are very similar to the rules of spoken language"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "engages only those areas of the brain that language engages"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "is a medium of expression that conveys complex emotions"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention ancient Greek philosopher Aristotle?",
+          "rawDisplayText": "13. Why does the author mention ancient Greek philosopher Aristotle?",
+          "payload": {
+            "passageId": "reading-2026-06-02-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "To point out that music was once thought to have a significant moral influence"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "To support the point that music is a powerful tool for emotional regulation"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "To suggest that ancient philosophers had a more nuanced understanding of music than modern researchers do"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "To identify the person who founded the academic field known as music theory"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"patients before surgery\"?",
+          "rawDisplayText": "14. Why does the author mention \"patients before surgery\"?",
+          "payload": {
+            "passageId": "reading-2026-06-02-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To demonstrate that the ancient Greek understanding of music was incorrect"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To argue that emotional states affect the enjoyment of music"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To provide an example of how music regulates emotions"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that slow-tempo classical music can lead to anxiety"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-02-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, the existence of an innate human aptitude for musical expression suggests that",
+          "rawDisplayText": "15. According to the passage, the existence of an innate human aptitude for musical expression suggests that",
+          "payload": {
+            "passageId": "reading-2026-06-02-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-02-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "music should only be seen as a form of art"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "music may have played an important role in human development"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "music that expresses joy is more universally appreciated than music that expresses sorrow"
+              },
+              {
+                "optionId": "reading-2026-06-02-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "music is not understood in the same way across different cultures"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-02-m2-q15-opt-2"
+          }
+        }
+      ]
+    }
+  ]
+}

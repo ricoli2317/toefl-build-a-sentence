@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-abbaa31d86752b3354e340c3",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-31",
+    "firstSeenSourceLabel": "5.31",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "abbaa31d86752b3354e340c368d566a9285c8ed4a3cf125206180efd1d67fa31",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-31-m2-ctw-18",
+      "logicalItemId": "reading-ctw-abbaa31d86752b3354e340c3",
+      "sourceKind": "docx",
+      "sourceLabel": "5.31",
+      "occurrenceDate": "2026-05-31",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.31.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.31_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-abbaa31d86752b3354e340c3-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-abbaa31d86752b3354e340c3-q01",
+      "logicalItemId": "reading-ctw-abbaa31d86752b3354e340c3",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Music is a powerful medium that serves as both a personal muse and a societal chronicle. From the haunting melodies of ancient flu_ _ _ to t_ _ dynamic rhy_ _ _ _ of contem_ _ _ _ _ _ electronic be_ _ _, music h_ _ continually evo_ _ _ _, echoing cult_ _ _ _ shifts o_ the ti_ _ _. This ever-changing art form not only provides an emotional outlet for individuals but also encapsulates the defining mood of entire eras. Music allows listeners to traverse historical landscapes, understand diverse cultural narratives, and gain insight into the human condition.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Music is a powerful medium that serves as both a personal muse and a societal chronicle. From the haunting melodies of ancient flu_ _ _ to t_ _ dynamic rhy_ _ _ _ of contem_ _ _ _ _ _ electronic be_ _ _, music h_ _ continually evo_ _ _ _, echoing cult_ _ _ _ shifts o_ the ti_ _ _. This ever-changing art form not only provides an emotional outlet for individuals but also encapsulates the defining mood of entire eras. Music allows listeners to traverse historical landscapes, understand diverse cultural narratives, and gain insight into the human condition.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Music is a powerful medium that serves as both a personal muse and a societal chronicle. From the haunting melodies of ancient "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " dynamic "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " electronic "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", music "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " continually "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ", echoing "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " shifts "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": ". This ever-changing art form not only provides an emotional outlet for individuals but also encapsulates the defining mood of entire eras. Music allows listeners to traverse historical landscapes, understand diverse cultural narratives, and gain insight into the human condition."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "flutes",
+            "prefix": "flu",
+            "displayText": "flu_ _ _",
+            "missingText": "tes",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "rhythms",
+            "prefix": "rhy",
+            "displayText": "rhy_ _ _ _",
+            "missingText": "thms",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "contemporary",
+            "prefix": "contem",
+            "displayText": "contem_ _ _ _ _ _",
+            "missingText": "porary",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "beats",
+            "prefix": "be",
+            "displayText": "be_ _ _",
+            "missingText": "ats",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "has",
+            "prefix": "h",
+            "displayText": "h_ _",
+            "missingText": "as",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "evolved",
+            "prefix": "evo",
+            "displayText": "evo_ _ _ _",
+            "missingText": "lved",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "cultural",
+            "prefix": "cult",
+            "displayText": "cult_ _ _ _",
+            "missingText": "ural",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-abbaa31d86752b3354e340c3-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-abbaa31d86752b3354e340c3-q01-p01",
+            "answer": "times",
+            "prefix": "ti",
+            "displayText": "ti_ _ _",
+            "missingText": "mes",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

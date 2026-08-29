@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-9487bcf1edeee3747f0b9865",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "9487bcf1edeee3747f0b9865dd8e31f03a13c6cba898e6aa943a9145eeba9c72",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m1-ctw-02",
+      "logicalItemId": "reading-ctw-9487bcf1edeee3747f0b9865",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-9487bcf1edeee3747f0b9865-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-9487bcf1edeee3747f0b9865-q01",
+      "logicalItemId": "reading-ctw-9487bcf1edeee3747f0b9865",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Global temperatures and weather patterns are experiencing notable shifts, which scientific research strongly associates with human-related factors. Activities su_ _ as t_ _ use o_ fossil fu_ _ _, changes i_ land u_ _, and industrial produ_ _ _ _ _ contribute t_ the accumu_ _ _ _ _ _ of green_ _ _ _ _ gases in the atmosphere. These gases retain heat, gradually increasing the Earth’s average temperature. If emissions continue at current levels, potential outcomes may include more frequent extreme weather events, rising sea levels, and disruptions to ecosystems. Experts emphasize that timely and coordinated efforts are essential to reduce risks and promote long-term environmental stability.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Global temperatures and weather patterns are experiencing notable shifts, which scientific research strongly associates with human-related factors. Activities su_ _ as t_ _ use o_ fossil fu_ _ _, changes i_ land u_ _, and industrial produ_ _ _ _ _ contribute t_ the accumu_ _ _ _ _ _ of green_ _ _ _ _ gases in the atmosphere. These gases retain heat, gradually increasing the Earth’s average temperature. If emissions continue at current levels, potential outcomes may include more frequent extreme weather events, rising sea levels, and disruptions to ecosystems. Experts emphasize that timely and coordinated efforts are essential to reduce risks and promote long-term environmental stability.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Global temperatures and weather patterns are experiencing notable shifts, which scientific research strongly associates with human-related factors. Activities "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " as "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " use "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " fossil "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ", changes "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " land "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": ", and industrial "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " contribute "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " gases in the atmosphere. These gases retain heat, gradually increasing the Earth’s average temperature. If emissions continue at current levels, potential outcomes may include more frequent extreme weather events, rising sea levels, and disruptions to ecosystems. Experts emphasize that timely and coordinated efforts are essential to reduce risks and promote long-term environmental stability."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "such",
+            "prefix": "su",
+            "displayText": "su_ _",
+            "missingText": "ch",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "fuels",
+            "prefix": "fu",
+            "displayText": "fu_ _ _",
+            "missingText": "els",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "in",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "use",
+            "prefix": "u",
+            "displayText": "u_ _",
+            "missingText": "se",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "production",
+            "prefix": "produ",
+            "displayText": "produ_ _ _ _ _",
+            "missingText": "ction",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "accumulation",
+            "prefix": "accumu",
+            "displayText": "accumu_ _ _ _ _ _",
+            "missingText": "lation",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-9487bcf1edeee3747f0b9865-q01-p01",
+            "answer": "greenhouse",
+            "prefix": "green",
+            "displayText": "green_ _ _ _ _",
+            "missingText": "house",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-01323265f05c769ce502c5ca",
+    "module": "rdl",
+    "title": "☆ ☆ ☆  MISHTI  ☆ ☆ ☆ Exciting Indian Cuisine Near Campus",
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "01323265f05c769ce502c5ca1876ac2d6a96bc21fedd63103c943172c0a87cdd",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m1-rdl-03",
+      "logicalItemId": "reading-rdl-01323265f05c769ce502c5ca",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-01323265f05c769ce502c5ca-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-01323265f05c769ce502c5ca-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-046",
+      "title": "☆ ☆ ☆  MISHTI  ☆ ☆ ☆ Exciting Indian Cuisine Near Campus",
+      "source": "material-index.json#RDL-046",
+      "sourceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-046/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-046/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-01323265f05c769ce502c5ca-q01",
+      "logicalItemId": "reading-rdl-01323265f05c769ce502c5ca",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Which of the following can be inferred about Mishti’s menu?",
+      "rawDisplayText": "21. Which of the following can be inferred about Mishti’s menu?",
+      "payload": {
+        "materialId": "RDL-046",
+        "options": [
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It provides detailed descriptions of every dish."
+          },
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It includes dishes from various parts of India."
+          },
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It focuses primarily on dishes that do not include meat."
+          },
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It offers variety partly by changing with the seasons."
+          }
+        ],
+        "correctOptionId": "reading-rdl-01323265f05c769ce502c5ca-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-01323265f05c769ce502c5ca-q02",
+      "logicalItemId": "reading-rdl-01323265f05c769ce502c5ca",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "The review praises all of the following aspects of the restaurant EXCEPT:",
+      "rawDisplayText": "22. The review praises all of the following aspects of the restaurant EXCEPT:",
+      "payload": {
+        "materialId": "RDL-046",
+        "options": [
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Its menu has plant-based options."
+          },
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Its service staff are friendly and informative."
+          },
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Its prices are affordable."
+          },
+          {
+            "optionId": "reading-rdl-01323265f05c769ce502c5ca-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Its dining room is attractive."
+          }
+        ],
+        "correctOptionId": "reading-rdl-01323265f05c769ce502c5ca-q02-opt-4"
+      }
+    }
+  ]
+}

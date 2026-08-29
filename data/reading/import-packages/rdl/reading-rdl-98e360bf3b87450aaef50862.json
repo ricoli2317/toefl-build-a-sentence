@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+    "module": "rdl",
+    "title": "Attention Residents!",
+    "firstSeenDate": "2026-05-23",
+    "firstSeenSourceLabel": "5.23",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "98e360bf3b87450aaef50862c8096e4f40c4a55acd6b2ce9b30d00c42ab46d6a",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-23-m1-rdl-07",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-14-m1-rdl-10",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "sourceKind": "docx",
+      "sourceLabel": "6.14",
+      "occurrenceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.14.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.14_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-21a-m1-rdl-07",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21A",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-21b-m1-rdl-07",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21B",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-98e360bf3b87450aaef50862-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-048",
+      "title": "Attention Residents!",
+      "source": "material-index.json#RDL-048",
+      "sourceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-048/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-048/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-98e360bf3b87450aaef50862-q01",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the notice primarily about?",
+      "rawDisplayText": "25. What is the notice primarily about?",
+      "payload": {
+        "materialId": "RDL-048",
+        "options": [
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Providing safety tips during a storm"
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Announcing a disruption to a service"
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Providing after-installation instructions for a new appliance"
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Promoting a community water park opening"
+          }
+        ],
+        "correctOptionId": "reading-rdl-98e360bf3b87450aaef50862-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-98e360bf3b87450aaef50862-q02",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What should residents do beforehand?",
+      "rawDisplayText": "26. What should residents do beforehand?",
+      "payload": {
+        "materialId": "RDL-048",
+        "options": [
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Plan for power outages"
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Disconnect all water appliances"
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Inspect faucets and showers for leaks"
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Ensure enough water is stored for one day"
+          }
+        ],
+        "correctOptionId": "reading-rdl-98e360bf3b87450aaef50862-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-98e360bf3b87450aaef50862-q03",
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What can be inferred about the event described in the announcement?",
+      "rawDisplayText": "27. What can be inferred about the event described in the announcement?",
+      "payload": {
+        "materialId": "RDL-048",
+        "options": [
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It can be postponed to a different day by calling the maintenance department."
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It is required for infrastructure upgrades."
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It will occur weekly."
+          },
+          {
+            "optionId": "reading-rdl-98e360bf3b87450aaef50862-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It is due to a natural disaster."
+          }
+        ],
+        "correctOptionId": "reading-rdl-98e360bf3b87450aaef50862-q03-opt-2"
+      }
+    }
+  ]
+}

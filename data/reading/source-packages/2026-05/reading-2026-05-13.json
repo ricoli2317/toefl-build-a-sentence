@@ -1,0 +1,1787 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.13",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Climate change refers to significant and lasting changes in weather patterns over periods ranging from decades to millions of years. It is dri_ _ _ by nat_ _ _ _ factors li_ _ volcanic erup_ _ _ _ _ and hu_ _ _ activities su_ _ as bur_ _ _ _ fossil fu_ _ _ and remo_ _ _ _ trees, wh_ _ _ release large amounts of greenhouse gases into the atmosphere. These gases trap heat, leading to global warming, rising sea levels, and more extreme weather events. Addressing climate change requires sustainable practices and international cooperation to mitigate its impacts.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Climate change refers to significant and lasting changes in weather patterns over periods ranging from decades to millions of years. It is dri_ _ _ by nat_ _ _ _ factors li_ _ volcanic erup_ _ _ _ _ and hu_ _ _ activities su_ _ as bur_ _ _ _ fossil fu_ _ _ and remo_ _ _ _ trees, wh_ _ _ release large amounts of greenhouse gases into the atmosphere. These gases trap heat, leading to global warming, rising sea levels, and more extreme weather events. Addressing climate change requires sustainable practices and international cooperation to mitigate its impacts.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Climate change refers to significant and lasting changes in weather patterns over periods ranging from decades to millions of years. It is "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " by "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " factors "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " volcanic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " activities "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " as "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " fossil "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " trees, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " release large amounts of greenhouse gases into the atmosphere. These gases trap heat, leading to global warming, rising sea levels, and more extreme weather events. Addressing climate change requires sustainable practices and international cooperation to mitigate its impacts."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "driven",
+                "prefix": "dri",
+                "displayText": "dri_ _ _",
+                "missingText": "ven",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "natural",
+                "prefix": "nat",
+                "displayText": "nat_ _ _ _",
+                "missingText": "ural",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "like",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "eruptions",
+                "prefix": "erup",
+                "displayText": "erup_ _ _ _ _",
+                "missingText": "tions",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "human",
+                "prefix": "hu",
+                "displayText": "hu_ _ _",
+                "missingText": "man",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "such",
+                "prefix": "su",
+                "displayText": "su_ _",
+                "missingText": "ch",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "burning",
+                "prefix": "bur",
+                "displayText": "bur_ _ _ _",
+                "missingText": "ning",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "fuels",
+                "prefix": "fu",
+                "displayText": "fu_ _ _",
+                "missingText": "els",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "removing",
+                "prefix": "remo",
+                "displayText": "remo_ _ _ _",
+                "missingText": "ving",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q01-10-p01",
+                "answer": "which",
+                "prefix": "wh",
+                "displayText": "wh_ _ _",
+                "missingText": "ich",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Initially, humans used naturally occurring objects as tools (for instance, a sharp stone or a forked stick). Later, peo_ _ _ began purpos_ _ _ _ _ _ to sh_ _ _ wood a_ _ stone in_ _ tools. Bec_ _ _ _ of t_ _ perishable nat_ _ _ of wo_ _, modern know_ _ _ _ _ of how it was used in prehistoric times is largely a matter of inference. With tools of stone, however, archaeologists are on firmer ground; there are a vast number of surviving artifacts. Throughout the world, flint was a favored material because of its unusual physical properties.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Initially, humans used naturally occurring objects as tools (for instance, a sharp stone or a forked stick). Later, peo_ _ _ began purpos_ _ _ _ _ _ to sh_ _ _ wood a_ _ stone in_ _ tools. Bec_ _ _ _ of t_ _ perishable nat_ _ _ of wo_ _, modern know_ _ _ _ _ of how it was used in prehistoric times is largely a matter of inference. With tools of stone, however, archaeologists are on firmer ground; there are a vast number of surviving artifacts. Throughout the world, flint was a favored material because of its unusual physical properties.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Initially, humans used naturally occurring objects as tools (for instance, a sharp stone or a forked stick). Later, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " began "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " wood "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " stone "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " tools. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " perishable "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", modern "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of how it was used in prehistoric times is largely a matter of inference. With tools of stone, however, archaeologists are on firmer ground; there are a vast number of surviving artifacts. Throughout the world, flint was a favored material because of its unusual physical properties."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "people",
+                "prefix": "peo",
+                "displayText": "peo_ _ _",
+                "missingText": "ple",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "purposefully",
+                "prefix": "purpos",
+                "displayText": "purpos_ _ _ _ _ _",
+                "missingText": "efully",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "shape",
+                "prefix": "sh",
+                "displayText": "sh_ _ _",
+                "missingText": "ape",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "into",
+                "prefix": "in",
+                "displayText": "in_ _",
+                "missingText": "to",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "Because",
+                "prefix": "Bec",
+                "displayText": "Bec_ _ _ _",
+                "missingText": "ause",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "nature",
+                "prefix": "nat",
+                "displayText": "nat_ _ _",
+                "missingText": "ure",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "wood",
+                "prefix": "wo",
+                "displayText": "wo_ _",
+                "missingText": "od",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-13-m1-ctw-q11-20-p01",
+                "answer": "knowledge",
+                "prefix": "know",
+                "displayText": "know_ _ _ _ _",
+                "missingText": "ledge",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-rdl-03",
+      "module": "rdl",
+      "title": "GoodBooks shipment",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-015",
+          "title": "GoodBooks shipment",
+          "source": "material-index.json#RDL-015",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-015/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-015/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What will Mr. Brown receive for free?",
+          "rawDisplayText": "21. What will Mr. Brown receive for free?",
+          "payload": {
+            "materialId": "RDL-015",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "A newsletter"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "A bookmark"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "A book"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "A catalog"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "On what basis did GoodBooks make a decision?",
+          "rawDisplayText": "22. On what basis did GoodBooks make a decision?",
+          "payload": {
+            "materialId": "RDL-015",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "A purchasing history"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "A reduced inventory"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "A limited budget"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "A completed survey"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-rdl-05",
+      "module": "rdl",
+      "title": "Student Center Closure",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-027",
+          "title": "Student Center Closure",
+          "source": "material-index.json#RDL-027",
+          "sourceDate": "2026-05-13",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-027/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-027/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the notice?",
+          "rawDisplayText": "23. What is the main purpose of the notice?",
+          "payload": {
+            "materialId": "RDL-027",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "To provide directions to a facility"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "To announce the temporary closure of a facility"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "To announce the relocation of a facility"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "To explain improvements to a facility"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What happens to events that are scheduled during the renovations?",
+          "rawDisplayText": "24. What happens to events that are scheduled during the renovations?",
+          "payload": {
+            "materialId": "RDL-027",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "They will be rescheduled for earlier dates."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "They will be rescheduled for later dates."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "They will no longer take place."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "They will be moved to a different location."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q24-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-rdl-07",
+      "module": "rdl",
+      "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-021",
+          "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+          "source": "material-index.json#RDL-021",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-021/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-021/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the advertisement?",
+          "rawDisplayText": "25. What is the main purpose of the advertisement?",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "To advertise improvements to products"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "To announce an event"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "To promote live music"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "To introduce a new menu"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "The word “complimentary” in the first paragraph is closest in meaning to",
+          "rawDisplayText": "26. The word “complimentary” in the first paragraph is closest in meaning to",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "pleasing"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "discounted"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "free"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "limited"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "What is necessary for an extra 20 percent off one’s first service?",
+          "rawDisplayText": "27. What is necessary for an extra 20 percent off one’s first service?",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Cash for payment"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Proof of being a student"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "A reservation"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "A consultation"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q27-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-rdl-10",
+      "module": "rdl",
+      "title": "DORM STARTUP GOES VIRAL",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-028",
+          "title": "DORM STARTUP GOES VIRAL",
+          "source": "material-index.json#RDL-028",
+          "sourceDate": "2026-05-13",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-028/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-028/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "What is the main topic of the article?",
+          "rawDisplayText": "28. What is the main topic of the article?",
+          "payload": {
+            "materialId": "RDL-028",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "A student-launched tech innovation"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "A tech conference on campus"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "Techniques for coping with exam stress"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Apps that help students find housing"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q28-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What is indicated about PlanForge?",
+          "rawDisplayText": "29. What is indicated about PlanForge?",
+          "payload": {
+            "materialId": "RDL-028",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "It was created by some professors."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "It quickly reached thousands of downloads."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "It is available only to university alumni."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "It helps students who are looking for jobs."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q29-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the app creators’ future plans?",
+          "rawDisplayText": "30. What can be inferred about the app creators’ future plans?",
+          "payload": {
+            "materialId": "RDL-028",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "They intend to pause their studies and focus on marketing the app."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "They would like to increase the functionality of the app to include more tools."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "They will ask other students to help develop the app."
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "They want to limit the app’s release to their own campus."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m1-rap-13",
+      "module": "rap",
+      "title": "Plant Communication",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-13-m1-rap-p01",
+          "title": "Plant Communication",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-13-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The discovery that plants use communication has changed our understanding of plant behavior and ecology. Traditionally, plants were considered passive organisms, reacting to environmental changes rather than actively engaging with their surroundings. However, studies have shown that plants can send chemical signals through the soil.",
+              "rawText": "The discovery that plants use communication has changed our understanding of plant behavior and ecology. Traditionally, plants were considered passive organisms, reacting to environmental changes rather than actively engaging with their surroundings. However, studies have shown that plants can send chemical signals through the soil.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The discovery that plants use communication has changed our understanding of plant behavior and ecology."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Traditionally, plants were considered passive organisms, reacting to environmental changes rather than actively engaging with their surroundings."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, studies have shown that plants can send chemical signals through the soil."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-13-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "These signals, often carried by root exudates (substances released by the plants’ roots into the soil), can inform neighboring plants about threats like plant-eating animals or disease-causing agents. For instance, when a corn plant is attacked by caterpillars, it can release specific chemicals that warn nearby corn plants. In response, the neighboring corn plants may release a chemical known as MBOA into their tissues, which makes them less palatable to the caterpillars.",
+              "rawText": "These signals, often carried by root exudates (substances released by the plants’ roots into the soil), can inform neighboring plants about threats like plant-eating animals or disease-causing agents. For instance, when a corn plant is attacked by caterpillars, it can release specific chemicals that warn nearby corn plants. In response, the neighboring corn plants may release a chemical known as MBOA into their tissues, which makes them less palatable to the caterpillars.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "These signals, often carried by root exudates (substances released by the plants’ roots into the soil), can inform neighboring plants about threats like plant-eating animals or disease-causing agents."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "For instance, when a corn plant is attacked by caterpillars, it can release specific chemicals that warn nearby corn plants."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "In response, the neighboring corn plants may release a chemical known as MBOA into their tissues, which makes them less palatable to the caterpillars."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-13-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Plants also use electrical signals to respond rapidly to environmental changes. These signals travel through the plant, allowing it to adjust resource allocation. Some plants can even detect the presence of other plants through their roots. This allows them to alter their growth patterns to avoid direct competition.",
+              "rawText": "Plants also use electrical signals to respond rapidly to environmental changes. These signals travel through the plant, allowing it to adjust resource allocation. Some plants can even detect the presence of other plants through their roots. This allows them to alter their growth patterns to avoid direct competition.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Plants also use electrical signals to respond rapidly to environmental changes."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "These signals travel through the plant, allowing it to adjust resource allocation."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Some plants can even detect the presence of other plants through their roots."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "This allows them to alter their growth patterns to avoid direct competition."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-13-m1-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Despite these discoveries, the study of plant communication is still in its infancy. Researchers are continuously uncovering new ways that plants interact with each other and their environment.",
+              "rawText": "Despite these discoveries, the study of plant communication is still in its infancy. Researchers are continuously uncovering new ways that plants interact with each other and their environment.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Despite these discoveries, the study of plant communication is still in its infancy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m1-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Researchers are continuously uncovering new ways that plants interact with each other and their environment."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, there used to be a mistaken view that plants",
+          "rawDisplayText": "31. According to the passage, there used to be a mistaken view that plants",
+          "payload": {
+            "passageId": "reading-2026-05-13-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "often changed their behavior"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "released root exudates only in small amounts"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "were not significantly affected by ecological factors"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "did not actively interact with other plants"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q31-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, corn plants may release MBOA into their tissues in response to",
+          "rawDisplayText": "32. According to the passage, corn plants may release MBOA into their tissues in response to",
+          "payload": {
+            "passageId": "reading-2026-05-13-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "harmful chemicals released by caterpillars"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "electrical signals in the soil"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "human activities that affect the environment"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "root exudates produced by other corn plants"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q32-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred to be the purpose of electrical signals that plants release?",
+          "rawDisplayText": "33. What can be inferred to be the purpose of electrical signals that plants release?",
+          "payload": {
+            "passageId": "reading-2026-05-13-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "To attract beneficial animals to the plants"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "To prevent attack by caterpillars on the plants"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "To help the plants make the best use of available resources"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "To communicate with other plants across long distances"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Knowledge about the presence of other plants can help a plant to",
+          "rawDisplayText": "34. Knowledge about the presence of other plants can help a plant to",
+          "payload": {
+            "passageId": "reading-2026-05-13-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "change its growth in a way that reduces competition"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "prevent major damage to its roots"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "find additional resources"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "determine which chemicals to release into the soil"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "The phrase “still in its infancy” in the passage is closest in meaning to",
+          "rawDisplayText": "35. The phrase “still in its infancy” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-13-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "highly controversial"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "in a difficult period"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "looking for funding"
+              },
+              {
+                "optionId": "reading-2026-05-13-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "at an early stage"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m1-q35-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The extinction of the baiji dolphin, also known as the Yangtze River dolphin, serves as a stark reminder of the impact of human activities on freshwater ecosystems. Declared functi_ _ _ _ _ _ extinct i_ 2006, t_ _ baiji suff_ _ _ _ from hab_ _ _ _ loss a_ _ the eff_ _ _ _ of poll_ _ _ _ _. Conservationists atte_ _ _ _ _ rescue miss_ _ _ _ and breeding programs, but these efforts were hindered by the dolphin’s declining population and fragmented habitat. Studying the baiji’s extinction helps scientists develop strategies to protect other endangered freshwater species and highlights the need for sustainable practices.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The extinction of the baiji dolphin, also known as the Yangtze River dolphin, serves as a stark reminder of the impact of human activities on freshwater ecosystems. Declared functi_ _ _ _ _ _ extinct i_ 2006, t_ _ baiji suff_ _ _ _ from hab_ _ _ _ loss a_ _ the eff_ _ _ _ of poll_ _ _ _ _. Conservationists atte_ _ _ _ _ rescue miss_ _ _ _ and breeding programs, but these efforts were hindered by the dolphin’s declining population and fragmented habitat. Studying the baiji’s extinction helps scientists develop strategies to protect other endangered freshwater species and highlights the need for sustainable practices.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The extinction of the baiji dolphin, also known as the Yangtze River dolphin, serves as a stark reminder of the impact of human activities on freshwater ecosystems. Declared "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " extinct "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " 2006, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " baiji "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " from "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " loss "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Conservationists "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " rescue "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and breeding programs, but these efforts were hindered by the dolphin’s declining population and fragmented habitat. Studying the baiji’s extinction helps scientists develop strategies to protect other endangered freshwater species and highlights the need for sustainable practices."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "functionally",
+                "prefix": "functi",
+                "displayText": "functi_ _ _ _ _ _",
+                "missingText": "onally",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "suffered",
+                "prefix": "suff",
+                "displayText": "suff_ _ _ _",
+                "missingText": "ered",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "habitat",
+                "prefix": "hab",
+                "displayText": "hab_ _ _ _",
+                "missingText": "itat",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "effects",
+                "prefix": "eff",
+                "displayText": "eff_ _ _ _",
+                "missingText": "ects",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "pollution",
+                "prefix": "poll",
+                "displayText": "poll_ _ _ _ _",
+                "missingText": "ution",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "attempted",
+                "prefix": "atte",
+                "displayText": "atte_ _ _ _ _",
+                "missingText": "mpted",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-13-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-13-m2-ctw-q01-10-p01",
+                "answer": "missions",
+                "prefix": "miss",
+                "displayText": "miss_ _ _ _",
+                "missingText": "ions",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-13-m2-rap-19",
+      "module": "rap",
+      "title": "The Power of Placebos",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.13",
+        "occurrenceDate": "2026-05-13",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-13-m2-rap-p01",
+          "title": "The Power of Placebos",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-13-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The placebo effect challenges conventional ideas about medical treatment efficacy. What is a placebo? A patient’s condition sometimes improves if they believe that they are receiving an effective treatment, even if they are in fact receiving a sugar pill. In this example, the sugar pill, which has no active ingredient, is a placebo. Surprisingly, this effect can sometimes rival real medications in clinical trials.",
+              "rawText": "The placebo effect challenges conventional ideas about medical treatment efficacy. What is a placebo? ■ A patient’s condition sometimes improves if they believe that they are receiving an effective treatment, even if they are in fact receiving a sugar pill. ■ In this example, the sugar pill, which has no active ingredient, is a placebo. Surprisingly, this effect can sometimes rival real medications in clinical trials. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The placebo effect challenges conventional ideas about medical treatment efficacy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "What is a placebo?"
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "A patient’s condition sometimes improves if they believe that they are receiving an effective treatment, even if they are in fact receiving a sugar pill."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "In this example, the sugar pill, which has no active ingredient, is a placebo."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Surprisingly, this effect can sometimes rival real medications in clinical trials."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-13-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Recent studies suggest that the placebo effect might be rooted in the brain’s complex chemistry. When a patient anticipates positive effects, their brain can release chemicals like endorphins, which may cause genuine physiological changes. In one study, patients receiving placebo “painkillers” reported pain relief comparable to the one produced by actual painkillers, highlighting the brain’s powerful role. Some researchers propose using the placebo effect deliberately to enhance therapy outcomes, arguing that the mind-body connection should be tapped into more.",
+              "rawText": "Recent studies suggest that the placebo effect might be rooted in the brain’s complex chemistry. ■ When a patient anticipates positive effects, their brain can release chemicals like endorphins, which may cause genuine physiological changes. In one study, patients receiving placebo “painkillers” reported pain relief comparable to the one produced by actual painkillers, highlighting the brain’s powerful role. Some researchers propose using the placebo effect deliberately to enhance therapy outcomes, arguing that the mind-body connection should be tapped into more.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Recent studies suggest that the placebo effect might be rooted in the brain’s complex chemistry."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "When a patient anticipates positive effects, their brain can release chemicals like endorphins, which may cause genuine physiological changes."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "In one study, patients receiving placebo “painkillers” reported pain relief comparable to the one produced by actual painkillers, highlighting the brain’s powerful role."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some researchers propose using the placebo effect deliberately to enhance therapy outcomes, arguing that the mind-body connection should be tapped into more."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-13-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "However, ethical considerations arise: deceiving patients could undermine trust in healthcare. For example, even when a placebo leads to measurable improvement, knowingly administering it without full disclosure may violate principles of informed consent, raising questions about autonomy and transparency in patient care. This delicate balance between harnessing the placebo effect and maintaining ethical standards continues to be a topic of debate.",
+              "rawText": "However, ethical considerations arise: deceiving patients could undermine trust in healthcare. For example, even when a placebo leads to measurable improvement, knowingly administering it without full disclosure may violate principles of informed consent, raising questions about autonomy and transparency in patient care. This delicate balance between harnessing the placebo effect and maintaining ethical standards continues to be a topic of debate.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, ethical considerations arise: deceiving patients could undermine trust in healthcare."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "For example, even when a placebo leads to measurable improvement, knowingly administering it without full disclosure may violate principles of informed consent, raising questions about autonomy and transparency in patient care."
+                },
+                {
+                  "sentenceId": "reading-2026-05-13-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "This delicate balance between harnessing the placebo effect and maintaining ethical standards continues to be a topic of debate."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-13-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "How does the placebo effect challenge traditional views on treatment?",
+          "rawDisplayText": "11. How does the placebo effect challenge traditional views on treatment?",
+          "payload": {
+            "passageId": "reading-2026-05-13-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "By showing that patients should have more say in selecting their medications"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "By suggesting that a patient’s belief can be as powerful as a medicine"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "By pointing out a possible way to reduce the costs of clinical trials"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "By questioning existing measurements of the effectiveness of a treatment"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m2-q11-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does paragraph 2 indicate about the placebo effect?",
+          "rawDisplayText": "12. What does paragraph 2 indicate about the placebo effect?",
+          "payload": {
+            "passageId": "reading-2026-05-13-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "It affects patients much more powerfully than actual painkillers do."
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "It may be related to the release of endorphins in the brain."
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "It is enhanced when it is accompanied by actual painkillers."
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "It has not been connected by researchers to any physiological changes."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “deliberately” in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word “deliberately” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-13-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "on purpose"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "with caution"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "efficiently"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "regularly"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “autonomy and transparency in patient care”?",
+          "rawDisplayText": "14. Why does the author mention “autonomy and transparency in patient care”?",
+          "payload": {
+            "passageId": "reading-2026-05-13-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-13-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To argue for the use of the placebo effect"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To highlight an ethical challenge in using the placebo effect"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To suggest that trust is less important than other considerations in healthcare"
+              },
+              {
+                "optionId": "reading-2026-05-13-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To explain how the placebo effect is misunderstood"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-13-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-13-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-13-m2-rap-p01",
+            "insertSentence": "Researchers have long been puzzled by the mechanisms behind this phenomenon.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-13-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-13-m2-rap-p01-p01",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-13-m2-rap-p01-p01-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-13-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-13-m2-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-13-m2-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-13-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-13-m2-rap-p01-p01",
+                "boundaryIndex": 5,
+                "afterSentenceId": "reading-2026-05-13-m2-rap-p01-p01-s05"
+              },
+              {
+                "anchorId": "reading-2026-05-13-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-13-m2-rap-p01-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-13-m2-rap-p01-p02-s01"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-13-m2-q15-anchor-3"
+          }
+        }
+      ]
+    }
+  ]
+}

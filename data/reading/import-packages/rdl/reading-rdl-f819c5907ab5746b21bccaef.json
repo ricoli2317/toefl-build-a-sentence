@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-f819c5907ab5746b21bccaef",
+    "module": "rdl",
+    "title": "Stay Healthy During Cold And Flu Season",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6B",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "f819c5907ab5746b21bccaefbd5d81b71f2968321ad2998bcfbebbbcc6f31b14",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6b-m1-rdl-05",
+      "logicalItemId": "reading-rdl-f819c5907ab5746b21bccaef",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6B",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-f819c5907ab5746b21bccaef-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-f819c5907ab5746b21bccaef-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-f819c5907ab5746b21bccaef-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-012",
+      "title": "Stay Healthy During Cold And Flu Season",
+      "source": "material-index.json#RDL-012",
+      "sourceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-012/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-012/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-f819c5907ab5746b21bccaef-q01",
+      "logicalItemId": "reading-rdl-f819c5907ab5746b21bccaef",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "The purpose of the notice is to",
+      "rawDisplayText": "23. The purpose of the notice is to",
+      "payload": {
+        "materialId": "RDL-012",
+        "options": [
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q01-opt-1",
+            "optionOrder": 1,
+            "text": "offer recommendations"
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q01-opt-2",
+            "optionOrder": 2,
+            "text": "describe a treatment"
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q01-opt-3",
+            "optionOrder": 3,
+            "text": "advertise a product"
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q01-opt-4",
+            "optionOrder": 4,
+            "text": "explain a process"
+          }
+        ],
+        "correctOptionId": "reading-rdl-f819c5907ab5746b21bccaef-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-f819c5907ab5746b21bccaef-q02",
+      "logicalItemId": "reading-rdl-f819c5907ab5746b21bccaef",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What can be inferred from the notice?",
+      "rawDisplayText": "24. What can be inferred from the notice?",
+      "payload": {
+        "materialId": "RDL-012",
+        "options": [
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q02-opt-1",
+            "optionOrder": 1,
+            "text": "The Campus Health Services office is open 24 hours a day to provide medical care."
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q02-opt-2",
+            "optionOrder": 2,
+            "text": "There have been more cases of flu on campus during the current year than in the previous year."
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Campus Health Services doctors do not prescribe antiviral medication to all flu patients."
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q02-opt-4",
+            "optionOrder": 4,
+            "text": "The symptoms of the flu are quite different from those of other respiratory infections."
+          }
+        ],
+        "correctOptionId": "reading-rdl-f819c5907ab5746b21bccaef-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-f819c5907ab5746b21bccaef-q03",
+      "logicalItemId": "reading-rdl-f819c5907ab5746b21bccaef",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "The notice mentions all of the following EXCEPT",
+      "rawDisplayText": "25. The notice mentions all of the following EXCEPT",
+      "payload": {
+        "materialId": "RDL-012",
+        "options": [
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q03-opt-1",
+            "optionOrder": 1,
+            "text": "symptoms that are common to both colds and flu"
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q03-opt-2",
+            "optionOrder": 2,
+            "text": "measures people can take to protect their health"
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q03-opt-3",
+            "optionOrder": 3,
+            "text": "where students can get a flu vaccination"
+          },
+          {
+            "optionId": "reading-rdl-f819c5907ab5746b21bccaef-q03-opt-4",
+            "optionOrder": 4,
+            "text": "how to make an appointment at Campus Health Services"
+          }
+        ],
+        "correctOptionId": "reading-rdl-f819c5907ab5746b21bccaef-q03-opt-4"
+      }
+    }
+  ]
+}

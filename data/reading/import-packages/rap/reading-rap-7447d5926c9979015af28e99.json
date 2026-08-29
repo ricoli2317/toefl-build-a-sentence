@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+    "module": "rap",
+    "title": "Social Networks and Influence",
+    "firstSeenDate": "2026-05-24",
+    "firstSeenSourceLabel": "5.24B",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "7447d5926c9979015af28e99ffb1ab9af693aeda8db3fd078ba3ecb895dd262d",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-24b-m1-rap-13",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24B",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-7447d5926c9979015af28e99-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-7447d5926c9979015af28e99-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-7447d5926c9979015af28e99-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-7447d5926c9979015af28e99-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-7447d5926c9979015af28e99-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-7447d5926c9979015af28e99-passage-01",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "title": "Social Networks and Influence",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Computational sociology studies how social networks—like friendships, professional connections, or online communities—affect how people think and act. Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior. If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views. These influences are especially strong when the conversations are emotionally charged or align with the person’s values.",
+          "rawText": "Computational sociology studies how social networks—like friendships, professional connections, or online communities—affect how people think and act. Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior. If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views. These influences are especially strong when the conversations are emotionally charged or align with the person’s values. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Computational sociology studies how social networks—like friendships, professional connections, or online communities—affect how people think and act."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "These influences are especially strong when the conversations are emotionally charged or align with the person’s values."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Interestingly, it is not always the most famous or powerful people who have the biggest impact. Everyday conversations—like repeated exchanges between coworkers—can be more influential than a single message from a celebrity or expert. Researchers use computational models to analyze how messages spread. An accurate model can predict which types of messages are likely to spread widely.",
+          "rawText": "Interestingly, it is not always the most famous or powerful people who have the biggest impact. ■ Everyday conversations—like repeated exchanges between coworkers—can be more influential than a single message from a celebrity or expert. Researchers use computational models to analyze how messages spread. ■ An accurate model can predict which types of messages are likely to spread widely. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Interestingly, it is not always the most famous or powerful people who have the biggest impact."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Everyday conversations—like repeated exchanges between coworkers—can be more influential than a single message from a celebrity or expert."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Researchers use computational models to analyze how messages spread."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "An accurate model can predict which types of messages are likely to spread widely."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Still, predicting human behavior is incredibly complex. People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally. For example, a message that spreads quickly in one country might fall flat in another due to different cultural values. The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior.",
+          "rawText": "Still, predicting human behavior is incredibly complex. People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally. For example, a message that spreads quickly in one country might fall flat in another due to different cultural values. The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Still, predicting human behavior is incredibly complex."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "For example, a message that spreads quickly in one country might fall flat in another due to different cultural values."
+            },
+            {
+              "sentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-7447d5926c9979015af28e99-q01",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "questionOrder": 1,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 1 that illustrates how social network dynamics can affect personal beliefs. Select the sentence to make your choice.",
+      "rawDisplayText": "31. Identify the sentence in paragraph 1 that illustrates how social network dynamics can affect personal beliefs. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-7447d5926c9979015af28e99-passage-01",
+        "targetParagraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01",
+        "correctSentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01-s03"
+      }
+    },
+    {
+      "questionId": "reading-rap-7447d5926c9979015af28e99-q02",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, computational sociologists study",
+      "rawDisplayText": "32. According to the passage, computational sociologists study",
+      "payload": {
+        "passageId": "reading-rap-7447d5926c9979015af28e99-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q02-opt-1",
+            "optionOrder": 1,
+            "text": "how having shared opinions strengthens a friendship"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q02-opt-2",
+            "optionOrder": 2,
+            "text": "why it is important to develop complex diagrams of network connections"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q02-opt-3",
+            "optionOrder": 3,
+            "text": "why emotionally charged conversations are ineffective at changing opinions"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q02-opt-4",
+            "optionOrder": 4,
+            "text": "how human behavior is affected by frequent interactions"
+          }
+        ],
+        "correctOptionId": "reading-rap-7447d5926c9979015af28e99-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-7447d5926c9979015af28e99-q03",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “incredibly” in the passage is closest in meaning to",
+      "rawDisplayText": "33. The word “incredibly” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-7447d5926c9979015af28e99-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q03-opt-1",
+            "optionOrder": 1,
+            "text": "generally"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q03-opt-2",
+            "optionOrder": 2,
+            "text": "extremely"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q03-opt-3",
+            "optionOrder": 3,
+            "text": "somewhat"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q03-opt-4",
+            "optionOrder": 4,
+            "text": "often"
+          }
+        ],
+        "correctOptionId": "reading-rap-7447d5926c9979015af28e99-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-7447d5926c9979015af28e99-q04",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what makes it difficult to model human behavior?",
+      "rawDisplayText": "34. According to the passage, what makes it difficult to model human behavior?",
+      "payload": {
+        "passageId": "reading-rap-7447d5926c9979015af28e99-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q04-opt-1",
+            "optionOrder": 1,
+            "text": "The interaction of various factors that play a role in human behavior"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q04-opt-2",
+            "optionOrder": 2,
+            "text": "The rapid spread of messages from one population to another"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q04-opt-3",
+            "optionOrder": 3,
+            "text": "The frequent movement of humans among countries with different cultural values"
+          },
+          {
+            "optionId": "reading-rap-7447d5926c9979015af28e99-q04-opt-4",
+            "optionOrder": 4,
+            "text": "The lack of cooperation among researchers from different cultural backgrounds"
+          }
+        ],
+        "correctOptionId": "reading-rap-7447d5926c9979015af28e99-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-7447d5926c9979015af28e99-q05",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-7447d5926c9979015af28e99-passage-01",
+        "insertSentence": "In fact, influence often emerges from the bottom up, rather than being imposed from the top down.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-7447d5926c9979015af28e99-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p01-s04"
+          },
+          {
+            "anchorId": "reading-rap-7447d5926c9979015af28e99-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s01"
+          },
+          {
+            "anchorId": "reading-rap-7447d5926c9979015af28e99-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s03"
+          },
+          {
+            "anchorId": "reading-rap-7447d5926c9979015af28e99-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-7447d5926c9979015af28e99-passage-01-p02-s04"
+          }
+        ],
+        "correctAnchorId": "reading-rap-7447d5926c9979015af28e99-q05-anchor-2"
+      }
+    }
+  ]
+}

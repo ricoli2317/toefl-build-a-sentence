@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-32dfd66933015b7ed7716a89",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20B",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "32dfd66933015b7ed7716a8942b13b2e5162eba57bc26d6650177dad6ba30b82",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-32dfd66933015b7ed7716a89",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20B",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-32dfd66933015b7ed7716a89-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-32dfd66933015b7ed7716a89-q01",
+      "logicalItemId": "reading-ctw-32dfd66933015b7ed7716a89",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The study of the classical world involves examining the cultural, political, and social structures of ancient civilizations such as Greece and Rome. These soci_ _ _ _ _ have gre_ _ _ _ influenced mod_ _ _ governance, philo_ _ _ _ _, and a_ _. The con_ _ _ _ of demo_ _ _ _ _ originated i_ Athens, a_ _ Romans we_ _ superb engineers, building roads, aqueducts, and impressive buildings like the Pantheon. By understanding their advancements and contributions, we gain insight into the foundations of contemporary society. Archaeologists and historians employ various methods to uncover artifacts and interpret historical records from ancient times.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The study of the classical world involves examining the cultural, political, and social structures of ancient civilizations such as Greece and Rome. These soci_ _ _ _ _ have gre_ _ _ _ influenced mod_ _ _ governance, philo_ _ _ _ _, and a_ _. The con_ _ _ _ of demo_ _ _ _ _ originated i_ Athens, a_ _ Romans we_ _ superb engineers, building roads, aqueducts, and impressive buildings like the Pantheon. By understanding their advancements and contributions, we gain insight into the foundations of contemporary society. Archaeologists and historians employ various methods to uncover artifacts and interpret historical records from ancient times.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The study of the classical world involves examining the cultural, political, and social structures of ancient civilizations such as Greece and Rome. These "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " have "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " influenced "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " governance, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ". The "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " originated "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " Athens, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " Romans "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " superb engineers, building roads, aqueducts, and impressive buildings like the Pantheon. By understanding their advancements and contributions, we gain insight into the foundations of contemporary society. Archaeologists and historians employ various methods to uncover artifacts and interpret historical records from ancient times."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "societies",
+            "prefix": "soci",
+            "displayText": "soci_ _ _ _ _",
+            "missingText": "eties",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "greatly",
+            "prefix": "gre",
+            "displayText": "gre_ _ _ _",
+            "missingText": "atly",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "modern",
+            "prefix": "mod",
+            "displayText": "mod_ _ _",
+            "missingText": "ern",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "philosophy",
+            "prefix": "philo",
+            "displayText": "philo_ _ _ _ _",
+            "missingText": "sophy",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "art",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "rt",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "concept",
+            "prefix": "con",
+            "displayText": "con_ _ _ _",
+            "missingText": "cept",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "democracy",
+            "prefix": "demo",
+            "displayText": "demo_ _ _ _ _",
+            "missingText": "cracy",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "in",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-32dfd66933015b7ed7716a89-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-32dfd66933015b7ed7716a89-q01-p01",
+            "answer": "were",
+            "prefix": "we",
+            "displayText": "we_ _",
+            "missingText": "re",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

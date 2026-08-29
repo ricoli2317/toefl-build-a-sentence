@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   BookOpen,
-  BookText,
   Clock3,
   ClipboardList,
   ClipboardX,
@@ -15,10 +14,10 @@ import {
   Menu,
   MessageCircleMore,
   Puzzle,
-  X,
-  type LucideIcon
+  X
 } from "lucide-react";
 import clsx from "clsx";
+import { CompleteTheWordsIcon } from "@/components/icons/CompleteTheWordsIcon";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -27,14 +26,21 @@ import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import { AdminAreaSwitch } from "@/components/RoleGate";
 
 type NavigationItem = {
-  disabled?: boolean;
-  href?: string;
-  icon: LucideIcon;
+  href: string;
+  icon: NavigationIcon;
+  iconClassName?: string;
   label: string;
   match?: (path: string) => boolean;
 };
 
-const navigationSections: Array<{ items: NavigationItem[]; label?: string }> = [
+type NavigationIcon = React.ComponentType<{
+  "aria-hidden"?: boolean | "true" | "false";
+  className?: string;
+  size?: number | string;
+  strokeWidth?: number | string;
+}>;
+
+const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?: "reading" | "writing" }> = [
   {
     items: [
       { href: STUDENT_ROUTES.home, icon: Home, label: "首页", match: (path) => path === STUDENT_ROUTES.home }
@@ -42,6 +48,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string }> = [
   },
   {
     label: "写作练习",
+    tone: "writing",
     items: [
       {
         href: STUDENT_ROUTES.buildASentence,
@@ -65,10 +72,27 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string }> = [
   },
   {
     label: "阅读练习",
+    tone: "reading",
     items: [
-      { disabled: true, icon: BookText, label: "Complete the Words" },
-      { disabled: true, icon: FileText, label: "Read in Daily Life" },
-      { disabled: true, icon: BookOpen, label: "Read an Academic Passage" }
+      {
+        href: STUDENT_ROUTES.readingCtw,
+        icon: CompleteTheWordsIcon,
+        iconClassName: "text-[#347fdc]",
+        label: "Complete the Words",
+        match: (path) => path === STUDENT_ROUTES.readingCtw
+      },
+      {
+        href: STUDENT_ROUTES.readingRdl,
+        icon: FileText,
+        label: "Read in Daily Life",
+        match: (path) => path === STUDENT_ROUTES.readingRdl
+      },
+      {
+        href: STUDENT_ROUTES.readingRap,
+        icon: BookOpen,
+        label: "Read an Academic Passage",
+        match: (path) => path === STUDENT_ROUTES.readingRap
+      }
     ]
   },
   {
@@ -84,7 +108,10 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string }> = [
         href: STUDENT_ROUTES.practiceHistory,
         icon: Clock3,
         label: STUDENT_UI_TEXT.practiceHistory,
-        match: (path) => path.startsWith(STUDENT_ROUTES.practiceHistory) || path.startsWith("/student/results/")
+        match: (path) =>
+          path.startsWith(STUDENT_ROUTES.practiceHistory)
+          || path.startsWith("/student/results/")
+          || path.startsWith("/student/reading/results/")
       },
       {
         href: STUDENT_ROUTES.assignments,
@@ -104,6 +131,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/student/write-email/submission/") ||
     pathname.startsWith("/student/academic-discussion/practice/") ||
     pathname.startsWith("/student/academic-discussion/submission/") ||
+    pathname.startsWith("/student/reading/practice/") ||
     /^\/student\/assignments\/[^/]+/.test(pathname) ||
     pathname.startsWith("/student/writing-reviews/");
 
@@ -142,7 +170,12 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
         <nav aria-label="学生端主导航" className="grid gap-4">
           {navigationSections.map((section, sectionIndex) => (
             <div className={sectionIndex > 0 ? "border-t border-student-border pt-4" : ""} key={section.label ?? "home"}>
-              {section.label ? <p className="mb-2 px-3 text-xs font-bold tracking-[0.08em] text-student-primary">{section.label}</p> : null}
+              {section.label ? (
+                <p className={clsx(
+                  "mb-2 px-3 text-xs font-bold tracking-[0.08em]",
+                  section.tone === "reading" ? "text-[#347fdc]" : "text-student-primary"
+                )}>{section.label}</p>
+              ) : null}
               <div className="grid gap-1">
                 {section.items.map((item) => (
                   <StudentNavItem item={item} key={item.label} onNavigate={() => setMenuOpen(false)} pathname={pathname} />
@@ -187,19 +220,16 @@ function StudentNavItem({
     "relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-[13px] font-semibold transition",
     active
       ? "bg-student-primary-soft text-student-primary"
-      : item.disabled
-        ? "cursor-not-allowed text-student-muted/55"
-        : "text-student-muted hover:bg-student-bg hover:text-student-text"
+      : "text-student-muted hover:bg-student-bg hover:text-student-text"
   );
   const content = (
     <>
-      <Icon aria-hidden="true" className="shrink-0" size={20} strokeWidth={1.9} />
+      <Icon aria-hidden="true" className={clsx("shrink-0", item.iconClassName)} size={20} strokeWidth={1.9} />
       <span className="min-w-0 flex-1">{item.label}</span>
-      {item.disabled ? <span className="text-[9px] font-semibold">即将上线</span> : null}
     </>
   );
 
-  return item.href ? (
+  return (
     <Link
       aria-current={active ? "page" : undefined}
       className={className}
@@ -211,7 +241,5 @@ function StudentNavItem({
     >
       {content}
     </Link>
-  ) : (
-    <span aria-disabled="true" className={className}>{content}</span>
   );
 }

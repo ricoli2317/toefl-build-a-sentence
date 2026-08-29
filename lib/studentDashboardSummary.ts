@@ -3,6 +3,7 @@ import type {
   WritingLogicalAttemptRow
 } from "./practiceLogicalState.ts";
 import type { PublicLogicalPracticeCatalogData } from "./practiceLogicalCatalog.ts";
+import type { ReadingModule } from "./reading/types.ts";
 import { isVirtualPracticeSetId } from "./studentNavigation.ts";
 
 export type StudentDashboardDraftSummary = {
@@ -12,6 +13,15 @@ export type StudentDashboardDraftSummary = {
 
 export type StudentDashboardWritingAttemptRow = WritingLogicalAttemptRow & {
   word_count: number | null;
+};
+
+export type StudentDashboardReadingAttemptRow = {
+  status: "draft" | "submitted";
+  task_type: ReadingModule;
+};
+
+export type StudentDashboardReadingProgressSummary = {
+  resumableAttemptCount: number;
 };
 
 export type StudentDashboardSummary = {
@@ -24,6 +34,7 @@ export type StudentDashboardSummary = {
     academic_discussion: StudentDashboardDraftSummary | null;
     email: StudentDashboardDraftSummary | null;
   };
+  readingProgress: Record<ReadingModule, StudentDashboardReadingProgressSummary>;
   overview: {
     currentMonthPracticeCount: number;
     learningDayCount: number;
@@ -56,6 +67,7 @@ export function buildStudentDashboardSummary(input: {
   draftDisplayNames: Partial<Record<"email" | "academic_discussion", string>>;
   now?: Date;
   pendingFeedbackCount: number;
+  readingAttempts: StudentDashboardReadingAttemptRow[];
   writingAttempts: StudentDashboardWritingAttemptRow[];
 }): StudentDashboardSummary {
   const now = input.now ?? new Date();
@@ -96,6 +108,10 @@ export function buildStudentDashboardSummary(input: {
     input.writingAttempts,
     "academic_discussion"
   );
+  const resumableReadingAttemptCount = (taskType: ReadingModule) =>
+    input.readingAttempts.filter(
+      (attempt) => attempt.task_type === taskType && attempt.status === "draft"
+    ).length;
 
   return {
     buildSentence: {
@@ -117,6 +133,11 @@ export function buildStudentDashboardSummary(input: {
             wordCount: discussionDraft.word_count ?? 0
           }
         : null
+    },
+    readingProgress: {
+      ctw: { resumableAttemptCount: resumableReadingAttemptCount("ctw") },
+      rdl: { resumableAttemptCount: resumableReadingAttemptCount("rdl") },
+      rap: { resumableAttemptCount: resumableReadingAttemptCount("rap") }
     },
     overview: {
       currentMonthPracticeCount: practiceDates.filter(

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-e673b7175d705d8132c6aec3",
+    "module": "rdl",
+    "title": "University STEM Peer Support Group",
+    "firstSeenDate": "2026-06-10",
+    "firstSeenSourceLabel": "6.10",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "e673b7175d705d8132c6aec3a9609dfdee5966948527753b1c3370dbf48ac344",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-10-m1-rdl-03",
+      "logicalItemId": "reading-rdl-e673b7175d705d8132c6aec3",
+      "sourceKind": "docx",
+      "sourceLabel": "6.10",
+      "occurrenceDate": "2026-06-10",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-e673b7175d705d8132c6aec3-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-e673b7175d705d8132c6aec3-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-069",
+      "title": "University STEM Peer Support Group",
+      "source": "material-index.json#RDL-069",
+      "sourceDate": "2026-06-10",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-069/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-069/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-e673b7175d705d8132c6aec3-q01",
+      "logicalItemId": "reading-rdl-e673b7175d705d8132c6aec3",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is suggested about the group?",
+      "rawDisplayText": "21. What is suggested about the group?",
+      "payload": {
+        "materialId": "RDL-069",
+        "options": [
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Students who are challenged by STEM courses may benefit from participating."
+          },
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Meetings are held every week in Armstrong Hall."
+          },
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q01-opt-3",
+            "optionOrder": 3,
+            "text": "The group is organized and led by STEM professors."
+          },
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q01-opt-4",
+            "optionOrder": 4,
+            "text": "The group regularly meets online."
+          }
+        ],
+        "correctOptionId": "reading-rdl-e673b7175d705d8132c6aec3-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-e673b7175d705d8132c6aec3-q02",
+      "logicalItemId": "reading-rdl-e673b7175d705d8132c6aec3",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is indicated about the study tips workshop?",
+      "rawDisplayText": "22. What is indicated about the study tips workshop?",
+      "payload": {
+        "materialId": "RDL-069",
+        "options": [
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It is open to students from other universities."
+          },
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It includes faculty members as active participants."
+          },
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It focuses on test preparation."
+          },
+          {
+            "optionId": "reading-rdl-e673b7175d705d8132c6aec3-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It provides individualized academic counseling."
+          }
+        ],
+        "correctOptionId": "reading-rdl-e673b7175d705d8132c6aec3-q02-opt-3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+    "module": "rap",
+    "title": "Theater Lighting Innovations",
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "28b2cecf31bfee0a244d1a094c3c8d2695386804a848248c491d1f5f9635cc00",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20b-m2-rap-19",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20B",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-24b-m2-rap-19",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24B",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "title": "Theater Lighting Innovations",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Theater lighting has evolved significantly over the centuries. Initially reliant on sunlight, performances were limited to daylight hours. Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination.",
+          "rawText": "Theater lighting has evolved significantly over the centuries. Initially reliant on sunlight, performances were limited to daylight hours. Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Theater lighting has evolved significantly over the centuries."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Initially reliant on sunlight, performances were limited to daylight hours."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent. This advancement improved visibility on stage and allowed for more expressive acting. Lights that illuminated actors from below and the sides helped direct audience attention.",
+          "rawText": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent. This advancement improved visibility on stage and allowed for more expressive acting. Lights that illuminated actors from below and the sides helped direct audience attention.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "This advancement improved visibility on stage and allowed for more expressive acting."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Lights that illuminated actors from below and the sides helped direct audience attention."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "The emergence of electric lighting in the late nineteenth century was transformative. Designers began using gels and filters to create a wide range of colors of varying intensity. These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape. For example, the angled light beams and shadows in Toller’s 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany.",
+          "rawText": "The emergence of electric lighting in the late nineteenth century was transformative. Designers began using gels and filters to create a wide range of colors of varying intensity. These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape. For example, the angled light beams and shadows in Toller’s 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "The emergence of electric lighting in the late nineteenth century was transformative."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Designers began using gels and filters to create a wide range of colors of varying intensity."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "For example, the angled light beams and shadows in Toller’s 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "Today’s theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings. Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative. Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential.",
+          "rawText": "Today’s theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings. Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative. Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "Today’s theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative."
+            },
+            {
+              "sentenceId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following is the most accurate description of the passage’s organization?",
+      "rawDisplayText": "11. Which of the following is the most accurate description of the passage’s organization?",
+      "payload": {
+        "passageId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01-opt-1",
+            "optionOrder": 1,
+            "text": "A discussion of the theory of theater lighting followed by paragraphs detailing the different effects it can achieve"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01-opt-2",
+            "optionOrder": 2,
+            "text": "An introduction followed by a summary of the disadvantages of older theater lighting systems"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01-opt-3",
+            "optionOrder": 3,
+            "text": "An introduction followed by a series of paragraphs on successive developments in theater lighting"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01-opt-4",
+            "optionOrder": 4,
+            "text": "A discussion of different theaters followed by a description of lighting technologies that complement each building"
+          }
+        ],
+        "correctOptionId": "reading-rap-28b2cecf31bfee0a244d1a09-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, gas lighting was an improvement on candles and oil lamps in all of the following ways EXCEPT:",
+      "rawDisplayText": "12. According to the passage, gas lighting was an improvement on candles and oil lamps in all of the following ways EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It was less likely to cause fires."
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It could be directed at individual actors."
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It produced a more constant light."
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It produced a softer light."
+          }
+        ],
+        "correctOptionId": "reading-rap-28b2cecf31bfee0a244d1a09-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “fundamentally” in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word “fundamentally” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03-opt-1",
+            "optionOrder": 1,
+            "text": "simply"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03-opt-2",
+            "optionOrder": 2,
+            "text": "thoroughly"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03-opt-3",
+            "optionOrder": 3,
+            "text": "surprisingly"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03-opt-4",
+            "optionOrder": 4,
+            "text": "permanently"
+          }
+        ],
+        "correctOptionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author discuss Transformation?",
+      "rawDisplayText": "14. Why does the author discuss Transformation?",
+      "payload": {
+        "passageId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate how skillful lighting can communicate a mood to the audience"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To provide an example of a play that could have benefited from LED technology"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To explain why electric lighting was not as powerful for creating moods as gas lighting"
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To argue that some plays relied too heavily on lighting effects"
+          }
+        ],
+        "correctOptionId": "reading-rap-28b2cecf31bfee0a244d1a09-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage imply about modern lighting technology?",
+      "rawDisplayText": "15. What does the passage imply about modern lighting technology?",
+      "payload": {
+        "passageId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05-opt-1",
+            "optionOrder": 1,
+            "text": "It can sometimes shift the focus from the play to the lighting."
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05-opt-2",
+            "optionOrder": 2,
+            "text": "It requires directors who are skilled in computer programming."
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05-opt-3",
+            "optionOrder": 3,
+            "text": "Theaters must now allocate more money to technicians and less to actors."
+          },
+          {
+            "optionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05-opt-4",
+            "optionOrder": 4,
+            "text": "Theaters must be redesigned to incorporate new lighting technology."
+          }
+        ],
+        "correctOptionId": "reading-rap-28b2cecf31bfee0a244d1a09-q05-opt-1"
+      }
+    }
+  ]
+}

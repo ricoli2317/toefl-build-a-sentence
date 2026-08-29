@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-aa8a741b5fa552e261cc5502",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1B",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "aa8a741b5fa552e261cc55024d29fcd9c9ba20bce2ae85fa7217c2c3e1c84fbc",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-aa8a741b5fa552e261cc5502",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1B",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-aa8a741b5fa552e261cc5502-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-aa8a741b5fa552e261cc5502-q01",
+      "logicalItemId": "reading-ctw-aa8a741b5fa552e261cc5502",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The trajectory of modern history has been profoundly shaped by urbanization and industrialization, which redefined both physical landscapes and social structures. As industrial centers grew, rural populations increasingly abandoned agrarian lifestyles rooted in seasonal labor and subsistence farming for wage-based employment in cities. Urban enviro_ _ _ _ _ _ became hu_ _ of econ_ _ _ _ opportunity a_ _ social exch_ _ _ _, where indiv_ _ _ _ _ _ from var_ _ _ backgrounds inter_ _ _ _ _, shared id_ _ _, and contr_ _ _ _ _ _ to emerging cultural movements. This shift marked a fundamental transformation in how people lived, worked, and connected within society.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The trajectory of modern history has been profoundly shaped by urbanization and industrialization, which redefined both physical landscapes and social structures. As industrial centers grew, rural populations increasingly abandoned agrarian lifestyles rooted in seasonal labor and subsistence farming for wage-based employment in cities. Urban enviro_ _ _ _ _ _ became hu_ _ of econ_ _ _ _ opportunity a_ _ social exch_ _ _ _, where indiv_ _ _ _ _ _ from var_ _ _ backgrounds inter_ _ _ _ _, shared id_ _ _, and contr_ _ _ _ _ _ to emerging cultural movements. This shift marked a fundamental transformation in how people lived, worked, and connected within society.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The trajectory of modern history has been profoundly shaped by urbanization and industrialization, which redefined both physical landscapes and social structures. As industrial centers grew, rural populations increasingly abandoned agrarian lifestyles rooted in seasonal labor and subsistence farming for wage-based employment in cities. Urban "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " became "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " opportunity "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " social "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", where "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " from "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " backgrounds "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": ", shared "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " to emerging cultural movements. This shift marked a fundamental transformation in how people lived, worked, and connected within society."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "environments",
+            "prefix": "enviro",
+            "displayText": "enviro_ _ _ _ _ _",
+            "missingText": "nments",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "hubs",
+            "prefix": "hu",
+            "displayText": "hu_ _",
+            "missingText": "bs",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "economic",
+            "prefix": "econ",
+            "displayText": "econ_ _ _ _",
+            "missingText": "omic",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "exchange",
+            "prefix": "exch",
+            "displayText": "exch_ _ _ _",
+            "missingText": "ange",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "individuals",
+            "prefix": "indiv",
+            "displayText": "indiv_ _ _ _ _ _",
+            "missingText": "iduals",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "varied",
+            "prefix": "var",
+            "displayText": "var_ _ _",
+            "missingText": "ied",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "interacted",
+            "prefix": "inter",
+            "displayText": "inter_ _ _ _ _",
+            "missingText": "acted",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "ideas",
+            "prefix": "id",
+            "displayText": "id_ _ _",
+            "missingText": "eas",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-aa8a741b5fa552e261cc5502-q01-p01",
+            "answer": "contributed",
+            "prefix": "contr",
+            "displayText": "contr_ _ _ _ _ _",
+            "missingText": "ibuted",
+            "missingLength": 6
+          }
+        ]
+      }
+    }
+  ]
+}

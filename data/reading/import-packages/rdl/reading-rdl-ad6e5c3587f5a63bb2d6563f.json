@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-ad6e5c3587f5a63bb2d6563f",
+    "module": "rdl",
+    "title": "CULN 310 Advanced Techniques: Sous Vide",
+    "firstSeenDate": "2026-06-09",
+    "firstSeenSourceLabel": "6.9",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "ad6e5c3587f5a63bb2d6563fd40ac7dfa632b5e9d0241740f11788601c762540",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-9-m1-rdl-10",
+      "logicalItemId": "reading-rdl-ad6e5c3587f5a63bb2d6563f",
+      "sourceKind": "docx",
+      "sourceLabel": "6.9",
+      "occurrenceDate": "2026-06-09",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-084",
+      "title": "CULN 310 Advanced Techniques: Sous Vide",
+      "source": "material-index.json#RDL-084",
+      "sourceDate": "2026-06-09",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-084/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-084/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01",
+      "logicalItemId": "reading-rdl-ad6e5c3587f5a63bb2d6563f",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is indicated about the skills students will develop from taking the CULN 310 course?",
+      "rawDisplayText": "28. What is indicated about the skills students will develop from taking the CULN 310 course?",
+      "payload": {
+        "materialId": "RDL-084",
+        "options": [
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01-opt-1",
+            "optionOrder": 1,
+            "text": "They will gain expertise in general culinary management techniques."
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01-opt-2",
+            "optionOrder": 2,
+            "text": "They will become proficient in the use of a technically complex cooking technique."
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01-opt-3",
+            "optionOrder": 3,
+            "text": "They will learn to critique historical culinary trends as restaurant critics."
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01-opt-4",
+            "optionOrder": 4,
+            "text": "They will become experts in the practical applications of plant-based ingredients."
+          }
+        ],
+        "correctOptionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02",
+      "logicalItemId": "reading-rdl-ad6e5c3587f5a63bb2d6563f",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is indicated about the eligibility criteria for enrolling in CULN 310?",
+      "rawDisplayText": "29. What is indicated about the eligibility criteria for enrolling in CULN 310?",
+      "payload": {
+        "materialId": "RDL-084",
+        "options": [
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Enrollment is open to all students with an interest in gastronomic science."
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Admission requires an advanced understanding of the sous vide technique."
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Candidates must have completed two introductory courses in the department."
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Students are required to possess prior work experience in an industrial kitchen."
+          }
+        ],
+        "correctOptionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03",
+      "logicalItemId": "reading-rdl-ad6e5c3587f5a63bb2d6563f",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Which aspect of sous vide does the syllabus suggest will be a significant component of the course?",
+      "rawDisplayText": "30. Which aspect of sous vide does the syllabus suggest will be a significant component of the course?",
+      "payload": {
+        "materialId": "RDL-084",
+        "options": [
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03-opt-1",
+            "optionOrder": 1,
+            "text": "The financial implications of sous vide in restaurant operations"
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03-opt-2",
+            "optionOrder": 2,
+            "text": "The cultural influences on the evolution of sous vide"
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The technological development of sous vide techniques over time"
+          },
+          {
+            "optionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03-opt-4",
+            "optionOrder": 4,
+            "text": "The ethical considerations of using sous vide techniques"
+          }
+        ],
+        "correctOptionId": "reading-rdl-ad6e5c3587f5a63bb2d6563f-q03-opt-3"
+      }
+    }
+  ]
+}

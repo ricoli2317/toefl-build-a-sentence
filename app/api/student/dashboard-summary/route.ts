@@ -7,6 +7,7 @@ import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
   buildStudentDashboardSummary,
   latestDashboardDraft,
+  type StudentDashboardReadingAttemptRow,
   type StudentDashboardWritingAttemptRow
 } from "@/lib/studentDashboardSummary";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
     }
 
     const db = createServiceSupabase();
-    const [buildSentenceCatalog, buildSentenceState, writingResult] = await Promise.all([
+    const [buildSentenceCatalog, buildSentenceState, writingResult, readingResult] = await Promise.all([
       timing.measure("cache", "public_build_sentence_catalog", () =>
         loadCachedPublicPracticeCatalog("build_sentence")
       ),
@@ -52,10 +53,23 @@ export async function GET(request: Request) {
             .order("attempt_id", { ascending: false })
             .range(from, to)
         )
+      ),
+      timing.measure("database", "reading_attempts_dashboard", () =>
+        readAllSupabaseRows<StudentDashboardReadingAttemptRow>((from, to) =>
+          db
+            .from("reading_attempts")
+            .select("task_type,status")
+            .eq("student_id", auth.userId!)
+            .eq("status", "draft")
+            .range(from, to)
+        )
       )
     ]);
     if (writingResult.error) {
       return respond({ error: writingResult.error.message }, { status: 500 });
+    }
+    if (readingResult.error) {
+      return respond({ error: "暂时无法加载阅读练习概览。" }, { status: 500 });
     }
 
     const writingAttempts = writingResult.data ?? [];
@@ -104,6 +118,7 @@ export async function GET(request: Request) {
             academic_discussion: discussionTitle
           },
           pendingFeedbackCount: publishedResult.data?.length ?? 0,
+          readingAttempts: readingResult.data ?? [],
           writingAttempts
         })
       )

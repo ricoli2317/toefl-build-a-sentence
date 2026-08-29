@@ -228,31 +228,69 @@ function ResultSummary({
   peerComparison: ResultPeerComparison;
 }) {
   return (
-    <section className="student-card">
-      <p className="text-lg font-bold text-student-text">
-        {formatResultSetTitle(attempt.set_id, attempt.set_title)}
-      </p>
+    <PracticeResultSummary
+      correctPoints={attempt.correct_count}
+      elapsedSeconds={attempt.time_spent_seconds}
+      scoreComparison={formatScoreComparison(peerComparison)}
+      timeComparison={formatTimeComparison(peerComparison)}
+      title={formatResultSetTitle(attempt.set_id, attempt.set_title)}
+      totalPoints={attempt.total_questions}
+    />
+  );
+}
+
+/** Shared BAS/Reading result summary. Domain-specific result data stays outside. */
+export function PracticeResultSummary({
+  correctPoints,
+  elapsedSeconds,
+  incorrectPoints,
+  scoreComparison = "练习已完成",
+  timeComparison = "本次练习用时",
+  title,
+  totalPoints,
+  unansweredPoints
+}: {
+  correctPoints: number;
+  elapsedSeconds: number;
+  incorrectPoints?: number;
+  scoreComparison?: string;
+  timeComparison?: string;
+  title: string;
+  totalPoints: number;
+  unansweredPoints?: number;
+}) {
+  const accuracy = totalPoints > 0
+    ? Math.round((correctPoints / totalPoints) * 100)
+    : 0;
+  return (
+    <section className="student-card" data-testid="practice-result-summary">
+      <p className="text-lg font-bold text-student-text">{title}</p>
       <div className="mt-5 grid gap-3 md:grid-cols-3">
         <ResultMetricCard
-          comparison={formatScoreComparison(peerComparison)}
+          comparison={scoreComparison}
           icon={Trophy}
           label="得分"
-          value={`${attempt.correct_count}/${attempt.total_questions}`}
+          value={`${correctPoints}/${totalPoints}`}
         />
         <ResultMetricCard
-          comparison={formatScoreComparison(peerComparison)}
+          comparison={scoreComparison}
           icon={Target}
           label="正确率"
-          value={`${Math.round(attempt.accuracy * 100)}%`}
+          value={`${accuracy}%`}
         />
         <ResultMetricCard
-          comparison={formatTimeComparison(peerComparison)}
+          comparison={timeComparison}
           icon={Clock3}
           label="用时"
           tone="error"
-          value={formatDuration(attempt.time_spent_seconds)}
+          value={formatDuration(elapsedSeconds)}
         />
       </div>
+      {incorrectPoints !== undefined && unansweredPoints !== undefined ? (
+        <p className="mt-4 text-sm font-semibold text-student-muted" data-testid="reading-result-breakdown">
+          答错 {incorrectPoints} · 未作答 {unansweredPoints}
+        </p>
+      ) : null}
     </section>
   );
 }
@@ -378,13 +416,15 @@ function ResultMetricCard({
   );
 }
 
-function formatScoreComparison(comparison: ResultPeerComparison) {
+export const RESULT_COMPARISON_LOADING_TEXT = "正在加载同班比较…";
+
+export function formatScoreComparison(comparison: ResultPeerComparison) {
   return comparison.scorePercentile === null
     ? "暂无同伴数据"
     : `超越了 ${comparison.scorePercentile}% 的同学`;
 }
 
-function formatTimeComparison(comparison: ResultPeerComparison) {
+export function formatTimeComparison(comparison: ResultPeerComparison) {
   const timeComparison = comparison.timeComparison;
   if (!timeComparison) return "暂无同伴数据";
   if (timeComparison.direction === "same") return "与平均用时基本一致";

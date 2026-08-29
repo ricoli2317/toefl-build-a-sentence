@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+    "module": "rap",
+    "title": "Language in Primates",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "94b83368bbbce780f1162836093866338697102501cb688b3e12f6abdc91a5df",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6a-m2-rap-19",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6A",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-94b83368bbbce780f1162836-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-94b83368bbbce780f1162836-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-94b83368bbbce780f1162836-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-94b83368bbbce780f1162836-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-94b83368bbbce780f1162836-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-94b83368bbbce780f1162836-passage-01",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "title": "Language in Primates",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Language has traditionally been considered a uniquely human trait; however, this assumption has been increasingly challenged. Research involving chimpanzees and bonobos reveals rudimentary linguistic abilities: symbolic communication, basic grammar, and even sentence formation. Kanzi, a bonobo, famously used lexigrams (symbols that stand for specific concepts) to convey desires and even to learn to comprehend grammar, suggesting a grasp of syntactic rules.",
+          "rawText": "Language has traditionally been considered a uniquely human trait; however, this assumption has been increasingly challenged. Research involving chimpanzees and bonobos reveals rudimentary linguistic abilities: symbolic communication, basic grammar, and even sentence formation. Kanzi, a bonobo, famously used lexigrams (symbols that stand for specific concepts) to convey desires and even to learn to comprehend grammar, suggesting a grasp of syntactic rules.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Language has traditionally been considered a uniquely human trait; however, this assumption has been increasingly challenged."
+            },
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Research involving chimpanzees and bonobos reveals rudimentary linguistic abilities: symbolic communication, basic grammar, and even sentence formation."
+            },
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Kanzi, a bonobo, famously used lexigrams (symbols that stand for specific concepts) to convey desires and even to learn to comprehend grammar, suggesting a grasp of syntactic rules."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Yet, such abilities in nonhuman primates emerge only through intensive training and do not naturally evolve in primate communities. This distinction underscores a critical contrast: while humans spontaneously develop intricate language systems, other primates’ communication remains tethered to immediate needs and lacks the generative structure necessary for producing novel sentences and ideas.",
+          "rawText": "Yet, such abilities in nonhuman primates emerge only through intensive training and do not naturally evolve in primate communities. This distinction underscores a critical contrast: while humans spontaneously develop intricate language systems, other primates’ communication remains tethered to immediate needs and lacks the generative structure necessary for producing novel sentences and ideas.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Yet, such abilities in nonhuman primates emerge only through intensive training and do not naturally evolve in primate communities."
+            },
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "This distinction underscores a critical contrast: while humans spontaneously develop intricate language systems, other primates’ communication remains tethered to immediate needs and lacks the generative structure necessary for producing novel sentences and ideas."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Some theorists propose that individual cognitive capacities are what constrains language development; others argue that social complexity plays a pivotal role. Language, they contend, may have coevolved with the demands of maintaining social hierarchies and alliances. While all primates, including humans, are social creatures, the fact remains that no known communication system among nonhuman primates rivals human language. Comparative linguistic studies may blur the boundaries between species, but they ultimately reaffirm the singularity of human linguistic capacity.",
+          "rawText": "■ Some theorists propose that individual cognitive capacities are what constrains language development; others argue that social complexity plays a pivotal role. ■ Language, they contend, may have coevolved with the demands of maintaining social hierarchies and alliances. ■ While all primates, including humans, are social creatures, the fact remains that no known communication system among nonhuman primates rivals human language. ■ Comparative linguistic studies may blur the boundaries between species, but they ultimately reaffirm the singularity of human linguistic capacity.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Some theorists propose that individual cognitive capacities are what constrains language development; others argue that social complexity plays a pivotal role."
+            },
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Language, they contend, may have coevolved with the demands of maintaining social hierarchies and alliances."
+            },
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "While all primates, including humans, are social creatures, the fact remains that no known communication system among nonhuman primates rivals human language."
+            },
+            {
+              "sentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Comparative linguistic studies may blur the boundaries between species, but they ultimately reaffirm the singularity of human linguistic capacity."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q01",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage suggests that Kanzi’s ability to communicate through language was limited in that it did not",
+      "rawDisplayText": "11. The passage suggests that Kanzi’s ability to communicate through language was limited in that it did not",
+      "payload": {
+        "passageId": "reading-rap-94b83368bbbce780f1162836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q01-opt-1",
+            "optionOrder": 1,
+            "text": "involve basic symbolic representation"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q01-opt-2",
+            "optionOrder": 2,
+            "text": "succeed in expressing immediate needs"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q01-opt-3",
+            "optionOrder": 3,
+            "text": "arise naturally without training by humans"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q01-opt-4",
+            "optionOrder": 4,
+            "text": "include an understanding of syntactic rules"
+          }
+        ],
+        "correctOptionId": "reading-rap-94b83368bbbce780f1162836-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q02",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, nonhuman primates can do each of the following EXCEPT",
+      "rawDisplayText": "12. According to the passage, nonhuman primates can do each of the following EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-94b83368bbbce780f1162836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q02-opt-1",
+            "optionOrder": 1,
+            "text": "convey meaning through symbols"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q02-opt-2",
+            "optionOrder": 2,
+            "text": "teach each other basic grammar"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q02-opt-3",
+            "optionOrder": 3,
+            "text": "live in groups with social structures"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q02-opt-4",
+            "optionOrder": 4,
+            "text": "respond to instruction by humans"
+          }
+        ],
+        "correctOptionId": "reading-rap-94b83368bbbce780f1162836-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q03",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The phrase “tethered to” in the passage is closest in meaning to",
+      "rawDisplayText": "13. The phrase “tethered to” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-94b83368bbbce780f1162836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q03-opt-1",
+            "optionOrder": 1,
+            "text": "hindered by"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q03-opt-2",
+            "optionOrder": 2,
+            "text": "useful for"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q03-opt-3",
+            "optionOrder": 3,
+            "text": "secondary to"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q03-opt-4",
+            "optionOrder": 4,
+            "text": "focused on"
+          }
+        ],
+        "correctOptionId": "reading-rap-94b83368bbbce780f1162836-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q04",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The author notes that “all primates, including humans, are social creatures” primarily to",
+      "rawDisplayText": "14. The author notes that “all primates, including humans, are social creatures” primarily to",
+      "payload": {
+        "passageId": "reading-rap-94b83368bbbce780f1162836-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q04-opt-1",
+            "optionOrder": 1,
+            "text": "suggest that nonhuman primates may eventually develop humanlike language"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q04-opt-2",
+            "optionOrder": 2,
+            "text": "indicate a seeming commonality when it comes to prerequisites for developing language"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q04-opt-3",
+            "optionOrder": 3,
+            "text": "argue that nonhuman primates are more intelligent than was previously believed"
+          },
+          {
+            "optionId": "reading-rap-94b83368bbbce780f1162836-q04-opt-4",
+            "optionOrder": 4,
+            "text": "support the claim that no known animal communication system rivals human language"
+          }
+        ],
+        "correctOptionId": "reading-rap-94b83368bbbce780f1162836-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q05",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-94b83368bbbce780f1162836-passage-01",
+        "insertSentence": "Yet social organization alone does not seem sufficient to explain the emergence of a fully generative language ability.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-94b83368bbbce780f1162836-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-94b83368bbbce780f1162836-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-94b83368bbbce780f1162836-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-94b83368bbbce780f1162836-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-94b83368bbbce780f1162836-q05-anchor-3"
+      }
+    }
+  ]
+}

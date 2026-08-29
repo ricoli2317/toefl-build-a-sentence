@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-31b26c1c58817872c3cb29f1",
+    "module": "rdl",
+    "title": "ON MARCH 18, FILM STUDIES MAJORS PRESENTED THEIR WORK AT ADLER AUDITORIUM.",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6A",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "31b26c1c58817872c3cb29f1accd358ad444d28a0740edbb4d9e95998548f0c7",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-31b26c1c58817872c3cb29f1",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6A",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-010",
+      "title": "ON MARCH 18, FILM STUDIES MAJORS PRESENTED THEIR WORK AT ADLER AUDITORIUM.",
+      "source": "material-index.json#RDL-010",
+      "sourceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-010/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-010/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01",
+      "logicalItemId": "reading-rdl-31b26c1c58817872c3cb29f1",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "The article indicates which of the following about the event at Adler Auditorium?",
+      "rawDisplayText": "23. The article indicates which of the following about the event at Adler Auditorium?",
+      "payload": {
+        "materialId": "RDL-010",
+        "options": [
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It was covered by several media outlets."
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It centered on students pursuing the same degree."
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It was introduced by a professor of film studies."
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It was sponsored by a student organization."
+          }
+        ],
+        "correctOptionId": "reading-rdl-31b26c1c58817872c3cb29f1-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02",
+      "logicalItemId": "reading-rdl-31b26c1c58817872c3cb29f1",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "The article suggests that the four films",
+      "rawDisplayText": "24. The article suggests that the four films",
+      "payload": {
+        "materialId": "RDL-010",
+        "options": [
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02-opt-1",
+            "optionOrder": 1,
+            "text": "showed different levels of technical proficiency"
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02-opt-2",
+            "optionOrder": 2,
+            "text": "featured students as actors"
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02-opt-3",
+            "optionOrder": 3,
+            "text": "were shot in black and white"
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02-opt-4",
+            "optionOrder": 4,
+            "text": "covered a range of emotional tones"
+          }
+        ],
+        "correctOptionId": "reading-rdl-31b26c1c58817872c3cb29f1-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03",
+      "logicalItemId": "reading-rdl-31b26c1c58817872c3cb29f1",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "The article mentions each of the following EXCEPT",
+      "rawDisplayText": "25. The article mentions each of the following EXCEPT",
+      "payload": {
+        "materialId": "RDL-010",
+        "options": [
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03-opt-1",
+            "optionOrder": 1,
+            "text": "other projects completed by the filmmakers"
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03-opt-2",
+            "optionOrder": 2,
+            "text": "the venue where the screenings were held"
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03-opt-3",
+            "optionOrder": 3,
+            "text": "the subject matter of each film that was shown"
+          },
+          {
+            "optionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03-opt-4",
+            "optionOrder": 4,
+            "text": "the inspiration behind one of the films"
+          }
+        ],
+        "correctOptionId": "reading-rdl-31b26c1c58817872c3cb29f1-q03-opt-1"
+      }
+    }
+  ]
+}

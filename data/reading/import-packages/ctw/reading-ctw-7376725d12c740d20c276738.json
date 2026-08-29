@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-7376725d12c740d20c276738",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-17",
+    "firstSeenSourceLabel": "6.17",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "7376725d12c740d20c2767384431c3a2a04ecfdae265fbb97bfe82cce7e1d410",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-17-m2-ctw-18",
+      "logicalItemId": "reading-ctw-7376725d12c740d20c276738",
+      "sourceKind": "docx",
+      "sourceLabel": "6.17",
+      "occurrenceDate": "2026-06-17",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.17_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-7376725d12c740d20c276738-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-21b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-7376725d12c740d20c276738",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21B",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-7376725d12c740d20c276738-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-7376725d12c740d20c276738-q01",
+      "logicalItemId": "reading-ctw-7376725d12c740d20c276738",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The Louisiana Purchase of 1803 was a landmark diplomatic agreement in which the United States acquired approximately 828,000 square miles of territory from France for $15 million. Negotiated under President Thomas Jefferson, the acqui_ _ _ _ _ _ nearly dou_ _ _ _ the la_ _ area o_ the nat_ _ _ and sec_ _ _ _ access t_ key inl_ _ _ waterways a_ _ trade hu_ _ essential for economic expansion. The purchase also affirmed the principle of implied powers within the United States Constitution, setting a precedent for future territorial growth.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The Louisiana Purchase of 1803 was a landmark diplomatic agreement in which the United States acquired approximately 828,000 square miles of territory from France for $15 million. Negotiated under President Thomas Jefferson, the acqui_ _ _ _ _ _ nearly dou_ _ _ _ the la_ _ area o_ the nat_ _ _ and sec_ _ _ _ access t_ key inl_ _ _ waterways a_ _ trade hu_ _ essential for economic expansion. The purchase also affirmed the principle of implied powers within the United States Constitution, setting a precedent for future territorial growth.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The Louisiana Purchase of 1803 was a landmark diplomatic agreement in which the United States acquired approximately 828,000 square miles of territory from France for $15 million. Negotiated under President Thomas Jefferson, the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " nearly "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " area "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " access "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " key "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " waterways "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " trade "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " essential for economic expansion. The purchase also affirmed the principle of implied powers within the United States Constitution, setting a precedent for future territorial growth."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "acquisition",
+            "prefix": "acqui",
+            "displayText": "acqui_ _ _ _ _ _",
+            "missingText": "sition",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "doubled",
+            "prefix": "dou",
+            "displayText": "dou_ _ _ _",
+            "missingText": "bled",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "land",
+            "prefix": "la",
+            "displayText": "la_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "nation",
+            "prefix": "nat",
+            "displayText": "nat_ _ _",
+            "missingText": "ion",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "secured",
+            "prefix": "sec",
+            "displayText": "sec_ _ _ _",
+            "missingText": "ured",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "inland",
+            "prefix": "inl",
+            "displayText": "inl_ _ _",
+            "missingText": "and",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-7376725d12c740d20c276738-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-7376725d12c740d20c276738-q01-p01",
+            "answer": "hubs",
+            "prefix": "hu",
+            "displayText": "hu_ _",
+            "missingText": "bs",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+    "module": "rap",
+    "title": "Hidden Structures in Discrete Geometry",
+    "firstSeenDate": "2026-06-24",
+    "firstSeenSourceLabel": "6.24",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "f50dd6e4cd831e6155bb31ac1eea19c2d8b69646273751a2c4b3e0c42e22fa8d",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-24-m1-rap-13",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "sourceKind": "docx",
+      "sourceLabel": "6.24",
+      "occurrenceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "title": "Hidden Structures in Discrete Geometry",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects. Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons. These distinct components reveal unexpected structures and relationships. Such revelations occur particularly in packing and tiling problems.",
+          "rawText": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects. Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons. These distinct components reveal unexpected structures and relationships. Such revelations occur particularly in packing and tiling problems.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "These distinct components reveal unexpected structures and relationships."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Such revelations occur particularly in packing and tiling problems."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Packing problems involve finding the most efficient arrangement of objects in a given space. While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access. Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency.",
+          "rawText": "Packing problems involve finding the most efficient arrangement of objects in a given space. While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access. Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Packing problems involve finding the most efficient arrangement of objects in a given space."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Tiling problems further illustrate the depth of discrete geometry. Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties. The insights gained from such tiling patterns have influenced architectural designs and artworks.",
+          "rawText": "■ Tiling problems further illustrate the depth of discrete geometry. ■ Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties. ■ The insights gained from such tiling patterns have influenced architectural designs and artworks. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Tiling problems further illustrate the depth of discrete geometry."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "The insights gained from such tiling patterns have influenced architectural designs and artworks."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value. Mathematicians continue to show how these hidden structures drive innovation across fields.",
+          "rawText": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value. Mathematicians continue to show how these hidden structures drive innovation across fields.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value."
+            },
+            {
+              "sentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Mathematicians continue to show how these hidden structures drive innovation across fields."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q01",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "questionOrder": 1,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 1 that contrasts two branches of mathematics. Select the sentence to make your choice.",
+      "rawDisplayText": "31. Identify the sentence in paragraph 1 that contrasts two branches of mathematics. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01",
+        "targetParagraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01",
+        "correctSentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01-s02"
+      }
+    },
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention \"fitting oranges into boxes\"?",
+      "rawDisplayText": "32. Why does the author mention \"fitting oranges into boxes\"?",
+      "payload": {
+        "passageId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To help describe the historical development of packing problems"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To help communicate the idea that packing problems are not as simple as they sound"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To explain the basic principles of discrete geometry to nonspecialists"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To highlight one of the challenges faced by researchers in discrete geometry"
+          }
+        ],
+        "correctOptionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The study of computer chip design and data storage has revealed that",
+      "rawDisplayText": "33. The study of computer chip design and data storage has revealed that",
+      "payload": {
+        "passageId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03-opt-1",
+            "optionOrder": 1,
+            "text": "traditional assumptions about efficiency are still valid"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03-opt-2",
+            "optionOrder": 2,
+            "text": "the principles of continuous geometry are surprisingly relevant"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03-opt-3",
+            "optionOrder": 3,
+            "text": "there are interesting connections between how shapes are arranged and how spaces are used"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03-opt-4",
+            "optionOrder": 4,
+            "text": "there are new ways of enhancing the security of digital information"
+          }
+        ],
+        "correctOptionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"belie\" in the passage is closest in meaning to",
+      "rawDisplayText": "34. The word \"belie\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04-opt-1",
+            "optionOrder": 1,
+            "text": "hide"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04-opt-2",
+            "optionOrder": 2,
+            "text": "confirm"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04-opt-3",
+            "optionOrder": 3,
+            "text": "enhance"
+          },
+          {
+            "optionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04-opt-4",
+            "optionOrder": 4,
+            "text": "undermine"
+          }
+        ],
+        "correctOptionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01",
+        "insertSentence": "For example, Penrose-inspired patterns have been used in mosaic art and floor designs to create visually striking compositions that evoke mathematical harmony.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-f50dd6e4cd831e6155bb31ac-q05-anchor-4"
+      }
+    }
+  ]
+}

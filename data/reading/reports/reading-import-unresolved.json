@@ -1,0 +1,13 @@
+[
+  {
+    "month": "2026-06",
+    "sourceFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+    "answerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+    "set": "6.2",
+    "module": "m1",
+    "question": "1-10",
+    "type": "ctw",
+    "issue": "source questions missing",
+    "reason": "The question and answer DOCX explicitly state that M1 questions 1-10 are missing from the source PDF"
+  }
+]

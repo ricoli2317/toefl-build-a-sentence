@@ -1,0 +1,1787 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.20A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Geology is the scientific study of our planet, including its composition, structure, and processes. Geolo_ _ _ _ _ analyze ro_ _ _ minerals, a_ _ the nat_ _ _ _ forces th_ _ change t_ _ outer la_ _ _ of Ea_ _ _ over ti_ _. This know_ _ _ _ _ helps scientists understand the planet’s history and predict future changes. It is essential for natural resource management, hazard mitigation, and environmental protection. Advances in geologic research—such as satellite-based remote sensing, deep-Earth imaging, and isotopic dating—have greatly improved our ability to monitor earthquakes, track volcanic activity, and assess groundwater resources.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Geology is the scientific study of our planet, including its composition, structure, and processes. Geolo_ _ _ _ _ analyze ro_ _ _ minerals, a_ _ the nat_ _ _ _ forces th_ _ change t_ _ outer la_ _ _ of Ea_ _ _ over ti_ _. This know_ _ _ _ _ helps scientists understand the planet’s history and predict future changes. It is essential for natural resource management, hazard mitigation, and environmental protection. Advances in geologic research—such as satellite-based remote sensing, deep-Earth imaging, and isotopic dating—have greatly improved our ability to monitor earthquakes, track volcanic activity, and assess groundwater resources.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Geology is the scientific study of our planet, including its composition, structure, and processes. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " analyze "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " minerals, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " forces "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " change "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " outer "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " over "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". This "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " helps scientists understand the planet’s history and predict future changes. It is essential for natural resource management, hazard mitigation, and environmental protection. Advances in geologic research—such as satellite-based remote sensing, deep-Earth imaging, and isotopic dating—have greatly improved our ability to monitor earthquakes, track volcanic activity, and assess groundwater resources."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "Geologists",
+                "prefix": "Geolo",
+                "displayText": "Geolo_ _ _ _ _",
+                "missingText": "gists",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "rocks",
+                "prefix": "ro",
+                "displayText": "ro_ _ _",
+                "missingText": "cks",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "natural",
+                "prefix": "nat",
+                "displayText": "nat_ _ _ _",
+                "missingText": "ural",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "that",
+                "prefix": "th",
+                "displayText": "th_ _",
+                "missingText": "at",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "layer",
+                "prefix": "la",
+                "displayText": "la_ _ _",
+                "missingText": "yer",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "Earth",
+                "prefix": "Ea",
+                "displayText": "Ea_ _ _",
+                "missingText": "rth",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "time",
+                "prefix": "ti",
+                "displayText": "ti_ _",
+                "missingText": "me",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q01-10-p01",
+                "answer": "knowledge",
+                "prefix": "know",
+                "displayText": "know_ _ _ _ _",
+                "missingText": "ledge",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In academic research, reasoning is key to forming and testing hypotheses. Logical reasoning uses structured thinking to evaluate arguments and reach conclusions. Deductive reasoning starts with known facts and leads to certain outcomes, while inductive reasoning draws gen_ _ _ _ ideas fr_ _ specific observ_ _ _ _ _ _, though i_ involves so_ _ uncertainty. Us_ _ _ both met_ _ _ _ together stren_ _ _ _ _ _ the appr_ _ _ _ to invest_ _ _ _ _ _ _ and inquiry. This practice helps scholars build solid arguments and make informed decisions. By applying clear reasoning strategies, researchers can advance knowledge and contribute meaningful insights to their fields.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "In academic research, reasoning is key to forming and testing hypotheses. Logical reasoning uses structured thinking to evaluate arguments and reach conclusions. Deductive reasoning starts with known facts and leads to certain outcomes, while inductive reasoning draws gen_ _ _ _ ideas fr_ _ specific observ_ _ _ _ _ _, though i_ involves so_ _ uncertainty. Us_ _ _ both met_ _ _ _ together stren_ _ _ _ _ _ the appr_ _ _ _ to invest_ _ _ _ _ _ _ and inquiry. This practice helps scholars build solid arguments and make informed decisions. By applying clear reasoning strategies, researchers can advance knowledge and contribute meaningful insights to their fields.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In academic research, reasoning is key to forming and testing hypotheses. Logical reasoning uses structured thinking to evaluate arguments and reach conclusions. Deductive reasoning starts with known facts and leads to certain outcomes, while inductive reasoning draws "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ideas "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " specific "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", though "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " involves "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " uncertainty. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " both "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " together "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and inquiry. This practice helps scholars build solid arguments and make informed decisions. By applying clear reasoning strategies, researchers can advance knowledge and contribute meaningful insights to their fields."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "general",
+                "prefix": "gen",
+                "displayText": "gen_ _ _ _",
+                "missingText": "eral",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "from",
+                "prefix": "fr",
+                "displayText": "fr_ _",
+                "missingText": "om",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "observations",
+                "prefix": "observ",
+                "displayText": "observ_ _ _ _ _ _",
+                "missingText": "ations",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "it",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "some",
+                "prefix": "so",
+                "displayText": "so_ _",
+                "missingText": "me",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "Using",
+                "prefix": "Us",
+                "displayText": "Us_ _ _",
+                "missingText": "ing",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "methods",
+                "prefix": "met",
+                "displayText": "met_ _ _ _",
+                "missingText": "hods",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "strengthens",
+                "prefix": "stren",
+                "displayText": "stren_ _ _ _ _ _",
+                "missingText": "gthens",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "approach",
+                "prefix": "appr",
+                "displayText": "appr_ _ _ _",
+                "missingText": "oach",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-20-a-m1-ctw-q11-20-p01",
+                "answer": "investigation",
+                "prefix": "invest",
+                "displayText": "invest_ _ _ _ _ _ _",
+                "missingText": "igation",
+                "missingLength": 7
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m1-rdl-03",
+      "module": "rdl",
+      "title": "SIGN LANGUAGE INTERPRETER NEEDED",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-040",
+          "title": "SIGN LANGUAGE INTERPRETER NEEDED",
+          "source": "material-index.json#RDL-040",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-040/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-040/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "A successful applicant must meet all of the following criteria EXCEPT",
+          "rawDisplayText": "21. A successful applicant must meet all of the following criteria EXCEPT",
+          "payload": {
+            "materialId": "RDL-040",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "be available on Wednesday afternoons"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "know American Sign Language"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "be a student council member"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "study full-time"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "According to the advertisement, what must a student do to apply?",
+          "rawDisplayText": "22. According to the advertisement, what must a student do to apply?",
+          "payload": {
+            "materialId": "RDL-040",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Send in two references"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Interpret a short conversation"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Attend the next student council meeting"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Contact the department that posted the job"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q22-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m1-rdl-05",
+      "module": "rdl",
+      "title": "Frankson Library Renovation and Temporary Relocation",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-041",
+          "title": "Frankson Library Renovation and Temporary Relocation",
+          "source": "material-index.json#RDL-041",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-041/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-041/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "Where can students check out and return books during the renovation?",
+          "rawDisplayText": "23. Where can students check out and return books during the renovation?",
+          "payload": {
+            "materialId": "RDL-041",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "In the Main Building"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "In the Meyer Student Union Building"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "In the Frankson Library"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "On the Main Quad"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What does the notice imply about the university’s digital resources?",
+          "rawDisplayText": "24. What does the notice imply about the university’s digital resources?",
+          "payload": {
+            "materialId": "RDL-041",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "They can be accessed only during the temporary library’s operating hours."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "They may compensate for reduced convenience during the renovation."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "They were developed specifically in response to the renovation project."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "They will be accessible only to students who register through the online portal."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What can be inferred from the notice about the Meyer Student Union Building?",
+          "rawDisplayText": "25. What can be inferred from the notice about the Meyer Student Union Building?",
+          "payload": {
+            "materialId": "RDL-041",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "It is not close to the university’s Main Building."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "It is the only campus building large enough to house library services."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "It is not within easy walking distance of the Main Quad."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "It does not normally offer study spaces for students."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q25-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m1-rap-08",
+      "module": "rap",
+      "title": "Parallel Algorithms: From Challenges to Opportunities",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-20-a-m1-rap-p01",
+          "title": "Parallel Algorithms: From Challenges to Opportunities",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.",
+              "rawText": "Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time. Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Parallel algorithms, a computing method common in modern computers, solve problems faster by dividing a task into smaller parts that run at the same time."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Instead of checking every item in a huge database one by one as in a sequential algorithm, a parallel algorithm might split the job across multiple processor cores, each checking a portion of the data simultaneously."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.",
+              "rawText": "In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly. When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics. Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks. However, if too much data is sent to the processors at once without proper management, the system slows down.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "In healthcare, parallel algorithms play a crucial role in analyzing large datasets quickly."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "When researchers simulate how a virus spreads through a population, they need to process millions of data points—like infection rates and demographics."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Using parallel processing, these simulations can run in minutes instead of hours, helping public health officials make faster decisions during outbreaks."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, if too much data is sent to the processors at once without proper management, the system slows down."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "One of the strengths of parallel algorithms is their versatility. Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. Training a deep learning model would be nearly impossible without parallel computing.",
+              "rawText": "One of the strengths of parallel algorithms is their versatility. ■ Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once. ■ This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly. ■ Training a deep learning model would be nearly impossible without parallel computing. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "One of the strengths of parallel algorithms is their versatility."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Developers can tailor them to work efficiently on different types of hardware, such as graphics processing units (GPUs), which are especially good at handling many tasks at once."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "This is a big reason why deep learning—used in things like facial recognition—has advanced so quickly."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Training a deep learning model would be nearly impossible without parallel computing."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage indicate about sequential algorithms?",
+          "rawDisplayText": "26. What does the passage indicate about sequential algorithms?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "They are less efficient than parallel algorithms are."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "They handle computational tasks in the same way that parallel algorithms do."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "They can solve problems that parallel algorithms cannot."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "They use more advanced hardware than parallel algorithms do."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q26-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss the simulation of the spread of a virus?",
+          "rawDisplayText": "27. Why does the author discuss the simulation of the spread of a virus?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate the challenges that public health officials face during disease outbreaks"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "To demonstrate the significance of parallel algorithms in healthcare"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "To highlight the data points that researchers focus on when a virus spreads through a population"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "To emphasize the risk of using small datasets for analysis during disease outbreaks"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q27-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 2 that indicates that parallel algorithms have challenges. Select the sentence to make your choice.",
+          "rawDisplayText": "28. Identify the sentence in paragraph 2 that indicates that parallel algorithms have challenges. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p01",
+            "targetParagraphId": "reading-2026-05-20-a-m1-rap-p01-p02",
+            "correctSentenceId": "reading-2026-05-20-a-m1-rap-p01-p02-s04"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “tailor” in the passage is closest in meaning to",
+          "rawDisplayText": "29. The word “tailor” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "direct"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "explore"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "adapt"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "prepare"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p01",
+            "insertSentence": "In light of their many advantages, parallel algorithms will surely continue to drive innovation in diverse areas like climate modeling and financial analysis.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q30-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q30-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q30-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q30-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p01-p03",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p01-p03-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-20-a-m1-q30-anchor-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m1-rap-13",
+      "module": "rap",
+      "title": "Urban Resilience",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-20-a-m1-rap-p02",
+          "title": "Urban Resilience",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals. This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas. Cities are implementing various strategies to enhance resilience. For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding. Renewable energy sources, such as solar and wind, reduce dependence on non-renewable resources and improve energy security.",
+              "rawText": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals. This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas. Cities are implementing various strategies to enhance resilience. For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding. Renewable energy sources, such as solar and wind, reduce dependence on non-renewable resources and improve energy security.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Urban resilience refers to the ability of cities to absorb, recover from, and prepare for shocks such as natural disasters, economic crises, and social upheavals."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This concept is becoming increasingly important as more people move into urban areas and face the challenges that come with densely populated areas."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Cities are implementing various strategies to enhance resilience."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "For instance, green infrastructure, like parks and green roofs, can help manage stormwater and reduce flooding."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Renewable energy sources, such as solar and wind, reduce dependence on non-renewable resources and improve energy security."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Community engagement is another critical component of urban resilience. Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met. This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies. Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems.",
+              "rawText": "Community engagement is another critical component of urban resilience. Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met. This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies. Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Community engagement is another critical component of urban resilience."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Local governments are involving residents in planning and decision-making processes to ensure that the needs of the community are met."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This participatory approach fosters a sense of ownership and accountability among citizens, improving the effectiveness of resilience strategies."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Technology also plays a role, with smart city initiatives using data and sensors to monitor infrastructure and predict potential problems."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Nonetheless, building urban resilience is not without obstacles. Budget constraints and political disagreements can hinder the implementation of necessary measures. Additionally, the integration of new technologies requires substantial investment and training. Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide.",
+              "rawText": "Nonetheless, building urban resilience is not without obstacles. ■ Budget constraints and political disagreements can hinder the implementation of necessary measures. ■ Additionally, the integration of new technologies requires substantial investment and training. ■ Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Nonetheless, building urban resilience is not without obstacles."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Budget constraints and political disagreements can hinder the implementation of necessary measures."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Additionally, the integration of new technologies requires substantial investment and training."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Despite these obstacles, the pursuit of urban resilience is essential for the sustainable development of cities worldwide."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the purpose of green infrastructure like parks and green roofs?",
+          "rawDisplayText": "31. What is the purpose of green infrastructure like parks and green roofs?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "To increase urban density"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "To prevent flooding"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "To foster community engagement"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "To generate renewable energy"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “fosters” in the passage is closest in meaning to",
+          "rawDisplayText": "32. The word “fosters” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "describes"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "neglects"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "encourages"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "replaces"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q32-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest is essential for resilience strategies to be fully effective?",
+          "rawDisplayText": "33. What does the passage suggest is essential for resilience strategies to be fully effective?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "Discouraging the uncontrolled growth of urban populations"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "The involvement of local government and citizens"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "Less reliance on smart technology"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "Limiting the number of structures in urban areas"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is NOT mentioned as a challenge for urban resilience?",
+          "rawDisplayText": "34. Which of the following is NOT mentioned as a challenge for urban resilience?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "Financial limitations"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "Political disagreements"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "Integration of new technologies"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "Community participation"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m1-rap-p02",
+            "insertSentence": "For example, Singapore’s Intelligent Transport System incorporates artificial intelligence (AI) to predict real-time traffic conditions, effectively manage road congestion, and optimize routes.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p02",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p02-p02-s04"
+              },
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-20-a-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-20-a-m1-rap-p02-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-20-a-m1-rap-p02-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-20-a-m1-q35-anchor-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The transition from Baroque to Classical music reflected broader cultural shifts in eighteenth-century Europe. Baroque music, with its elaborate textures and emotional intensity, mirrored the grandeur of monarchies and the Church. As Enlightenment ide_ _ _ gained infl_ _ _ _ _, Classical music eme_ _ _ _ with sim_ _ _ _, less orn_ _ _ structures, bala_ _ _ _ phrasing, and a fo_ _ _ on rea_ _ _ and or_ _ _. Composers li_ _ Haydn and Mozart embraced simplicity and symmetry, aligning with the era’s intellectual and political movements that favored rational thought over divine authority. This stylistic shift marked a move toward accessibility and elegance in musical expression.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The transition from Baroque to Classical music reflected broader cultural shifts in eighteenth-century Europe. Baroque music, with its elaborate textures and emotional intensity, mirrored the grandeur of monarchies and the Church. As Enlightenment ide_ _ _ gained infl_ _ _ _ _, Classical music eme_ _ _ _ with sim_ _ _ _, less orn_ _ _ structures, bala_ _ _ _ phrasing, and a fo_ _ _ on rea_ _ _ and or_ _ _. Composers li_ _ Haydn and Mozart embraced simplicity and symmetry, aligning with the era’s intellectual and political movements that favored rational thought over divine authority. This stylistic shift marked a move toward accessibility and elegance in musical expression.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The transition from Baroque to Classical music reflected broader cultural shifts in eighteenth-century Europe. Baroque music, with its elaborate textures and emotional intensity, mirrored the grandeur of monarchies and the Church. As Enlightenment "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " gained "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", Classical music "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", less "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " structures, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " phrasing, and a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " on "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Composers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Haydn and Mozart embraced simplicity and symmetry, aligning with the era’s intellectual and political movements that favored rational thought over divine authority. This stylistic shift marked a move toward accessibility and elegance in musical expression."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "ideals",
+                "prefix": "ide",
+                "displayText": "ide_ _ _",
+                "missingText": "als",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "influence",
+                "prefix": "infl",
+                "displayText": "infl_ _ _ _ _",
+                "missingText": "uence",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "emerged",
+                "prefix": "eme",
+                "displayText": "eme_ _ _ _",
+                "missingText": "rged",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "simpler",
+                "prefix": "sim",
+                "displayText": "sim_ _ _ _",
+                "missingText": "pler",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "ornate",
+                "prefix": "orn",
+                "displayText": "orn_ _ _",
+                "missingText": "ate",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "balanced",
+                "prefix": "bala",
+                "displayText": "bala_ _ _ _",
+                "missingText": "nced",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "focus",
+                "prefix": "fo",
+                "displayText": "fo_ _ _",
+                "missingText": "cus",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "reason",
+                "prefix": "rea",
+                "displayText": "rea_ _ _",
+                "missingText": "son",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "order",
+                "prefix": "or",
+                "displayText": "or_ _ _",
+                "missingText": "der",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-20-a-m2-ctw-q01-10-p01",
+                "answer": "like",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20a-m2-rap-19",
+      "module": "rap",
+      "title": "The Ascent of the Italian Lute Song",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20A",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-20-a-m2-rap-p01",
+          "title": "The Ascent of the Italian Lute Song",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-20-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Some historians explain the mid-sixteenth-century surge of Italian lute songs as the product of technological innovation combined with shifting social tastes. Around 1500, Ottavio dei Petrucci developed a groundbreaking movable-type printing technique for music, making it easier and cheaper to produce books of lute music. Suddenly, amateur musicians from Naples to Venice could acquire fashionable arrangements of madrigals, villanellas, and solo ricercars. This ease of access dovetailed with an expanding culture of private performance in aristocratic homes. Other historians point to a different catalyst: courtly patronage. Alfonso d’Este, the duke of Ferrara, played a decisive role by commissioning virtuosos like Francesco da Milano and Antonio Valente, whose published collections set a high artistic benchmark.",
+              "rawText": "Some historians explain the mid-sixteenth-century surge of Italian lute songs as the product of technological innovation combined with shifting social tastes. Around 1500, Ottavio dei Petrucci developed a groundbreaking movable-type printing technique for music, making it easier and cheaper to produce books of lute music. Suddenly, amateur musicians from Naples to Venice could acquire fashionable arrangements of madrigals, villanellas, and solo ricercars. This ease of access dovetailed with an expanding culture of private performance in aristocratic homes. Other historians point to a different catalyst: courtly patronage. Alfonso d’Este, the duke of Ferrara, played a decisive role by commissioning virtuosos like Francesco da Milano and Antonio Valente, whose published collections set a high artistic benchmark.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Some historians explain the mid-sixteenth-century surge of Italian lute songs as the product of technological innovation combined with shifting social tastes."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Around 1500, Ottavio dei Petrucci developed a groundbreaking movable-type printing technique for music, making it easier and cheaper to produce books of lute music."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Suddenly, amateur musicians from Naples to Venice could acquire fashionable arrangements of madrigals, villanellas, and solo ricercars."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This ease of access dovetailed with an expanding culture of private performance in aristocratic homes."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Other historians point to a different catalyst: courtly patronage."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p01-s06",
+                  "sentenceOrder": 6,
+                  "text": "Alfonso d’Este, the duke of Ferrara, played a decisive role by commissioning virtuosos like Francesco da Milano and Antonio Valente, whose published collections set a high artistic benchmark."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Evidence for both theories emerges in extant manuscripts: Some contain personalized annotations indicating home practice, while lavish presentation copies bear heraldic emblems of noble households. Furthermore, stylistic borrowings from the Spanish vihuela and French lute idioms suggest a pan-European dialogue that reinforced Italian composers’ ambitions. While the printing press democratized repertoire, it was the symbiosis of domestic enthusiasm and aristocratic sponsorship—each reinforcing the other—that, arguably, propelled the Italian lute song to its enduring prominence.",
+              "rawText": "Evidence for both theories emerges in extant manuscripts: Some contain personalized annotations indicating home practice, while lavish presentation copies bear heraldic emblems of noble households. Furthermore, stylistic borrowings from the Spanish vihuela and French lute idioms suggest a pan-European dialogue that reinforced Italian composers’ ambitions. While the printing press democratized repertoire, it was the symbiosis of domestic enthusiasm and aristocratic sponsorship—each reinforcing the other—that, arguably, propelled the Italian lute song to its enduring prominence.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Evidence for both theories emerges in extant manuscripts: Some contain personalized annotations indicating home practice, while lavish presentation copies bear heraldic emblems of noble households."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Furthermore, stylistic borrowings from the Spanish vihuela and French lute idioms suggest a pan-European dialogue that reinforced Italian composers’ ambitions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "While the printing press democratized repertoire, it was the symbiosis of domestic enthusiasm and aristocratic sponsorship—each reinforcing the other—that, arguably, propelled the Italian lute song to its enduring prominence."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following best expresses the main idea of the passage?",
+          "rawDisplayText": "11. Which of the following best expresses the main idea of the passage?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "Italian lute songs became more sophisticated in the sixteenth century as a result of Italian musicians’ incorporation of foreign influences."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "The increased availability of printed lute music, together with courtly patronage, fostered a flourishing culture of lute music in sixteenth-century Italy."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "Innovations in printing have emerged as the most likely cause of a surge in the composition of sixteenth-century Italian lute songs, replacing older, now disproven theories."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "As professional sixteenth-century Italian musicians gained more opportunities to offer private performances in aristocratic homes, composers altered the kind of music written for the lute."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m2-q11-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests which of the following about amateur musicians in sixteenth-century Italy?",
+          "rawDisplayText": "12. The passage suggests which of the following about amateur musicians in sixteenth-century Italy?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "Their repertoire prior to the sixteenth century did not include compositions for the lute."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "They performed in private homes alongside professional musicians invited by aristocratic patrons."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "Their musical tastes influenced the types of compositions commissioned for the lute by patrons like Alfonso d’Este."
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "The extent to which they performed lute music in private homes was affected by an innovation in the printing industry."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “lavish” in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word “lavish” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "traditional"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "practical"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "fancy"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "common"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m2-q13-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author mentions “heraldic emblems” primarily to",
+          "rawDisplayText": "14. The author mentions “heraldic emblems” primarily to",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "cite evidence of the influence of patronage on Italian lute music"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "provide evidence that printed lute music grew more complex over time"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "demonstrate that music written for the lute became very fashionable"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "indicate one way in which aristocrats personalized books of printed music"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is NOT mentioned in the passage as contributing to the mid-sixteenth-century surge of Italian lute songs?",
+          "rawDisplayText": "15. Which of the following is NOT mentioned in the passage as contributing to the mid-sixteenth-century surge of Italian lute songs?",
+          "payload": {
+            "passageId": "reading-2026-05-20-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-a-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "The availability of printed lute music"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "Courtly patronage of virtuosos"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "Improvements in lute construction"
+              },
+              {
+                "optionId": "reading-2026-05-20-a-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "Stylistic borrowings from the Spanish vihuela"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-a-m2-q15-opt-3"
+          }
+        }
+      ]
+    }
+  ]
+}

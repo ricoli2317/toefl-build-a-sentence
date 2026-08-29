@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-d582ad24a18454b33618a743",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-30",
+    "firstSeenSourceLabel": "6.30A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "d582ad24a18454b33618a7439bf353642f7f560e64edd5964415446d26e49f25",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-30a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-d582ad24a18454b33618a743",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30A",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-d582ad24a18454b33618a743-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-30b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-d582ad24a18454b33618a743",
+      "sourceKind": "docx",
+      "sourceLabel": "6.30B",
+      "occurrenceDate": "2026-06-30",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-d582ad24a18454b33618a743-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-d582ad24a18454b33618a743-q01",
+      "logicalItemId": "reading-ctw-d582ad24a18454b33618a743",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Craftsmanship blends art with functional design through a meticulous process requiring creativity and precision. Artisans wo_ _ with mater_ _ _ _ like me_ _ _, wood, a_ _ fabric t_ create prod_ _ _ _ that a_ _ both use_ _ _ and beau_ _ _ _ _. Each pi_ _ _ shows the maker's skill, attention to detail, and personal style. Beyond utility, handcrafted items carry cultural significance. Even as societies modernize, the value of tradition and quality endures, highlighting a lasting appreciation for the uniqueness and care embedded in artisanal work.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Craftsmanship blends art with functional design through a meticulous process requiring creativity and precision. Artisans wo_ _ with mater_ _ _ _ like me_ _ _, wood, a_ _ fabric t_ create prod_ _ _ _ that a_ _ both use_ _ _ and beau_ _ _ _ _. Each pi_ _ _ shows the maker's skill, attention to detail, and personal style. Beyond utility, handcrafted items carry cultural significance. Even as societies modernize, the value of tradition and quality endures, highlighting a lasting appreciation for the uniqueness and care embedded in artisanal work.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Craftsmanship blends art with functional design through a meticulous process requiring creativity and precision. Artisans "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " with "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " like "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": ", wood, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " fabric "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " create "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " both "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ". Each "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " shows the maker's skill, attention to detail, and personal style. Beyond utility, handcrafted items carry cultural significance. Even as societies modernize, the value of tradition and quality endures, highlighting a lasting appreciation for the uniqueness and care embedded in artisanal work."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "work",
+            "prefix": "wo",
+            "displayText": "wo_ _",
+            "missingText": "rk",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "materials",
+            "prefix": "mater",
+            "displayText": "mater_ _ _ _",
+            "missingText": "ials",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "metal",
+            "prefix": "me",
+            "displayText": "me_ _ _",
+            "missingText": "tal",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "products",
+            "prefix": "prod",
+            "displayText": "prod_ _ _ _",
+            "missingText": "ucts",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "are",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "re",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "useful",
+            "prefix": "use",
+            "displayText": "use_ _ _",
+            "missingText": "ful",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "beautiful",
+            "prefix": "beau",
+            "displayText": "beau_ _ _ _ _",
+            "missingText": "tiful",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-d582ad24a18454b33618a743-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-d582ad24a18454b33618a743-q01-p01",
+            "answer": "piece",
+            "prefix": "pi",
+            "displayText": "pi_ _ _",
+            "missingText": "ece",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

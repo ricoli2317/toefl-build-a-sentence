@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-59738805c751267138c354eb",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "59738805c751267138c354eb871ca33efe5af1b0505065eb67d237353a02df57",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-59738805c751267138c354eb",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10A",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-59738805c751267138c354eb-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-28-m2-ctw-18",
+      "logicalItemId": "reading-ctw-59738805c751267138c354eb",
+      "sourceKind": "docx",
+      "sourceLabel": "5.28",
+      "occurrenceDate": "2026-05-28",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-59738805c751267138c354eb-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-59738805c751267138c354eb-q01",
+      "logicalItemId": "reading-ctw-59738805c751267138c354eb",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Theater has long been a powerful medium for social change, offering the viewing public a space to reflect on societal norms and injustices. Like many ot_ _ _ art fo_ _ _, theater cre_ _ _ _ a dyn_ _ _ _ and abso_ _ _ _ _ experience f_ _ the audi_ _ _ _ that c_ _ provoke de_ _ emotional resp_ _ _ _ _. Such engagement makes theater uniquely suited for persuasive storytelling, galvanizing viewers to consider new perspectives and ideas critically. When playwrights craft narratives that challenge prevailing attitudes, they can influence public discourse and inspire action.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Theater has long been a powerful medium for social change, offering the viewing public a space to reflect on societal norms and injustices. Like many ot_ _ _ art fo_ _ _, theater cre_ _ _ _ a dyn_ _ _ _ and abso_ _ _ _ _ experience f_ _ the audi_ _ _ _ that c_ _ provoke de_ _ emotional resp_ _ _ _ _. Such engagement makes theater uniquely suited for persuasive storytelling, galvanizing viewers to consider new perspectives and ideas critically. When playwrights craft narratives that challenge prevailing attitudes, they can influence public discourse and inspire action.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Theater has long been a powerful medium for social change, offering the viewing public a space to reflect on societal norms and injustices. Like many "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " art "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": ", theater "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " experience "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " provoke "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " emotional "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": ". Such engagement makes theater uniquely suited for persuasive storytelling, galvanizing viewers to consider new perspectives and ideas critically. When playwrights craft narratives that challenge prevailing attitudes, they can influence public discourse and inspire action."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "other",
+            "prefix": "ot",
+            "displayText": "ot_ _ _",
+            "missingText": "her",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "forms",
+            "prefix": "fo",
+            "displayText": "fo_ _ _",
+            "missingText": "rms",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "creates",
+            "prefix": "cre",
+            "displayText": "cre_ _ _ _",
+            "missingText": "ates",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "dynamic",
+            "prefix": "dyn",
+            "displayText": "dyn_ _ _ _",
+            "missingText": "amic",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "absorbing",
+            "prefix": "abso",
+            "displayText": "abso_ _ _ _ _",
+            "missingText": "rbing",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "for",
+            "prefix": "f",
+            "displayText": "f_ _",
+            "missingText": "or",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "audience",
+            "prefix": "audi",
+            "displayText": "audi_ _ _ _",
+            "missingText": "ence",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "can",
+            "prefix": "c",
+            "displayText": "c_ _",
+            "missingText": "an",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "deep",
+            "prefix": "de",
+            "displayText": "de_ _",
+            "missingText": "ep",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-59738805c751267138c354eb-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-59738805c751267138c354eb-q01-p01",
+            "answer": "responses",
+            "prefix": "resp",
+            "displayText": "resp_ _ _ _ _",
+            "missingText": "onses",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

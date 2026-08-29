@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+    "module": "rap",
+    "title": "Noise Control in Urban Areas",
+    "firstSeenDate": "2026-05-03",
+    "firstSeenSourceLabel": "5.3A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "7945215d82567f1f6f2af63ae03c5449a7e241d16d1dca950d0584a23c239ccc",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-3a-m1-rap-13",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "sourceKind": "docx",
+      "sourceLabel": "5.3A",
+      "occurrenceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-7945215d82567f1f6f2af63a-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-7945215d82567f1f6f2af63a-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-7945215d82567f1f6f2af63a-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-7945215d82567f1f6f2af63a-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-7945215d82567f1f6f2af63a-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-7945215d82567f1f6f2af63a-passage-01",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "title": "Noise Control in Urban Areas",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Urban areas across the globe are grappling with the challenge of noise pollution. This type of pollution can severely impact health, leading to sleep disturbances and cardiovascular problems. It has many causes.",
+          "rawText": "■ Urban areas across the globe are grappling with the challenge of noise pollution. ■ This type of pollution can severely impact health, leading to sleep disturbances and cardiovascular problems. ■ It has many causes. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Urban areas across the globe are grappling with the challenge of noise pollution."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "This type of pollution can severely impact health, leading to sleep disturbances and cardiovascular problems."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "It has many causes."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Innovative solutions to control noise pollution, from traffic or other sources, are emerging. One such solution is green walls, vertical gardens installed on building facades. Green walls can absorb, reflect, or deflect sound waves, reducing the noise that enters a building. Additionally, they offer benefits like air purification and temperature regulation—thus not only improving the outdoor environment around buildings but also enhancing indoor air quality and helping regulate interior temperatures by acting as natural insulation.",
+          "rawText": "Innovative solutions to control noise pollution, from traffic or other sources, are emerging. One such solution is green walls, vertical gardens installed on building facades. Green walls can absorb, reflect, or deflect sound waves, reducing the noise that enters a building. Additionally, they offer benefits like air purification and temperature regulation—thus not only improving the outdoor environment around buildings but also enhancing indoor air quality and helping regulate interior temperatures by acting as natural insulation.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Innovative solutions to control noise pollution, from traffic or other sources, are emerging."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "One such solution is green walls, vertical gardens installed on building facades."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Green walls can absorb, reflect, or deflect sound waves, reducing the noise that enters a building."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Additionally, they offer benefits like air purification and temperature regulation—thus not only improving the outdoor environment around buildings but also enhancing indoor air quality and helping regulate interior temperatures by acting as natural insulation."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Another approach involves quiet zones. These zones are designated areas where noisy activities are restricted, often including parks, residential neighborhoods, and hospital areas. By reducing noise levels in these zones, cities create pockets of tranquility. Some European cities have seen a decrease in stress-related health issues among residents in quiet zones.",
+          "rawText": "Another approach involves quiet zones. These zones are designated areas where noisy activities are restricted, often including parks, residential neighborhoods, and hospital areas. By reducing noise levels in these zones, cities create pockets of tranquility. Some European cities have seen a decrease in stress-related health issues among residents in quiet zones.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Another approach involves quiet zones."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "These zones are designated areas where noisy activities are restricted, often including parks, residential neighborhoods, and hospital areas."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "By reducing noise levels in these zones, cities create pockets of tranquility."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Some European cities have seen a decrease in stress-related health issues among residents in quiet zones."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "Advancements in technology have also led to the creation of noise-canceling materials. Such materials are often used in buildings or road surfaces. They work by actively reducing sound vibrations. Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem.",
+          "rawText": "Advancements in technology have also led to the creation of noise-canceling materials. Such materials are often used in buildings or road surfaces. They work by actively reducing sound vibrations. Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "Advancements in technology have also led to the creation of noise-canceling materials."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Such materials are often used in buildings or road surfaces."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "They work by actively reducing sound vibrations."
+            },
+            {
+              "sentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04-s04",
+              "sentenceOrder": 4,
+              "text": "Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-7945215d82567f1f6f2af63a-q01",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “grappling” in the passage is closest in meaning to",
+      "rawDisplayText": "31. The word “grappling” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-7945215d82567f1f6f2af63a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q01-opt-1",
+            "optionOrder": 1,
+            "text": "identifying"
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q01-opt-2",
+            "optionOrder": 2,
+            "text": "interfering"
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q01-opt-3",
+            "optionOrder": 3,
+            "text": "struggling"
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q01-opt-4",
+            "optionOrder": 4,
+            "text": "experimenting"
+          }
+        ],
+        "correctOptionId": "reading-rap-7945215d82567f1f6f2af63a-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-7945215d82567f1f6f2af63a-q02",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "How do green walls help control noise pollution?",
+      "rawDisplayText": "32. How do green walls help control noise pollution?",
+      "payload": {
+        "passageId": "reading-rap-7945215d82567f1f6f2af63a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q02-opt-1",
+            "optionOrder": 1,
+            "text": "By purifying the air around buildings"
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q02-opt-2",
+            "optionOrder": 2,
+            "text": "By disrupting the path of sound waves"
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q02-opt-3",
+            "optionOrder": 3,
+            "text": "By making building facades more attractive"
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q02-opt-4",
+            "optionOrder": 4,
+            "text": "By reducing temperatures inside buildings"
+          }
+        ],
+        "correctOptionId": "reading-rap-7945215d82567f1f6f2af63a-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-7945215d82567f1f6f2af63a-q03",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about noise pollution in the European cities mentioned in the passage?",
+      "rawDisplayText": "33. What can be inferred about noise pollution in the European cities mentioned in the passage?",
+      "payload": {
+        "passageId": "reading-rap-7945215d82567f1f6f2af63a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It was likely a factor in causing stress-related health issues among residents."
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It has not been as effectively managed there as it has been in other places."
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It has been controlled most successfully by adding green walls to buildings."
+          },
+          {
+            "optionId": "reading-rap-7945215d82567f1f6f2af63a-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It has been funded primarily through the efforts of urban planners."
+          }
+        ],
+        "correctOptionId": "reading-rap-7945215d82567f1f6f2af63a-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-7945215d82567f1f6f2af63a-q04",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "questionOrder": 4,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 4 that names specific architectural elements built with noise-canceling materials.",
+      "rawDisplayText": "34. Identify the sentence in paragraph 4 that names specific architectural elements built with noise-canceling materials.",
+      "payload": {
+        "passageId": "reading-rap-7945215d82567f1f6f2af63a-passage-01",
+        "targetParagraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04",
+        "correctSentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p04-s04"
+      }
+    },
+    {
+      "questionId": "reading-rap-7945215d82567f1f6f2af63a-q05",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-7945215d82567f1f6f2af63a-passage-01",
+        "insertSentence": "One common source is traffic, which includes cars, buses, motorcycles, and trucks.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-7945215d82567f1f6f2af63a-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-7945215d82567f1f6f2af63a-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01-s01"
+          },
+          {
+            "anchorId": "reading-rap-7945215d82567f1f6f2af63a-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01-s02"
+          },
+          {
+            "anchorId": "reading-rap-7945215d82567f1f6f2af63a-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-7945215d82567f1f6f2af63a-q05-anchor-4"
+      }
+    }
+  ]
+}

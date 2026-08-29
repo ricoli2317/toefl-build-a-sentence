@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-43cc9aa7d02ea4bf7faad149",
+    "module": "rdl",
+    "title": "Reviews and Opinions @CampusDaily Review of The Kansas Kerfuffle",
+    "firstSeenDate": "2026-05-17",
+    "firstSeenSourceLabel": "5.17",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "43cc9aa7d02ea4bf7faad1494cb05746e256de545e3e7a7dac107e727b24531e",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-17-m1-rdl-05",
+      "logicalItemId": "reading-rdl-43cc9aa7d02ea4bf7faad149",
+      "sourceKind": "docx",
+      "sourceLabel": "5.17",
+      "occurrenceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 24,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-030",
+      "title": "Reviews and Opinions @CampusDaily Review of The Kansas Kerfuffle",
+      "source": "material-index.json#RDL-030",
+      "sourceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-030/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-030/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01",
+      "logicalItemId": "reading-rdl-43cc9aa7d02ea4bf7faad149",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What can be inferred about Elizabeth Wrenn?",
+      "rawDisplayText": "23. What can be inferred about Elizabeth Wrenn?",
+      "payload": {
+        "materialId": "RDL-030",
+        "options": [
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01-opt-1",
+            "optionOrder": 1,
+            "text": "She enjoyed a film."
+          },
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01-opt-2",
+            "optionOrder": 2,
+            "text": "She helped finance a film."
+          },
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01-opt-3",
+            "optionOrder": 3,
+            "text": "She starred in a film."
+          },
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01-opt-4",
+            "optionOrder": 4,
+            "text": "She produced a film."
+          }
+        ],
+        "correctOptionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02",
+      "logicalItemId": "reading-rdl-43cc9aa7d02ea4bf7faad149",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What can be concluded about The Kansas Kerfuffle?",
+      "rawDisplayText": "24. What can be concluded about The Kansas Kerfuffle?",
+      "payload": {
+        "materialId": "RDL-030",
+        "options": [
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Its plot is very formulaic and predictable."
+          },
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Its premiere took place in Kansas."
+          },
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It features a dispute about pet ownership."
+          },
+          {
+            "optionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It offers a satirical view of small-town bureaucracy."
+          }
+        ],
+        "correctOptionId": "reading-rdl-43cc9aa7d02ea4bf7faad149-q02-opt-4"
+      }
+    }
+  ]
+}

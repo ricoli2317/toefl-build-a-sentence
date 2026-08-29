@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ClipboardList } from "lucide-react";
+import { ArrowRight, ClipboardList, Clock3 } from "lucide-react";
 import { PracticeSetAction } from "@/components/shared/PracticeCatalog";
 
 export type PracticeHistoryCompactItem = {
@@ -11,6 +11,65 @@ export type PracticeHistoryCompactItem = {
   setId: string;
   setTitle: string;
 };
+
+export type PracticeSubmissionHistoryItem = {
+  actions: React.ReactNode;
+  badge?: React.ReactNode;
+  details: React.ReactNode;
+  id: string;
+  submittedAt: string;
+  title: string;
+};
+
+export function PracticeSubmissionHistoryHeader({
+  description,
+  eyebrow,
+  title
+}: {
+  description: string;
+  eyebrow: string;
+  title: string;
+}) {
+  return (
+    <header className="student-card">
+      <p className="text-sm font-bold text-student-primary">{eyebrow}</p>
+      <h2 className="mt-1 text-xl font-bold text-student-text">{title}</h2>
+      <p className="mt-2 text-sm text-student-muted">{description}</p>
+    </header>
+  );
+}
+
+export function PracticeSubmissionHistoryList({
+  emptyState,
+  items
+}: {
+  emptyState: React.ReactNode;
+  items: PracticeSubmissionHistoryItem[];
+}) {
+  if (items.length === 0) return <>{emptyState}</>;
+  return (
+    <div className="grid gap-3">
+      {items.map((item) => (
+        <article className="student-card flex flex-wrap items-center justify-between gap-4" key={item.id}>
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-student-primary-soft text-student-primary">
+              <Clock3 aria-hidden="true" size={22} />
+            </span>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="font-bold text-student-text">{item.title}</h2>
+                {item.badge}
+              </div>
+              <p className="mt-1 text-sm text-student-muted">{item.submittedAt}</p>
+              <div className="mt-1">{item.details}</div>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">{item.actions}</div>
+        </article>
+      ))}
+    </div>
+  );
+}
 
 export function PracticeHistoryCompactList({
   emptyState,

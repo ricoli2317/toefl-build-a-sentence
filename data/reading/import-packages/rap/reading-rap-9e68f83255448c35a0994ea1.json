@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+    "module": "rap",
+    "title": "Gravitational Physics and Its Practical Applications",
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "9e68f83255448c35a0994ea1a833920dad4f2349235fab61159273e0e78bac61",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m2-rap-19",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-18a-m2-rap-19",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18A",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-9e68f83255448c35a0994ea1-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-9e68f83255448c35a0994ea1-passage-01",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "title": "Gravitational Physics and Its Practical Applications",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The concept of gravity has evolved over time. In the seventeenth century, Isaac Newton described gravity as a universal force acting between masses, formalized in his law of universal gravitation. This theory provided a universal, mathematical framework for understanding both terrestrial and planetary motion. However, in 1915, Albert Einstein introduced general relativity, redefining gravity as the curvature of spacetime caused by mass and energy. This shift explained phenomena Newton’s model could not, such as the bending of light near massive bodies (gravitational lensing). Einstein’s theory, which marked a revolution in physics, also predicted black holes and gravitational waves, phenomena later confirmed by observation.",
+          "rawText": "The concept of gravity has evolved over time. In the seventeenth century, Isaac Newton described gravity as a universal force acting between masses, formalized in his law of universal gravitation. This theory provided a universal, mathematical framework for understanding both terrestrial and planetary motion. However, in 1915, Albert Einstein introduced general relativity, redefining gravity as the curvature of spacetime caused by mass and energy. This shift explained phenomena Newton’s model could not, such as the bending of light near massive bodies (gravitational lensing). Einstein’s theory, which marked a revolution in physics, also predicted black holes and gravitational waves, phenomena later confirmed by observation.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The concept of gravity has evolved over time."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "In the seventeenth century, Isaac Newton described gravity as a universal force acting between masses, formalized in his law of universal gravitation."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This theory provided a universal, mathematical framework for understanding both terrestrial and planetary motion."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "However, in 1915, Albert Einstein introduced general relativity, redefining gravity as the curvature of spacetime caused by mass and energy."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "This shift explained phenomena Newton’s model could not, such as the bending of light near massive bodies (gravitational lensing)."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01-s06",
+              "sentenceOrder": 6,
+              "text": "Einstein’s theory, which marked a revolution in physics, also predicted black holes and gravitational waves, phenomena later confirmed by observation."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Theoretical advances in gravitational physics have led to practical applications, such as in drug development. Proteins often form crystals that can be analyzed to determine their molecular structure. However, on Earth, gravity interferes with the uniform growth of crystals. In microgravity environments, such as those aboard the International Space Station (ISS), gravitational effects are minimized. Crystals grown in space tend to be larger, more uniform, and less flawed than those grown on Earth, enabling researchers to map the crystals’ atomic structure with greater accuracy. This is crucial for rational drug design, allowing scientists to develop medications that precisely target disease-related proteins.",
+          "rawText": "Theoretical advances in gravitational physics have led to practical applications, such as in drug development. Proteins often form crystals that can be analyzed to determine their molecular structure. ■ However, on Earth, gravity interferes with the uniform growth of crystals. ■ In microgravity environments, such as those aboard the International Space Station (ISS), gravitational effects are minimized. ■ Crystals grown in space tend to be larger, more uniform, and less flawed than those grown on Earth, enabling researchers to map the crystals’ atomic structure with greater accuracy. ■ This is crucial for rational drug design, allowing scientists to develop medications that precisely target disease-related proteins.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Theoretical advances in gravitational physics have led to practical applications, such as in drug development."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Proteins often form crystals that can be analyzed to determine their molecular structure."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "However, on Earth, gravity interferes with the uniform growth of crystals."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "In microgravity environments, such as those aboard the International Space Station (ISS), gravitational effects are minimized."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Crystals grown in space tend to be larger, more uniform, and less flawed than those grown on Earth, enabling researchers to map the crystals’ atomic structure with greater accuracy."
+            },
+            {
+              "sentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "This is crucial for rational drug design, allowing scientists to develop medications that precisely target disease-related proteins."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q01",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage mentions all of the following about Newton’s law of universal gravitation EXCEPT:",
+      "rawDisplayText": "11. The passage mentions all of the following about Newton’s law of universal gravitation EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-9e68f83255448c35a0994ea1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It helped explain motion on Earth and in space."
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It stated that all objects pull on each other."
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It was later replaced by another theory."
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It made predictions that were only confirmed later."
+          }
+        ],
+        "correctOptionId": "reading-rap-9e68f83255448c35a0994ea1-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q02",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “gravitational lensing” in the passage?",
+      "rawDisplayText": "12. Why does the author mention “gravitational lensing” in the passage?",
+      "payload": {
+        "passageId": "reading-rap-9e68f83255448c35a0994ea1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To help explain why Einstein’s theory was superior to Newton’s"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To further illustrate Newton’s law of universal gravitation"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To give an example of a prediction made by Einstein"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To contrast terrestrial and planetary motion"
+          }
+        ],
+        "correctOptionId": "reading-rap-9e68f83255448c35a0994ea1-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q03",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “minimized” in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word “minimized” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-9e68f83255448c35a0994ea1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q03-opt-1",
+            "optionOrder": 1,
+            "text": "eliminated"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q03-opt-2",
+            "optionOrder": 2,
+            "text": "reduced"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q03-opt-3",
+            "optionOrder": 3,
+            "text": "observed"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q03-opt-4",
+            "optionOrder": 4,
+            "text": "applied"
+          }
+        ],
+        "correctOptionId": "reading-rap-9e68f83255448c35a0994ea1-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q04",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why is it important for drug developers to determine a crystal’s molecular structure?",
+      "rawDisplayText": "14. Why is it important for drug developers to determine a crystal’s molecular structure?",
+      "payload": {
+        "passageId": "reading-rap-9e68f83255448c35a0994ea1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To understand the effects of gravity on proteins in the human body"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To create drugs that target specific proteins"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To create more perfect crystals for industrial use"
+          },
+          {
+            "optionId": "reading-rap-9e68f83255448c35a0994ea1-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To produce existing drugs more quickly and cheaply"
+          }
+        ],
+        "correctOptionId": "reading-rap-9e68f83255448c35a0994ea1-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q05",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-9e68f83255448c35a0994ea1-passage-01",
+        "insertSentence": "For instance, parts of a crystal will grow unevenly as heavier components settle, leading to distortions in its shape.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-9e68f83255448c35a0994ea1-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s02"
+          },
+          {
+            "anchorId": "reading-rap-9e68f83255448c35a0994ea1-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s03"
+          },
+          {
+            "anchorId": "reading-rap-9e68f83255448c35a0994ea1-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s04"
+          },
+          {
+            "anchorId": "reading-rap-9e68f83255448c35a0994ea1-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02-s05"
+          }
+        ],
+        "correctAnchorId": "reading-rap-9e68f83255448c35a0994ea1-q05-anchor-2"
+      }
+    }
+  ]
+}

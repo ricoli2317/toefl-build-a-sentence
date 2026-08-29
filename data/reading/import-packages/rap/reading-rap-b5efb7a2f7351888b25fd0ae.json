@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+    "module": "rap",
+    "title": "Spider Silk in Medicine",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "b5efb7a2f7351888b25fd0ae9478ca16cd959f15450a2604002fcacbaaeb460a",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6b-m2-rap-19",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6B",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "title": "Spider Silk in Medicine",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Spider silk is one of nature’s most remarkable materials, known for its strength and elasticity. Stronger than steel and highly stretchable, spider silk has inspired researchers to explore its medical potential.",
+          "rawText": "Spider silk is one of nature’s most remarkable materials, known for its strength and elasticity. Stronger than steel and highly stretchable, spider silk has inspired researchers to explore its medical potential.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Spider silk is one of nature’s most remarkable materials, known for its strength and elasticity."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Stronger than steel and highly stretchable, spider silk has inspired researchers to explore its medical potential."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection. Spider silk meets this criterion exceptionally well. It integrates smoothly with human tissues, minimizing immune response and promoting faster healing. Additionally, its natural elasticity helps the sutures adapt to bodily movements, reducing the risk of sutures rupturing under tension.",
+          "rawText": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection. Spider silk meets this criterion exceptionally well. It integrates smoothly with human tissues, minimizing immune response and promoting faster healing. Additionally, its natural elasticity helps the sutures adapt to bodily movements, reducing the risk of sutures rupturing under tension.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Spider silk meets this criterion exceptionally well."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "It integrates smoothly with human tissues, minimizing immune response and promoting faster healing."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Additionally, its natural elasticity helps the sutures adapt to bodily movements, reducing the risk of sutures rupturing under tension."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Spider silk has been woven into advanced dressings for wounds that accelerate recovery. Spider silk’s biocompatibility and ability to retain moisture make it ideal for treating chronic wounds and joint injuries. Spider silk-based bandages can also be infused with medications for localized drug delivery, reducing infection risk and improving treatment outcomes.",
+          "rawText": "Spider silk has been woven into advanced dressings for wounds that accelerate recovery. Spider silk’s biocompatibility and ability to retain moisture make it ideal for treating chronic wounds and joint injuries. Spider silk-based bandages can also be infused with medications for localized drug delivery, reducing infection risk and improving treatment outcomes.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Spider silk has been woven into advanced dressings for wounds that accelerate recovery."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Spider silk’s biocompatibility and ability to retain moisture make it ideal for treating chronic wounds and joint injuries."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Spider silk-based bandages can also be infused with medications for localized drug delivery, reducing infection risk and improving treatment outcomes."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "However, large-scale production is challenging. Spiders are territorial and cannibalistic, making farming them for silk impractical. Scientists have turned to synthetic methods of producing spider silk using genetically modified bacteria and yeast, but scaling up these techniques remains difficult. Researchers continue refining techniques to make spider silk more accessible.",
+          "rawText": "However, large-scale production is challenging. ■ Spiders are territorial and cannibalistic, making farming them for silk impractical. ■ Scientists have turned to synthetic methods of producing spider silk using genetically modified bacteria and yeast, but scaling up these techniques remains difficult. ■ Researchers continue refining techniques to make spider silk more accessible. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "However, large-scale production is challenging."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Spiders are territorial and cannibalistic, making farming them for silk impractical."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "Scientists have turned to synthetic methods of producing spider silk using genetically modified bacteria and yeast, but scaling up these techniques remains difficult."
+            },
+            {
+              "sentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s04",
+              "sentenceOrder": 4,
+              "text": "Researchers continue refining techniques to make spider silk more accessible."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “remarkable” in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word “remarkable” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01-opt-1",
+            "optionOrder": 1,
+            "text": "mysterious"
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01-opt-2",
+            "optionOrder": 2,
+            "text": "abundant"
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01-opt-3",
+            "optionOrder": 3,
+            "text": "analyzed"
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01-opt-4",
+            "optionOrder": 4,
+            "text": "extraordinary"
+          }
+        ],
+        "correctOptionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q02",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "questionOrder": 2,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 2 that contains the definition of a term. Select the sentence to make your choice.",
+      "rawDisplayText": "12. Identify the sentence in paragraph 2 that contains the definition of a term. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01",
+        "targetParagraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02",
+        "correctSentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p02-s01"
+      }
+    },
+    {
+      "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage indicates all of the following about spider silk-based sutures EXCEPT:",
+      "rawDisplayText": "13. The passage indicates all of the following about spider silk-based sutures EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03-opt-1",
+            "optionOrder": 1,
+            "text": "They are less likely to cause inflammation."
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03-opt-2",
+            "optionOrder": 2,
+            "text": "They are easily incorporated into human tissues."
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03-opt-3",
+            "optionOrder": 3,
+            "text": "They are less expensive than traditional sutures."
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03-opt-4",
+            "optionOrder": 4,
+            "text": "They are less likely to fail when placed under stress."
+          }
+        ],
+        "correctOptionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are benefits of wound dressings made from spider silk EXCEPT:",
+      "rawDisplayText": "14. All of the following are benefits of wound dressings made from spider silk EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04-opt-1",
+            "optionOrder": 1,
+            "text": "They speed up the recovery process."
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04-opt-2",
+            "optionOrder": 2,
+            "text": "They are simple to prepare and apply."
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04-opt-3",
+            "optionOrder": 3,
+            "text": "They do not dry out as quickly as other dressings."
+          },
+          {
+            "optionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04-opt-4",
+            "optionOrder": 4,
+            "text": "They make localized drug delivery easy."
+          }
+        ],
+        "correctOptionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01",
+        "insertSentence": "By contrast, silkworms, traditionally used for obtaining silk, are domesticated and easy to manage.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s01"
+          },
+          {
+            "anchorId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s02"
+          },
+          {
+            "anchorId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s03"
+          },
+          {
+            "anchorId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p04-s04"
+          }
+        ],
+        "correctAnchorId": "reading-rap-b5efb7a2f7351888b25fd0ae-q05-anchor-2"
+      }
+    }
+  ]
+}

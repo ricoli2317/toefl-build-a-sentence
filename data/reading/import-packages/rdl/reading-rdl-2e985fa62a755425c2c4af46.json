@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-2e985fa62a755425c2c4af46",
+    "module": "rdl",
+    "title": "IN TUNE WITH WELL-BEING: A Full-Spectrum Wellness Journey",
+    "firstSeenDate": "2026-05-03",
+    "firstSeenSourceLabel": "5.3A",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "2e985fa62a755425c2c4af46a4b34e7e88aa0842013f2c2248c9dff527561c9e",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-3a-m1-rdl-10",
+      "logicalItemId": "reading-rdl-2e985fa62a755425c2c4af46",
+      "sourceKind": "docx",
+      "sourceLabel": "5.3A",
+      "occurrenceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-2e985fa62a755425c2c4af46-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-2e985fa62a755425c2c4af46-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-2e985fa62a755425c2c4af46-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-004",
+      "title": "IN TUNE WITH WELL-BEING: A Full-Spectrum Wellness Journey",
+      "source": "material-index.json#RDL-004",
+      "sourceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-004/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-004/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-2e985fa62a755425c2c4af46-q01",
+      "logicalItemId": "reading-rdl-2e985fa62a755425c2c4af46",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is one activity you can expect to do at this event?",
+      "rawDisplayText": "28. What is one activity you can expect to do at this event?",
+      "payload": {
+        "materialId": "RDL-004",
+        "options": [
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Join a cooking class"
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Discuss dietary choices"
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Attend a psychology lecture"
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Watch a wellness documentary"
+          }
+        ],
+        "correctOptionId": "reading-rdl-2e985fa62a755425c2c4af46-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-2e985fa62a755425c2c4af46-q02",
+      "logicalItemId": "reading-rdl-2e985fa62a755425c2c4af46",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Which of the following is indicated about the event's target audience?",
+      "rawDisplayText": "29. Which of the following is indicated about the event's target audience?",
+      "payload": {
+        "materialId": "RDL-004",
+        "options": [
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q02-opt-1",
+            "optionOrder": 1,
+            "text": "The event is intended for both teaching staff and students at the university."
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q02-opt-2",
+            "optionOrder": 2,
+            "text": "The event is geared toward students in the psychology department."
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q02-opt-3",
+            "optionOrder": 3,
+            "text": "The event is primarily designed for those pursuing certification as holistic wellness trainers."
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q02-opt-4",
+            "optionOrder": 4,
+            "text": "The event is offered for students experiencing stress during the exam period."
+          }
+        ],
+        "correctOptionId": "reading-rdl-2e985fa62a755425c2c4af46-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-2e985fa62a755425c2c4af46-q03",
+      "logicalItemId": "reading-rdl-2e985fa62a755425c2c4af46",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What is suggested about the In Tune With Well-Being event?",
+      "rawDisplayText": "30. What is suggested about the In Tune With Well-Being event?",
+      "payload": {
+        "materialId": "RDL-004",
+        "options": [
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q03-opt-1",
+            "optionOrder": 1,
+            "text": "There will be career counseling for students seeking wellness careers."
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It is a recurring monthly event at Rowancourt University."
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It is an opportunity for like-minded university community members to connect."
+          },
+          {
+            "optionId": "reading-rdl-2e985fa62a755425c2c4af46-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Only members of the Wellness Council can preregister."
+          }
+        ],
+        "correctOptionId": "reading-rdl-2e985fa62a755425c2c4af46-q03-opt-3"
+      }
+    }
+  ]
+}

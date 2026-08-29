@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-2bcc305310c7f03fe386e644",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-09",
+    "firstSeenSourceLabel": "6.9",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "2bcc305310c7f03fe386e644eca3d6c6d77acb969a03dee253bea1bedd213f17",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-9-m1-ctw-01",
+      "logicalItemId": "reading-ctw-2bcc305310c7f03fe386e644",
+      "sourceKind": "docx",
+      "sourceLabel": "6.9",
+      "occurrenceDate": "2026-06-09",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-2bcc305310c7f03fe386e644-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-2bcc305310c7f03fe386e644-q01",
+      "logicalItemId": "reading-ctw-2bcc305310c7f03fe386e644",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Mushrooms are made up of two main parts: the mycelium and the fruiting body. The mycelium i_ long-lived, wh_ _ _ the fruiting body app_ _ _ _ only wh_ _ conditions a_ _ ideal f_ _ reproduction (li_ _ after ra_ _). Usually under_ _ _ _ _ _, the mycelium cons_ _ _ _ of a network of thread-like structures that absorb nutrients from the soil. The fruiting body is above ground and responsible for producing and spreading spores. These spores are released into the air to help the mushroom reproduce.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Mushrooms are made up of two main parts: the mycelium and the fruiting body. The mycelium i_ long-lived, wh_ _ _ the fruiting body app_ _ _ _ only wh_ _ conditions a_ _ ideal f_ _ reproduction (li_ _ after ra_ _). Usually under_ _ _ _ _ _, the mycelium cons_ _ _ _ of a network of thread-like structures that absorb nutrients from the soil. The fruiting body is above ground and responsible for producing and spreading spores. These spores are released into the air to help the mushroom reproduce.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Mushrooms are made up of two main parts: the mycelium and the fruiting body. The mycelium "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " long-lived, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " the fruiting body "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " only "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " conditions "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " ideal "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " reproduction ("
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " after "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": "). Usually "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ", the mycelium "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " of a network of thread-like structures that absorb nutrients from the soil. The fruiting body is above ground and responsible for producing and spreading spores. These spores are released into the air to help the mushroom reproduce."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "is",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "s",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "while",
+            "prefix": "wh",
+            "displayText": "wh_ _ _",
+            "missingText": "ile",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "appears",
+            "prefix": "app",
+            "displayText": "app_ _ _ _",
+            "missingText": "ears",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "when",
+            "prefix": "wh",
+            "displayText": "wh_ _",
+            "missingText": "en",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "are",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "re",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "for",
+            "prefix": "f",
+            "displayText": "f_ _",
+            "missingText": "or",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "like",
+            "prefix": "li",
+            "displayText": "li_ _",
+            "missingText": "ke",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "rain",
+            "prefix": "ra",
+            "displayText": "ra_ _",
+            "missingText": "in",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "underground",
+            "prefix": "under",
+            "displayText": "under_ _ _ _ _ _",
+            "missingText": "ground",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-2bcc305310c7f03fe386e644-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-2bcc305310c7f03fe386e644-q01-p01",
+            "answer": "consists",
+            "prefix": "cons",
+            "displayText": "cons_ _ _ _",
+            "missingText": "ists",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

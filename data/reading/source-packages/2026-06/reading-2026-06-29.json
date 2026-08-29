@@ -1,0 +1,1846 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.29",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Rooted in both biology and chemistry, modern biochemistry has grown into a foundational science that explores the molecular basis of life. I_ emerged fr_ _ early investi_ _ _ _ _ _ _ into nat_ _ _ _ processes li_ _ fermentation a_ _ digestion and n_ _ encompasses t_ _ study o_ biomolecules su_ _ as proteins, carbohydrates, and nucleic acids. Biochemistry plays a vital role in diverse fields including agriculture, environmental science, and pharmacology, contributing to innovations in areas like crop improvement, pollution control, and drug design, for example. Its broad applications continue to shape our understanding of living systems and support solutions to global challenges.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Rooted in both biology and chemistry, modern biochemistry has grown into a foundational science that explores the molecular basis of life. I_ emerged fr_ _ early investi_ _ _ _ _ _ _ into nat_ _ _ _ processes li_ _ fermentation a_ _ digestion and n_ _ encompasses t_ _ study o_ biomolecules su_ _ as proteins, carbohydrates, and nucleic acids. Biochemistry plays a vital role in diverse fields including agriculture, environmental science, and pharmacology, contributing to innovations in areas like crop improvement, pollution control, and drug design, for example. Its broad applications continue to shape our understanding of living systems and support solutions to global challenges.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Rooted in both biology and chemistry, modern biochemistry has grown into a foundational science that explores the molecular basis of life. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " emerged "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " early "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " into "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " processes "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " fermentation "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " digestion and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " encompasses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " study "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " biomolecules "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " as proteins, carbohydrates, and nucleic acids. Biochemistry plays a vital role in diverse fields including agriculture, environmental science, and pharmacology, contributing to innovations in areas like crop improvement, pollution control, and drug design, for example. Its broad applications continue to shape our understanding of living systems and support solutions to global challenges."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "It",
+                "prefix": "I",
+                "displayText": "I_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "from",
+                "prefix": "fr",
+                "displayText": "fr_ _",
+                "missingText": "om",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "investigations",
+                "prefix": "investi",
+                "displayText": "investi_ _ _ _ _ _ _",
+                "missingText": "gations",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "natural",
+                "prefix": "nat",
+                "displayText": "nat_ _ _ _",
+                "missingText": "ural",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "like",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "now",
+                "prefix": "n",
+                "displayText": "n_ _",
+                "missingText": "ow",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q01-10-p01",
+                "answer": "such",
+                "prefix": "su",
+                "displayText": "su_ _",
+                "missingText": "ch",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Throughout history, color and pigment ha_ _ played a central role in art, shaping how we perceive and interpret visual experiences. Artists have long under_ _ _ _ _ the emot_ _ _ _ _ and psycho_ _ _ _ _ _ _ power o_ color, util_ _ _ _ _ it t_ convey mo_ _, create emph_ _ _ _, and ev_ _ _ responses. For example, red often symbolizes passion, while blue can elicit calmness. These symbolic associations can vary across cultures and time periods, allowing artists to communicate deeper layers of meaning through their color choices.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Throughout history, color and pigment ha_ _ played a central role in art, shaping how we perceive and interpret visual experiences. Artists have long under_ _ _ _ _ the emot_ _ _ _ _ and psycho_ _ _ _ _ _ _ power o_ color, util_ _ _ _ _ it t_ convey mo_ _, create emph_ _ _ _, and ev_ _ _ responses. For example, red often symbolizes passion, while blue can elicit calmness. These symbolic associations can vary across cultures and time periods, allowing artists to communicate deeper layers of meaning through their color choices.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Throughout history, color and pigment "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " played a central role in art, shaping how we perceive and interpret visual experiences. Artists have long "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " power "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " color, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " it "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " convey "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", create "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " responses. For example, red often symbolizes passion, while blue can elicit calmness. These symbolic associations can vary across cultures and time periods, allowing artists to communicate deeper layers of meaning through their color choices."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "have",
+                "prefix": "ha",
+                "displayText": "ha_ _",
+                "missingText": "ve",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "understood",
+                "prefix": "under",
+                "displayText": "under_ _ _ _ _",
+                "missingText": "stood",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "emotional",
+                "prefix": "emot",
+                "displayText": "emot_ _ _ _ _",
+                "missingText": "ional",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "psychological",
+                "prefix": "psycho",
+                "displayText": "psycho_ _ _ _ _ _ _",
+                "missingText": "logical",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "utilizing",
+                "prefix": "util",
+                "displayText": "util_ _ _ _ _",
+                "missingText": "izing",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "mood",
+                "prefix": "mo",
+                "displayText": "mo_ _",
+                "missingText": "od",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "emphasis",
+                "prefix": "emph",
+                "displayText": "emph_ _ _ _",
+                "missingText": "asis",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-29-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-29-m1-ctw-q11-20-p01",
+                "answer": "evoke",
+                "prefix": "ev",
+                "displayText": "ev_ _ _",
+                "missingText": "oke",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m1-rdl-03",
+      "module": "rdl",
+      "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-065",
+          "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+          "source": "material-index.json#RDL-065",
+          "sourceDate": "2026-06-07",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-065/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-065/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Which of the following is most likely true of Discovering Human Cultures?",
+          "rawDisplayText": "21. Which of the following is most likely true of Discovering Human Cultures?",
+          "payload": {
+            "materialId": "RDL-065",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "It includes guides for conducting research."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "The case studies it contains use fictitious names."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "The methodologies it uses are not conventional."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "It is being made into an informational television series."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q21-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is suggested about the writing style of Discovering Human Cultures?",
+          "rawDisplayText": "22. What is suggested about the writing style of Discovering Human Cultures?",
+          "payload": {
+            "materialId": "RDL-065",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Its use of non-English expressions adds authenticity."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "It is written to be understood by general audiences."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Its language is ideal for advanced anthropology courses."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "It often uses humor to make a point."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m1-rdl-05",
+      "module": "rdl",
+      "title": "Summit View University Arts Week flash mob",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-066",
+          "title": "Summit View University Arts Week flash mob",
+          "source": "material-index.json#RDL-066",
+          "sourceDate": "2026-06-07",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-066/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-066/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main topic of the article?",
+          "rawDisplayText": "23. What is the main topic of the article?",
+          "payload": {
+            "materialId": "RDL-066",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "A unique arts event on campus"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Different activities offered at Arts Week"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "A new dance program at a university"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "The impact of social media on campus life"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q23-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is suggested about the dance performance?",
+          "rawDisplayText": "24. What is suggested about the dance performance?",
+          "payload": {
+            "materialId": "RDL-066",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "It broke attendance records."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "It was not announced to students."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "It was attended by famous artists."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "It was performed in an auditorium."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What will be a likely result of the dance performance?",
+          "rawDisplayText": "25. What will be a likely result of the dance performance?",
+          "payload": {
+            "materialId": "RDL-066",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "The university's quad will regularly be blocked off for gatherings."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Faculty will urge students to get advance approval for any event."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Students will be recruited to make more films about campus life."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Campus life in the future will feature more such events."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m1-rap-08",
+      "module": "rap",
+      "title": "Growth Mindset in Education",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-29-m1-rap-p01",
+          "title": "Growth Mindset in Education",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-29-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The concept of a growth mindset has gained attention in educational psychology. Coined by Carol Dweck, the phrase \"growth mindset\" refers to the belief that abilities and intelligence can be developed through dedication and hard work. This contrasts with a fixed mindset, where individuals believe their abilities are static.",
+              "rawText": "The concept of a growth mindset has gained attention in educational psychology. Coined by Carol Dweck, the phrase \"growth mindset\" refers to the belief that abilities and intelligence can be developed through dedication and hard work. This contrasts with a fixed mindset, where individuals believe their abilities are static.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The concept of a growth mindset has gained attention in educational psychology."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Coined by Carol Dweck, the phrase \"growth mindset\" refers to the belief that abilities and intelligence can be developed through dedication and hard work."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This contrasts with a fixed mindset, where individuals believe their abilities are static."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-29-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Research suggests that students with a growth mindset are more likely to embrace challenges, persevere through difficulties, and see effort as a path to mastery. For example, a student who struggles with math but believes they can improve with practice is displaying a growth mindset. This belief encourages resilience and a positive attitude towards learning.",
+              "rawText": "Research suggests that students with a growth mindset are more likely to embrace challenges, persevere through difficulties, and see effort as a path to mastery. For example, a student who struggles with math but believes they can improve with practice is displaying a growth mindset. This belief encourages resilience and a positive attitude towards learning.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Research suggests that students with a growth mindset are more likely to embrace challenges, persevere through difficulties, and see effort as a path to mastery."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "For example, a student who struggles with math but believes they can improve with practice is displaying a growth mindset."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This belief encourages resilience and a positive attitude towards learning."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-29-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Educators play a crucial role in fostering a growth mindset in their students. Techniques such as praising effort rather than innate ability and providing constructive feedback can help students develop this mindset. Creating a classroom environment that celebrates mistakes as learning opportunities can reinforce the growth mindset philosophy.",
+              "rawText": "Educators play a crucial role in fostering a growth mindset in their students. Techniques such as praising effort rather than innate ability and providing constructive feedback can help students develop this mindset. Creating a classroom environment that celebrates mistakes as learning opportunities can reinforce the growth mindset philosophy.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Educators play a crucial role in fostering a growth mindset in their students."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Techniques such as praising effort rather than innate ability and providing constructive feedback can help students develop this mindset."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Creating a classroom environment that celebrates mistakes as learning opportunities can reinforce the growth mindset philosophy."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-29-m1-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "However, implementing growth mindset strategies is not without challenges. Some students may find it difficult to change how they view their abilities, especially if they have been accustomed to a fixed mindset for a long time. Additionally, educators themselves must genuinely believe in the growth mindset principles to effectively convey them to their students.",
+              "rawText": "■ However, implementing growth mindset strategies is not without challenges. ■ Some students may find it difficult to change how they view their abilities, especially if they have been accustomed to a fixed mindset for a long time. ■ Additionally, educators themselves must genuinely believe in the growth mindset principles to effectively convey them to their students. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, implementing growth mindset strategies is not without challenges."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some students may find it difficult to change how they view their abilities, especially if they have been accustomed to a fixed mindset for a long time."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Additionally, educators themselves must genuinely believe in the growth mindset principles to effectively convey them to their students."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"persevere\" in the passage is closest in meaning to",
+          "rawDisplayText": "26. The word \"persevere\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "hurry"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "change"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "hesitate"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "persist"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, which of the following is true about students with a growth mindset?",
+          "rawDisplayText": "27. According to the passage, which of the following is true about students with a growth mindset?",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "They believe their intelligence is unchangeable."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "They avoid challenges."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "They view effort as a means to improve."
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "They are naturally talented."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q27-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are mentioned in the passage as ways educators can foster a growth mindset EXCEPT by",
+          "rawDisplayText": "28. All of the following are mentioned in the passage as ways educators can foster a growth mindset EXCEPT by",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "commending students' efforts"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "praising students' innate abilities"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "giving constructive feedback"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "using mistakes as learning opportunities"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, the implementation of growth mindset strategies may be challenging because of",
+          "rawDisplayText": "29. According to the passage, the implementation of growth mindset strategies may be challenging because of",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "difficulty in changing students' attitudes"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "lack of support from students' parents"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "insufficient research on growth mindset"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "overemphasis on academic performance"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p01",
+            "insertSentence": "This reluctance can be further compounded by a lack of immediate, visible progress, which may discourage continued effort.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-29-m1-q30-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-29-m1-rap-p01-p04",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-06-29-m1-q30-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-29-m1-rap-p01-p04",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p01-p04-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-29-m1-q30-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-29-m1-rap-p01-p04",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p01-p04-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-29-m1-q30-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-29-m1-rap-p01-p04",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p01-p04-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-29-m1-q30-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m1-rap-13",
+      "module": "rap",
+      "title": "The Mystery of Dark Galaxies",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-29-m1-rap-p02",
+          "title": "The Mystery of Dark Galaxies",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-29-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Ultraviolet (UV) astronomy has unveiled numerous cosmic phenomena. An especially intriguing discovery is that of dark galaxies. Unlike typical galaxies (gravitationally bound systems of stars, gas, and other particles), dark galaxies emit little to no visible light, making them nearly impossible to detect using conventional optical telescopes. However, these galaxies emit UV radiation, providing astronomers with a unique window to study them. Dark galaxies challenge our understanding of galaxy formation. Traditional models suggest that galaxies form through gas accumulation and star formation. But although dark galaxies contain vast amounts of gas, they have few, if any, stars. This raises questions about the processes that inhibit star formation. Some researchers propose that turbulence within the gas clouds might prevent the gas from collapsing to form stars.",
+              "rawText": "Ultraviolet (UV) astronomy has unveiled numerous cosmic phenomena. An especially intriguing discovery is that of dark galaxies. Unlike typical galaxies (gravitationally bound systems of stars, gas, and other particles), dark galaxies emit little to no visible light, making them nearly impossible to detect using conventional optical telescopes. However, these galaxies emit UV radiation, providing astronomers with a unique window to study them. ■ Dark galaxies challenge our understanding of galaxy formation. ■ Traditional models suggest that galaxies form through gas accumulation and star formation. ■ But although dark galaxies contain vast amounts of gas, they have few, if any, stars. ■ This raises questions about the processes that inhibit star formation. Some researchers propose that turbulence within the gas clouds might prevent the gas from collapsing to form stars.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Ultraviolet (UV) astronomy has unveiled numerous cosmic phenomena."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "An especially intriguing discovery is that of dark galaxies."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Unlike typical galaxies (gravitationally bound systems of stars, gas, and other particles), dark galaxies emit little to no visible light, making them nearly impossible to detect using conventional optical telescopes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, these galaxies emit UV radiation, providing astronomers with a unique window to study them."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Dark galaxies challenge our understanding of galaxy formation."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s06",
+                  "sentenceOrder": 6,
+                  "text": "Traditional models suggest that galaxies form through gas accumulation and star formation."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s07",
+                  "sentenceOrder": 7,
+                  "text": "But although dark galaxies contain vast amounts of gas, they have few, if any, stars."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s08",
+                  "sentenceOrder": 8,
+                  "text": "This raises questions about the processes that inhibit star formation."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p01-s09",
+                  "sentenceOrder": 9,
+                  "text": "Some researchers propose that turbulence within the gas clouds might prevent the gas from collapsing to form stars."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-29-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Observations from the Hubble Space Telescope and other UV-sensitive instruments have revealed that dark galaxies were more common in the early universe. These findings suggest that dark galaxies may represent a primordial phase in galaxy evolution. One hypothesis is that high levels of UV radiation in the early universe prevented the gas in dark galaxies from cooling and condensing into stars. Observations of regions with high UV radiation support this theory.",
+              "rawText": "Observations from the Hubble Space Telescope and other UV-sensitive instruments have revealed that dark galaxies were more common in the early universe. These findings suggest that dark galaxies may represent a primordial phase in galaxy evolution. One hypothesis is that high levels of UV radiation in the early universe prevented the gas in dark galaxies from cooling and condensing into stars. Observations of regions with high UV radiation support this theory.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Observations from the Hubble Space Telescope and other UV-sensitive instruments have revealed that dark galaxies were more common in the early universe."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These findings suggest that dark galaxies may represent a primordial phase in galaxy evolution."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "One hypothesis is that high levels of UV radiation in the early universe prevented the gas in dark galaxies from cooling and condensing into stars."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Observations of regions with high UV radiation support this theory."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests that astronomers discovered dark galaxies by",
+          "rawDisplayText": "31. The passage suggests that astronomers discovered dark galaxies by",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "studying numerous cosmic phenomena caused by them"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "observing their gravitational effects on other galaxies"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "seeing them through conventional optical telescopes"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "detecting UV radiation emitted by them"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q31-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What might prevent the formation of stars in dark galaxies?",
+          "rawDisplayText": "32. What might prevent the formation of stars in dark galaxies?",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "The accumulation of too much gas"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "The turbulence inside gas clouds"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "The presence of nearby galaxies"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "The collapse of gas clouds"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "Observations from the Hubble Space Telescope and other UV-sensitive instruments indicate that",
+          "rawDisplayText": "33. Observations from the Hubble Space Telescope and other UV-sensitive instruments indicate that",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "the number of dark galaxies in the universe increased over time"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "dark galaxies contain more gas than previously believed"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "dark galaxies emit more UV radiation than previously believed"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "dark galaxies represent an early stage in galaxy development"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q33-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Observations of dark-galaxy regions with high UV radiation indicate that",
+          "rawDisplayText": "34. Observations of dark-galaxy regions with high UV radiation indicate that",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "dark galaxies evolved very slowly"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "stars in the early universe were fairly cool and dense"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "UV radiation in the early universe kept gas temperatures high"
+              },
+              {
+                "optionId": "reading-2026-06-29-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "a traditional theory of how dark galaxies formed is incorrect"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m1-q34-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-29-m1-rap-p02",
+            "insertSentence": "Therefore, one might expect all galaxies to have a significant number of stars.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-29-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-29-m1-rap-p02-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p02-p01-s04"
+              },
+              {
+                "anchorId": "reading-2026-06-29-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-29-m1-rap-p02-p01",
+                "boundaryIndex": 5,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p02-p01-s05"
+              },
+              {
+                "anchorId": "reading-2026-06-29-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-29-m1-rap-p02-p01",
+                "boundaryIndex": 6,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p02-p01-s06"
+              },
+              {
+                "anchorId": "reading-2026-06-29-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-29-m1-rap-p02-p01",
+                "boundaryIndex": 7,
+                "afterSentenceId": "reading-2026-06-29-m1-rap-p02-p01-s07"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-29-m1-q35-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The last Ice Age sculpted the face of Earth, leaving behind majestic glaciers that continue to shape the landscape even today. These mas_ _ _ _ ice riv_ _ _ flow slo_ _ _, grinding do_ _ mountains a_ _ carving val_ _ _ _ over mill_ _ _ _ _. Compared t_ other geolo_ _ _ _ _ phenomena, t_ _ movement of glaciers is imperceptible on a human timescale, yet their impact is undeniably profound. Glaciers serve as natural archives of Earth's climatic history, preserving atmospheric data in layers of ice that have accumulated over thousands of years. Studying glaciers allows scientists to analyze past temperature patterns and environmental changes over time.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The last Ice Age sculpted the face of Earth, leaving behind majestic glaciers that continue to shape the landscape even today. These mas_ _ _ _ ice riv_ _ _ flow slo_ _ _, grinding do_ _ mountains a_ _ carving val_ _ _ _ over mill_ _ _ _ _. Compared t_ other geolo_ _ _ _ _ phenomena, t_ _ movement of glaciers is imperceptible on a human timescale, yet their impact is undeniably profound. Glaciers serve as natural archives of Earth's climatic history, preserving atmospheric data in layers of ice that have accumulated over thousands of years. Studying glaciers allows scientists to analyze past temperature patterns and environmental changes over time.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The last Ice Age sculpted the face of Earth, leaving behind majestic glaciers that continue to shape the landscape even today. These "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ice "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " flow "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", grinding "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " mountains "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " carving "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " over "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Compared "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " other "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " phenomena, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " movement of glaciers is imperceptible on a human timescale, yet their impact is undeniably profound. Glaciers serve as natural archives of Earth's climatic history, preserving atmospheric data in layers of ice that have accumulated over thousands of years. Studying glaciers allows scientists to analyze past temperature patterns and environmental changes over time."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "massive",
+                "prefix": "mas",
+                "displayText": "mas_ _ _ _",
+                "missingText": "sive",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "rivers",
+                "prefix": "riv",
+                "displayText": "riv_ _ _",
+                "missingText": "ers",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "slowly",
+                "prefix": "slo",
+                "displayText": "slo_ _ _",
+                "missingText": "wly",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "down",
+                "prefix": "do",
+                "displayText": "do_ _",
+                "missingText": "wn",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "valleys",
+                "prefix": "val",
+                "displayText": "val_ _ _ _",
+                "missingText": "leys",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "millennia",
+                "prefix": "mill",
+                "displayText": "mill_ _ _ _ _",
+                "missingText": "ennia",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "geological",
+                "prefix": "geolo",
+                "displayText": "geolo_ _ _ _ _",
+                "missingText": "gical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-29-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-29-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-29-m2-rap-19",
+      "module": "rap",
+      "title": "Circadian Rhythm Disruption",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.29",
+        "occurrenceDate": "2026-06-29",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-29-m2-rap-p01",
+          "title": "Circadian Rhythm Disruption",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-29-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure. These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\" This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders. Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms. Such adaptations could inform potential human therapies.",
+              "rawText": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure. These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\" This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders. Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms. Such adaptations could inform potential human therapies.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\""
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Such adaptations could inform potential human therapies."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-29-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Recent studies suggest that manipulating light exposure can help reset circadian clocks. Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles. However, this approach is not universally effective. Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles.",
+              "rawText": "Recent studies suggest that manipulating light exposure can help reset circadian clocks. Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles. However, this approach is not universally effective. Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Recent studies suggest that manipulating light exposure can help reset circadian clocks."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, this approach is not universally effective."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-29-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms. This complex causal web requires a multidisciplinary approach to develop comprehensive solutions. Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles. Whether these efforts will yield sustainable treatment options remains to be seen.",
+              "rawText": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms. This complex causal web requires a multidisciplinary approach to develop comprehensive solutions. Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles. Whether these efforts will yield sustainable treatment options remains to be seen.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "This complex causal web requires a multidisciplinary approach to develop comprehensive solutions."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles."
+                },
+                {
+                  "sentenceId": "reading-2026-06-29-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Whether these efforts will yield sustainable treatment options remains to be seen."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-29-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention the \"higher prevalence of metabolic disorders\"\"?",
+          "rawDisplayText": "11. Why does the author mention the \"higher prevalence of metabolic disorders\"\"?",
+          "payload": {
+            "passageId": "reading-2026-06-29-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "To explain why circadian misalignment. is increasing in urban environments"
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "To suggest a causal relationship between metabolic iliness and sleep disturbances"
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "To support the claim that circadian misalignment affects sleep patterns"
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "To describe one effect of the disruption of circadian rhythms by artifical light"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why might some nocturnal animal adaptations be important for human therapies?",
+          "rawDisplayText": "12. Why might some nocturnal animal adaptations be important for human therapies?",
+          "payload": {
+            "passageId": "reading-2026-06-29-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "They provide evidence that light exposure is the greatest driver of circadian rhythms."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "They offer clues about thriving in conditions that cause circadian misalignment in people."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "They show that melatonin is not always effective in regulating sleep patterns."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "They prove that animals' melatonin production cycles closely resemble those of humans."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the author suggest about simulating natural light cycles as a way of resetting circadian clocks?",
+          "rawDisplayText": "13. What does the author suggest about simulating natural light cycles as a way of resetting circadian clocks?",
+          "payload": {
+            "passageId": "reading-2026-06-29-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "Most people experiencing circadian misalignment have seen no benefit from the treatment."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "Most researchers agree that this treatment is currently the only effective approach."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "The approach is most effective for people with a genetic predisposition for sleep disorders."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "This approach has been successfully used to help many Individuals restore their sleep patterns."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m2-q13-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the relationship between paragraph 2 and paragraph 3?",
+          "rawDisplayText": "14. What is the relationship between paragraph 2 and paragraph 3?",
+          "payload": {
+            "passageId": "reading-2026-06-29-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "Paragraph 2 defines a concept; paragraph 3 provides more detail by discussing specific examples."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "Paragraph 2 evaluates a focused approach; paragraph 3 points to broader challenges and solutions."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "Paragraph 2 proposes a theory; paragraph 3 notes potential objections to itand suggests responses."
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "Paragraph 2 outlines a methodology; paragraph 3 reports the results of applying it to a problem."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-29-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"rectify\" in the passage is closest in meaning to",
+          "rawDisplayText": "15. The word \"rectify\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-29-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-29-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "disclose"
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "approve"
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "relieve"
+              },
+              {
+                "optionId": "reading-2026-06-29-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "document"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-29-m2-q15-opt-3"
+          }
+        }
+      ]
+    }
+  ]
+}

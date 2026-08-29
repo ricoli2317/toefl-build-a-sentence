@@ -1,0 +1,547 @@
+{
+  "schemaVersion": 1,
+  "ctwSamples": [
+    {
+      "set": "5.3A",
+      "questionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3A.docx",
+      "answerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3A_Answers.docx",
+      "sourceQuestionNumber": 1,
+      "rawExcerpt": "Archaeological excavations often reveal artifacts such as pottery, tools, and architectural structures, which can suggest cultural practices and societal norms. Advanced methods, i",
+      "displayText": "a_ _",
+      "prefix": "a",
+      "missingText": "nd",
+      "answer": "and"
+    },
+    {
+      "set": "5.18B",
+      "questionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18B.docx",
+      "answerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18B_Answers.docx",
+      "sourceQuestionNumber": 1,
+      "rawExcerpt": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous popul_ _ _ _ _ _ developed com_ _ _ _ societies wi_ _ rich tradi_ _ _ _ _ and soc_",
+      "displayText": "popul_ _ _ _ _ _",
+      "prefix": "popul",
+      "missingText": "ations",
+      "answer": "populations"
+    },
+    {
+      "set": "6.30A",
+      "questionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30A.docx",
+      "answerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30A_Answers.docx",
+      "sourceQuestionNumber": 1,
+      "rawExcerpt": "Understanding the relationship between cognition and consciousness is pivotal for unraveling the complexities of human thinking and behavior, as both are fundamental activities of ",
+      "displayText": "men_ _ _",
+      "prefix": "men",
+      "missingText": "tal",
+      "answer": "mental"
+    }
+  ],
+  "rdlSamples": [
+    {
+      "set": "5.3A",
+      "questionId": "reading-2026-05-03-a-m1-q21",
+      "stem": "What information does the flyer NOT provide?",
+      "optionCount": 4,
+      "correctOptionText": "How much to pay for the workshop",
+      "materialId": "RDL-001",
+      "imageRuntimePath": "/reading/rdl/rdl-001/material_final.png",
+      "selectionMapRuntimePath": "/reading/rdl/rdl-001/selection_map.json"
+    },
+    {
+      "set": "5.18B",
+      "questionId": "reading-2026-05-18-b-m1-q21",
+      "stem": "Students enrolled in this course must do all of the following EXCEPT",
+      "optionCount": 4,
+      "correctOptionText": "write a final lab report",
+      "materialId": "RDL-035",
+      "imageRuntimePath": "/reading/rdl/rdl-035/material_final.png",
+      "selectionMapRuntimePath": "/reading/rdl/rdl-035/selection_map.json"
+    },
+    {
+      "set": "6.30A",
+      "questionId": "reading-2026-06-30-a-m1-q21",
+      "stem": "Volunteers will do all of the following EXCEPT",
+      "optionCount": 4,
+      "correctOptionText": "sell food",
+      "materialId": "RDL-080",
+      "imageRuntimePath": "/reading/rdl/rdl-080/material_final.png",
+      "selectionMapRuntimePath": "/reading/rdl/rdl-080/selection_map.json"
+    }
+  ],
+  "rapMultipleChoiceSamples": [
+    {
+      "set": "5.3A",
+      "passageId": "reading-2026-05-03-a-m1-rap-p01",
+      "passageTitle": "Noise Control in Urban Areas",
+      "paragraphCount": 4,
+      "questionId": "reading-2026-05-03-a-m1-q31",
+      "stem": "The word “grappling” in the passage is closest in meaning to",
+      "correctOptionText": "struggling"
+    },
+    {
+      "set": "5.18B",
+      "passageId": "reading-2026-05-18-b-m1-rap-p01",
+      "passageTitle": "Data Science and the Buildings of Tomorrow",
+      "paragraphCount": 3,
+      "questionId": "reading-2026-05-18-b-m1-q31",
+      "stem": "The word “static” in the passage is closest in meaning to",
+      "correctOptionText": "unchanging"
+    },
+    {
+      "set": "6.30A",
+      "passageId": "reading-2026-06-30-a-m1-rap-p01",
+      "passageTitle": "Social Role Theory",
+      "paragraphCount": 1,
+      "questionId": "reading-2026-06-30-a-m1-q26",
+      "stem": "The word \"norms\" in the passage is closest in meaning to",
+      "correctOptionText": "unwritten rules"
+    }
+  ],
+  "allInsertionChecks": [
+    {
+      "questionId": "reading-2026-05-03-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-03-a-m1-q35-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-05-03-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-03-b-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-05-a-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-05-a-m1-q30-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-05-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-05-a-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-05-05-b-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-05-b-m1-q30-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-05-b-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-05-b-m2-q15-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-06-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-06-a-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-06-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-06-a-m2-q15-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-06-b-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-06-b-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-05-10-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-10-a-m2-q15-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-10-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-10-b-m1-q35-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-11-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-11-a-m1-q35-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-11-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-11-b-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-11-b-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-11-b-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-05-12-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-12-m1-q30-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-12-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-12-m1-q35-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-13-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-13-m2-q15-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-17-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-17-m1-q35-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-05-18-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-18-a-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-18-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-18-a-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-05-19-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-19-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-19-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-19-m2-q15-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-20-a-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-20-a-m1-q30-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-05-20-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-20-a-m1-q35-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-23-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-23-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-24-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-24-a-m2-q15-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-05-24-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-24-b-m1-q35-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-05-31-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-31-m1-q30-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-05-31-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-31-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-05-31-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-05-31-m2-q15-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-01-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-01-a-m2-q15-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-01-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-01-b-m1-q35-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-06-01-c-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-01-c-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-02-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-02-m1-q30-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-06-02-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-02-m1-q35-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-06-03-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-03-m2-q15-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-06-06-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-06-a-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-07-a-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-07-a-m1-q30-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-07-a-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-07-a-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-07-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-07-a-m2-q15-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-07-b-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-07-b-m1-q30-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-07-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-07-b-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-07-c-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-07-c-m1-q35-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-06-09-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-09-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-14-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-14-m1-q35-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-06-14-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-14-m2-q15-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-06-15-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-15-m1-q35-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-06-16-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-16-b-m1-q35-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-06-17-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-17-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-21-b-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-21-b-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-06-22-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-22-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-23-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-23-m1-q35-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-06-23-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-23-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-06-24-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-24-m1-q30-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-06-24-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-24-m1-q35-anchor-4"
+    },
+    {
+      "questionId": "reading-2026-06-29-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-29-m1-q30-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-29-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-29-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-30-a-m1-q30",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-30-a-m1-q30-anchor-1"
+    },
+    {
+      "questionId": "reading-2026-06-30-a-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-30-a-m2-q15-anchor-2"
+    },
+    {
+      "questionId": "reading-2026-06-30-b-m1-q35",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-30-b-m1-q35-anchor-3"
+    },
+    {
+      "questionId": "reading-2026-06-30-b-m2-q15",
+      "anchorCount": 4,
+      "correctAnchorId": "reading-2026-06-30-b-m2-q15-anchor-2"
+    }
+  ],
+  "allSentenceSelectionChecks": [
+    {
+      "questionId": "reading-2026-05-03-a-m1-q34",
+      "targetParagraphId": "reading-2026-05-03-a-m1-rap-p01-p04",
+      "correctSentenceId": "reading-2026-05-03-a-m1-rap-p01-p04-s04",
+      "correctSentenceText": "Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem."
+    },
+    {
+      "questionId": "reading-2026-05-03-a-m2-q15",
+      "targetParagraphId": "reading-2026-05-03-a-m2-rap-p01-p02",
+      "correctSentenceId": "reading-2026-05-03-a-m2-rap-p01-p02-s03",
+      "correctSentenceText": "Rogers claimed this approach allows individuals to gain the self-awareness and self-acceptance needed to grow personally and resolve issues."
+    },
+    {
+      "questionId": "reading-2026-05-06-a-m1-q33",
+      "targetParagraphId": "reading-2026-05-06-a-m1-rap-p02-p02",
+      "correctSentenceId": "reading-2026-05-06-a-m1-rap-p02-p02-s04",
+      "correctSentenceText": "However, the effectiveness of these dashboards often hinges on the user’s ability to interpret complex visual cues, which can be overwhelming."
+    },
+    {
+      "questionId": "reading-2026-05-06-b-m1-q35",
+      "targetParagraphId": "reading-2026-05-06-b-m1-rap-p02-p03",
+      "correctSentenceId": "reading-2026-05-06-b-m1-rap-p02-p03-s02",
+      "correctSentenceText": "Some researchers argue that these models rely on overly simplified assumptions."
+    },
+    {
+      "questionId": "reading-2026-05-06-b-m2-q12",
+      "targetParagraphId": "reading-2026-05-06-b-m2-rap-p01-p02",
+      "correctSentenceId": "reading-2026-05-06-b-m2-rap-p01-p02-s01",
+      "correctSentenceText": "Researchers have experimented with spider silk as a surgical suture material for use in stitching wounds, praising its strength and biocompatibility—a material’s ability to interact with the human body without causing adverse reactions, such as inflammation or rejection."
+    },
+    {
+      "questionId": "reading-2026-05-12-m2-q11",
+      "targetParagraphId": "reading-2026-05-12-m2-rap-p01-p01",
+      "correctSentenceId": "reading-2026-05-12-m2-rap-p01-p01-s01",
+      "correctSentenceText": "Creative waste transformation is reshaping the applied arts, those that apply design and decoration to everyday objects."
+    },
+    {
+      "questionId": "reading-2026-05-18-a-m1-q30",
+      "targetParagraphId": "reading-2026-05-18-a-m1-rap-p01-p03",
+      "correctSentenceId": "reading-2026-05-18-a-m1-rap-p01-p03-s02",
+      "correctSentenceText": "Some researchers argue that these models rely on overly simplified assumptions."
+    },
+    {
+      "questionId": "reading-2026-05-19-m1-q33",
+      "targetParagraphId": "reading-2026-05-19-m1-rap-p01-p02",
+      "correctSentenceId": "reading-2026-05-19-m1-rap-p01-p02-s04",
+      "correctSentenceText": "However, the effectiveness of these dashboards often hinges on the user’s ability to interpret complex visual cues, which can be overwhelming."
+    },
+    {
+      "questionId": "reading-2026-05-20-a-m1-q28",
+      "targetParagraphId": "reading-2026-05-20-a-m1-rap-p01-p02",
+      "correctSentenceId": "reading-2026-05-20-a-m1-rap-p01-p02-s04",
+      "correctSentenceText": "However, if too much data is sent to the processors at once without proper management, the system slows down."
+    },
+    {
+      "questionId": "reading-2026-05-23-m2-q11",
+      "targetParagraphId": "reading-2026-05-23-m2-rap-p01-p01",
+      "correctSentenceId": "reading-2026-05-23-m2-rap-p01-p01-s02",
+      "correctSentenceText": "As snow accumulates and compresses over centuries, it traps air bubbles that create tiny atmospheric snapshots."
+    },
+    {
+      "questionId": "reading-2026-05-24-a-m2-q11",
+      "targetParagraphId": "reading-2026-05-24-a-m2-rap-p01-p01",
+      "correctSentenceId": "reading-2026-05-24-a-m2-rap-p01-p01-s02",
+      "correctSentenceText": "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+    },
+    {
+      "questionId": "reading-2026-05-24-b-m1-q31",
+      "targetParagraphId": "reading-2026-05-24-b-m1-rap-p02-p01",
+      "correctSentenceId": "reading-2026-05-24-b-m1-rap-p02-p01-s03",
+      "correctSentenceText": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+    },
+    {
+      "questionId": "reading-2026-06-01-b-m1-q34",
+      "targetParagraphId": "reading-2026-06-01-b-m1-rap-p02-p04",
+      "correctSentenceId": "reading-2026-06-01-b-m1-rap-p02-p04-s04",
+      "correctSentenceText": "Urban planners can use these materials to design acoustic panels and noise barriers, strategically placing these structures to combat the noise problem."
+    },
+    {
+      "questionId": "reading-2026-06-03-m2-q11",
+      "targetParagraphId": "reading-2026-06-03-m2-rap-p01-p01",
+      "correctSentenceId": "reading-2026-06-03-m2-rap-p01-p01-s02",
+      "correctSentenceText": "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+    },
+    {
+      "questionId": "reading-2026-06-09-m1-q33",
+      "targetParagraphId": "reading-2026-06-09-m1-rap-p01-p02",
+      "correctSentenceId": "reading-2026-06-09-m1-rap-p01-p02-s04",
+      "correctSentenceText": "However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming."
+    },
+    {
+      "questionId": "reading-2026-06-10-m1-q31",
+      "targetParagraphId": "reading-2026-06-10-m1-rap-p01-p01",
+      "correctSentenceId": "reading-2026-06-10-m1-rap-p01-p01-s02",
+      "correctSentenceText": "Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems."
+    },
+    {
+      "questionId": "reading-2026-06-15-m1-q31",
+      "targetParagraphId": "reading-2026-06-15-m1-rap-p02-p01",
+      "correctSentenceId": "reading-2026-06-15-m1-rap-p02-p01-s03",
+      "correctSentenceText": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+    },
+    {
+      "questionId": "reading-2026-06-16-b-m1-q31",
+      "targetParagraphId": "reading-2026-06-16-b-m1-rap-p02-p01",
+      "correctSentenceId": "reading-2026-06-16-b-m1-rap-p02-p01-s03",
+      "correctSentenceText": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+    },
+    {
+      "questionId": "reading-2026-06-21-a-m2-q12",
+      "targetParagraphId": "reading-2026-06-21-a-m2-rap-p01-p02",
+      "correctSentenceId": "reading-2026-06-21-a-m2-rap-p01-p02-s01",
+      "correctSentenceText": "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate."
+    },
+    {
+      "questionId": "reading-2026-06-22-m2-q14",
+      "targetParagraphId": "reading-2026-06-22-m2-rap-p01-p02",
+      "correctSentenceId": "reading-2026-06-22-m2-rap-p01-p02-s01",
+      "correctSentenceText": "Some insist that despite linguistic and cultural variation, certain philosophical concerns—like suffering, justice, or mortality—are shared across societies, suggesting a basis for universality."
+    },
+    {
+      "questionId": "reading-2026-06-23-m2-q11",
+      "targetParagraphId": "reading-2026-06-23-m2-rap-p01-p01",
+      "correctSentenceId": "reading-2026-06-23-m2-rap-p01-p01-s03",
+      "correctSentenceText": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+    },
+    {
+      "questionId": "reading-2026-06-24-m1-q31",
+      "targetParagraphId": "reading-2026-06-24-m1-rap-p02-p01",
+      "correctSentenceId": "reading-2026-06-24-m1-rap-p02-p01-s02",
+      "correctSentenceText": "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+    },
+    {
+      "questionId": "reading-2026-06-30-b-m1-q33",
+      "targetParagraphId": "reading-2026-06-30-b-m1-rap-p01-p02",
+      "correctSentenceId": "reading-2026-06-30-b-m1-rap-p01-p02-s04",
+      "correctSentenceText": "However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming."
+    }
+  ],
+  "unresolvedCount": 1
+}

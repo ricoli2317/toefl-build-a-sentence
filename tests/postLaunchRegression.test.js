@@ -172,8 +172,9 @@ test("login keeps the original auth flow while active layouts use the new TPS as
   const studentBrand = read("components/student/StudentBrand.tsx");
   const teacherShell = read("components/teacher/TeacherAppShell.tsx");
   assert.match(login, /supabase\.auth\.signInWithPassword/);
-  assert.match(login, /profile\?\.role !== role/);
-  assert.match(login, /role === "student" \? "\/student\/sets" : "\/teacher\/dashboard"/);
+  assert.match(login, /\/api\/account\/me/);
+  assert.match(login, /resolveAuthenticatedRoute/);
+  assert.match(login, /payload\.defaultRoute/);
   assert.doesNotMatch(login, /Remember me|Forgot password/);
   for (const source of [login, studentBrand]) assert.match(source, /\/brand\/tps-logo\.png/);
   assert.match(teacherShell, /<StudentBrand compact/);

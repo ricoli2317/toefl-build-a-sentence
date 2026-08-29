@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+    "module": "rap",
+    "title": "The Political Legacy of the Roman Empire",
+    "firstSeenDate": "2026-06-14",
+    "firstSeenSourceLabel": "6.14",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "f04bee90f6b464220dc4d24910dbfe555c8871afce1c556bd2a286e37682bc6f",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-14-m2-rap-19",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "sourceKind": "docx",
+      "sourceLabel": "6.14",
+      "occurrenceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.14.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.14_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-f04bee90f6b464220dc4d249-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-f04bee90f6b464220dc4d249-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-f04bee90f6b464220dc4d249-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-f04bee90f6b464220dc4d249-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-f04bee90f6b464220dc4d249-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-f04bee90f6b464220dc4d249-passage-01",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "title": "The Political Legacy of the Roman Empire",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The fall of the Roman Empire reshaped the geopolitical landscape of Europe and the Mediterranean in profound ways. One widely accepted hypothesis is that the collapse of Roman administrative and military structures led to the fragmentation of centralized authority. Without Rome's unifying legal framework, power devolved to local warlords and tribal leaders, paving the way for feudalism and a mosaic of competing kingdoms. This decentralization fostered chronic instability, as seen in the frequent conflicts among the Franks, Visigoths, and Lombards.",
+          "rawText": "The fall of the Roman Empire reshaped the geopolitical landscape of Europe and the Mediterranean in profound ways. One widely accepted hypothesis is that the collapse of Roman administrative and military structures led to the fragmentation of centralized authority. Without Rome's unifying legal framework, power devolved to local warlords and tribal leaders, paving the way for feudalism and a mosaic of competing kingdoms. This decentralization fostered chronic instability, as seen in the frequent conflicts among the Franks, Visigoths, and Lombards.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The fall of the Roman Empire reshaped the geopolitical landscape of Europe and the Mediterranean in profound ways."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "One widely accepted hypothesis is that the collapse of Roman administrative and military structures led to the fragmentation of centralized authority."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Without Rome's unifying legal framework, power devolved to local warlords and tribal leaders, paving the way for feudalism and a mosaic of competing kingdoms."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This decentralization fostered chronic instability, as seen in the frequent conflicts among the Franks, Visigoths, and Lombards."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "However, some scholars argue that this fragmentation was not purely detrimental. The absence of a dominant empire may have encouraged regional innovation and adaptability. For instance, the Carolingian Renaissance under Charlemagne suggests that localized rule could still produce cultural and intellectual flourishing. The emergence of monastic communities during this period also played a crucial role in preserving classical knowledge and fostering educational continuity across fragmented territories.",
+          "rawText": "However, some scholars argue that this fragmentation was not purely detrimental. The absence of a dominant empire may have encouraged regional innovation and adaptability. For instance, the Carolingian Renaissance under Charlemagne suggests that localized rule could still produce cultural and intellectual flourishing. The emergence of monastic communities during this period also played a crucial role in preserving classical knowledge and fostering educational continuity across fragmented territories. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "However, some scholars argue that this fragmentation was not purely detrimental."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "The absence of a dominant empire may have encouraged regional innovation and adaptability."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "For instance, the Carolingian Renaissance under Charlemagne suggests that localized rule could still produce cultural and intellectual flourishing."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "The emergence of monastic communities during this period also played a crucial role in preserving classical knowledge and fostering educational continuity across fragmented territories."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Another compelling example is the Byzantine Empire, which retained Roman governance in the East and acted as a stabilizing force for centuries. Its survival challenges the notion that imperial collapse inevitably leads to disorder. While the fall of Rome dismantled a centralized system, it also opened space for diverse political experiments—some chaotic, and others surprisingly resilient.",
+          "rawText": "Another compelling example is the Byzantine Empire, which retained Roman governance in the East and acted as a stabilizing force for centuries. ■ Its survival challenges the notion that imperial collapse inevitably leads to disorder. ■ While the fall of Rome dismantled a centralized system, it also opened space for diverse political experiments—some chaotic, and others surprisingly resilient. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Another compelling example is the Byzantine Empire, which retained Roman governance in the East and acted as a stabilizing force for centuries."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Its survival challenges the notion that imperial collapse inevitably leads to disorder."
+            },
+            {
+              "sentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "While the fall of Rome dismantled a centralized system, it also opened space for diverse political experiments—some chaotic, and others surprisingly resilient."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-f04bee90f6b464220dc4d249-q01",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"fostered\" in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word \"fostered\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-f04bee90f6b464220dc4d249-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q01-opt-1",
+            "optionOrder": 1,
+            "text": "accepted"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q01-opt-2",
+            "optionOrder": 2,
+            "text": "revealed"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q01-opt-3",
+            "optionOrder": 3,
+            "text": "preceded"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q01-opt-4",
+            "optionOrder": 4,
+            "text": "promoted"
+          }
+        ],
+        "correctOptionId": "reading-rap-f04bee90f6b464220dc4d249-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-f04bee90f6b464220dc4d249-q02",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following best describes the main purpose of paragraph 1?",
+      "rawDisplayText": "12. Which of the following best describes the main purpose of paragraph 1?",
+      "payload": {
+        "passageId": "reading-rap-f04bee90f6b464220dc4d249-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To argue that the fall of Rome had minimal impact on European governance"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To highlight the cultural achievements that followed the Roman Empire's collapse"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To present a common explanation for the political fragmentation after Rome's fall"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To contrast the Roman Empire's decline with the rise of local kingdoms"
+          }
+        ],
+        "correctOptionId": "reading-rap-f04bee90f6b464220dc4d249-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-f04bee90f6b464220dc4d249-q03",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention the Carolingian Renaissance?",
+      "rawDisplayText": "13. Why does the author mention the Carolingian Renaissance?",
+      "payload": {
+        "passageId": "reading-rap-f04bee90f6b464220dc4d249-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate that cultural growth was still possible despite political fragmentation"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To argue that feudalism was a direct result of the Roman Empire's policies"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To show how Charlemagne attempted to restore the Roman Empire's boundaries"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To emphasize the role of military conflicts in shaping post- Roman Europe"
+          }
+        ],
+        "correctOptionId": "reading-rap-f04bee90f6b464220dc4d249-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-f04bee90f6b464220dc4d249-q04",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage mentions each of the following as a consequence of the Roman Empire's collapse EXCEPT",
+      "rawDisplayText": "14. The passage mentions each of the following as a consequence of the Roman Empire's collapse EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-f04bee90f6b464220dc4d249-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q04-opt-1",
+            "optionOrder": 1,
+            "text": "the rise of feudalism and competing regional kingdoms"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q04-opt-2",
+            "optionOrder": 2,
+            "text": "the expansion of the Byzantine Empire into Western Europe"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q04-opt-3",
+            "optionOrder": 3,
+            "text": "the preservation of classical knowledge in monastic communities"
+          },
+          {
+            "optionId": "reading-rap-f04bee90f6b464220dc4d249-q04-opt-4",
+            "optionOrder": 4,
+            "text": "the transfer of political authority to local leaders"
+          }
+        ],
+        "correctOptionId": "reading-rap-f04bee90f6b464220dc4d249-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-f04bee90f6b464220dc4d249-q05",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-f04bee90f6b464220dc4d249-passage-01",
+        "insertSentence": "Such developments suggest that decentralization may have inadvertently laid the groundwork for a more pluralistic and resilient intellectual tradition.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-f04bee90f6b464220dc4d249-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p02-s04"
+          },
+          {
+            "anchorId": "reading-rap-f04bee90f6b464220dc4d249-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-f04bee90f6b464220dc4d249-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-f04bee90f6b464220dc4d249-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-f04bee90f6b464220dc4d249-q05-anchor-1"
+      }
+    }
+  ]
+}

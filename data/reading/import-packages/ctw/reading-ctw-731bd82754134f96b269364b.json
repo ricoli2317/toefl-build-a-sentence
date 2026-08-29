@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-731bd82754134f96b269364b",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-24",
+    "firstSeenSourceLabel": "6.24",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "731bd82754134f96b269364b53ecc1d977c6c83681efd406f256faa38e566734",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-24-m1-ctw-02",
+      "logicalItemId": "reading-ctw-731bd82754134f96b269364b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.24",
+      "occurrenceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-731bd82754134f96b269364b-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-731bd82754134f96b269364b-q01",
+      "logicalItemId": "reading-ctw-731bd82754134f96b269364b",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Grasshoppers are insects commonly found in dry places with grass and plants. Grasshoppers ha_ _ several wa_ _ they pro_ _ _ _ themselves aga_ _ _ _ danger. Th_ _ have powe_ _ _ _ back le_ _, which al_ _ _ them t_ jump aw_ _ from enemies, such as rodents and snakes. Some grasshoppers can jump twenty times the length of their bodies. By the time they are adults, grasshoppers can also fly. Adult grasshoppers fly very quickly and this helps them avoid danger.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Grasshoppers are insects commonly found in dry places with grass and plants. Grasshoppers ha_ _ several wa_ _ they pro_ _ _ _ themselves aga_ _ _ _ danger. Th_ _ have powe_ _ _ _ back le_ _, which al_ _ _ them t_ jump aw_ _ from enemies, such as rodents and snakes. Some grasshoppers can jump twenty times the length of their bodies. By the time they are adults, grasshoppers can also fly. Adult grasshoppers fly very quickly and this helps them avoid danger.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Grasshoppers are insects commonly found in dry places with grass and plants. Grasshoppers "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " several "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " they "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " themselves "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " danger. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " have "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " back "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ", which "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " them "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " jump "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " from enemies, such as rodents and snakes. Some grasshoppers can jump twenty times the length of their bodies. By the time they are adults, grasshoppers can also fly. Adult grasshoppers fly very quickly and this helps them avoid danger."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "have",
+            "prefix": "ha",
+            "displayText": "ha_ _",
+            "missingText": "ve",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "ways",
+            "prefix": "wa",
+            "displayText": "wa_ _",
+            "missingText": "ys",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "protect",
+            "prefix": "pro",
+            "displayText": "pro_ _ _ _",
+            "missingText": "tect",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "against",
+            "prefix": "aga",
+            "displayText": "aga_ _ _ _",
+            "missingText": "inst",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "They",
+            "prefix": "Th",
+            "displayText": "Th_ _",
+            "missingText": "ey",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "powerful",
+            "prefix": "powe",
+            "displayText": "powe_ _ _ _",
+            "missingText": "rful",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "legs",
+            "prefix": "le",
+            "displayText": "le_ _",
+            "missingText": "gs",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "allow",
+            "prefix": "al",
+            "displayText": "al_ _ _",
+            "missingText": "low",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-731bd82754134f96b269364b-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-731bd82754134f96b269364b-q01-p01",
+            "answer": "away",
+            "prefix": "aw",
+            "displayText": "aw_ _",
+            "missingText": "ay",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

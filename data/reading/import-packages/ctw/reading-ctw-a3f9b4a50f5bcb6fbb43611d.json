@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-03",
+    "firstSeenSourceLabel": "6.3",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "a3f9b4a50f5bcb6fbb43611d537272bcceb31eea9e0616700e1d864ce02c8352",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-3-m2-ctw-18",
+      "logicalItemId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d",
+      "sourceKind": "docx",
+      "sourceLabel": "6.3",
+      "occurrenceDate": "2026-06-03",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01",
+      "logicalItemId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Throughout history, the Indian subcontinent has been a cultural crossroads that has facilitated the exchange of ideas, goods, and philosophies between East and West. The Mauryan Empire, established in 322 BCE, represented one of the earliest fo_ _ _ of consol_ _ _ _ _ _ rule i_ the reg_ _ _ and la_ _ the ground_ _ _ _ for fut_ _ _ administrative mod_ _ _. A not_ _ _ _ achievement w_ _ the spread of Buddhism under the emperor Ashoka, who propagated its teachings beyond India into Central Asia. The Gupta period, often termed the golden age, witnessed advancements in sciences, mathematics, and art.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Throughout history, the Indian subcontinent has been a cultural crossroads that has facilitated the exchange of ideas, goods, and philosophies between East and West. The Mauryan Empire, established in 322 BCE, represented one of the earliest fo_ _ _ of consol_ _ _ _ _ _ rule i_ the reg_ _ _ and la_ _ the ground_ _ _ _ for fut_ _ _ administrative mod_ _ _. A not_ _ _ _ achievement w_ _ the spread of Buddhism under the emperor Ashoka, who propagated its teachings beyond India into Central Asia. The Gupta period, often termed the golden age, witnessed advancements in sciences, mathematics, and art.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Throughout history, the Indian subcontinent has been a cultural crossroads that has facilitated the exchange of ideas, goods, and philosophies between East and West. The Mauryan Empire, established in 322 BCE, represented one of the earliest "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " rule "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " for "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " administrative "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": ". A "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " achievement "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " the spread of Buddhism under the emperor Ashoka, who propagated its teachings beyond India into Central Asia. The Gupta period, often termed the golden age, witnessed advancements in sciences, mathematics, and art."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "forms",
+            "prefix": "fo",
+            "displayText": "fo_ _ _",
+            "missingText": "rms",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "consolidated",
+            "prefix": "consol",
+            "displayText": "consol_ _ _ _ _ _",
+            "missingText": "idated",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "in",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "region",
+            "prefix": "reg",
+            "displayText": "reg_ _ _",
+            "missingText": "ion",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "laid",
+            "prefix": "la",
+            "displayText": "la_ _",
+            "missingText": "id",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "groundwork",
+            "prefix": "ground",
+            "displayText": "ground_ _ _ _",
+            "missingText": "work",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "future",
+            "prefix": "fut",
+            "displayText": "fut_ _ _",
+            "missingText": "ure",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "models",
+            "prefix": "mod",
+            "displayText": "mod_ _ _",
+            "missingText": "els",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "notable",
+            "prefix": "not",
+            "displayText": "not_ _ _ _",
+            "missingText": "able",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-a3f9b4a50f5bcb6fbb43611d-q01-p01",
+            "answer": "was",
+            "prefix": "w",
+            "displayText": "w_ _",
+            "missingText": "as",
+            "missingLength": 2
+          }
+        ]
+      }
+    }
+  ]
+}

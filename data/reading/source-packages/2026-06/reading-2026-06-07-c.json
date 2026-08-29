@@ -1,0 +1,1769 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.7C",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Prehistoric art and religion provide invaluable insights into the spiritual life of early humans. Cave paintings and carvings often depict animals and symbolic figures, reflecting the beliefs and rituals of ancient communities. These artworks se_ _ _ as a win_ _ _ into t_ _ social struc_ _ _ _ _ and cult_ _ _ _ practices o_ prehistoric ti_ _ _. By stud_ _ _ _ them, resea_ _ _ _ _ _ can bet_ _ _ understand the evolution of human thought and spirituality. These early forms of art show that even long ago, people had deep feelings, ideas, and questions about life and the world around them.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Prehistoric art and religion provide invaluable insights into the spiritual life of early humans. Cave paintings and carvings often depict animals and symbolic figures, reflecting the beliefs and rituals of ancient communities. These artworks se_ _ _ as a win_ _ _ into t_ _ social struc_ _ _ _ _ and cult_ _ _ _ practices o_ prehistoric ti_ _ _. By stud_ _ _ _ them, resea_ _ _ _ _ _ can bet_ _ _ understand the evolution of human thought and spirituality. These early forms of art show that even long ago, people had deep feelings, ideas, and questions about life and the world around them.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Prehistoric art and religion provide invaluable insights into the spiritual life of early humans. Cave paintings and carvings often depict animals and symbolic figures, reflecting the beliefs and rituals of ancient communities. These artworks "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " as a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " into "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " social "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " practices "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " prehistoric "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". By "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " them, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " can "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " understand the evolution of human thought and spirituality. These early forms of art show that even long ago, people had deep feelings, ideas, and questions about life and the world around them."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "serve",
+                "prefix": "se",
+                "displayText": "se_ _ _",
+                "missingText": "rve",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "window",
+                "prefix": "win",
+                "displayText": "win_ _ _",
+                "missingText": "dow",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "structures",
+                "prefix": "struc",
+                "displayText": "struc_ _ _ _ _",
+                "missingText": "tures",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "cultural",
+                "prefix": "cult",
+                "displayText": "cult_ _ _ _",
+                "missingText": "ural",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "times",
+                "prefix": "ti",
+                "displayText": "ti_ _ _",
+                "missingText": "mes",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "studying",
+                "prefix": "stud",
+                "displayText": "stud_ _ _ _",
+                "missingText": "ying",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "researchers",
+                "prefix": "resea",
+                "displayText": "resea_ _ _ _ _ _",
+                "missingText": "rchers",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q01-10-p01",
+                "answer": "better",
+                "prefix": "bet",
+                "displayText": "bet_ _ _",
+                "missingText": "ter",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Attachment theory, developed by John Bowlby, emphasizes the importance of early emotional bonds between infants and caregivers and how they impact future social and emotional outcomes. Secure attachment, formed through consistent and responsive caregiving, fos_ _ _ _ confidence, suppo_ _ _ _ _ relationships, a_ _ emotional regulation. Alternatively, inse_ _ _ _ attachment c_ _ lead t_ anxiety, po_ _ social ski_ _ _, and men_ _ _ health chall_ _ _ _ _. Researchers have linked attachment styles to long-term personality development and psychological outcomes. These insights inform parenting strategies and early interventions that promote better developmental paths.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Attachment theory, developed by John Bowlby, emphasizes the importance of early emotional bonds between infants and caregivers and how they impact future social and emotional outcomes. Secure attachment, formed through consistent and responsive caregiving, fos_ _ _ _ confidence, suppo_ _ _ _ _ relationships, a_ _ emotional regulation. Alternatively, inse_ _ _ _ attachment c_ _ lead t_ anxiety, po_ _ social ski_ _ _, and men_ _ _ health chall_ _ _ _ _. Researchers have linked attachment styles to long-term personality development and psychological outcomes. These insights inform parenting strategies and early interventions that promote better developmental paths.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Attachment theory, developed by John Bowlby, emphasizes the importance of early emotional bonds between infants and caregivers and how they impact future social and emotional outcomes. Secure attachment, formed through consistent and responsive caregiving, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " confidence, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " relationships, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " emotional regulation. Alternatively, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " attachment "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " lead "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " anxiety, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " social "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " health "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Researchers have linked attachment styles to long-term personality development and psychological outcomes. These insights inform parenting strategies and early interventions that promote better developmental paths."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "fosters",
+                "prefix": "fos",
+                "displayText": "fos_ _ _ _",
+                "missingText": "ters",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "supportive",
+                "prefix": "suppo",
+                "displayText": "suppo_ _ _ _ _",
+                "missingText": "rtive",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "insecure",
+                "prefix": "inse",
+                "displayText": "inse_ _ _ _",
+                "missingText": "cure",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "can",
+                "prefix": "c",
+                "displayText": "c_ _",
+                "missingText": "an",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "poor",
+                "prefix": "po",
+                "displayText": "po_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "skills",
+                "prefix": "ski",
+                "displayText": "ski_ _ _",
+                "missingText": "lls",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "mental",
+                "prefix": "men",
+                "displayText": "men_ _ _",
+                "missingText": "tal",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-07-c-m1-ctw-q11-20-p01",
+                "answer": "challenges",
+                "prefix": "chall",
+                "displayText": "chall_ _ _ _ _",
+                "missingText": "enges",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-rdl-03",
+      "module": "rdl",
+      "title": "Dental appointment",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-047",
+          "title": "Dental appointment",
+          "source": "material-index.json#RDL-047",
+          "sourceDate": "2026-05-23",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-047/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-047/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What may Ms. Smith need to do before her appointment?",
+          "rawDisplayText": "21. What may Ms. Smith need to do before her appointment?",
+          "payload": {
+            "materialId": "RDL-047",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Check directions to the clinic"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Call to confirm the appointment"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Update insurance information"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Provide a payment method"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "When should Ms. Smith arrive at the clinic?",
+          "rawDisplayText": "22. When should Ms. Smith arrive at the clinic?",
+          "payload": {
+            "materialId": "RDL-047",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "At 8:40 a.m."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "At 8:50 a.m."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "At 9:10 a.m."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "At 9:00 a.m."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-rdl-05",
+      "module": "rdl",
+      "title": "Extended Library Hours for Final Exams",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-067",
+          "title": "Extended Library Hours for Final Exams",
+          "source": "material-index.json#RDL-067",
+          "sourceDate": "2026-06-07",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-067/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-067/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "How will the library's schedule change during final exams?",
+          "rawDisplayText": "23. How will the library's schedule change during final exams?",
+          "payload": {
+            "materialId": "RDL-067",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Study rooms will be unavailable after 10 p.m. starting April 22."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "The library will begin opening an hour earlier starting April 22."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Weekend hours will be reduced after April 22 to allow for maintenance."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "The library's closing time will be later starting April 22."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q23-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Which feature is newly added to study rooms during the library's altered schedule for final exams?",
+          "rawDisplayText": "24. Which feature is newly added to study rooms during the library's altered schedule for final exams?",
+          "payload": {
+            "materialId": "RDL-067",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Additional drink choices"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "The ability to print documents"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Faster help from librarians"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Increased seating capacity"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q24-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-rdl-07",
+      "module": "rdl",
+      "title": "Supporting information needed",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-068",
+          "title": "Supporting information needed",
+          "source": "material-index.json#RDL-068",
+          "sourceDate": "2026-06-07",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-068/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-068/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "Supporting information is needed in order to complete which of the following processes?",
+          "rawDisplayText": "25. Supporting information is needed in order to complete which of the following processes?",
+          "payload": {
+            "materialId": "RDL-068",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "A request for admission to an academic program"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Assessment of an annual departmental budget"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "An application for funding for academic research"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "An evaluation of a vendor's proposal to provide services"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q25-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "According to Dr. Anderson, all of the following are required from Ms. Gupta EXCEPT",
+          "rawDisplayText": "26. According to Dr. Anderson, all of the following are required from Ms. Gupta EXCEPT",
+          "payload": {
+            "materialId": "RDL-068",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "a reason why she has included each item of equipment in her budget"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "the identities of the vendors she intends to hire for services"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "verification that she is enrolled in classes"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "a PDF of the coursework she has completed to date"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "What resource does Dr. Anderson offer in order to help Ms. Gupta accomplish the requested task?",
+          "rawDisplayText": "27. What resource does Dr. Anderson offer in order to help Ms. Gupta accomplish the requested task?",
+          "payload": {
+            "materialId": "RDL-068",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Sample scenarios for calculating her research budget"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Access to the university portal so she may download her schedule"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "An official email documenting his endorsement of her proposal"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "A list of the committee members reviewing her proposal"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q27-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-rdl-10",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-034",
+          "title": "The University Photography Club",
+          "source": "material-index.json#RDL-034",
+          "sourceDate": "2026-05-18",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-034/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-034/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "The notice suggests that",
+          "rawDisplayText": "28. The notice suggests that",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "people new to photography can benefit from the workshop"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "participants must pay an entrance fee"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "participants will leave campus to take pictures"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "students can learn fashion photography"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q28-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+          "rawDisplayText": "29. What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "An exhibition of participants' photography"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "A sale of used photo equipment"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "A lecture by a university visual arts professor"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "An opportunity to learn more photography techniques"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Which of the following is NOT true about the photography workshop?",
+          "rawDisplayText": "30. Which of the following is NOT true about the photography workshop?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "There will be a photography competition."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Photo editing methods will be presented."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Multiple photography genres will be featured."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Participants must pay for lunch."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q30-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m1-rap-13",
+      "module": "rap",
+      "title": "Sleep and Memory",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-07-c-m1-rap-p01",
+          "title": "Sleep and Memory",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Sleep is not merely a passive period of rest; it plays an active role in the consolidation of memory, a process that has been extensively examined by neuroscientists over several decades. During sleep, distinct stages—most notably rapid-eye-movement (REM) sleep and deep sleep—contribute in different ways to how memories are stored and organized. Experimental research suggests that while REM sleep strengthens emotionally charged memories, deep sleep supports the retention of factual knowledge and the acquisition of skills.",
+              "rawText": "Sleep is not merely a passive period of rest; it plays an active role in the consolidation of memory, a process that has been extensively examined by neuroscientists over several decades. During sleep, distinct stages—most notably rapid-eye-movement (REM) sleep and deep sleep—contribute in different ways to how memories are stored and organized. Experimental research suggests that while REM sleep strengthens emotionally charged memories, deep sleep supports the retention of factual knowledge and the acquisition of skills. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Sleep is not merely a passive period of rest; it plays an active role in the consolidation of memory, a process that has been extensively examined by neuroscientists over several decades."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "During sleep, distinct stages—most notably rapid-eye-movement (REM) sleep and deep sleep—contribute in different ways to how memories are stored and organized."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Experimental research suggests that while REM sleep strengthens emotionally charged memories, deep sleep supports the retention of factual knowledge and the acquisition of skills."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Some researchers further propose that sleep functions as a kind of neural \"data management\" system. While awake, the brain continuously forms new connections as it processes incoming information, creating a dense and potentially inefficient network. During sleep, however, unnecessary connections are trimmed, whereas essential ones are reinforced, a reorganization that enhances the brain's ability to retrieve information accurately.",
+              "rawText": "Some researchers further propose that sleep functions as a kind of neural \"data management\" system. ■ While awake, the brain continuously forms new connections as it processes incoming information, creating a dense and potentially inefficient network. ■ During sleep, however, unnecessary connections are trimmed, whereas essential ones are reinforced, a reorganization that enhances the brain's ability to retrieve information accurately. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Some researchers further propose that sleep functions as a kind of neural \"data management\" system."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "While awake, the brain continuously forms new connections as it processes incoming information, creating a dense and potentially inefficient network."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "During sleep, however, unnecessary connections are trimmed, whereas essential ones are reinforced, a reorganization that enhances the brain's ability to retrieve information accurately."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Not surprisingly, sleep deprivation has been shown to impair memory retention and conceptual integration. Even a single night of lost sleep can reduce recall and interfere with learning. Nevertheless, studies also indicate that recovery sleep—particularly when it is deep and uninterrupted—can partially reverse these effects, suggesting that although sleep is critical for memory, the brain retains a limited capacity to adapt to disruption.",
+              "rawText": "Not surprisingly, sleep deprivation has been shown to impair memory retention and conceptual integration. Even a single night of lost sleep can reduce recall and interfere with learning. Nevertheless, studies also indicate that recovery sleep—particularly when it is deep and uninterrupted—can partially reverse these effects, suggesting that although sleep is critical for memory, the brain retains a limited capacity to adapt to disruption.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Not surprisingly, sleep deprivation has been shown to impair memory retention and conceptual integration."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Even a single night of lost sleep can reduce recall and interfere with learning."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Nevertheless, studies also indicate that recovery sleep—particularly when it is deep and uninterrupted—can partially reverse these effects, suggesting that although sleep is critical for memory, the brain retains a limited capacity to adapt to disruption."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"retention\" in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word \"retention\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "creation"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "replacement"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "transfer"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "preservation"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q31-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "REM sleep and deep sleep differ in which of the following ways?",
+          "rawDisplayText": "32. REM sleep and deep sleep differ in which of the following ways?",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "Deep sleep is limited to the early stages of the sleep cycle, while REM sleep is not."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "REM sleep is more important for skill development than deep sleep."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "REM sleep involves less brain activity than deep sleep."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "REM sleep and deep sleep are each linked to separate types of memory."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q32-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests which of the following about the effect of sleep on memory?",
+          "rawDisplayText": "33. The passage suggests which of the following about the effect of sleep on memory?",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "Sleep Improves memory primarily by increasing the total number of neural connections."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "Sleep improves memory by selectively eliminating some neural connections."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "Sleep affects the strength of memories only during the rapid eye movemenr (REM) stage."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "Sleep strengthens the memory of emotionally charged events but not of factual information."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author use the phrase \"Not surprisingly\" to begin paragraph 32",
+          "rawDisplayText": "34. Why does the author use the phrase \"Not surprisingly\" to begin paragraph 32",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that the effects of sleep deprivation follow logically from earlier claims"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "To emphasize that people are often conscious of memory lapses after a perlod of poor sleep"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "To point out a reason for scientists' interest In establishing a link between sleep and memory"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "To acknowledge that sleep quality is as essential to memory retention as sleep quantity"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m1-rap-p01",
+            "insertSentence": "This interpretation focuses on the vital role sleep plays in helping the brain function in an optimal way.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-07-c-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-07-c-m1-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-07-c-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-07-c-m1-rap-p01-p02-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-07-c-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p02",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-07-c-m1-rap-p01-p02-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-07-c-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-07-c-m1-rap-p01-p02",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-07-c-m1-rap-p01-p02-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-07-c-m1-q35-anchor-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Cave paintings represent some of the earliest forms of human expression and communication, often characterized by their intricate depictions and symbolic meanings. These artw_ _ _ _, primarily fo_ _ _ on t_ _ walls a_ _ ceilings o_ caves, of_ _ _ insights in_ _ the li_ _ _ and bel_ _ _ _ of prehi_ _ _ _ _ _ peoples. Such paintings frequently feature animals, hunting scenes, and abstract shapes, suggesting a complex understanding of the environment and possibly spiritual beliefs. The pigments were garnered from natural sources like minerals and charcoal.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Cave paintings represent some of the earliest forms of human expression and communication, often characterized by their intricate depictions and symbolic meanings. These artw_ _ _ _, primarily fo_ _ _ on t_ _ walls a_ _ ceilings o_ caves, of_ _ _ insights in_ _ the li_ _ _ and bel_ _ _ _ of prehi_ _ _ _ _ _ peoples. Such paintings frequently feature animals, hunting scenes, and abstract shapes, suggesting a complex understanding of the environment and possibly spiritual beliefs. The pigments were garnered from natural sources like minerals and charcoal.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Cave paintings represent some of the earliest forms of human expression and communication, often characterized by their intricate depictions and symbolic meanings. These "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", primarily "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " on "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " walls "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ceilings "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " caves, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " insights "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " peoples. Such paintings frequently feature animals, hunting scenes, and abstract shapes, suggesting a complex understanding of the environment and possibly spiritual beliefs. The pigments were garnered from natural sources like minerals and charcoal."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "artworks",
+                "prefix": "artw",
+                "displayText": "artw_ _ _ _",
+                "missingText": "orks",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "found",
+                "prefix": "fo",
+                "displayText": "fo_ _ _",
+                "missingText": "und",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "offer",
+                "prefix": "of",
+                "displayText": "of_ _ _",
+                "missingText": "fer",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "into",
+                "prefix": "in",
+                "displayText": "in_ _",
+                "missingText": "to",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "lives",
+                "prefix": "li",
+                "displayText": "li_ _ _",
+                "missingText": "ves",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "beliefs",
+                "prefix": "bel",
+                "displayText": "bel_ _ _ _",
+                "missingText": "iefs",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-07-c-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-07-c-m2-ctw-q01-10-p01",
+                "answer": "prehistoric",
+                "prefix": "prehi",
+                "displayText": "prehi_ _ _ _ _ _",
+                "missingText": "storic",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-7c-m2-rap-19",
+      "module": "rap",
+      "title": "Psychology of Laughter",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.7C",
+        "occurrenceDate": "2026-06-07",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7C.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7C_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-07-c-m2-rap-p01",
+          "title": "Psychology of Laughter",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-07-c-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Laughter, a universal human behavior, plays a vital role in social harmony. Biologically, laughter triggers the release of endorphins, enhancing mood and resilience. This neurochemical response suggests an evolutionary advantage: laughter may have developed as a stress-coping mechanism, helping individuals endure hardship through shared emotional relief. This challenges the simplistic view of laughter as merely a reaction to humor. Instead, it reveals its deeper connection to emotional intelligence, mental health, and interpersonal communication.",
+              "rawText": "Laughter, a universal human behavior, plays a vital role in social harmony. Biologically, laughter triggers the release of endorphins, enhancing mood and resilience. This neurochemical response suggests an evolutionary advantage: laughter may have developed as a stress-coping mechanism, helping individuals endure hardship through shared emotional relief. This challenges the simplistic view of laughter as merely a reaction to humor. Instead, it reveals its deeper connection to emotional intelligence, mental health, and interpersonal communication.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Laughter, a universal human behavior, plays a vital role in social harmony."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Biologically, laughter triggers the release of endorphins, enhancing mood and resilience."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This neurochemical response suggests an evolutionary advantage: laughter may have developed as a stress-coping mechanism, helping individuals endure hardship through shared emotional relief."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This challenges the simplistic view of laughter as merely a reaction to humor."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Instead, it reveals its deeper connection to emotional intelligence, mental health, and interpersonal communication."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-07-c-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Our laughter is often triggered when we hear others laugh, and this contagiousness makes it pivotal in group dynamics. For example, in social gatherings, laughter often spreads rapidly, reinforcing a sense of collective identity and emotional synchrony. However, this contagiousness is not always straightforward. In some contexts, such as forced laughter in professional settings or laughter used to mask discomfort, its role becomes ambiguous and subject to interpretation.",
+              "rawText": "Our laughter is often triggered when we hear others laugh, and this contagiousness makes it pivotal in group dynamics. For example, in social gatherings, laughter often spreads rapidly, reinforcing a sense of collective identity and emotional synchrony. However, this contagiousness is not always straightforward. In some contexts, such as forced laughter in professional settings or laughter used to mask discomfort, its role becomes ambiguous and subject to interpretation.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Our laughter is often triggered when we hear others laugh, and this contagiousness makes it pivotal in group dynamics."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "For example, in social gatherings, laughter often spreads rapidly, reinforcing a sense of collective identity and emotional synchrony."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, this contagiousness is not always straightforward."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "In some contexts, such as forced laughter in professional settings or laughter used to mask discomfort, its role becomes ambiguous and subject to interpretation."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-07-c-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "While laughter can signal safety and shared understanding, it is complex and context-dependent. In relaxed environments, laughter often indicates trust and mutual comprehension. Yet, in tense situations, people may exhibit nervous laughter—such as during public speaking or conflict—which can mislead observers about their true emotional state. Research shows that identical laughter sounds can convey different meanings depending on social cues, tone, and setting, underscoring the importance of context in interpreting laughter.",
+              "rawText": "While laughter can signal safety and shared understanding, it is complex and context-dependent. In relaxed environments, laughter often indicates trust and mutual comprehension. Yet, in tense situations, people may exhibit nervous laughter—such as during public speaking or conflict—which can mislead observers about their true emotional state. Research shows that identical laughter sounds can convey different meanings depending on social cues, tone, and setting, underscoring the importance of context in interpreting laughter.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "While laughter can signal safety and shared understanding, it is complex and context-dependent."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "In relaxed environments, laughter often indicates trust and mutual comprehension."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Yet, in tense situations, people may exhibit nervous laughter—such as during public speaking or conflict—which can mislead observers about their true emotional state."
+                },
+                {
+                  "sentenceId": "reading-2026-06-07-c-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Research shows that identical laughter sounds can convey different meanings depending on social cues, tone, and setting, underscoring the importance of context in interpreting laughter."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-07-c-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "What evidence does the passage present for the evolutionary advantages of laughter?",
+          "rawDisplayText": "11. What evidence does the passage present for the evolutionary advantages of laughter?",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "Laughter can be used to deceive people in social settings."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "Laughter triggers the release of chemicals that improve mood."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "Laughter can be a sign of awareness of one's social context."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "Laughter is a necessary tool for interpersonal communication."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m2-q11-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the passage mention the contagiousness of laughter at social events?",
+          "rawDisplayText": "12. Why does the passage mention the contagiousness of laughter at social events?",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate the biological mechanism that causes laughter to spread among people in groups"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "To provide evidence for the claim that laughter is a universal human behavior"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "To show how laughter strengthens social bonds through shared group experiences"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that laughter primarily reflects individual emotional states"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m2-q12-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"straightforward\" in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word \"straightforward\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "clear"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "significant"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "consistent"
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "effective"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about how observers interpret nervous laughter?",
+          "rawDisplayText": "14. What does the passage suggest about how observers interpret nervous laughter?",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "Observers may incorrectly interpret nervous laughter as a sign of amusement."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "Observers usually interpret nervous laughter correctly in relaxed social environments."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "Observers tend to interpret nervous laughter consistently across cultures."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "Observers interpret nervous laughter primarily based on sound rather than on contextual cues."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-07-c-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following best summarizes the view of laughter presented in the passage?",
+          "rawDisplayText": "15. Which of the following best summarizes the view of laughter presented in the passage?",
+          "payload": {
+            "passageId": "reading-2026-06-07-c-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-07-c-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "Laughter is primarily a biological response that improves mood through chemical processes in the brain."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "Laughter is a behavior whose meaning depends both on social context and on biological mechanisms."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "Laughter spreads mainly because it is contagious and strengthens group identity in social settings."
+              },
+              {
+                "optionId": "reading-2026-06-07-c-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "Laughter reflects emotional intelligence by allowing individuals to express joy and relieve stress."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-07-c-m2-q15-opt-2"
+          }
+        }
+      ]
+    }
+  ]
+}

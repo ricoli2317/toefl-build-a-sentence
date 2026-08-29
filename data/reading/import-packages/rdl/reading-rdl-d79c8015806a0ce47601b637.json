@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+    "module": "rdl",
+    "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+    "firstSeenDate": "2026-05-03",
+    "firstSeenSourceLabel": "5.3B",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "d79c8015806a0ce47601b6373db04d4b099bcfbd05675310f61122adf3227154",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-3b-m1-rdl-05",
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "sourceKind": "docx",
+      "sourceLabel": "5.3B",
+      "occurrenceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-d79c8015806a0ce47601b637-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-d79c8015806a0ce47601b637-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-d79c8015806a0ce47601b637-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-6a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "sourceKind": "docx",
+      "sourceLabel": "6.6A",
+      "occurrenceDate": "2026-06-06",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-d79c8015806a0ce47601b637-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-d79c8015806a0ce47601b637-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-d79c8015806a0ce47601b637-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-006",
+      "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+      "source": "material-index.json#RDL-006",
+      "sourceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-006/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-006/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-d79c8015806a0ce47601b637-q01",
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What is the main purpose of the schedule?",
+      "rawDisplayText": "23. What is the main purpose of the schedule?",
+      "payload": {
+        "materialId": "RDL-006",
+        "options": [
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To provide information on a conference keynote address"
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To provide conference registration details"
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To list events happening at a conference"
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To provide information about refreshments at a conference"
+          }
+        ],
+        "correctOptionId": "reading-rdl-d79c8015806a0ce47601b637-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-d79c8015806a0ce47601b637-q02",
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "All of the following are reasons why someone might choose to attend the event EXCEPT",
+      "rawDisplayText": "24. All of the following are reasons why someone might choose to attend the event EXCEPT",
+      "payload": {
+        "materialId": "RDL-006",
+        "options": [
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q02-opt-1",
+            "optionOrder": 1,
+            "text": "to learn how to concentrate better on their studies"
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q02-opt-2",
+            "optionOrder": 2,
+            "text": "to gather materials for applying to medical school"
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q02-opt-3",
+            "optionOrder": 3,
+            "text": "to speak directly with people in the health industry"
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q02-opt-4",
+            "optionOrder": 4,
+            "text": "to gain access to wellness resources"
+          }
+        ],
+        "correctOptionId": "reading-rdl-d79c8015806a0ce47601b637-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-d79c8015806a0ce47601b637-q03",
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What is likely true about most of the attendees?",
+      "rawDisplayText": "25. What is likely true about most of the attendees?",
+      "payload": {
+        "materialId": "RDL-006",
+        "options": [
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q03-opt-1",
+            "optionOrder": 1,
+            "text": "They will receive free healthcare services at the event."
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q03-opt-2",
+            "optionOrder": 2,
+            "text": "They work in the health industry."
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q03-opt-3",
+            "optionOrder": 3,
+            "text": "They are visiting from other regions."
+          },
+          {
+            "optionId": "reading-rdl-d79c8015806a0ce47601b637-q03-opt-4",
+            "optionOrder": 4,
+            "text": "They are students."
+          }
+        ],
+        "correctOptionId": "reading-rdl-d79c8015806a0ce47601b637-q03-opt-4"
+      }
+    }
+  ]
+}

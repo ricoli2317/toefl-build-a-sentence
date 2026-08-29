@@ -1,3 +1,9 @@
+import {
+  COMPLETE_THE_WORDS_HEADERS,
+  READ_AN_ACADEMIC_PASSAGE_HEADERS,
+  READ_IN_DAILY_LIFE_HEADERS
+} from "./reading/csvSchemas.ts";
+
 export const BUILD_A_SENTENCE_HEADERS = [
   "question_id",
   "set_id",
@@ -56,18 +62,27 @@ export type QuestionType =
   | "build_a_sentence"
   | "email"
   | "academic_discussion"
+  | "complete_the_words"
+  | "read_in_daily_life"
+  | "read_an_academic_passage"
   | "unknown";
 
 export const QUESTION_TYPE_LABELS: Record<Exclude<QuestionType, "unknown">, string> = {
   build_a_sentence: "Build a Sentence",
   email: "Write an Email",
-  academic_discussion: "Academic Discussion"
+  academic_discussion: "Academic Discussion",
+  complete_the_words: "Complete the Words",
+  read_in_daily_life: "Read in Daily Life",
+  read_an_academic_passage: "Read an Academic Passage"
 };
 
 export const QUESTION_TYPE_SCHEMAS = {
   build_a_sentence: BUILD_A_SENTENCE_HEADERS,
   email: EMAIL_HEADERS,
-  academic_discussion: ACADEMIC_DISCUSSION_HEADERS
+  academic_discussion: ACADEMIC_DISCUSSION_HEADERS,
+  complete_the_words: COMPLETE_THE_WORDS_HEADERS,
+  read_in_daily_life: READ_IN_DAILY_LIFE_HEADERS,
+  read_an_academic_passage: READ_AN_ACADEMIC_PASSAGE_HEADERS
 } as const;
 
 export type KnownQuestionType = keyof typeof QUESTION_TYPE_SCHEMAS;

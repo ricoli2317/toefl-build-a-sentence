@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-1d9b63b9ea4ccc675d195cba",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-18",
+    "firstSeenSourceLabel": "5.18A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "1d9b63b9ea4ccc675d195cbaca639f022f7b4e55b755efac555eabc76bb0778d",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-18a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-1d9b63b9ea4ccc675d195cba",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18A",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01",
+      "logicalItemId": "reading-ctw-1d9b63b9ea4ccc675d195cba",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The Great Barrier Reef, located off the coast of Australia, is the world’s largest coral reef system. It ho_ _ _ a div_ _ _ _ array o_ marine li_ _, including fi_ _, mollusks, a_ _ sea tur_ _ _ _. Coral re_ _ _ are bu_ _ _ by colo_ _ _ _ of tiny organisms called coral polyps that secrete calcium carbonate skeletons; these hard structures grow together to form massive reefs over time. The Great Barrier Reef ecosystem is crucial for biodiversity, providing habitat and food for numerous marine species. Climate change, pollution, and overfishing threaten the health of the Great Barrier Reef.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The Great Barrier Reef, located off the coast of Australia, is the world’s largest coral reef system. It ho_ _ _ a div_ _ _ _ array o_ marine li_ _, including fi_ _, mollusks, a_ _ sea tur_ _ _ _. Coral re_ _ _ are bu_ _ _ by colo_ _ _ _ of tiny organisms called coral polyps that secrete calcium carbonate skeletons; these hard structures grow together to form massive reefs over time. The Great Barrier Reef ecosystem is crucial for biodiversity, providing habitat and food for numerous marine species. Climate change, pollution, and overfishing threaten the health of the Great Barrier Reef.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The Great Barrier Reef, located off the coast of Australia, is the world’s largest coral reef system. It "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " array "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " marine "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ", including "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", mollusks, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " sea "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": ". Coral "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " are "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " by "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " of tiny organisms called coral polyps that secrete calcium carbonate skeletons; these hard structures grow together to form massive reefs over time. The Great Barrier Reef ecosystem is crucial for biodiversity, providing habitat and food for numerous marine species. Climate change, pollution, and overfishing threaten the health of the Great Barrier Reef."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "hosts",
+            "prefix": "ho",
+            "displayText": "ho_ _ _",
+            "missingText": "sts",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "diverse",
+            "prefix": "div",
+            "displayText": "div_ _ _ _",
+            "missingText": "erse",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "of",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "f",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "life",
+            "prefix": "li",
+            "displayText": "li_ _",
+            "missingText": "fe",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "fish",
+            "prefix": "fi",
+            "displayText": "fi_ _",
+            "missingText": "sh",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "turtles",
+            "prefix": "tur",
+            "displayText": "tur_ _ _ _",
+            "missingText": "tles",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "reefs",
+            "prefix": "re",
+            "displayText": "re_ _ _",
+            "missingText": "efs",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "built",
+            "prefix": "bu",
+            "displayText": "bu_ _ _",
+            "missingText": "ilt",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-1d9b63b9ea4ccc675d195cba-q01-p01",
+            "answer": "colonies",
+            "prefix": "colo",
+            "displayText": "colo_ _ _ _",
+            "missingText": "nies",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

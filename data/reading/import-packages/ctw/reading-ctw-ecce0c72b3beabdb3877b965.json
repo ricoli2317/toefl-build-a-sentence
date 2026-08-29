@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-ecce0c72b3beabdb3877b965",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1B",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "ecce0c72b3beabdb3877b965d0b87c04fa2f9135a29611db497376c037fa4339",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1b-m1-ctw-01",
+      "logicalItemId": "reading-ctw-ecce0c72b3beabdb3877b965",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1B",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-ecce0c72b3beabdb3877b965-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-ecce0c72b3beabdb3877b965-q01",
+      "logicalItemId": "reading-ctw-ecce0c72b3beabdb3877b965",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Realism in theater is a movement that emerged in the 19th century, aiming to portray everyday life with authenticity and truthfulness. It rejects exaggerated sentime_ _ _ _ _ _ _ and theat_ _ _ _ _ conventions, ins_ _ _ _ focusing o_ believable chara_ _ _ _ _, natural conver_ _ _ _ _ _, and sett_ _ _ _ that ref_ _ _ _ real soc_ _ _ environments. Rea_ _ _ _ plays often explore complex moral and social issues, emphasizing psychological depth and the influence of environment and circumstance on human behavior. Realism continues to influence contemporary theatre by encouraging honest, nuanced storytelling.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Realism in theater is a movement that emerged in the 19th century, aiming to portray everyday life with authenticity and truthfulness. It rejects exaggerated sentime_ _ _ _ _ _ _ and theat_ _ _ _ _ conventions, ins_ _ _ _ focusing o_ believable chara_ _ _ _ _, natural conver_ _ _ _ _ _, and sett_ _ _ _ that ref_ _ _ _ real soc_ _ _ environments. Rea_ _ _ _ plays often explore complex moral and social issues, emphasizing psychological depth and the influence of environment and circumstance on human behavior. Realism continues to influence contemporary theatre by encouraging honest, nuanced storytelling.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Realism in theater is a movement that emerged in the 19th century, aiming to portray everyday life with authenticity and truthfulness. It rejects exaggerated "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " conventions, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " focusing "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " believable "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", natural "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " real "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " environments. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " plays often explore complex moral and social issues, emphasizing psychological depth and the influence of environment and circumstance on human behavior. Realism continues to influence contemporary theatre by encouraging honest, nuanced storytelling."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "sentimentality",
+            "prefix": "sentime",
+            "displayText": "sentime_ _ _ _ _ _ _",
+            "missingText": "ntality",
+            "missingLength": 7
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "theatrical",
+            "prefix": "theat",
+            "displayText": "theat_ _ _ _ _",
+            "missingText": "rical",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "instead",
+            "prefix": "ins",
+            "displayText": "ins_ _ _ _",
+            "missingText": "tead",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "on",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "characters",
+            "prefix": "chara",
+            "displayText": "chara_ _ _ _ _",
+            "missingText": "cters",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "conversation",
+            "prefix": "conver",
+            "displayText": "conver_ _ _ _ _ _",
+            "missingText": "sation",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "settings",
+            "prefix": "sett",
+            "displayText": "sett_ _ _ _",
+            "missingText": "ings",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "reflect",
+            "prefix": "ref",
+            "displayText": "ref_ _ _ _",
+            "missingText": "lect",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "social",
+            "prefix": "soc",
+            "displayText": "soc_ _ _",
+            "missingText": "ial",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-ecce0c72b3beabdb3877b965-q01-p01",
+            "answer": "Realist",
+            "prefix": "Rea",
+            "displayText": "Rea_ _ _ _",
+            "missingText": "list",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

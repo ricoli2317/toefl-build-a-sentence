@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+    "module": "rap",
+    "title": "The Power of Placebos",
+    "firstSeenDate": "2026-05-13",
+    "firstSeenSourceLabel": "5.13",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "51f18b2b4046d93a70bdd3005ef304ddb373f6b91b60852ecda0183392e7df48",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-13-m2-rap-19",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "sourceKind": "docx",
+      "sourceLabel": "5.13",
+      "occurrenceDate": "2026-05-13",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.13.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.13_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "title": "The Power of Placebos",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The placebo effect challenges conventional ideas about medical treatment efficacy. What is a placebo? A patient’s condition sometimes improves if they believe that they are receiving an effective treatment, even if they are in fact receiving a sugar pill. In this example, the sugar pill, which has no active ingredient, is a placebo. Surprisingly, this effect can sometimes rival real medications in clinical trials.",
+          "rawText": "The placebo effect challenges conventional ideas about medical treatment efficacy. What is a placebo? ■ A patient’s condition sometimes improves if they believe that they are receiving an effective treatment, even if they are in fact receiving a sugar pill. ■ In this example, the sugar pill, which has no active ingredient, is a placebo. Surprisingly, this effect can sometimes rival real medications in clinical trials. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The placebo effect challenges conventional ideas about medical treatment efficacy."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "What is a placebo?"
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "A patient’s condition sometimes improves if they believe that they are receiving an effective treatment, even if they are in fact receiving a sugar pill."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "In this example, the sugar pill, which has no active ingredient, is a placebo."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Surprisingly, this effect can sometimes rival real medications in clinical trials."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Recent studies suggest that the placebo effect might be rooted in the brain’s complex chemistry. When a patient anticipates positive effects, their brain can release chemicals like endorphins, which may cause genuine physiological changes. In one study, patients receiving placebo “painkillers” reported pain relief comparable to the one produced by actual painkillers, highlighting the brain’s powerful role. Some researchers propose using the placebo effect deliberately to enhance therapy outcomes, arguing that the mind-body connection should be tapped into more.",
+          "rawText": "Recent studies suggest that the placebo effect might be rooted in the brain’s complex chemistry. ■ When a patient anticipates positive effects, their brain can release chemicals like endorphins, which may cause genuine physiological changes. In one study, patients receiving placebo “painkillers” reported pain relief comparable to the one produced by actual painkillers, highlighting the brain’s powerful role. Some researchers propose using the placebo effect deliberately to enhance therapy outcomes, arguing that the mind-body connection should be tapped into more.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Recent studies suggest that the placebo effect might be rooted in the brain’s complex chemistry."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "When a patient anticipates positive effects, their brain can release chemicals like endorphins, which may cause genuine physiological changes."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "In one study, patients receiving placebo “painkillers” reported pain relief comparable to the one produced by actual painkillers, highlighting the brain’s powerful role."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Some researchers propose using the placebo effect deliberately to enhance therapy outcomes, arguing that the mind-body connection should be tapped into more."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "However, ethical considerations arise: deceiving patients could undermine trust in healthcare. For example, even when a placebo leads to measurable improvement, knowingly administering it without full disclosure may violate principles of informed consent, raising questions about autonomy and transparency in patient care. This delicate balance between harnessing the placebo effect and maintaining ethical standards continues to be a topic of debate.",
+          "rawText": "However, ethical considerations arise: deceiving patients could undermine trust in healthcare. For example, even when a placebo leads to measurable improvement, knowingly administering it without full disclosure may violate principles of informed consent, raising questions about autonomy and transparency in patient care. This delicate balance between harnessing the placebo effect and maintaining ethical standards continues to be a topic of debate.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "However, ethical considerations arise: deceiving patients could undermine trust in healthcare."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "For example, even when a placebo leads to measurable improvement, knowingly administering it without full disclosure may violate principles of informed consent, raising questions about autonomy and transparency in patient care."
+            },
+            {
+              "sentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "This delicate balance between harnessing the placebo effect and maintaining ethical standards continues to be a topic of debate."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q01",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "How does the placebo effect challenge traditional views on treatment?",
+      "rawDisplayText": "11. How does the placebo effect challenge traditional views on treatment?",
+      "payload": {
+        "passageId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q01-opt-1",
+            "optionOrder": 1,
+            "text": "By showing that patients should have more say in selecting their medications"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q01-opt-2",
+            "optionOrder": 2,
+            "text": "By suggesting that a patient’s belief can be as powerful as a medicine"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q01-opt-3",
+            "optionOrder": 3,
+            "text": "By pointing out a possible way to reduce the costs of clinical trials"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q01-opt-4",
+            "optionOrder": 4,
+            "text": "By questioning existing measurements of the effectiveness of a treatment"
+          }
+        ],
+        "correctOptionId": "reading-rap-51f18b2b4046d93a70bdd300-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q02",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does paragraph 2 indicate about the placebo effect?",
+      "rawDisplayText": "12. What does paragraph 2 indicate about the placebo effect?",
+      "payload": {
+        "passageId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It affects patients much more powerfully than actual painkillers do."
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It may be related to the release of endorphins in the brain."
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It is enhanced when it is accompanied by actual painkillers."
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It has not been connected by researchers to any physiological changes."
+          }
+        ],
+        "correctOptionId": "reading-rap-51f18b2b4046d93a70bdd300-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q03",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “deliberately” in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word “deliberately” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q03-opt-1",
+            "optionOrder": 1,
+            "text": "on purpose"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q03-opt-2",
+            "optionOrder": 2,
+            "text": "with caution"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q03-opt-3",
+            "optionOrder": 3,
+            "text": "efficiently"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q03-opt-4",
+            "optionOrder": 4,
+            "text": "regularly"
+          }
+        ],
+        "correctOptionId": "reading-rap-51f18b2b4046d93a70bdd300-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q04",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “autonomy and transparency in patient care”?",
+      "rawDisplayText": "14. Why does the author mention “autonomy and transparency in patient care”?",
+      "payload": {
+        "passageId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To argue for the use of the placebo effect"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To highlight an ethical challenge in using the placebo effect"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To suggest that trust is less important than other considerations in healthcare"
+          },
+          {
+            "optionId": "reading-rap-51f18b2b4046d93a70bdd300-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To explain how the placebo effect is misunderstood"
+          }
+        ],
+        "correctOptionId": "reading-rap-51f18b2b4046d93a70bdd300-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q05",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01",
+        "insertSentence": "Researchers have long been puzzled by the mechanisms behind this phenomenon.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-51f18b2b4046d93a70bdd300-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s02"
+          },
+          {
+            "anchorId": "reading-rap-51f18b2b4046d93a70bdd300-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s03"
+          },
+          {
+            "anchorId": "reading-rap-51f18b2b4046d93a70bdd300-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p01-s05"
+          },
+          {
+            "anchorId": "reading-rap-51f18b2b4046d93a70bdd300-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02-s01"
+          }
+        ],
+        "correctAnchorId": "reading-rap-51f18b2b4046d93a70bdd300-q05-anchor-3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-49382781292c38dd598ab6f8",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-12",
+    "firstSeenSourceLabel": "5.12",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "49382781292c38dd598ab6f8e2b6c8bf15c89f38a39dcd57eb9a4faa11358b6f",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-12-m1-ctw-02",
+      "logicalItemId": "reading-ctw-49382781292c38dd598ab6f8",
+      "sourceKind": "docx",
+      "sourceLabel": "5.12",
+      "occurrenceDate": "2026-05-12",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.12.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.12_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-49382781292c38dd598ab6f8-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-49382781292c38dd598ab6f8-q01",
+      "logicalItemId": "reading-ctw-49382781292c38dd598ab6f8",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The human nervous system is responsible for coordinating actions and processing sensory information by transmitting signals between different parts of the body. This com_ _ _ _ network ena_ _ _ _ essential func_ _ _ _ _ such a_ sensation, move_ _ _ _, and tho_ _ _ _. The ce_ _ _ in t_ _ nervous sys_ _ _ (neurons) commu_ _ _ _ _ _ through electrical impulses and chemical signals. This system controls voluntary actions like movement by sending messages from the brain to muscles, and it also controls involuntary functions such as heart rate, breathing, and digestion.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The human nervous system is responsible for coordinating actions and processing sensory information by transmitting signals between different parts of the body. This com_ _ _ _ network ena_ _ _ _ essential func_ _ _ _ _ such a_ sensation, move_ _ _ _, and tho_ _ _ _. The ce_ _ _ in t_ _ nervous sys_ _ _ (neurons) commu_ _ _ _ _ _ through electrical impulses and chemical signals. This system controls voluntary actions like movement by sending messages from the brain to muscles, and it also controls involuntary functions such as heart rate, breathing, and digestion.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The human nervous system is responsible for coordinating actions and processing sensory information by transmitting signals between different parts of the body. This "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " network "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " essential "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " such "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " sensation, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": ". The "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " in "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " nervous "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " (neurons) "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " through electrical impulses and chemical signals. This system controls voluntary actions like movement by sending messages from the brain to muscles, and it also controls involuntary functions such as heart rate, breathing, and digestion."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "complex",
+            "prefix": "com",
+            "displayText": "com_ _ _ _",
+            "missingText": "plex",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "enables",
+            "prefix": "ena",
+            "displayText": "ena_ _ _ _",
+            "missingText": "bles",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "functions",
+            "prefix": "func",
+            "displayText": "func_ _ _ _ _",
+            "missingText": "tions",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "as",
+            "prefix": "a",
+            "displayText": "a_",
+            "missingText": "s",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "movement",
+            "prefix": "move",
+            "displayText": "move_ _ _ _",
+            "missingText": "ment",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "thought",
+            "prefix": "tho",
+            "displayText": "tho_ _ _ _",
+            "missingText": "ught",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "cells",
+            "prefix": "ce",
+            "displayText": "ce_ _ _",
+            "missingText": "lls",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "system",
+            "prefix": "sys",
+            "displayText": "sys_ _ _",
+            "missingText": "tem",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-49382781292c38dd598ab6f8-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-49382781292c38dd598ab6f8-q01-p01",
+            "answer": "communicate",
+            "prefix": "commu",
+            "displayText": "commu_ _ _ _ _ _",
+            "missingText": "nicate",
+            "missingLength": 6
+          }
+        ]
+      }
+    }
+  ]
+}

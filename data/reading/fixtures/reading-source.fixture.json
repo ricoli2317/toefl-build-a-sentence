@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "Synthetic validation fixture (not production content)",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-synthetic-validation-fixture-not-production-content-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "Synthetic validation fixture (not production content)",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/fixture/questions.docx",
+        "sourceAnswerFile": "data/reading/source-docx/fixture/answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 3
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-fixture-q01",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 3,
+          "questionType": "ctw",
+          "stem": "Complete the words in the paragraph.",
+          "rawDisplayText": "The popul_____ grew quick__. A second paragr___ follows.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "ctw-fixture-p01",
+                "paragraphOrder": 1,
+                "rawText": "The popul_____ grew quick__.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "ctw-fixture-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " grew "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "ctw-fixture-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": "."
+                  }
+                ]
+              },
+              {
+                "paragraphId": "ctw-fixture-p02",
+                "paragraphOrder": 2,
+                "rawText": "A second paragr___ follows.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "A second "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "ctw-fixture-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " follows."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "ctw-fixture-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "ctw-fixture-p01",
+                "answer": "population",
+                "prefix": "popul",
+                "displayText": "popul_____",
+                "missingText": "ation",
+                "missingLength": 5
+              },
+              {
+                "slotId": "ctw-fixture-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "ctw-fixture-p01",
+                "answer": "quickly",
+                "prefix": "quick",
+                "displayText": "quick__",
+                "missingText": "ly",
+                "missingLength": 2
+              },
+              {
+                "slotId": "ctw-fixture-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "ctw-fixture-p02",
+                "answer": "paragraph",
+                "prefix": "paragr",
+                "displayText": "paragr___",
+                "missingText": "aph",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-synthetic-validation-fixture-not-production-content-m1-rdl-02",
+      "module": "rdl",
+      "title": "Fixture Notice",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "Synthetic validation fixture (not production content)",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/fixture/questions.docx",
+        "sourceAnswerFile": "data/reading/source-docx/fixture/answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 4,
+        "sourceQuestionEnd": 4
+      },
+      "materials": [
+        {
+          "materialId": "rdl-fixture-material-01",
+          "title": "Fixture Notice",
+          "source": "Synthetic validation fixture (not production content)",
+          "sourceDate": "2026-06-01",
+          "yearMonth": "2026-06",
+          "bindingStatus": "pending",
+          "imageAssetPath": null,
+          "hitboxDataPath": null
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-fixture-q02",
+          "questionOrder": 1,
+          "sourceQuestionStart": 4,
+          "sourceQuestionEnd": 4,
+          "questionType": "rdl",
+          "stem": "When does the event begin?",
+          "rawDisplayText": "When does the event begin?",
+          "payload": {
+            "materialId": "rdl-fixture-material-01",
+            "options": [
+              {
+                "optionId": "rdl-q02-o01",
+                "optionOrder": 1,
+                "text": "At 8:00"
+              },
+              {
+                "optionId": "rdl-q02-o02",
+                "optionOrder": 2,
+                "text": "At 9:00"
+              },
+              {
+                "optionId": "rdl-q02-o03",
+                "optionOrder": 3,
+                "text": "At 10:00"
+              }
+            ],
+            "correctOptionId": "rdl-q02-o02"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-synthetic-validation-fixture-not-production-content-m1-rap-03",
+      "module": "rap",
+      "title": "Fixture Passage",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "Synthetic validation fixture (not production content)",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/fixture/questions.docx",
+        "sourceAnswerFile": "data/reading/source-docx/fixture/answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 5,
+        "sourceQuestionEnd": 7
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "rap-fixture-passage-01",
+          "title": "Fixture Passage",
+          "paragraphs": [
+            {
+              "paragraphId": "rap-fixture-p01",
+              "paragraphOrder": 1,
+              "text": "Plants respond to light. Their stems often bend toward it. This response supports growth.",
+              "rawText": "Plants respond to light. Their stems often bend toward it. This response supports growth.",
+              "sentences": [
+                {
+                  "sentenceId": "rap-fixture-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Plants respond to light."
+                },
+                {
+                  "sentenceId": "rap-fixture-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Their stems often bend toward it."
+                },
+                {
+                  "sentenceId": "rap-fixture-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This response supports growth."
+                }
+              ]
+            },
+            {
+              "paragraphId": "rap-fixture-p02",
+              "paragraphOrder": 2,
+              "text": "Researchers can measure the response. The measurements vary among species.",
+              "rawText": "Researchers can measure the response. The measurements vary among species.",
+              "sentences": [
+                {
+                  "sentenceId": "rap-fixture-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Researchers can measure the response."
+                },
+                {
+                  "sentenceId": "rap-fixture-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "The measurements vary among species."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-fixture-q03",
+          "questionOrder": 1,
+          "sourceQuestionStart": 5,
+          "sourceQuestionEnd": 5,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the passage mainly about?",
+          "rawDisplayText": "What is the passage mainly about?",
+          "payload": {
+            "passageId": "rap-fixture-passage-01",
+            "options": [
+              {
+                "optionId": "rap-q03-o01",
+                "optionOrder": 1,
+                "text": "Plant responses to light"
+              },
+              {
+                "optionId": "rap-q03-o02",
+                "optionOrder": 2,
+                "text": "The history of measurement"
+              },
+              {
+                "optionId": "rap-q03-o03",
+                "optionOrder": 3,
+                "text": "Differences in soil"
+              }
+            ],
+            "correctOptionId": "rap-q03-o01"
+          }
+        },
+        {
+          "questionId": "reading-fixture-q04",
+          "questionOrder": 2,
+          "sourceQuestionStart": 6,
+          "sourceQuestionEnd": 6,
+          "questionType": "rap_sentence_insertion",
+          "stem": "Where would the sentence best fit?",
+          "rawDisplayText": "Where would the sentence best fit?",
+          "payload": {
+            "passageId": "rap-fixture-passage-01",
+            "insertSentence": "Light therefore provides an important environmental signal.",
+            "anchors": [
+              {
+                "anchorId": "rap-q04-a01",
+                "anchorOrder": 1,
+                "paragraphId": "rap-fixture-p01",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "rap-q04-a02",
+                "anchorOrder": 2,
+                "paragraphId": "rap-fixture-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "rap-fixture-p01-s01"
+              },
+              {
+                "anchorId": "rap-q04-a03",
+                "anchorOrder": 3,
+                "paragraphId": "rap-fixture-p01",
+                "boundaryIndex": 2,
+                "afterSentenceId": "rap-fixture-p01-s02"
+              },
+              {
+                "anchorId": "rap-q04-a04",
+                "anchorOrder": 4,
+                "paragraphId": "rap-fixture-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "rap-fixture-p02-s01"
+              }
+            ],
+            "correctAnchorId": "rap-q04-a03"
+          }
+        },
+        {
+          "questionId": "reading-fixture-q05",
+          "questionOrder": 3,
+          "sourceQuestionStart": 7,
+          "sourceQuestionEnd": 7,
+          "questionType": "rap_sentence_selection",
+          "stem": "Select the sentence that describes variation.",
+          "rawDisplayText": "Select the sentence that describes variation.",
+          "payload": {
+            "passageId": "rap-fixture-passage-01",
+            "targetParagraphId": "rap-fixture-p02",
+            "correctSentenceId": "rap-fixture-p02-s02"
+          }
+        }
+      ]
+    }
+  ]
+}

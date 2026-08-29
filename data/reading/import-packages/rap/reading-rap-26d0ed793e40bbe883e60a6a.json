@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+    "module": "rap",
+    "title": "Thermodynamics and Ecosystems",
+    "firstSeenDate": "2026-06-10",
+    "firstSeenSourceLabel": "6.10",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "26d0ed793e40bbe883e60a6a059bcb8d3508a82cd0074d8a502b312b1160a852",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-10-m1-rap-13",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "sourceKind": "docx",
+      "sourceLabel": "6.10",
+      "occurrenceDate": "2026-06-10",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "title": "Thermodynamics and Ecosystems",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "When students first encounter the laws of thermodynamics, educators often rely on simplified analogies—billiard balls, falling stones—to convey foundational principles. Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems. The first law, which asserts that energy cannot be created or destroyed but only transformed, is clearly exemplified in nature: sunlight becomes chemical energy via photosynthesis, which fuels plants, then herbivores and, ultimately, carnivores. This cascading energy transfer underscores the conservation principle while revealing the intricate interdependence among trophic (food chain) levels, with each organism depending on the energy efficiency of those occupying the level below.",
+          "rawText": "When students first encounter the laws of thermodynamics, educators often rely on simplified analogies—billiard balls, falling stones—to convey foundational principles. Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems. The first law, which asserts that energy cannot be created or destroyed but only transformed, is clearly exemplified in nature: sunlight becomes chemical energy via photosynthesis, which fuels plants, then herbivores and, ultimately, carnivores. This cascading energy transfer underscores the conservation principle while revealing the intricate interdependence among trophic (food chain) levels, with each organism depending on the energy efficiency of those occupying the level below.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "When students first encounter the laws of thermodynamics, educators often rely on simplified analogies—billiard balls, falling stones—to convey foundational principles."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Yet these laws extend far beyond mechanical systems, offering a powerful framework for interpreting complex phenomena such as energy flow in ecosystems."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "The first law, which asserts that energy cannot be created or destroyed but only transformed, is clearly exemplified in nature: sunlight becomes chemical energy via photosynthesis, which fuels plants, then herbivores and, ultimately, carnivores."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "This cascading energy transfer underscores the conservation principle while revealing the intricate interdependence among trophic (food chain) levels, with each organism depending on the energy efficiency of those occupying the level below."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "In contrast, the second law—which states that entropy, or disorder, tends to increase—illuminates why ecosystems evolve toward less efficient energy use. While simple organisms at the base of the food chain convert energy with relative efficiency, larger animals lose much of their energy intake. This disparity is not merely a biological curiosity; it reflects a fundamental thermodynamic constraint. As ecosystems mature, energy becomes increasingly fragmented and less available for productive work. Exceptions exist— some top predators exhibit surprising metabolic efficiency-but the general trend remains: Complexity breeds energy loss.",
+          "rawText": "In contrast, the second law—which states that entropy, or disorder, tends to increase—illuminates why ecosystems evolve toward less efficient energy use. While simple organisms at the base of the food chain convert energy with relative efficiency, larger animals lose much of their energy intake. This disparity is not merely a biological curiosity; it reflects a fundamental thermodynamic constraint. As ecosystems mature, energy becomes increasingly fragmented and less available for productive work. Exceptions exist— some top predators exhibit surprising metabolic efficiency-but the general trend remains: Complexity breeds energy loss.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "In contrast, the second law—which states that entropy, or disorder, tends to increase—illuminates why ecosystems evolve toward less efficient energy use."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "While simple organisms at the base of the food chain convert energy with relative efficiency, larger animals lose much of their energy intake."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "This disparity is not merely a biological curiosity; it reflects a fundamental thermodynamic constraint."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "As ecosystems mature, energy becomes increasingly fragmented and less available for productive work."
+            },
+            {
+              "sentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Exceptions exist— some top predators exhibit surprising metabolic efficiency-but the general trend remains: Complexity breeds energy loss."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q01",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "questionOrder": 1,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 1 that introduces the idea that thermodynamics has implications that the reader may not expect. Select the sentence to make your choice.",
+      "rawDisplayText": "31. Identify the sentence in paragraph 1 that introduces the idea that thermodynamics has implications that the reader may not expect. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01",
+        "targetParagraphId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01",
+        "correctSentenceId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01-s02"
+      }
+    },
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author note that \"sunlight becomes chemical energy\"?",
+      "rawDisplayText": "32. Why does the author note that \"sunlight becomes chemical energy\"?",
+      "payload": {
+        "passageId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate the claim that educators rely on simple analogies when teaching thermodynamics"
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To challenge the idea that thermodynamics offers a way of understanding complex phenomena"
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To provide an example of increasing entropy in a biological system"
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To show how the first law of thermodynamics is applicable to food chains"
+          }
+        ],
+        "correctOptionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what principle explains the trend toward less efficient energy use in ecosystems?",
+      "rawDisplayText": "33. According to the passage, what principle explains the trend toward less efficient energy use in ecosystems?",
+      "payload": {
+        "passageId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Smaller systems tend to combine into larger ones."
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03-opt-2",
+            "optionOrder": 2,
+            "text": "As entropy increases, less energy is available for work."
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Energy is never lost but takes on many different forms."
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Top predators are vulnerable to changes in an ecosystem."
+          }
+        ],
+        "correctOptionId": "reading-rap-26d0ed793e40bbe883e60a6a-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"disparity\" in the passage is closest in meaning to",
+      "rawDisplayText": "34. The word \"disparity\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04-opt-1",
+            "optionOrder": 1,
+            "text": "tendency"
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04-opt-2",
+            "optionOrder": 2,
+            "text": "difference"
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04-opt-3",
+            "optionOrder": 3,
+            "text": "comparison"
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04-opt-4",
+            "optionOrder": 4,
+            "text": "conclusion"
+          }
+        ],
+        "correctOptionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest about top predators?",
+      "rawDisplayText": "35. What does the passage suggest about top predators?",
+      "payload": {
+        "passageId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05-opt-1",
+            "optionOrder": 1,
+            "text": "They are the most complex organisms in an ecosystem."
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05-opt-2",
+            "optionOrder": 2,
+            "text": "They are metabolically more efficient than their prey."
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05-opt-3",
+            "optionOrder": 3,
+            "text": "Their metabolic efficiency depends on their habitat."
+          },
+          {
+            "optionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05-opt-4",
+            "optionOrder": 4,
+            "text": "They use up their energy more slowly as they mature."
+          }
+        ],
+        "correctOptionId": "reading-rap-26d0ed793e40bbe883e60a6a-q05-opt-2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1756 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.17",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Geology involves the study of Earth’s physical structure and substances, the processes that act upon them, and the history of the planet and its life forms. Environmental geology specif_ _ _ _ _ _ focuses o_ how geolo_ _ _ _ _ processes aff_ _ _ human activ_ _ _ _ _ and t_ _ environment. I_ encompasses ar_ _ _ such a_ natural haz_ _ _ assessment, resource management, and land-use planning. By understanding the geological factors that influence environmental conditions, geologists can help mitigate the impacts of natural disasters and promote sustainable development.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Geology involves the study of Earth’s physical structure and substances, the processes that act upon them, and the history of the planet and its life forms. Environmental geology specif_ _ _ _ _ _ focuses o_ how geolo_ _ _ _ _ processes aff_ _ _ human activ_ _ _ _ _ and t_ _ environment. I_ encompasses ar_ _ _ such a_ natural haz_ _ _ assessment, resource management, and land-use planning. By understanding the geological factors that influence environmental conditions, geologists can help mitigate the impacts of natural disasters and promote sustainable development.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Geology involves the study of Earth’s physical structure and substances, the processes that act upon them, and the history of the planet and its life forms. Environmental geology "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " focuses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " how "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " processes "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " human "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " environment. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " encompasses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " such "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " natural "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " assessment, resource management, and land-use planning. By understanding the geological factors that influence environmental conditions, geologists can help mitigate the impacts of natural disasters and promote sustainable development."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "specifically",
+                "prefix": "specif",
+                "displayText": "specif_ _ _ _ _ _",
+                "missingText": "ically",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "on",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "geological",
+                "prefix": "geolo",
+                "displayText": "geolo_ _ _ _ _",
+                "missingText": "gical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "affect",
+                "prefix": "aff",
+                "displayText": "aff_ _ _",
+                "missingText": "ect",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "activities",
+                "prefix": "activ",
+                "displayText": "activ_ _ _ _ _",
+                "missingText": "ities",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "It",
+                "prefix": "I",
+                "displayText": "I_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "areas",
+                "prefix": "ar",
+                "displayText": "ar_ _ _",
+                "missingText": "eas",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "as",
+                "prefix": "a",
+                "displayText": "a_",
+                "missingText": "s",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q01-10-p01",
+                "answer": "hazard",
+                "prefix": "haz",
+                "displayText": "haz_ _ _",
+                "missingText": "ard",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "We are exquisitely sensitive to our surroundings, and environment plays a critical role in the development of a child’s brain. But wh_ _ happens on_ _ we’ve rea_ _ _ _ adulthood? C_ _ the br_ _ _ still und_ _ _ _ the ki_ _ _ of cha_ _ _ _ it d_ _ when w_ were younger? By the time we are twenty-five years old, the brain transformations of childhood are finally over and our brain appears to be fully developed. You might think that who we are as adults is then fixed in place, immovable. But it’s not: in adulthood our brains continue to change.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "We are exquisitely sensitive to our surroundings, and environment plays a critical role in the development of a child’s brain. But wh_ _ happens on_ _ we’ve rea_ _ _ _ adulthood? C_ _ the br_ _ _ still und_ _ _ _ the ki_ _ _ of cha_ _ _ _ it d_ _ when w_ were younger? By the time we are twenty-five years old, the brain transformations of childhood are finally over and our brain appears to be fully developed. You might think that who we are as adults is then fixed in place, immovable. But it’s not: in adulthood our brains continue to change.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "We are exquisitely sensitive to our surroundings, and environment plays a critical role in the development of a child’s brain. But "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " happens "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " we’ve "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " adulthood? "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " still "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " it "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " when "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " were younger? By the time we are twenty-five years old, the brain transformations of childhood are finally over and our brain appears to be fully developed. You might think that who we are as adults is then fixed in place, immovable. But it’s not: in adulthood our brains continue to change."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "what",
+                "prefix": "wh",
+                "displayText": "wh_ _",
+                "missingText": "at",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "once",
+                "prefix": "on",
+                "displayText": "on_ _",
+                "missingText": "ce",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "reached",
+                "prefix": "rea",
+                "displayText": "rea_ _ _ _",
+                "missingText": "ched",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "Can",
+                "prefix": "C",
+                "displayText": "C_ _",
+                "missingText": "an",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "brain",
+                "prefix": "br",
+                "displayText": "br_ _ _",
+                "missingText": "ain",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "undergo",
+                "prefix": "und",
+                "displayText": "und_ _ _ _",
+                "missingText": "ergo",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "kinds",
+                "prefix": "ki",
+                "displayText": "ki_ _ _",
+                "missingText": "nds",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "changes",
+                "prefix": "cha",
+                "displayText": "cha_ _ _ _",
+                "missingText": "nges",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "did",
+                "prefix": "d",
+                "displayText": "d_ _",
+                "missingText": "id",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-17-m1-ctw-q11-20-p01",
+                "answer": "we",
+                "prefix": "w",
+                "displayText": "w_",
+                "missingText": "e",
+                "missingLength": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-rdl-03",
+      "module": "rdl",
+      "title": "Booking inquiry",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-029",
+          "title": "Booking inquiry",
+          "source": "material-index.json#RDL-029",
+          "sourceDate": "2026-05-17",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-029/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-029/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Why is Ms. White receiving the email?",
+          "rawDisplayText": "21. Why is Ms. White receiving the email?",
+          "payload": {
+            "materialId": "RDL-029",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Because she made an inquiry"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Because she attended a convention"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Because she canceled an appointment"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Because she reserved a room"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the deposit for a reservation?",
+          "rawDisplayText": "22. What is the deposit for a reservation?",
+          "payload": {
+            "materialId": "RDL-029",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "15 percent"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "10 percent"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "20 percent"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "25 percent"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q22-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-rdl-05",
+      "module": "rdl",
+      "title": "Reviews and Opinions @CampusDaily Review of The Kansas Kerfuffle",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-030",
+          "title": "Reviews and Opinions @CampusDaily Review of The Kansas Kerfuffle",
+          "source": "material-index.json#RDL-030",
+          "sourceDate": "2026-05-17",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-030/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-030/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What can be inferred about Elizabeth Wrenn?",
+          "rawDisplayText": "23. What can be inferred about Elizabeth Wrenn?",
+          "payload": {
+            "materialId": "RDL-030",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "She enjoyed a film."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "She helped finance a film."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "She starred in a film."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "She produced a film."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q23-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What can be concluded about The Kansas Kerfuffle?",
+          "rawDisplayText": "24. What can be concluded about The Kansas Kerfuffle?",
+          "payload": {
+            "materialId": "RDL-030",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Its plot is very formulaic and predictable."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Its premiere took place in Kansas."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "It features a dispute about pet ownership."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "It offers a satirical view of small-town bureaucracy."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q24-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-rdl-07",
+      "module": "rdl",
+      "title": "My thesis proposal",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-031",
+          "title": "My thesis proposal",
+          "source": "material-index.json#RDL-031",
+          "sourceDate": "2026-05-17",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-031/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-031/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the email?",
+          "rawDisplayText": "25. What is the main purpose of the email?",
+          "payload": {
+            "materialId": "RDL-031",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "To confirm the deadline for an assignment"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "To ask for an extension on a project"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "To thank a faculty member for their help"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "To ask for comments on a paper"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q25-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "The message mentions Professor Carter doing each of the following EXCEPT",
+          "rawDisplayText": "26. The message mentions Professor Carter doing each of the following EXCEPT",
+          "payload": {
+            "materialId": "RDL-031",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "meeting Micah during office hours"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "reading Micah’s thesis proposal"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "providing extra materials to Micah"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "helping Micah choose a thesis topic"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "In the next few days, Micah will most likely",
+          "rawDisplayText": "27. In the next few days, Micah will most likely",
+          "payload": {
+            "materialId": "RDL-031",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "seek feedback from another professor"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "update his proposal outline"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "meet with Professor Carter again"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "continue revising his entire proposal"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q27-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-rdl-10",
+      "module": "rdl",
+      "title": "Angela Kim (5:00 P.M.)",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-032",
+          "title": "Angela Kim (5:00 P.M.)",
+          "source": "material-index.json#RDL-032",
+          "sourceDate": "2026-05-17",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-032/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-032/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "Why does Angela recommend bringing a lot of water for the hike?",
+          "rawDisplayText": "28. Why does Angela recommend bringing a lot of water for the hike?",
+          "payload": {
+            "materialId": "RDL-032",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "The trail will eventually climb to an extremely high altitude."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "The conditions along the trail will be exceptionally windy and dusty."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "The water for sale along the trail is too expensive."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "The temperature along the trail will start to climb after about nine a.m."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q28-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "At 5:30 P.M., what does Angela imply when she writes, “Let me check on that, Tom”?",
+          "rawDisplayText": "29. At 5:30 P.M., what does Angela imply when she writes, “Let me check on that, Tom”?",
+          "payload": {
+            "materialId": "RDL-032",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "She knows that the hiking trails in Green Valley are not protected."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "She is concerned about the difficulty of the trail at Green Valley."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "She is unsure whether a permit is required for hiking on the trail."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "She knows that a permit is not required for parking."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "What does Milton offer to do?",
+          "rawDisplayText": "30. What does Milton offer to do?",
+          "payload": {
+            "materialId": "RDL-032",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "Rent a car for the group"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Use his car for carpooling"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Bring extra water"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Use his home as a gathering place"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m1-rap-13",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-17-m1-rap-p01",
+          "title": "Social Networks and Influence",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-17-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "In today’s digital age, social networks play a significant role in shaping opinions and behaviors. The influence of these networks is not merely about the number of connections one might have, but about the quality and nature of those interactions. Sociologists have long been interested in how individuals within a network can influence the group’s overall dynamics. This concept is sometimes referred to as social capital.",
+              "rawText": "In today’s digital age, social networks play a significant role in shaping opinions and behaviors. The influence of these networks is not merely about the number of connections one might have, but about the quality and nature of those interactions. Sociologists have long been interested in how individuals within a network can influence the group’s overall dynamics. This concept is sometimes referred to as social capital.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "In today’s digital age, social networks play a significant role in shaping opinions and behaviors."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "The influence of these networks is not merely about the number of connections one might have, but about the quality and nature of those interactions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Sociologists have long been interested in how individuals within a network can influence the group’s overall dynamics."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This concept is sometimes referred to as social capital."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-17-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "The structure of a network can determine the flow of information. An individual positioned at the intersection of various groups, known as a bridge, often plays a crucial role in disseminating information. This person can introduce new ideas and perspectives to different parts of the network, thereby influencing opinions and possibly altering behaviors. Another factor is homophily, where individuals are more likely to form connections with others who are similar to themselves in terms of opinions, values, or social status. While homophily can reinforce existing beliefs, it can also create echo chambers, limiting exposure to diverse perspectives. The presence of influential individuals, often termed opinion leaders, can amplify or mitigate the effects of network structures by means of their social skills or charisma. Sociologists aim to uncover the nuanced ways social networks shape collective behavior.",
+              "rawText": "■ The structure of a network can determine the flow of information. ■ An individual positioned at the intersection of various groups, known as a bridge, often plays a crucial role in disseminating information. ■ This person can introduce new ideas and perspectives to different parts of the network, thereby influencing opinions and possibly altering behaviors. ■ Another factor is homophily, where individuals are more likely to form connections with others who are similar to themselves in terms of opinions, values, or social status. While homophily can reinforce existing beliefs, it can also create echo chambers, limiting exposure to diverse perspectives. The presence of influential individuals, often termed opinion leaders, can amplify or mitigate the effects of network structures by means of their social skills or charisma. Sociologists aim to uncover the nuanced ways social networks shape collective behavior.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The structure of a network can determine the flow of information."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "An individual positioned at the intersection of various groups, known as a bridge, often plays a crucial role in disseminating information."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This person can introduce new ideas and perspectives to different parts of the network, thereby influencing opinions and possibly altering behaviors."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Another factor is homophily, where individuals are more likely to form connections with others who are similar to themselves in terms of opinions, values, or social status."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "While homophily can reinforce existing beliefs, it can also create echo chambers, limiting exposure to diverse perspectives."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "The presence of influential individuals, often termed opinion leaders, can amplify or mitigate the effects of network structures by means of their social skills or charisma."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m1-rap-p01-p02-s07",
+                  "sentenceOrder": 7,
+                  "text": "Sociologists aim to uncover the nuanced ways social networks shape collective behavior."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, social capital refers to",
+          "rawDisplayText": "31. According to the passage, social capital refers to",
+          "payload": {
+            "passageId": "reading-2026-05-17-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "how networks shape social interactions in the digital age"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "the number of social connections an individual has"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "the impact that individuals have on social networks"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "the data sociologists use to make claims about digital networks"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage imply about homophily?",
+          "rawDisplayText": "32. What does the passage imply about homophily?",
+          "payload": {
+            "passageId": "reading-2026-05-17-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "It ensures the dissemination of diverse ideas."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "It promotes similarity and continuity within groups."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "It emphasizes opinion leaders over network structures."
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "It makes it unnecessary to have bridges across networks."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “echo chambers”?",
+          "rawDisplayText": "33. Why does the author mention “echo chambers”?",
+          "payload": {
+            "passageId": "reading-2026-05-17-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "To highlight the risks of networks composed of like-minded individuals"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "To introduce the role of opinion leaders in amplifying network structures"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "To elaborate on the role of bridges in altering behaviors"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "To identify one advantage of networks that connect various social classes"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q33-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “nuanced” in the passage is closest in meaning to",
+          "rawDisplayText": "34. The word “nuanced” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-17-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "many"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "complex"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "powerful"
+              },
+              {
+                "optionId": "reading-2026-05-17-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "general"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m1-q34-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-17-m1-rap-p01",
+            "insertSentence": "However, spreading information is not the only way to exert influence.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-17-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-17-m1-rap-p01-p02",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-05-17-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-17-m1-rap-p01-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-17-m1-rap-p01-p02-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-17-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-17-m1-rap-p01-p02",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-17-m1-rap-p01-p02-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-17-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-17-m1-rap-p01-p02",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-17-m1-rap-p01-p02-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-17-m1-q35-anchor-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The Middle Ages was a period in Europe that spanned roughly between the fifth and fifteenth centuries. This e_ _ saw signi_ _ _ _ _ _ changes, mo_ _ notably t_ _ spread o_ Christianity a_ _ the establ_ _ _ _ _ _ _ of pow_ _ _ _ _ kingdoms. Des_ _ _ _ being of_ _ _ referred to as the “Dark Ages,” a name that suggests stagnation and decline, this period also witnessed remarkable achievements in art, architecture, and learning, laying the groundwork for Europe’s transition into the Renaissance and the age of discovery.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The Middle Ages was a period in Europe that spanned roughly between the fifth and fifteenth centuries. This e_ _ saw signi_ _ _ _ _ _ changes, mo_ _ notably t_ _ spread o_ Christianity a_ _ the establ_ _ _ _ _ _ _ of pow_ _ _ _ _ kingdoms. Des_ _ _ _ being of_ _ _ referred to as the “Dark Ages,” a name that suggests stagnation and decline, this period also witnessed remarkable achievements in art, architecture, and learning, laying the groundwork for Europe’s transition into the Renaissance and the age of discovery.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The Middle Ages was a period in Europe that spanned roughly between the fifth and fifteenth centuries. This "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " saw "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " changes, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " notably "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " spread "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Christianity "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " kingdoms. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " being "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " referred to as the “Dark Ages,” a name that suggests stagnation and decline, this period also witnessed remarkable achievements in art, architecture, and learning, laying the groundwork for Europe’s transition into the Renaissance and the age of discovery."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "era",
+                "prefix": "e",
+                "displayText": "e_ _",
+                "missingText": "ra",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "significant",
+                "prefix": "signi",
+                "displayText": "signi_ _ _ _ _ _",
+                "missingText": "ficant",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "most",
+                "prefix": "mo",
+                "displayText": "mo_ _",
+                "missingText": "st",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "establishment",
+                "prefix": "establ",
+                "displayText": "establ_ _ _ _ _ _ _",
+                "missingText": "ishment",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "powerful",
+                "prefix": "pow",
+                "displayText": "pow_ _ _ _ _",
+                "missingText": "erful",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "Despite",
+                "prefix": "Des",
+                "displayText": "Des_ _ _ _",
+                "missingText": "pite",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-17-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-17-m2-ctw-q01-10-p01",
+                "answer": "often",
+                "prefix": "of",
+                "displayText": "of_ _ _",
+                "missingText": "ten",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-17-m2-rap-19",
+      "module": "rap",
+      "title": "Video Evidence in U.S. Courts",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.17",
+        "occurrenceDate": "2026-05-17",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-17-m2-rap-p01",
+          "title": "Video Evidence in U.S. Courts",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-17-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "In the United States, as in some other countries, video evidence has become integral to the criminal justice system as technological advances have made cameras nearly ubiquitous. Police officers often wear body cameras, security cameras monitor public areas, and nearly everyone carries a smartphone capable of recording high-quality videos. While such recordings are widely seen as reliable evidentiary tools, they have certain limitations.",
+              "rawText": "In the United States, as in some other countries, video evidence has become integral to the criminal justice system as technological advances have made cameras nearly ubiquitous. Police officers often wear body cameras, security cameras monitor public areas, and nearly everyone carries a smartphone capable of recording high-quality videos. While such recordings are widely seen as reliable evidentiary tools, they have certain limitations.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "In the United States, as in some other countries, video evidence has become integral to the criminal justice system as technological advances have made cameras nearly ubiquitous."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Police officers often wear body cameras, security cameras monitor public areas, and nearly everyone carries a smartphone capable of recording high-quality videos."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "While such recordings are widely seen as reliable evidentiary tools, they have certain limitations."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-17-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "For example, videos are usually taken from a single vantage point, potentially giving viewers a misleading impression of events. A single camera angle might fail to capture what occurs just outside the frame, leading observers to misinterpret what they see. Additionally, video footage has no way of conveying interpersonal and emotional context: A person’s actions might appear antagonistic even if the person was acting in self-defense.",
+              "rawText": "For example, videos are usually taken from a single vantage point, potentially giving viewers a misleading impression of events. A single camera angle might fail to capture what occurs just outside the frame, leading observers to misinterpret what they see. Additionally, video footage has no way of conveying interpersonal and emotional context: A person’s actions might appear antagonistic even if the person was acting in self-defense.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "For example, videos are usually taken from a single vantage point, potentially giving viewers a misleading impression of events."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "A single camera angle might fail to capture what occurs just outside the frame, leading observers to misinterpret what they see."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Additionally, video footage has no way of conveying interpersonal and emotional context: A person’s actions might appear antagonistic even if the person was acting in self-defense."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-17-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Despite these limitations, legal experts emphasize that video evidence plays a significant role in courtrooms. Jurors (people chosen to consider evidence and decide a case) might dismiss eyewitness testimonies as unreliable or perceive oral accounts as inconsistent, while videos show events more directly. When multiple recordings are available from different angles, an even more reliable sense of an incident can emerge. Nevertheless, courts often remind jurors to evaluate video evidence cautiously.",
+              "rawText": "Despite these limitations, legal experts emphasize that video evidence plays a significant role in courtrooms. Jurors (people chosen to consider evidence and decide a case) might dismiss eyewitness testimonies as unreliable or perceive oral accounts as inconsistent, while videos show events more directly. When multiple recordings are available from different angles, an even more reliable sense of an incident can emerge. Nevertheless, courts often remind jurors to evaluate video evidence cautiously.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Despite these limitations, legal experts emphasize that video evidence plays a significant role in courtrooms."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Jurors (people chosen to consider evidence and decide a case) might dismiss eyewitness testimonies as unreliable or perceive oral accounts as inconsistent, while videos show events more directly."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "When multiple recordings are available from different angles, an even more reliable sense of an incident can emerge."
+                },
+                {
+                  "sentenceId": "reading-2026-05-17-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Nevertheless, courts often remind jurors to evaluate video evidence cautiously."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-17-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is the relationship between the first sentence and the second sentence of the passage?",
+          "rawDisplayText": "11. What is the relationship between the first sentence and the second sentence of the passage?",
+          "payload": {
+            "passageId": "reading-2026-05-17-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "The first sentence makes a generalization, and the second sentence introduces exceptions to the generalization."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "The first sentence introduces a question, and the second sentence offers possible answers to the question."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "The first sentence makes a claim, and the second sentence provides examples to illustrate that claim."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "The first sentence presents one view of a subject, and the second sentence presents a contrasting view."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m2-q11-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests which of the following about viewers of videos?",
+          "rawDisplayText": "12. The passage suggests which of the following about viewers of videos?",
+          "payload": {
+            "passageId": "reading-2026-05-17-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "They may not see actions that are critical to understanding an incident because of the way the video is framed."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "They may not find a video recording of an incident as revealing as an eyewitness account of the event."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "They are more likely to trust the accuracy of a video recorded on a police officer’s body camera than one taken with a smartphone."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "They are likely to regard video recordings skeptically because they know that videos can be misleading."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m2-q12-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the author point out when discussing “context”?",
+          "rawDisplayText": "13. What does the author point out when discussing “context”?",
+          "payload": {
+            "passageId": "reading-2026-05-17-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "The setting in which a video is viewed may affect the way viewers perceive the recorded events."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "People may draw incorrect conclusions about others’ motivations from what they observe in a video."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "Video recordings can be used either to defend an individual’s actions or to depict the individual as an aggressor."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "The reliability of video recordings of events should be compared to the reliability of oral accounts of those events."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates that “legal experts” hold which of the following views?",
+          "rawDisplayText": "14. The passage indicates that “legal experts” hold which of the following views?",
+          "payload": {
+            "passageId": "reading-2026-05-17-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "Jurors are likely to accept videos as objective depictions of events whereas they view witness testimony with skepticism."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "Recent improvements in technology have made it so easy to display video evidence to jurors that other kinds of evidence may be neglected."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "Video recordings should not be used as evidence in courtrooms unless multiple recordings taken from different vantage points can be shown."
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "Courts should not undermine jurors’ confidence in their abilities by overemphasizing the possibility of misinterpreting videos."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-17-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “cautiously” in the passage is closest in meaning to",
+          "rawDisplayText": "15. The word “cautiously” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-17-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-17-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "reluctantly"
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "carefully"
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "decisively"
+              },
+              {
+                "optionId": "reading-2026-05-17-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "confidently"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-17-m2-q15-opt-2"
+          }
+        }
+      ]
+    }
+  ]
+}

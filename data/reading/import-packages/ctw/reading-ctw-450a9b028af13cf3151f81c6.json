@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-03",
+    "firstSeenSourceLabel": "5.3B",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "450a9b028af13cf3151f81c6edd952170a3a5ecc5da9f553253f042bd12fc652",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-3b-m2-ctw-18",
+      "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+      "sourceKind": "docx",
+      "sourceLabel": "5.3B",
+      "occurrenceDate": "2026-05-03",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.3B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.3B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-450a9b028af13cf3151f81c6-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-6a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+      "sourceKind": "docx",
+      "sourceLabel": "6.6A",
+      "occurrenceDate": "2026-06-06",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.6A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.6A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-450a9b028af13cf3151f81c6-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-450a9b028af13cf3151f81c6-q01",
+      "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "In the world of academia, art history is more than just studying paintings—it is about decoding the emotional language of visual storytelling. For example, chiaroscuro is a tech_ _ _ _ _ that origi_ _ _ _ _ during t_ _ Renaissance. Exemp_ _ _ _ _ _ by str_ _ _ contrast bet_ _ _ _ light a_ _ shadow, the st_ _ _ evokes dr_ _ _ through sele_ _ _ _ _ illumination. Artists like Caravaggio mastered this interplay, using it to pull viewers into the heart of his scenes, guiding their eyes and stirring their emotions with every flicker of light.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "In the world of academia, art history is more than just studying paintings—it is about decoding the emotional language of visual storytelling. For example, chiaroscuro is a tech_ _ _ _ _ that origi_ _ _ _ _ during t_ _ Renaissance. Exemp_ _ _ _ _ _ by str_ _ _ contrast bet_ _ _ _ light a_ _ shadow, the st_ _ _ evokes dr_ _ _ through sele_ _ _ _ _ illumination. Artists like Caravaggio mastered this interplay, using it to pull viewers into the heart of his scenes, guiding their eyes and stirring their emotions with every flicker of light.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "In the world of academia, art history is more than just studying paintings—it is about decoding the emotional language of visual storytelling. For example, chiaroscuro is a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " that "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " during "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " Renaissance. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " by "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " contrast "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " light "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " shadow, the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " evokes "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " through "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " illumination. Artists like Caravaggio mastered this interplay, using it to pull viewers into the heart of his scenes, guiding their eyes and stirring their emotions with every flicker of light."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "technique",
+            "prefix": "tech",
+            "displayText": "tech_ _ _ _ _",
+            "missingText": "nique",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "originated",
+            "prefix": "origi",
+            "displayText": "origi_ _ _ _ _",
+            "missingText": "nated",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "the",
+            "prefix": "t",
+            "displayText": "t_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "Exemplified",
+            "prefix": "Exemp",
+            "displayText": "Exemp_ _ _ _ _ _",
+            "missingText": "lified",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "strong",
+            "prefix": "str",
+            "displayText": "str_ _ _",
+            "missingText": "ong",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "between",
+            "prefix": "bet",
+            "displayText": "bet_ _ _ _",
+            "missingText": "ween",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "style",
+            "prefix": "st",
+            "displayText": "st_ _ _",
+            "missingText": "yle",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "drama",
+            "prefix": "dr",
+            "displayText": "dr_ _ _",
+            "missingText": "ama",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-450a9b028af13cf3151f81c6-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-450a9b028af13cf3151f81c6-q01-p01",
+            "answer": "selective",
+            "prefix": "sele",
+            "displayText": "sele_ _ _ _ _",
+            "missingText": "ctive",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

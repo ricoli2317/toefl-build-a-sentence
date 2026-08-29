@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-e86f14f23f34ef4011fe3f95",
+    "module": "rdl",
+    "title": "Study Smarter: Academic Success Workshop",
+    "firstSeenDate": "2026-05-31",
+    "firstSeenSourceLabel": "5.31",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "e86f14f23f34ef4011fe3f9524ecbbaea4c843f48b3e028138d4440744e741b9",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-31-m1-rdl-05",
+      "logicalItemId": "reading-rdl-e86f14f23f34ef4011fe3f95",
+      "sourceKind": "docx",
+      "sourceLabel": "5.31",
+      "occurrenceDate": "2026-05-31",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.31.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.31_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-056",
+      "title": "Study Smarter: Academic Success Workshop",
+      "source": "material-index.json#RDL-056",
+      "sourceDate": "2026-05-31",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-056/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-056/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01",
+      "logicalItemId": "reading-rdl-e86f14f23f34ef4011fe3f95",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Which person is eligible to attend and has done what is required before coming?",
+      "rawDisplayText": "23. Which person is eligible to attend and has done what is required before coming?",
+      "payload": {
+        "materialId": "RDL-056",
+        "options": [
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01-opt-1",
+            "optionOrder": 1,
+            "text": "A member of the public who has completed a placement survey"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01-opt-2",
+            "optionOrder": 2,
+            "text": "A currently enrolled student who has signed up on the listed website"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01-opt-3",
+            "optionOrder": 3,
+            "text": "An undergraduate student who has emailed the Writing Center to reserve a seat"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01-opt-4",
+            "optionOrder": 4,
+            "text": "A member of the faculty or staff who has signed up through the advising office"
+          }
+        ],
+        "correctOptionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02",
+      "logicalItemId": "reading-rdl-e86f14f23f34ef4011fe3f95",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "All of the following are mentioned as topics covered in the workshop EXCEPT",
+      "rawDisplayText": "24. All of the following are mentioned as topics covered in the workshop EXCEPT",
+      "payload": {
+        "materialId": "RDL-056",
+        "options": [
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02-opt-1",
+            "optionOrder": 1,
+            "text": "recording information"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02-opt-2",
+            "optionOrder": 2,
+            "text": "prioritizing tasks"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02-opt-3",
+            "optionOrder": 3,
+            "text": "test readiness"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02-opt-4",
+            "optionOrder": 4,
+            "text": "critical thinking"
+          }
+        ],
+        "correctOptionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03",
+      "logicalItemId": "reading-rdl-e86f14f23f34ef4011fe3f95",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What will each participant take away from the workshop?",
+      "rawDisplayText": "25. What will each participant take away from the workshop?",
+      "payload": {
+        "materialId": "RDL-056",
+        "options": [
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03-opt-1",
+            "optionOrder": 1,
+            "text": "An internship application"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03-opt-2",
+            "optionOrder": 2,
+            "text": "An appointment with a tutor"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03-opt-3",
+            "optionOrder": 3,
+            "text": "A customized learning plan"
+          },
+          {
+            "optionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03-opt-4",
+            "optionOrder": 4,
+            "text": "A designated peer mentor"
+          }
+        ],
+        "correctOptionId": "reading-rdl-e86f14f23f34ef4011fe3f95-q03-opt-3"
+      }
+    }
+  ]
+}

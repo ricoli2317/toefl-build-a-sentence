@@ -1,0 +1,1757 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.30B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Museums play a crucial role in preserving and showcasing art, history, and culture. They pro_ _ _ _ a sp_ _ _ where peo_ _ _ can eng_ _ _ with mult_ _ _ _ forms o_ artistic expre_ _ _ _ _ and histo_ _ _ _ _ artifacts. Ma_ _ museums al_ _ offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Museums play a crucial role in preserving and showcasing art, history, and culture. They pro_ _ _ _ a sp_ _ _ where peo_ _ _ can eng_ _ _ with mult_ _ _ _ forms o_ artistic expre_ _ _ _ _ and histo_ _ _ _ _ artifacts. Ma_ _ museums al_ _ offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Museums play a crucial role in preserving and showcasing art, history, and culture. They "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " where "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " can "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " forms "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " artistic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " artifacts. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " museums "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " offer educational programs and workshops, fostering a deeper understanding of the subjects they display. In addition, digital innovations have enabled museums to reach global audiences through virtual tours and online collections. The patronage of visual arts by individuals and organizations helps support artists and ensures the continued growth and diversity of the cultural landscape."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "provide",
+                "prefix": "pro",
+                "displayText": "pro_ _ _ _",
+                "missingText": "vide",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "space",
+                "prefix": "sp",
+                "displayText": "sp_ _ _",
+                "missingText": "ace",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "people",
+                "prefix": "peo",
+                "displayText": "peo_ _ _",
+                "missingText": "ple",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "engage",
+                "prefix": "eng",
+                "displayText": "eng_ _ _",
+                "missingText": "age",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "multiple",
+                "prefix": "mult",
+                "displayText": "mult_ _ _ _",
+                "missingText": "iple",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "expression",
+                "prefix": "expre",
+                "displayText": "expre_ _ _ _ _",
+                "missingText": "ssion",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "historical",
+                "prefix": "histo",
+                "displayText": "histo_ _ _ _ _",
+                "missingText": "rical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "Many",
+                "prefix": "Ma",
+                "displayText": "Ma_ _",
+                "missingText": "ny",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q01-10-p01",
+                "answer": "also",
+                "prefix": "al",
+                "displayText": "al_ _",
+                "missingText": "so",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The role of kinship was central to the social structure of prehistoric communities. Kinship not only structured family relationships but also shaped how resources were shared, labor was organized, and social hierarchies were maintained within the group. Archaeo_ _ _ _ _ _ _ evidence sugg_ _ _ _ that indiv_ _ _ _ _ _ held spec_ _ _ _ roles ba_ _ _ on a_ _ and gen_ _ _, contributing t_ a sophis_ _ _ _ _ _ _ division o_ labor. The intricacy of these social structures is further evidenced by the existence of ceremonial sites, which indicate collective activities and social gatherings.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "The role of kinship was central to the social structure of prehistoric communities. Kinship not only structured family relationships but also shaped how resources were shared, labor was organized, and social hierarchies were maintained within the group. Archaeo_ _ _ _ _ _ _ evidence sugg_ _ _ _ that indiv_ _ _ _ _ _ held spec_ _ _ _ roles ba_ _ _ on a_ _ and gen_ _ _, contributing t_ a sophis_ _ _ _ _ _ _ division o_ labor. The intricacy of these social structures is further evidenced by the existence of ceremonial sites, which indicate collective activities and social gatherings.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The role of kinship was central to the social structure of prehistoric communities. Kinship not only structured family relationships but also shaped how resources were shared, labor was organized, and social hierarchies were maintained within the group. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " evidence "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " held "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " roles "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " on "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", contributing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " division "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " labor. The intricacy of these social structures is further evidenced by the existence of ceremonial sites, which indicate collective activities and social gatherings."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "Archaeological",
+                "prefix": "Archaeo",
+                "displayText": "Archaeo_ _ _ _ _ _ _",
+                "missingText": "logical",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "suggests",
+                "prefix": "sugg",
+                "displayText": "sugg_ _ _ _",
+                "missingText": "ests",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "individuals",
+                "prefix": "indiv",
+                "displayText": "indiv_ _ _ _ _ _",
+                "missingText": "iduals",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "specific",
+                "prefix": "spec",
+                "displayText": "spec_ _ _ _",
+                "missingText": "ific",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "based",
+                "prefix": "ba",
+                "displayText": "ba_ _ _",
+                "missingText": "sed",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "age",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "ge",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "gender",
+                "prefix": "gen",
+                "displayText": "gen_ _ _",
+                "missingText": "der",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "sophisticated",
+                "prefix": "sophis",
+                "displayText": "sophis_ _ _ _ _ _ _",
+                "missingText": "ticated",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-30-b-m1-ctw-q11-20-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-rdl-03",
+      "module": "rdl",
+      "title": "Dorm Printer Setup Instructions",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-002",
+          "title": "Dorm Printer Setup Instructions",
+          "source": "material-index.json#RDL-002",
+          "sourceDate": "2026-05-03",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-002/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-002/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the instructions?",
+          "rawDisplayText": "21. What is the main purpose of the instructions?",
+          "payload": {
+            "materialId": "RDL-002",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "To explain how to replace an ink cartridge"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "To explain how to prepare a new printer for use"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "To explain how to connect a printer to a power source"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "To explain how to repair a printer"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q21-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the next step after turning on the printer?",
+          "rawDisplayText": "22. What is the next step after turning on the printer?",
+          "payload": {
+            "materialId": "RDL-002",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Add paper and begin using the printer"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Print a test page to ensure it is working properly"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Follow more instructions on the printer screen"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Install the ink cartridges as shown"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q22-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-rdl-05",
+      "module": "rdl",
+      "title": "LIT 304 Shakespeare's Kings",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-082",
+          "title": "LIT 304 Shakespeare's Kings",
+          "source": "material-index.json#RDL-082",
+          "sourceDate": "2026-06-30",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-082/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-082/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "It can be inferred that the course will include which of the following?",
+          "rawDisplayText": "23. It can be inferred that the course will include which of the following?",
+          "payload": {
+            "materialId": "RDL-082",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Attendance of a theatrical production"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Collaboration between students"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Quizzes on individual plays"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Biographical study of various monarchs"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Which of the following is an organizing principle of the course?",
+          "rawDisplayText": "24. Which of the following is an organizing principle of the course?",
+          "payload": {
+            "materialId": "RDL-082",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "A particular theme"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "A particular type of play"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "A historical overview of Shakespeare's world"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "A comparison of different theatrical productions"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q24-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-rdl-07",
+      "module": "rdl",
+      "title": "Student council meeting text-message chain",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-083",
+          "title": "Student council meeting text-message chain",
+          "source": "material-index.json#RDL-083",
+          "sourceDate": "2026-06-30",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-083/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-083/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is NOT mentioned as a topic for the meeting?",
+          "rawDisplayText": "25. What is NOT mentioned as a topic for the meeting?",
+          "payload": {
+            "materialId": "RDL-083",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "Finalizing the budget"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Updating a governing document"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Organizing activities for the spring semester"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Appointing new leadership"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q25-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "At 4:51 p.m., what does Ryan imply when he writes, \"If time permits\"?",
+          "rawDisplayText": "26. At 4:51 p.m., what does Ryan imply when he writes, \"If time permits\"?",
+          "payload": {
+            "materialId": "RDL-083",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "A vote on new club proposals will likely take place."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "University officials are not likely to approve any new clubs."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Ella does not have the authority to propose topics for discussion."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Other topics have higher priority than the one mentioned by Ella."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "Which of the following is part of Ryan's role?",
+          "rawDisplayText": "27. Which of the following is part of Ryan's role?",
+          "payload": {
+            "materialId": "RDL-083",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Compiling the minutes during the meeting"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Preparing materials and equipment for the meeting"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "Keeping track of the time during the meeting"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "Bringing snacks for council members at the meeting"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q27-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-rdl-10",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-034",
+          "title": "The University Photography Club",
+          "source": "material-index.json#RDL-034",
+          "sourceDate": "2026-05-18",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-034/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-034/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "The notice suggests that",
+          "rawDisplayText": "28. The notice suggests that",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "people new to photography can benefit from the workshop"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "participants must pay an entrance fee"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "participants will leave campus to take pictures"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "students can learn fashion photography"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q28-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+          "rawDisplayText": "29. What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "An exhibition of participants' photography"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "A sale of used photo equipment"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "A lecture by a university visual arts professor"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "An opportunity to learn more photography techniques"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Which of the following is NOT true about the photography workshop?",
+          "rawDisplayText": "30. Which of the following is NOT true about the photography workshop?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "There will be a photography competition."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Photo editing methods will be presented."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Multiple photography genres will be featured."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Participants must pay for lunch."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q30-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m1-rap-13",
+      "module": "rap",
+      "title": "Data Visualization in Action",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-30-b-m1-rap-p01",
+          "title": "Data Visualization in Action",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Data visualization is transforming how we interpret complex datasets, moving beyond traditional charts, such as static charts and graphs, to dynamic graphical representations, such as heat maps, time-lapse animations, and network graphs. This shift allows for the discovery of patterns and anomalies otherwise hidden in raw data. For example, when studying climate change impacts, a time-lapse heat map might reveal unexpected temperature shifts over decades that spreadsheets alone could not capture.",
+              "rawText": "Data visualization is transforming how we interpret complex datasets, moving beyond traditional charts, such as static charts and graphs, to dynamic graphical representations, such as heat maps, time-lapse animations, and network graphs. This shift allows for the discovery of patterns and anomalies otherwise hidden in raw data. For example, when studying climate change impacts, a time-lapse heat map might reveal unexpected temperature shifts over decades that spreadsheets alone could not capture.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Data visualization is transforming how we interpret complex datasets, moving beyond traditional charts, such as static charts and graphs, to dynamic graphical representations, such as heat maps, time-lapse animations, and network graphs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This shift allows for the discovery of patterns and anomalies otherwise hidden in raw data."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "For example, when studying climate change impacts, a time-lapse heat map might reveal unexpected temperature shifts over decades that spreadsheets alone could not capture."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "A significant development in this field is the use of interactive dashboards. These tools not only display data but also allow users to manipulate variables to explore different scenarios. In the business sector, decision-makers use dashboards to simulate market conditions, adjusting factors like demand and supply to forecast outcomes. However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming.",
+              "rawText": "A significant development in this field is the use of interactive dashboards. These tools not only display data but also allow users to manipulate variables to explore different scenarios. In the business sector, decision-makers use dashboards to simulate market conditions, adjusting factors like demand and supply to forecast outcomes. However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "A significant development in this field is the use of interactive dashboards."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These tools not only display data but also allow users to manipulate variables to explore different scenarios."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "In the business sector, decision-makers use dashboards to simulate market conditions, adjusting factors like demand and supply to forecast outcomes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "In the realm of public health, data visualization has proven invaluable in tracking disease spread. The combination of geographical maps and timelines helps analysts predict outbreak hot spots. Nonetheless, this predictive power depends heavily on the quality of data inputs. Still, data visualization tools help public health officials to act before a situation becomes unmanageable.",
+              "rawText": "In the realm of public health, data visualization has proven invaluable in tracking disease spread. ■ The combination of geographical maps and timelines helps analysts predict outbreak hot spots. ■ Nonetheless, this predictive power depends heavily on the quality of data inputs. ■ Still, data visualization tools help public health officials to act before a situation becomes unmanageable. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "In the realm of public health, data visualization has proven invaluable in tracking disease spread."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "The combination of geographical maps and timelines helps analysts predict outbreak hot spots."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Nonetheless, this predictive power depends heavily on the quality of data inputs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Still, data visualization tools help public health officials to act before a situation becomes unmanageable."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"anomalies\" in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word \"anomalies\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "irregularities"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "indications"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "solutions"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "links"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q31-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about traditional data charts?",
+          "rawDisplayText": "32. What does the passage suggest about traditional data charts?",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "They reveal some important features hidden in raw data."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "They are limited in how effectively they convey complex information."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "They are especially helpful in capturing data related to climate change."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "They include heat maps, time-lapse animations, and network graphs."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 2 that highlights a limitation of interactive dashboards. Select the sentence to make your choice.",
+          "rawDisplayText": "33. Identify the sentence in paragraph 2 that highlights a limitation of interactive dashboards. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m1-rap-p01",
+            "targetParagraphId": "reading-2026-06-30-b-m1-rap-p01-p02",
+            "correctSentenceId": "reading-2026-06-30-b-m1-rap-p01-p02-s04"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage mentions all the following about interactive dashboards EXCEPT:",
+          "rawDisplayText": "34. The passage mentions all the following about interactive dashboards EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "They represent an important development in data analysis tools."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "They let users change variables to see different outcomes."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "They can be used to explore how markets might behave."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "They help business leaders interact more effectively with one another."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m1-rap-p01",
+            "insertSentence": "Incomplete or biased data can lead to misleading conclusions, potentially hampering response efforts.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-30-b-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-30-b-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-30-b-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-30-b-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-30-b-m1-rap-p01-p03",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-30-b-m1-rap-p01-p03-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-30-b-m1-q35-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Craftsmanship blends art with functional design through a meticulous process requiring creativity and precision. Artisans wo_ _ with mater_ _ _ _ like me_ _ _, wood, a_ _ fabric t_ create prod_ _ _ _ that a_ _ both use_ _ _ and beau_ _ _ _ _. Each pi_ _ _ shows the maker's skill, attention to detail, and personal style. Beyond utility, handcrafted items carry cultural significance. Even as societies modernize, the value of tradition and quality endures, highlighting a lasting appreciation for the uniqueness and care embedded in artisanal work.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Craftsmanship blends art with functional design through a meticulous process requiring creativity and precision. Artisans wo_ _ with mater_ _ _ _ like me_ _ _, wood, a_ _ fabric t_ create prod_ _ _ _ that a_ _ both use_ _ _ and beau_ _ _ _ _. Each pi_ _ _ shows the maker's skill, attention to detail, and personal style. Beyond utility, handcrafted items carry cultural significance. Even as societies modernize, the value of tradition and quality endures, highlighting a lasting appreciation for the uniqueness and care embedded in artisanal work.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Craftsmanship blends art with functional design through a meticulous process requiring creativity and precision. Artisans "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " like "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", wood, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " fabric "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " create "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " both "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Each "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " shows the maker's skill, attention to detail, and personal style. Beyond utility, handcrafted items carry cultural significance. Even as societies modernize, the value of tradition and quality endures, highlighting a lasting appreciation for the uniqueness and care embedded in artisanal work."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "work",
+                "prefix": "wo",
+                "displayText": "wo_ _",
+                "missingText": "rk",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "materials",
+                "prefix": "mater",
+                "displayText": "mater_ _ _ _",
+                "missingText": "ials",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "metal",
+                "prefix": "me",
+                "displayText": "me_ _ _",
+                "missingText": "tal",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "products",
+                "prefix": "prod",
+                "displayText": "prod_ _ _ _",
+                "missingText": "ucts",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "are",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "useful",
+                "prefix": "use",
+                "displayText": "use_ _ _",
+                "missingText": "ful",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "beautiful",
+                "prefix": "beau",
+                "displayText": "beau_ _ _ _ _",
+                "missingText": "tiful",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-30-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-30-b-m2-ctw-q01-10-p01",
+                "answer": "piece",
+                "prefix": "pi",
+                "displayText": "pi_ _ _",
+                "missingText": "ece",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-30b-m2-rap-19",
+      "module": "rap",
+      "title": "Optical Astronomy's Adaptive Revolution",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.30B",
+        "occurrenceDate": "2026-06-30",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.30B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.30B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-30-b-m2-rap-p01",
+          "title": "Optical Astronomy's Adaptive Revolution",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s. This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity. Light waves from distant stars travel through Earth's atmosphere, creating a shimmering effect that distorts them. Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms. The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second.",
+              "rawText": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s. ■ This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity. Light waves from distant stars travel through Earth's atmosphere, creating a shimmering effect that distorts them. ■ Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms. ■ The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Light waves from distant stars travel through Earth's atmosphere, creating a shimmering effect that distorts them."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "However, the technology is not without controversy. Some argue that the energy consumption of adaptive optics contributes significantly to observatories' carbon footprints. Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life.",
+              "rawText": "However, the technology is not without controversy. Some argue that the energy consumption of adaptive optics contributes significantly to observatories' carbon footprints. Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, the technology is not without controversy."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some argue that the energy consumption of adaptive optics contributes significantly to observatories' carbon footprints."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship. Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations. Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections.",
+              "rawText": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship. Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations. Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations."
+                },
+                {
+                  "sentenceId": "reading-2026-06-30-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-30-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred from the passage about the capabilities of optical astronomy BEFORE the late 1980s?",
+          "rawDisplayText": "11. What can be inferred from the passage about the capabilities of optical astronomy BEFORE the late 1980s?",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "Images of celestial objects from ground-based telescopes were often unclear."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "Astronomers used adaptive optics to distort light waves."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "Telescopes used deformable mirrors to see farther into space."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "Astronomers used the shimmering effect to find distant stars."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m2-q11-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "How do proponents of adaptive optics counter criticism of the technology?",
+          "rawDisplayText": "12. How do proponents of adaptive optics counter criticism of the technology?",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "The observatories that use the technology have a lower carbon footprint than the critics maintain."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "The usefulness of the technology is more important than its drawbacks."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "The negative effects of the technology are localized and not globally significant."
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "The technology is only in its early stages and will improve over time."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"stewardship\" in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word \"stewardship\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "supervision"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "achievement"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "enthusiasm"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "design"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention attempts to optimize algorithms?",
+          "rawDisplayText": "14. Why does the author mention attempts to optimize algorithms?",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-30-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To give an example of how observatories could cut costs"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To suggest that current algorithms still contain some errors when adjusting mirrors"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To provide an example of how adaptive optics continues to evolve"
+              },
+              {
+                "optionId": "reading-2026-06-30-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To show one way researchers are trying to reduce observatories' energy consumption"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-30-b-m2-q14-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-30-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-30-b-m2-rap-p01",
+            "insertSentence": "To understand this phenomenon, imagine looking through the heat waves seen over hot asphalt or desert sand.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-30-b-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-30-b-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-30-b-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s04"
+              },
+              {
+                "anchorId": "reading-2026-06-30-b-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-30-b-m2-rap-p01-p01",
+                "boundaryIndex": 5,
+                "afterSentenceId": "reading-2026-06-30-b-m2-rap-p01-p01-s05"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-30-b-m2-q15-anchor-2"
+          }
+        }
+      ]
+    }
+  ]
+}

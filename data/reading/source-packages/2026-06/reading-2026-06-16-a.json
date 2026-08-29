@@ -1,0 +1,1811 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.16A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The discovery of water and volcanic activity on moons like Europa and Enceladus has sparked interest in the potential for extraterrestrial life. These moons, orbi_ _ _ _ the pla_ _ _ _ Jupiter a_ _ Saturn, ha_ _ ice-covered surf_ _ _ _ with oce_ _ _ lying under_ _ _ _ _. Volcanic acti_ _ _ _, in t_ _ form o_ hydrothermal vents, provides heat and nutrients, creating environments where microbial life could potentially thrive. Missions by spacecraft such as the Galileo and Cassini have gathered valuable data on these moons.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The discovery of water and volcanic activity on moons like Europa and Enceladus has sparked interest in the potential for extraterrestrial life. These moons, orbi_ _ _ _ the pla_ _ _ _ Jupiter a_ _ Saturn, ha_ _ ice-covered surf_ _ _ _ with oce_ _ _ lying under_ _ _ _ _. Volcanic acti_ _ _ _, in t_ _ form o_ hydrothermal vents, provides heat and nutrients, creating environments where microbial life could potentially thrive. Missions by spacecraft such as the Galileo and Cassini have gathered valuable data on these moons.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The discovery of water and volcanic activity on moons like Europa and Enceladus has sparked interest in the potential for extraterrestrial life. These moons, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Jupiter "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Saturn, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ice-covered "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " lying "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Volcanic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", in "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " form "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " hydrothermal vents, provides heat and nutrients, creating environments where microbial life could potentially thrive. Missions by spacecraft such as the Galileo and Cassini have gathered valuable data on these moons."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "orbiting",
+                "prefix": "orbi",
+                "displayText": "orbi_ _ _ _",
+                "missingText": "ting",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "planets",
+                "prefix": "pla",
+                "displayText": "pla_ _ _ _",
+                "missingText": "nets",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "have",
+                "prefix": "ha",
+                "displayText": "ha_ _",
+                "missingText": "ve",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "surfaces",
+                "prefix": "surf",
+                "displayText": "surf_ _ _ _",
+                "missingText": "aces",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "oceans",
+                "prefix": "oce",
+                "displayText": "oce_ _ _",
+                "missingText": "ans",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "underneath",
+                "prefix": "under",
+                "displayText": "under_ _ _ _ _",
+                "missingText": "neath",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "activity",
+                "prefix": "acti",
+                "displayText": "acti_ _ _ _",
+                "missingText": "vity",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing ove_ _ _ _ economic produc_ _ _ _ _ _ and fost_ _ _ _ _ international interde_ _ _ _ _ _ _ _. However, exce_ _ _ _ _ reliance o_ this mo_ _ _ can exp_ _ _ economies t_ significant ri_ _ _. Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing ove_ _ _ _ economic produc_ _ _ _ _ _ and fost_ _ _ _ _ international interde_ _ _ _ _ _ _ _. However, exce_ _ _ _ _ reliance o_ this mo_ _ _ can exp_ _ _ economies t_ significant ri_ _ _. Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " economic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " international "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". However, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " reliance "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " this "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " can "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " economies "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " significant "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "overall",
+                "prefix": "ove",
+                "displayText": "ove_ _ _ _",
+                "missingText": "rall",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "productivity",
+                "prefix": "produc",
+                "displayText": "produc_ _ _ _ _ _",
+                "missingText": "tivity",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "fostering",
+                "prefix": "fost",
+                "displayText": "fost_ _ _ _ _",
+                "missingText": "ering",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "interdependence",
+                "prefix": "interde",
+                "displayText": "interde_ _ _ _ _ _ _ _",
+                "missingText": "pendence",
+                "missingLength": 8
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "excessive",
+                "prefix": "exce",
+                "displayText": "exce_ _ _ _ _",
+                "missingText": "ssive",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "on",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "model",
+                "prefix": "mo",
+                "displayText": "mo_ _ _",
+                "missingText": "del",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "expose",
+                "prefix": "exp",
+                "displayText": "exp_ _ _",
+                "missingText": "ose",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-16-a-m1-ctw-q11-20-p01",
+                "answer": "risks",
+                "prefix": "ri",
+                "displayText": "ri_ _ _",
+                "missingText": "sks",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m1-rdl-03",
+      "module": "rdl",
+      "title": "Welcome, Study-Abroad Students!",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-050",
+          "title": "Welcome, Study-Abroad Students!",
+          "source": "material-index.json#RDL-050",
+          "sourceDate": "2026-05-24",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-050/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-050/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the tour company?",
+          "rawDisplayText": "21. What can be inferred about the tour company?",
+          "payload": {
+            "materialId": "RDL-050",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Most of its clients are double majors."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "It mainly caters to architecture students."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "It plans specialized tours for a broad clientele."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Some of its clients are hotel management students."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "Which of the following methods is suggested for potential customers wishing to arrange a tour?",
+          "rawDisplayText": "22. Which of the following methods is suggested for potential customers wishing to arrange a tour?",
+          "payload": {
+            "materialId": "RDL-050",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Write a letter"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Visit the website"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Send an email"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Join a waiting list"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q22-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m1-rdl-05",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-048",
+          "title": "Attention Residents!",
+          "source": "material-index.json#RDL-048",
+          "sourceDate": "2026-05-23",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-048/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-048/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the notice primarily about?",
+          "rawDisplayText": "23. What is the notice primarily about?",
+          "payload": {
+            "materialId": "RDL-048",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Providing safety tips during a storm"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Announcing a disruption to a service"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Promoting a community water park opening"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Providing after-installation instructions for a new appliance"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What should residents do beforehand?",
+          "rawDisplayText": "24. What should residents do beforehand?",
+          "payload": {
+            "materialId": "RDL-048",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Plan for power outages"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Disconnect all water appliances"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Inspect faucets and showers for leaks"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Ensure enough water is stored for one day"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q24-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the event described in the announcement?",
+          "rawDisplayText": "25. What can be inferred about the event described in the announcement?",
+          "payload": {
+            "materialId": "RDL-048",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "It can be postponed to a different day by calling the maintenance department."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "It is required for infrastructure upgrades."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "It will occur weekly."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "It is due to a natural disaster."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q25-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m1-rap-08",
+      "module": "rap",
+      "title": "Radio Astronomy: A New Perspective",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-16-a-m1-rap-p01",
+          "title": "Radio Astronomy: A New Perspective",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-16-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Radio astronomy is the study of celestial objects using radio waves rather than visible light. Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments. This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe's early conditions.",
+              "rawText": "Radio astronomy is the study of celestial objects using radio waves rather than visible light. Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments. This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe's early conditions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Radio astronomy is the study of celestial objects using radio waves rather than visible light."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unlike optical telescopes, radio telescopes can detect signals from sources obscured by dust or too faint to be seen with traditional instruments."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This branch of astronomy has led to transformative discoveries, including the detection of cosmic microwave background radiation—a faint glow left over from the Big Bang—which has enabled scientists to reconstruct the universe's early conditions."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967. These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals. Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions.",
+              "rawText": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967. These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals. Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "One of the most famous radio astronomy discoveries was the identification of pulsars in 1967."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These rapidly spinning neutron stars, the dense remnants of massive stars that have exploded, emit beams of radio waves at regular intervals."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Observing pulsars helps scientists understand the end stages of stellar life and the behavior of matter under extreme conditions."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "However, radio astronomy faces growing challenges due to technological interference. Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect. This \"radio frequency pollution\" makes it increasingly difficult to isolate genuine astronomical data. To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat.",
+              "rawText": "However, radio astronomy faces growing challenges due to technological interference. Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect. This \"radio frequency pollution\" makes it increasingly difficult to isolate genuine astronomical data. To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, radio astronomy faces growing challenges due to technological interference."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Devices like mobile phones, wireless routers, and satellites emit radio frequencies that can overwhelm the faint cosmic signals astronomers seek to detect."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "This \"radio frequency pollution\" makes it increasingly difficult to isolate genuine astronomical data."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "To combat this, observatories are often located in remote areas and protected by radio quiet zones, but the global spread of wireless technology continues to pose a serious threat."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the comparison of optical and radio telescopes suggest?",
+          "rawDisplayText": "26. What does the comparison of optical and radio telescopes suggest?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Traditional instruments are more susceptible to damage."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "Dust often interferes with the optical detection of objects in space."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Radio telescopes are best for detecting massive stars."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Optical telescopes were the first to detect cosmic microwave background radiation."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"transformative\" in the passage is closest in meaning to",
+          "rawDisplayText": "27. The word \"transformative\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "groundbreaking"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "exciting"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "concerning"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "startling"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q27-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, radio astronomy helps scientists study all of the following EXCEPT",
+          "rawDisplayText": "28. According to the passage, radio astronomy helps scientists study all of the following EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "the beginnings of the universe"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "how to prevent the explosions of large stars"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "the last stages of stars"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "the way matter behaves under extreme conditions"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"the global spread of wireless technology\"?",
+          "rawDisplayText": "29. Why does the author mention \"the global spread of wireless technology\"?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that the issue of technological interference is not likely to end soon"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "To argue that technological interference is not as severe as was once thought"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "To support the argument that optical telescopes are more reliable than radio telescopes"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "To highlight the sophisticated tools astronomers use to detect cosmic signals"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is one way to address the issue of technological interference?",
+          "rawDisplayText": "30. According to the passage, what is one way to address the issue of technological interference?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "Revive the use of optical telescopes"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Limit wireless routers to certain frequencies"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Place observatories far away from urban areas"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Mandate specific quiet times when the use of wireless technology is prohibited"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q30-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m1-rap-13",
+      "module": "rap",
+      "title": "Value Theory",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-16-a-m1-rap-p02",
+          "title": "Value Theory",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-16-a-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively. Central questions include: What makes something good? Are values objective features of the world or subjective preferences? A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end.",
+              "rawText": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively. Central questions include: What makes something good? Are values objective features of the world or subjective preferences? A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Central questions include: What makes something good?"
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Are values objective features of the world or subjective preferences?"
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "One influential theory within this domain is utilitarianism, which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility. This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics. However, critics argue that utilitarianism's aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs. For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity.",
+              "rawText": "One influential theory within this domain is utilitarianism, which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility. This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics. However, critics argue that utilitarianism's aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs. For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "One influential theory within this domain is utilitarianism, which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, critics argue that utilitarianism's aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important. This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric.",
+              "rawText": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important. This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, value theory is concerned with all of the following EXCEPT",
+          "rawDisplayText": "31. According to the passage, value theory is concerned with all of the following EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "how to determine what is good"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "whether values are personal preferences"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "how to distinguish between values and principles"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "the difference between intrinsic and instrumental value"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the phrase \"This consequentialist framework\" refer to?",
+          "rawDisplayText": "32. What does the phrase \"This consequentialist framework\" refer to?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "The view that the consequences of an action determine its morality"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "Theories that foreground the happiness of the individual in assigning value"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "The underlying view that theories of value have an impact on making life decisions"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "The debate about how best to balance competing outcomes of happiness and utility"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q32-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"allocating\" in the passage is closest in meaning to",
+          "rawDisplayText": "33. The word \"allocating\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "distributing"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "acquiring"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "increasing"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "tracking"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q33-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is one main criticism of utilitarianism?",
+          "rawDisplayText": "34. According to the passage, what is one main criticism of utilitarianism?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "Its implementation may benefit public policy, but it is less helpful for economic decisions."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "Its priority of making healthcare more accessible creates higher costs for most people."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "In its efforts to benefit large numbers of people, it may harm some individuals."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "There is little evidence that it leads to improved healthcare for the majority."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q34-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about value pluralism?",
+          "rawDisplayText": "35. What does the passage suggest about value pluralism?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "It was a popular system for making decisions until quite recently."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "It gives primary consideration to compassion while autonomy plays a secondary role."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "It states that ethical decisions require the input of multiple decision-makers."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "It argues that ethical decisions should not be based on just one criterion."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m1-q35-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Shadow puppetry is an ancient form of storytelling that uses flat, articulated (movable) figures cast onto a screen by a light source. Shadow puppetry combi_ _ _ visual arti_ _ _ _ with dram_ _ _ _ narration, crea_ _ _ _ engaging perfor_ _ _ _ _ _ that con_ _ _ traditional ta_ _ _ and mo_ _ _ lessons. Th_ _ art fo_ _ originated in Asia and spread to various cultures around the world. The puppets are typically made of leather or paper and manipulated by sticks or strings. Performers narrate stories, often accompanied by music or sound effects.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Shadow puppetry is an ancient form of storytelling that uses flat, articulated (movable) figures cast onto a screen by a light source. Shadow puppetry combi_ _ _ visual arti_ _ _ _ with dram_ _ _ _ narration, crea_ _ _ _ engaging perfor_ _ _ _ _ _ that con_ _ _ traditional ta_ _ _ and mo_ _ _ lessons. Th_ _ art fo_ _ originated in Asia and spread to various cultures around the world. The puppets are typically made of leather or paper and manipulated by sticks or strings. Performers narrate stories, often accompanied by music or sound effects.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Shadow puppetry is an ancient form of storytelling that uses flat, articulated (movable) figures cast onto a screen by a light source. Shadow puppetry "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " visual "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " narration, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " engaging "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " traditional "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " lessons. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " art "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " originated in Asia and spread to various cultures around the world. The puppets are typically made of leather or paper and manipulated by sticks or strings. Performers narrate stories, often accompanied by music or sound effects."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "combines",
+                "prefix": "combi",
+                "displayText": "combi_ _ _",
+                "missingText": "nes",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "artistry",
+                "prefix": "arti",
+                "displayText": "arti_ _ _ _",
+                "missingText": "stry",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "dramatic",
+                "prefix": "dram",
+                "displayText": "dram_ _ _ _",
+                "missingText": "atic",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "creating",
+                "prefix": "crea",
+                "displayText": "crea_ _ _ _",
+                "missingText": "ting",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "performances",
+                "prefix": "perfor",
+                "displayText": "perfor_ _ _ _ _ _",
+                "missingText": "mances",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "convey",
+                "prefix": "con",
+                "displayText": "con_ _ _",
+                "missingText": "vey",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "tales",
+                "prefix": "ta",
+                "displayText": "ta_ _ _",
+                "missingText": "les",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "moral",
+                "prefix": "mo",
+                "displayText": "mo_ _ _",
+                "missingText": "ral",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "This",
+                "prefix": "Th",
+                "displayText": "Th_ _",
+                "missingText": "is",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-16-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-16-a-m2-ctw-q01-10-p01",
+                "answer": "form",
+                "prefix": "fo",
+                "displayText": "fo_ _",
+                "missingText": "rm",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-16a-m2-rap-19",
+      "module": "rap",
+      "title": "Theater Lighting Innovations",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.16A",
+        "occurrenceDate": "2026-06-16",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-16-a-m2-rap-p01",
+          "title": "Theater Lighting Innovations",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-16-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Theater lighting has evolved significantly over the centuries. Initially reliant on sunlight, performances were limited to daylight hours. Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination.",
+              "rawText": "Theater lighting has evolved significantly over the centuries. Initially reliant on sunlight, performances were limited to daylight hours. Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Theater lighting has evolved significantly over the centuries."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Initially reliant on sunlight, performances were limited to daylight hours."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent. This advancement improved visibility on stage and allowed for more expressive acting. Lights that illuminated actors from below and the sides helped direct audience attention.",
+              "rawText": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent. This advancement improved visibility on stage and allowed for more expressive acting. Lights that illuminated actors from below and the sides helped direct audience attention.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "This advancement improved visibility on stage and allowed for more expressive acting."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Lights that illuminated actors from below and the sides helped direct audience attention."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "The emergence of electric lighting in the late nineteenth century was transformative. Designers began using gels and filters to create a wide range of colors of varying intensity. These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape. For example, the angled light beams and shadows in Toller's 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany.",
+              "rawText": "The emergence of electric lighting in the late nineteenth century was transformative. Designers began using gels and filters to create a wide range of colors of varying intensity. These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape. For example, the angled light beams and shadows in Toller's 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "The emergence of electric lighting in the late nineteenth century was transformative."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Designers began using gels and filters to create a wide range of colors of varying intensity."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "For example, the angled light beams and shadows in Toller's 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-16-a-m2-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Today's theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings. Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative. Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential.",
+              "rawText": "Today's theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings. Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative. Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Today's theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative."
+                },
+                {
+                  "sentenceId": "reading-2026-06-16-a-m2-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-16-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is the most accurate description of the passage's organization?",
+          "rawDisplayText": "11. Which of the following is the most accurate description of the passage's organization?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "An introduction followed by a summary of the disadvantages of older theater lighting systems"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "A discussion of the theory of theater lighting followed by paragraphs detailing the different effects it can achieve"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "An introduction followed by a series of paragraphs on successive developments in theater lighting"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "A discussion of different theaters followed by a description of lighting technologies that complement each building"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m2-q11-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, gas lighting was an improvement on candles and oil lamps in all of the following ways ЕХCЕPT:",
+          "rawDisplayText": "12. According to the passage, gas lighting was an improvement on candles and oil lamps in all of the following ways ЕХCЕPT:",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "It produced a more constant light."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "It was less likely to cause fires."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "It could be directed at individual actors."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "It produced a softer light."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"fundamentally\" in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word \"fundamentally\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "simply"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "thoroughly"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "permanently"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "surprisingly"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss Transformation?",
+          "rawDisplayText": "14. Why does the author discuss Transformation?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate how skillful lighting can communicate a mood to the audience"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To provide an example of a play that could have benefited from LED technology"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To explain why electric lighting was not as powerful for creating moods as gas lighting"
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To argue that some plays relied too heavily on lighting effects"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-16-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage imply about modern lighting technology?",
+          "rawDisplayText": "15. What does the passage imply about modern lighting technology?",
+          "payload": {
+            "passageId": "reading-2026-06-16-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-16-a-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "It can sometimes shift the focus from the play to the lighting."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "It requires directors who are skilled in computer programming."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "Theaters must now allocate more money to technicians and less to actors."
+              },
+              {
+                "optionId": "reading-2026-06-16-a-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "Theaters must be redesigned to incorporate new lighting technology."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-16-a-m2-q15-opt-1"
+          }
+        }
+      ]
+    }
+  ]
+}

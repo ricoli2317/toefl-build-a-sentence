@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   BarChart3,
+  BookOpenCheck,
   ClipboardPenLine,
   ClipboardList,
   CloudUpload,
@@ -42,6 +43,12 @@ const navigation = [
     icon: BarChart3,
     label: "套题统计",
     match: (path: string) => path.startsWith("/teacher/sets")
+  },
+  {
+    href: "/teacher/reading/statistics",
+    icon: BookOpenCheck,
+    label: "阅读统计",
+    match: (path: string) => path.startsWith("/teacher/reading")
   },
   {
     href: "/teacher/writing/assignments",

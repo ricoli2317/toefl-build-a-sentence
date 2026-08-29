@@ -81,6 +81,7 @@ const BASE_INVALIDATION_MATRIX: Record<
     "teacherWritingReviewWorkspace",
     "teacherAssignments",
     "studentWritingOverview",
+    "studentPracticeHistory",
     "studentPublishedReviews"
   ],
   ASSIGNMENT_UPDATED: [

@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+    "module": "rap",
+    "title": "Libertarianism and Personal Freedom",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "a5a1662900f8b43ba35add0e7613c5a2e9a0eaf31a94c1f5918bb379249f1759",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7a-m2-rap-19",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7A",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "title": "Libertarianism and Personal Freedom",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Libertarianism is a political philosophy emphasizing individual liberty, minimal government intervention, and free markets. It advocates personal freedom, arguing that individuals should make choices without undue state interference. This ideology has gained traction in recent years among those who value economic freedom.",
+          "rawText": "Libertarianism is a political philosophy emphasizing individual liberty, minimal government intervention, and free markets. It advocates personal freedom, arguing that individuals should make choices without undue state interference. This ideology has gained traction in recent years among those who value economic freedom.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Libertarianism is a political philosophy emphasizing individual liberty, minimal government intervention, and free markets."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "It advocates personal freedom, arguing that individuals should make choices without undue state interference."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This ideology has gained traction in recent years among those who value economic freedom."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "A central tenet of libertarianism is self-ownership, which asserts that individuals own their bodies and labor. Libertarians argue that people should control their lives and property and be free from coercive forces. For instance, libertarians often oppose taxation, viewing it as involuntary servitude that infringes on autonomy. Libertarianism champions free markets as the most efficient means of allocating resources. By allowing supply and demand to dictate prices, free markets encourage innovation and competition, leading to better products and services. Government regulations are seen as impediments that stifle economic growth and limit freedom. Libertarians believe that a laissez-faire approach creates an environment where businesses can thrive and individuals can pursue their economic interests without constraints.",
+          "rawText": "A central tenet of libertarianism is self-ownership, which asserts that individuals own their bodies and labor. Libertarians argue that people should control their lives and property and be free from coercive forces. For instance, libertarians often oppose taxation, viewing it as involuntary servitude that infringes on autonomy. Libertarianism champions free markets as the most efficient means of allocating resources. ■ By allowing supply and demand to dictate prices, free markets encourage innovation and competition, leading to better products and services. ■ Government regulations are seen as impediments that stifle economic growth and limit freedom. ■ Libertarians believe that a laissez-faire approach creates an environment where businesses can thrive and individuals can pursue their economic interests without constraints. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "A central tenet of libertarianism is self-ownership, which asserts that individuals own their bodies and labor."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Libertarians argue that people should control their lives and property and be free from coercive forces."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "For instance, libertarians often oppose taxation, viewing it as involuntary servitude that infringes on autonomy."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Libertarianism champions free markets as the most efficient means of allocating resources."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "By allowing supply and demand to dictate prices, free markets encourage innovation and competition, leading to better products and services."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "Government regulations are seen as impediments that stifle economic growth and limit freedom."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s07",
+              "sentenceOrder": 7,
+              "text": "Libertarians believe that a laissez-faire approach creates an environment where businesses can thrive and individuals can pursue their economic interests without constraints."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Critics of libertarianism argue that a lack of regulation can lead to social inequality and exploitation. Some contend that public goods, like education and healthcare, require government involvement to ensure equitable access. Balancing personal freedom with the need for social welfare remains contentious within libertarian thought.",
+          "rawText": "Critics of libertarianism argue that a lack of regulation can lead to social inequality and exploitation. Some contend that public goods, like education and healthcare, require government involvement to ensure equitable access. Balancing personal freedom with the need for social welfare remains contentious within libertarian thought.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Critics of libertarianism argue that a lack of regulation can lead to social inequality and exploitation."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Some contend that public goods, like education and healthcare, require government involvement to ensure equitable access."
+            },
+            {
+              "sentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Balancing personal freedom with the need for social welfare remains contentious within libertarian thought."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q01",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are true about libertarianism EXCEPT:",
+      "rawDisplayText": "11. All of the following are true about libertarianism EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It emphasizes free markets."
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It champions personal freedom."
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It supports state involvement in people's lives."
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It has recently grown in popularity."
+          }
+        ],
+        "correctOptionId": "reading-rap-a5a1662900f8b43ba35add0e-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q02",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Libertarians might consider taxation immoral because it violates",
+      "rawDisplayText": "12. Libertarians might consider taxation immoral because it violates",
+      "payload": {
+        "passageId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q02-opt-1",
+            "optionOrder": 1,
+            "text": "the principle of self-ownership"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q02-opt-2",
+            "optionOrder": 2,
+            "text": "legal standards about bodily autonomy"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q02-opt-3",
+            "optionOrder": 3,
+            "text": "laws against use of coercive force"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q02-opt-4",
+            "optionOrder": 4,
+            "text": "conventions of liberal society"
+          }
+        ],
+        "correctOptionId": "reading-rap-a5a1662900f8b43ba35add0e-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q03",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"impediments\" in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word \"impediments\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q03-opt-1",
+            "optionOrder": 1,
+            "text": "rules"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q03-opt-2",
+            "optionOrder": 2,
+            "text": "barriers"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q03-opt-3",
+            "optionOrder": 3,
+            "text": "costs"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q03-opt-4",
+            "optionOrder": 4,
+            "text": "measures"
+          }
+        ],
+        "correctOptionId": "reading-rap-a5a1662900f8b43ba35add0e-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q04",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Libertarians themselves do not agree with one another about whether",
+      "rawDisplayText": "14. Libertarians themselves do not agree with one another about whether",
+      "payload": {
+        "passageId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q04-opt-1",
+            "optionOrder": 1,
+            "text": "the libertarian approach creates educational opportunities"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q04-opt-2",
+            "optionOrder": 2,
+            "text": "a laissez-faire approach is good for businesses"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q04-opt-3",
+            "optionOrder": 3,
+            "text": "healthcare requires more government involvement than education"
+          },
+          {
+            "optionId": "reading-rap-a5a1662900f8b43ba35add0e-q04-opt-4",
+            "optionOrder": 4,
+            "text": "personal freedom should be balanced against the need for social welfare"
+          }
+        ],
+        "correctOptionId": "reading-rap-a5a1662900f8b43ba35add0e-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q05",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01",
+        "insertSentence": "Such intervention constrains innovation and can lead to unintended outcomes.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-a5a1662900f8b43ba35add0e-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s04"
+          },
+          {
+            "anchorId": "reading-rap-a5a1662900f8b43ba35add0e-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s05"
+          },
+          {
+            "anchorId": "reading-rap-a5a1662900f8b43ba35add0e-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02",
+            "boundaryIndex": 6,
+            "afterSentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s06"
+          },
+          {
+            "anchorId": "reading-rap-a5a1662900f8b43ba35add0e-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02",
+            "boundaryIndex": 7,
+            "afterSentenceId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02-s07"
+          }
+        ],
+        "correctAnchorId": "reading-rap-a5a1662900f8b43ba35add0e-q05-anchor-3"
+      }
+    }
+  ]
+}

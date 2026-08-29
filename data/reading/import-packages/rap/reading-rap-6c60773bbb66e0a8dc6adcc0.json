@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+    "module": "rap",
+    "title": "The Benefits of Music Education",
+    "firstSeenDate": "2026-06-21",
+    "firstSeenSourceLabel": "6.21A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "6c60773bbb66e0a8dc6adcc05bf3fb3d73870a46a08e640bee76e27c8af353cb",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-21a-m1-rap-13",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21A",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-21b-m1-rap-13",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "sourceKind": "docx",
+      "sourceLabel": "6.21B",
+      "occurrenceDate": "2026-06-21",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.21B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.21B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "title": "The Benefits of Music Education",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "In the United States, music education has been consistently linked to enhanced cognitive development. Studies such as those by the National Association for Music Education (NAfME) and research published in Frontiers in Psychology have shown that children who study music often demonstrate improvements in memory, language acquisition, and spatial-temporal reasoning. These cognitive gains are attributed to the discipline and structured practice inherent in learning music, which strengthens neural pathways associated with attention and processing.",
+          "rawText": "In the United States, music education has been consistently linked to enhanced cognitive development. Studies such as those by the National Association for Music Education (NAfME) and research published in Frontiers in Psychology have shown that children who study music often demonstrate improvements in memory, language acquisition, and spatial-temporal reasoning. These cognitive gains are attributed to the discipline and structured practice inherent in learning music, which strengthens neural pathways associated with attention and processing.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "In the United States, music education has been consistently linked to enhanced cognitive development."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Studies such as those by the National Association for Music Education (NAfME) and research published in Frontiers in Psychology have shown that children who study music often demonstrate improvements in memory, language acquisition, and spatial-temporal reasoning."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "These cognitive gains are attributed to the discipline and structured practice inherent in learning music, which strengthens neural pathways associated with attention and processing."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Beyond cognition, music education contributes meaningfully to social development. Participation in an ensemble—a group of musicians performing together—requires active collaboration, listening, and nonverbal communication, fostering empathy and cooperative behavior. This group dynamic differs from traditional classroom settings and can support the development of interpersonal skills. Moreover, music provides a safe space for emotional exploration. Students engage with complex emotions, both their own and those conveyed by others, through the expressive nature of music itself. This experience can enhance emotional intelligence and serve as a constructive outlet for stress.",
+          "rawText": "Beyond cognition, music education contributes meaningfully to social development. Participation in an ensemble—a group of musicians performing together—requires active collaboration, listening, and nonverbal communication, fostering empathy and cooperative behavior. This group dynamic differs from traditional classroom settings and can support the development of interpersonal skills. Moreover, music provides a safe space for emotional exploration. Students engage with complex emotions, both their own and those conveyed by others, through the expressive nature of music itself. This experience can enhance emotional intelligence and serve as a constructive outlet for stress.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Beyond cognition, music education contributes meaningfully to social development."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Participation in an ensemble—a group of musicians performing together—requires active collaboration, listening, and nonverbal communication, fostering empathy and cooperative behavior."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "This group dynamic differs from traditional classroom settings and can support the development of interpersonal skills."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Moreover, music provides a safe space for emotional exploration."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Students engage with complex emotions, both their own and those conveyed by others, through the expressive nature of music itself."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "This experience can enhance emotional intelligence and serve as a constructive outlet for stress."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Despite these documented benefits, music programs in U.S. schools are often viewed as nonessential compared to core academic subjects and thus vulnerable to budget cuts. This reduction may disproportionately affect students who could benefit most from music's holistic contributions, potentially limiting their cognitive, social, and emotional growth.",
+          "rawText": "Despite these documented benefits, music programs in U.S. schools are often viewed as nonessential compared to core academic subjects and thus vulnerable to budget cuts. This reduction may disproportionately affect students who could benefit most from music's holistic contributions, potentially limiting their cognitive, social, and emotional growth.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Despite these documented benefits, music programs in U.S. schools are often viewed as nonessential compared to core academic subjects and thus vulnerable to budget cuts."
+            },
+            {
+              "sentenceId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "This reduction may disproportionately affect students who could benefit most from music's holistic contributions, potentially limiting their cognitive, social, and emotional growth."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention \"neural pathways associated with attention and processing\"?",
+      "rawDisplayText": "31. Why does the author mention \"neural pathways associated with attention and processing\"?",
+      "payload": {
+        "passageId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To explain one way in which music might improve certain mental skills"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To highlight the parts of the brain used when listening to music"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To contradict the results of a study in Frontiers in Psychology"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To suggest that music education has little effect on cognitive development"
+          }
+        ],
+        "correctOptionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Based on the discussion in the passage, what type of musical activity would be least likely to support social development?",
+      "rawDisplayText": "32. Based on the discussion in the passage, what type of musical activity would be least likely to support social development?",
+      "payload": {
+        "passageId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Playing in an orchestra"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Singing in a choir"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Calming oneself with peaceful music"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Being a band member"
+          }
+        ],
+        "correctOptionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, music education promotes social development in all of the following ways EXCEPT",
+      "rawDisplayText": "33. According to the passage, music education promotes social development in all of the following ways EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03-opt-1",
+            "optionOrder": 1,
+            "text": "by developing listening skills"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03-opt-2",
+            "optionOrder": 2,
+            "text": "by teaching students to communicate non-verbally"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03-opt-3",
+            "optionOrder": 3,
+            "text": "by encouraging cooperative behavior"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03-opt-4",
+            "optionOrder": 4,
+            "text": "by setting high standards for performance quality"
+          }
+        ],
+        "correctOptionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest about music education in the United States?",
+      "rawDisplayText": "34. What does the passage suggest about music education in the United States?",
+      "payload": {
+        "passageId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04-opt-1",
+            "optionOrder": 1,
+            "text": "It is acknowledged to be a necessary part of the school curriculum."
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04-opt-2",
+            "optionOrder": 2,
+            "text": "It is at greater risk of losing its funding than other school subjects are."
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Some parents fear that time and money spent on music programs will limit their children's academic growth."
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Some parents want to see further studies done on the benefits of music education."
+          }
+        ],
+        "correctOptionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"holistic\" in the passage is closest in meaning to",
+      "rawDisplayText": "35. The word \"holistic\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05-opt-1",
+            "optionOrder": 1,
+            "text": "documented"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05-opt-2",
+            "optionOrder": 2,
+            "text": "celebrated"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05-opt-3",
+            "optionOrder": 3,
+            "text": "comprehensive"
+          },
+          {
+            "optionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05-opt-4",
+            "optionOrder": 4,
+            "text": "well-known"
+          }
+        ],
+        "correctOptionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05-opt-3"
+      }
+    }
+  ]
+}

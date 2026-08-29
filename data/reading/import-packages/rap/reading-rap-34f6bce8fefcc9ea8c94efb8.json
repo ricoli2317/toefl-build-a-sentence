@@ -1,0 +1,370 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+    "module": "rap",
+    "title": "Circadian Rhythm Disruption",
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "34f6bce8fefcc9ea8c94efb855c08990f4b3ca78a963617633feca283d52e74e",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1b-m2-rap-19",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1B",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-29-m2-rap-19",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "sourceKind": "docx",
+      "sourceLabel": "6.29",
+      "occurrenceDate": "2026-06-29",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "title": "Circadian Rhythm Disruption",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure. These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\" This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders. Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms. Such adaptations could inform potential human therapies.",
+          "rawText": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure. These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\" This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders. Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms. Such adaptations could inform potential human therapies.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Circadian rhythms, the internal clocks regulating organisms' physiological processes, are primarily driven by light exposure."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "These rhythms may be disrupted by the increased artificial light of urban environments, leading to what scientists call \"circadian misalignment.\""
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This misalignment not only affects sleep patterns but is linked to a higher prevalence of metabolic disorders."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Interestingly, research on nocturnal animals reveals that these creatures have evolved mechanisms, such as unique melatonin production cycles, for thriving in conditions that disrupt human circadian rhythms."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Such adaptations could inform potential human therapies."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Recent studies suggest that manipulating light exposure can help reset circadian clocks. Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles. However, this approach is not universally effective. Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles.",
+          "rawText": "Recent studies suggest that manipulating light exposure can help reset circadian clocks. Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles. However, this approach is not universally effective. Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Recent studies suggest that manipulating light exposure can help reset circadian clocks."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Experiments demonstrated that disrupted rhythms can be realigned by the simulation of natural light cycles."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "However, this approach is not universally effective."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Some individuals experience persistent misalignment, suggesting that other environmental or genetic factors may play significant roles."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms. This complex causal web requires a multidisciplinary approach to develop comprehensive solutions. Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles. Whether these efforts will yield sustainable treatment options remains to be seen.",
+          "rawText": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms. This complex causal web requires a multidisciplinary approach to develop comprehensive solutions. Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles. Whether these efforts will yield sustainable treatment options remains to be seen.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Moreover, the factors affecting circadian regulation extend beyond light: temperature, diet, and social interactions all influence these rhythms."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "This complex causal web requires a multidisciplinary approach to develop comprehensive solutions."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Cutting-edge research is now exploring therapeutic drugs that can rectify disruptions to the natural circadian rhythmic cycles."
+            },
+            {
+              "sentenceId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Whether these efforts will yield sustainable treatment options remains to be seen."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention the \"higher prevalence of metabolic disorders\"\"?",
+      "rawDisplayText": "11. Why does the author mention the \"higher prevalence of metabolic disorders\"\"?",
+      "payload": {
+        "passageId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To explain why circadian misalignment. is increasing in urban environments"
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To suggest a causal relationship between metabolic iliness and sleep disturbances"
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To support the claim that circadian misalignment affects sleep patterns"
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To describe one effect of the disruption of circadian rhythms by artifical light"
+          }
+        ],
+        "correctOptionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why might some nocturnal animal adaptations be important for human therapies?",
+      "rawDisplayText": "12. Why might some nocturnal animal adaptations be important for human therapies?",
+      "payload": {
+        "passageId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They provide evidence that light exposure is the greatest driver of circadian rhythms."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They offer clues about thriving in conditions that cause circadian misalignment in people."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They show that melatonin is not always effective in regulating sleep patterns."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They prove that animals' melatonin production cycles closely resemble those of humans."
+          }
+        ],
+        "correctOptionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the author suggest about simulating natural light cycles as a way of resetting circadian clocks?",
+      "rawDisplayText": "13. What does the author suggest about simulating natural light cycles as a way of resetting circadian clocks?",
+      "payload": {
+        "passageId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Most people experiencing circadian misalignment have seen no benefit from the treatment."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Most researchers agree that this treatment is currently the only effective approach."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03-opt-3",
+            "optionOrder": 3,
+            "text": "The approach is most effective for people with a genetic predisposition for sleep disorders."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03-opt-4",
+            "optionOrder": 4,
+            "text": "This approach has been successfully used to help many Individuals restore their sleep patterns."
+          }
+        ],
+        "correctOptionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is the relationship between paragraph 2 and paragraph 3?",
+      "rawDisplayText": "14. What is the relationship between paragraph 2 and paragraph 3?",
+      "payload": {
+        "passageId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Paragraph 2 defines a concept; paragraph 3 provides more detail by discussing specific examples."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Paragraph 2 evaluates a focused approach; paragraph 3 points to broader challenges and solutions."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Paragraph 2 proposes a theory; paragraph 3 notes potential objections to itand suggests responses."
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Paragraph 2 outlines a methodology; paragraph 3 reports the results of applying it to a problem."
+          }
+        ],
+        "correctOptionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"rectify\" in the passage is closest in meaning to",
+      "rawDisplayText": "15. The word \"rectify\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05-opt-1",
+            "optionOrder": 1,
+            "text": "disclose"
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05-opt-2",
+            "optionOrder": 2,
+            "text": "approve"
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05-opt-3",
+            "optionOrder": 3,
+            "text": "relieve"
+          },
+          {
+            "optionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05-opt-4",
+            "optionOrder": 4,
+            "text": "document"
+          }
+        ],
+        "correctOptionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05-opt-3"
+      }
+    }
+  ]
+}

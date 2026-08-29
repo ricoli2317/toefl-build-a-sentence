@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+    "module": "rap",
+    "title": "Unveiling Earth’s Core",
+    "firstSeenDate": "2026-05-06",
+    "firstSeenSourceLabel": "5.6B",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "69611be5fee90ca9b207c69e5aad1c6c401e71a5fd7b416d11db78b08fe369cf",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-6b-m1-rap-13",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "sourceKind": "docx",
+      "sourceLabel": "5.6B",
+      "occurrenceDate": "2026-05-06",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.6B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.6B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-18a-m1-rap-08",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18A",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-69611be5fee90ca9b207c69e-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-69611be5fee90ca9b207c69e-passage-01",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "title": "Unveiling Earth’s Core",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Geophysicists have long been intrigued by Earth’s core (the center of Earth). When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world. Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed. Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter.",
+          "rawText": "Geophysicists have long been intrigued by Earth’s core (the center of Earth). When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world. Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed. Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Geophysicists have long been intrigued by Earth’s core (the center of Earth)."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions. These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies. Collectively, these findings portray a core in constant motion.",
+          "rawText": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions. These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies. Collectively, these findings portray a core in constant motion.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Collectively, these findings portray a core in constant motion."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "But is this picture complete? Some researchers argue that these models rely on overly simplified assumptions. Truly understanding the inner core demands cutting-edge technology and fresh perspectives. The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it.",
+          "rawText": "But is this picture complete? Some researchers argue that these models rely on overly simplified assumptions. Truly understanding the inner core demands cutting-edge technology and fresh perspectives. The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "But is this picture complete?"
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Some researchers argue that these models rely on overly simplified assumptions."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Truly understanding the inner core demands cutting-edge technology and fresh perspectives."
+            },
+            {
+              "sentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-69611be5fee90ca9b207c69e-q01",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author discuss earthquakes in paragraph 1?",
+      "rawDisplayText": "31. Why does the author discuss earthquakes in paragraph 1?",
+      "payload": {
+        "passageId": "reading-rap-69611be5fee90ca9b207c69e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To demonstrate the fascination of geophysicists with Earth’s core"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To explain one way scientists gain insights into Earth’s core"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To highlight the destructive effects of seismic waves on Earth’s core"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To challenge the idea that Earth’s core is a mysterious world"
+          }
+        ],
+        "correctOptionId": "reading-rap-69611be5fee90ca9b207c69e-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-69611be5fee90ca9b207c69e-q02",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why might seismic waves slow down when passing through Earth’s core?",
+      "rawDisplayText": "32. Why might seismic waves slow down when passing through Earth’s core?",
+      "payload": {
+        "passageId": "reading-rap-69611be5fee90ca9b207c69e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Because of the solid nature of the core"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Because of the presence of iron and nickel"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Because of the possible presence of molten layers or unusual elements"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Because of the strength of the elements that make up the core"
+          }
+        ],
+        "correctOptionId": "reading-rap-69611be5fee90ca9b207c69e-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-69611be5fee90ca9b207c69e-q03",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “Collectively” in the passage is closest in meaning to",
+      "rawDisplayText": "33. The word “Collectively” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-69611be5fee90ca9b207c69e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q03-opt-1",
+            "optionOrder": 1,
+            "text": "generally"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q03-opt-2",
+            "optionOrder": 2,
+            "text": "together"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q03-opt-3",
+            "optionOrder": 3,
+            "text": "somehow"
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q03-opt-4",
+            "optionOrder": 4,
+            "text": "interestingly"
+          }
+        ],
+        "correctOptionId": "reading-rap-69611be5fee90ca9b207c69e-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-69611be5fee90ca9b207c69e-q04",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Advanced computer models suggest all of the following about Earth’s core EXCEPT:",
+      "rawDisplayText": "34. Advanced computer models suggest all of the following about Earth’s core EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-69611be5fee90ca9b207c69e-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Earth’s core has different layers."
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q04-opt-2",
+            "optionOrder": 2,
+            "text": "The inner part of Earth’s core rotates a little faster than other parts of Earth do."
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Wave behavior in Earth’s core shows directional differences."
+          },
+          {
+            "optionId": "reading-rap-69611be5fee90ca9b207c69e-q04-opt-4",
+            "optionOrder": 4,
+            "text": "The super-rotation of Earth’s core is caused by anisotropies."
+          }
+        ],
+        "correctOptionId": "reading-rap-69611be5fee90ca9b207c69e-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-69611be5fee90ca9b207c69e-q05",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 3 that describes a specific criticism of computer models of the inner core. Select the sentence to make your choice.",
+      "rawDisplayText": "35. Identify the sentence in paragraph 3 that describes a specific criticism of computer models of the inner core. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-69611be5fee90ca9b207c69e-passage-01",
+        "targetParagraphId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03",
+        "correctSentenceId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p03-s02"
+      }
+    }
+  ]
+}

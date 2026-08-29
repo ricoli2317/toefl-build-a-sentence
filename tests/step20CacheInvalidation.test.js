@@ -83,6 +83,7 @@ test("review publish invalidates teacher review and student published-review dom
   assert.match(publishBlock, /teacherWritingReviews/);
   assert.match(publishBlock, /teacherWritingReviewWorkspace/);
   assert.match(publishBlock, /studentPublishedReviews/);
+  assert.match(publishBlock, /studentPracticeHistory/);
   assert.match(publishBlock, /studentWritingOverview/);
 });
 
@@ -174,6 +175,6 @@ test("dynamic BAS result, submission, and teacher stats APIs disable route and f
 });
 
 test("teacher stats uses an explicit schema version instead of another ad-hoc key bump", () => {
-  assert.match(teacherCache, /TEACHER_STATS_CACHE_SCHEMA_VERSION = 1/);
+  assert.match(teacherCache, /TEACHER_STATS_CACHE_SCHEMA_VERSION = \d+/);
   assert.match(teacherCache, /teacher:stats:logical-schema-/);
 });

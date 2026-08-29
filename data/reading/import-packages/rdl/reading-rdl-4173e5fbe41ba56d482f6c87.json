@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-4173e5fbe41ba56d482f6c87",
+    "module": "rdl",
+    "title": "Revitalizing Campus Life at Ridgeview University",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10A",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "4173e5fbe41ba56d482f6c87caac842e4ffe6fc103e0cef7f1e3fd1653933f87",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10a-m1-rdl-05",
+      "logicalItemId": "reading-rdl-4173e5fbe41ba56d482f6c87",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10A",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 25,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        },
+        {
+          "questionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-014",
+      "title": "Revitalizing Campus Life at Ridgeview University",
+      "source": "material-index.json#RDL-014",
+      "sourceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-014/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-014/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01",
+      "logicalItemId": "reading-rdl-4173e5fbe41ba56d482f6c87",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "According to the article, what is one goal of the new housing program?",
+      "rawDisplayText": "23. According to the article, what is one goal of the new housing program?",
+      "payload": {
+        "materialId": "RDL-014",
+        "options": [
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To convince international students to live on campus"
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To create a feeling of connection among students"
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To support the local residential construction economy"
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To reduce the cost of dormitory maintenance"
+          }
+        ],
+        "correctOptionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02",
+      "logicalItemId": "reading-rdl-4173e5fbe41ba56d482f6c87",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Which initiative involves collaboration with outside organizations?",
+      "rawDisplayText": "24. Which initiative involves collaboration with outside organizations?",
+      "payload": {
+        "materialId": "RDL-014",
+        "options": [
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Renovated residential buildings"
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Expanded employment opportunities"
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Improved tutoring services"
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Enhanced volunteering programs"
+          }
+        ],
+        "correctOptionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03",
+      "logicalItemId": "reading-rdl-4173e5fbe41ba56d482f6c87",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "According to the article, what impact are the initiatives expected to have on students?",
+      "rawDisplayText": "25. According to the article, what impact are the initiatives expected to have on students?",
+      "payload": {
+        "materialId": "RDL-014",
+        "options": [
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03-opt-1",
+            "optionOrder": 1,
+            "text": "They will not be affected."
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03-opt-2",
+            "optionOrder": 2,
+            "text": "They will provide less feedback."
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Their satisfaction will increase."
+          },
+          {
+            "optionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03-opt-4",
+            "optionOrder": 4,
+            "text": "They will get priority course registration."
+          }
+        ],
+        "correctOptionId": "reading-rdl-4173e5fbe41ba56d482f6c87-q03-opt-3"
+      }
+    }
+  ]
+}

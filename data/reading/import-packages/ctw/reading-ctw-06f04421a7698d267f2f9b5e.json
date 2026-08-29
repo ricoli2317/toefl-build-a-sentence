@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-06f04421a7698d267f2f9b5e",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-24",
+    "firstSeenSourceLabel": "5.24A",
+    "firstSeenSourceOrder": 18,
+    "dedupFingerprint": "06f04421a7698d267f2f9b5ec864bbbe9d4c8227f9dea45ddef172141e02069b",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-24a-m2-ctw-18",
+      "logicalItemId": "reading-ctw-06f04421a7698d267f2f9b5e",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24A",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 18,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-06f04421a7698d267f2f9b5e-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-06f04421a7698d267f2f9b5e-q01",
+      "logicalItemId": "reading-ctw-06f04421a7698d267f2f9b5e",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "In visual arts, the interplay between color and pigment is fundamental in shaping artistic expression. Pigments, the materials that give color to paint, are der_ _ _ _ from var_ _ _ _ sources, incl_ _ _ _ _ minerals, pla_ _ _, and synt_ _ _ _ _ compounds. Art_ _ _ _ selected mate_ _ _ _ _ based o_ their abi_ _ _ _ to con_ _ _ _ underlying layers (opacity) and resist fading over time. The transformation of pigments into vibrant colors involves the complex interaction of light with the pigment’s molecular structure. This interaction determines the color’s intensity and luminosity.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "In visual arts, the interplay between color and pigment is fundamental in shaping artistic expression. Pigments, the materials that give color to paint, are der_ _ _ _ from var_ _ _ _ sources, incl_ _ _ _ _ minerals, pla_ _ _, and synt_ _ _ _ _ compounds. Art_ _ _ _ selected mate_ _ _ _ _ based o_ their abi_ _ _ _ to con_ _ _ _ underlying layers (opacity) and resist fading over time. The transformation of pigments into vibrant colors involves the complex interaction of light with the pigment’s molecular structure. This interaction determines the color’s intensity and luminosity.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "In visual arts, the interplay between color and pigment is fundamental in shaping artistic expression. Pigments, the materials that give color to paint, are "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " from "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " sources, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " minerals, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ", and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " compounds. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " selected "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " based "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " their "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " underlying layers (opacity) and resist fading over time. The transformation of pigments into vibrant colors involves the complex interaction of light with the pigment’s molecular structure. This interaction determines the color’s intensity and luminosity."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "derived",
+            "prefix": "der",
+            "displayText": "der_ _ _ _",
+            "missingText": "ived",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "various",
+            "prefix": "var",
+            "displayText": "var_ _ _ _",
+            "missingText": "ious",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "including",
+            "prefix": "incl",
+            "displayText": "incl_ _ _ _ _",
+            "missingText": "uding",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "plants",
+            "prefix": "pla",
+            "displayText": "pla_ _ _",
+            "missingText": "nts",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "synthetic",
+            "prefix": "synt",
+            "displayText": "synt_ _ _ _ _",
+            "missingText": "hetic",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "Artists",
+            "prefix": "Art",
+            "displayText": "Art_ _ _ _",
+            "missingText": "ists",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "materials",
+            "prefix": "mate",
+            "displayText": "mate_ _ _ _ _",
+            "missingText": "rials",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "on",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "ability",
+            "prefix": "abi",
+            "displayText": "abi_ _ _ _",
+            "missingText": "lity",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-06f04421a7698d267f2f9b5e-q01-p01",
+            "answer": "conceal",
+            "prefix": "con",
+            "displayText": "con_ _ _ _",
+            "missingText": "ceal",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1232 @@
+{
+  "schemaVersion": 1,
+  "rawOccurrenceCounts": {
+    "ctw": 140,
+    "rdl": 132,
+    "rap": 122
+  },
+  "logicalItemCounts": {
+    "ctw": 97,
+    "rdl": 108,
+    "rap": 97
+  },
+  "exactDuplicateGroups": [
+    {
+      "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3A",
+        "6.7B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-189d72820c22a80c73ad25fe",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3B",
+        "5.6A",
+        "5.12",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2cc38dbe1f91461daa045881",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-3e31a0eb787bfe6b1e950548",
+      "module": "rdl",
+      "title": "Discover Larkhaven, where lecture halls open to cobblestone courtyards abuzz with debate and steaming coffee.",
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "module": "rdl",
+      "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.5A",
+        "5.5B",
+        "5.18B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-521e98e18884ed6f75cbb22c",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.5A",
+        "5.5B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-52cf08e9825eabdbeb06b412",
+      "module": "rdl",
+      "title": "Fall Midterm Schedule",
+      "occurrences": [
+        "5.5A",
+        "5.5B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ee5ee566c93478bba85e5d67",
+      "module": "rdl",
+      "title": "Greetings from an Eliot fan",
+      "occurrences": [
+        "5.5A",
+        "5.5B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "module": "rap",
+      "title": "Floating Wind Turbines",
+      "occurrences": [
+        "5.5A",
+        "5.5B",
+        "5.23"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "module": "rap",
+      "title": "A Unique Advantage of Spicy Cuisine",
+      "occurrences": [
+        "5.5A",
+        "5.5B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "module": "rap",
+      "title": "Gravitational Physics and Its Practical Applications",
+      "occurrences": [
+        "5.5A",
+        "5.18A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-acf2beb7a85723ad2886d935",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.6A",
+        "6.7C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "module": "rap",
+      "title": "Radio Astronomy: A New Perspective",
+      "occurrences": [
+        "5.6A",
+        "5.6B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "module": "rap",
+      "title": "Unveiling Earth’s Core",
+      "occurrences": [
+        "5.6B",
+        "5.18A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-0cace9e500cd44402d821f51",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.10A",
+        "6.30B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-59738805c751267138c354eb",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.10A",
+        "5.28"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "module": "rap",
+      "title": "Polarized Light’s Surprising Applications",
+      "occurrences": [
+        "5.10A",
+        "5.19"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2ab97b6850f8e0c41aa70028",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.10B",
+        "5.24A",
+        "6.16A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "module": "rap",
+      "title": "Sociocybernetics: Understanding Complex Social Systems",
+      "occurrences": [
+        "5.10B",
+        "5.11A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11A",
+        "6.9"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-0d183f45c45258e1f082cc43",
+      "module": "rdl",
+      "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+      "occurrences": [
+        "5.11A",
+        "5.13"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-4e7f36defd8417687e29e829",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11A",
+        "6.1C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5a283c718affa85202b1e0b8",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11B",
+        "6.1C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-78ba838a1ace8abb5f8bdeb2",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11B",
+        "6.1C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-fdeb6000ce9ff3558cc559b5",
+      "module": "rap",
+      "title": "Free Will and Determinism",
+      "occurrences": [
+        "5.11B",
+        "5.20B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-e7ce2874e8c366c253f0bed0",
+      "module": "rap",
+      "title": "Urban Resilience",
+      "occurrences": [
+        "5.12",
+        "5.20A",
+        "5.31"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-fdcbd211e823a548b33c1fee",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.17",
+        "5.18A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-eedb6ddc51543962fd16cb93",
+      "module": "rdl",
+      "title": "David White",
+      "occurrences": [
+        "5.18B",
+        "5.19"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c754230429405fc06cf1629e",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.19",
+        "6.3",
+        "6.14"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-f4d8a1d7c701f5c647bd40cb",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.20A",
+        "6.23"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-b68fc93277cc216b6eb4b369",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.20B",
+        "5.24B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "module": "rap",
+      "title": "Theater Lighting Innovations",
+      "occurrences": [
+        "5.20B",
+        "5.24B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "occurrences": [
+        "5.23",
+        "6.14",
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.24A",
+        "5.24B",
+        "6.15",
+        "6.16A",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-38157809495f0f9430021f61",
+      "module": "rdl",
+      "title": "Welcome, Study-Abroad Students!",
+      "occurrences": [
+        "5.24A",
+        "6.16A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-037189a85dc9e05fe6daf88b",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "occurrences": [
+        "5.24A",
+        "6.16A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "module": "rap",
+      "title": "Value Theory",
+      "occurrences": [
+        "5.24A",
+        "5.24B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-be034d62663a3ca6d9a1e2ef",
+      "module": "rdl",
+      "title": "North Bay",
+      "occurrences": [
+        "5.24B",
+        "6.15",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-502044d303afa26e7d169993",
+      "module": "rdl",
+      "title": "Time Capsule Unearthed During Dorm Renovation",
+      "occurrences": [
+        "5.24B",
+        "6.15",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f198eacd96a87c8361d25e01",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "occurrences": [
+        "5.28",
+        "6.10"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-6c86e758a075394842fbe92a",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.31",
+        "6.14"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "module": "rap",
+      "title": "The Mystery of Dark Galaxies",
+      "occurrences": [
+        "5.31",
+        "6.7A",
+        "6.7B",
+        "6.29"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-e3dacd3f358e1ab8d1a2f76d",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.1A",
+        "6.1B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-634cdcba16cac603d9436627",
+      "module": "rap",
+      "title": "The Mysteries of Opal",
+      "occurrences": [
+        "6.1A",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "module": "rap",
+      "title": "Circadian Rhythm Disruption",
+      "occurrences": [
+        "6.1B",
+        "6.29"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "module": "rap",
+      "title": "Evolutionary Trends in Graphic Design",
+      "occurrences": [
+        "6.1C",
+        "6.17"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-25e10401a0a3eeb038f2636e",
+      "module": "rap",
+      "title": "Microseisms: The Earth's Subtle Vibrations",
+      "occurrences": [
+        "6.1C",
+        "6.17"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-84e32c9db06e86a3d21877d0",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.2",
+        "6.23"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-7e08b910550bb287d6aed1f6",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.7A",
+        "6.7B",
+        "6.29",
+        "6.30A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-eda179be352d1ea66707817f",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.7A",
+        "6.7B",
+        "6.29"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-bd7b74dc185dffd78d80469b",
+      "module": "rdl",
+      "title": "Summit View University Arts Week flash mob",
+      "occurrences": [
+        "6.7A",
+        "6.7B",
+        "6.29"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "module": "rap",
+      "title": "Growth Mindset in Education",
+      "occurrences": [
+        "6.7A",
+        "6.7B",
+        "6.29"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-4b27639d9b03fa08d60a4567",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.7A",
+        "6.22"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-ea4eba6be59eb0d54561689d",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "occurrences": [
+        "6.7C",
+        "6.23",
+        "6.30B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5c4606d16cf712944122c4b1",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "occurrences": [
+        "6.9",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-c0a09dd368b968fd01c859ed",
+      "module": "rap",
+      "title": "Data Visualization in Action",
+      "occurrences": [
+        "6.9",
+        "6.30B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5c8a673a20671fe9840f6390",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.15",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-63f40499a4cb42080d150c60",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.15",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-7376725d12c740d20c276738",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.17",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c243c35727fc3b252fc781bb",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5742f88ad3912409154da83d",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-29ecc94b793b79bd2331c0a8",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "occurrences": [
+        "6.21A",
+        "6.22"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-dc21043fcf9a1dbbf0638d8e",
+      "module": "rdl",
+      "title": "Bella Italia campus dining notice",
+      "occurrences": [
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-5477133100b2982be0a02471",
+      "module": "rdl",
+      "title": "Kintsugi",
+      "occurrences": [
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "module": "rap",
+      "title": "The Benefits of Music Education",
+      "occurrences": [
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5964b4b1bd76214ba5c4d908",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.24",
+        "6.29"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-d582ad24a18454b33618a743",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "6.30A",
+        "6.30B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-08f66e6c2b3e25bd34fa0651",
+      "module": "rap",
+      "title": "Optical Astronomy's Adaptive Revolution",
+      "occurrences": [
+        "6.30A",
+        "6.30B"
+      ]
+    }
+  ],
+  "possibleDuplicates": [
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.3A",
+        "6.30B"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.3A",
+        "6.10",
+        "6.22"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.3A",
+        "6.1B"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.3B",
+        "6.1A",
+        "6.6A"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.3B",
+        "6.2",
+        "6.6A"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.5B",
+        "5.31"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.6A",
+        "5.19"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.6A",
+        "5.6B",
+        "5.24A"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.6A",
+        "5.19"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.10A",
+        "6.17"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.10A",
+        "5.11A"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.10B",
+        "5.13"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.10B",
+        "5.28"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.10B",
+        "6.10"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.11A",
+        "6.9",
+        "6.21A",
+        "6.21B",
+        "6.22",
+        "6.23"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.11A",
+        "5.13",
+        "6.9"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.11B",
+        "6.1C"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.11B",
+        "6.1C"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.11B",
+        "5.20B",
+        "6.1C"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.11B",
+        "6.1C",
+        "6.17"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.18A",
+        "6.7C",
+        "6.23",
+        "6.30B"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.18B",
+        "5.19"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.20A",
+        "6.9"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.20B",
+        "5.28",
+        "6.10"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.23",
+        "6.7C"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.23",
+        "5.24A",
+        "6.14",
+        "6.16A",
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "5.24A",
+        "6.3",
+        "6.24"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "6.1A",
+        "6.1B"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "6.3",
+        "6.17"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "6.3",
+        "6.16B"
+      ]
+    },
+    {
+      "module": "rdl",
+      "reason": "same canonical material, but the complete question group differs",
+      "sourceOccurrences": [
+        "6.7A",
+        "6.7B",
+        "6.29"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "6.9",
+        "6.30A"
+      ]
+    },
+    {
+      "module": "rap",
+      "reason": "same passage, but the complete question group differs",
+      "sourceOccurrences": [
+        "6.16A",
+        "6.16B"
+      ]
+    }
+  ],
+  "months": {
+    "2026-05": {
+      "sourceSetCount": 23,
+      "rawOccurrenceCounts": {
+        "ctw": 69,
+        "rdl": 66,
+        "rap": 59
+      },
+      "newLogicalItemCounts": {
+        "ctw": 59,
+        "rdl": 62,
+        "rap": 46
+      },
+      "mergedIntoEarlierLogicalItemCounts": {
+        "ctw": 0,
+        "rdl": 0,
+        "rap": 0
+      },
+      "duplicateOccurrenceWithinMonthCounts": {
+        "ctw": 10,
+        "rdl": 4,
+        "rap": 13
+      }
+    },
+    "2026-06": {
+      "sourceSetCount": 24,
+      "rawOccurrenceCounts": {
+        "ctw": 71,
+        "rdl": 66,
+        "rap": 63
+      },
+      "newLogicalItemCounts": {
+        "ctw": 38,
+        "rdl": 46,
+        "rap": 51
+      },
+      "mergedIntoEarlierLogicalItemCounts": {
+        "ctw": 18,
+        "rdl": 12,
+        "rap": 3
+      },
+      "duplicateOccurrenceWithinMonthCounts": {
+        "ctw": 15,
+        "rdl": 8,
+        "rap": 9
+      }
+    }
+  },
+  "crossMonthDuplicateGroups": [
+    {
+      "logicalItemId": "reading-ctw-edcc4e1d262b489dd8a62e42",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3A",
+        "6.7B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-189d72820c22a80c73ad25fe",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3B",
+        "5.6A",
+        "5.12",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2cc38dbe1f91461daa045881",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-3e31a0eb787bfe6b1e950548",
+      "module": "rdl",
+      "title": "Discover Larkhaven, where lecture halls open to cobblestone courtyards abuzz with debate and steaming coffee.",
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-d79c8015806a0ce47601b637",
+      "module": "rdl",
+      "title": "UNIVERSITY HEALTH AND WELLNESS CONFERENCE",
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-450a9b028af13cf3151f81c6",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.3B",
+        "6.6A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-acf2beb7a85723ad2886d935",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.6A",
+        "6.7C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-0cace9e500cd44402d821f51",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.10A",
+        "6.30B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-2ab97b6850f8e0c41aa70028",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.10B",
+        "5.24A",
+        "6.16A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11A",
+        "6.9"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-4e7f36defd8417687e29e829",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11A",
+        "6.1C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-5a283c718affa85202b1e0b8",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11B",
+        "6.1C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-78ba838a1ace8abb5f8bdeb2",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.11B",
+        "6.1C"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-c754230429405fc06cf1629e",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.19",
+        "6.3",
+        "6.14"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-f4d8a1d7c701f5c647bd40cb",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.20A",
+        "6.23"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-98e360bf3b87450aaef50862",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "occurrences": [
+        "5.23",
+        "6.14",
+        "6.21A",
+        "6.21B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.24A",
+        "5.24B",
+        "6.15",
+        "6.16A",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-38157809495f0f9430021f61",
+      "module": "rdl",
+      "title": "Welcome, Study-Abroad Students!",
+      "occurrences": [
+        "5.24A",
+        "6.16A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-037189a85dc9e05fe6daf88b",
+      "module": "rdl",
+      "title": "Attention Residents!",
+      "occurrences": [
+        "5.24A",
+        "6.16A"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-be034d62663a3ca6d9a1e2ef",
+      "module": "rdl",
+      "title": "North Bay",
+      "occurrences": [
+        "5.24B",
+        "6.15",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-502044d303afa26e7d169993",
+      "module": "rdl",
+      "title": "Time Capsule Unearthed During Dorm Renovation",
+      "occurrences": [
+        "5.24B",
+        "6.15",
+        "6.16B"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rdl-f198eacd96a87c8361d25e01",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "occurrences": [
+        "5.28",
+        "6.10"
+      ]
+    },
+    {
+      "logicalItemId": "reading-ctw-6c86e758a075394842fbe92a",
+      "module": "ctw",
+      "title": null,
+      "occurrences": [
+        "5.31",
+        "6.14"
+      ]
+    },
+    {
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "module": "rap",
+      "title": "The Mystery of Dark Galaxies",
+      "occurrences": [
+        "5.31",
+        "6.7A",
+        "6.7B",
+        "6.29"
+      ]
+    }
+  ]
+}

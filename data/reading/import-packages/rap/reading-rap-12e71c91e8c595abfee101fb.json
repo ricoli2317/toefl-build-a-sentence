@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+    "module": "rap",
+    "title": "Cooperative Education",
+    "firstSeenDate": "2026-06-24",
+    "firstSeenSourceLabel": "6.24",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "12e71c91e8c595abfee101fb3a0b133084b13dd5d0f8e242fb548f5cb596d3e7",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-24-m2-rap-19",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "sourceKind": "docx",
+      "sourceLabel": "6.24",
+      "occurrenceDate": "2026-06-24",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.24.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.24_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-12e71c91e8c595abfee101fb-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-12e71c91e8c595abfee101fb-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-12e71c91e8c595abfee101fb-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-12e71c91e8c595abfee101fb-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-12e71c91e8c595abfee101fb-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-12e71c91e8c595abfee101fb-passage-01",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "title": "Cooperative Education",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Cooperative education (\"co-ops\") emerged in the United States in the early twentieth century, when engineering programs seeking stronger industry alignment began alternating academic terms with structured, paid work experience. Although the model was first formalized at the University of Cincinnati, its rapid adoption across institutions specializing in scientific and technical fields reflected broader recognition that technical fields required applied practice alongside theoretical coursework. Today, co-ops are most prevalent at universities with deep employer partnerships. At Northeastern University and Drexel University, most students complete co-ops (multi-month paid placements) in fields ranging from engineering to computing to design. These programs often involve multiple sequenced work terms with increasing responsibility and are integrated into degree requirements rather than treated as optional internships.",
+          "rawText": "Cooperative education (\"co-ops\") emerged in the United States in the early twentieth century, when engineering programs seeking stronger industry alignment began alternating academic terms with structured, paid work experience. Although the model was first formalized at the University of Cincinnati, its rapid adoption across institutions specializing in scientific and technical fields reflected broader recognition that technical fields required applied practice alongside theoretical coursework. Today, co-ops are most prevalent at universities with deep employer partnerships. At Northeastern University and Drexel University, most students complete co-ops (multi-month paid placements) in fields ranging from engineering to computing to design. These programs often involve multiple sequenced work terms with increasing responsibility and are integrated into degree requirements rather than treated as optional internships.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Cooperative education (\"co-ops\") emerged in the United States in the early twentieth century, when engineering programs seeking stronger industry alignment began alternating academic terms with structured, paid work experience."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Although the model was first formalized at the University of Cincinnati, its rapid adoption across institutions specializing in scientific and technical fields reflected broader recognition that technical fields required applied practice alongside theoretical coursework."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Today, co-ops are most prevalent at universities with deep employer partnerships."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "At Northeastern University and Drexel University, most students complete co-ops (multi-month paid placements) in fields ranging from engineering to computing to design."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "These programs often involve multiple sequenced work terms with increasing responsibility and are integrated into degree requirements rather than treated as optional internships."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Proponents argue that co-ops cultivate professional maturity by requiring students to navigate real organizational structures, contribute to long-term projects, and build evidence-based portfolios before graduation. They also note that co-op graduates often report higher initial earnings and stronger job placement. Critics, however, contend that alternating semesters can disrupt academic continuity, extend time-to-degree, and disadvantage students who cannot relocate or afford breaks in campus employment. Despite these concerns, co-op education remains a defining form of work-integrated learning, especially in fields where applied expertise is essential.",
+          "rawText": "Proponents argue that co-ops cultivate professional maturity by requiring students to navigate real organizational structures, contribute to long-term projects, and build evidence-based portfolios before graduation. They also note that co-op graduates often report higher initial earnings and stronger job placement. Critics, however, contend that alternating semesters can disrupt academic continuity, extend time-to-degree, and disadvantage students who cannot relocate or afford breaks in campus employment. Despite these concerns, co-op education remains a defining form of work-integrated learning, especially in fields where applied expertise is essential.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Proponents argue that co-ops cultivate professional maturity by requiring students to navigate real organizational structures, contribute to long-term projects, and build evidence-based portfolios before graduation."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "They also note that co-op graduates often report higher initial earnings and stronger job placement."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Critics, however, contend that alternating semesters can disrupt academic continuity, extend time-to-degree, and disadvantage students who cannot relocate or afford breaks in campus employment."
+            },
+            {
+              "sentenceId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Despite these concerns, co-op education remains a defining form of work-integrated learning, especially in fields where applied expertise is essential."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-12e71c91e8c595abfee101fb-q01",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage mentions all of the following about cooperative education programs EXCEPT:",
+      "rawDisplayText": "11. The passage mentions all of the following about cooperative education programs EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-12e71c91e8c595abfee101fb-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q01-opt-1",
+            "optionOrder": 1,
+            "text": "They are based on the idea that practical experience is necessary in certain technical fields."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q01-opt-2",
+            "optionOrder": 2,
+            "text": "They are recommended for students who are experiencing difficulties in theoretical courses."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Engineering departments at universities were some of the first to adopt them."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q01-opt-4",
+            "optionOrder": 4,
+            "text": "They allow students to receive payment while learning."
+          }
+        ],
+        "correctOptionId": "reading-rap-12e71c91e8c595abfee101fb-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-12e71c91e8c595abfee101fb-q02",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest about institutions such as Northeastern University and Drexel University?",
+      "rawDisplayText": "12. What does the passage suggest about institutions such as Northeastern University and Drexel University?",
+      "payload": {
+        "passageId": "reading-rap-12e71c91e8c595abfee101fb-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They have worked closely with employers to establish comprehensive co-op programs."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They allow students who have completed multiple co-ops to graduate more quickly than they otherwise would."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They prefer to admit students who have already had extensive practical experience in their chosen fields."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They limit co-op placements to the top students in each field."
+          }
+        ],
+        "correctOptionId": "reading-rap-12e71c91e8c595abfee101fb-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-12e71c91e8c595abfee101fb-q03",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"cultivate\" in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word \"cultivate\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-12e71c91e8c595abfee101fb-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q03-opt-1",
+            "optionOrder": 1,
+            "text": "precede"
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q03-opt-2",
+            "optionOrder": 2,
+            "text": "highlight"
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q03-opt-3",
+            "optionOrder": 3,
+            "text": "demonstrate"
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q03-opt-4",
+            "optionOrder": 4,
+            "text": "promote"
+          }
+        ],
+        "correctOptionId": "reading-rap-12e71c91e8c595abfee101fb-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-12e71c91e8c595abfee101fb-q04",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is one potential drawback of co-ops?",
+      "rawDisplayText": "14. According to the passage, what is one potential drawback of co-ops?",
+      "payload": {
+        "passageId": "reading-rap-12e71c91e8c595abfee101fb-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Co-op students are less likely to graduate than students who do not participate in co-ops."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Co-op students perfect their practical skills at the expense of their theoretical knowledge."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q04-opt-3",
+            "optionOrder": 3,
+            "text": "Co-op students take longer to graduate than other students."
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Co-op students overextend themselves by working at both their co-op placements and their regular campus jobs."
+          }
+        ],
+        "correctOptionId": "reading-rap-12e71c91e8c595abfee101fb-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-12e71c91e8c595abfee101fb-q05",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which type of student is probably least likely to find cooperative education attractive?",
+      "rawDisplayText": "15. Which type of student is probably least likely to find cooperative education attractive?",
+      "payload": {
+        "passageId": "reading-rap-12e71c91e8c595abfee101fb-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q05-opt-1",
+            "optionOrder": 1,
+            "text": "A student who is most drawn to analyzing texts and doing academic research"
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q05-opt-2",
+            "optionOrder": 2,
+            "text": "A student who is pursuing a degree in computer science"
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q05-opt-3",
+            "optionOrder": 3,
+            "text": "A student who wants to have the best chance of finding a job after graduation"
+          },
+          {
+            "optionId": "reading-rap-12e71c91e8c595abfee101fb-q05-opt-4",
+            "optionOrder": 4,
+            "text": "A student who wants to network with professionals in her chosen field"
+          }
+        ],
+        "correctOptionId": "reading-rap-12e71c91e8c595abfee101fb-q05-opt-1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-98bf443f98f8c842cd7faaf0",
+    "module": "rdl",
+    "title": "Membership Application Form First Name: ____________________",
+    "firstSeenDate": "2026-05-18",
+    "firstSeenSourceLabel": "5.18A",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "98bf443f98f8c842cd7faaf00dc4feeac8b09a3e115dabdac91263163f3e8e6e",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-18a-m1-rdl-03",
+      "logicalItemId": "reading-rdl-98bf443f98f8c842cd7faaf0",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18A",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-033",
+      "title": "Membership Application Form First Name: ____________________",
+      "source": "material-index.json#RDL-033",
+      "sourceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-033/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-033/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01",
+      "logicalItemId": "reading-rdl-98bf443f98f8c842cd7faaf0",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Which membership type is offered at a reduced rate?",
+      "rawDisplayText": "21. Which membership type is offered at a reduced rate?",
+      "payload": {
+        "materialId": "RDL-033",
+        "options": [
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Family"
+          },
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Individual"
+          },
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Student"
+          },
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01-opt-4",
+            "optionOrder": 4,
+            "text": "None"
+          }
+        ],
+        "correctOptionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02",
+      "logicalItemId": "reading-rdl-98bf443f98f8c842cd7faaf0",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is indicated about membership?",
+      "rawDisplayText": "22. What is indicated about membership?",
+      "payload": {
+        "materialId": "RDL-033",
+        "options": [
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It includes an initial application fee."
+          },
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It is valid for one year."
+          },
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It is limited to residents of specific areas."
+          },
+          {
+            "optionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It provides lifetime benefits."
+          }
+        ],
+        "correctOptionId": "reading-rdl-98bf443f98f8c842cd7faaf0-q02-opt-2"
+      }
+    }
+  ]
+}

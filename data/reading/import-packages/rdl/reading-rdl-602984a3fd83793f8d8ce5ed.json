@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-602984a3fd83793f8d8ce5ed",
+    "module": "rdl",
+    "title": "Angela Kim (5:00 P.M.)",
+    "firstSeenDate": "2026-05-17",
+    "firstSeenSourceLabel": "5.17",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "602984a3fd83793f8d8ce5edf93fed10f5b2d046506e2f29c8a4311bdf3ac905",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-17-m1-rdl-10",
+      "logicalItemId": "reading-rdl-602984a3fd83793f8d8ce5ed",
+      "sourceKind": "docx",
+      "sourceLabel": "5.17",
+      "occurrenceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.17_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-032",
+      "title": "Angela Kim (5:00 P.M.)",
+      "source": "material-index.json#RDL-032",
+      "sourceDate": "2026-05-17",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-032/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-032/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01",
+      "logicalItemId": "reading-rdl-602984a3fd83793f8d8ce5ed",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Why does Angela recommend bringing a lot of water for the hike?",
+      "rawDisplayText": "28. Why does Angela recommend bringing a lot of water for the hike?",
+      "payload": {
+        "materialId": "RDL-032",
+        "options": [
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01-opt-1",
+            "optionOrder": 1,
+            "text": "The trail will eventually climb to an extremely high altitude."
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01-opt-2",
+            "optionOrder": 2,
+            "text": "The conditions along the trail will be exceptionally windy and dusty."
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01-opt-3",
+            "optionOrder": 3,
+            "text": "The water for sale along the trail is too expensive."
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01-opt-4",
+            "optionOrder": 4,
+            "text": "The temperature along the trail will start to climb after about nine a.m."
+          }
+        ],
+        "correctOptionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02",
+      "logicalItemId": "reading-rdl-602984a3fd83793f8d8ce5ed",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "At 5:30 P.M., what does Angela imply when she writes, “Let me check on that, Tom”?",
+      "rawDisplayText": "29. At 5:30 P.M., what does Angela imply when she writes, “Let me check on that, Tom”?",
+      "payload": {
+        "materialId": "RDL-032",
+        "options": [
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02-opt-1",
+            "optionOrder": 1,
+            "text": "She knows that the hiking trails in Green Valley are not protected."
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02-opt-2",
+            "optionOrder": 2,
+            "text": "She is concerned about the difficulty of the trail at Green Valley."
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02-opt-3",
+            "optionOrder": 3,
+            "text": "She is unsure whether a permit is required for hiking on the trail."
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02-opt-4",
+            "optionOrder": 4,
+            "text": "She knows that a permit is not required for parking."
+          }
+        ],
+        "correctOptionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03",
+      "logicalItemId": "reading-rdl-602984a3fd83793f8d8ce5ed",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "What does Milton offer to do?",
+      "rawDisplayText": "30. What does Milton offer to do?",
+      "payload": {
+        "materialId": "RDL-032",
+        "options": [
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Rent a car for the group"
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Use his car for carpooling"
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Bring extra water"
+          },
+          {
+            "optionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Use his home as a gathering place"
+          }
+        ],
+        "correctOptionId": "reading-rdl-602984a3fd83793f8d8ce5ed-q03-opt-2"
+      }
+    }
+  ]
+}

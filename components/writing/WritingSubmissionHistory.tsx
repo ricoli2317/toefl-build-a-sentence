@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock3, Eye, FileCheck2 } from "lucide-react";
+import { Eye, FileCheck2 } from "lucide-react";
 import Link from "next/link";
 import {
   STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX,
@@ -27,6 +27,10 @@ import type {
   SubmittedWritingAttemptSummary,
   WritingSubmissionQuestionSummary
 } from "@/lib/writingSubmissionHistory";
+import {
+  PracticeSubmissionHistoryHeader,
+  PracticeSubmissionHistoryList
+} from "@/components/shared/PracticeHistoryCards";
 import {
   measureStudentRequest,
   useStudentPagePerformance
@@ -76,41 +80,35 @@ export function WritingSubmissionHistory({
           { label: "提交记录" }
         ]}
       />
-      <header className="student-card">
-        <p className="text-sm font-bold text-student-primary">{config.label}</p>
-        <h2 className="mt-1 text-xl font-bold text-student-text">{questionDisplayName}</h2>
-        <p className="mt-2 text-sm text-student-muted">
-          共 {attempts.length} 次提交，最新提交显示在最上方。
-        </p>
-      </header>
-      {attempts.length === 0 ? (
-        <StudentEmptyState text="这道题还没有已提交的写作记录。" />
-      ) : (
-        <div className="grid gap-3">
-          {attempts.map((attempt, index) => {
+      <PracticeSubmissionHistoryHeader
+        description={`共 ${attempts.length} 次提交，最新提交显示在最上方。`}
+        eyebrow={config.label}
+        title={questionDisplayName}
+      />
+      <PracticeSubmissionHistoryList
+        emptyState={<StudentEmptyState text="这道题还没有已提交的写作记录。" />}
+        items={attempts.map((attempt, index) => {
             const submissionNumber = attempts.length - index;
             const submissionHref = `${config.submissionHref}/${encodeURIComponent(attempt.attempt_id)}`;
-            return (
-              <article className="student-card flex flex-wrap items-center justify-between gap-4" key={attempt.attempt_id}>
-                <div className="flex min-w-0 items-start gap-3">
-                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-student-primary-soft text-student-primary">
-                    <Clock3 aria-hidden="true" size={22} />
-                  </span>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-bold text-student-text">提交 {submissionNumber}</h2>
-                      <span className={attempt.has_published_review ? "student-chip" : "text-xs font-semibold text-student-muted"}>
-                        {attempt.has_published_review ? "批改已发布" : "等待批改"}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-sm text-student-muted">{formatDateTime(attempt.submitted_at)}</p>
-                    <p className="mt-1 text-sm font-semibold text-student-text">{attempt.word_count} words</p>
-                    <p className="mt-1 text-xs font-semibold text-student-primary">
-                      {formatWritingAttemptSummary(attempt.writing_mode, attempt.elapsed_seconds)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
+            return {
+              id: attempt.attempt_id,
+              title: `提交 ${submissionNumber}`,
+              submittedAt: formatDateTime(attempt.submitted_at),
+              badge: (
+                <span className={attempt.has_published_review ? "student-chip" : "text-xs font-semibold text-student-muted"}>
+                  {attempt.has_published_review ? "批改已发布" : "等待批改"}
+                </span>
+              ),
+              details: (
+                <>
+                  <p className="text-sm font-semibold text-student-text">{attempt.word_count} words</p>
+                  <p className="mt-1 text-xs font-semibold text-student-primary">
+                    {formatWritingAttemptSummary(attempt.writing_mode, attempt.elapsed_seconds)}
+                  </p>
+                </>
+              ),
+              actions: (
+                <>
                   <Link className="student-button-secondary" href={submissionHref}>
                     <Eye aria-hidden="true" size={17} />查看提交
                   </Link>
@@ -122,12 +120,11 @@ export function WritingSubmissionHistory({
                       <FileCheck2 aria-hidden="true" size={17} />查看批改
                     </Link>
                   ) : null}
-                </div>
-              </article>
-            );
+                </>
+              )
+            };
           })}
-        </div>
-      )}
+      />
     </div>
   );
 }

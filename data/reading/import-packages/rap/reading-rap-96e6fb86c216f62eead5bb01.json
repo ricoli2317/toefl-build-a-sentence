@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+    "module": "rap",
+    "title": "Polarized Light’s Surprising Applications",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "96e6fb86c216f62eead5bb01830c723d9cdeae1168404ee1f749ffaa86cfe061",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10a-m2-rap-19",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10A",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-19-m2-rap-19",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "sourceKind": "docx",
+      "sourceLabel": "5.19",
+      "occurrenceDate": "2026-05-19",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.19.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.19_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "title": "Polarized Light’s Surprising Applications",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Polarized light, characterized by waves vibrating in a single plane, offers applications beyond its familiar use in sunglasses, where it reduces glare from reflective surfaces like water and roads. In certain scientific fields, it is invaluable for revealing hidden properties of materials. For instance, when researchers study the internal structure of crystals, polarized light provides insights that normal light cannot, by interacting differently with the distinct optical paths within the crystal lattice.",
+          "rawText": "Polarized light, characterized by waves vibrating in a single plane, offers applications beyond its familiar use in sunglasses, where it reduces glare from reflective surfaces like water and roads. In certain scientific fields, it is invaluable for revealing hidden properties of materials. For instance, when researchers study the internal structure of crystals, polarized light provides insights that normal light cannot, by interacting differently with the distinct optical paths within the crystal lattice.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Polarized light, characterized by waves vibrating in a single plane, offers applications beyond its familiar use in sunglasses, where it reduces glare from reflective surfaces like water and roads."
+            },
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "In certain scientific fields, it is invaluable for revealing hidden properties of materials."
+            },
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "For instance, when researchers study the internal structure of crystals, polarized light provides insights that normal light cannot, by interacting differently with the distinct optical paths within the crystal lattice."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "In biology, polarized light uncovers structural details of cells and tissues, facilitating breakthroughs in understanding cellular organization and disease mechanisms. This is true for birefringent materials, which alter the polarization of light in ways that reveal microstructural patterns such as fiber alignment and intracellular organization, helping scientists assess variations in cell density and composition. Such techniques have been instrumental in identifying amyloid plaques in brain tissue, an indication of Alzheimer’s disease.",
+          "rawText": "■ In biology, polarized light uncovers structural details of cells and tissues, facilitating breakthroughs in understanding cellular organization and disease mechanisms. ■ This is true for birefringent materials, which alter the polarization of light in ways that reveal microstructural patterns such as fiber alignment and intracellular organization, helping scientists assess variations in cell density and composition. ■ Such techniques have been instrumental in identifying amyloid plaques in brain tissue, an indication of Alzheimer’s disease. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "In biology, polarized light uncovers structural details of cells and tissues, facilitating breakthroughs in understanding cellular organization and disease mechanisms."
+            },
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "This is true for birefringent materials, which alter the polarization of light in ways that reveal microstructural patterns such as fiber alignment and intracellular organization, helping scientists assess variations in cell density and composition."
+            },
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Such techniques have been instrumental in identifying amyloid plaques in brain tissue, an indication of Alzheimer’s disease."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "However, the use of polarized light is not universally beneficial. In aviation, pilots may avoid polarized lenses because they can obscure critical visual cues, such as instrument readings, that are essential for navigation. Thus, while polarized light can solve certain visibility issues by reducing glare, it may also interfere with necessary visual information, prompting careful consideration of context before implementation.",
+          "rawText": "However, the use of polarized light is not universally beneficial. In aviation, pilots may avoid polarized lenses because they can obscure critical visual cues, such as instrument readings, that are essential for navigation. Thus, while polarized light can solve certain visibility issues by reducing glare, it may also interfere with necessary visual information, prompting careful consideration of context before implementation.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "However, the use of polarized light is not universally beneficial."
+            },
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "In aviation, pilots may avoid polarized lenses because they can obscure critical visual cues, such as instrument readings, that are essential for navigation."
+            },
+            {
+              "sentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Thus, while polarized light can solve certain visibility issues by reducing glare, it may also interfere with necessary visual information, prompting careful consideration of context before implementation."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q01",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “invaluable” in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word “invaluable” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q01-opt-1",
+            "optionOrder": 1,
+            "text": "convenient"
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q01-opt-2",
+            "optionOrder": 2,
+            "text": "recommended"
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q01-opt-3",
+            "optionOrder": 3,
+            "text": "extremely useful"
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q01-opt-4",
+            "optionOrder": 4,
+            "text": "very expensive"
+          }
+        ],
+        "correctOptionId": "reading-rap-96e6fb86c216f62eead5bb01-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q02",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are mentioned as applications of polarized light EXCEPT:",
+      "rawDisplayText": "12. All of the following are mentioned as applications of polarized light EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It can reveal hidden properties in crystals."
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It is used in sunglasses to reduce glare."
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It can be used to alter cell structure."
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It aids in analyzing cellular composition."
+          }
+        ],
+        "correctOptionId": "reading-rap-96e6fb86c216f62eead5bb01-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q03",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about the use of polarized light in medicine?",
+      "rawDisplayText": "13. What can be inferred about the use of polarized light in medicine?",
+      "payload": {
+        "passageId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It can help doctors diagnose diseases."
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It is still in its early stages of implementation."
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It offers new ways to treat Alzheimer’s disease."
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Its use is somewhat controversial."
+          }
+        ],
+        "correctOptionId": "reading-rap-96e6fb86c216f62eead5bb01-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q04",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Polarized lenses are potentially dangerous in aviation because they can",
+      "rawDisplayText": "14. Polarized lenses are potentially dangerous in aviation because they can",
+      "payload": {
+        "passageId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q04-opt-1",
+            "optionOrder": 1,
+            "text": "give pilots a false sense of confidence"
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q04-opt-2",
+            "optionOrder": 2,
+            "text": "increase glare in the cockpit"
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q04-opt-3",
+            "optionOrder": 3,
+            "text": "become foggy at high altitudes"
+          },
+          {
+            "optionId": "reading-rap-96e6fb86c216f62eead5bb01-q04-opt-4",
+            "optionOrder": 4,
+            "text": "make it difficult to see aircraft instruments"
+          }
+        ],
+        "correctOptionId": "reading-rap-96e6fb86c216f62eead5bb01-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q05",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01",
+        "insertSentence": "Applications are not limited to the inorganic world.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-96e6fb86c216f62eead5bb01-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-96e6fb86c216f62eead5bb01-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02-s01"
+          },
+          {
+            "anchorId": "reading-rap-96e6fb86c216f62eead5bb01-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02-s02"
+          },
+          {
+            "anchorId": "reading-rap-96e6fb86c216f62eead5bb01-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p02-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-96e6fb86c216f62eead5bb01-q05-anchor-1"
+      }
+    }
+  ]
+}

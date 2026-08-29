@@ -1,0 +1,1790 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.23",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In academic research, reasoning is key to forming and testing hypotheses. Logical reasoning uses structured thinking to evaluate arguments and reach conclusions. Deductive reasoning starts with known facts and leads to certain outcomes, while inductive reasoning draws gen_ _ _ _ ideas fr_ _ specific observ_ _ _ _ _ _, though i_ involves so_ _ uncertainty. Us_ _ _ both met_ _ _ _ together stren_ _ _ _ _ _ the appr_ _ _ _ to invest_ _ _ _ _ _ _ and inquiry. This practice helps scholars build solid arguments and make informed decisions. By applying clear reasoning strategies, researchers can advance knowledge and contribute meaningful insights to their fields.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "In academic research, reasoning is key to forming and testing hypotheses. Logical reasoning uses structured thinking to evaluate arguments and reach conclusions. Deductive reasoning starts with known facts and leads to certain outcomes, while inductive reasoning draws gen_ _ _ _ ideas fr_ _ specific observ_ _ _ _ _ _, though i_ involves so_ _ uncertainty. Us_ _ _ both met_ _ _ _ together stren_ _ _ _ _ _ the appr_ _ _ _ to invest_ _ _ _ _ _ _ and inquiry. This practice helps scholars build solid arguments and make informed decisions. By applying clear reasoning strategies, researchers can advance knowledge and contribute meaningful insights to their fields.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In academic research, reasoning is key to forming and testing hypotheses. Logical reasoning uses structured thinking to evaluate arguments and reach conclusions. Deductive reasoning starts with known facts and leads to certain outcomes, while inductive reasoning draws "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ideas "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " specific "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", though "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " involves "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " uncertainty. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " both "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " together "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and inquiry. This practice helps scholars build solid arguments and make informed decisions. By applying clear reasoning strategies, researchers can advance knowledge and contribute meaningful insights to their fields."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "general",
+                "prefix": "gen",
+                "displayText": "gen_ _ _ _",
+                "missingText": "eral",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "from",
+                "prefix": "fr",
+                "displayText": "fr_ _",
+                "missingText": "om",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "observations",
+                "prefix": "observ",
+                "displayText": "observ_ _ _ _ _ _",
+                "missingText": "ations",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "it",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "some",
+                "prefix": "so",
+                "displayText": "so_ _",
+                "missingText": "me",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "Using",
+                "prefix": "Us",
+                "displayText": "Us_ _ _",
+                "missingText": "ing",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "methods",
+                "prefix": "met",
+                "displayText": "met_ _ _ _",
+                "missingText": "hods",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "strengthens",
+                "prefix": "stren",
+                "displayText": "stren_ _ _ _ _ _",
+                "missingText": "gthens",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "approach",
+                "prefix": "appr",
+                "displayText": "appr_ _ _ _",
+                "missingText": "oach",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q01-10-p01",
+                "answer": "investigation",
+                "prefix": "invest",
+                "displayText": "invest_ _ _ _ _ _ _",
+                "missingText": "igation",
+                "missingLength": 7
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Oceanography is the study of the physical, chemical, and biological aspects of the ocean. This fi_ _ _ encompasses t_ _ exploration o_ ocean curr_ _ _ _, marine ecosy_ _ _ _ _, and geolo_ _ _ _ _ seabed struc_ _ _ _ _. Oceanographers u_ _ satellites a_ _ other adva_ _ _ _ technology to monitor and analyze ocean conditions. By tracking sea surface temperatures, currents, salinity, and other features, researchers contribute to our understanding of climate change. Their work is vital for sustaining ocean health and preserving marine biodiversity.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Oceanography is the study of the physical, chemical, and biological aspects of the ocean. This fi_ _ _ encompasses t_ _ exploration o_ ocean curr_ _ _ _, marine ecosy_ _ _ _ _, and geolo_ _ _ _ _ seabed struc_ _ _ _ _. Oceanographers u_ _ satellites a_ _ other adva_ _ _ _ technology to monitor and analyze ocean conditions. By tracking sea surface temperatures, currents, salinity, and other features, researchers contribute to our understanding of climate change. Their work is vital for sustaining ocean health and preserving marine biodiversity.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Oceanography is the study of the physical, chemical, and biological aspects of the ocean. This "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " encompasses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " exploration "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ocean "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", marine "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " seabed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Oceanographers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " satellites "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " other "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " technology to monitor and analyze ocean conditions. By tracking sea surface temperatures, currents, salinity, and other features, researchers contribute to our understanding of climate change. Their work is vital for sustaining ocean health and preserving marine biodiversity."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "field",
+                "prefix": "fi",
+                "displayText": "fi_ _ _",
+                "missingText": "eld",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "currents",
+                "prefix": "curr",
+                "displayText": "curr_ _ _ _",
+                "missingText": "ents",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "ecosystems",
+                "prefix": "ecosy",
+                "displayText": "ecosy_ _ _ _ _",
+                "missingText": "stems",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "geological",
+                "prefix": "geolo",
+                "displayText": "geolo_ _ _ _ _",
+                "missingText": "gical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "structures",
+                "prefix": "struc",
+                "displayText": "struc_ _ _ _ _",
+                "missingText": "tures",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "use",
+                "prefix": "u",
+                "displayText": "u_ _",
+                "missingText": "se",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-23-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-23-m1-ctw-q11-20-p01",
+                "answer": "advanced",
+                "prefix": "adva",
+                "displayText": "adva_ _ _ _",
+                "missingText": "nced",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-rdl-03",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-020",
+          "title": "Instructions for Resetting Your Dorm Room Router",
+          "source": "material-index.json#RDL-020",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-020/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-020/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What should be done first to reset the router?",
+          "rawDisplayText": "21. What should be done first to reset the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Disconnect the router from electrical power"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Plug the router back in and push the start button"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Wait for the router to restart automatically"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Wait for 30 seconds for the router to cool"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the final step to resetting the router?",
+          "rawDisplayText": "22. What is the final step to resetting the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Wait for 30 seconds or until the light flashes"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Wait until the router has completely started again"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Unplug the router from the power source"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Plug the router into a different power source"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-rdl-05",
+      "module": "rdl",
+      "title": "Brison College Poetry Magazine",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-077",
+          "title": "Brison College Poetry Magazine",
+          "source": "material-index.json#RDL-077",
+          "sourceDate": "2026-06-23",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-077/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-077/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the Brison College Poetry Magazine?",
+          "rawDisplayText": "23. What can be inferred about the Brison College Poetry Magazine?",
+          "payload": {
+            "materialId": "RDL-077",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "It includes poems by faculty members."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "It is published each year in the fall and in the spring."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "It is offered free of charge to students and faculty."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "It reaches readers beyond the Brison College community."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q23-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Tania Jackson is mentioned as someone who",
+          "rawDisplayText": "24. Tania Jackson is mentioned as someone who",
+          "payload": {
+            "materialId": "RDL-077",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "has published poems in the magazine in previous years"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "responds to inquiries about submitting poems"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "supervises the selection process for the poetry magazine"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "determines the publication schedule for the poetry magazine"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q24-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-rdl-07",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-034",
+          "title": "The University Photography Club",
+          "source": "material-index.json#RDL-034",
+          "sourceDate": "2026-05-18",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-034/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-034/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "The notice suggests that",
+          "rawDisplayText": "25. The notice suggests that",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "people new to photography can benefit from the workshop"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "participants must pay an entrance fee"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "participants will leave campus to take pictures"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "students can learn fashion photography"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q25-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+          "rawDisplayText": "26. What would most likely be a part of the event on Sunday from 3:00 p.m. to 4:30 p.m.?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "An exhibition of participants' photography"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "A sale of used photo equipment"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "A lecture by a university visual arts professor"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "An opportunity to learn more photography techniques"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q26-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "Which of the following is NOT true about the photography workshop?",
+          "rawDisplayText": "27. Which of the following is NOT true about the photography workshop?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "There will be a photography competition."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Photo editing methods will be presented."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "Multiple photography genres will be featured."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "Participants must pay for lunch."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q27-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-rdl-10",
+      "module": "rdl",
+      "title": "The Rise of Sustainable Living in University Housing",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-086",
+          "title": "The Rise of Sustainable Living in University Housing",
+          "source": "material-index.json#RDL-086",
+          "sourceDate": "2026-06-23",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-086/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-086/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "All of the following are mentioned as features of the EcoHousing initiative EXCEPT",
+          "rawDisplayText": "28. All of the following are mentioned as features of the EcoHousing initiative EXCEPT",
+          "payload": {
+            "materialId": "RDL-086",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "solar power"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "composting bins"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "shared gardening spaces"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "the collection of rainwater"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "According to the article, a survey revealed that a large percentage of Greenleaf students are",
+          "rawDisplayText": "29. According to the article, a survey revealed that a large percentage of Greenleaf students are",
+          "payload": {
+            "materialId": "RDL-086",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "choosing to major in environmental science"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "demanding more spacious rooms in dormitories"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "seeking housing that is environmentally friendly"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "dissatisfied with the university's housing options"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Why does the article mention a discount?",
+          "rawDisplayText": "30. Why does the article mention a discount?",
+          "payload": {
+            "materialId": "RDL-086",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that housing fees have increased significantly"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "To highlight that EcoHousing costs more than traditional dorms"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "To encourage students to attend the recycling workshops"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "To feature an incentive that the university offers to students"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q30-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m1-rap-13",
+      "module": "rap",
+      "title": "The Great Smog of London",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-23-m1-rap-p01",
+          "title": "The Great Smog of London",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-23-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The Great Smog of London in 1952 was a pivotal event in environmental history. For five days in December, a thick layer of smog blanketed the city, caused by cold weather, windless conditions, and pollutants. The primary sources were coal-burning fires for heating homes and factories, releasing sulfur dioxide and other toxic chemicals.",
+              "rawText": "The Great Smog of London in 1952 was a pivotal event in environmental history. For five days in December, a thick layer of smog blanketed the city, caused by cold weather, windless conditions, and pollutants. The primary sources were coal-burning fires for heating homes and factories, releasing sulfur dioxide and other toxic chemicals.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The Great Smog of London in 1952 was a pivotal event in environmental history."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "For five days in December, a thick layer of smog blanketed the city, caused by cold weather, windless conditions, and pollutants."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "The primary sources were coal-burning fires for heating homes and factories, releasing sulfur dioxide and other toxic chemicals."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-23-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "As the smog settled, it became a health crisis. Visibility was reduced to a few meters, and transportation was disrupted. Many people abandoned their cars, and the ambulance service was severely impacted. Thousands developed respiratory problems, and the death rate surged. The Great Smog caused up to 12,000 premature deaths and countless illnesses. Hospitals were overwhelmed with patients, and morgues quickly reached capacity.",
+              "rawText": "As the smog settled, it became a health crisis. Visibility was reduced to a few meters, and transportation was disrupted. Many people abandoned their cars, and the ambulance service was severely impacted. Thousands developed respiratory problems, and the death rate surged. The Great Smog caused up to 12,000 premature deaths and countless illnesses. Hospitals were overwhelmed with patients, and morgues quickly reached capacity.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "As the smog settled, it became a health crisis."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Visibility was reduced to a few meters, and transportation was disrupted."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Many people abandoned their cars, and the ambulance service was severely impacted."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Thousands developed respiratory problems, and the death rate surged."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "The Great Smog caused up to 12,000 premature deaths and countless illnesses."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "Hospitals were overwhelmed with patients, and morgues quickly reached capacity."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-23-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "In response, the British government took action. New regulations aimed at reducing air pollution were established. The most significant was the Clean Air Act of 1956, which restricted coal burning in urban areas and promoted cleaner energy sources.",
+              "rawText": "In response, the British government took action. New regulations aimed at reducing air pollution were established. The most significant was the Clean Air Act of 1956, which restricted coal burning in urban areas and promoted cleaner energy sources. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "In response, the British government took action."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "New regulations aimed at reducing air pollution were established."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "The most significant was the Clean Air Act of 1956, which restricted coal burning in urban areas and promoted cleaner energy sources."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-23-m1-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Despite progress, air pollution remains a global challenge. Many cities still struggle with poor air quality due to industrial activities, vehicle emissions, and other sources. The Great Smog of London serves as a stark reminder of the need to address environmental issues to protect public health.",
+              "rawText": "Despite progress, air pollution remains a global challenge. ■ Many cities still struggle with poor air quality due to industrial activities, vehicle emissions, and other sources. ■ The Great Smog of London serves as a stark reminder of the need to address environmental issues to protect public health. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Despite progress, air pollution remains a global challenge."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Many cities still struggle with poor air quality due to industrial activities, vehicle emissions, and other sources."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m1-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "The Great Smog of London serves as a stark reminder of the need to address environmental issues to protect public health."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about the 1952 Great Smog of London?",
+          "rawDisplayText": "31. What can be inferred about the 1952 Great Smog of London?",
+          "payload": {
+            "passageId": "reading-2026-06-23-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "It affected several other European cities."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "It resulted from multiple factors that occurred simultaneously."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "It disrupted the normal activities of factories for five days."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "It made residents switch to coal to heat their homes."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"premature\" in the passage is closest in meaning to",
+          "rawDisplayText": "32. The word \"premature\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-23-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "early"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "recorded"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "preventable"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "likely"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q32-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why was the Great Smog of London considered a pivotal event?",
+          "rawDisplayText": "33. Why was the Great Smog of London considered a pivotal event?",
+          "payload": {
+            "passageId": "reading-2026-06-23-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "It lasted longer than usual."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "It occurred at an unlikely time of the year."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "It led to significant environmental regulations."
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "It caused the immediate closure of all factories."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author bring up the impact on the ambulance service?",
+          "rawDisplayText": "34. Why does the author bring up the impact on the ambulance service?",
+          "payload": {
+            "passageId": "reading-2026-06-23-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "To highlight one of the results of low visibility"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "To explain the main cause of the surging death rate"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "To suggest a reason why hospitals were overwhelmed"
+              },
+              {
+                "optionId": "reading-2026-06-23-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "To indicate that authorities closed London roads for travel"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-23-m1-rap-p01",
+            "insertSentence": "Local authorities created \"smoke control areas\" where only smokeless fuels could be burned.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-23-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-23-m1-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-23-m1-rap-p01-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-23-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-23-m1-rap-p01-p04",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-23-m1-rap-p01-p04-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-23-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-23-m1-rap-p01-p04",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-23-m1-rap-p01-p04-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-23-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-23-m1-rap-p01-p04",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-23-m1-rap-p01-p04-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-23-m1-q35-anchor-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Ants display highly organized social behavior, characterized by a structured division of labor and cooperative interaction. Worker ants, which are sterile females, perform specialized tasks such as foraging, brood care, nest maintenance, and defense. These ro_ _ _ often va_ _ based o_ age o_ physical tra_ _ _, enhancing col_ _ _ efficiency. Commun_ _ _ _ _ _ _ occurs prim_ _ _ _ _ through chem_ _ _ _ signals cal_ _ _ pheromones, enabling coordination across large groups. The complexity of ant societies offers insight into how evolutionary pressures can produce adaptive social systems.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Ants display highly organized social behavior, characterized by a structured division of labor and cooperative interaction. Worker ants, which are sterile females, perform specialized tasks such as foraging, brood care, nest maintenance, and defense. These ro_ _ _ often va_ _ based o_ age o_ physical tra_ _ _, enhancing col_ _ _ efficiency. Commun_ _ _ _ _ _ _ occurs prim_ _ _ _ _ through chem_ _ _ _ signals cal_ _ _ pheromones, enabling coordination across large groups. The complexity of ant societies offers insight into how evolutionary pressures can produce adaptive social systems.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Ants display highly organized social behavior, characterized by a structured division of labor and cooperative interaction. Worker ants, which are sterile females, perform specialized tasks such as foraging, brood care, nest maintenance, and defense. These "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " often "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " based "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " age "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " physical "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", enhancing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " efficiency. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " occurs "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " through "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " signals "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " pheromones, enabling coordination across large groups. The complexity of ant societies offers insight into how evolutionary pressures can produce adaptive social systems."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "roles",
+                "prefix": "ro",
+                "displayText": "ro_ _ _",
+                "missingText": "les",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "vary",
+                "prefix": "va",
+                "displayText": "va_ _",
+                "missingText": "ry",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "on",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "or",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "r",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "traits",
+                "prefix": "tra",
+                "displayText": "tra_ _ _",
+                "missingText": "its",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "colony",
+                "prefix": "col",
+                "displayText": "col_ _ _",
+                "missingText": "ony",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "Communication",
+                "prefix": "Commun",
+                "displayText": "Commun_ _ _ _ _ _ _",
+                "missingText": "ication",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "primarily",
+                "prefix": "prim",
+                "displayText": "prim_ _ _ _ _",
+                "missingText": "arily",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "chemical",
+                "prefix": "chem",
+                "displayText": "chem_ _ _ _",
+                "missingText": "ical",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-23-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-23-m2-ctw-q01-10-p01",
+                "answer": "called",
+                "prefix": "cal",
+                "displayText": "cal_ _ _",
+                "missingText": "led",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-23-m2-rap-19",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.23",
+        "occurrenceDate": "2026-06-23",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-23-m2-rap-p01",
+          "title": "Social Networks and Influence",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-23-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Computational sociology studies how social networks—like friendships, professional connections, or online communities—affect how people think and act. Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior. If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views. These influences are especially strong when the conversations are emotionally charged or align with the person's values.",
+              "rawText": "Computational sociology studies how social networks—like friendships, professional connections, or online communities—affect how people think and act. Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior. If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views. These influences are especially strong when the conversations are emotionally charged or align with the person's values. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Computational sociology studies how social networks—like friendships, professional connections, or online communities—affect how people think and act."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "These influences are especially strong when the conversations are emotionally charged or align with the person's values."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-23-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Interestingly, it is not always the most famous or powerful people who have the biggest impact. Everyday conversations—like repeated exchanges between coworkers—can be more influential than a single message from a celebrity or expert. Researchers use computational models to analyze how messages spread. An accurate model can predict which types of messages are likely to spread widely.",
+              "rawText": "Interestingly, it is not always the most famous or powerful people who have the biggest impact. ■ Everyday conversations—like repeated exchanges between coworkers—can be more influential than a single message from a celebrity or expert. Researchers use computational models to analyze how messages spread. ■ An accurate model can predict which types of messages are likely to spread widely. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Interestingly, it is not always the most famous or powerful people who have the biggest impact."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Everyday conversations—like repeated exchanges between coworkers—can be more influential than a single message from a celebrity or expert."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Researchers use computational models to analyze how messages spread."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "An accurate model can predict which types of messages are likely to spread widely."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-23-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Still, predicting human behavior is incredibly complex. People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally. For example, a message that spreads quickly in one country might fall flat in another due to different cultural values. The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior.",
+              "rawText": "Still, predicting human behavior is incredibly complex. People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally. For example, a message that spreads quickly in one country might fall flat in another due to different cultural values. The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Still, predicting human behavior is incredibly complex."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "For example, a message that spreads quickly in one country might fall flat in another due to different cultural values."
+                },
+                {
+                  "sentenceId": "reading-2026-06-23-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-23-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 1 that illustrates how social network dynamics can affect personal beliefs. Select the sentence to make your choice.",
+          "rawDisplayText": "11. Identify the sentence in paragraph 1 that illustrates how social network dynamics can affect personal beliefs. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-23-m2-rap-p01",
+            "targetParagraphId": "reading-2026-06-23-m2-rap-p01-p01",
+            "correctSentenceId": "reading-2026-06-23-m2-rap-p01-p01-s03"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, computational sociologists study",
+          "rawDisplayText": "12. According to the passage, computational sociologists study",
+          "payload": {
+            "passageId": "reading-2026-06-23-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "how having shared opinions strengthens a friendship"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "why emotionally charged conversations are ineffective at changing opinions"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "why it is important to develop complex diagrams of network connections"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "how human behavior is affected by frequent interactions"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"incredibly\" in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word \"incredibly\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-23-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "somewhat"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "extremely"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "generally"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "often"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what makes it difficult to model human behavior?",
+          "rawDisplayText": "14. According to the passage, what makes it difficult to model human behavior?",
+          "payload": {
+            "passageId": "reading-2026-06-23-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-23-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "The interaction of various factors that play a role in human behavior"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "The rapid spread of messages from one population to another"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "The frequent movement of humans among countries with different cultural values"
+              },
+              {
+                "optionId": "reading-2026-06-23-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "The lack of cooperation among researchers from different cultural backgrounds"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-23-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-23-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-23-m2-rap-p01",
+            "insertSentence": "In fact, influence often emerges from the bottom up, rather than being imposed from the top down.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-23-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-23-m2-rap-p01-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-23-m2-rap-p01-p01-s04"
+              },
+              {
+                "anchorId": "reading-2026-06-23-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-23-m2-rap-p01-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-23-m2-rap-p01-p02-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-23-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-23-m2-rap-p01-p02",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-23-m2-rap-p01-p02-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-23-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-23-m2-rap-p01-p02",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-23-m2-rap-p01-p02-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-23-m2-q15-anchor-2"
+          }
+        }
+      ]
+    }
+  ]
+}

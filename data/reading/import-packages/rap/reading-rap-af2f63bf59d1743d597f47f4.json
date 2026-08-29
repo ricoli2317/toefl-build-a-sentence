@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+    "module": "rap",
+    "title": "Value Theory",
+    "firstSeenDate": "2026-05-24",
+    "firstSeenSourceLabel": "5.24A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "af2f63bf59d1743d597f47f4f3b752e908447f7e7102ba2ddbd304d575e84f8e",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-24a-m1-rap-13",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24A",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-24b-m1-rap-08",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24B",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "title": "Value Theory",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively. Central questions include: What makes something good? Are values objective features of the world or subjective preferences? A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end.",
+          "rawText": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively. Central questions include: What makes something good? Are values objective features of the world or subjective preferences? A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively."
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Central questions include: What makes something good?"
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Are values objective features of the world or subjective preferences?"
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "One influential theory within this domain is utilitarianism, which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility. This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics. However, critics argue that utilitarianism’s aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs. For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity.",
+          "rawText": "One influential theory within this domain is utilitarianism, which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility. This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics. However, critics argue that utilitarianism’s aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs. For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "One influential theory within this domain is utilitarianism, which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility."
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics."
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "However, critics argue that utilitarianism’s aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs."
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important. This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric.",
+          "rawText": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important. This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important."
+            },
+            {
+              "sentenceId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q01",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, value theory is concerned with all of the following EXCEPT:",
+      "rawDisplayText": "31. According to the passage, value theory is concerned with all of the following EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q01-opt-1",
+            "optionOrder": 1,
+            "text": "how to determine what is good"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q01-opt-2",
+            "optionOrder": 2,
+            "text": "whether values are personal preferences"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q01-opt-3",
+            "optionOrder": 3,
+            "text": "how to distinguish between values and principles"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q01-opt-4",
+            "optionOrder": 4,
+            "text": "the difference between intrinsic and instrumental value"
+          }
+        ],
+        "correctOptionId": "reading-rap-af2f63bf59d1743d597f47f4-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q02",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the phrase “This consequentialist framework” refer to?",
+      "rawDisplayText": "32. What does the phrase “This consequentialist framework” refer to?",
+      "payload": {
+        "passageId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q02-opt-1",
+            "optionOrder": 1,
+            "text": "The view that the consequences of an action determine its morality"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Theories that foreground the happiness of the individual in assigning value"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q02-opt-3",
+            "optionOrder": 3,
+            "text": "The underlying view that theories of value have an impact on making life decisions"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q02-opt-4",
+            "optionOrder": 4,
+            "text": "The debate about how best to balance competing outcomes of happiness and utility"
+          }
+        ],
+        "correctOptionId": "reading-rap-af2f63bf59d1743d597f47f4-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q03",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “allocating” in the passage is closest in meaning to",
+      "rawDisplayText": "33. The word “allocating” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q03-opt-1",
+            "optionOrder": 1,
+            "text": "distributing"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q03-opt-2",
+            "optionOrder": 2,
+            "text": "acquiring"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q03-opt-3",
+            "optionOrder": 3,
+            "text": "increasing"
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q03-opt-4",
+            "optionOrder": 4,
+            "text": "tracking"
+          }
+        ],
+        "correctOptionId": "reading-rap-af2f63bf59d1743d597f47f4-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q04",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is one main criticism of utilitarianism?",
+      "rawDisplayText": "34. According to the passage, what is one main criticism of utilitarianism?",
+      "payload": {
+        "passageId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Its implementation may benefit public policy, but it is less helpful for economic decisions."
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Its priority of making healthcare more accessible creates higher costs for most people."
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q04-opt-3",
+            "optionOrder": 3,
+            "text": "In its efforts to benefit large numbers of people, it may harm some individuals."
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q04-opt-4",
+            "optionOrder": 4,
+            "text": "There is little evidence that it leads to improved healthcare for the majority."
+          }
+        ],
+        "correctOptionId": "reading-rap-af2f63bf59d1743d597f47f4-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q05",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest about value pluralism?",
+      "rawDisplayText": "35. What does the passage suggest about value pluralism?",
+      "payload": {
+        "passageId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q05-opt-1",
+            "optionOrder": 1,
+            "text": "It was a popular system for making decisions until quite recently."
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q05-opt-2",
+            "optionOrder": 2,
+            "text": "It gives primary consideration to compassion while autonomy plays a secondary role."
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q05-opt-3",
+            "optionOrder": 3,
+            "text": "It states that ethical decisions require the input of multiple decision-makers."
+          },
+          {
+            "optionId": "reading-rap-af2f63bf59d1743d597f47f4-q05-opt-4",
+            "optionOrder": 4,
+            "text": "It argues that ethical decisions should not be based on just one criterion."
+          }
+        ],
+        "correctOptionId": "reading-rap-af2f63bf59d1743d597f47f4-q05-opt-4"
+      }
+    }
+  ]
+}

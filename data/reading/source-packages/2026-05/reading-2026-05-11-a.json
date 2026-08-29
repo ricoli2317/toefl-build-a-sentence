@@ -1,0 +1,1837 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.11A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The development of transcontinental railroads was a pivotal moment in North American history, fundamentally altering the landscape and economy. By linking the eastern and western coasts, these rail lines facilitated unprecedented movement of goods, people, and ideas. The railroad accel_ _ _ _ _ _ national integ_ _ _ _ _ _, supported indus_ _ _ _ _ growth, a_ _ contributed t_ the expa_ _ _ _ _ of tr_ _ _, transforming t_ _ United States in_ _ a mo_ _ interconnected and economically dynamic nation. Advances in engineering, such as the use of steel rails, standardized gauges, and telegraph communication, enabled efficient construction and coordination across vast distances.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The development of transcontinental railroads was a pivotal moment in North American history, fundamentally altering the landscape and economy. By linking the eastern and western coasts, these rail lines facilitated unprecedented movement of goods, people, and ideas. The railroad accel_ _ _ _ _ _ national integ_ _ _ _ _ _, supported indus_ _ _ _ _ growth, a_ _ contributed t_ the expa_ _ _ _ _ of tr_ _ _, transforming t_ _ United States in_ _ a mo_ _ interconnected and economically dynamic nation. Advances in engineering, such as the use of steel rails, standardized gauges, and telegraph communication, enabled efficient construction and coordination across vast distances.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The development of transcontinental railroads was a pivotal moment in North American history, fundamentally altering the landscape and economy. By linking the eastern and western coasts, these rail lines facilitated unprecedented movement of goods, people, and ideas. The railroad "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " national "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", supported "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " growth, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " contributed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", transforming "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " United States "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " interconnected and economically dynamic nation. Advances in engineering, such as the use of steel rails, standardized gauges, and telegraph communication, enabled efficient construction and coordination across vast distances."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "accelerated",
+                "prefix": "accel",
+                "displayText": "accel_ _ _ _ _ _",
+                "missingText": "erated",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "integration",
+                "prefix": "integ",
+                "displayText": "integ_ _ _ _ _ _",
+                "missingText": "ration",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "industrial",
+                "prefix": "indus",
+                "displayText": "indus_ _ _ _ _",
+                "missingText": "trial",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "expansion",
+                "prefix": "expa",
+                "displayText": "expa_ _ _ _ _",
+                "missingText": "nsion",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "trade",
+                "prefix": "tr",
+                "displayText": "tr_ _ _",
+                "missingText": "ade",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "into",
+                "prefix": "in",
+                "displayText": "in_ _",
+                "missingText": "to",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q01-10-p01",
+                "answer": "more",
+                "prefix": "mo",
+                "displayText": "mo_ _",
+                "missingText": "re",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When the_ _ is mo_ _ demand f_ _ a pro_ _ _ _, suppliers m_ _ make i_ more expe_ _ _ _ _ to incr_ _ _ _ profits. Conve_ _ _ _ _, an exc_ _ _ supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When the_ _ is mo_ _ demand f_ _ a pro_ _ _ _, suppliers m_ _ make i_ more expe_ _ _ _ _ to incr_ _ _ _ profits. Conve_ _ _ _ _, an exc_ _ _ supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " is "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " demand "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", suppliers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " make "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " more "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " profits. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", an "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "there",
+                "prefix": "the",
+                "displayText": "the_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "more",
+                "prefix": "mo",
+                "displayText": "mo_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "for",
+                "prefix": "f",
+                "displayText": "f_ _",
+                "missingText": "or",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "product",
+                "prefix": "pro",
+                "displayText": "pro_ _ _ _",
+                "missingText": "duct",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "may",
+                "prefix": "m",
+                "displayText": "m_ _",
+                "missingText": "ay",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "it",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "expensive",
+                "prefix": "expe",
+                "displayText": "expe_ _ _ _ _",
+                "missingText": "nsive",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "increase",
+                "prefix": "incr",
+                "displayText": "incr_ _ _ _",
+                "missingText": "ease",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "Conversely",
+                "prefix": "Conve",
+                "displayText": "Conve_ _ _ _ _",
+                "missingText": "rsely",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-11-a-m1-ctw-q11-20-p01",
+                "answer": "excess",
+                "prefix": "exc",
+                "displayText": "exc_ _ _",
+                "missingText": "ess",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-rdl-03",
+      "module": "rdl",
+      "title": "ENGL 102: Introduction to Literature II",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-019",
+          "title": "ENGL 102: Introduction to Literature II",
+          "source": "material-index.json#RDL-019",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-019/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-019/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Who would benefit most from enrolling in ENGL 102?",
+          "rawDisplayText": "21. Who would benefit most from enrolling in ENGL 102?",
+          "payload": {
+            "materialId": "RDL-019",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Students with proven analytical and interpretive skills"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Students majoring in English"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Undergraduate students who have recently completed ENGL 101"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Literature majors in their final year of study"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the central aim of the course as described?",
+          "rawDisplayText": "22. What is the central aim of the course as described?",
+          "payload": {
+            "materialId": "RDL-019",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "To increase students’ appreciation for literature"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "To help students understand literary translation techniques"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "To equip students with creative writing skills"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "To prepare students for specialization in literary criticism"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-rdl-05",
+      "module": "rdl",
+      "title": "Instructions for Resetting Your Dorm Room Router",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-020",
+          "title": "Instructions for Resetting Your Dorm Room Router",
+          "source": "material-index.json#RDL-020",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-020/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-020/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What should be done first to reset the router?",
+          "rawDisplayText": "23. What should be done first to reset the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Disconnect the router from electrical power"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Plug the router back in and push the start button"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Wait for the router to restart automatically"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Wait for 30 seconds for the router to cool"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q23-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is the final step to resetting the router?",
+          "rawDisplayText": "24. What is the final step to resetting the router?",
+          "payload": {
+            "materialId": "RDL-020",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Unplug the router from the power source"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Wait until the router has completely started again"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Wait for 30 seconds or until the light flashes"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Plug the router into a different power source"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q24-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-rdl-07",
+      "module": "rdl",
+      "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-021",
+          "title": "Join us on Saturday, June 21, from 10:00 A.M. to 6:00 P.M. for the grand opening of Radiant Beauty Salon! Enjoy complimentary refreshments, live music, and exclusive offers:",
+          "source": "material-index.json#RDL-021",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-021/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-021/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the advertisement?",
+          "rawDisplayText": "25. What is the main purpose of the advertisement?",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "To advertise improvements to products"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "To announce an event"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "To promote live music"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "To introduce a new menu"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "The word “complimentary” in the first paragraph is closest in meaning to",
+          "rawDisplayText": "26. The word “complimentary” in the first paragraph is closest in meaning to",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "pleasing"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "discounted"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "free"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "limited"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "What is necessary for an extra 20 percent off one’s first service?",
+          "rawDisplayText": "27. What is necessary for an extra 20 percent off one’s first service?",
+          "payload": {
+            "materialId": "RDL-021",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Cash for payment"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Proof of being a student"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "A reservation"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "A consultation"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q27-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-rdl-10",
+      "module": "rdl",
+      "title": "CAMPUS RESEARCHERS “CRACK” THE CONCRETE CODE",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-022",
+          "title": "CAMPUS RESEARCHERS “CRACK” THE CONCRETE CODE",
+          "source": "material-index.json#RDL-022",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-022/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-022/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "What is the main topic of the article?",
+          "rawDisplayText": "28. What is the main topic of the article?",
+          "payload": {
+            "materialId": "RDL-022",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "How students are learning about environmental responsibility"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "A debate over campus maintenance budgets"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "Campus research on a better building material"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "A plan to ban concrete use in new building projects"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q28-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What is indicated about self-healing concrete?",
+          "rawDisplayText": "29. What is indicated about self-healing concrete?",
+          "payload": {
+            "materialId": "RDL-022",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "It is activated by alternating exposure to heat and cold."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "It uses liquid to reverse the effects of damage."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "It is the result of a collaboration between two universities."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "It is only suitable for indoor applications."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q29-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "What can be inferred about the potential impact of self-healing concrete?",
+          "rawDisplayText": "30. What can be inferred about the potential impact of self-healing concrete?",
+          "payload": {
+            "materialId": "RDL-022",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "It will change the way bridges are designed."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "It could significantly reduce costs for the maintenance of public infrastructure."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Its ultimate success will be determined by current trials on campus walkways."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "It will have its greatest impact as a construction material for university buildings."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m1-rap-13",
+      "module": "rap",
+      "title": "Sociocybernetics: Understanding Complex Social Systems",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-11-a-m1-rap-p01",
+          "title": "Sociocybernetics: Understanding Complex Social Systems",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics. By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function. A key concept in sociocybernetics is self-organization. This is the process in which social systems develop ordered patterns without centralized control.",
+              "rawText": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics. ■ By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function. ■ A key concept in sociocybernetics is self-organization. ■ This is the process in which social systems develop ordered patterns without centralized control. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "A key concept in sociocybernetics is self-organization."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This is the process in which social systems develop ordered patterns without centralized control."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Feedback loops are crucial in sociocybernetics. Positive feedback amplifies changes, leading to rapid social transformations. Negative feedback stabilizes systems, maintaining equilibrium. In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises. Recognizing these mechanisms helps sociologists predict and influence social dynamics.",
+              "rawText": "Feedback loops are crucial in sociocybernetics. Positive feedback amplifies changes, leading to rapid social transformations. Negative feedback stabilizes systems, maintaining equilibrium. In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises. Recognizing these mechanisms helps sociologists predict and influence social dynamics.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Feedback loops are crucial in sociocybernetics."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Positive feedback amplifies changes, leading to rapid social transformations."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Negative feedback stabilizes systems, maintaining equilibrium."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Recognizing these mechanisms helps sociologists predict and influence social dynamics."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Communication is another critical aspect. Effective communication channels within social systems impact their stability and adaptability. Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos. Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems. These models also explore how digital technologies influence communication patterns.",
+              "rawText": "Communication is another critical aspect. Effective communication channels within social systems impact their stability and adaptability. Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos. Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems. These models also explore how digital technologies influence communication patterns.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Communication is another critical aspect."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Effective communication channels within social systems impact their stability and adaptability."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "These models also explore how digital technologies influence communication patterns."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Sociocybernetics is important to urban planning. Cities are complex systems with numerous interacting components. Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies. This approach helps create sustainable urban environments that better respond to changes.",
+              "rawText": "Sociocybernetics is important to urban planning. Cities are complex systems with numerous interacting components. Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies. This approach helps create sustainable urban environments that better respond to changes.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Sociocybernetics is important to urban planning."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Cities are complex systems with numerous interacting components."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m1-rap-p01-p04-s04",
+                  "sentenceOrder": 4,
+                  "text": "This approach helps create sustainable urban environments that better respond to changes."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “amplifies” in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word “amplifies” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "delays"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "increases"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "simplifies"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "suggests"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following can be inferred about positive and negative feedback?",
+          "rawDisplayText": "32. Which of the following can be inferred about positive and negative feedback?",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "Positive feedback leads to outcomes that are more beneficial than those from negative feedback."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "Negative feedback is easier for sociologists to recognize than positive feedback."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "Positive and negative feedback both provide systems with beneficial information."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "Positive feedback is more common in progressive social systems than negative feedback."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q32-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to sociocybernetic models, effective communication is important for",
+          "rawDisplayText": "33. According to sociocybernetic models, effective communication is important for",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "preventing misinformation"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "maintenance of social cohesion"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "transparent information flow"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "providing successful digital technologies"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is an aspect of urban environments that makes them a suitable object of study for sociocybernetics?",
+          "rawDisplayText": "34. What is an aspect of urban environments that makes them a suitable object of study for sociocybernetics?",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "They involve many interacting components."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "They can be made more resilient when designed using scientific principles."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "They feature ideal traffic patterns."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "They respond better to changes when they are more sustainable."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m1-rap-p01",
+            "insertSentence": "The latter is concerned with the comparative study of automatic control systems, such as the nervous system.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-11-a-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-11-a-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p01",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-11-a-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-11-a-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-11-a-m1-rap-p01-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-11-a-m1-rap-p01-p01-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-11-a-m1-q35-anchor-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Climate change has become one of the most pressing current issues of our time, sparking global conversations. When discussing climate, it is often confused with weather. Climate specif_ _ _ _ _ _ refers t_ long-term tre_ _ _ in tempe_ _ _ _ _ _, humidity, wi_ _, and precip_ _ _ _ _ _ _ that def_ _ _ typical condi_ _ _ _ _ for a reg_ _ _—not ju_ _ the daily forecast. While weather can shift dramatically from one day to the next, the climate of an area describes what is normal over decades.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Climate change has become one of the most pressing current issues of our time, sparking global conversations. When discussing climate, it is often confused with weather. Climate specif_ _ _ _ _ _ refers t_ long-term tre_ _ _ in tempe_ _ _ _ _ _, humidity, wi_ _, and precip_ _ _ _ _ _ _ that def_ _ _ typical condi_ _ _ _ _ for a reg_ _ _—not ju_ _ the daily forecast. While weather can shift dramatically from one day to the next, the climate of an area describes what is normal over decades.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Climate change has become one of the most pressing current issues of our time, sparking global conversations. When discussing climate, it is often confused with weather. Climate "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " refers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " long-term "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " in "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", humidity, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " typical "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": "—not "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the daily forecast. While weather can shift dramatically from one day to the next, the climate of an area describes what is normal over decades."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "specifically",
+                "prefix": "specif",
+                "displayText": "specif_ _ _ _ _ _",
+                "missingText": "ically",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "trends",
+                "prefix": "tre",
+                "displayText": "tre_ _ _",
+                "missingText": "nds",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "temperature",
+                "prefix": "tempe",
+                "displayText": "tempe_ _ _ _ _ _",
+                "missingText": "rature",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "wind",
+                "prefix": "wi",
+                "displayText": "wi_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "precipitation",
+                "prefix": "precip",
+                "displayText": "precip_ _ _ _ _ _ _",
+                "missingText": "itation",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "define",
+                "prefix": "def",
+                "displayText": "def_ _ _",
+                "missingText": "ine",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "conditions",
+                "prefix": "condi",
+                "displayText": "condi_ _ _ _ _",
+                "missingText": "tions",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "region",
+                "prefix": "reg",
+                "displayText": "reg_ _ _",
+                "missingText": "ion",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-11-a-m2-ctw-q01-10-p01",
+                "answer": "just",
+                "prefix": "ju",
+                "displayText": "ju_ _",
+                "missingText": "st",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11a-m2-rap-19",
+      "module": "rap",
+      "title": "Microseisms: The Earth’s Subtle Vibrations",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11A",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-11-a-m2-rap-p01",
+          "title": "Microseisms: The Earth’s Subtle Vibrations",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-11-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The Earth is constantly vibrating, even when there are no earthquakes. These subtle vibrations, known as microseisms, are typically caused by ocean waves. When waves collide, they create pressure variations that travel through the water and into the sea floor. This energy transfer generates seismic waves detectable by seismometers worldwide. Interestingly, microseisms are strongest during storms when ocean waves are more powerful.",
+              "rawText": "The Earth is constantly vibrating, even when there are no earthquakes. These subtle vibrations, known as microseisms, are typically caused by ocean waves. When waves collide, they create pressure variations that travel through the water and into the sea floor. This energy transfer generates seismic waves detectable by seismometers worldwide. Interestingly, microseisms are strongest during storms when ocean waves are more powerful.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The Earth is constantly vibrating, even when there are no earthquakes."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "These subtle vibrations, known as microseisms, are typically caused by ocean waves."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "When waves collide, they create pressure variations that travel through the water and into the sea floor."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This energy transfer generates seismic waves detectable by seismometers worldwide."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "Interestingly, microseisms are strongest during storms when ocean waves are more powerful."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Researchers have found these vibrations can provide important information about the Earth’s interior. Microseisms travel through the Earth’s crust and mantle, revealing details about the geological structures they pass through, including variations in rock density and the presence of faults or fractures. Another compelling use of microseisms is in climate studies. Scientists analyze historical data on these vibrations to reconstruct past ocean conditions and storm activities. This helps improve climate models and understand long-term weather patterns. Additionally, microseisms are used in oil and gas exploration. They identify potential drilling sites by highlighting subsurface structures without more invasive techniques.",
+              "rawText": "Researchers have found these vibrations can provide important information about the Earth’s interior. Microseisms travel through the Earth’s crust and mantle, revealing details about the geological structures they pass through, including variations in rock density and the presence of faults or fractures. Another compelling use of microseisms is in climate studies. Scientists analyze historical data on these vibrations to reconstruct past ocean conditions and storm activities. This helps improve climate models and understand long-term weather patterns. Additionally, microseisms are used in oil and gas exploration. They identify potential drilling sites by highlighting subsurface structures without more invasive techniques.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Researchers have found these vibrations can provide important information about the Earth’s interior."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Microseisms travel through the Earth’s crust and mantle, revealing details about the geological structures they pass through, including variations in rock density and the presence of faults or fractures."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Another compelling use of microseisms is in climate studies."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Scientists analyze historical data on these vibrations to reconstruct past ocean conditions and storm activities."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "This helps improve climate models and understand long-term weather patterns."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "Additionally, microseisms are used in oil and gas exploration."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p02-s07",
+                  "sentenceOrder": 7,
+                  "text": "They identify potential drilling sites by highlighting subsurface structures without more invasive techniques."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-a-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Studying microseisms is challenging. The mild signals are easily masked by other seismic noises. Advanced data analysis techniques and state-of-the-art equipment are essential for accurately interpreting microseisms. Researchers often employ filtering methods and cross-referencing data from multiple seismometers.",
+              "rawText": "Studying microseisms is challenging. The mild signals are easily masked by other seismic noises. Advanced data analysis techniques and state-of-the-art equipment are essential for accurately interpreting microseisms. Researchers often employ filtering methods and cross-referencing data from multiple seismometers.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Studying microseisms is challenging."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "The mild signals are easily masked by other seismic noises."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Advanced data analysis techniques and state-of-the-art equipment are essential for accurately interpreting microseisms."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-a-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Researchers often employ filtering methods and cross-referencing data from multiple seismometers."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “subtle” in the passage is closest in meaning to",
+          "rawDisplayText": "11. The word “subtle” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "faint"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "strong"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "quick"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "constant"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m2-q11-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "It can be inferred that microseisms are strongest during ocean storms because",
+          "rawDisplayText": "12. It can be inferred that microseisms are strongest during ocean storms because",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "the Earth’s crust and mantle are more active during such storms"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "ocean waves are larger and collide more vigorously during such storms"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "seismometers are designed to work most effectively during such storms"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "the details of geological structures become more apparent during such storms"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “variations in rock density and the presence of faults or fractures”?",
+          "rawDisplayText": "13. Why does the author mention “variations in rock density and the presence of faults or fractures”?",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that more research is needed to understand the relationship between microseisms and earthquakes"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "To identify the most important features of Earth’s crust and mantle"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "To help explain how microseisms can alter the geological structures that they pass through"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "To highlight the kinds of information microseisms can provide about Earth’s interior"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m2-q13-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, how can microseisms help in oil and gas exploration?",
+          "rawDisplayText": "14. According to the passage, how can microseisms help in oil and gas exploration?",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "By providing historical data on ocean conditions"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "By pinpointing potential drilling sites"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "By measuring the strength of seismic waves"
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "By reducing the need for seismometers"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the author suggest about “filtering methods and cross-referencing data from multiple seismometers”?",
+          "rawDisplayText": "15. What does the author suggest about “filtering methods and cross-referencing data from multiple seismometers”?",
+          "payload": {
+            "passageId": "reading-2026-05-11-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-a-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "They are techniques used to study microseisms."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "They demonstrate the outdatedness of seismometers."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "They are popular ways of studying various types of seismic noises."
+              },
+              {
+                "optionId": "reading-2026-05-11-a-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "They highlight a flaw in current research methods."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-a-m2-q15-opt-1"
+          }
+        }
+      ]
+    }
+  ]
+}

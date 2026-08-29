@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-24",
+    "firstSeenSourceLabel": "5.24A",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "08060c6f94bd546d10ffa20ce93bb05af1142046c89dc5aa19de06ee25e317de",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-24a-m1-ctw-02",
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24A",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-08060c6f94bd546d10ffa20c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-24b-m1-ctw-02",
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "sourceKind": "docx",
+      "sourceLabel": "5.24B",
+      "occurrenceDate": "2026-05-24",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.24B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.24B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-08060c6f94bd546d10ffa20c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-15-m1-ctw-02",
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "sourceKind": "docx",
+      "sourceLabel": "6.15",
+      "occurrenceDate": "2026-06-15",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-08060c6f94bd546d10ffa20c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-16a-m1-ctw-02",
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "sourceKind": "docx",
+      "sourceLabel": "6.16A",
+      "occurrenceDate": "2026-06-16",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-08060c6f94bd546d10ffa20c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-16b-m1-ctw-02",
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "sourceKind": "docx",
+      "sourceLabel": "6.16B",
+      "occurrenceDate": "2026-06-16",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.16B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.16B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-08060c6f94bd546d10ffa20c-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-08060c6f94bd546d10ffa20c-q01",
+      "logicalItemId": "reading-ctw-08060c6f94bd546d10ffa20c",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing ove_ _ _ _ economic produc_ _ _ _ _ _ and fost_ _ _ _ _ international interde_ _ _ _ _ _ _ _. However, exce_ _ _ _ _ reliance o_ this mo_ _ _ can exp_ _ _ economies t_ significant ri_ _ _. Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing ove_ _ _ _ economic produc_ _ _ _ _ _ and fost_ _ _ _ _ international interde_ _ _ _ _ _ _ _. However, exce_ _ _ _ _ reliance o_ this mo_ _ _ can exp_ _ _ economies t_ significant ri_ _ _. Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " economic "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " international "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ". However, "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " reliance "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " this "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " can "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " economies "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " significant "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": ". Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "overall",
+            "prefix": "ove",
+            "displayText": "ove_ _ _ _",
+            "missingText": "rall",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "productivity",
+            "prefix": "produc",
+            "displayText": "produc_ _ _ _ _ _",
+            "missingText": "tivity",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "fostering",
+            "prefix": "fost",
+            "displayText": "fost_ _ _ _ _",
+            "missingText": "ering",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "interdependence",
+            "prefix": "interde",
+            "displayText": "interde_ _ _ _ _ _ _ _",
+            "missingText": "pendence",
+            "missingLength": 8
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "excessive",
+            "prefix": "exce",
+            "displayText": "exce_ _ _ _ _",
+            "missingText": "ssive",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "on",
+            "prefix": "o",
+            "displayText": "o_",
+            "missingText": "n",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "model",
+            "prefix": "mo",
+            "displayText": "mo_ _ _",
+            "missingText": "del",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "expose",
+            "prefix": "exp",
+            "displayText": "exp_ _ _",
+            "missingText": "ose",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "to",
+            "prefix": "t",
+            "displayText": "t_",
+            "missingText": "o",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-08060c6f94bd546d10ffa20c-q01-p01",
+            "answer": "risks",
+            "prefix": "ri",
+            "displayText": "ri_ _ _",
+            "missingText": "sks",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

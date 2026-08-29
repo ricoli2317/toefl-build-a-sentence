@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+    "module": "rap",
+    "title": "Floating Wind Turbines",
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "4986420f2a3c5df66f0fe8d26a2d3c598e8eb43262c67c6766dbadb269004b11",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m1-rap-08",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-5b-m1-rap-08",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5B",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-23-m1-rap-13",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "sourceKind": "docx",
+      "sourceLabel": "5.23",
+      "occurrenceDate": "2026-05-23",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "title": "Floating Wind Turbines",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Wind turbines are large devices with long blades that capture wind energy and convert it into electricity. Floating wind turbines are a special type of wind turbines because they are not fixed to the seabed but are anchored using advanced mooring systems, allowing placement in deeper waters where winds are more consistent. In this context, anchoring refers to securing the turbine in place using cables or chains connected to weighted structures or anchors on the ocean floor, ensuring stability despite the lack of a fixed foundation. The deeper placement means the wind turbines can harness untapped wind resources that traditional turbines cannot access.",
+          "rawText": "Wind turbines are large devices with long blades that capture wind energy and convert it into electricity. Floating wind turbines are a special type of wind turbines because they are not fixed to the seabed but are anchored using advanced mooring systems, allowing placement in deeper waters where winds are more consistent. In this context, anchoring refers to securing the turbine in place using cables or chains connected to weighted structures or anchors on the ocean floor, ensuring stability despite the lack of a fixed foundation. The deeper placement means the wind turbines can harness untapped wind resources that traditional turbines cannot access.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Wind turbines are large devices with long blades that capture wind energy and convert it into electricity."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Floating wind turbines are a special type of wind turbines because they are not fixed to the seabed but are anchored using advanced mooring systems, allowing placement in deeper waters where winds are more consistent."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "In this context, anchoring refers to securing the turbine in place using cables or chains connected to weighted structures or anchors on the ocean floor, ensuring stability despite the lack of a fixed foundation."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "The deeper placement means the wind turbines can harness untapped wind resources that traditional turbines cannot access."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Engineering floating turbines involves unique challenges. They rely on buoyancy principles rather than on solid ground, making their design and maintenance complex. Despite the increased costs, their ability to reduce visual and noise pollution makes them an attractive option for distant offshore locations. However, their long-term viability is threatened by harsh marine conditions that can accelerate wear and tear.",
+          "rawText": "Engineering floating turbines involves unique challenges. They rely on buoyancy principles rather than on solid ground, making their design and maintenance complex. Despite the increased costs, their ability to reduce visual and noise pollution makes them an attractive option for distant offshore locations. However, their long-term viability is threatened by harsh marine conditions that can accelerate wear and tear.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Engineering floating turbines involves unique challenges."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "They rely on buoyancy principles rather than on solid ground, making their design and maintenance complex."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Despite the increased costs, their ability to reduce visual and noise pollution makes them an attractive option for distant offshore locations."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "However, their long-term viability is threatened by harsh marine conditions that can accelerate wear and tear."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Research continues to explore solutions for these problems. Some experts are investigating materials and designs to enhance durability. As efforts to capitalize on deeper offshore wind resources persist, floating turbines represent both a promising opportunity and a complex engineering puzzle.",
+          "rawText": "■ Research continues to explore solutions for these problems. ■ Some experts are investigating materials and designs to enhance durability. ■ As efforts to capitalize on deeper offshore wind resources persist, floating turbines represent both a promising opportunity and a complex engineering puzzle. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Research continues to explore solutions for these problems."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Some experts are investigating materials and designs to enhance durability."
+            },
+            {
+              "sentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "As efforts to capitalize on deeper offshore wind resources persist, floating turbines represent both a promising opportunity and a complex engineering puzzle."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “harness” in the passage is closest in meaning to",
+      "rawDisplayText": "26. The word “harness” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01-opt-1",
+            "optionOrder": 1,
+            "text": "limit"
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01-opt-2",
+            "optionOrder": 2,
+            "text": "distribute"
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01-opt-3",
+            "optionOrder": 3,
+            "text": "release"
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01-opt-4",
+            "optionOrder": 4,
+            "text": "exploit"
+          }
+        ],
+        "correctOptionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What unique advantage do floating wind turbines have over traditional turbines?",
+      "rawDisplayText": "27. What unique advantage do floating wind turbines have over traditional turbines?",
+      "payload": {
+        "passageId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02-opt-1",
+            "optionOrder": 1,
+            "text": "They are larger in size and have longer blades."
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02-opt-2",
+            "optionOrder": 2,
+            "text": "They require less maintenance."
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02-opt-3",
+            "optionOrder": 3,
+            "text": "They can be placed in deeper waters."
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02-opt-4",
+            "optionOrder": 4,
+            "text": "They are easier to design."
+          }
+        ],
+        "correctOptionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “buoyancy principles”?",
+      "rawDisplayText": "28. Why does the author mention “buoyancy principles”?",
+      "payload": {
+        "passageId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To point out a challenge of creating floating turbines"
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To suggest a new area for future research into floating turbines"
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To emphasize the greater flexibility of floating turbines compared with traditional turbines"
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To provide an example of cost-saving measures related to floating turbines"
+          }
+        ],
+        "correctOptionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about the acceleration of “wear and tear” in floating turbines?",
+      "rawDisplayText": "29. What can be inferred about the acceleration of “wear and tear” in floating turbines?",
+      "payload": {
+        "passageId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04-opt-1",
+            "optionOrder": 1,
+            "text": "Any attempts to reduce it will likely prove to be unsuccessful."
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04-opt-2",
+            "optionOrder": 2,
+            "text": "Scientists are working to control it through better designs and materials."
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04-opt-3",
+            "optionOrder": 3,
+            "text": "It is prompting engineers to place floating wind turbines closer to shore."
+          },
+          {
+            "optionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04-opt-4",
+            "optionOrder": 4,
+            "text": "It makes floating turbines especially unattractive to look at."
+          }
+        ],
+        "correctOptionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "30. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01",
+        "insertSentence": "Others assess economic models that might offset higher initial expenses.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-4986420f2a3c5df66f0fe8d2-q05-anchor-3"
+      }
+    }
+  ]
+}

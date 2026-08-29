@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-ac11e70fdf918145b0cd10e1",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-17",
+    "firstSeenSourceLabel": "6.17",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "ac11e70fdf918145b0cd10e16225a1930c2ccbb39dee89f88dda7b0de487e8bb",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-17-m1-ctw-01",
+      "logicalItemId": "reading-ctw-ac11e70fdf918145b0cd10e1",
+      "sourceKind": "docx",
+      "sourceLabel": "6.17",
+      "occurrenceDate": "2026-06-17",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.17.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.17_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01",
+      "logicalItemId": "reading-ctw-ac11e70fdf918145b0cd10e1",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Rainforests are critical to global biodiversity, housing a vast array of plant and animal species. Researchers stud_ _ _ _ these enviro_ _ _ _ _ _ examine ecolo_ _ _ _ _ interactions a_ _ the impor_ _ _ _ _ of conser_ _ _ _ _ _ in maint_ _ _ _ _ _ species rich_ _ _ _ and ecos_ _ _ _ _ stability. Esse_ _ _ _ _ services to humanity are provided by rainforests, which aid in carbon sequestration and climate regulation, as well as being a vital source of medicinal compounds. Ongoing threats such as deforestation and habitat fragmentation underscore the need to preserve rainforests for future generations.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Rainforests are critical to global biodiversity, housing a vast array of plant and animal species. Researchers stud_ _ _ _ these enviro_ _ _ _ _ _ examine ecolo_ _ _ _ _ interactions a_ _ the impor_ _ _ _ _ of conser_ _ _ _ _ _ in maint_ _ _ _ _ _ species rich_ _ _ _ and ecos_ _ _ _ _ stability. Esse_ _ _ _ _ services to humanity are provided by rainforests, which aid in carbon sequestration and climate regulation, as well as being a vital source of medicinal compounds. Ongoing threats such as deforestation and habitat fragmentation underscore the need to preserve rainforests for future generations.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Rainforests are critical to global biodiversity, housing a vast array of plant and animal species. Researchers "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " these "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " examine "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " interactions "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " the "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " of "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " in "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " species "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " stability. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " services to humanity are provided by rainforests, which aid in carbon sequestration and climate regulation, as well as being a vital source of medicinal compounds. Ongoing threats such as deforestation and habitat fragmentation underscore the need to preserve rainforests for future generations."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "studying",
+            "prefix": "stud",
+            "displayText": "stud_ _ _ _",
+            "missingText": "ying",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "environments",
+            "prefix": "enviro",
+            "displayText": "enviro_ _ _ _ _ _",
+            "missingText": "nments",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "ecological",
+            "prefix": "ecolo",
+            "displayText": "ecolo_ _ _ _ _",
+            "missingText": "gical",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "and",
+            "prefix": "a",
+            "displayText": "a_ _",
+            "missingText": "nd",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "importance",
+            "prefix": "impor",
+            "displayText": "impor_ _ _ _ _",
+            "missingText": "tance",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "conservation",
+            "prefix": "conser",
+            "displayText": "conser_ _ _ _ _ _",
+            "missingText": "vation",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "maintaining",
+            "prefix": "maint",
+            "displayText": "maint_ _ _ _ _ _",
+            "missingText": "aining",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "richness",
+            "prefix": "rich",
+            "displayText": "rich_ _ _ _",
+            "missingText": "ness",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "ecosystem",
+            "prefix": "ecos",
+            "displayText": "ecos_ _ _ _ _",
+            "missingText": "ystem",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-ac11e70fdf918145b0cd10e1-q01-p01",
+            "answer": "Essential",
+            "prefix": "Esse",
+            "displayText": "Esse_ _ _ _ _",
+            "missingText": "ntial",
+            "missingLength": 5
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -11,6 +11,7 @@ import { importAcademicDiscussionQuestions } from "./importers/academicDiscussio
 import { importBuildASentence } from "./importers/buildASentence";
 import { serializeError } from "./importers/common";
 import { importEmailQuestions } from "./importers/email";
+import { readingCsvImporter } from "./importers/reading";
 import type { ImporterContext, ImportResult } from "./importers/types";
 import { revalidatePracticeCatalog } from "@/lib/practiceCatalogCache.server";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
@@ -23,10 +24,13 @@ const importers: Record<
 > = {
   build_a_sentence: importBuildASentence,
   email: importEmailQuestions,
-  academic_discussion: importAcademicDiscussionQuestions
+  academic_discussion: importAcademicDiscussionQuestions,
+  complete_the_words: readingCsvImporter("complete_the_words"),
+  read_in_daily_life: readingCsvImporter("read_in_daily_life"),
+  read_an_academic_passage: readingCsvImporter("read_an_academic_passage")
 };
 
-const importedTaskTypes: Record<KnownQuestionType, PracticeTaskType> = {
+const importedTaskTypes: Partial<Record<KnownQuestionType, PracticeTaskType>> = {
   build_a_sentence: "build_sentence",
   email: "email",
   academic_discussion: "academic_discussion"
@@ -109,6 +113,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as {
       headers?: unknown;
       rows?: unknown;
+      fileName?: unknown;
     };
     if (!Array.isArray(body.rows) || !body.rows.every((row) => row && typeof row === "object")) {
       return json(
@@ -142,11 +147,13 @@ export async function POST(request: Request) {
     const result = await importer({
       rows,
       supabase: createServiceSupabase(),
-      userId: auth.userId
+      userId: auth.userId,
+      fileName: typeof body.fileName === "string" ? body.fileName : undefined
     });
 
-    if (result.successCount > 0) {
-      revalidatePracticeCatalog(importedTaskTypes[questionType]);
+    const importedTaskType = importedTaskTypes[questionType];
+    if (result.successCount > 0 && importedTaskType) {
+      revalidatePracticeCatalog(importedTaskType);
     }
 
     return json({ ...result, questionType });

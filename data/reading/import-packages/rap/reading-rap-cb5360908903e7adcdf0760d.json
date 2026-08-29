@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+    "module": "rap",
+    "title": "Coastal Erosion Challenges",
+    "firstSeenDate": "2026-05-28",
+    "firstSeenSourceLabel": "5.28",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "cb5360908903e7adcdf0760df4e13c6e7433eb298181a9d17a99d83d53b282ba",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-28-m2-rap-19",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "sourceKind": "docx",
+      "sourceLabel": "5.28",
+      "occurrenceDate": "2026-05-28",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-cb5360908903e7adcdf0760d-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-cb5360908903e7adcdf0760d-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-cb5360908903e7adcdf0760d-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-cb5360908903e7adcdf0760d-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-cb5360908903e7adcdf0760d-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-cb5360908903e7adcdf0760d-passage-01",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "title": "Coastal Erosion Challenges",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Coastal erosion, the gradual loss of shoreline due to natural forces, poses challenges worldwide. Waves, currents, and rising sea levels are primary contributors to the phenomenon. Strong storms can exacerbate erosion, reshaping coastlines abruptly. For countries with extensive coastal zones, such as Bangladesh and the Netherlands, managing erosion is not only an environmental issue but also an economic and social one. Coastal erosion threatens infrastructure, transportation, and residential areas, necessitating costly investments in protective measures.",
+          "rawText": "Coastal erosion, the gradual loss of shoreline due to natural forces, poses challenges worldwide. Waves, currents, and rising sea levels are primary contributors to the phenomenon. Strong storms can exacerbate erosion, reshaping coastlines abruptly. For countries with extensive coastal zones, such as Bangladesh and the Netherlands, managing erosion is not only an environmental issue but also an economic and social one. Coastal erosion threatens infrastructure, transportation, and residential areas, necessitating costly investments in protective measures.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Coastal erosion, the gradual loss of shoreline due to natural forces, poses challenges worldwide."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Waves, currents, and rising sea levels are primary contributors to the phenomenon."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Strong storms can exacerbate erosion, reshaping coastlines abruptly."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "For countries with extensive coastal zones, such as Bangladesh and the Netherlands, managing erosion is not only an environmental issue but also an economic and social one."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Coastal erosion threatens infrastructure, transportation, and residential areas, necessitating costly investments in protective measures."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "One strategy to combat erosion is beach nourishment, the addition of sand or sediment to shorelines. While this method provides short-term benefits, frequent replenishment is required. Seawalls and breakwaters, solid structures designed to deflect wave energy and protect coastlines, are longer-term solutions but can alter natural sediment movement, unintentionally accelerating erosion in nearby areas.",
+          "rawText": "One strategy to combat erosion is beach nourishment, the addition of sand or sediment to shorelines. While this method provides short-term benefits, frequent replenishment is required. Seawalls and breakwaters, solid structures designed to deflect wave energy and protect coastlines, are longer-term solutions but can alter natural sediment movement, unintentionally accelerating erosion in nearby areas.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "One strategy to combat erosion is beach nourishment, the addition of sand or sediment to shorelines."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "While this method provides short-term benefits, frequent replenishment is required."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Seawalls and breakwaters, solid structures designed to deflect wave energy and protect coastlines, are longer-term solutions but can alter natural sediment movement, unintentionally accelerating erosion in nearby areas."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Recent studies suggest that some natural approaches may be more sustainable. For instance, mangrove forests and dune systems serve as buffers, reducing wave energy before it reaches populated areas. Mangroves not only provide erosion control but also support diverse ecosystems. However, such methods require extensive space and careful planning, making them unsuitable for heavily urbanized coastal zones. This highlights the tension between maintaining natural landscapes and safeguarding human developments along vulnerable coastlines.",
+          "rawText": "Recent studies suggest that some natural approaches may be more sustainable. For instance, mangrove forests and dune systems serve as buffers, reducing wave energy before it reaches populated areas. Mangroves not only provide erosion control but also support diverse ecosystems. However, such methods require extensive space and careful planning, making them unsuitable for heavily urbanized coastal zones. This highlights the tension between maintaining natural landscapes and safeguarding human developments along vulnerable coastlines.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Recent studies suggest that some natural approaches may be more sustainable."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "For instance, mangrove forests and dune systems serve as buffers, reducing wave energy before it reaches populated areas."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Mangroves not only provide erosion control but also support diverse ecosystems."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "However, such methods require extensive space and careful planning, making them unsuitable for heavily urbanized coastal zones."
+            },
+            {
+              "sentenceId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03-s05",
+              "sentenceOrder": 5,
+              "text": "This highlights the tension between maintaining natural landscapes and safeguarding human developments along vulnerable coastlines."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q01",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “exacerbate” in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word “exacerbate” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-cb5360908903e7adcdf0760d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q01-opt-1",
+            "optionOrder": 1,
+            "text": "contribute to"
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q01-opt-2",
+            "optionOrder": 2,
+            "text": "cause"
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q01-opt-3",
+            "optionOrder": 3,
+            "text": "control"
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q01-opt-4",
+            "optionOrder": 4,
+            "text": "increase"
+          }
+        ],
+        "correctOptionId": "reading-rap-cb5360908903e7adcdf0760d-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q02",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention Bangladesh and the Netherlands?",
+      "rawDisplayText": "12. Why does the author mention Bangladesh and the Netherlands?",
+      "payload": {
+        "passageId": "reading-rap-cb5360908903e7adcdf0760d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate that strong storms pose threats to infrastructure in coastal areas"
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To give examples of countries for which coastal erosion presents challenges beyond environmental ones"
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To provide examples of countries that have recently invested in protecting their coastal infrastructure"
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To acknowledge that coastal erosion is a problem that affects countries in a variety of regions"
+          }
+        ],
+        "correctOptionId": "reading-rap-cb5360908903e7adcdf0760d-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q03",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage indicates which of the following about “beach nourishment”?",
+      "rawDisplayText": "13. The passage indicates which of the following about “beach nourishment”?",
+      "payload": {
+        "passageId": "reading-rap-cb5360908903e7adcdf0760d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It involves an ongoing commitment to maintain the advantages it offers."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It is effective primarily in areas that already have natural dune systems."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It is a relatively expensive method of combating erosion."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It is primarily effective in areas where the coastal zones have little residential development."
+          }
+        ],
+        "correctOptionId": "reading-rap-cb5360908903e7adcdf0760d-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q04",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about the “natural approaches” mentioned in the passage?",
+      "rawDisplayText": "14. What can be inferred about the “natural approaches” mentioned in the passage?",
+      "payload": {
+        "passageId": "reading-rap-cb5360908903e7adcdf0760d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q04-opt-1",
+            "optionOrder": 1,
+            "text": "They offer significant protection of coastal areas but are short-term measures."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q04-opt-2",
+            "optionOrder": 2,
+            "text": "They are easier to implement in areas with high population density."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q04-opt-3",
+            "optionOrder": 3,
+            "text": "They are less likely than man-made structures to cause unintended harm to surrounding shorelines."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q04-opt-4",
+            "optionOrder": 4,
+            "text": "They are more effective as a way of protecting biodiversity than as a measure to combat erosion."
+          }
+        ],
+        "correctOptionId": "reading-rap-cb5360908903e7adcdf0760d-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q05",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage indicates each of the following about erosion-control measures EXCEPT:",
+      "rawDisplayText": "15. The passage indicates each of the following about erosion-control measures EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-cb5360908903e7adcdf0760d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q05-opt-1",
+            "optionOrder": 1,
+            "text": "They can sometimes deflect wave energy."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q05-opt-2",
+            "optionOrder": 2,
+            "text": "They sometimes disrupt transportation in coastal areas."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q05-opt-3",
+            "optionOrder": 3,
+            "text": "They vary in the amount of space they require."
+          },
+          {
+            "optionId": "reading-rap-cb5360908903e7adcdf0760d-q05-opt-4",
+            "optionOrder": 4,
+            "text": "They have greater economic impact in some countries than in others."
+          }
+        ],
+        "correctOptionId": "reading-rap-cb5360908903e7adcdf0760d-q05-opt-2"
+      }
+    }
+  ]
+}

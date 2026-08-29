@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+    "module": "rap",
+    "title": "Free Will and Determinism",
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1C",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "872c6a298ccb4eea664f48124e8b948ba1be717b8d655fae418e140f98cf6efb",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1c-m1-rap-08",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1C",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1C.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1C_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-872c6a298ccb4eea664f4812-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-872c6a298ccb4eea664f4812-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-872c6a298ccb4eea664f4812-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-872c6a298ccb4eea664f4812-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-872c6a298ccb4eea664f4812-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-872c6a298ccb4eea664f4812-passage-01",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "title": "Free Will and Determinism",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control. Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited. The key question is whether these influences simply guide our choices or actually determine them. If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions.",
+          "rawText": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control. Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited. The key question is whether these influences simply guide our choices or actually determine them. If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "The key question is whether these influences simply guide our choices or actually determine them."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires. Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions. Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy. These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships. If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined.",
+          "rawText": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires. Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions. Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy. These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships. If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships."
+            },
+            {
+              "sentenceId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-872c6a298ccb4eea664f4812-q01",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention genetics and upbringing in paragraph 1?",
+      "rawDisplayText": "26. Why does the author mention genetics and upbringing in paragraph 1?",
+      "payload": {
+        "passageId": "reading-rap-872c6a298ccb4eea664f4812-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q01-opt-1",
+            "optionOrder": 1,
+            "text": "To name the factors that contribute to the unconscious habits people form"
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q01-opt-2",
+            "optionOrder": 2,
+            "text": "To list factors we may be unaware of that shape our decision-making"
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q01-opt-3",
+            "optionOrder": 3,
+            "text": "To argue that some people have more freedom to act than others do"
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q01-opt-4",
+            "optionOrder": 4,
+            "text": "To note two factors that contribute to the formation of people's personalities"
+          }
+        ],
+        "correctOptionId": "reading-rap-872c6a298ccb4eea664f4812-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-872c6a298ccb4eea664f4812-q02",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the author suggest may be true of \"our sense of control\" over our choices?",
+      "rawDisplayText": "27. What does the author suggest may be true of \"our sense of control\" over our choices?",
+      "payload": {
+        "passageId": "reading-rap-872c6a298ccb4eea664f4812-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q02-opt-1",
+            "optionOrder": 1,
+            "text": "It can drive our actions if we train ourselves to think independently."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It helps us develop narratives that shape our choices."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q02-opt-3",
+            "optionOrder": 3,
+            "text": "It is the product of unconscious habits."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It is nothing more than an illusion."
+          }
+        ],
+        "correctOptionId": "reading-rap-872c6a298ccb4eea664f4812-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-872c6a298ccb4eea664f4812-q03",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+      "rawDisplayText": "28. In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+      "payload": {
+        "passageId": "reading-rap-872c6a298ccb4eea664f4812-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Sentence 1 presents an argument, and sentence 2 restates it in simpler terms."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Sentence 1 makes a claim, and sentence 2 supports it with evidence."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Sentence 1 presents an idea, and sentence 2 challenges an assumption behind the idea."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Sentence 1 introduces a viewpoint, and sentence 2 considers its implications."
+          }
+        ],
+        "correctOptionId": "reading-rap-872c6a298ccb4eea664f4812-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-872c6a298ccb4eea664f4812-q04",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"unravel\" in the passage is closest in meaning to",
+      "rawDisplayText": "29. The word \"unravel\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-872c6a298ccb4eea664f4812-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q04-opt-1",
+            "optionOrder": 1,
+            "text": "fall apart"
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q04-opt-2",
+            "optionOrder": 2,
+            "text": "gather strength"
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q04-opt-3",
+            "optionOrder": 3,
+            "text": "form"
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q04-opt-4",
+            "optionOrder": 4,
+            "text": "evolve"
+          }
+        ],
+        "correctOptionId": "reading-rap-872c6a298ccb4eea664f4812-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-872c6a298ccb4eea664f4812-q05",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the author, why is it important to consider questions about the meaning of free will?",
+      "rawDisplayText": "30. According to the author, why is it important to consider questions about the meaning of free will?",
+      "payload": {
+        "passageId": "reading-rap-872c6a298ccb4eea664f4812-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q05-opt-1",
+            "optionOrder": 1,
+            "text": "Ideas about free will affect how we hold each other responsible for our actions."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q05-opt-2",
+            "optionOrder": 2,
+            "text": "Free will is an important part of what it means to be a modern human being."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q05-opt-3",
+            "optionOrder": 3,
+            "text": "The debate over free will and determinism is one of the fundamental questions of our time."
+          },
+          {
+            "optionId": "reading-rap-872c6a298ccb4eea664f4812-q05-opt-4",
+            "optionOrder": 4,
+            "text": "Without genuine autonomy, there is little value in institutions such as law and education."
+          }
+        ],
+        "correctOptionId": "reading-rap-872c6a298ccb4eea664f4812-q05-opt-1"
+      }
+    }
+  ]
+}

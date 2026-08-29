@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+    "module": "rap",
+    "title": "Veganism in the United States",
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "3c7da315889dceed32412dcf971ad765abb7710df65b92cdd583c3d3b50877a8",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1a-m1-rap-13",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1A",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-3c7da315889dceed32412dcf-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-3c7da315889dceed32412dcf-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-3c7da315889dceed32412dcf-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-3c7da315889dceed32412dcf-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-3c7da315889dceed32412dcf-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-3c7da315889dceed32412dcf-passage-01",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "title": "Veganism in the United States",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States. A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019. This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating. During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks.",
+          "rawText": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States. A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019. This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating. During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "By the mid-2020s, however, momentum began to level off. Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan. Several factors contributed to this plateau. Preparing vegan meals can be more involved than preparing meat-based meals. For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming. And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness. Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat. American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits.",
+          "rawText": "By the mid-2020s, however, momentum began to level off. Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan. Several factors contributed to this plateau. Preparing vegan meals can be more involved than preparing meat-based meals. For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming. And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness. Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat. American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "By the mid-2020s, however, momentum began to level off."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Several factors contributed to this plateau."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Preparing vegan meals can be more involved than preparing meat-based meals."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s07",
+              "sentenceOrder": 7,
+              "text": "Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat."
+            },
+            {
+              "sentenceId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02-s08",
+              "sentenceOrder": 8,
+              "text": "American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q01",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The main purpose of this passage is to",
+      "rawDisplayText": "31. The main purpose of this passage is to",
+      "payload": {
+        "passageId": "reading-rap-3c7da315889dceed32412dcf-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q01-opt-1",
+            "optionOrder": 1,
+            "text": "describe the birth of veganism in the United States"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q01-opt-2",
+            "optionOrder": 2,
+            "text": "list the benefits of a vegan diet"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q01-opt-3",
+            "optionOrder": 3,
+            "text": "analyze some changes in Americans' attitudes toward veganism"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q01-opt-4",
+            "optionOrder": 4,
+            "text": "identify trends in American consumer preferences"
+          }
+        ],
+        "correctOptionId": "reading-rap-3c7da315889dceed32412dcf-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q02",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The author notes all of the following as factors driving the popularity of veganism EXCEPT",
+      "rawDisplayText": "32. The author notes all of the following as factors driving the popularity of veganism EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-3c7da315889dceed32412dcf-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q02-opt-1",
+            "optionOrder": 1,
+            "text": "concern for animals"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q02-opt-2",
+            "optionOrder": 2,
+            "text": "considerations about health"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q02-opt-3",
+            "optionOrder": 3,
+            "text": "the high cost of consuming meat"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q02-opt-4",
+            "optionOrder": 4,
+            "text": "a desire to protect the environment"
+          }
+        ],
+        "correctOptionId": "reading-rap-3c7da315889dceed32412dcf-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q03",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"involved\" in the passage is closest in meaning to",
+      "rawDisplayText": "33. The word \"involved\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-3c7da315889dceed32412dcf-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q03-opt-1",
+            "optionOrder": 1,
+            "text": "unsatisfying"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q03-opt-2",
+            "optionOrder": 2,
+            "text": "expensive"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q03-opt-3",
+            "optionOrder": 3,
+            "text": "unpleasant"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q03-opt-4",
+            "optionOrder": 4,
+            "text": "complicated"
+          }
+        ],
+        "correctOptionId": "reading-rap-3c7da315889dceed32412dcf-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q04",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The author mentions \"a vegan cheese substitute\" primarily in order to",
+      "rawDisplayText": "34. The author mentions \"a vegan cheese substitute\" primarily in order to",
+      "payload": {
+        "passageId": "reading-rap-3c7da315889dceed32412dcf-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q04-opt-1",
+            "optionOrder": 1,
+            "text": "note a challenge inherent in preparing vegan meals"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q04-opt-2",
+            "optionOrder": 2,
+            "text": "identify a popular item used in many vegan recipes"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q04-opt-3",
+            "optionOrder": 3,
+            "text": "contrast the healthfulness of vegan and animal-based foods"
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q04-opt-4",
+            "optionOrder": 4,
+            "text": "describe a cooking process popularized by vegans"
+          }
+        ],
+        "correctOptionId": "reading-rap-3c7da315889dceed32412dcf-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q05",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage suggests which of the following about commercial meat-alternative products?",
+      "rawDisplayText": "35. The passage suggests which of the following about commercial meat-alternative products?",
+      "payload": {
+        "passageId": "reading-rap-3c7da315889dceed32412dcf-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q05-opt-1",
+            "optionOrder": 1,
+            "text": "They became increasingly popular with home cooks during the mid-2020s."
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q05-opt-2",
+            "optionOrder": 2,
+            "text": "They are produced in a way that causes some people to doubt their healthfulness."
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q05-opt-3",
+            "optionOrder": 3,
+            "text": "They are not popular with Americans concerned about food allergies."
+          },
+          {
+            "optionId": "reading-rap-3c7da315889dceed32412dcf-q05-opt-4",
+            "optionOrder": 4,
+            "text": "They have greatly improved in flavor since their introduction."
+          }
+        ],
+        "correctOptionId": "reading-rap-3c7da315889dceed32412dcf-q05-opt-2"
+      }
+    }
+  ]
+}

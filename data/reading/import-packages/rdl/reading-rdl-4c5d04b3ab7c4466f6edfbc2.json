@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2",
+    "module": "rdl",
+    "title": "Gym World membership email",
+    "firstSeenDate": "2026-06-14",
+    "firstSeenSourceLabel": "6.14",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "4c5d04b3ab7c4466f6edfbc28f54adf60251a4ab4d0e292aa7ac176f726a9d3a",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-14-m1-rdl-03",
+      "logicalItemId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2",
+      "sourceKind": "docx",
+      "sourceLabel": "6.14",
+      "occurrenceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.14.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.14_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-070",
+      "title": "Gym World membership email",
+      "source": "material-index.json#RDL-070",
+      "sourceDate": "2026-06-14",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-070/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-070/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01",
+      "logicalItemId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "When will Mr. Taylor receive his membership card?",
+      "rawDisplayText": "21. When will Mr. Taylor receive his membership card?",
+      "payload": {
+        "materialId": "RDL-070",
+        "options": [
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Within two business days"
+          },
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Within three business days"
+          },
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Within five business days"
+          },
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Within seven business days"
+          }
+        ],
+        "correctOptionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02",
+      "logicalItemId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "How can Mr. Taylor learn about gym promotions?",
+      "rawDisplayText": "22. How can Mr. Taylor learn about gym promotions?",
+      "payload": {
+        "materialId": "RDL-070",
+        "options": [
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02-opt-1",
+            "optionOrder": 1,
+            "text": "By downloading a mobile app"
+          },
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02-opt-2",
+            "optionOrder": 2,
+            "text": "By calling a representative"
+          },
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02-opt-3",
+            "optionOrder": 3,
+            "text": "By visiting a website"
+          },
+          {
+            "optionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02-opt-4",
+            "optionOrder": 4,
+            "text": "By checking the mail"
+          }
+        ],
+        "correctOptionId": "reading-rdl-4c5d04b3ab7c4466f6edfbc2-q02-opt-1"
+      }
+    }
+  ]
+}

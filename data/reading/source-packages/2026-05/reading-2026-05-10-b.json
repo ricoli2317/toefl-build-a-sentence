@@ -1,0 +1,1812 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.10B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Economics is the social science that studies the production, distribution, and consumption of goods and services. It exam_ _ _ _ how indiv_ _ _ _ _ _, households, busin_ _ _ _ _, and gover_ _ _ _ _ make cho_ _ _ _ about reso_ _ _ _ allocation a_ _ how su_ _ decisions aff_ _ _ overall stab_ _ _ _ _ and growth in the economy. Through the application of theoretical models and the collection of empirical data, economists can help policymakers formulate strategies to address issues such as inflation, unemployment, and trade imbalances, thereby improving societal well-being.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Economics is the social science that studies the production, distribution, and consumption of goods and services. It exam_ _ _ _ how indiv_ _ _ _ _ _, households, busin_ _ _ _ _, and gover_ _ _ _ _ make cho_ _ _ _ about reso_ _ _ _ allocation a_ _ how su_ _ decisions aff_ _ _ overall stab_ _ _ _ _ and growth in the economy. Through the application of theoretical models and the collection of empirical data, economists can help policymakers formulate strategies to address issues such as inflation, unemployment, and trade imbalances, thereby improving societal well-being.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Economics is the social science that studies the production, distribution, and consumption of goods and services. It "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " how "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", households, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " make "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " about "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " allocation "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " how "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " decisions "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " overall "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and growth in the economy. Through the application of theoretical models and the collection of empirical data, economists can help policymakers formulate strategies to address issues such as inflation, unemployment, and trade imbalances, thereby improving societal well-being."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "examines",
+                "prefix": "exam",
+                "displayText": "exam_ _ _ _",
+                "missingText": "ines",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "individuals",
+                "prefix": "indiv",
+                "displayText": "indiv_ _ _ _ _ _",
+                "missingText": "iduals",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "businesses",
+                "prefix": "busin",
+                "displayText": "busin_ _ _ _ _",
+                "missingText": "esses",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "government",
+                "prefix": "gover",
+                "displayText": "gover_ _ _ _ _",
+                "missingText": "nment",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "choices",
+                "prefix": "cho",
+                "displayText": "cho_ _ _ _",
+                "missingText": "ices",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "resource",
+                "prefix": "reso",
+                "displayText": "reso_ _ _ _",
+                "missingText": "urce",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "such",
+                "prefix": "su",
+                "displayText": "su_ _",
+                "missingText": "ch",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "affect",
+                "prefix": "aff",
+                "displayText": "aff_ _ _",
+                "missingText": "ect",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q01-10-p01",
+                "answer": "stability",
+                "prefix": "stab",
+                "displayText": "stab_ _ _ _ _",
+                "missingText": "ility",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The discovery of water and volcanic activity on moons like Europa and Enceladus has sparked interest in the potential for extraterrestrial life. These moons, orbi_ _ _ _ the pla_ _ _ _ Jupiter a_ _ Saturn, ha_ _ ice-covered surf_ _ _ _ with oce_ _ _ lying under_ _ _ _ _. Volcanic acti_ _ _ _, in t_ _ form o_ hydrothermal vents, provides heat and nutrients, creating environments where microbial life could potentially thrive. Missions by spacecraft such as the Galileo and Cassini have gathered valuable data on these moons.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "The discovery of water and volcanic activity on moons like Europa and Enceladus has sparked interest in the potential for extraterrestrial life. These moons, orbi_ _ _ _ the pla_ _ _ _ Jupiter a_ _ Saturn, ha_ _ ice-covered surf_ _ _ _ with oce_ _ _ lying under_ _ _ _ _. Volcanic acti_ _ _ _, in t_ _ form o_ hydrothermal vents, provides heat and nutrients, creating environments where microbial life could potentially thrive. Missions by spacecraft such as the Galileo and Cassini have gathered valuable data on these moons.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The discovery of water and volcanic activity on moons like Europa and Enceladus has sparked interest in the potential for extraterrestrial life. These moons, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Jupiter "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Saturn, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ice-covered "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " lying "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Volcanic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", in "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " form "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " hydrothermal vents, provides heat and nutrients, creating environments where microbial life could potentially thrive. Missions by spacecraft such as the Galileo and Cassini have gathered valuable data on these moons."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "orbiting",
+                "prefix": "orbi",
+                "displayText": "orbi_ _ _ _",
+                "missingText": "ting",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "planets",
+                "prefix": "pla",
+                "displayText": "pla_ _ _ _",
+                "missingText": "nets",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "have",
+                "prefix": "ha",
+                "displayText": "ha_ _",
+                "missingText": "ve",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "surfaces",
+                "prefix": "surf",
+                "displayText": "surf_ _ _ _",
+                "missingText": "aces",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "oceans",
+                "prefix": "oce",
+                "displayText": "oce_ _ _",
+                "missingText": "ans",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "underneath",
+                "prefix": "under",
+                "displayText": "under_ _ _ _ _",
+                "missingText": "neath",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "activity",
+                "prefix": "acti",
+                "displayText": "acti_ _ _ _",
+                "missingText": "vity",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-10-b-m1-ctw-q11-20-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-rdl-03",
+      "module": "rdl",
+      "title": "GoodBooks shipment",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-015",
+          "title": "GoodBooks shipment",
+          "source": "material-index.json#RDL-015",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-015/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-015/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What will Mr. Brown receive for free?",
+          "rawDisplayText": "21. What will Mr. Brown receive for free?",
+          "payload": {
+            "materialId": "RDL-015",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "A bookmark"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "A newsletter"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "A book"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "A catalog"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "On what basis did GoodBooks make a decision?",
+          "rawDisplayText": "22. On what basis did GoodBooks make a decision?",
+          "payload": {
+            "materialId": "RDL-015",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "A purchasing history"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "A limited budget"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "A reduced inventory"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "A completed survey"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-rdl-05",
+      "module": "rdl",
+      "title": "Literature 201: Introduction to World Literature",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-016",
+          "title": "Literature 201: Introduction to World Literature",
+          "source": "material-index.json#RDL-016",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-016/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-016/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the excerpt?",
+          "rawDisplayText": "23. What is the main purpose of the excerpt?",
+          "payload": {
+            "materialId": "RDL-016",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "To outline the grading criteria for course assignments"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "To summarize the course objectives and expectations"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "To provide a reading list for the course"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "To list all the major assignments for the course"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is indicated about the guest lectures?",
+          "rawDisplayText": "24. What is indicated about the guest lectures?",
+          "payload": {
+            "materialId": "RDL-016",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "They will be held every week."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "They will be delivered by professors from the university."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "They will feature writers who are well-known."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "They will include time for discussion."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q24-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-rdl-07",
+      "module": "rdl",
+      "title": "Sandeep Patel (10:00 A.M.)",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-017",
+          "title": "Sandeep Patel (10:00 A.M.)",
+          "source": "material-index.json#RDL-017",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-017/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-017/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "Who is Sandeep going to the concert with?",
+          "rawDisplayText": "25. Who is Sandeep going to the concert with?",
+          "payload": {
+            "materialId": "RDL-017",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "His cousin"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "His classmate"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Fatima"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "His friend"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q25-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "How does Sandeep most likely feel about Fatima’s situation?",
+          "rawDisplayText": "26. How does Sandeep most likely feel about Fatima’s situation?",
+          "payload": {
+            "materialId": "RDL-017",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Happy"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "Relieved"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Indifferent"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Disappointed"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "At 10:05 A.M., what does Fatima most likely mean when she writes, “I would like to, but one of my classmates has been out sick all week and our report is due tomorrow”?",
+          "rawDisplayText": "27. At 10:05 A.M., what does Fatima most likely mean when she writes, “I would like to, but one of my classmates has been out sick all week and our report is due tomorrow”?",
+          "payload": {
+            "materialId": "RDL-017",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "She feels too ill to go to the concert."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "She will take next week off from work."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "She does not think the concert will be enjoyable."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "She is unlikely to be able to attend the concert."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q27-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-rdl-10",
+      "module": "rdl",
+      "title": "Internship fair follow-up",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-018",
+          "title": "Internship fair follow-up",
+          "source": "material-index.json#RDL-018",
+          "sourceDate": "2026-05-10",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-018/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-018/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "What is most likely true about Nia’s level of interest in BrightPath Analytics?",
+          "rawDisplayText": "28. What is most likely true about Nia’s level of interest in BrightPath Analytics?",
+          "payload": {
+            "materialId": "RDL-018",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "She is unsure whether she wants to continue the application process."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "She is enthusiastic about the opportunity and hopes to move forward."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "She prefers another company whose representative she met at the fair."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "She is only applying because her advisor recommended that she do it."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "According to her email, Nia gained skills that will help her succeed as an intern at BrightPath Analytics from",
+          "rawDisplayText": "29. According to her email, Nia gained skills that will help her succeed as an intern at BrightPath Analytics from",
+          "payload": {
+            "materialId": "RDL-018",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "hardware design case studies that she has done"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "creative writing classes that she has taken"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "her major subject and minor subject coursework"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "her previous work experience in marketing"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Nia expects which of the following to be a part of the application process?",
+          "rawDisplayText": "30. Nia expects which of the following to be a part of the application process?",
+          "payload": {
+            "materialId": "RDL-018",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "An interview at BrightPath Analytics headquarters"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "The completion of a brief screening exam"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "The successful completion of a trial work period"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "The submission of a recommendation letter"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q30-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m1-rap-13",
+      "module": "rap",
+      "title": "Sociocybernetics: Understanding Complex Social Systems",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-10-b-m1-rap-p01",
+          "title": "Sociocybernetics: Understanding Complex Social Systems",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics. By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function. A key concept in sociocybernetics is self-organization. This is the process in which social systems develop ordered patterns without centralized control.",
+              "rawText": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics. ■ By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function. ■ A key concept in sociocybernetics is self-organization. ■ This is the process in which social systems develop ordered patterns without centralized control. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Sociocybernetics is a field that provides tools to analyze complex social systems, merging sociology and cybernetics."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "By applying principles of feedback, control, and communication from cybernetics, sociologists can understand how societies function."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "A key concept in sociocybernetics is self-organization."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This is the process in which social systems develop ordered patterns without centralized control."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Feedback loops are crucial in sociocybernetics. Positive feedback amplifies changes, leading to rapid social transformations. Negative feedback stabilizes systems, maintaining equilibrium. In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises. Recognizing these mechanisms helps sociologists predict and influence social dynamics.",
+              "rawText": "Feedback loops are crucial in sociocybernetics. Positive feedback amplifies changes, leading to rapid social transformations. Negative feedback stabilizes systems, maintaining equilibrium. In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises. Recognizing these mechanisms helps sociologists predict and influence social dynamics.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Feedback loops are crucial in sociocybernetics."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Positive feedback amplifies changes, leading to rapid social transformations."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Negative feedback stabilizes systems, maintaining equilibrium."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "In economic systems, positive feedback can result in booming markets, while negative feedback can prevent financial crises."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Recognizing these mechanisms helps sociologists predict and influence social dynamics."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Communication is another critical aspect. Effective communication channels within social systems impact their stability and adaptability. Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos. Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems. These models also explore how digital technologies influence communication patterns.",
+              "rawText": "Communication is another critical aspect. Effective communication channels within social systems impact their stability and adaptability. Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos. Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems. These models also explore how digital technologies influence communication patterns.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Communication is another critical aspect."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Effective communication channels within social systems impact their stability and adaptability."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Misinformation or communication breakdowns can disrupt social cohesion and lead to chaos."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Sociocybernetic models highlight the importance of transparent information flow in maintaining healthy social systems."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "These models also explore how digital technologies influence communication patterns."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Sociocybernetics is important to urban planning. Cities are complex systems with numerous interacting components. Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies. This approach helps create sustainable urban environments that better respond to changes.",
+              "rawText": "Sociocybernetics is important to urban planning. Cities are complex systems with numerous interacting components. Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies. This approach helps create sustainable urban environments that better respond to changes.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Sociocybernetics is important to urban planning."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Cities are complex systems with numerous interacting components."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Using sociocybernetic principles, urban planners design more resilient cities by modeling traffic patterns, resource distribution, and emergency response strategies."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m1-rap-p01-p04-s04",
+                  "sentenceOrder": 4,
+                  "text": "This approach helps create sustainable urban environments that better respond to changes."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “amplifies” in the passage is closest in meaning to",
+          "rawDisplayText": "31. The word “amplifies” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "delays"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "increases"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "simplifies"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "suggests"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following can be inferred about positive and negative feedback?",
+          "rawDisplayText": "32. Which of the following can be inferred about positive and negative feedback?",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "Positive feedback leads to outcomes that are more beneficial than those from negative feedback."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "Negative feedback is easier for sociologists to recognize than positive feedback."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "Positive and negative feedback both provide systems with beneficial information."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "Positive feedback is more common in progressive social systems than negative feedback."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q32-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to sociocybernetic models, effective communication is important for",
+          "rawDisplayText": "33. According to sociocybernetic models, effective communication is important for",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "preventing misinformation"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "maintenance of social cohesion"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "transparent information flow"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "providing successful digital technologies"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is an aspect of urban environments that makes them a suitable object of study for sociocybernetics?",
+          "rawDisplayText": "34. What is an aspect of urban environments that makes them a suitable object of study for sociocybernetics?",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "They involve many interacting components."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "They can be made more resilient when designed using scientific principles."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "They feature ideal traffic patterns."
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "They respond better to changes when they are more sustainable."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m1-rap-p01",
+            "insertSentence": "The latter is concerned with the comparative study of automatic control systems, such as the nervous system.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-10-b-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-10-b-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p01",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-10-b-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-10-b-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-10-b-m1-rap-p01-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-10-b-m1-rap-p01-p01-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-10-b-m1-q35-anchor-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The human brain is an extraordinarily intricate organ, unrivaled in its complexity and function. Studying its anatomy reveals a remarkable internal architecture, composed of billions of neurons intricately interconnected by synapses. These neurons tran_ _ _ _ electrical impu_ _ _ _, facilitating t_ _ brain’s ro_ _ in enab_ _ _ _ cognition, proce_ _ _ _ _ information, regul_ _ _ _ _ essential bod_ _ _ functions, a_ _ facilitating emot_ _ _ _. The reflective nature of studying the brain encourages careful consideration of how its structure impacts behavior and thought.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The human brain is an extraordinarily intricate organ, unrivaled in its complexity and function. Studying its anatomy reveals a remarkable internal architecture, composed of billions of neurons intricately interconnected by synapses. These neurons tran_ _ _ _ electrical impu_ _ _ _, facilitating t_ _ brain’s ro_ _ in enab_ _ _ _ cognition, proce_ _ _ _ _ information, regul_ _ _ _ _ essential bod_ _ _ functions, a_ _ facilitating emot_ _ _ _. The reflective nature of studying the brain encourages careful consideration of how its structure impacts behavior and thought.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The human brain is an extraordinarily intricate organ, unrivaled in its complexity and function. Studying its anatomy reveals a remarkable internal architecture, composed of billions of neurons intricately interconnected by synapses. These neurons "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " electrical "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", facilitating "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " brain’s "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " in "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " cognition, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " information, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " essential "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " functions, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " facilitating "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". The reflective nature of studying the brain encourages careful consideration of how its structure impacts behavior and thought."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "transmit",
+                "prefix": "tran",
+                "displayText": "tran_ _ _ _",
+                "missingText": "smit",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "impulses",
+                "prefix": "impu",
+                "displayText": "impu_ _ _ _",
+                "missingText": "lses",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "role",
+                "prefix": "ro",
+                "displayText": "ro_ _",
+                "missingText": "le",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "enabling",
+                "prefix": "enab",
+                "displayText": "enab_ _ _ _",
+                "missingText": "ling",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "processing",
+                "prefix": "proce",
+                "displayText": "proce_ _ _ _ _",
+                "missingText": "ssing",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "regulating",
+                "prefix": "regul",
+                "displayText": "regul_ _ _ _ _",
+                "missingText": "ating",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "bodily",
+                "prefix": "bod",
+                "displayText": "bod_ _ _",
+                "missingText": "ily",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-10-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-10-b-m2-ctw-q01-10-p01",
+                "answer": "emotions",
+                "prefix": "emot",
+                "displayText": "emot_ _ _ _",
+                "missingText": "ions",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-10b-m2-rap-19",
+      "module": "rap",
+      "title": "The Power of Music",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.10B",
+        "occurrenceDate": "2026-05-10",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-10-b-m2-rap-p01",
+          "title": "The Power of Music",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-10-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Music is often hailed as a universal language. Philosophers and neuroscientists alike have explored music’s power to convey emotions without words. While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions. This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression.",
+              "rawText": "Music is often hailed as a universal language. Philosophers and neuroscientists alike have explored music’s power to convey emotions without words. While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions. This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Music is often hailed as a universal language."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Philosophers and neuroscientists alike have explored music’s power to convey emotions without words."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "While lacking the precision of spoken language, music uniquely evokes complex emotions, a phenomenon attributed to its simultaneous engagement of various brain regions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "This interplay not only stirs emotions but also triggers memories and bodily responses, making music a profound medium of expression."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-10-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Historically, figures like the ancient Greek philosopher Aristotle argued for music’s ethical influence, positing that different musical modes could either promote virtue or incite vice. Modern research, however, leans toward music’s role in emotional regulation rather than moral alteration. Researchers have investigated how music interacts with human psychology beyond mere enjoyment. For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music’s therapeutic potential.",
+              "rawText": "Historically, figures like the ancient Greek philosopher Aristotle argued for music’s ethical influence, positing that different musical modes could either promote virtue or incite vice. Modern research, however, leans toward music’s role in emotional regulation rather than moral alteration. Researchers have investigated how music interacts with human psychology beyond mere enjoyment. For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music’s therapeutic potential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Historically, figures like the ancient Greek philosopher Aristotle argued for music’s ethical influence, positing that different musical modes could either promote virtue or incite vice."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Modern research, however, leans toward music’s role in emotional regulation rather than moral alteration."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Researchers have investigated how music interacts with human psychology beyond mere enjoyment."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "For instance, studies have shown that listening to slow-tempo classical music can reduce anxiety levels in patients before surgery, demonstrating music’s therapeutic potential."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-10-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts. Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression. This universality has sparked inquiries into music’s evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development.",
+              "rawText": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts. Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression. This universality has sparked inquiries into music’s evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Surprisingly, the ability to perceive emotions in music transcends cultural contexts."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Studies reveal that individuals worldwide can discern emotions like joy or sorrow in music, suggesting an innate human aptitude for musical expression."
+                },
+                {
+                  "sentenceId": "reading-2026-05-10-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "This universality has sparked inquiries into music’s evolutionary role, raising questions about whether music is merely an art form or a crucial aspect of human development."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-10-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “interplay” in the passage is closest in meaning to",
+          "rawDisplayText": "11. The word “interplay” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "interaction"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "interpretation"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "interval"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "intervention"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m2-q11-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "It can be inferred that music is similar to language in that music",
+          "rawDisplayText": "12. It can be inferred that music is similar to language in that music",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "matches the precision of written language"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "engages only those areas of the brain that language engages"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "has rules that are very similar to the rules of spoken language"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "is a medium of expression that conveys complex emotions"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention ancient Greek philosopher Aristotle?",
+          "rawDisplayText": "13. Why does the author mention ancient Greek philosopher Aristotle?",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "To point out that music was once thought to have a significant moral influence"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "To support the point that music is a powerful tool for emotional regulation"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "To suggest that ancient philosophers had a more nuanced understanding of music than modern researchers do"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "To identify the person who founded the academic field known as music theory"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “patients before surgery”?",
+          "rawDisplayText": "14. Why does the author mention “patients before surgery”?",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To demonstrate that the ancient Greek understanding of music was incorrect"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To argue that emotional states affect the enjoyment of music"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To provide an example of how music regulates emotions"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that slow-tempo classical music can lead to anxiety"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m2-q14-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-10-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, the existence of an innate human aptitude for musical expression suggests that",
+          "rawDisplayText": "15. According to the passage, the existence of an innate human aptitude for musical expression suggests that",
+          "payload": {
+            "passageId": "reading-2026-05-10-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-10-b-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "music should only be seen as a form of art"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "music may have played an important role in human development"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "music that expresses joy is more universally appreciated than music that expresses sorrow"
+              },
+              {
+                "optionId": "reading-2026-05-10-b-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "music is not understood in the same way across different cultures"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-10-b-m2-q15-opt-2"
+          }
+        }
+      ]
+    }
+  ]
+}

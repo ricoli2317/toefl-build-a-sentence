@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-06-02",
+    "firstSeenSourceLabel": "6.2",
+    "firstSeenSourceOrder": 17,
+    "dedupFingerprint": "c8a8a0593ef7fa6d556d6d7bc1f4f1425fdb9aba44bf3d203d3ef6ad1afa86b7",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-2-m2-ctw-17",
+      "logicalItemId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.2",
+      "occurrenceDate": "2026-06-02",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.2.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.2_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 17,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01",
+      "logicalItemId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Logical reasoning is a cornerstone of academic methodology, providing a structured approach to analyzing arguments and evidence. Deductive reas_ _ _ _ _ starts wi_ _ general princ_ _ _ _ _ and der_ _ _ _ specific concl_ _ _ _ _ _, while indu_ _ _ _ _ thinking invo_ _ _ _ drawing br_ _ _ generalizations fr_ _ specific observ_ _ _ _ _ _. Critical thinking skills enable scholars to identify logical fallacies, assess the credibility of sources, and construct coherent arguments. The application of logic extends across disciplines, from mathematics to philosophy to the natural sciences. Developing proficiency in logical reasoning enhances the ability to solve complex problems and communicate effectively, fostering intellectual rigor and innovation.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Logical reasoning is a cornerstone of academic methodology, providing a structured approach to analyzing arguments and evidence. Deductive reas_ _ _ _ _ starts wi_ _ general princ_ _ _ _ _ and der_ _ _ _ specific concl_ _ _ _ _ _, while indu_ _ _ _ _ thinking invo_ _ _ _ drawing br_ _ _ generalizations fr_ _ specific observ_ _ _ _ _ _. Critical thinking skills enable scholars to identify logical fallacies, assess the credibility of sources, and construct coherent arguments. The application of logic extends across disciplines, from mathematics to philosophy to the natural sciences. Developing proficiency in logical reasoning enhances the ability to solve complex problems and communicate effectively, fostering intellectual rigor and innovation.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Logical reasoning is a cornerstone of academic methodology, providing a structured approach to analyzing arguments and evidence. Deductive "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " starts "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " general "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " specific "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": ", while "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " thinking "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " drawing "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " generalizations "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " specific "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": ". Critical thinking skills enable scholars to identify logical fallacies, assess the credibility of sources, and construct coherent arguments. The application of logic extends across disciplines, from mathematics to philosophy to the natural sciences. Developing proficiency in logical reasoning enhances the ability to solve complex problems and communicate effectively, fostering intellectual rigor and innovation."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "reasoning",
+            "prefix": "reas",
+            "displayText": "reas_ _ _ _ _",
+            "missingText": "oning",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "with",
+            "prefix": "wi",
+            "displayText": "wi_ _",
+            "missingText": "th",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "principles",
+            "prefix": "princ",
+            "displayText": "princ_ _ _ _ _",
+            "missingText": "iples",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "derives",
+            "prefix": "der",
+            "displayText": "der_ _ _ _",
+            "missingText": "ives",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "conclusions",
+            "prefix": "concl",
+            "displayText": "concl_ _ _ _ _ _",
+            "missingText": "usions",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "inductive",
+            "prefix": "indu",
+            "displayText": "indu_ _ _ _ _",
+            "missingText": "ctive",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "involves",
+            "prefix": "invo",
+            "displayText": "invo_ _ _ _",
+            "missingText": "lves",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "broad",
+            "prefix": "br",
+            "displayText": "br_ _ _",
+            "missingText": "oad",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "from",
+            "prefix": "fr",
+            "displayText": "fr_ _",
+            "missingText": "om",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-c8a8a0593ef7fa6d556d6d7b-q01-p01",
+            "answer": "observations",
+            "prefix": "observ",
+            "displayText": "observ_ _ _ _ _ _",
+            "missingText": "ations",
+            "missingLength": 6
+          }
+        ]
+      }
+    }
+  ]
+}

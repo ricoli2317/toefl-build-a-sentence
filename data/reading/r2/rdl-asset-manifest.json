@@ -1,0 +1,4403 @@
+{
+  "schemaVersion": 1,
+  "protocol": "tps-reading-rdl-assets-v1",
+  "generatedAt": "2026-08-28T09:19:01.389Z",
+  "publishStatus": "verified",
+  "objectKeyConvention": "reading/rdl/<MATERIAL_ID>/<asset-file>",
+  "materialCount": 86,
+  "objectCount": 172,
+  "source": {
+    "materialIndexPath": "data/material-index.json",
+    "materialIndexSha256": "3d1efd5bfa6ad103b1c839a68e431dab5c03a59dadbdbc18f67028177ba6fe38",
+    "selectionCatalogPath": "data/selection-assets.json",
+    "selectionCatalogSha256": "87d602ec6f188a98f02de7d709938e34e4e6a1c535eb6313645433945687ffe7",
+    "integrityStatus": "COMPLETE"
+  },
+  "publication": {
+    "bucketName": "tps-reading-assets",
+    "publicBaseUrlType": "temporary_r2_public_url",
+    "checksumVerifiedCount": 172,
+    "contentTypeVerifiedCount": 172,
+    "cacheControlVerifiedCount": 172,
+    "publicRuntimeVerifiedCount": 172,
+    "corsVerified": true
+  },
+  "materials": [
+    {
+      "materialId": "RDL-001",
+      "canonicalImagePath": "data/5.3A/robotics-workshop/canonical.png",
+      "canonicalSelectionMapPath": "data/5.3A/robotics-workshop/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-001/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-001/selection_map.json",
+      "imageSha256": "d67047b95e314d1f31f11162de2ef08967998450fdbed5fe0c85fade3635bf87",
+      "selectionMapSha256": "5d0530ba52731d45ea06781c421d56c1ddd31f79ceda532009fb202408408ef7",
+      "imageSize": 131034,
+      "selectionMapSize": 162883,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-001",
+        "canonicalSource": {
+          "set": "5.3A",
+          "file": "5月/Questions/5.3A.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd.png",
+        "selectionImageSha256": "ee368efd5edb412ab148cc7ba4de7212a8bac9ed89904de7054ac5a4b16cca14",
+        "canonicalImageSha256": "d67047b95e314d1f31f11162de2ef08967998450fdbed5fe0c85fade3635bf87"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "d67047b95e314d1f31f11162de2ef08967998450fdbed5fe0c85fade3635bf87",
+          "size": 131034,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "5d0530ba52731d45ea06781c421d56c1ddd31f79ceda532009fb202408408ef7",
+          "size": 162883,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-002",
+      "canonicalImagePath": "data/5.3A/printer-setup/canonical.png",
+      "canonicalSelectionMapPath": "data/5.3A/printer-setup/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-002/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-002/selection_map.json",
+      "imageSha256": "ef5bb11f4ccb824a5527379df8025f4b01a30d61f6cb181bd6d2b6371dd275ee",
+      "selectionMapSha256": "961a0633c280414f3465f59ccd735b83179652591627c1a32614ca0f6e1e3be8",
+      "imageSize": 101894,
+      "selectionMapSize": 161178,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-002",
+        "canonicalSource": {
+          "set": "5.3A",
+          "file": "5月/Questions/5.3A.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd.png",
+        "selectionImageSha256": "f1d69b93b303855f8272907a9857d59f418d46b6a86ddf54236160c9c7a89547",
+        "canonicalImageSha256": "ef5bb11f4ccb824a5527379df8025f4b01a30d61f6cb181bd6d2b6371dd275ee"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "ef5bb11f4ccb824a5527379df8025f4b01a30d61f6cb181bd6d2b6371dd275ee",
+          "size": 101894,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "961a0633c280414f3465f59ccd735b83179652591627c1a32614ca0f6e1e3be8",
+          "size": 161178,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-003",
+      "canonicalImagePath": "data/5.3A/mini-fridge-messages/canonical.png",
+      "canonicalSelectionMapPath": "data/5.3A/mini-fridge-messages/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-003/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-003/selection_map.json",
+      "imageSha256": "b952f9b689c2c7c50b2ce0ab10d5de0bdd19a3ec4f873aa95f264284d3b76965",
+      "selectionMapSha256": "cf21d5d55443be05c74d9452994b15626d18cdcfe4f00cc26dc179b1f6ba99ac",
+      "imageSize": 308647,
+      "selectionMapSize": 344207,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-003",
+        "canonicalSource": {
+          "set": "5.3A",
+          "file": "5月/Questions/5.3A.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd.png",
+        "selectionImageSha256": "37e3f55ca2c8ee7280700e7edc44399b4863a9266c2f9143e43b4d5a9b10c462",
+        "canonicalImageSha256": "b952f9b689c2c7c50b2ce0ab10d5de0bdd19a3ec4f873aa95f264284d3b76965"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "b952f9b689c2c7c50b2ce0ab10d5de0bdd19a3ec4f873aa95f264284d3b76965",
+          "size": 308647,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "cf21d5d55443be05c74d9452994b15626d18cdcfe4f00cc26dc179b1f6ba99ac",
+          "size": 344207,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-004",
+      "canonicalImagePath": "data/5.3A/well-being-event/canonical.png",
+      "canonicalSelectionMapPath": "data/5.3A/well-being-event/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-004/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-004/selection_map.json",
+      "imageSha256": "8cc49602f56e5a50ad8ad64363c8c07ea0c8cee81ed909b1c0382e145b56569e",
+      "selectionMapSha256": "ba9472d0741e3de40b734b77858f7f9712d310bd8f1f6714bd60b80aaddcb418",
+      "imageSize": 256628,
+      "selectionMapSize": 483511,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-004",
+        "canonicalSource": {
+          "set": "5.3A",
+          "file": "5月/Questions/5.3A.pdf",
+          "page": 5,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd.png",
+        "selectionImageSha256": "8983d6938260828eef6017c4c24ab6b91a16daad2ec886a897581b7fc3aa0ae2",
+        "canonicalImageSha256": "8cc49602f56e5a50ad8ad64363c8c07ea0c8cee81ed909b1c0382e145b56569e"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "8cc49602f56e5a50ad8ad64363c8c07ea0c8cee81ed909b1c0382e145b56569e",
+          "size": 256628,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "ba9472d0741e3de40b734b77858f7f9712d310bd8f1f6714bd60b80aaddcb418",
+          "size": 483511,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-005",
+      "canonicalImagePath": "data/canonical-assets/rdl-005-larkhaven-advertisement/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-005-larkhaven-advertisement/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-005/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-005/selection_map.json",
+      "imageSha256": "ce1ad53aabad1946579964633f375a6bf9eb6d226959a6bce698bec6fcc7e57d",
+      "selectionMapSha256": "191dc6f0c2f2d2a59e4d1b6ca3875abcd192c59c63337537269a8d9cabb91f98",
+      "imageSize": 716079,
+      "selectionMapSize": 159927,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-005",
+        "canonicalSource": {
+          "set": "5.3B",
+          "file": "5月/Questions/5.3B.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "ce1ad53aabad1946579964633f375a6bf9eb6d226959a6bce698bec6fcc7e57d",
+        "canonicalImageSha256": "ce1ad53aabad1946579964633f375a6bf9eb6d226959a6bce698bec6fcc7e57d"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "ce1ad53aabad1946579964633f375a6bf9eb6d226959a6bce698bec6fcc7e57d",
+          "size": 716079,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "191dc6f0c2f2d2a59e4d1b6ca3875abcd192c59c63337537269a8d9cabb91f98",
+          "size": 159927,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-006",
+      "canonicalImagePath": "data/canonical-assets/rdl-006-health-wellness-conference/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-006-health-wellness-conference/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-006/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-006/selection_map.json",
+      "imageSha256": "d30bafbd8862f0d6c5177a5e509a9f2de8d7070c1a74f58f0a3deee30e10490e",
+      "selectionMapSha256": "f7456c7e87581fb225c67361ad25b4630aeb33e9912b2c60798c03c9ccfa97f8",
+      "imageSize": 1355085,
+      "selectionMapSize": 468932,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-006",
+        "canonicalSource": {
+          "set": "5.3B",
+          "file": "5月/Questions/5.3B.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "d30bafbd8862f0d6c5177a5e509a9f2de8d7070c1a74f58f0a3deee30e10490e",
+        "canonicalImageSha256": "d30bafbd8862f0d6c5177a5e509a9f2de8d7070c1a74f58f0a3deee30e10490e"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "d30bafbd8862f0d6c5177a5e509a9f2de8d7070c1a74f58f0a3deee30e10490e",
+          "size": 1355085,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "f7456c7e87581fb225c67361ad25b4630aeb33e9912b2c60798c03c9ccfa97f8",
+          "size": 468932,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-007",
+      "canonicalImagePath": "data/canonical-assets/rdl-007-fall-midterm-schedule/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-007-fall-midterm-schedule/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-007/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-007/selection_map.json",
+      "imageSha256": "44dbdd2388f307d953e84d28aafea8f87175745dcc22aa43a51256a9c62fe824",
+      "selectionMapSha256": "3eeffcf6bbf705eea9574c9a01824e61fe721fc12298017b0ed7f84ffef065cb",
+      "imageSize": 1557832,
+      "selectionMapSize": 153337,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-007",
+        "canonicalSource": {
+          "set": "5.5A",
+          "file": "5月/Questions/5.5A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "44dbdd2388f307d953e84d28aafea8f87175745dcc22aa43a51256a9c62fe824",
+        "canonicalImageSha256": "44dbdd2388f307d953e84d28aafea8f87175745dcc22aa43a51256a9c62fe824"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "44dbdd2388f307d953e84d28aafea8f87175745dcc22aa43a51256a9c62fe824",
+          "size": 1557832,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "3eeffcf6bbf705eea9574c9a01824e61fe721fc12298017b0ed7f84ffef065cb",
+          "size": 153337,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-008",
+      "canonicalImagePath": "data/canonical-assets/rdl-008-eliot-fan-email/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-008-eliot-fan-email/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-008/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-008/selection_map.json",
+      "imageSha256": "0e2e69285e1657bfafa705397b9b10b5ac2651a1b2c0b49dbba96c8998262591",
+      "selectionMapSha256": "89c9e8a123f2f30606b1e350031634a15754964c869f8c670581c20958ec3454",
+      "imageSize": 2550845,
+      "selectionMapSize": 414656,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-008",
+        "canonicalSource": {
+          "set": "5.5A",
+          "file": "5月/Questions/5.5A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0e2e69285e1657bfafa705397b9b10b5ac2651a1b2c0b49dbba96c8998262591",
+        "canonicalImageSha256": "0e2e69285e1657bfafa705397b9b10b5ac2651a1b2c0b49dbba96c8998262591"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0e2e69285e1657bfafa705397b9b10b5ac2651a1b2c0b49dbba96c8998262591",
+          "size": 2550845,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "89c9e8a123f2f30606b1e350031634a15754964c869f8c670581c20958ec3454",
+          "size": 414656,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-009",
+      "canonicalImagePath": "data/canonical-assets/rdl-009-mystery-must-see/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-009-mystery-must-see/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-009/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-009/selection_map.json",
+      "imageSha256": "94678944df3eba03df3126f303baf943a270fdb759f8d03f8274cd1fa0764258",
+      "selectionMapSha256": "5262722c09977fd87d5e649593f7f3e11371814089c2d3b86e8679cad7988b14",
+      "imageSize": 2054249,
+      "selectionMapSize": 149567,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-009",
+        "canonicalSource": {
+          "set": "5.6A",
+          "file": "5月/Questions/5.6A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "94678944df3eba03df3126f303baf943a270fdb759f8d03f8274cd1fa0764258",
+        "canonicalImageSha256": "94678944df3eba03df3126f303baf943a270fdb759f8d03f8274cd1fa0764258"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "94678944df3eba03df3126f303baf943a270fdb759f8d03f8274cd1fa0764258",
+          "size": 2054249,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "5262722c09977fd87d5e649593f7f3e11371814089c2d3b86e8679cad7988b14",
+          "size": 149567,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-010",
+      "canonicalImagePath": "data/canonical-assets/rdl-010-adler-auditorium-film-studies/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-010-adler-auditorium-film-studies/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-010/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-010/selection_map.json",
+      "imageSha256": "fb76ae27c01b3a9c7ec7ce7ed9fccb5013926923595d0c7b7789be92b4603233",
+      "selectionMapSha256": "c55752e88bbe8d0059b8f46c58a2f09aa3e53cdf7b2a8608f0839c3d2229cfec",
+      "imageSize": 3138107,
+      "selectionMapSize": 448197,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-010",
+        "canonicalSource": {
+          "set": "5.6A",
+          "file": "5月/Questions/5.6A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "fb76ae27c01b3a9c7ec7ce7ed9fccb5013926923595d0c7b7789be92b4603233",
+        "canonicalImageSha256": "fb76ae27c01b3a9c7ec7ce7ed9fccb5013926923595d0c7b7789be92b4603233"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "fb76ae27c01b3a9c7ec7ce7ed9fccb5013926923595d0c7b7789be92b4603233",
+          "size": 3138107,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "c55752e88bbe8d0059b8f46c58a2f09aa3e53cdf7b2a8608f0839c3d2229cfec",
+          "size": 448197,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-011",
+      "canonicalImagePath": "data/canonical-assets/rdl-011-dormitory-quiet-hours/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-011-dormitory-quiet-hours/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-011/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-011/selection_map.json",
+      "imageSha256": "9f5cf5d5f63ddfd8d4eaec3051aafdeec6c003cb8e17256533ae51c2fb888bab",
+      "selectionMapSha256": "3928ee7c7117b055d4caca02a98b7948e6881bd741671abbbae292de51094713",
+      "imageSize": 961906,
+      "selectionMapSize": 154345,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-011",
+        "canonicalSource": {
+          "set": "5.6B",
+          "file": "5月/Questions/5.6B.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "9f5cf5d5f63ddfd8d4eaec3051aafdeec6c003cb8e17256533ae51c2fb888bab",
+        "canonicalImageSha256": "9f5cf5d5f63ddfd8d4eaec3051aafdeec6c003cb8e17256533ae51c2fb888bab"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "9f5cf5d5f63ddfd8d4eaec3051aafdeec6c003cb8e17256533ae51c2fb888bab",
+          "size": 961906,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "3928ee7c7117b055d4caca02a98b7948e6881bd741671abbbae292de51094713",
+          "size": 154345,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-012",
+      "canonicalImagePath": "data/canonical-assets/rdl-012-cold-flu-season/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-012-cold-flu-season/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-012/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-012/selection_map.json",
+      "imageSha256": "06fba5278c2fc6c88279f2abeb994d2f04afb36bdc807c0c50233f13f9f0c1e9",
+      "selectionMapSha256": "5df270a74ff00fa50a5ec46042e7a25abb85fe144fdeecf75e3934d66793ceac",
+      "imageSize": 2031109,
+      "selectionMapSize": 415004,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-012",
+        "canonicalSource": {
+          "set": "5.6B",
+          "file": "5月/Questions/5.6B.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "06fba5278c2fc6c88279f2abeb994d2f04afb36bdc807c0c50233f13f9f0c1e9",
+        "canonicalImageSha256": "06fba5278c2fc6c88279f2abeb994d2f04afb36bdc807c0c50233f13f9f0c1e9"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "06fba5278c2fc6c88279f2abeb994d2f04afb36bdc807c0c50233f13f9f0c1e9",
+          "size": 2031109,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "5df270a74ff00fa50a5ec46042e7a25abb85fe144fdeecf75e3934d66793ceac",
+          "size": 415004,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-013",
+      "canonicalImagePath": "data/5.10A/tasty-bites-review/canonical.png",
+      "canonicalSelectionMapPath": "data/5.10A/tasty-bites-review/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-013/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-013/selection_map.json",
+      "imageSha256": "010dc7338575187f11a5c9f513631c337d91dbf671d9a170daed03fc8bec7113",
+      "selectionMapSha256": "5eff21487e1bb5b0396333c26cd1b813940dc4b8c29611a6e8c6b97a461c1758",
+      "imageSize": 388420,
+      "selectionMapSize": 167137,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-013",
+        "canonicalSource": {
+          "set": "5.10A",
+          "file": "5月/Questions/5.10A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd.png",
+        "selectionImageSha256": "063d39596453758ffae1478538dea9cbb445881f90472683bb795441299e82d8",
+        "canonicalImageSha256": "010dc7338575187f11a5c9f513631c337d91dbf671d9a170daed03fc8bec7113"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "010dc7338575187f11a5c9f513631c337d91dbf671d9a170daed03fc8bec7113",
+          "size": 388420,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "5eff21487e1bb5b0396333c26cd1b813940dc4b8c29611a6e8c6b97a461c1758",
+          "size": 167137,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-014",
+      "canonicalImagePath": "data/5.10A/ridgeview-campus-life/canonical.png",
+      "canonicalSelectionMapPath": "data/5.10A/ridgeview-campus-life/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-014/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-014/selection_map.json",
+      "imageSha256": "b11aa8b514d35650dd3fe1d8f7cdfc99c756cc1d10b8b68f151504bb13353f11",
+      "selectionMapSha256": "9c9f6aadb1a0788e5b9b1bc7496505f5e85a1c2dcf40d6e9e5f7f9bc9902f312",
+      "imageSize": 894714,
+      "selectionMapSize": 482858,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-014",
+        "canonicalSource": {
+          "set": "5.10A",
+          "file": "5月/Questions/5.10A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd.png",
+        "selectionImageSha256": "31fa91da5cdb72805e3fe0fcfb093c52ad8cc525875620eb506f403c623f7f4b",
+        "canonicalImageSha256": "b11aa8b514d35650dd3fe1d8f7cdfc99c756cc1d10b8b68f151504bb13353f11"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "b11aa8b514d35650dd3fe1d8f7cdfc99c756cc1d10b8b68f151504bb13353f11",
+          "size": 894714,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "9c9f6aadb1a0788e5b9b1bc7496505f5e85a1c2dcf40d6e9e5f7f9bc9902f312",
+          "size": 482858,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-015",
+      "canonicalImagePath": "data/canonical-assets/rdl-015-goodbooks-shipment/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-015-goodbooks-shipment/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-015/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-015/selection_map.json",
+      "imageSha256": "7421d2b965eb6c5a2406dbfa6b68cce1f88ddec62181f349ecb7430fc91aaeb0",
+      "selectionMapSha256": "a182ff1fea12b1fd9670c26fda4a4bf751770548366dfda60681e4b050cbdc73",
+      "imageSize": 1389635,
+      "selectionMapSize": 137986,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-015",
+        "canonicalSource": {
+          "set": "5.13",
+          "file": "5月/Questions/5.13-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "7421d2b965eb6c5a2406dbfa6b68cce1f88ddec62181f349ecb7430fc91aaeb0",
+        "canonicalImageSha256": "7421d2b965eb6c5a2406dbfa6b68cce1f88ddec62181f349ecb7430fc91aaeb0"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "7421d2b965eb6c5a2406dbfa6b68cce1f88ddec62181f349ecb7430fc91aaeb0",
+          "size": 1389635,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a182ff1fea12b1fd9670c26fda4a4bf751770548366dfda60681e4b050cbdc73",
+          "size": 137986,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-016",
+      "canonicalImagePath": "data/canonical-assets/rdl-016-world-literature-syllabus/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-016-world-literature-syllabus/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-016/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-016/selection_map.json",
+      "imageSha256": "401539a1fa6dcb4e8d57c7dde1ae9e80199d3e6d1236e08db0b1a2a17071d170",
+      "selectionMapSha256": "d19093d660524e7c1c7c026cffab7be45ab35791e56cf9e341fb2ff8dea3cb2c",
+      "imageSize": 983184,
+      "selectionMapSize": 167697,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-016",
+        "canonicalSource": {
+          "set": "5.10B",
+          "file": "5月/Questions/5.10B.docx",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "401539a1fa6dcb4e8d57c7dde1ae9e80199d3e6d1236e08db0b1a2a17071d170",
+        "canonicalImageSha256": "401539a1fa6dcb4e8d57c7dde1ae9e80199d3e6d1236e08db0b1a2a17071d170"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "401539a1fa6dcb4e8d57c7dde1ae9e80199d3e6d1236e08db0b1a2a17071d170",
+          "size": 983184,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "d19093d660524e7c1c7c026cffab7be45ab35791e56cf9e341fb2ff8dea3cb2c",
+          "size": 167697,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-017",
+      "canonicalImagePath": "data/canonical-assets/rdl-017-sandeep-fatima-text-chain/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-017-sandeep-fatima-text-chain/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-017/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-017/selection_map.json",
+      "imageSha256": "e01face9c3226af8f4fe34249b66c38a41890b8868ab5459a2529625d16aadba",
+      "selectionMapSha256": "8144b9146db3c56d5f4711a09e12b7411d2035874082b2b6325de10fd52ed7ee",
+      "imageSize": 2778796,
+      "selectionMapSize": 334823,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-017",
+        "canonicalSource": {
+          "set": "5.28",
+          "file": "5月/Questions/5.28-M1.pdf",
+          "page": 11,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "e01face9c3226af8f4fe34249b66c38a41890b8868ab5459a2529625d16aadba",
+        "canonicalImageSha256": "e01face9c3226af8f4fe34249b66c38a41890b8868ab5459a2529625d16aadba"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "e01face9c3226af8f4fe34249b66c38a41890b8868ab5459a2529625d16aadba",
+          "size": 2778796,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "8144b9146db3c56d5f4711a09e12b7411d2035874082b2b6325de10fd52ed7ee",
+          "size": 334823,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-018",
+      "canonicalImagePath": "data/canonical-assets/rdl-018-brightpath-follow-up/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-018-brightpath-follow-up/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-018/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-018/selection_map.json",
+      "imageSha256": "8c245139b4240d2f52d7060474df6f5292655010b1b21714f3240d8d942e4d6b",
+      "selectionMapSha256": "ea88eadca4c269389520bd5c0a59c0fcad389dfdb45c57ff1851e47b3bdc47b0",
+      "imageSize": 1774704,
+      "selectionMapSize": 457102,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-018",
+        "canonicalSource": {
+          "set": "5.10B",
+          "file": "5月/Questions/5.10B.docx",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "8c245139b4240d2f52d7060474df6f5292655010b1b21714f3240d8d942e4d6b",
+        "canonicalImageSha256": "8c245139b4240d2f52d7060474df6f5292655010b1b21714f3240d8d942e4d6b"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "8c245139b4240d2f52d7060474df6f5292655010b1b21714f3240d8d942e4d6b",
+          "size": 1774704,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "ea88eadca4c269389520bd5c0a59c0fcad389dfdb45c57ff1851e47b3bdc47b0",
+          "size": 457102,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-019",
+      "canonicalImagePath": "data/canonical-assets/rdl-019-engl-102-course-description/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-019-engl-102-course-description/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-019/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-019/selection_map.json",
+      "imageSha256": "161d8413fb268346f2264bdbd29ee8b1c3b6bffe01a283a0a413fb94abc529ee",
+      "selectionMapSha256": "d014eae169abf342ae490dd542644345028dda0fd8007eae819f942a9ee60579",
+      "imageSize": 1565475,
+      "selectionMapSize": 168769,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-019",
+        "canonicalSource": {
+          "set": "5.11A",
+          "file": "5月/Questions/5.11A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "161d8413fb268346f2264bdbd29ee8b1c3b6bffe01a283a0a413fb94abc529ee",
+        "canonicalImageSha256": "161d8413fb268346f2264bdbd29ee8b1c3b6bffe01a283a0a413fb94abc529ee"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "161d8413fb268346f2264bdbd29ee8b1c3b6bffe01a283a0a413fb94abc529ee",
+          "size": 1565475,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "d014eae169abf342ae490dd542644345028dda0fd8007eae819f942a9ee60579",
+          "size": 168769,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-020",
+      "canonicalImagePath": "data/canonical-assets/rdl-020-router-reset-instructions/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-020-router-reset-instructions/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-020/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-020/selection_map.json",
+      "imageSha256": "0efa914ea951cccf359dd2f01ba9bfde3fd448be71d349e062ec32acd2929e76",
+      "selectionMapSha256": "9fca8ad2aa07ec29ed57f4ae70adca75c1c5aa3bc7e733f3bcdbeb1598059c29",
+      "imageSize": 1393501,
+      "selectionMapSize": 124172,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-020",
+        "canonicalSource": {
+          "set": "5.11A",
+          "file": "5月/Questions/5.11A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0efa914ea951cccf359dd2f01ba9bfde3fd448be71d349e062ec32acd2929e76",
+        "canonicalImageSha256": "0efa914ea951cccf359dd2f01ba9bfde3fd448be71d349e062ec32acd2929e76"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0efa914ea951cccf359dd2f01ba9bfde3fd448be71d349e062ec32acd2929e76",
+          "size": 1393501,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "9fca8ad2aa07ec29ed57f4ae70adca75c1c5aa3bc7e733f3bcdbeb1598059c29",
+          "size": 124172,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-021",
+      "canonicalImagePath": "data/canonical-assets/rdl-021-radiant-beauty-opening/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-021-radiant-beauty-opening/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-021/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-021/selection_map.json",
+      "imageSha256": "18deaa68942c4434bed5a6c3f42ebfcfb06ed545ebef5502a33427c186974804",
+      "selectionMapSha256": "a73c8306594f641f95e44794778a4d029e4a4eb60d009ddbb3c8e148173df959",
+      "imageSize": 2085947,
+      "selectionMapSize": 244494,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-021",
+        "canonicalSource": {
+          "set": "5.11A",
+          "file": "5月/Questions/5.11A-M1.pdf",
+          "page": 8,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "18deaa68942c4434bed5a6c3f42ebfcfb06ed545ebef5502a33427c186974804",
+        "canonicalImageSha256": "18deaa68942c4434bed5a6c3f42ebfcfb06ed545ebef5502a33427c186974804"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "18deaa68942c4434bed5a6c3f42ebfcfb06ed545ebef5502a33427c186974804",
+          "size": 2085947,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a73c8306594f641f95e44794778a4d029e4a4eb60d009ddbb3c8e148173df959",
+          "size": 244494,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-022",
+      "canonicalImagePath": "data/canonical-assets/rdl-022-self-healing-concrete/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-022-self-healing-concrete/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-022/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-022/selection_map.json",
+      "imageSha256": "b8efcad635c0b6b85b8071986177f57e21075c11a570a13f9c5ca8cd2315fa47",
+      "selectionMapSha256": "72b87348179bebbcb2e5de65502c96d28c15a3e68b0352025f2215efb7b3e4a9",
+      "imageSize": 3266107,
+      "selectionMapSize": 487195,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-022",
+        "canonicalSource": {
+          "set": "5.11A",
+          "file": "5月/Questions/5.11A-M1.pdf",
+          "page": 12,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "b8efcad635c0b6b85b8071986177f57e21075c11a570a13f9c5ca8cd2315fa47",
+        "canonicalImageSha256": "b8efcad635c0b6b85b8071986177f57e21075c11a570a13f9c5ca8cd2315fa47"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "b8efcad635c0b6b85b8071986177f57e21075c11a570a13f9c5ca8cd2315fa47",
+          "size": 3266107,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "72b87348179bebbcb2e5de65502c96d28c15a3e68b0352025f2215efb7b3e4a9",
+          "size": 487195,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-023",
+      "canonicalImagePath": "data/canonical-assets/rdl-023-organic-chemistry-syllabus/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-023-organic-chemistry-syllabus/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-023/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-023/selection_map.json",
+      "imageSha256": "0c241ac4e3e0f3645c06f2bc103341f37bf215595d1df1789d1ebd34c3e5e1f8",
+      "selectionMapSha256": "cb3c97972e71d1f411ea60ac8d790d7733f134af327f99f64f33b6a75aef7639",
+      "imageSize": 687462,
+      "selectionMapSize": 175669,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-023",
+        "canonicalSource": {
+          "set": "5.11B",
+          "file": "5月/Questions/5.11B.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0c241ac4e3e0f3645c06f2bc103341f37bf215595d1df1789d1ebd34c3e5e1f8",
+        "canonicalImageSha256": "0c241ac4e3e0f3645c06f2bc103341f37bf215595d1df1789d1ebd34c3e5e1f8"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0c241ac4e3e0f3645c06f2bc103341f37bf215595d1df1789d1ebd34c3e5e1f8",
+          "size": 687462,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "cb3c97972e71d1f411ea60ac8d790d7733f134af327f99f64f33b6a75aef7639",
+          "size": 175669,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-024",
+      "canonicalImagePath": "data/canonical-assets/rdl-024-debate-club-email/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-024-debate-club-email/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-024/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-024/selection_map.json",
+      "imageSha256": "75b49723763f30d6801e839519bc9351fffd1e48caaab0a5b0fb55e65086078e",
+      "selectionMapSha256": "a87fa4f63a472790a55dc5167eebe7686f0d5d244768fdb51fe7635807ad2de6",
+      "imageSize": 1671939,
+      "selectionMapSize": 448640,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-024",
+        "canonicalSource": {
+          "set": "5.11B",
+          "file": "5月/Questions/5.11B.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "75b49723763f30d6801e839519bc9351fffd1e48caaab0a5b0fb55e65086078e",
+        "canonicalImageSha256": "75b49723763f30d6801e839519bc9351fffd1e48caaab0a5b0fb55e65086078e"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "75b49723763f30d6801e839519bc9351fffd1e48caaab0a5b0fb55e65086078e",
+          "size": 1671939,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a87fa4f63a472790a55dc5167eebe7686f0d5d244768fdb51fe7635807ad2de6",
+          "size": 448640,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-025",
+      "canonicalImagePath": "data/canonical-assets/rdl-025-williamsville-gardening/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-025-williamsville-gardening/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-025/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-025/selection_map.json",
+      "imageSha256": "250afcd7dcfd67d9995290d6255472e5a9a311b0f6078d4b5ab59511cc2a4d7d",
+      "selectionMapSha256": "fc27d038de078d1e304339cc4b0cf6f9684c2b3ac5b8809224f1a08d633f2813",
+      "imageSize": 1841737,
+      "selectionMapSize": 182781,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-025",
+        "canonicalSource": {
+          "set": "5.12",
+          "file": "5月/Questions/5.12-M1.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "250afcd7dcfd67d9995290d6255472e5a9a311b0f6078d4b5ab59511cc2a4d7d",
+        "canonicalImageSha256": "250afcd7dcfd67d9995290d6255472e5a9a311b0f6078d4b5ab59511cc2a4d7d"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "250afcd7dcfd67d9995290d6255472e5a9a311b0f6078d4b5ab59511cc2a4d7d",
+          "size": 1841737,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "fc27d038de078d1e304339cc4b0cf6f9684c2b3ac5b8809224f1a08d633f2813",
+          "size": 182781,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-026",
+      "canonicalImagePath": "data/canonical-assets/rdl-026-award-winner-alma-mater/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-026-award-winner-alma-mater/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-026/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-026/selection_map.json",
+      "imageSha256": "51f57c8729f018fccbbe711312e7f6007e79594b04d60a67c6963b11e4cbac40",
+      "selectionMapSha256": "5b70d16bbfa94913918e507e1d7946fd870c4a5efcac0bc27d93090b145c770b",
+      "imageSize": 2979461,
+      "selectionMapSize": 430804,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-026",
+        "canonicalSource": {
+          "set": "5.12",
+          "file": "5月/Questions/5.12-M1.pdf",
+          "page": 5,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "51f57c8729f018fccbbe711312e7f6007e79594b04d60a67c6963b11e4cbac40",
+        "canonicalImageSha256": "51f57c8729f018fccbbe711312e7f6007e79594b04d60a67c6963b11e4cbac40"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "51f57c8729f018fccbbe711312e7f6007e79594b04d60a67c6963b11e4cbac40",
+          "size": 2979461,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "5b70d16bbfa94913918e507e1d7946fd870c4a5efcac0bc27d93090b145c770b",
+          "size": 430804,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-027",
+      "canonicalImagePath": "data/canonical-assets/rdl-027-student-center-closure/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-027-student-center-closure/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-027/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-027/selection_map.json",
+      "imageSha256": "f32e3b6a15f269251df6c3696f726002b246580c23882728f617a9c625397335",
+      "selectionMapSha256": "5a0942200d5116cb7dcbf0b82880c06578969877293818e0ff37df8c56a6c254",
+      "imageSize": 1342747,
+      "selectionMapSize": 126291,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-027",
+        "canonicalSource": {
+          "set": "5.13",
+          "file": "5月/Questions/5.13-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "f32e3b6a15f269251df6c3696f726002b246580c23882728f617a9c625397335",
+        "canonicalImageSha256": "f32e3b6a15f269251df6c3696f726002b246580c23882728f617a9c625397335"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "f32e3b6a15f269251df6c3696f726002b246580c23882728f617a9c625397335",
+          "size": 1342747,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "5a0942200d5116cb7dcbf0b82880c06578969877293818e0ff37df8c56a6c254",
+          "size": 126291,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-028",
+      "canonicalImagePath": "data/canonical-assets/rdl-028-dorm-startup-goes-viral/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-028-dorm-startup-goes-viral/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-028/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-028/selection_map.json",
+      "imageSha256": "a1c15b3d28d4bbfe78e32245b726afc5b0e8899a73ac7617b2c931862959c124",
+      "selectionMapSha256": "66573ad6bad833082020c2917e66b1f1d4d18b8bca722c0e8cec6233bc531346",
+      "imageSize": 3061711,
+      "selectionMapSize": 460276,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-028",
+        "canonicalSource": {
+          "set": "5.13",
+          "file": "5月/Questions/5.13-M1.pdf",
+          "page": 11,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "a1c15b3d28d4bbfe78e32245b726afc5b0e8899a73ac7617b2c931862959c124",
+        "canonicalImageSha256": "a1c15b3d28d4bbfe78e32245b726afc5b0e8899a73ac7617b2c931862959c124"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "a1c15b3d28d4bbfe78e32245b726afc5b0e8899a73ac7617b2c931862959c124",
+          "size": 3061711,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "66573ad6bad833082020c2917e66b1f1d4d18b8bca722c0e8cec6233bc531346",
+          "size": 460276,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-029",
+      "canonicalImagePath": "data/canonical-assets/rdl-029-booking-inquiry-email/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-029-booking-inquiry-email/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-029/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-029/selection_map.json",
+      "imageSha256": "48c0ce24fb3ee3e4160894bcd978351a95859b334371b0dabb744ff8a09d0e2d",
+      "selectionMapSha256": "6bf5372147184b1abadf99f652f9b2dc08605c70a5920901c4bfc91bd01f5cb8",
+      "imageSize": 1424877,
+      "selectionMapSize": 149951,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-029",
+        "canonicalSource": {
+          "set": "5.17",
+          "file": "5月/Questions/5.17-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "48c0ce24fb3ee3e4160894bcd978351a95859b334371b0dabb744ff8a09d0e2d",
+        "canonicalImageSha256": "48c0ce24fb3ee3e4160894bcd978351a95859b334371b0dabb744ff8a09d0e2d"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "48c0ce24fb3ee3e4160894bcd978351a95859b334371b0dabb744ff8a09d0e2d",
+          "size": 1424877,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "6bf5372147184b1abadf99f652f9b2dc08605c70a5920901c4bfc91bd01f5cb8",
+          "size": 149951,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-030",
+      "canonicalImagePath": "data/canonical-assets/rdl-030-kansas-kerfuffle-review/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-030-kansas-kerfuffle-review/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-030/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-030/selection_map.json",
+      "imageSha256": "07b96bfab561807e07b63c8fca3d69a0130ad2fdc9aaf43d1b874bc3fdbfa512",
+      "selectionMapSha256": "0bd424d16195ab79691c414ed634ccd170b6628d136b5445dee09e41c4adc93c",
+      "imageSize": 1714936,
+      "selectionMapSize": 191795,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-030",
+        "canonicalSource": {
+          "set": "5.17",
+          "file": "5月/Questions/5.17-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "07b96bfab561807e07b63c8fca3d69a0130ad2fdc9aaf43d1b874bc3fdbfa512",
+        "canonicalImageSha256": "07b96bfab561807e07b63c8fca3d69a0130ad2fdc9aaf43d1b874bc3fdbfa512"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "07b96bfab561807e07b63c8fca3d69a0130ad2fdc9aaf43d1b874bc3fdbfa512",
+          "size": 1714936,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "0bd424d16195ab79691c414ed634ccd170b6628d136b5445dee09e41c4adc93c",
+          "size": 191795,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-031",
+      "canonicalImagePath": "data/canonical-assets/rdl-031-thesis-proposal-email/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-031-thesis-proposal-email/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-031/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-031/selection_map.json",
+      "imageSha256": "0a20d9bafa820f13ad6c01f77d0bc3307d383e8d62a15f751d560fa2abccad02",
+      "selectionMapSha256": "44eecbd779364819502b5bbd87faf59457e596f6db969ba96f1c294c5e875e06",
+      "imageSize": 2741556,
+      "selectionMapSize": 387171,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-031",
+        "canonicalSource": {
+          "set": "5.17",
+          "file": "5月/Questions/5.17-M1.pdf",
+          "page": 8,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0a20d9bafa820f13ad6c01f77d0bc3307d383e8d62a15f751d560fa2abccad02",
+        "canonicalImageSha256": "0a20d9bafa820f13ad6c01f77d0bc3307d383e8d62a15f751d560fa2abccad02"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0a20d9bafa820f13ad6c01f77d0bc3307d383e8d62a15f751d560fa2abccad02",
+          "size": 2741556,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "44eecbd779364819502b5bbd87faf59457e596f6db969ba96f1c294c5e875e06",
+          "size": 387171,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-032",
+      "canonicalImagePath": "data/canonical-assets/rdl-032-green-valley-hike-messages/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-032-green-valley-hike-messages/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-032/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-032/selection_map.json",
+      "imageSha256": "7c6f9102f68e1517e78fd915edfacb5684250ac67a3033d805d01f43c94478bb",
+      "selectionMapSha256": "9fa69da159e1de3729094a8ff28e9465a717ad79cf8e3ba1331150630656f6c4",
+      "imageSize": 2570468,
+      "selectionMapSize": 356860,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-032",
+        "canonicalSource": {
+          "set": "5.17",
+          "file": "5月/Questions/5.17-M1.pdf",
+          "page": 11,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "7c6f9102f68e1517e78fd915edfacb5684250ac67a3033d805d01f43c94478bb",
+        "canonicalImageSha256": "7c6f9102f68e1517e78fd915edfacb5684250ac67a3033d805d01f43c94478bb"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "7c6f9102f68e1517e78fd915edfacb5684250ac67a3033d805d01f43c94478bb",
+          "size": 2570468,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "9fa69da159e1de3729094a8ff28e9465a717ad79cf8e3ba1331150630656f6c4",
+          "size": 356860,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-033",
+      "canonicalImagePath": "data/canonical-assets/rdl-033-membership-application/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-033-membership-application/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-033/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-033/selection_map.json",
+      "imageSha256": "337f56c29fcb7ad412f071bf688061c0a20a652e8bec5d98c9e31e711d503a7f",
+      "selectionMapSha256": "0edd5ae35b5bd5a8b982d8076ebcec88337cd80cfdfc8fb8918ba1a6f3a7bf1d",
+      "imageSize": 1710990,
+      "selectionMapSize": 145645,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-033",
+        "canonicalSource": {
+          "set": "5.18A",
+          "file": "5月/Questions/5.18A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "337f56c29fcb7ad412f071bf688061c0a20a652e8bec5d98c9e31e711d503a7f",
+        "canonicalImageSha256": "337f56c29fcb7ad412f071bf688061c0a20a652e8bec5d98c9e31e711d503a7f"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "337f56c29fcb7ad412f071bf688061c0a20a652e8bec5d98c9e31e711d503a7f",
+          "size": 1710990,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "0edd5ae35b5bd5a8b982d8076ebcec88337cd80cfdfc8fb8918ba1a6f3a7bf1d",
+          "size": 145645,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-034",
+      "canonicalImagePath": "data/canonical-assets/rdl-034-photography-club-notice/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-034-photography-club-notice/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-034/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-034/selection_map.json",
+      "imageSha256": "ab3deef5afc50415032854d072554c7e600f02a0ec46da9183334cc51f1d3322",
+      "selectionMapSha256": "b041f061edfd34921f3150e6b715d70a560c5563e0c1e3f7b32269d54e71c0d0",
+      "imageSize": 3612853,
+      "selectionMapSize": 535024,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-034",
+        "canonicalSource": {
+          "set": "5.18A",
+          "file": "5月/Questions/5.18A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "ab3deef5afc50415032854d072554c7e600f02a0ec46da9183334cc51f1d3322",
+        "canonicalImageSha256": "ab3deef5afc50415032854d072554c7e600f02a0ec46da9183334cc51f1d3322"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "ab3deef5afc50415032854d072554c7e600f02a0ec46da9183334cc51f1d3322",
+          "size": 3612853,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "b041f061edfd34921f3150e6b715d70a560c5563e0c1e3f7b32269d54e71c0d0",
+          "size": 535024,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-035",
+      "canonicalImagePath": "data/5.18B/biol-101/canonical.png",
+      "canonicalSelectionMapPath": "data/5.18B/biol-101/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-035/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-035/selection_map.json",
+      "imageSha256": "2762ca3d657386448d1912fc72ecf5e582760ff233adbdcc74e2203c626af9f9",
+      "selectionMapSha256": "b503d4ea0ef53a8e7c6bfc9bf67481bb1dd851c9384d4e494985fc2460e44a4e",
+      "imageSize": 150141,
+      "selectionMapSize": 193104,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-035",
+        "canonicalSource": {
+          "set": "5.18B",
+          "file": "5月/Questions/5.18B.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd_geometry_fixed.png",
+        "selectionImageSha256": "854d2a269e6804eb297f9a2c6c084acd8353f41d5a6ae0bcd552826cfaf5f99d",
+        "canonicalImageSha256": "2762ca3d657386448d1912fc72ecf5e582760ff233adbdcc74e2203c626af9f9"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "2762ca3d657386448d1912fc72ecf5e582760ff233adbdcc74e2203c626af9f9",
+          "size": 150141,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "b503d4ea0ef53a8e7c6bfc9bf67481bb1dd851c9384d4e494985fc2460e44a4e",
+          "size": 193104,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-036",
+      "canonicalImagePath": "data/5.18B/movie-mania/canonical.png",
+      "canonicalSelectionMapPath": "data/5.18B/movie-mania/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-036/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-036/selection_map.json",
+      "imageSha256": "fb69ba9a0583beadea941ecb453558307320654d01c638b21a0632bcb45ebd38",
+      "selectionMapSha256": "34d4cb2ddae09c7b0d9f1ad1ad494f6c6784a3f283d97a06b412b729827bf66d",
+      "imageSize": 141163,
+      "selectionMapSize": 140547,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-036",
+        "canonicalSource": {
+          "set": "5.18B",
+          "file": "5月/Questions/5.18B.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd_geometry_fixed.png",
+        "selectionImageSha256": "9e60764ba37ab3da5332635501da69a6787ac14abb59a0819412338aaf7dfd30",
+        "canonicalImageSha256": "fb69ba9a0583beadea941ecb453558307320654d01c638b21a0632bcb45ebd38"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "fb69ba9a0583beadea941ecb453558307320654d01c638b21a0632bcb45ebd38",
+          "size": 141163,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "34d4cb2ddae09c7b0d9f1ad1ad494f6c6784a3f283d97a06b412b729827bf66d",
+          "size": 140547,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-037",
+      "canonicalImagePath": "data/5.18B/flex-and-flow/canonical.png",
+      "canonicalSelectionMapPath": "data/5.18B/flex-and-flow/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-037/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-037/selection_map.json",
+      "imageSha256": "907f4fb85590ad11c10b1af795ba34680ddfbf49599d9c2a1b0534decbb48dd3",
+      "selectionMapSha256": "e0e142159692faf027b1c10d2c1f00e1343a1f5cabf1810dc163b332bbdc7567",
+      "imageSize": 302943,
+      "selectionMapSize": 398262,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-037",
+        "canonicalSource": {
+          "set": "5.18B",
+          "file": "5月/Questions/5.18B.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd_geometry_fixed.png",
+        "selectionImageSha256": "ba2c1cbd293cb4224cadecbb20e91c16d7cdcedbc17ef05a43baf4d36d8e375e",
+        "canonicalImageSha256": "907f4fb85590ad11c10b1af795ba34680ddfbf49599d9c2a1b0534decbb48dd3"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "907f4fb85590ad11c10b1af795ba34680ddfbf49599d9c2a1b0534decbb48dd3",
+          "size": 302943,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "e0e142159692faf027b1c10d2c1f00e1343a1f5cabf1810dc163b332bbdc7567",
+          "size": 398262,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-038",
+      "canonicalImagePath": "data/5.18B/english-202-sonnet/canonical.png",
+      "canonicalSelectionMapPath": "data/5.18B/english-202-sonnet/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-038/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-038/selection_map.json",
+      "imageSha256": "a231b8d9f27b1fe4de8294781dfb8e601a8ec1221e0277cf2ecfd9503aae7903",
+      "selectionMapSha256": "c7e70d2170d0c1641dc931a9bf230a12dbe96892a023844776035a8dc5128074",
+      "imageSize": 300480,
+      "selectionMapSize": 446779,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-038",
+        "canonicalSource": {
+          "set": "5.18B",
+          "file": "5月/Questions/5.18B.pdf",
+          "page": 5,
+          "render_dpi": 220
+        },
+        "provenance": "reused_existing_accepted_asset"
+      },
+      "selectionBinding": {
+        "status": "accepted_legacy_selection_source",
+        "selectionImageFile": "source_hd_geometry_fixed.png",
+        "selectionImageSha256": "6442ad897dd8ff3b472259e61e6b3a0ba6ed25b736329b61dc97029aee8cf476",
+        "canonicalImageSha256": "a231b8d9f27b1fe4de8294781dfb8e601a8ec1221e0277cf2ecfd9503aae7903"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "a231b8d9f27b1fe4de8294781dfb8e601a8ec1221e0277cf2ecfd9503aae7903",
+          "size": 300480,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "c7e70d2170d0c1641dc931a9bf230a12dbe96892a023844776035a8dc5128074",
+          "size": 446779,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-039",
+      "canonicalImagePath": "data/canonical-assets/rdl-039-solar-panels-email-exchange/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-039-solar-panels-email-exchange/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-039/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-039/selection_map.json",
+      "imageSha256": "5ab80471dbb549d037e0b0c2659b2fdb63f792a827d13673938213b9218dc813",
+      "selectionMapSha256": "f0be8946e3dce7d8db06ed1d023fbf30eef65b1d635d3e7d89f5c437e2758a0b",
+      "imageSize": 2332676,
+      "selectionMapSize": 234179,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-039",
+        "canonicalSource": {
+          "set": "5.19",
+          "file": "5月/Questions/5.19-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "5ab80471dbb549d037e0b0c2659b2fdb63f792a827d13673938213b9218dc813",
+        "canonicalImageSha256": "5ab80471dbb549d037e0b0c2659b2fdb63f792a827d13673938213b9218dc813"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "5ab80471dbb549d037e0b0c2659b2fdb63f792a827d13673938213b9218dc813",
+          "size": 2332676,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "f0be8946e3dce7d8db06ed1d023fbf30eef65b1d635d3e7d89f5c437e2758a0b",
+          "size": 234179,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-040",
+      "canonicalImagePath": "data/canonical-assets/rdl-040-sign-language-interpreter/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-040-sign-language-interpreter/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-040/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-040/selection_map.json",
+      "imageSha256": "7fa32d0d2a60cfc1edd88852ffc8b9666b6173fafbd0d5d2748406bff36ecf42",
+      "selectionMapSha256": "84b3f0dae1dea8595dd286f7037444b1c16632a7809924b374bab8816159e6fc",
+      "imageSize": 1801706,
+      "selectionMapSize": 161030,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-040",
+        "canonicalSource": {
+          "set": "5.20A",
+          "file": "5月/Questions/5.20A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "7fa32d0d2a60cfc1edd88852ffc8b9666b6173fafbd0d5d2748406bff36ecf42",
+        "canonicalImageSha256": "7fa32d0d2a60cfc1edd88852ffc8b9666b6173fafbd0d5d2748406bff36ecf42"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "7fa32d0d2a60cfc1edd88852ffc8b9666b6173fafbd0d5d2748406bff36ecf42",
+          "size": 1801706,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "84b3f0dae1dea8595dd286f7037444b1c16632a7809924b374bab8816159e6fc",
+          "size": 161030,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-041",
+      "canonicalImagePath": "data/canonical-assets/rdl-041-frankson-library-renovation/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-041-frankson-library-renovation/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-041/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-041/selection_map.json",
+      "imageSha256": "30105f5411597fdb80000b64a3cef28ea92fe3fa9f088f10187140f8e751e887",
+      "selectionMapSha256": "93aae82e68a597a8816a3d62ce229ecd495dee20caf3afdf4654e417d522d1e5",
+      "imageSize": 2811645,
+      "selectionMapSize": 461024,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-041",
+        "canonicalSource": {
+          "set": "5.20A",
+          "file": "5月/Questions/5.20A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "30105f5411597fdb80000b64a3cef28ea92fe3fa9f088f10187140f8e751e887",
+        "canonicalImageSha256": "30105f5411597fdb80000b64a3cef28ea92fe3fa9f088f10187140f8e751e887"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "30105f5411597fdb80000b64a3cef28ea92fe3fa9f088f10187140f8e751e887",
+          "size": 2811645,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "93aae82e68a597a8816a3d62ce229ecd495dee20caf3afdf4654e417d522d1e5",
+          "size": 461024,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-042",
+      "canonicalImagePath": "data/canonical-assets/rdl-042-ella-bottled-water-label/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-042-ella-bottled-water-label/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-042/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-042/selection_map.json",
+      "imageSha256": "965cb34f9d91f53996d0b7b588ca0b05973baa516ed662da98bcd4972c9868c7",
+      "selectionMapSha256": "e809ff317442f7cdeafc9285eba372a21cabcd578fd88b15389856e2a9da3a3e",
+      "imageSize": 891800,
+      "selectionMapSize": 91420,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-042",
+        "canonicalSource": {
+          "set": "5.20B",
+          "file": "5月/Questions/5.20B.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "965cb34f9d91f53996d0b7b588ca0b05973baa516ed662da98bcd4972c9868c7",
+        "canonicalImageSha256": "965cb34f9d91f53996d0b7b588ca0b05973baa516ed662da98bcd4972c9868c7"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "965cb34f9d91f53996d0b7b588ca0b05973baa516ed662da98bcd4972c9868c7",
+          "size": 891800,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "e809ff317442f7cdeafc9285eba372a21cabcd578fd88b15389856e2a9da3a3e",
+          "size": 91420,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-043",
+      "canonicalImagePath": "data/canonical-assets/rdl-043-physics-syllabus/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-043-physics-syllabus/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-043/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-043/selection_map.json",
+      "imageSha256": "5df81d14c3c61ccb0d04e6e4b1933a15c8d6b79d5eb9528079d669a56680573a",
+      "selectionMapSha256": "95a1c08810b4043927a8a99255ef30b3a0c3231d68af3acbeca00124d4f892d2",
+      "imageSize": 1603302,
+      "selectionMapSize": 170674,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-043",
+        "canonicalSource": {
+          "set": "5.28",
+          "file": "5月/Questions/5.28-M1.pdf",
+          "page": 7,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "5df81d14c3c61ccb0d04e6e4b1933a15c8d6b79d5eb9528079d669a56680573a",
+        "canonicalImageSha256": "5df81d14c3c61ccb0d04e6e4b1933a15c8d6b79d5eb9528079d669a56680573a"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "5df81d14c3c61ccb0d04e6e4b1933a15c8d6b79d5eb9528079d669a56680573a",
+          "size": 1603302,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "95a1c08810b4043927a8a99255ef30b3a0c3231d68af3acbeca00124d4f892d2",
+          "size": 170674,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-044",
+      "canonicalImagePath": "data/canonical-assets/rdl-044-downtown-data-skills-notice/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-044-downtown-data-skills-notice/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-044/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-044/selection_map.json",
+      "imageSha256": "a4ae9726ea93a4c72ac6e284e2507ef506b95a0cd80f163706151fb21da5bfe6",
+      "selectionMapSha256": "42396ad3ac48cfbbe689cff8addff84029fe88986accb64545a29e4b1a87a766",
+      "imageSize": 1448917,
+      "selectionMapSize": 427650,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-044",
+        "canonicalSource": {
+          "set": "5.20B",
+          "file": "5月/Questions/5.20B.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "a4ae9726ea93a4c72ac6e284e2507ef506b95a0cd80f163706151fb21da5bfe6",
+        "canonicalImageSha256": "a4ae9726ea93a4c72ac6e284e2507ef506b95a0cd80f163706151fb21da5bfe6"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "a4ae9726ea93a4c72ac6e284e2507ef506b95a0cd80f163706151fb21da5bfe6",
+          "size": 1448917,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "42396ad3ac48cfbbe689cff8addff84029fe88986accb64545a29e4b1a87a766",
+          "size": 427650,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-045",
+      "canonicalImagePath": "data/canonical-assets/rdl-045-study-abroad-expo-agenda/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-045-study-abroad-expo-agenda/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-045/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-045/selection_map.json",
+      "imageSha256": "dabdb552bc092d9dc474cd6be9cbd89372d033a7f663648ff3cd1c0058b36e2b",
+      "selectionMapSha256": "af0451cdd4fecb09bb10349a99f00b127629c673ba05e09dcf03f5192373d900",
+      "imageSize": 3862191,
+      "selectionMapSize": 500548,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-045",
+        "canonicalSource": {
+          "set": "5.20B",
+          "file": "5月/Questions/5.20B.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "dabdb552bc092d9dc474cd6be9cbd89372d033a7f663648ff3cd1c0058b36e2b",
+        "canonicalImageSha256": "dabdb552bc092d9dc474cd6be9cbd89372d033a7f663648ff3cd1c0058b36e2b"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "dabdb552bc092d9dc474cd6be9cbd89372d033a7f663648ff3cd1c0058b36e2b",
+          "size": 3862191,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "af0451cdd4fecb09bb10349a99f00b127629c673ba05e09dcf03f5192373d900",
+          "size": 500548,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-046",
+      "canonicalImagePath": "data/canonical-assets/rdl-046-mishti-review/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-046-mishti-review/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-046/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-046/selection_map.json",
+      "imageSha256": "242145c3942ea3f590b75b9f32cde3ffcc36dbccd3496b30b0e5e94b6b68f5db",
+      "selectionMapSha256": "e3ba4969d8404e70452914a4d88d6ec9268683959556c303d6ccc1d64f1c6fe8",
+      "imageSize": 1124520,
+      "selectionMapSize": 158524,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-046",
+        "canonicalSource": {
+          "set": "5.23",
+          "file": "5月/Questions/5.23.pdf",
+          "page": 2,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "242145c3942ea3f590b75b9f32cde3ffcc36dbccd3496b30b0e5e94b6b68f5db",
+        "canonicalImageSha256": "242145c3942ea3f590b75b9f32cde3ffcc36dbccd3496b30b0e5e94b6b68f5db"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "242145c3942ea3f590b75b9f32cde3ffcc36dbccd3496b30b0e5e94b6b68f5db",
+          "size": 1124520,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "e3ba4969d8404e70452914a4d88d6ec9268683959556c303d6ccc1d64f1c6fe8",
+          "size": 158524,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-047",
+      "canonicalImagePath": "data/canonical-assets/rdl-047-dental-appointment-email/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-047-dental-appointment-email/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-047/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-047/selection_map.json",
+      "imageSha256": "212bae9b045cf28976d289280aa0db7f7bea2244d6a5330777523efeb099f782",
+      "selectionMapSha256": "2e13833ef2dec549aa3dca60646d1399cbd181a6a85d22848d89acad65d6d525",
+      "imageSize": 933086,
+      "selectionMapSize": 141512,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-047",
+        "canonicalSource": {
+          "set": "5.23",
+          "file": "5月/Questions/5.23.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "212bae9b045cf28976d289280aa0db7f7bea2244d6a5330777523efeb099f782",
+        "canonicalImageSha256": "212bae9b045cf28976d289280aa0db7f7bea2244d6a5330777523efeb099f782"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "212bae9b045cf28976d289280aa0db7f7bea2244d6a5330777523efeb099f782",
+          "size": 933086,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "2e13833ef2dec549aa3dca60646d1399cbd181a6a85d22848d89acad65d6d525",
+          "size": 141512,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-048",
+      "canonicalImagePath": "data/canonical-assets/rdl-048-water-interruption-notice/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-048-water-interruption-notice/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-048/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-048/selection_map.json",
+      "imageSha256": "090ea689b7c72fdfa3ce5525b27d5fe9ab3723feda8cfbb8c2f22bf2784239d6",
+      "selectionMapSha256": "77fd6cabb47b53767a0c88afea753511609e06b8516c8908e83c4b1f748309e2",
+      "imageSize": 2510993,
+      "selectionMapSize": 450595,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-048",
+        "canonicalSource": {
+          "set": "5.24A",
+          "file": "5月/Questions/5.24A-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "090ea689b7c72fdfa3ce5525b27d5fe9ab3723feda8cfbb8c2f22bf2784239d6",
+        "canonicalImageSha256": "090ea689b7c72fdfa3ce5525b27d5fe9ab3723feda8cfbb8c2f22bf2784239d6"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "090ea689b7c72fdfa3ce5525b27d5fe9ab3723feda8cfbb8c2f22bf2784239d6",
+          "size": 2510993,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "77fd6cabb47b53767a0c88afea753511609e06b8516c8908e83c4b1f748309e2",
+          "size": 450595,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-049",
+      "canonicalImagePath": "data/canonical-assets/rdl-049-volunteer-opportunities-expo/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-049-volunteer-opportunities-expo/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-049/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-049/selection_map.json",
+      "imageSha256": "bfae7ad725a5df0eb8f6c7ec5664c7d1831626d1a527eb70267a51796a35b720",
+      "selectionMapSha256": "6973743e9e9b94ef21b66ed52c966ece188119998d346ce9e524d95d053eb11d",
+      "imageSize": 2074279,
+      "selectionMapSize": 443801,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-049",
+        "canonicalSource": {
+          "set": "5.23",
+          "file": "5月/Questions/5.23.pdf",
+          "page": 7,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "bfae7ad725a5df0eb8f6c7ec5664c7d1831626d1a527eb70267a51796a35b720",
+        "canonicalImageSha256": "bfae7ad725a5df0eb8f6c7ec5664c7d1831626d1a527eb70267a51796a35b720"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "bfae7ad725a5df0eb8f6c7ec5664c7d1831626d1a527eb70267a51796a35b720",
+          "size": 2074279,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "6973743e9e9b94ef21b66ed52c966ece188119998d346ce9e524d95d053eb11d",
+          "size": 443801,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-050",
+      "canonicalImagePath": "data/canonical-assets/rdl-050-study-abroad-jerez-webpage/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-050-study-abroad-jerez-webpage/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-050/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-050/selection_map.json",
+      "imageSha256": "56b9c18a4b403f784950d82d76d33d0c56426f27e261529aded7b32ed5afae1d",
+      "selectionMapSha256": "62794b566e8e4dbc5687bfd054046ade474182ed310be9fcd9ea3ef458fb7c3b",
+      "imageSize": 1676674,
+      "selectionMapSize": 179450,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-050",
+        "canonicalSource": {
+          "set": "5.24A",
+          "file": "5月/Questions/5.24A-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "56b9c18a4b403f784950d82d76d33d0c56426f27e261529aded7b32ed5afae1d",
+        "canonicalImageSha256": "56b9c18a4b403f784950d82d76d33d0c56426f27e261529aded7b32ed5afae1d"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "56b9c18a4b403f784950d82d76d33d0c56426f27e261529aded7b32ed5afae1d",
+          "size": 1676674,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "62794b566e8e4dbc5687bfd054046ade474182ed310be9fcd9ea3ef458fb7c3b",
+          "size": 179450,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-051",
+      "canonicalImagePath": "data/canonical-assets/rdl-051-college-craft-a-thon/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-051-college-craft-a-thon/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-051/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-051/selection_map.json",
+      "imageSha256": "5fb08f2282f33cae268fa10ce9d2689764c6489296b2c6429ccb92f38bddd7df",
+      "selectionMapSha256": "b0aaf736924247200fe2cc5d47b8ce6576c0eb63314e0c8b1237829722c0e019",
+      "imageSize": 1526220,
+      "selectionMapSize": 170064,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-051",
+        "canonicalSource": {
+          "set": "5.24B",
+          "file": "5月/Questions/5.24B-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "5fb08f2282f33cae268fa10ce9d2689764c6489296b2c6429ccb92f38bddd7df",
+        "canonicalImageSha256": "5fb08f2282f33cae268fa10ce9d2689764c6489296b2c6429ccb92f38bddd7df"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "5fb08f2282f33cae268fa10ce9d2689764c6489296b2c6429ccb92f38bddd7df",
+          "size": 1526220,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "b0aaf736924247200fe2cc5d47b8ce6576c0eb63314e0c8b1237829722c0e019",
+          "size": 170064,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-052",
+      "canonicalImagePath": "data/canonical-assets/rdl-052-time-capsule-dorm-renovation/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-052-time-capsule-dorm-renovation/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-052/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-052/selection_map.json",
+      "imageSha256": "50bc5ea72474a83584b1fa8fb89a6476efb46e75f44a54aaecdcbc27e4dcf15f",
+      "selectionMapSha256": "905817ef551f339402f17f467ac4df48db7fe547d46f2a24b290457184c4534c",
+      "imageSize": 2356199,
+      "selectionMapSize": 464041,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-052",
+        "canonicalSource": {
+          "set": "5.24B",
+          "file": "5月/Questions/5.24B-M1.pdf",
+          "page": 6,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "50bc5ea72474a83584b1fa8fb89a6476efb46e75f44a54aaecdcbc27e4dcf15f",
+        "canonicalImageSha256": "50bc5ea72474a83584b1fa8fb89a6476efb46e75f44a54aaecdcbc27e4dcf15f"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "50bc5ea72474a83584b1fa8fb89a6476efb46e75f44a54aaecdcbc27e4dcf15f",
+          "size": 2356199,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "905817ef551f339402f17f467ac4df48db7fe547d46f2a24b290457184c4534c",
+          "size": 464041,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-053",
+      "canonicalImagePath": "data/canonical-assets/rdl-053-dorm-maintenance-notice/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-053-dorm-maintenance-notice/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-053/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-053/selection_map.json",
+      "imageSha256": "a181f28aed3852c968bb798168a03480f5f65b4b6455f5e9ed499be72f67468f",
+      "selectionMapSha256": "a4ae0706220d61071f0c1176cb07eab65197690d1f36a131076c66085b85af7a",
+      "imageSize": 1332475,
+      "selectionMapSize": 134921,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-053",
+        "canonicalSource": {
+          "set": "5.28",
+          "file": "5月/Questions/5.28-M1.pdf",
+          "page": 5,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "a181f28aed3852c968bb798168a03480f5f65b4b6455f5e9ed499be72f67468f",
+        "canonicalImageSha256": "a181f28aed3852c968bb798168a03480f5f65b4b6455f5e9ed499be72f67468f"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "a181f28aed3852c968bb798168a03480f5f65b4b6455f5e9ed499be72f67468f",
+          "size": 1332475,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a4ae0706220d61071f0c1176cb07eab65197690d1f36a131076c66085b85af7a",
+          "size": 134921,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-054",
+      "canonicalImagePath": "data/canonical-assets/rdl-054-student-housing-dilemma/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-054-student-housing-dilemma/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-054/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-054/selection_map.json",
+      "imageSha256": "d160b89829f6a03b582986ae6e938f9cb34641b9a84af413963db78df8ce4f8b",
+      "selectionMapSha256": "a45225ecd84abd3f75b95aff40969289c5884ba09a34a33d88937afb06414b57",
+      "imageSize": 3416153,
+      "selectionMapSize": 521047,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-054",
+        "canonicalSource": {
+          "set": "5.28",
+          "file": "5月/Questions/5.28-M1.pdf",
+          "page": 8,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "d160b89829f6a03b582986ae6e938f9cb34641b9a84af413963db78df8ce4f8b",
+        "canonicalImageSha256": "d160b89829f6a03b582986ae6e938f9cb34641b9a84af413963db78df8ce4f8b"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "d160b89829f6a03b582986ae6e938f9cb34641b9a84af413963db78df8ce4f8b",
+          "size": 3416153,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a45225ecd84abd3f75b95aff40969289c5884ba09a34a33d88937afb06414b57",
+          "size": 521047,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-055",
+      "canonicalImagePath": "data/canonical-assets/rdl-055-library-news-social-post/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-055-library-news-social-post/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-055/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-055/selection_map.json",
+      "imageSha256": "3824b69beeb3440650142a25779d3de971a0038c20f19b2465e267402d6f64a7",
+      "selectionMapSha256": "43d413e0e2fafa25232ec44bac4d302f32e2e01555e0352280ba206fb6b032ef",
+      "imageSize": 652230,
+      "selectionMapSize": 166835,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-055",
+        "canonicalSource": {
+          "set": "5.31",
+          "file": "5月/Questions/5.31-M1.pdf",
+          "page": 3,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "3824b69beeb3440650142a25779d3de971a0038c20f19b2465e267402d6f64a7",
+        "canonicalImageSha256": "3824b69beeb3440650142a25779d3de971a0038c20f19b2465e267402d6f64a7"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "3824b69beeb3440650142a25779d3de971a0038c20f19b2465e267402d6f64a7",
+          "size": 652230,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "43d413e0e2fafa25232ec44bac4d302f32e2e01555e0352280ba206fb6b032ef",
+          "size": 166835,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-056",
+      "canonicalImagePath": "data/canonical-assets/rdl-056-study-smarter-workshop/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-056-study-smarter-workshop/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-056/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-056/selection_map.json",
+      "imageSha256": "4368c1beaf181a2f0a2447c6c971f3ae831453c80bf39ed33e9b3a36fc6b7d5a",
+      "selectionMapSha256": "fdc572420896e54970926c9ce394b654e9d5c19a0daaf3a3005cb50bbe8fd40e",
+      "imageSize": 1512625,
+      "selectionMapSize": 456012,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-056",
+        "canonicalSource": {
+          "set": "5.31",
+          "file": "5月/Questions/5.31-M1.pdf",
+          "page": 4,
+          "render_dpi": 220
+        },
+        "provenance": "new_canonical_asset"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "4368c1beaf181a2f0a2447c6c971f3ae831453c80bf39ed33e9b3a36fc6b7d5a",
+        "canonicalImageSha256": "4368c1beaf181a2f0a2447c6c971f3ae831453c80bf39ed33e9b3a36fc6b7d5a"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "4368c1beaf181a2f0a2447c6c971f3ae831453c80bf39ed33e9b3a36fc6b7d5a",
+          "size": 1512625,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "fdc572420896e54970926c9ce394b654e9d5c19a0daaf3a3005cb50bbe8fd40e",
+          "size": 456012,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-057",
+      "canonicalImagePath": "data/canonical-assets/rdl-057-mental-well-being-workshops/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-057-mental-well-being-workshops/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-057/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-057/selection_map.json",
+      "imageSha256": "0b3a3cccc641013adc7f3cdc6b1054d58ca45a81e0936fd75c87d6844c3ba229",
+      "selectionMapSha256": "e1dbfc4a12a545c09390d9731e4df775687f3f92cfeba525d0cb278812e3d333",
+      "imageSize": 1134022,
+      "selectionMapSize": 172590,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-057",
+        "canonicalSource": {
+          "set": "6.1A",
+          "file": "6月/PDF/M1_20260601A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            10,
+            173,
+            1083,
+            800
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0b3a3cccc641013adc7f3cdc6b1054d58ca45a81e0936fd75c87d6844c3ba229",
+        "canonicalImageSha256": "0b3a3cccc641013adc7f3cdc6b1054d58ca45a81e0936fd75c87d6844c3ba229"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0b3a3cccc641013adc7f3cdc6b1054d58ca45a81e0936fd75c87d6844c3ba229",
+          "size": 1134022,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "e1dbfc4a12a545c09390d9731e4df775687f3f92cfeba525d0cb278812e3d333",
+          "size": 172590,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-058",
+      "canonicalImagePath": "data/canonical-assets/rdl-058-campusconnect/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-058-campusconnect/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-058/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-058/selection_map.json",
+      "imageSha256": "468a85d91918739058485706f2d9207a3dc69b34ad28c088defa93374855d9b4",
+      "selectionMapSha256": "b7210b4dddedebfd3987a7a5094d50a15ee1b741a0203e3276769400487d8d02",
+      "imageSize": 1556506,
+      "selectionMapSize": 509472,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-058",
+        "canonicalSource": {
+          "set": "6.1A",
+          "file": "6月/PDF/M1_20260601A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            10,
+            30,
+            1077,
+            945
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "468a85d91918739058485706f2d9207a3dc69b34ad28c088defa93374855d9b4",
+        "canonicalImageSha256": "468a85d91918739058485706f2d9207a3dc69b34ad28c088defa93374855d9b4"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "468a85d91918739058485706f2d9207a3dc69b34ad28c088defa93374855d9b4",
+          "size": 1556506,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "b7210b4dddedebfd3987a7a5094d50a15ee1b741a0203e3276769400487d8d02",
+          "size": 509472,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-059",
+      "canonicalImagePath": "data/canonical-assets/rdl-059-pols-201-comparative-political-thought/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-059-pols-201-comparative-political-thought/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-059/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-059/selection_map.json",
+      "imageSha256": "65eba23279aa028287e39cd89e8e1890614b07a1d93aa989780a4372a6262c5c",
+      "selectionMapSha256": "f29ccd32646558334ea126787e5940f1f390f7f7cac08dcec279f13bcad1ed90",
+      "imageSize": 1098409,
+      "selectionMapSize": 171870,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-059",
+        "canonicalSource": {
+          "set": "6.1B",
+          "file": "6月/PDF/M1_20260601B_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -25,
+            10,
+            1149,
+            465
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "65eba23279aa028287e39cd89e8e1890614b07a1d93aa989780a4372a6262c5c",
+        "canonicalImageSha256": "65eba23279aa028287e39cd89e8e1890614b07a1d93aa989780a4372a6262c5c"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "65eba23279aa028287e39cd89e8e1890614b07a1d93aa989780a4372a6262c5c",
+          "size": 1098409,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "f29ccd32646558334ea126787e5940f1f390f7f7cac08dcec279f13bcad1ed90",
+          "size": 171870,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-060",
+      "canonicalImagePath": "data/canonical-assets/rdl-060-momentum-meet-up/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-060-momentum-meet-up/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-060/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-060/selection_map.json",
+      "imageSha256": "9ffec36f3ab472ceb44867fbf86ec6cd445c6d0c1c32cca75e27fb76640977ee",
+      "selectionMapSha256": "19be3833b3e46e17d07eb3a3d317a1c716c5c8e0dd86921e412ffb12bd6af1fc",
+      "imageSize": 1402086,
+      "selectionMapSize": 455309,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-060",
+        "canonicalSource": {
+          "set": "6.1B",
+          "file": "6月/PDF/M1_20260601B_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -25,
+            10,
+            1152,
+            1144
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "9ffec36f3ab472ceb44867fbf86ec6cd445c6d0c1c32cca75e27fb76640977ee",
+        "canonicalImageSha256": "9ffec36f3ab472ceb44867fbf86ec6cd445c6d0c1c32cca75e27fb76640977ee"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "9ffec36f3ab472ceb44867fbf86ec6cd445c6d0c1c32cca75e27fb76640977ee",
+          "size": 1402086,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "19be3833b3e46e17d07eb3a3d317a1c716c5c8e0dd86921e412ffb12bd6af1fc",
+          "size": 455309,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-061",
+      "canonicalImagePath": "data/canonical-assets/rdl-061-library-hours-guidelines/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-061-library-hours-guidelines/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-061/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-061/selection_map.json",
+      "imageSha256": "588ba10dc715c022e51fc3e3ed490a6f8ed7a24d7fbd1396e4a2491c4054cd49",
+      "selectionMapSha256": "29df5d292ab0e8532179f2744f1348dfcef9abe0b65123426e1259ff61d46681",
+      "imageSize": 944320,
+      "selectionMapSize": 145618,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-061",
+        "canonicalSource": {
+          "set": "6.2A",
+          "file": "6月/PDF/M1_20260602A_ R_01-35_PDF(缺q1).pdf",
+          "format": "PDF",
+          "page": 3,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            17,
+            225,
+            996,
+            1047
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "588ba10dc715c022e51fc3e3ed490a6f8ed7a24d7fbd1396e4a2491c4054cd49",
+        "canonicalImageSha256": "588ba10dc715c022e51fc3e3ed490a6f8ed7a24d7fbd1396e4a2491c4054cd49"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "588ba10dc715c022e51fc3e3ed490a6f8ed7a24d7fbd1396e4a2491c4054cd49",
+          "size": 944320,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "29df5d292ab0e8532179f2744f1348dfcef9abe0b65123426e1259ff61d46681",
+          "size": 145618,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-062",
+      "canonicalImagePath": "data/canonical-assets/rdl-062-japan-study-abroad-program/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-062-japan-study-abroad-program/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-062/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-062/selection_map.json",
+      "imageSha256": "9ed827b71469384b3aa4919a666a63a53d1a047c7db2ed8b0a39bc7490b1acfc",
+      "selectionMapSha256": "fc35c195fefeb753941183ad775916fe15952c10f375728ad7e950a67186de13",
+      "imageSize": 1518434,
+      "selectionMapSize": 508576,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-062",
+        "canonicalSource": {
+          "set": "6.2A",
+          "file": "6月/PDF/M1_20260602A_ R_01-35_PDF(缺q1).pdf",
+          "format": "PDF",
+          "page": 5,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            11,
+            235,
+            1082,
+            1362
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "9ed827b71469384b3aa4919a666a63a53d1a047c7db2ed8b0a39bc7490b1acfc",
+        "canonicalImageSha256": "9ed827b71469384b3aa4919a666a63a53d1a047c7db2ed8b0a39bc7490b1acfc"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "9ed827b71469384b3aa4919a666a63a53d1a047c7db2ed8b0a39bc7490b1acfc",
+          "size": 1518434,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "fc35c195fefeb753941183ad775916fe15952c10f375728ad7e950a67186de13",
+          "size": 508576,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-063",
+      "canonicalImagePath": "data/canonical-assets/rdl-063-sidewalk-repair-project/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-063-sidewalk-repair-project/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-063/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-063/selection_map.json",
+      "imageSha256": "2d9d47853cfc353a9057d622ea0aac7da22624be44fe87bccb248c22497be7a3",
+      "selectionMapSha256": "a123cd409c2bb04176fc93d119b17537bcb90675b12533fbbb6dcb52d2a973bf",
+      "imageSize": 1290783,
+      "selectionMapSize": 151737,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-063",
+        "canonicalSource": {
+          "set": "6.3A",
+          "file": "6月/PDF/M1_20260603_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            93,
+            169,
+            1104,
+            646
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "2d9d47853cfc353a9057d622ea0aac7da22624be44fe87bccb248c22497be7a3",
+        "canonicalImageSha256": "2d9d47853cfc353a9057d622ea0aac7da22624be44fe87bccb248c22497be7a3"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "2d9d47853cfc353a9057d622ea0aac7da22624be44fe87bccb248c22497be7a3",
+          "size": 1290783,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a123cd409c2bb04176fc93d119b17537bcb90675b12533fbbb6dcb52d2a973bf",
+          "size": 151737,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-064",
+      "canonicalImagePath": "data/canonical-assets/rdl-064-remote-learning-assignment-messages/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-064-remote-learning-assignment-messages/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-064/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-064/selection_map.json",
+      "imageSha256": "8960e1da7544c521cbcb3fb07bb8398c673202c7fffddbb6538032da020625cf",
+      "selectionMapSha256": "4f7674a24a534e7f6d26337bee61583b0d6c3ab1bb46af45135ddadef0a61131",
+      "imageSize": 1496725,
+      "selectionMapSize": 393819,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-064",
+        "canonicalSource": {
+          "set": "6.3A",
+          "file": "6月/PDF/M1_20260603_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            155,
+            197,
+            1006,
+            1304
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "8960e1da7544c521cbcb3fb07bb8398c673202c7fffddbb6538032da020625cf",
+        "canonicalImageSha256": "8960e1da7544c521cbcb3fb07bb8398c673202c7fffddbb6538032da020625cf"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "8960e1da7544c521cbcb3fb07bb8398c673202c7fffddbb6538032da020625cf",
+          "size": 1496725,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "4f7674a24a534e7f6d26337bee61583b0d6c3ab1bb46af45135ddadef0a61131",
+          "size": 393819,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-065",
+      "canonicalImagePath": "data/canonical-assets/rdl-065-hancock-review/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-065-hancock-review/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-065/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-065/selection_map.json",
+      "imageSha256": "4f1375ed0055fc5e57410986271474421e66bf999958b896cc2bcd0bdb7fb31e",
+      "selectionMapSha256": "981160618a4dd8dd853bf88cc6b31511a793472c427e092954f4380dfbe914ba",
+      "imageSize": 1053051,
+      "selectionMapSize": 176374,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-065",
+        "canonicalSource": {
+          "set": "6.7A",
+          "file": "6月/PDF/M1_20260607A_ R_01-35_Word.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -5,
+            191,
+            1046,
+            770
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "4f1375ed0055fc5e57410986271474421e66bf999958b896cc2bcd0bdb7fb31e",
+        "canonicalImageSha256": "4f1375ed0055fc5e57410986271474421e66bf999958b896cc2bcd0bdb7fb31e"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "4f1375ed0055fc5e57410986271474421e66bf999958b896cc2bcd0bdb7fb31e",
+          "size": 1053051,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "981160618a4dd8dd853bf88cc6b31511a793472c427e092954f4380dfbe914ba",
+          "size": 176374,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-066",
+      "canonicalImagePath": "data/canonical-assets/rdl-066-summit-view-arts-week/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-066-summit-view-arts-week/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-066/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-066/selection_map.json",
+      "imageSha256": "345448dbb8ebb26d935d78cdb8dcfd40800993fe54054e4feb68788815ff163e",
+      "selectionMapSha256": "a4096d7703aef049ecfe49576a9bac27c02f8c10d93ef570b3573ab57946180d",
+      "imageSize": 1402571,
+      "selectionMapSize": 440423,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-066",
+        "canonicalSource": {
+          "set": "6.7A",
+          "file": "6月/PDF/M1_20260607A_ R_01-35_Word.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -11,
+            185,
+            1048,
+            1172
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "345448dbb8ebb26d935d78cdb8dcfd40800993fe54054e4feb68788815ff163e",
+        "canonicalImageSha256": "345448dbb8ebb26d935d78cdb8dcfd40800993fe54054e4feb68788815ff163e"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "345448dbb8ebb26d935d78cdb8dcfd40800993fe54054e4feb68788815ff163e",
+          "size": 1402571,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a4096d7703aef049ecfe49576a9bac27c02f8c10d93ef570b3573ab57946180d",
+          "size": 440423,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-067",
+      "canonicalImagePath": "data/canonical-assets/rdl-067-extended-library-hours/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-067-extended-library-hours/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-067/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-067/selection_map.json",
+      "imageSha256": "d77a2b190d0efe218d2996f6ad09438b5ebd54ce529f0101fc27f8a1512a6ec9",
+      "selectionMapSha256": "63792c42b3859a4c817ab8085b79d20f4f9dc6b006d0e6a6104898051ff74c4e",
+      "imageSize": 1100308,
+      "selectionMapSize": 164460,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-067",
+        "canonicalSource": {
+          "set": "6.7C",
+          "file": "6月/PDF/M1_20260607C_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -4,
+            224,
+            1058,
+            761
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "d77a2b190d0efe218d2996f6ad09438b5ebd54ce529f0101fc27f8a1512a6ec9",
+        "canonicalImageSha256": "d77a2b190d0efe218d2996f6ad09438b5ebd54ce529f0101fc27f8a1512a6ec9"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "d77a2b190d0efe218d2996f6ad09438b5ebd54ce529f0101fc27f8a1512a6ec9",
+          "size": 1100308,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "63792c42b3859a4c817ab8085b79d20f4f9dc6b006d0e6a6104898051ff74c4e",
+          "size": 164460,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-068",
+      "canonicalImagePath": "data/canonical-assets/rdl-068-supporting-information-needed/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-068-supporting-information-needed/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-068/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-068/selection_map.json",
+      "imageSha256": "213359cd095f55507c31ce083e570f96acd5ea82439ce3e132a05aed632caefb",
+      "selectionMapSha256": "10d0692d00c553b6d4e1f39c371e8ef585f7e0c4f70e352fcdfcd4a2461917a1",
+      "imageSize": 1289420,
+      "selectionMapSize": 425997,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-068",
+        "canonicalSource": {
+          "set": "6.7C",
+          "file": "6月/PDF/M1_20260607C_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 8,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -14,
+            189,
+            1005,
+            1200
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "213359cd095f55507c31ce083e570f96acd5ea82439ce3e132a05aed632caefb",
+        "canonicalImageSha256": "213359cd095f55507c31ce083e570f96acd5ea82439ce3e132a05aed632caefb"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "213359cd095f55507c31ce083e570f96acd5ea82439ce3e132a05aed632caefb",
+          "size": 1289420,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "10d0692d00c553b6d4e1f39c371e8ef585f7e0c4f70e352fcdfcd4a2461917a1",
+          "size": 425997,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-069",
+      "canonicalImagePath": "data/canonical-assets/rdl-069-stem-peer-support/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-069-stem-peer-support/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-069/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-069/selection_map.json",
+      "imageSha256": "494fff6e5155fbc189135720e9a3151e7948f33bf8e48b140d3fa5edc73a84df",
+      "selectionMapSha256": "3f874628d92dac487216389d619608651a4ab1efbba20353f6341671e90b1b6d",
+      "imageSize": 1020173,
+      "selectionMapSize": 143778,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-069",
+        "canonicalSource": {
+          "set": "6.10A",
+          "file": "6月/PDF/M1_20260610A_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            10,
+            26,
+            1068,
+            806
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "494fff6e5155fbc189135720e9a3151e7948f33bf8e48b140d3fa5edc73a84df",
+        "canonicalImageSha256": "494fff6e5155fbc189135720e9a3151e7948f33bf8e48b140d3fa5edc73a84df"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "494fff6e5155fbc189135720e9a3151e7948f33bf8e48b140d3fa5edc73a84df",
+          "size": 1020173,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "3f874628d92dac487216389d619608651a4ab1efbba20353f6341671e90b1b6d",
+          "size": 143778,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-070",
+      "canonicalImagePath": "data/canonical-assets/rdl-070-gym-world-membership/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-070-gym-world-membership/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-070/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-070/selection_map.json",
+      "imageSha256": "1153102a2c5c54671d5214a210014e46e9cd0081a8b3a590c2aaba5b24df10f5",
+      "selectionMapSha256": "e5bf50a7d5cded7174a81df0a74dc8a381db93a68371233e43aa75bf0a701afe",
+      "imageSize": 999877,
+      "selectionMapSize": 146547,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-070",
+        "canonicalSource": {
+          "set": "6.14A",
+          "file": "6月/PDF/M1_20260614A_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            11,
+            14,
+            1106,
+            615
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "1153102a2c5c54671d5214a210014e46e9cd0081a8b3a590c2aaba5b24df10f5",
+        "canonicalImageSha256": "1153102a2c5c54671d5214a210014e46e9cd0081a8b3a590c2aaba5b24df10f5"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "1153102a2c5c54671d5214a210014e46e9cd0081a8b3a590c2aaba5b24df10f5",
+          "size": 999877,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "e5bf50a7d5cded7174a81df0a74dc8a381db93a68371233e43aa75bf0a701afe",
+          "size": 146547,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-071",
+      "canonicalImagePath": "data/canonical-assets/rdl-071-engl-101-introduction-to-literature/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-071-engl-101-introduction-to-literature/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-071/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-071/selection_map.json",
+      "imageSha256": "dd49d94b2e1a158306ababe9287308e926497771c4912b31ed82d9973f2073d5",
+      "selectionMapSha256": "44406ea745e4d6075e82ec148f22848fdb6e4c10ec11a39f771855ff95268f02",
+      "imageSize": 1107484,
+      "selectionMapSize": 176604,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-071",
+        "canonicalSource": {
+          "set": "6.14A",
+          "file": "6月/PDF/M1_20260614A_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 7,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            37,
+            146,
+            1110,
+            729
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "dd49d94b2e1a158306ababe9287308e926497771c4912b31ed82d9973f2073d5",
+        "canonicalImageSha256": "dd49d94b2e1a158306ababe9287308e926497771c4912b31ed82d9973f2073d5"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "dd49d94b2e1a158306ababe9287308e926497771c4912b31ed82d9973f2073d5",
+          "size": 1107484,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "44406ea745e4d6075e82ec148f22848fdb6e4c10ec11a39f771855ff95268f02",
+          "size": 176604,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-072",
+      "canonicalImagePath": "data/canonical-assets/rdl-072-campus-transport-advisory/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-072-campus-transport-advisory/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-072/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-072/selection_map.json",
+      "imageSha256": "1c08dd540a4033d3c2030505372b5e64b6238f4b768f86248db2f6d7ba80ac0b",
+      "selectionMapSha256": "789e584ed38c5ceaf44ed3b27c686bab2e11a2c97e71cfa962ee9b808cafde58",
+      "imageSize": 1406337,
+      "selectionMapSize": 465221,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-072",
+        "canonicalSource": {
+          "set": "6.14A",
+          "file": "6月/PDF/M1_20260614A_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 9,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            10,
+            11,
+            1148,
+            1088
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "1c08dd540a4033d3c2030505372b5e64b6238f4b768f86248db2f6d7ba80ac0b",
+        "canonicalImageSha256": "1c08dd540a4033d3c2030505372b5e64b6238f4b768f86248db2f6d7ba80ac0b"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "1c08dd540a4033d3c2030505372b5e64b6238f4b768f86248db2f6d7ba80ac0b",
+          "size": 1406337,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "789e584ed38c5ceaf44ed3b27c686bab2e11a2c97e71cfa962ee9b808cafde58",
+          "size": 465221,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-073",
+      "canonicalImagePath": "data/canonical-assets/rdl-073-housing-renewal-email/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-073-housing-renewal-email/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-073/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-073/selection_map.json",
+      "imageSha256": "b27e02ce4553b718c15f7dc0739359720f9617b84034e5a46e042a1145c563d4",
+      "selectionMapSha256": "af8143ec1b7b73d4451637850dc140315ada22ea1e066246a2839f35c50810ea",
+      "imageSize": 987680,
+      "selectionMapSize": 167461,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-073",
+        "canonicalSource": {
+          "set": "6.17A",
+          "file": "6月/PDF/M1_202060617A_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            10,
+            29,
+            1059,
+            729
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            25,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "b27e02ce4553b718c15f7dc0739359720f9617b84034e5a46e042a1145c563d4",
+        "canonicalImageSha256": "b27e02ce4553b718c15f7dc0739359720f9617b84034e5a46e042a1145c563d4"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "b27e02ce4553b718c15f7dc0739359720f9617b84034e5a46e042a1145c563d4",
+          "size": 987680,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "af8143ec1b7b73d4451637850dc140315ada22ea1e066246a2839f35c50810ea",
+          "size": 167461,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-074",
+      "canonicalImagePath": "data/canonical-assets/rdl-074-bella-italia-notice/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-074-bella-italia-notice/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-074/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-074/selection_map.json",
+      "imageSha256": "d7112f4f8de79bbc5ec55a7aa3764fcb991dfe7dfae77f034aae261e248eb032",
+      "selectionMapSha256": "a486257487bd76b413116c6f3a7752a0d1a9891def3f711a683692bd599706d0",
+      "imageSize": 1059411,
+      "selectionMapSize": 146154,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-074",
+        "canonicalSource": {
+          "set": "6.21A",
+          "file": "6月/PDF/M1_20260621A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            9,
+            206,
+            925,
+            793
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "d7112f4f8de79bbc5ec55a7aa3764fcb991dfe7dfae77f034aae261e248eb032",
+        "canonicalImageSha256": "d7112f4f8de79bbc5ec55a7aa3764fcb991dfe7dfae77f034aae261e248eb032"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "d7112f4f8de79bbc5ec55a7aa3764fcb991dfe7dfae77f034aae261e248eb032",
+          "size": 1059411,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a486257487bd76b413116c6f3a7752a0d1a9891def3f711a683692bd599706d0",
+          "size": 146154,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-075",
+      "canonicalImagePath": "data/canonical-assets/rdl-075-math-101-calculus/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-075-math-101-calculus/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-075/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-075/selection_map.json",
+      "imageSha256": "9a2f1a26d895eb51c5392b6b9101217f118aa55f82dad4f009ac8ae09bdfc552",
+      "selectionMapSha256": "c3f67441c6a801d1742d0dcd7f5489a4ca8d656726bc4903c29f9f5c02b67631",
+      "imageSize": 1102760,
+      "selectionMapSize": 166955,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-075",
+        "canonicalSource": {
+          "set": "6.22A",
+          "file": "6月/PDF/M1_20260622A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            11,
+            9,
+            1080,
+            596
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "9a2f1a26d895eb51c5392b6b9101217f118aa55f82dad4f009ac8ae09bdfc552",
+        "canonicalImageSha256": "9a2f1a26d895eb51c5392b6b9101217f118aa55f82dad4f009ac8ae09bdfc552"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "9a2f1a26d895eb51c5392b6b9101217f118aa55f82dad4f009ac8ae09bdfc552",
+          "size": 1102760,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "c3f67441c6a801d1742d0dcd7f5489a4ca8d656726bc4903c29f9f5c02b67631",
+          "size": 166955,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-076",
+      "canonicalImagePath": "data/canonical-assets/rdl-076-discover-estonia/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-076-discover-estonia/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-076/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-076/selection_map.json",
+      "imageSha256": "5f505239bbeefc6e543d05d36bc6630a188d24ded1625788d0ada645d6d68896",
+      "selectionMapSha256": "bd9b926f939eb67ac7c1914ff99a2fddb51ae9617bf7bdd42ccb2f31e0ec16d4",
+      "imageSize": 1652801,
+      "selectionMapSize": 462983,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-076",
+        "canonicalSource": {
+          "set": "6.22A",
+          "file": "6月/PDF/M1_20260622A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 8,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            3,
+            9,
+            1131,
+            1179
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "5f505239bbeefc6e543d05d36bc6630a188d24ded1625788d0ada645d6d68896",
+        "canonicalImageSha256": "5f505239bbeefc6e543d05d36bc6630a188d24ded1625788d0ada645d6d68896"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "5f505239bbeefc6e543d05d36bc6630a188d24ded1625788d0ada645d6d68896",
+          "size": 1652801,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "bd9b926f939eb67ac7c1914ff99a2fddb51ae9617bf7bdd42ccb2f31e0ec16d4",
+          "size": 462983,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-077",
+      "canonicalImagePath": "data/canonical-assets/rdl-077-brison-poetry-magazine/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-077-brison-poetry-magazine/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-077/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-077/selection_map.json",
+      "imageSha256": "ab0e86173d105fa5f3bdf34cc3238986be5baef1d337e2e7a6eacc9da6f30866",
+      "selectionMapSha256": "7c047d03d577e3d30f8b224c9ca4b9cb19e2109ff4dccad946d206483d42d441",
+      "imageSize": 1094565,
+      "selectionMapSize": 149655,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-077",
+        "canonicalSource": {
+          "set": "6.23A",
+          "file": "6月/PDF/M1_20260623A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            6,
+            23,
+            873,
+            701
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "ab0e86173d105fa5f3bdf34cc3238986be5baef1d337e2e7a6eacc9da6f30866",
+        "canonicalImageSha256": "ab0e86173d105fa5f3bdf34cc3238986be5baef1d337e2e7a6eacc9da6f30866"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "ab0e86173d105fa5f3bdf34cc3238986be5baef1d337e2e7a6eacc9da6f30866",
+          "size": 1094565,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "7c047d03d577e3d30f8b224c9ca4b9cb19e2109ff4dccad946d206483d42d441",
+          "size": 149655,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-078",
+      "canonicalImagePath": "data/canonical-assets/rdl-078-bridgeford-music-culture-night/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-078-bridgeford-music-culture-night/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-078/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-078/selection_map.json",
+      "imageSha256": "51d545b2aa85654cd869155293ea0b48e050100f571330b7a5fe7297653440df",
+      "selectionMapSha256": "1e51a3d8cb325d82e7b58395fe5c15d6843bb023a81878d3fb48364d791e6a94",
+      "imageSize": 1089948,
+      "selectionMapSize": 184563,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-078",
+        "canonicalSource": {
+          "set": "6.24A",
+          "file": "6月/PDF/M1_20260624A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -25,
+            10,
+            1139,
+            759
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "51d545b2aa85654cd869155293ea0b48e050100f571330b7a5fe7297653440df",
+        "canonicalImageSha256": "51d545b2aa85654cd869155293ea0b48e050100f571330b7a5fe7297653440df"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "51d545b2aa85654cd869155293ea0b48e050100f571330b7a5fe7297653440df",
+          "size": 1089948,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "1e51a3d8cb325d82e7b58395fe5c15d6843bb023a81878d3fb48364d791e6a94",
+          "size": 184563,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-079",
+      "canonicalImagePath": "data/canonical-assets/rdl-079-nuclear-research-reactor/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-079-nuclear-research-reactor/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-079/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-079/selection_map.json",
+      "imageSha256": "5588098365d3ce055c521636b1f401afcb5c4f85552d5b6e2679d9c6c1bfa769",
+      "selectionMapSha256": "adef7f2be2fe93496b32696696f149a218da9325e38042000fbabdfc3747106d",
+      "imageSize": 1954058,
+      "selectionMapSize": 458632,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-079",
+        "canonicalSource": {
+          "set": "6.24A",
+          "file": "6月/PDF/M1_20260624A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 6,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            -14,
+            13,
+            1109,
+            790
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "5588098365d3ce055c521636b1f401afcb5c4f85552d5b6e2679d9c6c1bfa769",
+        "canonicalImageSha256": "5588098365d3ce055c521636b1f401afcb5c4f85552d5b6e2679d9c6c1bfa769"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "5588098365d3ce055c521636b1f401afcb5c4f85552d5b6e2679d9c6c1bfa769",
+          "size": 1954058,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "adef7f2be2fe93496b32696696f149a218da9325e38042000fbabdfc3747106d",
+          "size": 458632,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-080",
+      "canonicalImagePath": "data/canonical-assets/rdl-080-campus-volunteer-day/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-080-campus-volunteer-day/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-080/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-080/selection_map.json",
+      "imageSha256": "e4a5dc7795439b9271193f1ca6aea352f660107bb8639e8acee8f5cc578f667e",
+      "selectionMapSha256": "7257c331a5a79a1cb21ac2d9ab4d100a0da7bfb7b347c3f70905cc1a2000b7b1",
+      "imageSize": 1053519,
+      "selectionMapSize": 154969,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-080",
+        "canonicalSource": {
+          "set": "6.30A",
+          "file": "6月/PDF/M1_20260630A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 3,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            82,
+            198,
+            1114,
+            653
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "e4a5dc7795439b9271193f1ca6aea352f660107bb8639e8acee8f5cc578f667e",
+        "canonicalImageSha256": "e4a5dc7795439b9271193f1ca6aea352f660107bb8639e8acee8f5cc578f667e"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "e4a5dc7795439b9271193f1ca6aea352f660107bb8639e8acee8f5cc578f667e",
+          "size": 1053519,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "7257c331a5a79a1cb21ac2d9ab4d100a0da7bfb7b347c3f70905cc1a2000b7b1",
+          "size": 154969,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-081",
+      "canonicalImagePath": "data/canonical-assets/rdl-081-blackout-finals-week/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-081-blackout-finals-week/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-081/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-081/selection_map.json",
+      "imageSha256": "8b9068b3b9bb597ad3ef5bfe3370bd4d3440aa8e017b9378edb1f2fdade672db",
+      "selectionMapSha256": "ecea9b28346001db0f4872dca41abd10cb3e32d9d483a3734083b8a4ca122da0",
+      "imageSize": 1388597,
+      "selectionMapSize": 455383,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-081",
+        "canonicalSource": {
+          "set": "6.30A",
+          "file": "6月/PDF/M1_20260630A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 5,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            19,
+            180,
+            1079,
+            1261
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "8b9068b3b9bb597ad3ef5bfe3370bd4d3440aa8e017b9378edb1f2fdade672db",
+        "canonicalImageSha256": "8b9068b3b9bb597ad3ef5bfe3370bd4d3440aa8e017b9378edb1f2fdade672db"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "8b9068b3b9bb597ad3ef5bfe3370bd4d3440aa8e017b9378edb1f2fdade672db",
+          "size": 1388597,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "ecea9b28346001db0f4872dca41abd10cb3e32d9d483a3734083b8a4ca122da0",
+          "size": 455383,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-082",
+      "canonicalImagePath": "data/canonical-assets/rdl-082-shakespeares-kings/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-082-shakespeares-kings/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-082/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-082/selection_map.json",
+      "imageSha256": "0267dc6287035d800a9f9dd0e292f188d9fd8c1975184640353be34b21d4ca80",
+      "selectionMapSha256": "c4bb36aaa3c196924792590b8f36011118be44a4a2fba3e1091954acd6ad477c",
+      "imageSize": 1045345,
+      "selectionMapSize": 174753,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-082",
+        "canonicalSource": {
+          "set": "6.30B",
+          "file": "6月/PDF/M1_20260630B_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 3,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            11,
+            10,
+            600,
+            295
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0267dc6287035d800a9f9dd0e292f188d9fd8c1975184640353be34b21d4ca80",
+        "canonicalImageSha256": "0267dc6287035d800a9f9dd0e292f188d9fd8c1975184640353be34b21d4ca80"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0267dc6287035d800a9f9dd0e292f188d9fd8c1975184640353be34b21d4ca80",
+          "size": 1045345,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "c4bb36aaa3c196924792590b8f36011118be44a4a2fba3e1091954acd6ad477c",
+          "size": 174753,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-083",
+      "canonicalImagePath": "data/canonical-assets/rdl-083-student-council-messages/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-083-student-council-messages/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-083/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-083/selection_map.json",
+      "imageSha256": "a8bb2f3d69dfdfd01d9c9d06ac1c6a2f9134811a4f7bcfa64ea00752f4efb0c9",
+      "selectionMapSha256": "a64b2751541d3fa044809a50aa583c6ae90f98e460df36363e1fcb071744f552",
+      "imageSize": 1489133,
+      "selectionMapSize": 479336,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-083",
+        "canonicalSource": {
+          "set": "6.30B",
+          "file": "6月/PDF/M1_20260630B_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 4,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source",
+          "candidate_relative_crop_box": [
+            24,
+            10,
+            622,
+            564
+          ],
+          "canvas_extension": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "a8bb2f3d69dfdfd01d9c9d06ac1c6a2f9134811a4f7bcfa64ea00752f4efb0c9",
+        "canonicalImageSha256": "a8bb2f3d69dfdfd01d9c9d06ac1c6a2f9134811a4f7bcfa64ea00752f4efb0c9"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "a8bb2f3d69dfdfd01d9c9d06ac1c6a2f9134811a4f7bcfa64ea00752f4efb0c9",
+          "size": 1489133,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a64b2751541d3fa044809a50aa583c6ae90f98e460df36363e1fcb071744f552",
+          "size": 479336,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-084",
+      "canonicalImagePath": "data/canonical-assets/rdl-084-culn-310-sous-vide/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-084-culn-310-sous-vide/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-084/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-084/selection_map.json",
+      "imageSha256": "55fddb7859981653015e39a7b8d4591c8f2c061b63e80e844104811f8cb04ec7",
+      "selectionMapSha256": "a4010e28a2372b2a24184292b13f55711eb3834e96938141255d042d0b98a296",
+      "imageSize": 1457968,
+      "selectionMapSize": 490560,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-084",
+        "canonicalSource": {
+          "set": "6.9",
+          "file": "6月/PDF/M1_20260609A_R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 11,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source, followed by deterministic white outer-canvas extension",
+          "page_crop_box": [
+            135,
+            480,
+            1255,
+            1555
+          ],
+          "canvas_extension": [
+            96,
+            96,
+            96,
+            96
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "55fddb7859981653015e39a7b8d4591c8f2c061b63e80e844104811f8cb04ec7",
+        "canonicalImageSha256": "55fddb7859981653015e39a7b8d4591c8f2c061b63e80e844104811f8cb04ec7"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "55fddb7859981653015e39a7b8d4591c8f2c061b63e80e844104811f8cb04ec7",
+          "size": 1457968,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "a4010e28a2372b2a24184292b13f55711eb3834e96938141255d042d0b98a296",
+          "size": 490560,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-085",
+      "canonicalImagePath": "data/canonical-assets/rdl-085-kintsugi/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-085-kintsugi/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-085/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-085/selection_map.json",
+      "imageSha256": "0dcfe70fc73ee8695c0f206c1bba5ff238fa37f2ddfae2334c202a8dc1591d36",
+      "selectionMapSha256": "4f4fb71ef99e029ca2765640bbd8bab62ac828a557a76c7cf61fe05966b6a722",
+      "imageSize": 1339202,
+      "selectionMapSize": 496330,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-085",
+        "canonicalSource": {
+          "set": "6.21A",
+          "file": "6月/PDF/M1_20260621A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 11,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source, followed by deterministic white outer-canvas extension",
+          "page_crop_box": [
+            105,
+            545,
+            1182,
+            1525
+          ],
+          "canvas_extension": [
+            96,
+            96,
+            96,
+            96
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "0dcfe70fc73ee8695c0f206c1bba5ff238fa37f2ddfae2334c202a8dc1591d36",
+        "canonicalImageSha256": "0dcfe70fc73ee8695c0f206c1bba5ff238fa37f2ddfae2334c202a8dc1591d36"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "0dcfe70fc73ee8695c0f206c1bba5ff238fa37f2ddfae2334c202a8dc1591d36",
+          "size": 1339202,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "4f4fb71ef99e029ca2765640bbd8bab62ac828a557a76c7cf61fe05966b6a722",
+          "size": 496330,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    },
+    {
+      "materialId": "RDL-086",
+      "canonicalImagePath": "data/canonical-assets/rdl-086-sustainable-living-university-housing/material_final.png",
+      "canonicalSelectionMapPath": "data/canonical-assets/rdl-086-sustainable-living-university-housing/selection_map.json",
+      "imageObjectKey": "reading/rdl/RDL-086/material_final.png",
+      "selectionMapObjectKey": "reading/rdl/RDL-086/selection_map.json",
+      "imageSha256": "e0465ad94a23a7bbb1ac833757d8758f2476cc314f130a52f581d548084daaf7",
+      "selectionMapSha256": "56fc8a9a980e169dee85258f7cc89ecdb9e72a4e3dbfb87d2c63af5a98577095",
+      "imageSize": 1355442,
+      "selectionMapSize": 480358,
+      "imageContentType": "image/png",
+      "selectionMapContentType": "application/json",
+      "cacheControl": "public, max-age=31536000, immutable",
+      "sourceCanonicalIdentity": {
+        "materialIndexAssetId": "RDL-086",
+        "canonicalSource": {
+          "set": "6.23",
+          "file": "6月/PDF/M1_20260623A_ R_01-35_PDF.pdf",
+          "format": "PDF",
+          "page": 11,
+          "render_dpi": 220,
+          "crop_method": "manual frame-safe crop from rendered original source, followed by deterministic white outer-canvas extension",
+          "page_crop_box": [
+            126,
+            470,
+            1215,
+            1605
+          ],
+          "canvas_extension": [
+            96,
+            96,
+            96,
+            96
+          ]
+        },
+        "provenance": "new_canonical_asset_2026-06"
+      },
+      "selectionBinding": {
+        "status": "exact_image_sha256",
+        "selectionImageFile": "material_final.png",
+        "selectionImageSha256": "e0465ad94a23a7bbb1ac833757d8758f2476cc314f130a52f581d548084daaf7",
+        "canonicalImageSha256": "e0465ad94a23a7bbb1ac833757d8758f2476cc314f130a52f581d548084daaf7"
+      },
+      "remote": {
+        "image": {
+          "status": "verified_existing",
+          "sha256": "e0465ad94a23a7bbb1ac833757d8758f2476cc314f130a52f581d548084daaf7",
+          "size": 1355442,
+          "contentType": "image/png",
+          "cacheControl": "public, max-age=31536000, immutable"
+        },
+        "selectionMap": {
+          "status": "verified_existing",
+          "sha256": "56fc8a9a980e169dee85258f7cc89ecdb9e72a4e3dbfb87d2c63af5a98577095",
+          "size": 480358,
+          "contentType": "application/json",
+          "cacheControl": "public, max-age=31536000, immutable"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-eaf7a62bfcd01cc442557cb2",
+    "module": "rdl",
+    "title": "Brison College Poetry Magazine",
+    "firstSeenDate": "2026-06-23",
+    "firstSeenSourceLabel": "6.23",
+    "firstSeenSourceOrder": 5,
+    "dedupFingerprint": "eaf7a62bfcd01cc442557cb27352b6e7f53c728242d239763567df0074a60f03",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-23-m1-rdl-05",
+      "logicalItemId": "reading-rdl-eaf7a62bfcd01cc442557cb2",
+      "sourceKind": "docx",
+      "sourceLabel": "6.23",
+      "occurrenceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 5,
+      "sourceQuestionStart": 23,
+      "sourceQuestionEnd": 24,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01",
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23
+        },
+        {
+          "questionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02",
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-077",
+      "title": "Brison College Poetry Magazine",
+      "source": "material-index.json#RDL-077",
+      "sourceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-077/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-077/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01",
+      "logicalItemId": "reading-rdl-eaf7a62bfcd01cc442557cb2",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "What can be inferred about the Brison College Poetry Magazine?",
+      "rawDisplayText": "23. What can be inferred about the Brison College Poetry Magazine?",
+      "payload": {
+        "materialId": "RDL-077",
+        "options": [
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It includes poems by faculty members."
+          },
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It is published each year in the fall and in the spring."
+          },
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It is offered free of charge to students and faculty."
+          },
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It reaches readers beyond the Brison College community."
+          }
+        ],
+        "correctOptionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02",
+      "logicalItemId": "reading-rdl-eaf7a62bfcd01cc442557cb2",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "Tania Jackson is mentioned as someone who",
+      "rawDisplayText": "24. Tania Jackson is mentioned as someone who",
+      "payload": {
+        "materialId": "RDL-077",
+        "options": [
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02-opt-1",
+            "optionOrder": 1,
+            "text": "has published poems in the magazine in previous years"
+          },
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02-opt-2",
+            "optionOrder": 2,
+            "text": "responds to inquiries about submitting poems"
+          },
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02-opt-3",
+            "optionOrder": 3,
+            "text": "supervises the selection process for the poetry magazine"
+          },
+          {
+            "optionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02-opt-4",
+            "optionOrder": 4,
+            "text": "determines the publication schedule for the poetry magazine"
+          }
+        ],
+        "correctOptionId": "reading-rdl-eaf7a62bfcd01cc442557cb2-q02-opt-2"
+      }
+    }
+  ]
+}

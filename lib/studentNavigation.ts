@@ -9,6 +9,10 @@ export const STUDENT_ROUTES = {
   writingReviews: "/student/writing-reviews",
   practiceSets: "/student/practice-sets",
   practiceHistory: "/student/practice-history",
+  readingHistory: "/student/reading/history",
+  readingCtw: "/student/reading/ctw",
+  readingRdl: "/student/reading/rdl",
+  readingRap: "/student/reading/rap",
   grammarPractice: "/student/grammar-practice",
   wrongQuestions: "/student/wrong-questions"
 } as const;
@@ -46,6 +50,7 @@ export function writingSubmissionHistoryHref(
 }
 
 export type StudentResultSource =
+  | "practice-history"
   | "practice-history-history"
   | "practice-history-today";
 
@@ -97,6 +102,16 @@ export function getStudentResultNavigation(
   }
 
   if (options?.source) {
+    if (options.source === "practice-history") {
+      return {
+        backHref: STUDENT_ROUTES.practiceHistory,
+        crumbs: [
+          rootCrumb,
+          { label: STUDENT_UI_TEXT.practiceHistory, href: STUDENT_ROUTES.practiceHistory },
+          { label: "查看结果" }
+        ]
+      };
+    }
     const scope = options.source === "practice-history-today" ? "today" : "history";
     const scopeLabel = scope === "today" ? "今日练习套题" : "历史练习套题";
     const historyHomeHref = `${STUDENT_ROUTES.practiceHistory}?tab=${scope}`;

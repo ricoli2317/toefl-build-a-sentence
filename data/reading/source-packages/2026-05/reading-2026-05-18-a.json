@@ -1,0 +1,1815 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.18A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Philosophy investigates the nature of reality, existence, and knowledge through critical thinking and reasoning. It expla_ _ _ fundamental ques_ _ _ _ _ about t_ _ human exper_ _ _ _ _, ethics, a_ _ the mi_ _. Philosophers dev_ _ _ _ theories t_ better under_ _ _ _ _ the wo_ _ _ and our place in it. This discipline challenges individuals to reflect deeply on their beliefs and assumptions, fostering intellectual growth and enlightenment. Contemporary philosophical branches include bioethics, philosophy of mind, and environmental philosophy, addressing modern challenges such as artificial intelligence consciousness, genetic engineering ethics, and humanity’s relationship with nature.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Philosophy investigates the nature of reality, existence, and knowledge through critical thinking and reasoning. It expla_ _ _ fundamental ques_ _ _ _ _ about t_ _ human exper_ _ _ _ _, ethics, a_ _ the mi_ _. Philosophers dev_ _ _ _ theories t_ better under_ _ _ _ _ the wo_ _ _ and our place in it. This discipline challenges individuals to reflect deeply on their beliefs and assumptions, fostering intellectual growth and enlightenment. Contemporary philosophical branches include bioethics, philosophy of mind, and environmental philosophy, addressing modern challenges such as artificial intelligence consciousness, genetic engineering ethics, and humanity’s relationship with nature.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Philosophy investigates the nature of reality, existence, and knowledge through critical thinking and reasoning. It "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " fundamental "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " about "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " human "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", ethics, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Philosophers "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " theories "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " better "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and our place in it. This discipline challenges individuals to reflect deeply on their beliefs and assumptions, fostering intellectual growth and enlightenment. Contemporary philosophical branches include bioethics, philosophy of mind, and environmental philosophy, addressing modern challenges such as artificial intelligence consciousness, genetic engineering ethics, and humanity’s relationship with nature."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "explains",
+                "prefix": "expla",
+                "displayText": "expla_ _ _",
+                "missingText": "ins",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "questions",
+                "prefix": "ques",
+                "displayText": "ques_ _ _ _ _",
+                "missingText": "tions",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "experience",
+                "prefix": "exper",
+                "displayText": "exper_ _ _ _ _",
+                "missingText": "ience",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "mind",
+                "prefix": "mi",
+                "displayText": "mi_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "develop",
+                "prefix": "dev",
+                "displayText": "dev_ _ _ _",
+                "missingText": "elop",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "understand",
+                "prefix": "under",
+                "displayText": "under_ _ _ _ _",
+                "missingText": "stand",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q01-10-p01",
+                "answer": "world",
+                "prefix": "wo",
+                "displayText": "wo_ _ _",
+                "missingText": "rld",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Geology involves the study of Earth’s physical structure and substances, the processes that act upon them, and the history of the planet and its life forms. Environmental geology specif_ _ _ _ _ _ focuses o_ how geolo_ _ _ _ _ processes aff_ _ _ human activ_ _ _ _ _ and t_ _ environment. I_ encompasses ar_ _ _ such a_ natural haz_ _ _ assessment, resource management, and land-use planning. By understanding the geological factors that influence environmental conditions, geologists can help mitigate the impacts of natural disasters and promote sustainable development.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "Geology involves the study of Earth’s physical structure and substances, the processes that act upon them, and the history of the planet and its life forms. Environmental geology specif_ _ _ _ _ _ focuses o_ how geolo_ _ _ _ _ processes aff_ _ _ human activ_ _ _ _ _ and t_ _ environment. I_ encompasses ar_ _ _ such a_ natural haz_ _ _ assessment, resource management, and land-use planning. By understanding the geological factors that influence environmental conditions, geologists can help mitigate the impacts of natural disasters and promote sustainable development.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Geology involves the study of Earth’s physical structure and substances, the processes that act upon them, and the history of the planet and its life forms. Environmental geology "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " focuses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " how "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " processes "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " human "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " environment. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " encompasses "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " such "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " natural "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " assessment, resource management, and land-use planning. By understanding the geological factors that influence environmental conditions, geologists can help mitigate the impacts of natural disasters and promote sustainable development."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "specifically",
+                "prefix": "specif",
+                "displayText": "specif_ _ _ _ _ _",
+                "missingText": "ically",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "on",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "geological",
+                "prefix": "geolo",
+                "displayText": "geolo_ _ _ _ _",
+                "missingText": "gical",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "affect",
+                "prefix": "aff",
+                "displayText": "aff_ _ _",
+                "missingText": "ect",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "activities",
+                "prefix": "activ",
+                "displayText": "activ_ _ _ _ _",
+                "missingText": "ities",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "It",
+                "prefix": "I",
+                "displayText": "I_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "areas",
+                "prefix": "ar",
+                "displayText": "ar_ _ _",
+                "missingText": "eas",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "as",
+                "prefix": "a",
+                "displayText": "a_",
+                "missingText": "s",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-18-a-m1-ctw-q11-20-p01",
+                "answer": "hazard",
+                "prefix": "haz",
+                "displayText": "haz_ _ _",
+                "missingText": "ard",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m1-rdl-03",
+      "module": "rdl",
+      "title": "Membership Application Form First Name: ____________________",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-033",
+          "title": "Membership Application Form First Name: ____________________",
+          "source": "material-index.json#RDL-033",
+          "sourceDate": "2026-05-18",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-033/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-033/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Which membership type is offered at a reduced rate?",
+          "rawDisplayText": "21. Which membership type is offered at a reduced rate?",
+          "payload": {
+            "materialId": "RDL-033",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Family"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Individual"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "Student"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "None"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is indicated about membership?",
+          "rawDisplayText": "22. What is indicated about membership?",
+          "payload": {
+            "materialId": "RDL-033",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "It includes an initial application fee."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "It is valid for one year."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "It is limited to residents of specific areas."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "It provides lifetime benefits."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m1-rdl-05",
+      "module": "rdl",
+      "title": "The University Photography Club",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-034",
+          "title": "The University Photography Club",
+          "source": "material-index.json#RDL-034",
+          "sourceDate": "2026-05-18",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-034/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-034/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "The notice suggests that",
+          "rawDisplayText": "23. The notice suggests that",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "people new to photography can benefit from the workshop"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "participants will leave campus to take pictures"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "participants must pay an entrance fee"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "students can learn fashion photography"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q23-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What would most likely be a part of the event on Sunday from 3:00 P.M. to 4:30 P.M.?",
+          "rawDisplayText": "24. What would most likely be a part of the event on Sunday from 3:00 P.M. to 4:30 P.M.?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "An exhibition of participants’ photography"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "A sale of used photo equipment"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "A lecture by a university visual arts professor"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "An opportunity to learn more photography techniques"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q24-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "Which of the following is NOT true about the photography workshop?",
+          "rawDisplayText": "25. Which of the following is NOT true about the photography workshop?",
+          "payload": {
+            "materialId": "RDL-034",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "There will be a photography competition."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Photo editing methods will be presented."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Multiple photography genres will be featured."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Participants must pay for lunch."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m1-rap-08",
+      "module": "rap",
+      "title": "Unveiling Earth’s Core",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-18-a-m1-rap-p01",
+          "title": "Unveiling Earth’s Core",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Geophysicists have long been intrigued by Earth’s core (the center of Earth). When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world. Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed. Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter.",
+              "rawText": "Geophysicists have long been intrigued by Earth’s core (the center of Earth). When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world. Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed. Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Geophysicists have long been intrigued by Earth’s core (the center of Earth)."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "When earthquakes occur, they send seismic waves through the planet, offering rare glimpses into this mysterious world."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Interestingly, these waves sometimes slow down in unexpected ways, suggesting that the core’s makeup may be more complex than just iron and nickel as previously believed."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some scientists suggest it might not be entirely solid, possibly containing molten layers or unusual elements that create a unique state of matter."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions. These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies. Collectively, these findings portray a core in constant motion.",
+              "rawText": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions. These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies. Collectively, these findings portray a core in constant motion.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Advanced computer models now depict the core not as a homogeneous sphere, but as a layered structure with distinct regions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These models also propose phenomena like super-rotation—where the inner core (the inner part of Earth’s core) spins slightly faster than the rest of the planet—and directional differences in wave behavior, known as anisotropies."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Collectively, these findings portray a core in constant motion."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "But is this picture complete? Some researchers argue that these models rely on overly simplified assumptions. Truly understanding the inner core demands cutting-edge technology and fresh perspectives. The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it.",
+              "rawText": "But is this picture complete? Some researchers argue that these models rely on overly simplified assumptions. Truly understanding the inner core demands cutting-edge technology and fresh perspectives. The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "But is this picture complete?"
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some researchers argue that these models rely on overly simplified assumptions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Truly understanding the inner core demands cutting-edge technology and fresh perspectives."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "The limitations of current theories remind us that the deeper we explore planetary science, the more we challenge our understanding of it."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss earthquakes in paragraph 1?",
+          "rawDisplayText": "26. Why does the author discuss earthquakes in paragraph 1?",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "To demonstrate the fascination of geophysicists with Earth’s core"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "To explain one way scientists gain insights into Earth’s core"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "To highlight the destructive effects of seismic waves on Earth’s core"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "To challenge the idea that Earth’s core is a mysterious world"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why might seismic waves slow down when passing through Earth’s core?",
+          "rawDisplayText": "27. Why might seismic waves slow down when passing through Earth’s core?",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Because of the solid nature of the core"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Because of the presence of iron and nickel"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "Because of the possible presence of molten layers or unusual elements"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "Because of the strength of the elements that make up the core"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q27-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “Collectively” in the passage is closest in meaning to",
+          "rawDisplayText": "28. The word “Collectively” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "generally"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "together"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "somehow"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "interestingly"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "Advanced computer models suggest all of the following about Earth’s core EXCEPT:",
+          "rawDisplayText": "29. Advanced computer models suggest all of the following about Earth’s core EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Earth’s core has different layers."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "The inner part of Earth’s core rotates a little faster than other parts of Earth do."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "Wave behavior in Earth’s core shows directional differences."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "The super-rotation of Earth’s core is caused by anisotropies."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q29-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 3 that describes a specific criticism of computer models of the inner core. Select the sentence to make your choice.",
+          "rawDisplayText": "30. Identify the sentence in paragraph 3 that describes a specific criticism of computer models of the inner core. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p01",
+            "targetParagraphId": "reading-2026-05-18-a-m1-rap-p01-p03",
+            "correctSentenceId": "reading-2026-05-18-a-m1-rap-p01-p03-s02"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m1-rap-13",
+      "module": "rap",
+      "title": "Libertarianism and Personal Freedom",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-18-a-m1-rap-p02",
+          "title": "Libertarianism and Personal Freedom",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Libertarianism is a political philosophy emphasizing individual liberty, minimal government intervention, and free markets. It advocates personal freedom, arguing that individuals should make choices without undue state interference. This ideology has gained traction in recent years among those who value economic freedom.",
+              "rawText": "Libertarianism is a political philosophy emphasizing individual liberty, minimal government intervention, and free markets. It advocates personal freedom, arguing that individuals should make choices without undue state interference. This ideology has gained traction in recent years among those who value economic freedom.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Libertarianism is a political philosophy emphasizing individual liberty, minimal government intervention, and free markets."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "It advocates personal freedom, arguing that individuals should make choices without undue state interference."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This ideology has gained traction in recent years among those who value economic freedom."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "A central tenet of libertarianism is self-ownership, which asserts that individuals own their bodies and labor. Libertarians argue that people should control their lives and property and be free from coercive forces. For instance, libertarians often oppose taxation, viewing it as involuntary servitude that infringes on autonomy.",
+              "rawText": "A central tenet of libertarianism is self-ownership, which asserts that individuals own their bodies and labor. Libertarians argue that people should control their lives and property and be free from coercive forces. For instance, libertarians often oppose taxation, viewing it as involuntary servitude that infringes on autonomy.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "A central tenet of libertarianism is self-ownership, which asserts that individuals own their bodies and labor."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Libertarians argue that people should control their lives and property and be free from coercive forces."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "For instance, libertarians often oppose taxation, viewing it as involuntary servitude that infringes on autonomy."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Libertarianism champions free markets as the most efficient means of allocating resources. By allowing supply and demand to dictate prices, free markets encourage innovation and competition, leading to better products and services. Government regulations are seen as impediments that stifle economic growth and limit freedom. Libertarians believe that a laissez-faire approach creates an environment where businesses can thrive and individuals can pursue their economic interests without constraints.",
+              "rawText": "Libertarianism champions free markets as the most efficient means of allocating resources. ■ By allowing supply and demand to dictate prices, free markets encourage innovation and competition, leading to better products and services. ■ Government regulations are seen as impediments that stifle economic growth and limit freedom. ■ Libertarians believe that a laissez-faire approach creates an environment where businesses can thrive and individuals can pursue their economic interests without constraints. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Libertarianism champions free markets as the most efficient means of allocating resources."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "By allowing supply and demand to dictate prices, free markets encourage innovation and competition, leading to better products and services."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Government regulations are seen as impediments that stifle economic growth and limit freedom."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Libertarians believe that a laissez-faire approach creates an environment where businesses can thrive and individuals can pursue their economic interests without constraints."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p04",
+              "paragraphOrder": 4,
+              "text": "Critics of libertarianism argue that a lack of regulation can lead to social inequality and exploitation. Some contend that public goods, like education and healthcare, require government involvement to ensure equitable access. Balancing personal freedom with the need for social welfare remains contentious within libertarian thought.",
+              "rawText": "Critics of libertarianism argue that a lack of regulation can lead to social inequality and exploitation. Some contend that public goods, like education and healthcare, require government involvement to ensure equitable access. Balancing personal freedom with the need for social welfare remains contentious within libertarian thought.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Critics of libertarianism argue that a lack of regulation can lead to social inequality and exploitation."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some contend that public goods, like education and healthcare, require government involvement to ensure equitable access."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m1-rap-p02-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Balancing personal freedom with the need for social welfare remains contentious within libertarian thought."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are true about libertarianism EXCEPT:",
+          "rawDisplayText": "31. All of the following are true about libertarianism EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "It emphasizes free markets."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "It champions personal freedom."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "It supports state involvement in people’s lives."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "It has recently grown in popularity."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "Libertarians might consider taxation immoral because it violates",
+          "rawDisplayText": "32. Libertarians might consider taxation immoral because it violates",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "the principle of self-ownership"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "laws against use of coercive force"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "legal standards about bodily autonomy"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "conventions of liberal society"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q32-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “impediments” in the passage is closest in meaning to",
+          "rawDisplayText": "33. The word “impediments” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "rules"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "barriers"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "measures"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "costs"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "Libertarians themselves do not agree with one another about whether",
+          "rawDisplayText": "34. Libertarians themselves do not agree with one another about whether",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "the libertarian approach creates educational opportunities"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "a laissez-faire approach is good for businesses"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "healthcare requires more government involvement than education"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "personal freedom should be balanced against the need for social welfare"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m1-rap-p02",
+            "insertSentence": "Such intervention constrains innovation and can lead to unintended outcomes.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-18-a-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-18-a-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-18-a-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-18-a-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-18-a-m1-rap-p02-p03",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-18-a-m1-rap-p02-p03-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-18-a-m1-q35-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The Great Barrier Reef, located off the coast of Australia, is the world’s largest coral reef system. It ho_ _ _ a div_ _ _ _ array o_ marine li_ _, including fi_ _, mollusks, a_ _ sea tur_ _ _ _. Coral re_ _ _ are bu_ _ _ by colo_ _ _ _ of tiny organisms called coral polyps that secrete calcium carbonate skeletons; these hard structures grow together to form massive reefs over time. The Great Barrier Reef ecosystem is crucial for biodiversity, providing habitat and food for numerous marine species. Climate change, pollution, and overfishing threaten the health of the Great Barrier Reef.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The Great Barrier Reef, located off the coast of Australia, is the world’s largest coral reef system. It ho_ _ _ a div_ _ _ _ array o_ marine li_ _, including fi_ _, mollusks, a_ _ sea tur_ _ _ _. Coral re_ _ _ are bu_ _ _ by colo_ _ _ _ of tiny organisms called coral polyps that secrete calcium carbonate skeletons; these hard structures grow together to form massive reefs over time. The Great Barrier Reef ecosystem is crucial for biodiversity, providing habitat and food for numerous marine species. Climate change, pollution, and overfishing threaten the health of the Great Barrier Reef.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The Great Barrier Reef, located off the coast of Australia, is the world’s largest coral reef system. It "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " array "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " marine "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", including "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", mollusks, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " sea "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Coral "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " are "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " by "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of tiny organisms called coral polyps that secrete calcium carbonate skeletons; these hard structures grow together to form massive reefs over time. The Great Barrier Reef ecosystem is crucial for biodiversity, providing habitat and food for numerous marine species. Climate change, pollution, and overfishing threaten the health of the Great Barrier Reef."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "hosts",
+                "prefix": "ho",
+                "displayText": "ho_ _ _",
+                "missingText": "sts",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "diverse",
+                "prefix": "div",
+                "displayText": "div_ _ _ _",
+                "missingText": "erse",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "life",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "fe",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "fish",
+                "prefix": "fi",
+                "displayText": "fi_ _",
+                "missingText": "sh",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "turtles",
+                "prefix": "tur",
+                "displayText": "tur_ _ _ _",
+                "missingText": "tles",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "reefs",
+                "prefix": "re",
+                "displayText": "re_ _ _",
+                "missingText": "efs",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "built",
+                "prefix": "bu",
+                "displayText": "bu_ _ _",
+                "missingText": "ilt",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-18-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-18-a-m2-ctw-q01-10-p01",
+                "answer": "colonies",
+                "prefix": "colo",
+                "displayText": "colo_ _ _ _",
+                "missingText": "nies",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-18a-m2-rap-19",
+      "module": "rap",
+      "title": "Gravitational Physics and Its Practical Applications",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.18A",
+        "occurrenceDate": "2026-05-18",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-18-a-m2-rap-p01",
+          "title": "Gravitational Physics and Its Practical Applications",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-18-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The concept of gravity has evolved over time. In the seventeenth century, Isaac Newton described gravity as a universal force acting between masses, formalized in his law of universal gravitation. This theory provided a universal, mathematical framework for understanding both terrestrial and planetary motion. However, in 1915, Albert Einstein introduced general relativity, redefining gravity as the curvature of spacetime caused by mass and energy. This shift explained phenomena Newton’s model could not, such as the bending of light near massive bodies (gravitational lensing). Einstein’s theory, which marked a revolution in physics, also predicted black holes and gravitational waves, phenomena later confirmed by observation.",
+              "rawText": "The concept of gravity has evolved over time. In the seventeenth century, Isaac Newton described gravity as a universal force acting between masses, formalized in his law of universal gravitation. This theory provided a universal, mathematical framework for understanding both terrestrial and planetary motion. However, in 1915, Albert Einstein introduced general relativity, redefining gravity as the curvature of spacetime caused by mass and energy. This shift explained phenomena Newton’s model could not, such as the bending of light near massive bodies (gravitational lensing). Einstein’s theory, which marked a revolution in physics, also predicted black holes and gravitational waves, phenomena later confirmed by observation.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The concept of gravity has evolved over time."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "In the seventeenth century, Isaac Newton described gravity as a universal force acting between masses, formalized in his law of universal gravitation."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This theory provided a universal, mathematical framework for understanding both terrestrial and planetary motion."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, in 1915, Albert Einstein introduced general relativity, redefining gravity as the curvature of spacetime caused by mass and energy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "This shift explained phenomena Newton’s model could not, such as the bending of light near massive bodies (gravitational lensing)."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p01-s06",
+                  "sentenceOrder": 6,
+                  "text": "Einstein’s theory, which marked a revolution in physics, also predicted black holes and gravitational waves, phenomena later confirmed by observation."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-18-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Theoretical advances in gravitational physics have led to practical applications, such as in drug development. Proteins often form crystals that can be analyzed to determine their molecular structure. However, on Earth, gravity interferes with the uniform growth of crystals. In microgravity environments, such as those aboard the International Space Station (ISS), gravitational effects are minimized. Crystals grown in space tend to be larger, more uniform, and less flawed than those grown on Earth, enabling researchers to map the crystals’ atomic structure with greater accuracy. This is crucial for rational drug design, allowing scientists to develop medications that precisely target disease-related proteins.",
+              "rawText": "Theoretical advances in gravitational physics have led to practical applications, such as in drug development. Proteins often form crystals that can be analyzed to determine their molecular structure. ■ However, on Earth, gravity interferes with the uniform growth of crystals. ■ In microgravity environments, such as those aboard the International Space Station (ISS), gravitational effects are minimized. ■ Crystals grown in space tend to be larger, more uniform, and less flawed than those grown on Earth, enabling researchers to map the crystals’ atomic structure with greater accuracy. ■ This is crucial for rational drug design, allowing scientists to develop medications that precisely target disease-related proteins.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Theoretical advances in gravitational physics have led to practical applications, such as in drug development."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Proteins often form crystals that can be analyzed to determine their molecular structure."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "However, on Earth, gravity interferes with the uniform growth of crystals."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "In microgravity environments, such as those aboard the International Space Station (ISS), gravitational effects are minimized."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Crystals grown in space tend to be larger, more uniform, and less flawed than those grown on Earth, enabling researchers to map the crystals’ atomic structure with greater accuracy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "This is crucial for rational drug design, allowing scientists to develop medications that precisely target disease-related proteins."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-18-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage mentions all of the following about Newton’s law of universal gravitation EXCEPT:",
+          "rawDisplayText": "11. The passage mentions all of the following about Newton’s law of universal gravitation EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "It helped explain motion on Earth and in space."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "It stated that all objects pull on each other."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "It was later replaced by another theory."
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "It made predictions that were only confirmed later."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m2-q11-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention “gravitational lensing” in the passage?",
+          "rawDisplayText": "12. Why does the author mention “gravitational lensing” in the passage?",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "To help explain why Einstein’s theory was superior to Newton’s"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "To further illustrate Newton’s law of universal gravitation"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "To give an example of a prediction made by Einstein"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "To contrast terrestrial and planetary motion"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m2-q12-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “minimized” in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word “minimized” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "eliminated"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "reduced"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "observed"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "applied"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why is it important for drug developers to determine a crystal’s molecular structure?",
+          "rawDisplayText": "14. Why is it important for drug developers to determine a crystal’s molecular structure?",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-18-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To understand the effects of gravity on proteins in the human body"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To create drugs that target specific proteins"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To create more perfect crystals for industrial use"
+              },
+              {
+                "optionId": "reading-2026-05-18-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To produce existing drugs more quickly and cheaply"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-18-a-m2-q14-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-18-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-18-a-m2-rap-p01",
+            "insertSentence": "For instance, parts of a crystal will grow unevenly as heavier components settle, leading to distortions in its shape.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-18-a-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-18-a-m2-rap-p01-p02",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-18-a-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-18-a-m2-rap-p01-p02",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-18-a-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-18-a-m2-rap-p01-p02",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s04"
+              },
+              {
+                "anchorId": "reading-2026-05-18-a-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-18-a-m2-rap-p01-p02",
+                "boundaryIndex": 5,
+                "afterSentenceId": "reading-2026-05-18-a-m2-rap-p01-p02-s05"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-18-a-m2-q15-anchor-2"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+    "module": "rap",
+    "title": "The Great Smog of London",
+    "firstSeenDate": "2026-06-23",
+    "firstSeenSourceLabel": "6.23",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "c60864a200a09f24ffb1835d80eb898f7174a595f082ab00d6e91829683bac59",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-23-m1-rap-13",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "sourceKind": "docx",
+      "sourceLabel": "6.23",
+      "occurrenceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-c60864a200a09f24ffb1835d-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-c60864a200a09f24ffb1835d-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-c60864a200a09f24ffb1835d-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-c60864a200a09f24ffb1835d-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-c60864a200a09f24ffb1835d-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-c60864a200a09f24ffb1835d-passage-01",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "title": "The Great Smog of London",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "The Great Smog of London in 1952 was a pivotal event in environmental history. For five days in December, a thick layer of smog blanketed the city, caused by cold weather, windless conditions, and pollutants. The primary sources were coal-burning fires for heating homes and factories, releasing sulfur dioxide and other toxic chemicals.",
+          "rawText": "The Great Smog of London in 1952 was a pivotal event in environmental history. For five days in December, a thick layer of smog blanketed the city, caused by cold weather, windless conditions, and pollutants. The primary sources were coal-burning fires for heating homes and factories, releasing sulfur dioxide and other toxic chemicals.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "The Great Smog of London in 1952 was a pivotal event in environmental history."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "For five days in December, a thick layer of smog blanketed the city, caused by cold weather, windless conditions, and pollutants."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "The primary sources were coal-burning fires for heating homes and factories, releasing sulfur dioxide and other toxic chemicals."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "As the smog settled, it became a health crisis. Visibility was reduced to a few meters, and transportation was disrupted. Many people abandoned their cars, and the ambulance service was severely impacted. Thousands developed respiratory problems, and the death rate surged. The Great Smog caused up to 12,000 premature deaths and countless illnesses. Hospitals were overwhelmed with patients, and morgues quickly reached capacity.",
+          "rawText": "As the smog settled, it became a health crisis. Visibility was reduced to a few meters, and transportation was disrupted. Many people abandoned their cars, and the ambulance service was severely impacted. Thousands developed respiratory problems, and the death rate surged. The Great Smog caused up to 12,000 premature deaths and countless illnesses. Hospitals were overwhelmed with patients, and morgues quickly reached capacity.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "As the smog settled, it became a health crisis."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Visibility was reduced to a few meters, and transportation was disrupted."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Many people abandoned their cars, and the ambulance service was severely impacted."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Thousands developed respiratory problems, and the death rate surged."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "The Great Smog caused up to 12,000 premature deaths and countless illnesses."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "Hospitals were overwhelmed with patients, and morgues quickly reached capacity."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "In response, the British government took action. New regulations aimed at reducing air pollution were established. The most significant was the Clean Air Act of 1956, which restricted coal burning in urban areas and promoted cleaner energy sources.",
+          "rawText": "In response, the British government took action. New regulations aimed at reducing air pollution were established. The most significant was the Clean Air Act of 1956, which restricted coal burning in urban areas and promoted cleaner energy sources. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "In response, the British government took action."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "New regulations aimed at reducing air pollution were established."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "The most significant was the Clean Air Act of 1956, which restricted coal burning in urban areas and promoted cleaner energy sources."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "Despite progress, air pollution remains a global challenge. Many cities still struggle with poor air quality due to industrial activities, vehicle emissions, and other sources. The Great Smog of London serves as a stark reminder of the need to address environmental issues to protect public health.",
+          "rawText": "Despite progress, air pollution remains a global challenge. ■ Many cities still struggle with poor air quality due to industrial activities, vehicle emissions, and other sources. ■ The Great Smog of London serves as a stark reminder of the need to address environmental issues to protect public health. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "Despite progress, air pollution remains a global challenge."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "Many cities still struggle with poor air quality due to industrial activities, vehicle emissions, and other sources."
+            },
+            {
+              "sentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "The Great Smog of London serves as a stark reminder of the need to address environmental issues to protect public health."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-c60864a200a09f24ffb1835d-q01",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about the 1952 Great Smog of London?",
+      "rawDisplayText": "31. What can be inferred about the 1952 Great Smog of London?",
+      "payload": {
+        "passageId": "reading-rap-c60864a200a09f24ffb1835d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It affected several other European cities."
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It resulted from multiple factors that occurred simultaneously."
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It disrupted the normal activities of factories for five days."
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It made residents switch to coal to heat their homes."
+          }
+        ],
+        "correctOptionId": "reading-rap-c60864a200a09f24ffb1835d-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-c60864a200a09f24ffb1835d-q02",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"premature\" in the passage is closest in meaning to",
+      "rawDisplayText": "32. The word \"premature\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-c60864a200a09f24ffb1835d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q02-opt-1",
+            "optionOrder": 1,
+            "text": "early"
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q02-opt-2",
+            "optionOrder": 2,
+            "text": "recorded"
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q02-opt-3",
+            "optionOrder": 3,
+            "text": "preventable"
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q02-opt-4",
+            "optionOrder": 4,
+            "text": "likely"
+          }
+        ],
+        "correctOptionId": "reading-rap-c60864a200a09f24ffb1835d-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-c60864a200a09f24ffb1835d-q03",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why was the Great Smog of London considered a pivotal event?",
+      "rawDisplayText": "33. Why was the Great Smog of London considered a pivotal event?",
+      "payload": {
+        "passageId": "reading-rap-c60864a200a09f24ffb1835d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It lasted longer than usual."
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It occurred at an unlikely time of the year."
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It led to significant environmental regulations."
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It caused the immediate closure of all factories."
+          }
+        ],
+        "correctOptionId": "reading-rap-c60864a200a09f24ffb1835d-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-c60864a200a09f24ffb1835d-q04",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author bring up the impact on the ambulance service?",
+      "rawDisplayText": "34. Why does the author bring up the impact on the ambulance service?",
+      "payload": {
+        "passageId": "reading-rap-c60864a200a09f24ffb1835d-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To highlight one of the results of low visibility"
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To explain the main cause of the surging death rate"
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To suggest a reason why hospitals were overwhelmed"
+          },
+          {
+            "optionId": "reading-rap-c60864a200a09f24ffb1835d-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To indicate that authorities closed London roads for travel"
+          }
+        ],
+        "correctOptionId": "reading-rap-c60864a200a09f24ffb1835d-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-c60864a200a09f24ffb1835d-q05",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-c60864a200a09f24ffb1835d-passage-01",
+        "insertSentence": "Local authorities created \"smoke control areas\" where only smokeless fuels could be burned.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-c60864a200a09f24ffb1835d-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p03-s03"
+          },
+          {
+            "anchorId": "reading-rap-c60864a200a09f24ffb1835d-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04-s01"
+          },
+          {
+            "anchorId": "reading-rap-c60864a200a09f24ffb1835d-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04-s02"
+          },
+          {
+            "anchorId": "reading-rap-c60864a200a09f24ffb1835d-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p04-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-c60864a200a09f24ffb1835d-q05-anchor-1"
+      }
+    }
+  ]
+}

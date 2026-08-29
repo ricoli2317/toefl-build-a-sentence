@@ -27,6 +27,7 @@ type ImportResult = {
   logicalNewItemCount: number;
   logicalAutoMergeCount: number;
   logicalNeedsReviewCount: number;
+  possibleDuplicateCount?: number;
   occurrenceInsertedCount: number;
   failedCount: number;
   warnings?: Array<{
@@ -194,7 +195,7 @@ export function TeacherImportQuestions() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token ?? ""}`
         },
-        body: JSON.stringify({ headers, rows })
+        body: JSON.stringify({ fileName, headers, rows })
       });
 
       const responseText = await response.text();
@@ -355,14 +356,28 @@ export function TeacherImportQuestions() {
         <section className="teacher-card p-6">
           <h2 className="text-xl font-bold text-student-text">导入结果</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <ResultMetric label="原始记录成功" value={result.successCount} />
-            <ResultMetric label="原始记录新增" value={result.insertedCount} />
-            <ResultMetric label="原始记录更新" value={result.updatedCount} />
-            <ResultMetric label="失败" tone="error" value={result.failedCount} />
-            <ResultMetric label="新逻辑题" value={result.logicalNewItemCount ?? 0} />
-            <ResultMetric label="重复归组" value={result.logicalAutoMergeCount ?? 0} />
-            <ResultMetric label="待确认" tone={result.logicalNeedsReviewCount > 0 ? "error" : undefined} value={result.logicalNeedsReviewCount ?? 0} />
-            <ResultMetric label="新增日期记录" value={result.occurrenceInsertedCount ?? 0} />
+            {isReadingQuestionType(questionType) ? (
+              <>
+                <ResultMetric label="成功导入题组" value={result.successCount} />
+                <ResultMetric label="新建题组" value={result.insertedCount} />
+                <ResultMetric label="已有题组更新" value={result.updatedCount} />
+                <ResultMetric label="已有相同题组复用" value={result.logicalAutoMergeCount ?? 0} />
+                <ResultMetric label="新增来源记录" value={result.occurrenceInsertedCount ?? 0} />
+                <ResultMetric label="可能重复（已保留）" value={result.possibleDuplicateCount ?? 0} />
+                <ResultMetric label="失败" tone="error" value={result.failedCount} />
+              </>
+            ) : (
+              <>
+                <ResultMetric label="原始记录成功" value={result.successCount} />
+                <ResultMetric label="原始记录新增" value={result.insertedCount} />
+                <ResultMetric label="原始记录更新" value={result.updatedCount} />
+                <ResultMetric label="失败" tone="error" value={result.failedCount} />
+                <ResultMetric label="新逻辑题" value={result.logicalNewItemCount ?? 0} />
+                <ResultMetric label="重复归组" value={result.logicalAutoMergeCount ?? 0} />
+                <ResultMetric label="待确认" tone={result.logicalNeedsReviewCount > 0 ? "error" : undefined} value={result.logicalNeedsReviewCount ?? 0} />
+                <ResultMetric label="新增日期记录" value={result.occurrenceInsertedCount ?? 0} />
+              </>
+            )}
           </div>
           {result.logicalNeedsReviewCount > 0 ? (
             <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
@@ -387,8 +402,8 @@ export function TeacherImportQuestions() {
                 <thead>
                   <tr className="border-b border-student-border bg-student-primary-soft/45 text-student-muted">
                     <th className="px-4 py-3">CSV 行</th>
-                    <th className="px-4 py-3">题目 ID</th>
-                    <th className="px-4 py-3">套题 ID</th>
+                    <th className="px-4 py-3">{isReadingQuestionType(questionType) ? "题组" : "题目 ID"}</th>
+                    <th className="px-4 py-3">{isReadingQuestionType(questionType) ? "来源" : "套题 ID"}</th>
                     <th className="px-4 py-3">操作</th>
                     <th className="px-4 py-3">原因</th>
                   </tr>
@@ -447,6 +462,33 @@ export function TeacherImportQuestions() {
 }
 
 function getPreviewColumns(questionType: QuestionType) {
+  if (questionType === "complete_the_words") {
+    return [
+      { field: "source_label", label: "来源" },
+      { field: "occurrence_date", label: "日期" },
+      { field: "source_group_id", label: "题组" },
+      { field: "passage_json", label: "文章结构" }
+    ];
+  }
+
+  if (questionType === "read_in_daily_life") {
+    return [
+      { field: "source_label", label: "来源" },
+      { field: "material_id", label: "材料" },
+      { field: "material_type", label: "材料类型" },
+      { field: "title", label: "标题" },
+      { field: "question_stem", label: "题目" }
+    ];
+  }
+
+  if (questionType === "read_an_academic_passage") {
+    return [
+      { field: "source_label", label: "来源" },
+      { field: "passage_title", label: "文章标题" },
+      { field: "question_type", label: "题型" },
+      { field: "question_stem", label: "题目" }
+    ];
+  }
   if (questionType === "email") {
     return [
       { field: "question_id", label: "题目 ID" },
@@ -471,6 +513,12 @@ function getPreviewColumns(questionType: QuestionType) {
     { field: "prompt", label: "题目" },
     { field: "options_text", label: "选项" }
   ];
+}
+
+function isReadingQuestionType(questionType: QuestionType) {
+  return questionType === "complete_the_words"
+    || questionType === "read_in_daily_life"
+    || questionType === "read_an_academic_passage";
 }
 
 function formatImportError(payload: ImportErrorPayload) {
@@ -515,6 +563,9 @@ function localizeImportMessage(message: string) {
   if (/logical writing title.*task name/i.test(message)) return "logical_title 不能包含题型名称。";
   if (/logical writing title.*date or question number/i.test(message)) return "logical_title 不能包含日期或题号。";
   if (/question_sets\.set_id appears to be uuid/i.test(message)) return "question_sets.set_id 当前似乎是 uuid 类型，因此无法写入 CSV 中的文本 set_id；题目仍会按文本形式写入 questions.set_id。";
+  if (/material_id|passage_json|slots_json|correctAnchorId|correctSentenceId|source_(?:label|group|module|order|question)/i.test(message)) {
+    return message;
+  }
   if (/[\u3400-\u9fff]/.test(message)) return message;
   return "导入过程中发生错误，请根据错误代码排查。";
 }
@@ -536,6 +587,9 @@ function localizeImportOperation(operation?: string) {
     "upsert questions": "写入题目数据",
     "upsert email questions": "写入 Write an Email 题目",
     "upsert academic discussion questions": "写入 Academic Discussion 题目",
+    "validate Reading group": "校验 Reading 题组",
+    "check Reading possible duplicates": "检查 Reading 可能重复内容",
+    "import Reading group atomically": "完整写入 Reading 题组",
     "import CSV questions": "导入 CSV 题目"
   };
   return labels[operation] ?? (/[\u3400-\u9fff]/.test(operation) ? operation : "执行导入操作");

@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+    "module": "rap",
+    "title": "Carthage's Trade Network",
+    "firstSeenDate": "2026-06-03",
+    "firstSeenSourceLabel": "6.3",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "fcb877e86ce9cff28b0635f8fab416eedbf4e36b68192386ee4f3e344780a7b1",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-3-m1-rap-13",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "sourceKind": "docx",
+      "sourceLabel": "6.3",
+      "occurrenceDate": "2026-06-03",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "title": "Carthage's Trade Network",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Carthage, founded by Phoenician merchants around 814 B.C.E., became a powerful city-state due to its strategic location on the Mediterranean. This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia. Carthaginian traders dealt in goods such as silver, gold, tin, and textiles.",
+          "rawText": "Carthage, founded by Phoenician merchants around 814 B.C.E., became a powerful city-state due to its strategic location on the Mediterranean. This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia. Carthaginian traders dealt in goods such as silver, gold, tin, and textiles.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Carthage, founded by Phoenician merchants around 814 B.C.E., became a powerful city-state due to its strategic location on the Mediterranean."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Carthaginian traders dealt in goods such as silver, gold, tin, and textiles."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport. They developed efficient trade routes and set up colonies, expanding their economic reach. Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world. Carthage's wealth was also built on innovations in agriculture. Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export.",
+          "rawText": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport. They developed efficient trade routes and set up colonies, expanding their economic reach. Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world. Carthage's wealth was also built on innovations in agriculture. Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "They developed efficient trade routes and set up colonies, expanding their economic reach."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Carthage's wealth was also built on innovations in agriculture."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "However, Carthage's rise did not come without challenges. Its growing wealth and dominance in trade led to rivalry with Rome. The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes. Despite initial successes, Carthage was ultimately defeated. The final blow came when the Romans launched a brutal siege on Carthage, culminating in the city's destruction.",
+          "rawText": "However, Carthage's rise did not come without challenges. Its growing wealth and dominance in trade led to rivalry with Rome. The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes. Despite initial successes, Carthage was ultimately defeated. The final blow came when the Romans launched a brutal siege on Carthage, culminating in the city's destruction.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "However, Carthage's rise did not come without challenges."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Its growing wealth and dominance in trade led to rivalry with Rome."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03-s04",
+              "sentenceOrder": 4,
+              "text": "Despite initial successes, Carthage was ultimately defeated."
+            },
+            {
+              "sentenceId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03-s05",
+              "sentenceOrder": 5,
+              "text": "The final blow came when the Romans launched a brutal siege on Carthage, culminating in the city's destruction."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following contributed to the status of Carthage as a wealthy and powerful city-state EXCEPT",
+      "rawDisplayText": "31. All of the following contributed to the status of Carthage as a wealthy and powerful city-state EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01-opt-1",
+            "optionOrder": 1,
+            "text": "its geographic position"
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01-opt-2",
+            "optionOrder": 2,
+            "text": "its trade network across three continents"
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01-opt-3",
+            "optionOrder": 3,
+            "text": "its large fishing industry"
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01-opt-4",
+            "optionOrder": 4,
+            "text": "its ship-building technology"
+          }
+        ],
+        "correctOptionId": "reading-rap-fcb877e86ce9cff28b0635f8-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage indicates which of the following about Carthage's maritime technology?",
+      "rawDisplayText": "32. The passage indicates which of the following about Carthage's maritime technology?",
+      "payload": {
+        "passageId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Carthage's ships were designed primarily for the transport of small items of high value, such as silver and gold."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Carthage's ships were not as advanced as Roman ships."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Carthaginians developed a system of switching ships at colonial ports to go longer distances."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Carthaginians were skilled at navigating over long distances."
+          }
+        ],
+        "correctOptionId": "reading-rap-fcb877e86ce9cff28b0635f8-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be concluded from the passage about Carthaginian agriculture?",
+      "rawDisplayText": "33. What can be concluded from the passage about Carthaginian agriculture?",
+      "payload": {
+        "passageId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It was far inferior to Carthaginian maritime technology."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It produced more than enough food to feed the Carthaginians."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Its innovations borrowed much from Roman technical knowledge."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It was transformed by farmers from Africa, Europe, and Asia."
+          }
+        ],
+        "correctOptionId": "reading-rap-fcb877e86ce9cff28b0635f8-q03-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What can be inferred about the consequences of Carthage's success?",
+      "rawDisplayText": "34. What can be inferred about the consequences of Carthage's success?",
+      "payload": {
+        "passageId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04-opt-1",
+            "optionOrder": 1,
+            "text": "It led to mutually beneficial relations with Rome."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04-opt-2",
+            "optionOrder": 2,
+            "text": "It caused internal strife among Carthaginian traders."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04-opt-3",
+            "optionOrder": 3,
+            "text": "It led to a neglect of the military."
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04-opt-4",
+            "optionOrder": 4,
+            "text": "It contributed to external conflicts."
+          }
+        ],
+        "correctOptionId": "reading-rap-fcb877e86ce9cff28b0635f8-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The phrase \"culminating in\" in the final sentence is closest in meaning to",
+      "rawDisplayText": "35. The phrase \"culminating in\" in the final sentence is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05-opt-1",
+            "optionOrder": 1,
+            "text": "revealing"
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05-opt-2",
+            "optionOrder": 2,
+            "text": "ending with"
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05-opt-3",
+            "optionOrder": 3,
+            "text": "coinciding with"
+          },
+          {
+            "optionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05-opt-4",
+            "optionOrder": 4,
+            "text": "following"
+          }
+        ],
+        "correctOptionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05-opt-2"
+      }
+    }
+  ]
+}

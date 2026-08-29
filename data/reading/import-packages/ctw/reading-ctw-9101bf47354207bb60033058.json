@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-11",
+    "firstSeenSourceLabel": "5.11A",
+    "firstSeenSourceOrder": 2,
+    "dedupFingerprint": "9101bf47354207bb600330585ca3a3265c4af411351e4d4c53caa56d7e798ab8",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-11a-m1-ctw-02",
+      "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+      "sourceKind": "docx",
+      "sourceLabel": "5.11A",
+      "occurrenceDate": "2026-05-11",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-9101bf47354207bb60033058-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-9-m1-ctw-02",
+      "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+      "sourceKind": "docx",
+      "sourceLabel": "6.9",
+      "occurrenceDate": "2026-06-09",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.9.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.9_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 2,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 20,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-9101bf47354207bb60033058-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-9101bf47354207bb60033058-q01",
+      "logicalItemId": "reading-ctw-9101bf47354207bb60033058",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When the_ _ is mo_ _ demand f_ _ a pro_ _ _ _, suppliers m_ _ make i_ more expe_ _ _ _ _ to incr_ _ _ _ profits. Conve_ _ _ _ _, an exc_ _ _ supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When the_ _ is mo_ _ demand f_ _ a pro_ _ _ _, suppliers m_ _ make i_ more expe_ _ _ _ _ to incr_ _ _ _ profits. Conve_ _ _ _ _, an exc_ _ _ supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "Supply and demand are fundamental concepts in economics because they determine the price and availability of goods or services. When "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " is "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " demand "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " a "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": ", suppliers "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " make "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " more "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " to "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " profits. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": ", an "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " supply can lead to price reductions. Market equilibrium occurs when supply matches demand, resulting in stable prices. The real world, however, is rarely as simple as this. Various factors influence these dynamics, including consumer preferences, production costs, and external events."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "there",
+            "prefix": "the",
+            "displayText": "the_ _",
+            "missingText": "re",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "more",
+            "prefix": "mo",
+            "displayText": "mo_ _",
+            "missingText": "re",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "for",
+            "prefix": "f",
+            "displayText": "f_ _",
+            "missingText": "or",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "product",
+            "prefix": "pro",
+            "displayText": "pro_ _ _ _",
+            "missingText": "duct",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "may",
+            "prefix": "m",
+            "displayText": "m_ _",
+            "missingText": "ay",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "it",
+            "prefix": "i",
+            "displayText": "i_",
+            "missingText": "t",
+            "missingLength": 1
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "expensive",
+            "prefix": "expe",
+            "displayText": "expe_ _ _ _ _",
+            "missingText": "nsive",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "increase",
+            "prefix": "incr",
+            "displayText": "incr_ _ _ _",
+            "missingText": "ease",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "Conversely",
+            "prefix": "Conve",
+            "displayText": "Conve_ _ _ _ _",
+            "missingText": "rsely",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-9101bf47354207bb60033058-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-9101bf47354207bb60033058-q01-p01",
+            "answer": "excess",
+            "prefix": "exc",
+            "displayText": "exc_ _ _",
+            "missingText": "ess",
+            "missingLength": 3
+          }
+        ]
+      }
+    }
+  ]
+}

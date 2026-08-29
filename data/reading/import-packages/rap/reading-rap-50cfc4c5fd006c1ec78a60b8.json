@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+    "module": "rap",
+    "title": "The Getty Kouros",
+    "firstSeenDate": "2026-06-10",
+    "firstSeenSourceLabel": "6.10",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "50cfc4c5fd006c1ec78a60b855888cc4b716ea8e79beb2c6fcf2f60205549791",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-10-m2-rap-19",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "sourceKind": "docx",
+      "sourceLabel": "6.10",
+      "occurrenceDate": "2026-06-10",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.10.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.10_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "title": "The Getty Kouros",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "In 1985, the J. Paul Getty Museum acquired what it believed to be a Greek kouros (a statue of a naked youth) dating from the Archaic period (650-480 B.C.E.), estimating the date of origin as approximately 530 B.C.E. The Getty Kouros's authenticity soon came into question, however. Supporters cited scientific analyses suggesting that the statue's marble is consistent with marble known to have come from ancient Greek quarries and that its surface shows chemical changes consistent with long. term burial. Some scholars also argue that peculiar inconsistencies in the statue's style—it incorporates features from different regions and periods—could reflect a transitional moment in Greek sculpture.",
+          "rawText": "In 1985, the J. Paul Getty Museum acquired what it believed to be a Greek kouros (a statue of a naked youth) dating from the Archaic period (650-480 B.C.E.), estimating the date of origin as approximately 530 B.C.E. The Getty Kouros's authenticity soon came into question, however. Supporters cited scientific analyses suggesting that the statue's marble is consistent with marble known to have come from ancient Greek quarries and that its surface shows chemical changes consistent with long. term burial. Some scholars also argue that peculiar inconsistencies in the statue's style—it incorporates features from different regions and periods—could reflect a transitional moment in Greek sculpture.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "In 1985, the J. Paul Getty Museum acquired what it believed to be a Greek kouros (a statue of a naked youth) dating from the Archaic period (650-480 B.C.E.), estimating the date of origin as approximately 530 B.C.E. The Getty Kouros's authenticity soon came into question, however."
+            },
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Supporters cited scientific analyses suggesting that the statue's marble is consistent with marble known to have come from ancient Greek quarries and that its surface shows chemical changes consistent with long."
+            },
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "term burial."
+            },
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Some scholars also argue that peculiar inconsistencies in the statue's style—it incorporates features from different regions and periods—could reflect a transitional moment in Greek sculpture."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Skeptics contend that these inconsistencies undermine the case for authenticity. The Kouros combines traits from several other known sixth-century B.C.E. kouroi in a way that appears too eclectic to be genuine. To these observers, the statue looks like a modern forger's creation—a confused imitation of Greek Archaic elements rather than the genuine product of a coherent sculptural tradition. Furthermore, scientists recognize that modern forgers can artificially age marble.",
+          "rawText": "Skeptics contend that these inconsistencies undermine the case for authenticity. The Kouros combines traits from several other known sixth-century B.C.E. kouroi in a way that appears too eclectic to be genuine. To these observers, the statue looks like a modern forger's creation—a confused imitation of Greek Archaic elements rather than the genuine product of a coherent sculptural tradition. Furthermore, scientists recognize that modern forgers can artificially age marble.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Skeptics contend that these inconsistencies undermine the case for authenticity."
+            },
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "The Kouros combines traits from several other known sixth-century B.C.E. kouroi in a way that appears too eclectic to be genuine."
+            },
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "To these observers, the statue looks like a modern forger's creation—a confused imitation of Greek Archaic elements rather than the genuine product of a coherent sculptural tradition."
+            },
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Furthermore, scientists recognize that modern forgers can artificially age marble."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Because neither scientific analysis nor stylistic evaluation yields decisive results, the question of the Kouros's authenticity remains unresolved.",
+          "rawText": "Because neither scientific analysis nor stylistic evaluation yields decisive results, the question of the Kouros's authenticity remains unresolved.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Because neither scientific analysis nor stylistic evaluation yields decisive results, the question of the Kouros's authenticity remains unresolved."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage indicate about the \"chemical changes\" in the marble of the Getty Kouros?",
+      "rawDisplayText": "11. What does the passage indicate about the \"chemical changes\" in the marble of the Getty Kouros?",
+      "payload": {
+        "passageId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01-opt-1",
+            "optionOrder": 1,
+            "text": "They could not have occurred naturally."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01-opt-2",
+            "optionOrder": 2,
+            "text": "They were caused by scientists testing the marble's age."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01-opt-3",
+            "optionOrder": 3,
+            "text": "They explain some inconsistencies in features of the Getty Kouros."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01-opt-4",
+            "optionOrder": 4,
+            "text": "They may suggest an ancient origin for the marble of the Getty Kouros."
+          }
+        ],
+        "correctOptionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The author mentions \"a transitional moment in Greek sculpture\" primarily in order to",
+      "rawDisplayText": "12. The author mentions \"a transitional moment in Greek sculpture\" primarily in order to",
+      "payload": {
+        "passageId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02-opt-1",
+            "optionOrder": 1,
+            "text": "question a claim about sixth-century B.C.E. kouroi"
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02-opt-2",
+            "optionOrder": 2,
+            "text": "point out how some people explain the style of the Getty Kouros"
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02-opt-3",
+            "optionOrder": 3,
+            "text": "support the view that artistic styles evolve over time"
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02-opt-4",
+            "optionOrder": 4,
+            "text": "characterize sculptures typical of the Greek Archaic period"
+          }
+        ],
+        "correctOptionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is the main reason that the authenticity of the Getty Kouros is in doubt?",
+      "rawDisplayText": "13. What is the main reason that the authenticity of the Getty Kouros is in doubt?",
+      "payload": {
+        "passageId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Modern forgers are known to have created similar sculptures."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03-opt-2",
+            "optionOrder": 2,
+            "text": "The Greeks did not create many sculptures during the sixth century B.C.E."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Observers may have misunderstood Greek Archaic elements."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03-opt-4",
+            "optionOrder": 4,
+            "text": "The Getty Kouros combines styles that are too diverse."
+          }
+        ],
+        "correctOptionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, what is known about marble?",
+      "rawDisplayText": "14. According to the passage, what is known about marble?",
+      "payload": {
+        "passageId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04-opt-1",
+            "optionOrder": 1,
+            "text": "It can be quickly produced by forgers in large amounts."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04-opt-2",
+            "optionOrder": 2,
+            "text": "It is difficult for forgers to imitate."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04-opt-3",
+            "optionOrder": 3,
+            "text": "It can be made to appear older than it actually is."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Its traits could affect the style of Greek sculptures."
+          }
+        ],
+        "correctOptionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following best expresses the main idea of the passage?",
+      "rawDisplayText": "15. Which of the following best expresses the main idea of the passage?",
+      "payload": {
+        "passageId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05-opt-1",
+            "optionOrder": 1,
+            "text": "The Getty Kouros is not typical of Greek kouroi and may or may not be genuine."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05-opt-2",
+            "optionOrder": 2,
+            "text": "The Getty Kouros is composed of marble that has probably been artificially aged."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05-opt-3",
+            "optionOrder": 3,
+            "text": "The Getty Kouros is probably of Greek origin but unlikely to be from the Archaic period."
+          },
+          {
+            "optionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05-opt-4",
+            "optionOrder": 4,
+            "text": "The Getty Kouros was likely forged by a sculptor with limited knowledge of Greek sculptural traditions."
+          }
+        ],
+        "correctOptionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q05-opt-1"
+      }
+    }
+  ]
+}

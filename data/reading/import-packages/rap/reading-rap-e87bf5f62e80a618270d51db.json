@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+    "module": "rap",
+    "title": "Creative Waste Transformation",
+    "firstSeenDate": "2026-05-12",
+    "firstSeenSourceLabel": "5.12",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "e87bf5f62e80a618270d51db310b33527786ed2cdbb674ad1b9d04870e4c588e",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-12-m2-rap-19",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "sourceKind": "docx",
+      "sourceLabel": "5.12",
+      "occurrenceDate": "2026-05-12",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.12.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.12_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-e87bf5f62e80a618270d51db-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-e87bf5f62e80a618270d51db-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-e87bf5f62e80a618270d51db-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-e87bf5f62e80a618270d51db-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-e87bf5f62e80a618270d51db-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-e87bf5f62e80a618270d51db-passage-01",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "title": "Creative Waste Transformation",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Creative waste transformation is reshaping the applied arts, those that apply design and decoration to everyday objects. Artists working with waste do more than recycle materials. They redefine what waste can become. And in doing so, they make a powerful statement on sustainability, challenging the norms of resource use.",
+          "rawText": "Creative waste transformation is reshaping the applied arts, those that apply design and decoration to everyday objects. Artists working with waste do more than recycle materials. They redefine what waste can become. And in doing so, they make a powerful statement on sustainability, challenging the norms of resource use.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Creative waste transformation is reshaping the applied arts, those that apply design and decoration to everyday objects."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Artists working with waste do more than recycle materials."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "They redefine what waste can become."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "And in doing so, they make a powerful statement on sustainability, challenging the norms of resource use."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Consider the metamorphosis of plastic bottles. Artists heat and reshape these discarded items and transform them into intricate sculptures, provoking dialogue on consumer habits. Such works suggest themes of rebirth, questioning whether the end of an object’s usefulness is truly its final chapter.",
+          "rawText": "Consider the metamorphosis of plastic bottles. Artists heat and reshape these discarded items and transform them into intricate sculptures, provoking dialogue on consumer habits. Such works suggest themes of rebirth, questioning whether the end of an object’s usefulness is truly its final chapter.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Consider the metamorphosis of plastic bottles."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Artists heat and reshape these discarded items and transform them into intricate sculptures, provoking dialogue on consumer habits."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Such works suggest themes of rebirth, questioning whether the end of an object’s usefulness is truly its final chapter."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Similarly, forgotten newspapers find new life as evocative collages (artworks made by assembling pieces of paper or other materials). These collages weave stories by layering headlines, images, and fragments of text to construct visual narratives that critique media saturation and information excess. Through juxtaposition and repetition, they highlight contradictions, biases, and overlooked truths, inviting viewers to reconsider the narratives they consume daily.",
+          "rawText": "Similarly, forgotten newspapers find new life as evocative collages (artworks made by assembling pieces of paper or other materials). These collages weave stories by layering headlines, images, and fragments of text to construct visual narratives that critique media saturation and information excess. Through juxtaposition and repetition, they highlight contradictions, biases, and overlooked truths, inviting viewers to reconsider the narratives they consume daily.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Similarly, forgotten newspapers find new life as evocative collages (artworks made by assembling pieces of paper or other materials)."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "These collages weave stories by layering headlines, images, and fragments of text to construct visual narratives that critique media saturation and information excess."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Through juxtaposition and repetition, they highlight contradictions, biases, and overlooked truths, inviting viewers to reconsider the narratives they consume daily."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p04",
+          "paragraphOrder": 4,
+          "text": "This trend sparks broader discourse on art’s societal role. By turning waste into art, creators not only curb landfill growth but also prompt audiences to reflect on consumption practices. Creative waste transformation is a catalyst for change, urging society toward a sustainable future.",
+          "rawText": "This trend sparks broader discourse on art’s societal role. By turning waste into art, creators not only curb landfill growth but also prompt audiences to reflect on consumption practices. Creative waste transformation is a catalyst for change, urging society toward a sustainable future.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p04-s01",
+              "sentenceOrder": 1,
+              "text": "This trend sparks broader discourse on art’s societal role."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p04-s02",
+              "sentenceOrder": 2,
+              "text": "By turning waste into art, creators not only curb landfill growth but also prompt audiences to reflect on consumption practices."
+            },
+            {
+              "sentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p04-s03",
+              "sentenceOrder": 3,
+              "text": "Creative waste transformation is a catalyst for change, urging society toward a sustainable future."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-e87bf5f62e80a618270d51db-q01",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "questionOrder": 1,
+      "questionType": "rap_sentence_selection",
+      "stem": "Identify the sentence in paragraph 1 that defines an important term. Select the sentence to make your choice.",
+      "rawDisplayText": "11. Identify the sentence in paragraph 1 that defines an important term. Select the sentence to make your choice.",
+      "payload": {
+        "passageId": "reading-rap-e87bf5f62e80a618270d51db-passage-01",
+        "targetParagraphId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01",
+        "correctSentenceId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p01-s01"
+      }
+    },
+    {
+      "questionId": "reading-rap-e87bf5f62e80a618270d51db-q02",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "It can be inferred from paragraph 2 that one intention of making sculptures from plastic bottles is to",
+      "rawDisplayText": "12. It can be inferred from paragraph 2 that one intention of making sculptures from plastic bottles is to",
+      "payload": {
+        "passageId": "reading-rap-e87bf5f62e80a618270d51db-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q02-opt-1",
+            "optionOrder": 1,
+            "text": "show that an everyday object has value beyond its immediate usefulness"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q02-opt-2",
+            "optionOrder": 2,
+            "text": "show that drink manufacturers should use more plastic in packaging"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q02-opt-3",
+            "optionOrder": 3,
+            "text": "encourage people to appreciate plastics as a multipurpose material"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q02-opt-4",
+            "optionOrder": 4,
+            "text": "encourage people to value sculpture more highly than other forms of art"
+          }
+        ],
+        "correctOptionId": "reading-rap-e87bf5f62e80a618270d51db-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-e87bf5f62e80a618270d51db-q03",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “evocative” in the passage is closest in meaning to",
+      "rawDisplayText": "13. The word “evocative” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-e87bf5f62e80a618270d51db-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q03-opt-1",
+            "optionOrder": 1,
+            "text": "challenging"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q03-opt-2",
+            "optionOrder": 2,
+            "text": "beautiful"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q03-opt-3",
+            "optionOrder": 3,
+            "text": "suggestive"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q03-opt-4",
+            "optionOrder": 4,
+            "text": "informative"
+          }
+        ],
+        "correctOptionId": "reading-rap-e87bf5f62e80a618270d51db-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-e87bf5f62e80a618270d51db-q04",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "In paragraph 3, what is indicated about newspapers that are used in collages?",
+      "rawDisplayText": "14. In paragraph 3, what is indicated about newspapers that are used in collages?",
+      "payload": {
+        "passageId": "reading-rap-e87bf5f62e80a618270d51db-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q04-opt-1",
+            "optionOrder": 1,
+            "text": "They focus on the daily lives of people rather than on breaking news stories."
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q04-opt-2",
+            "optionOrder": 2,
+            "text": "They become part of a critique of information presented by the news media."
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q04-opt-3",
+            "optionOrder": 3,
+            "text": "They contain more images than text."
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q04-opt-4",
+            "optionOrder": 4,
+            "text": "They are carefully selected to ensure that their content contains no contradictions."
+          }
+        ],
+        "correctOptionId": "reading-rap-e87bf5f62e80a618270d51db-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-e87bf5f62e80a618270d51db-q05",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to paragraph 4, the societal role of creative waste transformation is to",
+      "rawDisplayText": "15. According to paragraph 4, the societal role of creative waste transformation is to",
+      "payload": {
+        "passageId": "reading-rap-e87bf5f62e80a618270d51db-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q05-opt-1",
+            "optionOrder": 1,
+            "text": "inspire greater experimentation in the fine arts"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q05-opt-2",
+            "optionOrder": 2,
+            "text": "reduce the cost of art production"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q05-opt-3",
+            "optionOrder": 3,
+            "text": "encourage reflection on consumerism and sustainability"
+          },
+          {
+            "optionId": "reading-rap-e87bf5f62e80a618270d51db-q05-opt-4",
+            "optionOrder": 4,
+            "text": "prioritize artistic values over environmental concerns"
+          }
+        ],
+        "correctOptionId": "reading-rap-e87bf5f62e80a618270d51db-q05-opt-3"
+      }
+    }
+  ]
+}

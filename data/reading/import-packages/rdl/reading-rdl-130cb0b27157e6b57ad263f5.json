@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-130cb0b27157e6b57ad263f5",
+    "module": "rdl",
+    "title": "Downtown School of Data Skills",
+    "firstSeenDate": "2026-05-20",
+    "firstSeenSourceLabel": "5.20B",
+    "firstSeenSourceOrder": 7,
+    "dedupFingerprint": "130cb0b27157e6b57ad263f55b7d6a85211fe4fc78f7c1d4f559c4d87f3d86c8",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-20b-m1-rdl-07",
+      "logicalItemId": "reading-rdl-130cb0b27157e6b57ad263f5",
+      "sourceKind": "docx",
+      "sourceLabel": "5.20B",
+      "occurrenceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 7,
+      "sourceQuestionStart": 25,
+      "sourceQuestionEnd": 27,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01",
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25
+        },
+        {
+          "questionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-044",
+      "title": "Downtown School of Data Skills",
+      "source": "material-index.json#RDL-044",
+      "sourceDate": "2026-05-20",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-044/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-044/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01",
+      "logicalItemId": "reading-rdl-130cb0b27157e6b57ad263f5",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Peter has no experience with spreadsheets and cannot attend class on Wednesdays. He should enroll in",
+      "rawDisplayText": "25. Peter has no experience with spreadsheets and cannot attend class on Wednesdays. He should enroll in",
+      "payload": {
+        "materialId": "RDL-044",
+        "options": [
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Section A"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01-opt-2",
+            "optionOrder": 2,
+            "text": "Section B"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Section C"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01-opt-4",
+            "optionOrder": 4,
+            "text": "Section D"
+          }
+        ],
+        "correctOptionId": "reading-rdl-130cb0b27157e6b57ad263f5-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02",
+      "logicalItemId": "reading-rdl-130cb0b27157e6b57ad263f5",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What does Michelle need before enrolling in Section D?",
+      "rawDisplayText": "26. What does Michelle need before enrolling in Section D?",
+      "payload": {
+        "materialId": "RDL-044",
+        "options": [
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Experience creating new spreadsheet formulas"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02-opt-2",
+            "optionOrder": 2,
+            "text": "A research position that requires creating formulas"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Training in how to present complex data"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Previous experience using spreadsheets"
+          }
+        ],
+        "correctOptionId": "reading-rdl-130cb0b27157e6b57ad263f5-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03",
+      "logicalItemId": "reading-rdl-130cb0b27157e6b57ad263f5",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Beth has worked with formulas for years and is ready to learn advanced data skills. She should enroll in",
+      "rawDisplayText": "27. Beth has worked with formulas for years and is ready to learn advanced data skills. She should enroll in",
+      "payload": {
+        "materialId": "RDL-044",
+        "options": [
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Section A, B, or C"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Section D or E"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Section F"
+          },
+          {
+            "optionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Section G"
+          }
+        ],
+        "correctOptionId": "reading-rdl-130cb0b27157e6b57ad263f5-q03-opt-3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-5dded3a998e1aa70151d92c3",
+    "module": "rdl",
+    "title": "The Rise of Sustainable Living in University Housing",
+    "firstSeenDate": "2026-06-23",
+    "firstSeenSourceLabel": "6.23",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "5dded3a998e1aa70151d92c38728f4b791e4d6301d21ef3708b3eb805dd959e9",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-23-m1-rdl-10",
+      "logicalItemId": "reading-rdl-5dded3a998e1aa70151d92c3",
+      "sourceKind": "docx",
+      "sourceLabel": "6.23",
+      "occurrenceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.23.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.23_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-086",
+      "title": "The Rise of Sustainable Living in University Housing",
+      "source": "material-index.json#RDL-086",
+      "sourceDate": "2026-06-23",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-086/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-086/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01",
+      "logicalItemId": "reading-rdl-5dded3a998e1aa70151d92c3",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "All of the following are mentioned as features of the EcoHousing initiative EXCEPT",
+      "rawDisplayText": "28. All of the following are mentioned as features of the EcoHousing initiative EXCEPT",
+      "payload": {
+        "materialId": "RDL-086",
+        "options": [
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01-opt-1",
+            "optionOrder": 1,
+            "text": "solar power"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01-opt-2",
+            "optionOrder": 2,
+            "text": "composting bins"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01-opt-3",
+            "optionOrder": 3,
+            "text": "shared gardening spaces"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01-opt-4",
+            "optionOrder": 4,
+            "text": "the collection of rainwater"
+          }
+        ],
+        "correctOptionId": "reading-rdl-5dded3a998e1aa70151d92c3-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02",
+      "logicalItemId": "reading-rdl-5dded3a998e1aa70151d92c3",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "According to the article, a survey revealed that a large percentage of Greenleaf students are",
+      "rawDisplayText": "29. According to the article, a survey revealed that a large percentage of Greenleaf students are",
+      "payload": {
+        "materialId": "RDL-086",
+        "options": [
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02-opt-1",
+            "optionOrder": 1,
+            "text": "choosing to major in environmental science"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02-opt-2",
+            "optionOrder": 2,
+            "text": "demanding more spacious rooms in dormitories"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02-opt-3",
+            "optionOrder": 3,
+            "text": "seeking housing that is environmentally friendly"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02-opt-4",
+            "optionOrder": 4,
+            "text": "dissatisfied with the university's housing options"
+          }
+        ],
+        "correctOptionId": "reading-rdl-5dded3a998e1aa70151d92c3-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03",
+      "logicalItemId": "reading-rdl-5dded3a998e1aa70151d92c3",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "Why does the article mention a discount?",
+      "rawDisplayText": "30. Why does the article mention a discount?",
+      "payload": {
+        "materialId": "RDL-086",
+        "options": [
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that housing fees have increased significantly"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03-opt-2",
+            "optionOrder": 2,
+            "text": "To highlight that EcoHousing costs more than traditional dorms"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03-opt-3",
+            "optionOrder": 3,
+            "text": "To encourage students to attend the recycling workshops"
+          },
+          {
+            "optionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03-opt-4",
+            "optionOrder": 4,
+            "text": "To feature an incentive that the university offers to students"
+          }
+        ],
+        "correctOptionId": "reading-rdl-5dded3a998e1aa70151d92c3-q03-opt-4"
+      }
+    }
+  ]
+}

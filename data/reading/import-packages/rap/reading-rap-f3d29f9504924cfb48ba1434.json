@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+    "module": "rap",
+    "title": "A Unique Advantage of Spicy Cuisine",
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "f3d29f9504924cfb48ba1434b62bcabcaa727d8210ba2a54d7f4d4e197f27827",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m1-rap-13",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-5b-m1-rap-13",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5B",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "title": "A Unique Advantage of Spicy Cuisine",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Are you fond of spicy food? Spices have been used for thousands of years to enhance the flavor of food, originally in cultures where spice plants were native to the area. Today, spice use is widespread across cultures, though certain spices are more prevalent in some cuisines. Indeed, scientists have suggested that hot-climate cuisines feature a greater amount and variety of spices. For example, a recent study found that the number of different spices was much greater in traditional recipes from Southeast Asian countries than in those from northern Europe.",
+          "rawText": "Are you fond of spicy food? Spices have been used for thousands of years to enhance the flavor of food, originally in cultures where spice plants were native to the area. Today, spice use is widespread across cultures, though certain spices are more prevalent in some cuisines. Indeed, scientists have suggested that hot-climate cuisines feature a greater amount and variety of spices. For example, a recent study found that the number of different spices was much greater in traditional recipes from Southeast Asian countries than in those from northern Europe.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Are you fond of spicy food?"
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Spices have been used for thousands of years to enhance the flavor of food, originally in cultures where spice plants were native to the area."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Today, spice use is widespread across cultures, though certain spices are more prevalent in some cuisines."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Indeed, scientists have suggested that hot-climate cuisines feature a greater amount and variety of spices."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "For example, a recent study found that the number of different spices was much greater in traditional recipes from Southeast Asian countries than in those from northern Europe."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Why do hot-climate cuisines feature more spices? Some believe that spice consumption is related to cultural preferences. While culture certainly plays a part, scientists have recently suggested that the antimicrobial properties of spices, which prevent the growth of dangerous foodborne microorganisms, ensured their widespread use in hot climates. In such climates, food spoilage was a concern before the availability of refrigeration. Spices with greater antimicrobial or antibacterial properties, such as allspice, cinnamon, cumin, garlic, and onions, were frequently featured in the traditional recipes of hot-climate cuisines and in different combinations. Scientists concluded that food safety precipitated the use of many and multiple spices in hot regions.",
+          "rawText": "Why do hot-climate cuisines feature more spices? Some believe that spice consumption is related to cultural preferences. While culture certainly plays a part, scientists have recently suggested that the antimicrobial properties of spices, which prevent the growth of dangerous foodborne microorganisms, ensured their widespread use in hot climates. In such climates, food spoilage was a concern before the availability of refrigeration. Spices with greater antimicrobial or antibacterial properties, such as allspice, cinnamon, cumin, garlic, and onions, were frequently featured in the traditional recipes of hot-climate cuisines and in different combinations. Scientists concluded that food safety precipitated the use of many and multiple spices in hot regions.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Why do hot-climate cuisines feature more spices?"
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Some believe that spice consumption is related to cultural preferences."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "While culture certainly plays a part, scientists have recently suggested that the antimicrobial properties of spices, which prevent the growth of dangerous foodborne microorganisms, ensured their widespread use in hot climates."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "In such climates, food spoilage was a concern before the availability of refrigeration."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Spices with greater antimicrobial or antibacterial properties, such as allspice, cinnamon, cumin, garlic, and onions, were frequently featured in the traditional recipes of hot-climate cuisines and in different combinations."
+            },
+            {
+              "sentenceId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "Scientists concluded that food safety precipitated the use of many and multiple spices in hot regions."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q01",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The main purpose of the passage is to",
+      "rawDisplayText": "31. The main purpose of the passage is to",
+      "payload": {
+        "passageId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q01-opt-1",
+            "optionOrder": 1,
+            "text": "share research findings related to spice use"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q01-opt-2",
+            "optionOrder": 2,
+            "text": "promote the widespread use of specific spices"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q01-opt-3",
+            "optionOrder": 3,
+            "text": "describe an outdated theory of spice consumption"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q01-opt-4",
+            "optionOrder": 4,
+            "text": "contrast traditional and contemporary spice consumption"
+          }
+        ],
+        "correctOptionId": "reading-rap-f3d29f9504924cfb48ba1434-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q02",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What data did the scientists most likely collect for the study mentioned in the first paragraph?",
+      "rawDisplayText": "32. What data did the scientists most likely collect for the study mentioned in the first paragraph?",
+      "payload": {
+        "passageId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q02-opt-1",
+            "optionOrder": 1,
+            "text": "The number of spices used in a variety of countries"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q02-opt-2",
+            "optionOrder": 2,
+            "text": "The types of microorganisms found on different spices"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q02-opt-3",
+            "optionOrder": 3,
+            "text": "The food preferences of customers at traditional restaurants"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q02-opt-4",
+            "optionOrder": 4,
+            "text": "The number of traditional Southeast Asian recipes used in Europe"
+          }
+        ],
+        "correctOptionId": "reading-rap-f3d29f9504924cfb48ba1434-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q03",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is suggested about spice usage?",
+      "rawDisplayText": "33. What is suggested about spice usage?",
+      "payload": {
+        "passageId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Spices were used to conceal the odor of spoiled food."
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Spice consumption caused a rise in demand for native plants."
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Spices may prevent bacteria on food from developing."
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Spice use has decreased substantially in Southeast Asia."
+          }
+        ],
+        "correctOptionId": "reading-rap-f3d29f9504924cfb48ba1434-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q04",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are mentioned about spices EXCEPT:",
+      "rawDisplayText": "34. All of the following are mentioned about spices EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q04-opt-1",
+            "optionOrder": 1,
+            "text": "They are derived from plant products."
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q04-opt-2",
+            "optionOrder": 2,
+            "text": "They require refrigeration to maintain their function."
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q04-opt-3",
+            "optionOrder": 3,
+            "text": "They are associated with cultural practices."
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q04-opt-4",
+            "optionOrder": 4,
+            "text": "Their use varies considerably by cuisine."
+          }
+        ],
+        "correctOptionId": "reading-rap-f3d29f9504924cfb48ba1434-q04-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q05",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “precipitated” in the passage is closest in meaning to",
+      "rawDisplayText": "35. The word “precipitated” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q05-opt-1",
+            "optionOrder": 1,
+            "text": "threw"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q05-opt-2",
+            "optionOrder": 2,
+            "text": "separated"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q05-opt-3",
+            "optionOrder": 3,
+            "text": "caused"
+          },
+          {
+            "optionId": "reading-rap-f3d29f9504924cfb48ba1434-q05-opt-4",
+            "optionOrder": 4,
+            "text": "rained"
+          }
+        ],
+        "correctOptionId": "reading-rap-f3d29f9504924cfb48ba1434-q05-opt-3"
+      }
+    }
+  ]
+}

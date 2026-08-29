@@ -1,0 +1,1819 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.3",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The advancement of 3D printing technology has revolutionized manufacturing by enabling precise, layer-by-layer fabrication of complex objects. 3D printing can use div_ _ _ _ materials su_ _ as plas_ _ _ _, metals, a_ _ ceramics. Engi_ _ _ _ _ are ab_ _ to fabr_ _ _ _ _ lightweight, str_ _ _ components wi_ _ internal struc_ _ _ _ _ that are impossible to produce using traditional methods. In the medical field, 3D printing facilitates the production of patient-specific implants and prosthetics tailored to anatomical data from imaging scans. 3D printing enhances design flexibility and production efficiency by streamlining prototyping and reducing material waste.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The advancement of 3D printing technology has revolutionized manufacturing by enabling precise, layer-by-layer fabrication of complex objects. 3D printing can use div_ _ _ _ materials su_ _ as plas_ _ _ _, metals, a_ _ ceramics. Engi_ _ _ _ _ are ab_ _ to fabr_ _ _ _ _ lightweight, str_ _ _ components wi_ _ internal struc_ _ _ _ _ that are impossible to produce using traditional methods. In the medical field, 3D printing facilitates the production of patient-specific implants and prosthetics tailored to anatomical data from imaging scans. 3D printing enhances design flexibility and production efficiency by streamlining prototyping and reducing material waste.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The advancement of 3D printing technology has revolutionized manufacturing by enabling precise, layer-by-layer fabrication of complex objects. 3D printing can use "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " materials "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " as "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", metals, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ceramics. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " are "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " lightweight, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " components "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " internal "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that are impossible to produce using traditional methods. In the medical field, 3D printing facilitates the production of patient-specific implants and prosthetics tailored to anatomical data from imaging scans. 3D printing enhances design flexibility and production efficiency by streamlining prototyping and reducing material waste."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "diverse",
+                "prefix": "div",
+                "displayText": "div_ _ _ _",
+                "missingText": "erse",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "such",
+                "prefix": "su",
+                "displayText": "su_ _",
+                "missingText": "ch",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "plastics",
+                "prefix": "plas",
+                "displayText": "plas_ _ _ _",
+                "missingText": "tics",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "Engineers",
+                "prefix": "Engi",
+                "displayText": "Engi_ _ _ _ _",
+                "missingText": "neers",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "able",
+                "prefix": "ab",
+                "displayText": "ab_ _",
+                "missingText": "le",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "fabricate",
+                "prefix": "fabr",
+                "displayText": "fabr_ _ _ _ _",
+                "missingText": "icate",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "strong",
+                "prefix": "str",
+                "displayText": "str_ _ _",
+                "missingText": "ong",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "with",
+                "prefix": "wi",
+                "displayText": "wi_ _",
+                "missingText": "th",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q01-10-p01",
+                "answer": "structures",
+                "prefix": "struc",
+                "displayText": "struc_ _ _ _ _",
+                "missingText": "tures",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "At the dawn of civilization, humans relied heavily on their natural surroundings to meet basic needs. Early humans were primarily hunters and gatherers, foraging for edible plants and hunting wild animals. This required humans to move often to find food. Over ti_ _, they obse_ _ _ _ natural patt_ _ _ _ and be_ _ _ planting se_ _ _, sparking t_ _ agricultural revol_ _ _ _ _. This cha_ _ _ allowed perm_ _ _ _ _ settlements a_ _ growing communities. With larger populations came complex social structures, trade, and specialized crafts.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "At the dawn of civilization, humans relied heavily on their natural surroundings to meet basic needs. Early humans were primarily hunters and gatherers, foraging for edible plants and hunting wild animals. This required humans to move often to find food. Over ti_ _, they obse_ _ _ _ natural patt_ _ _ _ and be_ _ _ planting se_ _ _, sparking t_ _ agricultural revol_ _ _ _ _. This cha_ _ _ allowed perm_ _ _ _ _ settlements a_ _ growing communities. With larger populations came complex social structures, trade, and specialized crafts.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "At the dawn of civilization, humans relied heavily on their natural surroundings to meet basic needs. Early humans were primarily hunters and gatherers, foraging for edible plants and hunting wild animals. This required humans to move often to find food. Over "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", they "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " natural "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " planting "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", sparking "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " agricultural "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". This "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " allowed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " settlements "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " growing communities. With larger populations came complex social structures, trade, and specialized crafts."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "time",
+                "prefix": "ti",
+                "displayText": "ti_ _",
+                "missingText": "me",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "observed",
+                "prefix": "obse",
+                "displayText": "obse_ _ _ _",
+                "missingText": "rved",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "patterns",
+                "prefix": "patt",
+                "displayText": "patt_ _ _ _",
+                "missingText": "erns",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "began",
+                "prefix": "be",
+                "displayText": "be_ _ _",
+                "missingText": "gan",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "seeds",
+                "prefix": "se",
+                "displayText": "se_ _ _",
+                "missingText": "eds",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "revolution",
+                "prefix": "revol",
+                "displayText": "revol_ _ _ _ _",
+                "missingText": "ution",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "change",
+                "prefix": "cha",
+                "displayText": "cha_ _ _",
+                "missingText": "nge",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "permanent",
+                "prefix": "perm",
+                "displayText": "perm_ _ _ _ _",
+                "missingText": "anent",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-03-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-03-m1-ctw-q11-20-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m1-rdl-03",
+      "module": "rdl",
+      "title": "Sidewalk Repair Project",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-063",
+          "title": "Sidewalk Repair Project",
+          "source": "material-index.json#RDL-063",
+          "sourceDate": "2026-06-03",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-063/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-063/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What will probably occur during the period from July 2 to July 9?",
+          "rawDisplayText": "21. What will probably occur during the period from July 2 to July 9?",
+          "payload": {
+            "materialId": "RDL-063",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "Repairs to a major campus street will take place."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "Classes on East Campus will be relocated to other areas."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "There will be a lot of noise on East Campus related to office renovations."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "A university office will be reviewing feedback about an upcoming project."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q21-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What can be inferred about College Drive?",
+          "rawDisplayText": "22. What can be inferred about College Drive?",
+          "payload": {
+            "materialId": "RDL-063",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "It will be unaffected by the project."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "It is located on East Campus."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "It is the site of the Facilities Office."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Its road surface has been neglected."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m1-rdl-05",
+      "module": "rdl",
+      "title": "Colin / Priya / Mateo remote-learning assignment messages",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-064",
+          "title": "Colin / Priya / Mateo remote-learning assignment messages",
+          "source": "material-index.json#RDL-064",
+          "sourceDate": "2026-06-03",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-064/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-064/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main problem that Colin expresses about the assignment?",
+          "rawDisplayText": "23. What is the main problem that Colin expresses about the assignment?",
+          "payload": {
+            "materialId": "RDL-064",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "He believes the topic is unimportant."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "He finds the topic too general to approach easily."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "He believes that the prompt makes false assumptions."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "He does not understand the assignment."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What does Priya suggest is the purpose of the assignment?",
+          "rawDisplayText": "24. What does Priya suggest is the purpose of the assignment?",
+          "payload": {
+            "materialId": "RDL-064",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "To summarize existing research on remote learning"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "To criticize existing research on remote learning"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "To choose a viewpoint and support it with arguments"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "To analyze one's personal experience with online courses"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q24-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What does Colin struggle with when reviewing the research?",
+          "rawDisplayText": "25. What does Colin struggle with when reviewing the research?",
+          "payload": {
+            "materialId": "RDL-064",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "It discusses too many topics."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "It contradicts his own experience."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "It relies too heavily on theory."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "It is intended for experts only."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q25-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m1-rap-08",
+      "module": "rap",
+      "title": "Data Science and the Buildings of Tomorrow",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-03-m1-rap-p01",
+          "title": "Data Science and the Buildings of Tomorrow",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-03-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Once static structures, buildings increasingly function as dynamic systems thanks to applications of data science to the built environment. Building data science uses sensors and Internet of Things (IoT) devices, such as smart thermostats, to collect and interpret data from buildings. This approach enables architects and planners to make informed decisions throughout a building's design, operation, and renovation phases.",
+              "rawText": "Once static structures, buildings increasingly function as dynamic systems thanks to applications of data science to the built environment. Building data science uses sensors and Internet of Things (IoT) devices, such as smart thermostats, to collect and interpret data from buildings. This approach enables architects and planners to make informed decisions throughout a building's design, operation, and renovation phases.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Once static structures, buildings increasingly function as dynamic systems thanks to applications of data science to the built environment."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Building data science uses sensors and Internet of Things (IoT) devices, such as smart thermostats, to collect and interpret data from buildings."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This approach enables architects and planners to make informed decisions throughout a building's design, operation, and renovation phases."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Sensors embedded in modern buildings track variables such as energy consumption, temperature, air quality, and occupancy patterns. These insights help optimize energy use, reduce operational costs, and enhance comfort. Smart HVAC (heating, ventilation, and air-conditioning) systems can adjust airflow based on real-time occupancy, improving efficiency. Monitoring space usage may conflict, however, with occupants' privacy concerns and dislike of being tracked without their consent.",
+              "rawText": "Sensors embedded in modern buildings track variables such as energy consumption, temperature, air quality, and occupancy patterns. These insights help optimize energy use, reduce operational costs, and enhance comfort. Smart HVAC (heating, ventilation, and air-conditioning) systems can adjust airflow based on real-time occupancy, improving efficiency. Monitoring space usage may conflict, however, with occupants' privacy concerns and dislike of being tracked without their consent.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Sensors embedded in modern buildings track variables such as energy consumption, temperature, air quality, and occupancy patterns."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "These insights help optimize energy use, reduce operational costs, and enhance comfort."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Smart HVAC (heating, ventilation, and air-conditioning) systems can adjust airflow based on real-time occupancy, improving efficiency."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Monitoring space usage may conflict, however, with occupants' privacy concerns and dislike of being tracked without their consent."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Despite high initial costs, building data science offers long-term benefits. Studies show that buildings using these systems can reduce energy consumption by up to 30 percent, making them attractive for sustainable development. As urban populations grow, building data science will be key to creating adaptable spaces. A skyscraper that adjusts its internal climate based on external weather conditions exemplifies this potential. Other applications include optimizing the layouts of hospitals for better patient flow or using occupancy data to redesign underutilized office spaces.",
+              "rawText": "Despite high initial costs, building data science offers long-term benefits. Studies show that buildings using these systems can reduce energy consumption by up to 30 percent, making them attractive for sustainable development. As urban populations grow, building data science will be key to creating adaptable spaces. A skyscraper that adjusts its internal climate based on external weather conditions exemplifies this potential. Other applications include optimizing the layouts of hospitals for better patient flow or using occupancy data to redesign underutilized office spaces.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Despite high initial costs, building data science offers long-term benefits."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Studies show that buildings using these systems can reduce energy consumption by up to 30 percent, making them attractive for sustainable development."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "As urban populations grow, building data science will be key to creating adaptable spaces."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "A skyscraper that adjusts its internal climate based on external weather conditions exemplifies this potential."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "Other applications include optimizing the layouts of hospitals for better patient flow or using occupancy data to redesign underutilized office spaces."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"static\" in the passage is closest in meaning to",
+          "rawDisplayText": "26. The word \"static\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "impractical"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "unchanging"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "wasteful"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "simple"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates all of the following about building data science EXCEPT:",
+          "rawDisplayText": "27. The passage indicates all of the following about building data science EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "It uses data collected from Internet of Things devices."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "It requires special training in data analysis for architects who use it."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "It has an impact on how architects design new buildings."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "It can be used as a basis for decisions about a building's operations."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q27-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is one drawback of the use of sensors?",
+          "rawDisplayText": "28. According to the passage, what is one drawback of the use of sensors?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "Sensors lead to greater energy use."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "Sensors are known for supplying inaccurate data."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "The data collected is frequently hard to interpret."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Some building occupants may not approve of their use."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q28-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"hospitals\" and \"office spaces\"?",
+          "rawDisplayText": "29. Why does the author mention \"hospitals\" and \"office spaces\"?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "To give examples of city structures that are often poorly designed"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "To demonstrate how building data science can improve urban infrastructure"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "To show the limitations of building data science"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "To contradict the claim that building data science will be key to creating adaptable spaces"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q29-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "Based on the passage, building data science can help most with which of the following?",
+          "rawDisplayText": "30. Based on the passage, building data science can help most with which of the following?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "Increasing a building's office space"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Limiting a building's construction costs"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "Reducing a building's environmental impact"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Enhancing a building's visual appeal"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q30-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m1-rap-13",
+      "module": "rap",
+      "title": "Carthage's Trade Network",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-03-m1-rap-p02",
+          "title": "Carthage's Trade Network",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-03-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Carthage, founded by Phoenician merchants around 814 B.C.E., became a powerful city-state due to its strategic location on the Mediterranean. This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia. Carthaginian traders dealt in goods such as silver, gold, tin, and textiles.",
+              "rawText": "Carthage, founded by Phoenician merchants around 814 B.C.E., became a powerful city-state due to its strategic location on the Mediterranean. This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia. Carthaginian traders dealt in goods such as silver, gold, tin, and textiles.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Carthage, founded by Phoenician merchants around 814 B.C.E., became a powerful city-state due to its strategic location on the Mediterranean."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Carthaginian traders dealt in goods such as silver, gold, tin, and textiles."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport. They developed efficient trade routes and set up colonies, expanding their economic reach. Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world. Carthage's wealth was also built on innovations in agriculture. Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export.",
+              "rawText": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport. They developed efficient trade routes and set up colonies, expanding their economic reach. Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world. Carthage's wealth was also built on innovations in agriculture. Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "They developed efficient trade routes and set up colonies, expanding their economic reach."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Carthage's wealth was also built on innovations in agriculture."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "However, Carthage's rise did not come without challenges. Its growing wealth and dominance in trade led to rivalry with Rome. The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes. Despite initial successes, Carthage was ultimately defeated. The final blow came when the Romans launched a brutal siege on Carthage, culminating in the city's destruction.",
+              "rawText": "However, Carthage's rise did not come without challenges. Its growing wealth and dominance in trade led to rivalry with Rome. The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes. Despite initial successes, Carthage was ultimately defeated. The final blow came when the Romans launched a brutal siege on Carthage, culminating in the city's destruction.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, Carthage's rise did not come without challenges."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Its growing wealth and dominance in trade led to rivalry with Rome."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Despite initial successes, Carthage was ultimately defeated."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m1-rap-p02-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "The final blow came when the Romans launched a brutal siege on Carthage, culminating in the city's destruction."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following contributed to the status of Carthage as a wealthy and powerful city-state EXCEPT",
+          "rawDisplayText": "31. All of the following contributed to the status of Carthage as a wealthy and powerful city-state EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "its geographic position"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "its trade network across three continents"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "its large fishing industry"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "its ship-building technology"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates which of the following about Carthage's maritime technology?",
+          "rawDisplayText": "32. The passage indicates which of the following about Carthage's maritime technology?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "Carthage's ships were designed primarily for the transport of small items of high value, such as silver and gold."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "Carthage's ships were not as advanced as Roman ships."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "Carthaginians developed a system of switching ships at colonial ports to go longer distances."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "Carthaginians were skilled at navigating over long distances."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q32-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be concluded from the passage about Carthaginian agriculture?",
+          "rawDisplayText": "33. What can be concluded from the passage about Carthaginian agriculture?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "It was far inferior to Carthaginian maritime technology."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "It produced more than enough food to feed the Carthaginians."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "Its innovations borrowed much from Roman technical knowledge."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "It was transformed by farmers from Africa, Europe, and Asia."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about the consequences of Carthage's success?",
+          "rawDisplayText": "34. What can be inferred about the consequences of Carthage's success?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "It led to mutually beneficial relations with Rome."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "It caused internal strife among Carthaginian traders."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "It led to a neglect of the military."
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "It contributed to external conflicts."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "The phrase \"culminating in\" in the final sentence is closest in meaning to",
+          "rawDisplayText": "35. The phrase \"culminating in\" in the final sentence is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-03-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "revealing"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "ending with"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "coinciding with"
+              },
+              {
+                "optionId": "reading-2026-06-03-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "following"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m1-q35-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Throughout history, the Indian subcontinent has been a cultural crossroads that has facilitated the exchange of ideas, goods, and philosophies between East and West. The Mauryan Empire, established in 322 BCE, represented one of the earliest fo_ _ _ of consol_ _ _ _ _ _ rule i_ the reg_ _ _ and la_ _ the ground_ _ _ _ for fut_ _ _ administrative mod_ _ _. A not_ _ _ _ achievement w_ _ the spread of Buddhism under the emperor Ashoka, who propagated its teachings beyond India into Central Asia. The Gupta period, often termed the golden age, witnessed advancements in sciences, mathematics, and art.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Throughout history, the Indian subcontinent has been a cultural crossroads that has facilitated the exchange of ideas, goods, and philosophies between East and West. The Mauryan Empire, established in 322 BCE, represented one of the earliest fo_ _ _ of consol_ _ _ _ _ _ rule i_ the reg_ _ _ and la_ _ the ground_ _ _ _ for fut_ _ _ administrative mod_ _ _. A not_ _ _ _ achievement w_ _ the spread of Buddhism under the emperor Ashoka, who propagated its teachings beyond India into Central Asia. The Gupta period, often termed the golden age, witnessed advancements in sciences, mathematics, and art.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Throughout history, the Indian subcontinent has been a cultural crossroads that has facilitated the exchange of ideas, goods, and philosophies between East and West. The Mauryan Empire, established in 322 BCE, represented one of the earliest "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " rule "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " administrative "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". A "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " achievement "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the spread of Buddhism under the emperor Ashoka, who propagated its teachings beyond India into Central Asia. The Gupta period, often termed the golden age, witnessed advancements in sciences, mathematics, and art."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "forms",
+                "prefix": "fo",
+                "displayText": "fo_ _ _",
+                "missingText": "rms",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "consolidated",
+                "prefix": "consol",
+                "displayText": "consol_ _ _ _ _ _",
+                "missingText": "idated",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "region",
+                "prefix": "reg",
+                "displayText": "reg_ _ _",
+                "missingText": "ion",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "laid",
+                "prefix": "la",
+                "displayText": "la_ _",
+                "missingText": "id",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "groundwork",
+                "prefix": "ground",
+                "displayText": "ground_ _ _ _",
+                "missingText": "work",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "future",
+                "prefix": "fut",
+                "displayText": "fut_ _ _",
+                "missingText": "ure",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "models",
+                "prefix": "mod",
+                "displayText": "mod_ _ _",
+                "missingText": "els",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "notable",
+                "prefix": "not",
+                "displayText": "not_ _ _ _",
+                "missingText": "able",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-03-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-03-m2-ctw-q01-10-p01",
+                "answer": "was",
+                "prefix": "w",
+                "displayText": "w_ _",
+                "missingText": "as",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-3-m2-rap-19",
+      "module": "rap",
+      "title": "Hidden Structures in Discrete Geometry",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.3",
+        "occurrenceDate": "2026-06-03",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.3.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.3_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-03-m2-rap-p01",
+          "title": "Hidden Structures in Discrete Geometry",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-03-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects. Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons. These distinct components reveal unexpected structures and relationships. Such revelations occur particularly in packing and tiling problems.",
+              "rawText": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects. Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons. These distinct components reveal unexpected structures and relationships. Such revelations occur particularly in packing and tiling problems.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Discrete geometry is a fascinating branch of mathematics that explores the hidden patterns formed by distinct geometric objects."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "These distinct components reveal unexpected structures and relationships."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Such revelations occur particularly in packing and tiling problems."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Packing problems involve finding the most efficient arrangement of objects in a given space. While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access. Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency.",
+              "rawText": "Packing problems involve finding the most efficient arrangement of objects in a given space. While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access. Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Packing problems involve finding the most efficient arrangement of objects in a given space."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "While this might sound like a simple exercise—such as fitting oranges into boxes—it has far-reaching applications in fields like computer-chip design, where components must be arranged to maximize performance and minimize space, and in data storage, where digital information is packed efficiently to save memory and speed up access."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Researchers have discovered intriguing connections between the arrangement of shapes and space utilization, challenging assumptions about efficiency."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Tiling problems further illustrate the depth of discrete geometry. Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties. The insights gained from such tiling patterns have influenced architectural designs and artworks.",
+              "rawText": "■ Tiling problems further illustrate the depth of discrete geometry. ■ Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties. ■ The insights gained from such tiling patterns have influenced architectural designs and artworks. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Tiling problems further illustrate the depth of discrete geometry."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Penrose tiling, for instance, creates a pattern with non-repeating shapes that fill a plane, revealing underlying symmetrical properties."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "The insights gained from such tiling patterns have influenced architectural designs and artworks."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-03-m2-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value. Mathematicians continue to show how these hidden structures drive innovation across fields.",
+              "rawText": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value. Mathematicians continue to show how these hidden structures drive innovation across fields.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "The challenging, abstract nature of discrete geometry can all too easily belie its practical value."
+                },
+                {
+                  "sentenceId": "reading-2026-06-03-m2-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Mathematicians continue to show how these hidden structures drive innovation across fields."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-03-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 1 that contrasts two branches of mathematics. Select the sentence to make your choice.",
+          "rawDisplayText": "11. Identify the sentence in paragraph 1 that contrasts two branches of mathematics. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-03-m2-rap-p01",
+            "targetParagraphId": "reading-2026-06-03-m2-rap-p01-p01",
+            "correctSentenceId": "reading-2026-06-03-m2-rap-p01-p01-s02"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"fitting oranges into boxes\"?",
+          "rawDisplayText": "12. Why does the author mention \"fitting oranges into boxes\"?",
+          "payload": {
+            "passageId": "reading-2026-06-03-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "To help describe the historical development of packing problems"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "To help communicate the idea that packing problems are not as simple as they sound"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "To highlight one of the challenges faced by researchers in discrete geometry"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "To explain the basic principles of discrete geometry to nonspecialists"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The study of computer chip design and data storage has revealed that",
+          "rawDisplayText": "13. The study of computer chip design and data storage has revealed that",
+          "payload": {
+            "passageId": "reading-2026-06-03-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "traditional assumptions about efficiency are still valid"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "there are new ways of enhancing the security of digital information"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "there are interesting connections between how shapes are arranged and how spaces are used"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "the principles of continuous geometry are surprisingly relevant"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m2-q13-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"belie\" in the passage is closest in meaning to",
+          "rawDisplayText": "14. The word \"belie\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-03-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-03-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "hide"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "confirm"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "enhance"
+              },
+              {
+                "optionId": "reading-2026-06-03-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "undermine"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-03-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-03-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-03-m2-rap-p01",
+            "insertSentence": "For example, Penrose-inspired patterns have been used in mosaic art and floor designs to create visually striking compositions that evoke mathematical harmony.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-03-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-03-m2-rap-p01-p03",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-06-03-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-03-m2-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-03-m2-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-03-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-03-m2-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-03-m2-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-03-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-03-m2-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-03-m2-rap-p01-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-03-m2-q15-anchor-4"
+          }
+        }
+      ]
+    }
+  ]
+}

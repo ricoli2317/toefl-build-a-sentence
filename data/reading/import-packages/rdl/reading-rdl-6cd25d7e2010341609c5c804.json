@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-6cd25d7e2010341609c5c804",
+    "module": "rdl",
+    "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+    "firstSeenDate": "2026-06-29",
+    "firstSeenSourceLabel": "6.29",
+    "firstSeenSourceOrder": 3,
+    "dedupFingerprint": "6cd25d7e2010341609c5c804ee647424435c06916ff02ed9aab19b653604f2c1",
+    "questionCount": 2,
+    "scoredItemCount": 2,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-29-m1-rdl-03",
+      "logicalItemId": "reading-rdl-6cd25d7e2010341609c5c804",
+      "sourceKind": "docx",
+      "sourceLabel": "6.29",
+      "occurrenceDate": "2026-06-29",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 3,
+      "sourceQuestionStart": 21,
+      "sourceQuestionEnd": 22,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-6cd25d7e2010341609c5c804-q01",
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21
+        },
+        {
+          "questionId": "reading-rdl-6cd25d7e2010341609c5c804-q02",
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-065",
+      "title": "Discovering Human Cultures by Dr. R. J. Hancock",
+      "source": "material-index.json#RDL-065",
+      "sourceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-065/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-065/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-6cd25d7e2010341609c5c804-q01",
+      "logicalItemId": "reading-rdl-6cd25d7e2010341609c5c804",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Which of the following is most likely true of Discovering Human Cultures?",
+      "rawDisplayText": "21. Which of the following is most likely true of Discovering Human Cultures?",
+      "payload": {
+        "materialId": "RDL-065",
+        "options": [
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It includes guides for conducting research."
+          },
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q01-opt-2",
+            "optionOrder": 2,
+            "text": "The case studies it contains use fictitious names."
+          },
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q01-opt-3",
+            "optionOrder": 3,
+            "text": "The methodologies it uses are not conventional."
+          },
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It is being made into an informational television series."
+          }
+        ],
+        "correctOptionId": "reading-rdl-6cd25d7e2010341609c5c804-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-6cd25d7e2010341609c5c804-q02",
+      "logicalItemId": "reading-rdl-6cd25d7e2010341609c5c804",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "What is suggested about the writing style of Discovering Human Cultures?",
+      "rawDisplayText": "22. What is suggested about the writing style of Discovering Human Cultures?",
+      "payload": {
+        "materialId": "RDL-065",
+        "options": [
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Its use of non-English expressions adds authenticity."
+          },
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q02-opt-2",
+            "optionOrder": 2,
+            "text": "It is written to be understood by general audiences."
+          },
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Its language is ideal for advanced anthropology courses."
+          },
+          {
+            "optionId": "reading-rdl-6cd25d7e2010341609c5c804-q02-opt-4",
+            "optionOrder": 4,
+            "text": "It often uses humor to make a point."
+          }
+        ],
+        "correctOptionId": "reading-rdl-6cd25d7e2010341609c5c804-q02-opt-2"
+      }
+    }
+  ]
+}

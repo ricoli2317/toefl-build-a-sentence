@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+    "module": "ctw",
+    "title": null,
+    "firstSeenDate": "2026-05-05",
+    "firstSeenSourceLabel": "5.5A",
+    "firstSeenSourceOrder": 1,
+    "dedupFingerprint": "956eea9b8537363f0159a5e3ed59231e6321d883fb196eb34c25773d01df3bf2",
+    "questionCount": 1,
+    "scoredItemCount": 10,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-5a-m1-ctw-01",
+      "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5A",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-956eea9b8537363f0159a5e3-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-5b-m1-ctw-01",
+      "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+      "sourceKind": "docx",
+      "sourceLabel": "5.5B",
+      "occurrenceDate": "2026-05-05",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.5B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.5B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-956eea9b8537363f0159a5e3-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-5-18b-m1-ctw-01",
+      "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18B",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 1,
+      "sourceQuestionStart": 1,
+      "sourceQuestionEnd": 10,
+      "questionSources": [
+        {
+          "questionId": "reading-ctw-956eea9b8537363f0159a5e3-q01",
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-ctw-956eea9b8537363f0159a5e3-q01",
+      "logicalItemId": "reading-ctw-956eea9b8537363f0159a5e3",
+      "questionOrder": 1,
+      "questionType": "ctw",
+      "stem": "Fill in the missing letters in the paragraph.",
+      "rawDisplayText": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous popul_ _ _ _ _ _ developed com_ _ _ _ societies wi_ _ rich tradi_ _ _ _ _ and soc_ _ _ structures. T_ _ region’s poli_ _ _ _ _ and econ_ _ _ _ landscapes exper_ _ _ _ _ _ profound cha_ _ _ _ following colonization by Europeans. Studying this history allows for a greater understanding of cultural interactions and the ongoing effects of historical events on contemporary South Pacific societies. Traditional navigation techniques using stars and ocean swells enabled remarkable voyaging achievements, while contemporary movements focus on cultural preservation, language revitalization, and addressing climate change impacts on island nations.",
+      "payload": {
+        "paragraphs": [
+          {
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "paragraphOrder": 1,
+            "rawText": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous popul_ _ _ _ _ _ developed com_ _ _ _ societies wi_ _ rich tradi_ _ _ _ _ and soc_ _ _ structures. T_ _ region’s poli_ _ _ _ _ and econ_ _ _ _ landscapes exper_ _ _ _ _ _ profound cha_ _ _ _ following colonization by Europeans. Studying this history allows for a greater understanding of cultural interactions and the ongoing effects of historical events on contemporary South Pacific societies. Traditional navigation techniques using stars and ocean swells enabled remarkable voyaging achievements, while contemporary movements focus on cultural preservation, language revitalization, and addressing climate change impacts on island nations.",
+            "segments": [
+              {
+                "kind": "text",
+                "text": "The history of the South Pacific is marked by diverse cultures and significant events. Indigenous "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-01"
+              },
+              {
+                "kind": "text",
+                "text": " developed "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-02"
+              },
+              {
+                "kind": "text",
+                "text": " societies "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-03"
+              },
+              {
+                "kind": "text",
+                "text": " rich "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-04"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-05"
+              },
+              {
+                "kind": "text",
+                "text": " structures. "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-06"
+              },
+              {
+                "kind": "text",
+                "text": " region’s "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-07"
+              },
+              {
+                "kind": "text",
+                "text": " and "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-08"
+              },
+              {
+                "kind": "text",
+                "text": " landscapes "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-09"
+              },
+              {
+                "kind": "text",
+                "text": " profound "
+              },
+              {
+                "kind": "blank",
+                "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-10"
+              },
+              {
+                "kind": "text",
+                "text": " following colonization by Europeans. Studying this history allows for a greater understanding of cultural interactions and the ongoing effects of historical events on contemporary South Pacific societies. Traditional navigation techniques using stars and ocean swells enabled remarkable voyaging achievements, while contemporary movements focus on cultural preservation, language revitalization, and addressing climate change impacts on island nations."
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-01",
+            "slotOrder": 1,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "populations",
+            "prefix": "popul",
+            "displayText": "popul_ _ _ _ _ _",
+            "missingText": "ations",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-02",
+            "slotOrder": 2,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "complex",
+            "prefix": "com",
+            "displayText": "com_ _ _ _",
+            "missingText": "plex",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-03",
+            "slotOrder": 3,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "with",
+            "prefix": "wi",
+            "displayText": "wi_ _",
+            "missingText": "th",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-04",
+            "slotOrder": 4,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "traditions",
+            "prefix": "tradi",
+            "displayText": "tradi_ _ _ _ _",
+            "missingText": "tions",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-05",
+            "slotOrder": 5,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "social",
+            "prefix": "soc",
+            "displayText": "soc_ _ _",
+            "missingText": "ial",
+            "missingLength": 3
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-06",
+            "slotOrder": 6,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "The",
+            "prefix": "T",
+            "displayText": "T_ _",
+            "missingText": "he",
+            "missingLength": 2
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-07",
+            "slotOrder": 7,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "political",
+            "prefix": "poli",
+            "displayText": "poli_ _ _ _ _",
+            "missingText": "tical",
+            "missingLength": 5
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-08",
+            "slotOrder": 8,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "economic",
+            "prefix": "econ",
+            "displayText": "econ_ _ _ _",
+            "missingText": "omic",
+            "missingLength": 4
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-09",
+            "slotOrder": 9,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "experienced",
+            "prefix": "exper",
+            "displayText": "exper_ _ _ _ _ _",
+            "missingText": "ienced",
+            "missingLength": 6
+          },
+          {
+            "slotId": "reading-ctw-956eea9b8537363f0159a5e3-q01-slot-10",
+            "slotOrder": 10,
+            "paragraphId": "reading-ctw-956eea9b8537363f0159a5e3-q01-p01",
+            "answer": "changes",
+            "prefix": "cha",
+            "displayText": "cha_ _ _ _",
+            "missingText": "nges",
+            "missingLength": 4
+          }
+        ]
+      }
+    }
+  ]
+}

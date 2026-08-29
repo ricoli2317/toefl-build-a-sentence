@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-25140f617f981938f89b04ef",
+    "module": "rdl",
+    "title": "English 202: The Sonnet",
+    "firstSeenDate": "2026-05-18",
+    "firstSeenSourceLabel": "5.18B",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "25140f617f981938f89b04ef13d9f5c477cc31b60535359c9d30a72fc6145f9d",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-18b-m1-rdl-10",
+      "logicalItemId": "reading-rdl-25140f617f981938f89b04ef",
+      "sourceKind": "docx",
+      "sourceLabel": "5.18B",
+      "occurrenceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.18B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.18B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-25140f617f981938f89b04ef-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-25140f617f981938f89b04ef-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-25140f617f981938f89b04ef-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-038",
+      "title": "English 202: The Sonnet",
+      "source": "material-index.json#RDL-038",
+      "sourceDate": "2026-05-18",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-038/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-038/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-25140f617f981938f89b04ef-q01",
+      "logicalItemId": "reading-rdl-25140f617f981938f89b04ef",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "The course description mentions the sonnet’s “strict formal rules” primarily to",
+      "rawDisplayText": "28. The course description mentions the sonnet’s “strict formal rules” primarily to",
+      "payload": {
+        "materialId": "RDL-038",
+        "options": [
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q01-opt-1",
+            "optionOrder": 1,
+            "text": "suggest that sonnets are more difficult to write than other kinds of poems"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q01-opt-2",
+            "optionOrder": 2,
+            "text": "identify a way in which form itself can convey meaning"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q01-opt-3",
+            "optionOrder": 3,
+            "text": "explain how the sonnet has evolved since the early sixteenth century"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q01-opt-4",
+            "optionOrder": 4,
+            "text": "challenge a myth about the kinds of subjects that poets have addressed in sonnets"
+          }
+        ],
+        "correctOptionId": "reading-rdl-25140f617f981938f89b04ef-q01-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rdl-25140f617f981938f89b04ef-q02",
+      "logicalItemId": "reading-rdl-25140f617f981938f89b04ef",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "The course description suggests that students will",
+      "rawDisplayText": "29. The course description suggests that students will",
+      "payload": {
+        "materialId": "RDL-038",
+        "options": [
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q02-opt-1",
+            "optionOrder": 1,
+            "text": "read poems other than sonnets"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q02-opt-2",
+            "optionOrder": 2,
+            "text": "submit multiple papers during the course"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q02-opt-3",
+            "optionOrder": 3,
+            "text": "take quizzes on each week’s assigned reading"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q02-opt-4",
+            "optionOrder": 4,
+            "text": "do both creative and academic writing"
+          }
+        ],
+        "correctOptionId": "reading-rdl-25140f617f981938f89b04ef-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-25140f617f981938f89b04ef-q03",
+      "logicalItemId": "reading-rdl-25140f617f981938f89b04ef",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "The course description mentions each of the following EXCEPT",
+      "rawDisplayText": "30. The course description mentions each of the following EXCEPT",
+      "payload": {
+        "materialId": "RDL-038",
+        "options": [
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q03-opt-1",
+            "optionOrder": 1,
+            "text": "the origins of the English sonnet"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q03-opt-2",
+            "optionOrder": 2,
+            "text": "structural features of the sonnet"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q03-opt-3",
+            "optionOrder": 3,
+            "text": "aspects of the sonnet to be discussed in the term paper"
+          },
+          {
+            "optionId": "reading-rdl-25140f617f981938f89b04ef-q03-opt-4",
+            "optionOrder": 4,
+            "text": "subject matter that poets have explored in sonnets"
+          }
+        ],
+        "correctOptionId": "reading-rdl-25140f617f981938f89b04ef-q03-opt-3"
+      }
+    }
+  ]
+}

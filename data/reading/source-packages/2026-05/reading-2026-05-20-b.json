@@ -1,0 +1,1760 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.20B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The earliest ancestor of the modern bicycle is probably a machine used in England in the early 1800s called a hobbyhorse. It h_ _ two whe_ _ _ and a pl_ _ _ to s_ _, but n_ pedals; rid_ _ _ would pu_ _ it al_ _ _ with th_ _ _ feet. La_ _ _, an inventor added pedals directly to the front wheel, like a modern child’s tricycle. This version, with a huge front wheel, was faster, but it was unsafe. Riders were high off the ground, and the two wheels were close together, making both balance and stopping difficult.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The earliest ancestor of the modern bicycle is probably a machine used in England in the early 1800s called a hobbyhorse. It h_ _ two whe_ _ _ and a pl_ _ _ to s_ _, but n_ pedals; rid_ _ _ would pu_ _ it al_ _ _ with th_ _ _ feet. La_ _ _, an inventor added pedals directly to the front wheel, like a modern child’s tricycle. This version, with a huge front wheel, was faster, but it was unsafe. Riders were high off the ground, and the two wheels were close together, making both balance and stopping difficult.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The earliest ancestor of the modern bicycle is probably a machine used in England in the early 1800s called a hobbyhorse. It "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " two "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", but "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " pedals; "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " would "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " it "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " feet. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", an inventor added pedals directly to the front wheel, like a modern child’s tricycle. This version, with a huge front wheel, was faster, but it was unsafe. Riders were high off the ground, and the two wheels were close together, making both balance and stopping difficult."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "had",
+                "prefix": "h",
+                "displayText": "h_ _",
+                "missingText": "ad",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "wheels",
+                "prefix": "whe",
+                "displayText": "whe_ _ _",
+                "missingText": "els",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "place",
+                "prefix": "pl",
+                "displayText": "pl_ _ _",
+                "missingText": "ace",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "sit",
+                "prefix": "s",
+                "displayText": "s_ _",
+                "missingText": "it",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "no",
+                "prefix": "n",
+                "displayText": "n_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "riders",
+                "prefix": "rid",
+                "displayText": "rid_ _ _",
+                "missingText": "ers",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "push",
+                "prefix": "pu",
+                "displayText": "pu_ _",
+                "missingText": "sh",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "along",
+                "prefix": "al",
+                "displayText": "al_ _ _",
+                "missingText": "ong",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "their",
+                "prefix": "th",
+                "displayText": "th_ _ _",
+                "missingText": "eir",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q01-10-p01",
+                "answer": "Later",
+                "prefix": "La",
+                "displayText": "La_ _ _",
+                "missingText": "ter",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The Pinta Island tortoise, a subspecies of giant tortoise native to Ecuador’s Galápagos Islands, became extinct with the death of the last known individual, Lonesome George, in 2012. Pinta tortoises were kn_ _ _ for th_ _ _ domed she_ _ _ and lo_ _ necks ada_ _ _ _ for fee_ _ _ _; they pla_ _ _ a cru_ _ _ _ role i_ shaping veget_ _ _ _ _ by grazing on plants and dispersing seeds. The extinction of this subspecies highlights the impact of human activity on isolated ecosystems. Invasive species and habitat destruction were significant factors contributing to its decline.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "The Pinta Island tortoise, a subspecies of giant tortoise native to Ecuador’s Galápagos Islands, became extinct with the death of the last known individual, Lonesome George, in 2012. Pinta tortoises were kn_ _ _ for th_ _ _ domed she_ _ _ and lo_ _ necks ada_ _ _ _ for fee_ _ _ _; they pla_ _ _ a cru_ _ _ _ role i_ shaping veget_ _ _ _ _ by grazing on plants and dispersing seeds. The extinction of this subspecies highlights the impact of human activity on isolated ecosystems. Invasive species and habitat destruction were significant factors contributing to its decline.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The Pinta Island tortoise, a subspecies of giant tortoise native to Ecuador’s Galápagos Islands, became extinct with the death of the last known individual, Lonesome George, in 2012. Pinta tortoises were "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " domed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " necks "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": "; they "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " role "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " shaping "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " by grazing on plants and dispersing seeds. The extinction of this subspecies highlights the impact of human activity on isolated ecosystems. Invasive species and habitat destruction were significant factors contributing to its decline."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "known",
+                "prefix": "kn",
+                "displayText": "kn_ _ _",
+                "missingText": "own",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "their",
+                "prefix": "th",
+                "displayText": "th_ _ _",
+                "missingText": "eir",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "shells",
+                "prefix": "she",
+                "displayText": "she_ _ _",
+                "missingText": "lls",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "long",
+                "prefix": "lo",
+                "displayText": "lo_ _",
+                "missingText": "ng",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "adapted",
+                "prefix": "ada",
+                "displayText": "ada_ _ _ _",
+                "missingText": "pted",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "feeding",
+                "prefix": "fee",
+                "displayText": "fee_ _ _ _",
+                "missingText": "ding",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "played",
+                "prefix": "pla",
+                "displayText": "pla_ _ _",
+                "missingText": "yed",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "crucial",
+                "prefix": "cru",
+                "displayText": "cru_ _ _ _",
+                "missingText": "cial",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-20-b-m1-ctw-q11-20-p01",
+                "answer": "vegetation",
+                "prefix": "veget",
+                "displayText": "veget_ _ _ _ _",
+                "missingText": "ation",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-rdl-03",
+      "module": "rdl",
+      "title": "Ella Bottled Water (1 Case)",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-042",
+          "title": "Ella Bottled Water (1 Case)",
+          "source": "material-index.json#RDL-042",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-042/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-042/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "How many items are in one case?",
+          "rawDisplayText": "21. How many items are in one case?",
+          "payload": {
+            "materialId": "RDL-042",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "1"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "12"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "150"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "1,000"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q21-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is the brand name of the product?",
+          "rawDisplayText": "22. What is the brand name of the product?",
+          "payload": {
+            "materialId": "RDL-042",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Ella"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Natural"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Lagos"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Mainland"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-rdl-05",
+      "module": "rdl",
+      "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 24
+      },
+      "materials": [
+        {
+          "materialId": "RDL-043",
+          "title": "This course explores classical mechanics, thermodynamics, and electromagnetism through lectures, labs, and problem-solving sessions.",
+          "source": "material-index.json#RDL-043",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-043/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-043/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the most likely subject of the course?",
+          "rawDisplayText": "23. What is the most likely subject of the course?",
+          "payload": {
+            "materialId": "RDL-043",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "Biology"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "Calculus"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "Physics"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "Sociology"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is NOT mentioned as an assessment method?",
+          "rawDisplayText": "24. What is NOT mentioned as an assessment method?",
+          "payload": {
+            "materialId": "RDL-043",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "Weekly exercises"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "Lab reports"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Tests"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Essays"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q24-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-rdl-07",
+      "module": "rdl",
+      "title": "Downtown School of Data Skills",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 7,
+        "sourceQuestionStart": 25,
+        "sourceQuestionEnd": 27
+      },
+      "materials": [
+        {
+          "materialId": "RDL-044",
+          "title": "Downtown School of Data Skills",
+          "source": "material-index.json#RDL-044",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-044/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-044/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-q25",
+          "questionOrder": 1,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "Peter has no experience with spreadsheets and cannot attend class on Wednesdays. He should enroll in",
+          "rawDisplayText": "25. Peter has no experience with spreadsheets and cannot attend class on Wednesdays. He should enroll in",
+          "payload": {
+            "materialId": "RDL-044",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "Section A"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "Section B"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "Section C"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "Section D"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q25-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q26",
+          "questionOrder": 2,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rdl",
+          "stem": "What does Michelle need before enrolling in Section D?",
+          "rawDisplayText": "26. What does Michelle need before enrolling in Section D?",
+          "payload": {
+            "materialId": "RDL-044",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Experience creating new spreadsheet formulas"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "A research position that requires creating formulas"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Training in how to present complex data"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "Previous experience using spreadsheets"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q27",
+          "questionOrder": 3,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rdl",
+          "stem": "Beth has worked with formulas for years and is ready to learn advanced data skills. She should enroll in",
+          "rawDisplayText": "27. Beth has worked with formulas for years and is ready to learn advanced data skills. She should enroll in",
+          "payload": {
+            "materialId": "RDL-044",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "Section A, B, or C"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Section D or E"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "Section F"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "Section G"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q27-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-rdl-10",
+      "module": "rdl",
+      "title": "Study Abroad Expo - Session Schedule",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 10,
+        "sourceQuestionStart": 28,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [
+        {
+          "materialId": "RDL-045",
+          "title": "Study Abroad Expo - Session Schedule",
+          "source": "material-index.json#RDL-045",
+          "sourceDate": "2026-05-20",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-045/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-045/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-q28",
+          "questionOrder": 1,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rdl",
+          "stem": "What is the general aim of the Study Abroad Expo?",
+          "rawDisplayText": "28. What is the general aim of the Study Abroad Expo?",
+          "payload": {
+            "materialId": "RDL-045",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "To evaluate emerging risks in a variety of sectors in the field of global education"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "To facilitate a deep understanding of opportunities for international learning"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "To highlight the historical significance of student exchange programs"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "To promote the sale of travel-related merchandise intended for students"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q28-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q29",
+          "questionOrder": 2,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rdl",
+          "stem": "What is suggested about the Sustainable Study Abroad panel?",
+          "rawDisplayText": "29. What is suggested about the Sustainable Study Abroad panel?",
+          "payload": {
+            "materialId": "RDL-045",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "It will mainly address the costs of studying abroad for students."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "It will show the need to integrate eco-friendly practices into study abroad programs."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "It will examine the impact of studying abroad on student environmental consciousness."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "It will primarily focus on the legal aspects of participating in study abroad programs."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q29-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q30",
+          "questionOrder": 3,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rdl",
+          "stem": "Which of the following aspects of study abroad programs might Dr. Kim’s keynote speech address?",
+          "rawDisplayText": "30. Which of the following aspects of study abroad programs might Dr. Kim’s keynote speech address?",
+          "payload": {
+            "materialId": "RDL-045",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "The possible influence of emerging technologies"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Existing patterns of participation in study abroad programs"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "The allure of traditional study abroad destinations"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "The benefits of current study abroad program policies"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m1-rap-13",
+      "module": "rap",
+      "title": "Free Will and Determinism",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-20-b-m1-rap-p01",
+          "title": "Free Will and Determinism",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-20-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control. Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited. The key question is whether these influences simply guide our choices or actually determine them. If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions.",
+              "rawText": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control. Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited. The key question is whether these influences simply guide our choices or actually determine them. If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "The key question is whether these influences simply guide our choices or actually determine them."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires. Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions. Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy. These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships. If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined.",
+              "rawText": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires. Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions. Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy. These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships. If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention genetics and upbringing in paragraph 1?",
+          "rawDisplayText": "31. Why does the author mention genetics and upbringing in paragraph 1?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "To name the factors that contribute to the unconscious habits people form"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "To list factors we may be unaware of that shape our decision-making"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "To argue that some people have more freedom to act than others do"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "To note two factors that contribute to the formation of people’s personalities"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q31-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the author suggest may be true of “our sense of control” over our choices?",
+          "rawDisplayText": "32. What does the author suggest may be true of “our sense of control” over our choices?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "It can drive our actions if we train ourselves to think independently."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "It helps us develop narratives that shape our choices."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "It is the product of unconscious habits."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "It is nothing more than an illusion."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q32-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+          "rawDisplayText": "33. In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "Sentence 1 presents an argument, and sentence 2 restates it in simpler terms."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "Sentence 1 makes a claim, and sentence 2 supports it with evidence."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "Sentence 1 presents an idea, and sentence 2 challenges an assumption behind the idea."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "Sentence 1 introduces a viewpoint, and sentence 2 considers its implications."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “unravel” in the passage is closest in meaning to",
+          "rawDisplayText": "34. The word “unravel” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "fall apart"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "gather strength"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "form"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "evolve"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the author, why is it important to consider questions about the meaning of free will?",
+          "rawDisplayText": "35. According to the author, why is it important to consider questions about the meaning of free will?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "Ideas about free will affect how we hold each other responsible for our actions."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "Free will is an important part of what it means to be a modern human being."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "The debate over free will and determinism is one of the fundamental questions of our time."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "Without genuine autonomy, there is little value in institutions such as law and education."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m1-q35-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The study of the classical world involves examining the cultural, political, and social structures of ancient civilizations such as Greece and Rome. These soci_ _ _ _ _ have gre_ _ _ _ influenced mod_ _ _ governance, philo_ _ _ _ _, and a_ _. The con_ _ _ _ of demo_ _ _ _ _ originated i_ Athens, a_ _ Romans we_ _ superb engineers, building roads, aqueducts, and impressive buildings like the Pantheon. By understanding their advancements and contributions, we gain insight into the foundations of contemporary society. Archaeologists and historians employ various methods to uncover artifacts and interpret historical records from ancient times.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The study of the classical world involves examining the cultural, political, and social structures of ancient civilizations such as Greece and Rome. These soci_ _ _ _ _ have gre_ _ _ _ influenced mod_ _ _ governance, philo_ _ _ _ _, and a_ _. The con_ _ _ _ of demo_ _ _ _ _ originated i_ Athens, a_ _ Romans we_ _ superb engineers, building roads, aqueducts, and impressive buildings like the Pantheon. By understanding their advancements and contributions, we gain insight into the foundations of contemporary society. Archaeologists and historians employ various methods to uncover artifacts and interpret historical records from ancient times.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The study of the classical world involves examining the cultural, political, and social structures of ancient civilizations such as Greece and Rome. These "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " have "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " influenced "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " governance, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". The "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " originated "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Athens, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " Romans "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " superb engineers, building roads, aqueducts, and impressive buildings like the Pantheon. By understanding their advancements and contributions, we gain insight into the foundations of contemporary society. Archaeologists and historians employ various methods to uncover artifacts and interpret historical records from ancient times."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "societies",
+                "prefix": "soci",
+                "displayText": "soci_ _ _ _ _",
+                "missingText": "eties",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "greatly",
+                "prefix": "gre",
+                "displayText": "gre_ _ _ _",
+                "missingText": "atly",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "modern",
+                "prefix": "mod",
+                "displayText": "mod_ _ _",
+                "missingText": "ern",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "philosophy",
+                "prefix": "philo",
+                "displayText": "philo_ _ _ _ _",
+                "missingText": "sophy",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "art",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "rt",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "concept",
+                "prefix": "con",
+                "displayText": "con_ _ _ _",
+                "missingText": "cept",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "democracy",
+                "prefix": "demo",
+                "displayText": "demo_ _ _ _ _",
+                "missingText": "cracy",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-20-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-20-b-m2-ctw-q01-10-p01",
+                "answer": "were",
+                "prefix": "we",
+                "displayText": "we_ _",
+                "missingText": "re",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-20b-m2-rap-19",
+      "module": "rap",
+      "title": "Theater Lighting Innovations",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.20B",
+        "occurrenceDate": "2026-05-20",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.20B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.20B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-20-b-m2-rap-p01",
+          "title": "Theater Lighting Innovations",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-20-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Theater lighting has evolved significantly over the centuries. Initially reliant on sunlight, performances were limited to daylight hours. Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination.",
+              "rawText": "Theater lighting has evolved significantly over the centuries. Initially reliant on sunlight, performances were limited to daylight hours. Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Theater lighting has evolved significantly over the centuries."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Initially reliant on sunlight, performances were limited to daylight hours."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Candles and oil lamps enabled evening shows but posed fire risks and offered limited control over illumination."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent. This advancement improved visibility on stage and allowed for more expressive acting. Lights that illuminated actors from below and the sides helped direct audience attention.",
+              "rawText": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent. This advancement improved visibility on stage and allowed for more expressive acting. Lights that illuminated actors from below and the sides helped direct audience attention.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The introduction of gas lighting in the nineteenth century provided safer lighting that was brighter and more consistent."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "This advancement improved visibility on stage and allowed for more expressive acting."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Lights that illuminated actors from below and the sides helped direct audience attention."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "The emergence of electric lighting in the late nineteenth century was transformative. Designers began using gels and filters to create a wide range of colors of varying intensity. These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape. For example, the angled light beams and shadows in Toller’s 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany.",
+              "rawText": "The emergence of electric lighting in the late nineteenth century was transformative. Designers began using gels and filters to create a wide range of colors of varying intensity. These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape. For example, the angled light beams and shadows in Toller’s 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "The emergence of electric lighting in the late nineteenth century was transformative."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Designers began using gels and filters to create a wide range of colors of varying intensity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "These and other innovations, including focused spotlights and dimming systems, fundamentally reshaped the visual and emotional stage landscape."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "For example, the angled light beams and shadows in Toller’s 1919 play Transformation evoked the chaos and psychological unrest of post-war Germany."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-20-b-m2-rap-p01-p04",
+              "paragraphOrder": 4,
+              "text": "Today’s theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings. Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative. Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential.",
+              "rawText": "Today’s theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings. Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative. Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p04-s01",
+                  "sentenceOrder": 1,
+                  "text": "Today’s theaters leverage LED technology for energy efficiency and versatility, as it offers rapid color changes and programmable effects to create varied settings."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p04-s02",
+                  "sentenceOrder": 2,
+                  "text": "Designers must now carefully balance technological prowess with artistic intent, ensuring that lighting supports rather than distracts from the narrative."
+                },
+                {
+                  "sentenceId": "reading-2026-05-20-b-m2-rap-p01-p04-s03",
+                  "sentenceOrder": 3,
+                  "text": "Moreover, as lighting systems become increasingly complex, collaboration between lighting designers, directors, and technicians has become essential."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-20-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is the most accurate description of the passage’s organization?",
+          "rawDisplayText": "11. Which of the following is the most accurate description of the passage’s organization?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "A discussion of the theory of theater lighting followed by paragraphs detailing the different effects it can achieve"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "An introduction followed by a summary of the disadvantages of older theater lighting systems"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "An introduction followed by a series of paragraphs on successive developments in theater lighting"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "A discussion of different theaters followed by a description of lighting technologies that complement each building"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m2-q11-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, gas lighting was an improvement on candles and oil lamps in all of the following ways EXCEPT:",
+          "rawDisplayText": "12. According to the passage, gas lighting was an improvement on candles and oil lamps in all of the following ways EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "It was less likely to cause fires."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "It could be directed at individual actors."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "It produced a more constant light."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "It produced a softer light."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “fundamentally” in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word “fundamentally” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "simply"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "thoroughly"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "surprisingly"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "permanently"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss Transformation?",
+          "rawDisplayText": "14. Why does the author discuss Transformation?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate how skillful lighting can communicate a mood to the audience"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To provide an example of a play that could have benefited from LED technology"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To explain why electric lighting was not as powerful for creating moods as gas lighting"
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To argue that some plays relied too heavily on lighting effects"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m2-q14-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-20-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage imply about modern lighting technology?",
+          "rawDisplayText": "15. What does the passage imply about modern lighting technology?",
+          "payload": {
+            "passageId": "reading-2026-05-20-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-20-b-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "It can sometimes shift the focus from the play to the lighting."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "It requires directors who are skilled in computer programming."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "Theaters must now allocate more money to technicians and less to actors."
+              },
+              {
+                "optionId": "reading-2026-05-20-b-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "Theaters must be redesigned to incorporate new lighting technology."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-20-b-m2-q15-opt-1"
+          }
+        }
+      ]
+    }
+  ]
+}

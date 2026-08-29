@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rdl-79a7fed6dab3ea6be215f43a",
+    "module": "rdl",
+    "title": "Sandeep Patel (10:00 A.M.)",
+    "firstSeenDate": "2026-05-28",
+    "firstSeenSourceLabel": "5.28",
+    "firstSeenSourceOrder": 10,
+    "dedupFingerprint": "79a7fed6dab3ea6be215f43a33fae9ba1b81e00b00541b7b75dbabec0f340504",
+    "questionCount": 3,
+    "scoredItemCount": 3,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-28-m1-rdl-10",
+      "logicalItemId": "reading-rdl-79a7fed6dab3ea6be215f43a",
+      "sourceKind": "docx",
+      "sourceLabel": "5.28",
+      "occurrenceDate": "2026-05-28",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.28.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.28_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 10,
+      "sourceQuestionStart": 28,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "materialId": "RDL-017",
+      "title": "Sandeep Patel (10:00 A.M.)",
+      "source": "material-index.json#RDL-017",
+      "sourceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "bindingStatus": "bound",
+      "imageAssetPath": "/reading/rdl/rdl-017/material_final.png",
+      "hitboxDataPath": "/reading/rdl/rdl-017/selection_map.json"
+    }
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "questionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01",
+      "logicalItemId": "reading-rdl-79a7fed6dab3ea6be215f43a",
+      "questionOrder": 1,
+      "questionType": "rdl",
+      "stem": "Who is Sandeep going to the concert with?",
+      "rawDisplayText": "28. Who is Sandeep going to the concert with?",
+      "payload": {
+        "materialId": "RDL-017",
+        "options": [
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01-opt-1",
+            "optionOrder": 1,
+            "text": "His cousin"
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01-opt-2",
+            "optionOrder": 2,
+            "text": "His classmate"
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Fatima"
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01-opt-4",
+            "optionOrder": 4,
+            "text": "His friend"
+          }
+        ],
+        "correctOptionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q01-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02",
+      "logicalItemId": "reading-rdl-79a7fed6dab3ea6be215f43a",
+      "questionOrder": 2,
+      "questionType": "rdl",
+      "stem": "How does Sandeep most likely feel about Fatima’s situation?",
+      "rawDisplayText": "29. How does Sandeep most likely feel about Fatima’s situation?",
+      "payload": {
+        "materialId": "RDL-017",
+        "options": [
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02-opt-1",
+            "optionOrder": 1,
+            "text": "Happy"
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02-opt-2",
+            "optionOrder": 2,
+            "text": "Relieved"
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02-opt-3",
+            "optionOrder": 3,
+            "text": "Indifferent"
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02-opt-4",
+            "optionOrder": 4,
+            "text": "Disappointed"
+          }
+        ],
+        "correctOptionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q02-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03",
+      "logicalItemId": "reading-rdl-79a7fed6dab3ea6be215f43a",
+      "questionOrder": 3,
+      "questionType": "rdl",
+      "stem": "At 10:05 a.m., what does Fatima most likely mean when she writes, “I would like to, but one of my classmates has been out sick all week and our report is due tomorrow”?",
+      "rawDisplayText": "30. At 10:05 a.m., what does Fatima most likely mean when she writes, “I would like to, but one of my classmates has been out sick all week and our report is due tomorrow”?",
+      "payload": {
+        "materialId": "RDL-017",
+        "options": [
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03-opt-1",
+            "optionOrder": 1,
+            "text": "She feels too ill to go to the concert."
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03-opt-2",
+            "optionOrder": 2,
+            "text": "She will take next week off from work."
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03-opt-3",
+            "optionOrder": 3,
+            "text": "She does not think the concert will be enjoyable."
+          },
+          {
+            "optionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03-opt-4",
+            "optionOrder": 4,
+            "text": "She is unlikely to be able to attend the concert."
+          }
+        ],
+        "correctOptionId": "reading-rdl-79a7fed6dab3ea6be215f43a-q03-opt-4"
+      }
+    }
+  ]
+}

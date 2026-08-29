@@ -1,0 +1,1808 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "5.11B",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "During the late nineteenth and early twentieth centuries, the landscape of North American urban centers underwent dramatic transformations as industrialization accelerated. Cities expanded rap_ _ _ _, fueled b_ the arr_ _ _ _ of immig_ _ _ _ _ and ru_ _ _ populations see_ _ _ _ employment i_ factories. This dyn_ _ _ _ era witn_ _ _ _ _ the ri_ _ of skyscrapers, symbolizing progress and technological triumph. Architects and planners grappled with the challenges posed by such quick growth, including overcrowding and sanitation issues. Public transit systems, like streetcars, emerged as pivotal solutions to urban congestion, altering the rhythm of daily life.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "During the late nineteenth and early twentieth centuries, the landscape of North American urban centers underwent dramatic transformations as industrialization accelerated. Cities expanded rap_ _ _ _, fueled b_ the arr_ _ _ _ of immig_ _ _ _ _ and ru_ _ _ populations see_ _ _ _ employment i_ factories. This dyn_ _ _ _ era witn_ _ _ _ _ the ri_ _ of skyscrapers, symbolizing progress and technological triumph. Architects and planners grappled with the challenges posed by such quick growth, including overcrowding and sanitation issues. Public transit systems, like streetcars, emerged as pivotal solutions to urban congestion, altering the rhythm of daily life.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "During the late nineteenth and early twentieth centuries, the landscape of North American urban centers underwent dramatic transformations as industrialization accelerated. Cities expanded "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", fueled "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " populations "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " employment "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " factories. This "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " era "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " of skyscrapers, symbolizing progress and technological triumph. Architects and planners grappled with the challenges posed by such quick growth, including overcrowding and sanitation issues. Public transit systems, like streetcars, emerged as pivotal solutions to urban congestion, altering the rhythm of daily life."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "rapidly",
+                "prefix": "rap",
+                "displayText": "rap_ _ _ _",
+                "missingText": "idly",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "by",
+                "prefix": "b",
+                "displayText": "b_",
+                "missingText": "y",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "arrival",
+                "prefix": "arr",
+                "displayText": "arr_ _ _ _",
+                "missingText": "ival",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "immigrants",
+                "prefix": "immig",
+                "displayText": "immig_ _ _ _ _",
+                "missingText": "rants",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "rural",
+                "prefix": "ru",
+                "displayText": "ru_ _ _",
+                "missingText": "ral",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "seeking",
+                "prefix": "see",
+                "displayText": "see_ _ _ _",
+                "missingText": "king",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "dynamic",
+                "prefix": "dyn",
+                "displayText": "dyn_ _ _ _",
+                "missingText": "amic",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "witnessed",
+                "prefix": "witn",
+                "displayText": "witn_ _ _ _ _",
+                "missingText": "essed",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q01-10-p01",
+                "answer": "rise",
+                "prefix": "ri",
+                "displayText": "ri_ _",
+                "missingText": "se",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "What are some foundational skills for academic success? Critical thin_ _ _ _ allows stud_ _ _ _ to appr_ _ _ _ problems systema_ _ _ _ _ _ _, analyze infor_ _ _ _ _ _, and ma_ _ connections bet_ _ _ _ ideas. Al_ _ important a_ _ soft skills li_ _ time management and social skills. Time management is helpful for balancing studies, extracurricular activities, and personal life in an efficient manner. Social skills are good predictors of academic success because those who communicate effectively can form positive relationships with their peers and professors.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "What are some foundational skills for academic success? Critical thin_ _ _ _ allows stud_ _ _ _ to appr_ _ _ _ problems systema_ _ _ _ _ _ _, analyze infor_ _ _ _ _ _, and ma_ _ connections bet_ _ _ _ ideas. Al_ _ important a_ _ soft skills li_ _ time management and social skills. Time management is helpful for balancing studies, extracurricular activities, and personal life in an efficient manner. Social skills are good predictors of academic success because those who communicate effectively can form positive relationships with their peers and professors.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "What are some foundational skills for academic success? Critical "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " allows "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " problems "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", analyze "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " connections "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " ideas. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " important "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " soft skills "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " time management and social skills. Time management is helpful for balancing studies, extracurricular activities, and personal life in an efficient manner. Social skills are good predictors of academic success because those who communicate effectively can form positive relationships with their peers and professors."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "thinking",
+                "prefix": "thin",
+                "displayText": "thin_ _ _ _",
+                "missingText": "king",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "students",
+                "prefix": "stud",
+                "displayText": "stud_ _ _ _",
+                "missingText": "ents",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "approach",
+                "prefix": "appr",
+                "displayText": "appr_ _ _ _",
+                "missingText": "oach",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "systematically",
+                "prefix": "systema",
+                "displayText": "systema_ _ _ _ _ _ _",
+                "missingText": "tically",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "information",
+                "prefix": "infor",
+                "displayText": "infor_ _ _ _ _ _",
+                "missingText": "mation",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "make",
+                "prefix": "ma",
+                "displayText": "ma_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "between",
+                "prefix": "bet",
+                "displayText": "bet_ _ _ _",
+                "missingText": "ween",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "Also",
+                "prefix": "Al",
+                "displayText": "Al_ _",
+                "missingText": "so",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "are",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "re",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-05-11-b-m1-ctw-q11-20-p01",
+                "answer": "like",
+                "prefix": "li",
+                "displayText": "li_ _",
+                "missingText": "ke",
+                "missingLength": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m1-rdl-03",
+      "module": "rdl",
+      "title": "Organic Chemistry I",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-023",
+          "title": "Organic Chemistry I",
+          "source": "material-index.json#RDL-023",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-023/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-023/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What does the excerpt imply about the Organic Chemistry course?",
+          "rawDisplayText": "21. What does the excerpt imply about the Organic Chemistry course?",
+          "payload": {
+            "materialId": "RDL-023",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "It covers multiple topics."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "It features field trips."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "It is graded as “pass” or “fail.”"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "Any student can enroll."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q21-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "What is NOT mentioned as part of the coursework?",
+          "rawDisplayText": "22. What is NOT mentioned as part of the coursework?",
+          "payload": {
+            "materialId": "RDL-023",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Laboratory sessions"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Weekly quizzes"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Problem-based tasks"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Major examinations"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q22-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m1-rdl-05",
+      "module": "rdl",
+      "title": "Dear Club Coordinator,",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-024",
+          "title": "Dear Club Coordinator,",
+          "source": "material-index.json#RDL-024",
+          "sourceDate": "2026-05-11",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-024/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-024/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the most recent debating event that Noam attended?",
+          "rawDisplayText": "23. What is the most recent debating event that Noam attended?",
+          "payload": {
+            "materialId": "RDL-024",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "A high school tournament in which he competed"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "An introductory session held by the university club"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "An intercollegiate debate on international trade policies"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "A workshop offered by the university club"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q23-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Why does Noam mention “both parliamentary and policy debate formats”?",
+          "rawDisplayText": "24. Why does Noam mention “both parliamentary and policy debate formats”?",
+          "payload": {
+            "materialId": "RDL-024",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "To inquire about which debate format the Debate Club prefers"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "To indicate the breadth of his debating background"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "To highlight what he learned at a recent Debate Club event"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest a topic for a future workshop"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "Why does Noam ask how much time the Debate Club will require of him?",
+          "rawDisplayText": "25. Why does Noam ask how much time the Debate Club will require of him?",
+          "payload": {
+            "materialId": "RDL-024",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "He is trying to decide how many university clubs he should join."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "He is wondering whether additional training will be required."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "He is considering becoming an officer of the Debate Club."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "He is experiencing a heavy academic workload."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q25-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m1-rap-08",
+      "module": "rap",
+      "title": "Free Will and Determinism",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-11-b-m1-rap-p01",
+          "title": "Free Will and Determinism",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-11-b-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control. Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited. The key question is whether these influences simply guide our choices or actually determine them. If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions.",
+              "rawText": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control. Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited. The key question is whether these influences simply guide our choices or actually determine them. If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "The debate over free will asks whether our decisions come from independent thought or are shaped by factors beyond our control."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Although we may feel like we choose freely, influences such as genetics, upbringing, and unconscious habits suggest our freedom may be limited."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "The key question is whether these influences simply guide our choices or actually determine them."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "If they determine them, then our sense of control may be more of a story we tell ourselves after the fact than something that drives our actions."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-b-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires. Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions. Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy. These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships. If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined.",
+              "rawText": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires. Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions. Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy. These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships. If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Some philosophers maintain that even within a causally determined world, we can still act freely—so long as our choices reflect our own reasoning and desires."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Yet this view raises questions about whether those desires are truly ours or merely the result of prior conditions."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Others push further, suggesting that even our capacity to reflect on our actions is shaped by forces beyond our control, leaving little room for genuine autonomy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "These tensions are not just theoretical; they shape how we think about responsibility in law, education, and relationships."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "If the assumption that someone might have acted differently begins to unravel, then our notions of accountability may need to be reimagined."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention genetics and upbringing in paragraph 1?",
+          "rawDisplayText": "26. Why does the author mention genetics and upbringing in paragraph 1?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "To name the factors that contribute to the unconscious habits people form"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "To list factors we may be unaware of that shape our decision-making"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "To argue that some people have more freedom to act than others do"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "To note two factors that contribute to the formation of people’s personalities"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q26-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the author suggest may be true of “our sense of control” over our choices?",
+          "rawDisplayText": "27. What does the author suggest may be true of “our sense of control” over our choices?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "It can drive our actions if we train ourselves to think independently."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "It helps us develop narratives that shape our choices."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "It is the product of unconscious habits."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "It is nothing more than an illusion."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q27-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+          "rawDisplayText": "28. In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "Sentence 1 presents an argument, and sentence 2 restates it in simpler terms."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "Sentence 1 makes a claim, and sentence 2 supports it with evidence."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "Sentence 1 presents an idea, and sentence 2 challenges an assumption behind the idea."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Sentence 1 introduces a viewpoint, and sentence 2 considers its implications."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q28-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “unravel” in the passage is closest in meaning to",
+          "rawDisplayText": "29. The word “unravel” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "fall apart"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "gather strength"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "form"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "evolve"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q29-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the author, why is it important to consider questions about the meaning of free will?",
+          "rawDisplayText": "30. According to the author, why is it important to consider questions about the meaning of free will?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "Ideas about free will affect how we hold each other responsible for our actions."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "Free will is an important part of what it means to be a modern human being."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "The debate over free will and determinism is one of the fundamental questions of our time."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "Without genuine autonomy, there is little value in institutions such as law and education."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q30-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m1-rap-13",
+      "module": "rap",
+      "title": "Evolutionary Trends in Graphic Design",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-11-b-m1-rap-p02",
+          "title": "Evolutionary Trends in Graphic Design",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Graphic design has transformed repeatedly throughout history, influenced by both cultural shifts and technological advancements. In Europe, during the Middle Ages (the fifth to fifteenth centuries), the creation of intricate manuscripts was predominant. The advent of the printing press in the fifteenth century altered these dynamics, facilitating mass production and broadening public access to designed materials. Such technological shifts not only changed the way art was produced but also how it was perceived.",
+              "rawText": "Graphic design has transformed repeatedly throughout history, influenced by both cultural shifts and technological advancements. In Europe, during the Middle Ages (the fifth to fifteenth centuries), the creation of intricate manuscripts was predominant. The advent of the printing press in the fifteenth century altered these dynamics, facilitating mass production and broadening public access to designed materials. Such technological shifts not only changed the way art was produced but also how it was perceived.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Graphic design has transformed repeatedly throughout history, influenced by both cultural shifts and technological advancements."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "In Europe, during the Middle Ages (the fifth to fifteenth centuries), the creation of intricate manuscripts was predominant."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "The advent of the printing press in the fifteenth century altered these dynamics, facilitating mass production and broadening public access to designed materials."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Such technological shifts not only changed the way art was produced but also how it was perceived."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "By the mid-twentieth century, Swiss design emerged as a response to the chaotic visual landscape, introducing principles of minimalism and functionality. Heavily influenced by the Bauhaus movement, designers like Josef Müller-Brockmann advocated for simplicity and rationality. Their grid-based approach brought order and readability to what often seemed to be overwhelming visuals. Some critics argue that the rigid structure, while effective, limited expressive possibilities and emotional resonance in design.",
+              "rawText": "By the mid-twentieth century, Swiss design emerged as a response to the chaotic visual landscape, introducing principles of minimalism and functionality. ■ Heavily influenced by the Bauhaus movement, designers like Josef Müller-Brockmann advocated for simplicity and rationality. ■ Their grid-based approach brought order and readability to what often seemed to be overwhelming visuals. ■ Some critics argue that the rigid structure, while effective, limited expressive possibilities and emotional resonance in design. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "By the mid-twentieth century, Swiss design emerged as a response to the chaotic visual landscape, introducing principles of minimalism and functionality."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Heavily influenced by the Bauhaus movement, designers like Josef Müller-Brockmann advocated for simplicity and rationality."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Their grid-based approach brought order and readability to what often seemed to be overwhelming visuals."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Some critics argue that the rigid structure, while effective, limited expressive possibilities and emotional resonance in design."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Today, graphic design stands at the intersection of tradition and innovation. While digital tools democratize access and encourage experimentation, designers grapple with preserving artistic integrity. The challenge lies in blending the precision of technology with the warmth of human creativity. Thus, graphic design continues to evolve, reflecting broader cultural debates about art and technology.",
+              "rawText": "Today, graphic design stands at the intersection of tradition and innovation. While digital tools democratize access and encourage experimentation, designers grapple with preserving artistic integrity. The challenge lies in blending the precision of technology with the warmth of human creativity. Thus, graphic design continues to evolve, reflecting broader cultural debates about art and technology.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Today, graphic design stands at the intersection of tradition and innovation."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "While digital tools democratize access and encourage experimentation, designers grapple with preserving artistic integrity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "The challenge lies in blending the precision of technology with the warmth of human creativity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Thus, graphic design continues to evolve, reflecting broader cultural debates about art and technology."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about intricate manuscripts during the Middle Ages?",
+          "rawDisplayText": "31. What can be inferred about intricate manuscripts during the Middle Ages?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "They were individually made."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "They were produced using the printing press."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "They were widely available to the general public."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "They depicted mostly landscapes."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q31-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "The phrase “advocated for” in the passage is closest in meaning to",
+          "rawDisplayText": "32. The phrase “advocated for” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "mentioned"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "promoted"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "debated"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "inspired"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q32-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author discuss the “grid-based approach”?",
+          "rawDisplayText": "33. Why does the author discuss the “grid-based approach”?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "To argue that the approach should be adopted more widely"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "To question the relevance of the approach in modern design"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "To show how the principles of minimalism and functionality were used by Swiss designers"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "To indicate how Swiss designers differed from the majority of Bauhaus designers"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q33-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "It can be inferred that many of today’s graphic designers are concerned that digital tools",
+          "rawDisplayText": "34. It can be inferred that many of today’s graphic designers are concerned that digital tools",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "undermine the democratization of the arts"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "are not responsive to public debates in the arts"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "are not precise enough to be useful in the design process"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "do not always reflect the warmth of human creativity"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m1-q34-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m1-rap-p02",
+            "insertSentence": "However, this clarity sometimes came at the cost of creativity.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-11-b-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-11-b-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p02",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s02"
+              },
+              {
+                "anchorId": "reading-2026-05-11-b-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p02",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-11-b-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-11-b-m1-rap-p02-p02",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-11-b-m1-rap-p02-p02-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-11-b-m1-q35-anchor-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The advent of industrialization in the late eighteenth and nineteenth centuries dramatically reshaped city architecture across Europe and North America. As urban popu_ _ _ _ _ _ _ surged, cit_ _ _ expanded upw_ _ _ with t_ _ construction o_ multi-story buil_ _ _ _ _ and, event_ _ _ _ _, steel-framed skys_ _ _ _ _ _ _ that def_ _ _ _ modern skyl_ _ _ _. These towering structures reflected new engineering capabilities and the growing demand for centralized workspaces. Within cities, transportation systems like streetcars made commuting more efficient, further fueling urban growth. This architectural transformation marked a shift toward dense, vertical living and working environments, emblematic of the industrial age.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The advent of industrialization in the late eighteenth and nineteenth centuries dramatically reshaped city architecture across Europe and North America. As urban popu_ _ _ _ _ _ _ surged, cit_ _ _ expanded upw_ _ _ with t_ _ construction o_ multi-story buil_ _ _ _ _ and, event_ _ _ _ _, steel-framed skys_ _ _ _ _ _ _ that def_ _ _ _ modern skyl_ _ _ _. These towering structures reflected new engineering capabilities and the growing demand for centralized workspaces. Within cities, transportation systems like streetcars made commuting more efficient, further fueling urban growth. This architectural transformation marked a shift toward dense, vertical living and working environments, emblematic of the industrial age.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The advent of industrialization in the late eighteenth and nineteenth centuries dramatically reshaped city architecture across Europe and North America. As urban "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " surged, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " expanded "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " with "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " construction "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " multi-story "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", steel-framed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " modern "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". These towering structures reflected new engineering capabilities and the growing demand for centralized workspaces. Within cities, transportation systems like streetcars made commuting more efficient, further fueling urban growth. This architectural transformation marked a shift toward dense, vertical living and working environments, emblematic of the industrial age."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "populations",
+                "prefix": "popu",
+                "displayText": "popu_ _ _ _ _ _ _",
+                "missingText": "lations",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "cities",
+                "prefix": "cit",
+                "displayText": "cit_ _ _",
+                "missingText": "ies",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "upward",
+                "prefix": "upw",
+                "displayText": "upw_ _ _",
+                "missingText": "ard",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "of",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "f",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "buildings",
+                "prefix": "buil",
+                "displayText": "buil_ _ _ _ _",
+                "missingText": "dings",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "eventually",
+                "prefix": "event",
+                "displayText": "event_ _ _ _ _",
+                "missingText": "ually",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "skyscrapers",
+                "prefix": "skys",
+                "displayText": "skys_ _ _ _ _ _ _",
+                "missingText": "crapers",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "defined",
+                "prefix": "def",
+                "displayText": "def_ _ _ _",
+                "missingText": "ined",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-05-11-b-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-05-11-b-m2-ctw-q01-10-p01",
+                "answer": "skylines",
+                "prefix": "skyl",
+                "displayText": "skyl_ _ _ _",
+                "missingText": "ines",
+                "missingLength": 4
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-5-11b-m2-rap-19",
+      "module": "rap",
+      "title": "Optical Astronomy’s Adaptive Revolution",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "5.11B",
+        "occurrenceDate": "2026-05-11",
+        "yearMonth": "2026-05",
+        "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.11B.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.11B_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-05-11-b-m2-rap-p01",
+          "title": "Optical Astronomy’s Adaptive Revolution",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s. This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity. Light waves from distant stars travel through Earth’s atmosphere, creating a shimmering effect that distorts them. Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms. The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second.",
+              "rawText": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s. ■ This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity. Light waves from distant stars travel through Earth’s atmosphere, creating a shimmering effect that distorts them. ■ Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms. ■ The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Optical astronomy, the study of celestial objects through visible light, has been revolutionized by adaptive optics, first developed in the late 1980s."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "This technology, which allows ground-based telescopes at observatories to counteract atmospheric distortion, has enabled astronomers to observe the cosmos with exceptional clarity."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Light waves from distant stars travel through Earth’s atmosphere, creating a shimmering effect that distorts them."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Adaptive optics corrects these distortions in real time using a system of deformable mirrors controlled by computer algorithms."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s05",
+                  "sentenceOrder": 5,
+                  "text": "The mirrors can change shape rapidly to counteract the distortion, with the algorithms calculating the needed adjustments thousands of times per second."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "However, the technology is not without controversy. Some argue that the energy consumption of adaptive optics contributes significantly to observatories’ carbon footprints. Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life.",
+              "rawText": "However, the technology is not without controversy. Some argue that the energy consumption of adaptive optics contributes significantly to observatories’ carbon footprints. Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, the technology is not without controversy."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some argue that the energy consumption of adaptive optics contributes significantly to observatories’ carbon footprints."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Yet, proponents counter that the potential discoveries outweigh environmental concerns, citing recent breakthroughs in identifying exoplanets potentially hospitable to life."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship. Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations. Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections.",
+              "rawText": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship. Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations. Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "The debate highlights the complexities of balancing scientific advancement with environmental stewardship."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Some researchers are actively exploring the use of solar panels and wind turbines to power these observatories, especially for daytime operations."
+                },
+                {
+                  "sentenceId": "reading-2026-05-11-b-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Others are trying to optimize algorithms to reduce unnecessary computations and the need for constant high-speed corrections."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-05-11-b-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred from the passage about the capabilities of optical astronomy BEFORE the late 1980s?",
+          "rawDisplayText": "11. What can be inferred from the passage about the capabilities of optical astronomy BEFORE the late 1980s?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "Images of celestial objects from ground-based telescopes were often unclear."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "Astronomers used adaptive optics to distort light waves."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "Astronomers used the shimmering effect to find distant stars."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "Telescopes used deformable mirrors to see farther into space."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m2-q11-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "How do proponents of adaptive optics counter criticism of the technology?",
+          "rawDisplayText": "12. How do proponents of adaptive optics counter criticism of the technology?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "The observatories that use the technology have a lower carbon footprint than the critics maintain."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "The usefulness of the technology is more important than its drawbacks."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "The technology is only in its early stages and will improve over time."
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "The negative effects of the technology are localized and not globally significant."
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m2-q12-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word “stewardship” in the passage is closest in meaning to",
+          "rawDisplayText": "13. The word “stewardship” in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "supervision"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "achievement"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "enthusiasm"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "design"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention attempts to optimize algorithms?",
+          "rawDisplayText": "14. Why does the author mention attempts to optimize algorithms?",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-05-11-b-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "To give an example of how observatories could cut costs"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "To suggest that current algorithms still contain some errors when adjusting mirrors"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "To provide an example of how adaptive optics continues to evolve"
+              },
+              {
+                "optionId": "reading-2026-05-11-b-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "To show one way researchers are trying to reduce observatories’ energy consumption"
+              }
+            ],
+            "correctOptionId": "reading-2026-05-11-b-m2-q14-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-05-11-b-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-05-11-b-m2-rap-p01",
+            "insertSentence": "To understand this phenomenon, imagine looking through the heat waves seen over hot asphalt or desert sand.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-05-11-b-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p01",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s01"
+              },
+              {
+                "anchorId": "reading-2026-05-11-b-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p01",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s03"
+              },
+              {
+                "anchorId": "reading-2026-05-11-b-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s04"
+              },
+              {
+                "anchorId": "reading-2026-05-11-b-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-05-11-b-m2-rap-p01-p01",
+                "boundaryIndex": 5,
+                "afterSentenceId": "reading-2026-05-11-b-m2-rap-p01-p01-s05"
+              }
+            ],
+            "correctAnchorId": "reading-2026-05-11-b-m2-q15-anchor-2"
+          }
+        }
+      ]
+    }
+  ]
+}

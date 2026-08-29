@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+    "module": "rap",
+    "title": "The Mystery of Dark Galaxies",
+    "firstSeenDate": "2026-05-31",
+    "firstSeenSourceLabel": "5.31",
+    "firstSeenSourceOrder": 13,
+    "dedupFingerprint": "b58232c37a080aa5aad5e9d1abbe0624f5d3c45525ddc507fd0966f7e10443dd",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-31-m1-rap-13",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "sourceKind": "docx",
+      "sourceLabel": "5.31",
+      "occurrenceDate": "2026-05-31",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.31.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.31_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-7a-m1-rap-13",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7A",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-7b-m1-rap-13",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7B",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7B_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    },
+    {
+      "occurrenceId": "reading-source-6-29-m1-rap-13",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "sourceKind": "docx",
+      "sourceLabel": "6.29",
+      "occurrenceDate": "2026-06-29",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.29.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.29_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 13,
+      "sourceQuestionStart": 31,
+      "sourceQuestionEnd": 35,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01",
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02",
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03",
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04",
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34
+        },
+        {
+          "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q05",
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "title": "The Mystery of Dark Galaxies",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Ultraviolet (UV) astronomy has unveiled numerous cosmic phenomena. An especially intriguing discovery is that of dark galaxies. Unlike typical galaxies (gravitationally bound systems of stars, gas, and other particles), dark galaxies emit little to no visible light, making them nearly impossible to detect using conventional optical telescopes. However, these galaxies emit UV radiation, providing astronomers with a unique window to study them. Dark galaxies challenge our understanding of galaxy formation. Traditional models suggest that galaxies form through gas accumulation and star formation. But although dark galaxies contain vast amounts of gas, they have few, if any, stars. This raises questions about the processes that inhibit star formation. Some researchers propose that turbulence within the gas clouds might prevent the gas from collapsing to form stars.",
+          "rawText": "Ultraviolet (UV) astronomy has unveiled numerous cosmic phenomena. An especially intriguing discovery is that of dark galaxies. Unlike typical galaxies (gravitationally bound systems of stars, gas, and other particles), dark galaxies emit little to no visible light, making them nearly impossible to detect using conventional optical telescopes. However, these galaxies emit UV radiation, providing astronomers with a unique window to study them. ■ Dark galaxies challenge our understanding of galaxy formation. ■ Traditional models suggest that galaxies form through gas accumulation and star formation. ■ But although dark galaxies contain vast amounts of gas, they have few, if any, stars. ■ This raises questions about the processes that inhibit star formation. Some researchers propose that turbulence within the gas clouds might prevent the gas from collapsing to form stars.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Ultraviolet (UV) astronomy has unveiled numerous cosmic phenomena."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "An especially intriguing discovery is that of dark galaxies."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Unlike typical galaxies (gravitationally bound systems of stars, gas, and other particles), dark galaxies emit little to no visible light, making them nearly impossible to detect using conventional optical telescopes."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "However, these galaxies emit UV radiation, providing astronomers with a unique window to study them."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s05",
+              "sentenceOrder": 5,
+              "text": "Dark galaxies challenge our understanding of galaxy formation."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s06",
+              "sentenceOrder": 6,
+              "text": "Traditional models suggest that galaxies form through gas accumulation and star formation."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s07",
+              "sentenceOrder": 7,
+              "text": "But although dark galaxies contain vast amounts of gas, they have few, if any, stars."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s08",
+              "sentenceOrder": 8,
+              "text": "This raises questions about the processes that inhibit star formation."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s09",
+              "sentenceOrder": 9,
+              "text": "Some researchers propose that turbulence within the gas clouds might prevent the gas from collapsing to form stars."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Observations from the Hubble Space Telescope and other UV-sensitive instruments have revealed that dark galaxies were more common in the early universe. These findings suggest that dark galaxies may represent a primordial phase in galaxy evolution. One hypothesis is that high levels of UV radiation in the early universe prevented the gas in dark galaxies from cooling and condensing into stars. Observations of regions with high UV radiation support this theory.",
+          "rawText": "Observations from the Hubble Space Telescope and other UV-sensitive instruments have revealed that dark galaxies were more common in the early universe. These findings suggest that dark galaxies may represent a primordial phase in galaxy evolution. One hypothesis is that high levels of UV radiation in the early universe prevented the gas in dark galaxies from cooling and condensing into stars. Observations of regions with high UV radiation support this theory.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Observations from the Hubble Space Telescope and other UV-sensitive instruments have revealed that dark galaxies were more common in the early universe."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "These findings suggest that dark galaxies may represent a primordial phase in galaxy evolution."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "One hypothesis is that high levels of UV radiation in the early universe prevented the gas in dark galaxies from cooling and condensing into stars."
+            },
+            {
+              "sentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Observations of regions with high UV radiation support this theory."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage suggests that astronomers discovered dark galaxies by",
+      "rawDisplayText": "31. The passage suggests that astronomers discovered dark galaxies by",
+      "payload": {
+        "passageId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01-opt-1",
+            "optionOrder": 1,
+            "text": "studying numerous cosmic phenomena caused by them"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01-opt-2",
+            "optionOrder": 2,
+            "text": "observing their gravitational effects on other galaxies"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01-opt-3",
+            "optionOrder": 3,
+            "text": "seeing them through conventional optical telescopes"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01-opt-4",
+            "optionOrder": 4,
+            "text": "detecting UV radiation emitted by them"
+          }
+        ],
+        "correctOptionId": "reading-rap-b58232c37a080aa5aad5e9d1-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "What might prevent the formation of stars in dark galaxies?",
+      "rawDisplayText": "32. What might prevent the formation of stars in dark galaxies?",
+      "payload": {
+        "passageId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02-opt-1",
+            "optionOrder": 1,
+            "text": "The accumulation of too much gas"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02-opt-2",
+            "optionOrder": 2,
+            "text": "The turbulence inside gas clouds"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02-opt-3",
+            "optionOrder": 3,
+            "text": "The presence of nearby galaxies"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02-opt-4",
+            "optionOrder": 4,
+            "text": "The collapse of gas clouds"
+          }
+        ],
+        "correctOptionId": "reading-rap-b58232c37a080aa5aad5e9d1-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "Observations from the Hubble Space Telescope and other UV-sensitive instruments indicate that",
+      "rawDisplayText": "33. Observations from the Hubble Space Telescope and other UV-sensitive instruments indicate that",
+      "payload": {
+        "passageId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03-opt-1",
+            "optionOrder": 1,
+            "text": "the number of dark galaxies in the universe increased over time"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03-opt-2",
+            "optionOrder": 2,
+            "text": "dark galaxies contain more gas than previously believed"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03-opt-3",
+            "optionOrder": 3,
+            "text": "dark galaxies emit more UV radiation than previously believed"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03-opt-4",
+            "optionOrder": 4,
+            "text": "dark galaxies represent an early stage in galaxy development"
+          }
+        ],
+        "correctOptionId": "reading-rap-b58232c37a080aa5aad5e9d1-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Observations of dark-galaxy regions with high UV radiation indicate that",
+      "rawDisplayText": "34. Observations of dark-galaxy regions with high UV radiation indicate that",
+      "payload": {
+        "passageId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04-opt-1",
+            "optionOrder": 1,
+            "text": "dark galaxies evolved very slowly"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04-opt-2",
+            "optionOrder": 2,
+            "text": "stars in the early universe were fairly cool and dense"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04-opt-3",
+            "optionOrder": 3,
+            "text": "UV radiation in the early universe kept gas temperatures high"
+          },
+          {
+            "optionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04-opt-4",
+            "optionOrder": 4,
+            "text": "a traditional theory of how dark galaxies formed is incorrect"
+          }
+        ],
+        "correctOptionId": "reading-rap-b58232c37a080aa5aad5e9d1-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-b58232c37a080aa5aad5e9d1-q05",
+      "logicalItemId": "reading-rap-b58232c37a080aa5aad5e9d1",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01",
+        "insertSentence": "Therefore, one might expect all galaxies to have a significant number of stars.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-b58232c37a080aa5aad5e9d1-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01",
+            "boundaryIndex": 4,
+            "afterSentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s04"
+          },
+          {
+            "anchorId": "reading-rap-b58232c37a080aa5aad5e9d1-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01",
+            "boundaryIndex": 5,
+            "afterSentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s05"
+          },
+          {
+            "anchorId": "reading-rap-b58232c37a080aa5aad5e9d1-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01",
+            "boundaryIndex": 6,
+            "afterSentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s06"
+          },
+          {
+            "anchorId": "reading-rap-b58232c37a080aa5aad5e9d1-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01",
+            "boundaryIndex": 7,
+            "afterSentenceId": "reading-rap-b58232c37a080aa5aad5e9d1-passage-01-p01-s07"
+          }
+        ],
+        "correctAnchorId": "reading-rap-b58232c37a080aa5aad5e9d1-q05-anchor-3"
+      }
+    }
+  ]
+}

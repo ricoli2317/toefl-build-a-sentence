@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+    "module": "rap",
+    "title": "The Mysteries of Opal",
+    "firstSeenDate": "2026-05-10",
+    "firstSeenSourceLabel": "5.10A",
+    "firstSeenSourceOrder": 8,
+    "dedupFingerprint": "28ff52f3a4ffdbd69e8d95cd640234a5e186667684ce3472ba05d90e56b815d4",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-5-10a-m1-rap-08",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "sourceKind": "docx",
+      "sourceLabel": "5.10A",
+      "occurrenceDate": "2026-05-10",
+      "yearMonth": "2026-05",
+      "sourceQuestionFile": "data/reading/source-docx/2026-05/questions/TOEFL_Reading_5.10A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-05/answers/TOEFL_Reading_5.10A_Answers.docx",
+      "sourceModule": "m1",
+      "sourceOrder": 8,
+      "sourceQuestionStart": 26,
+      "sourceQuestionEnd": 30,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01",
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26
+        },
+        {
+          "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02",
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27
+        },
+        {
+          "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03",
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28
+        },
+        {
+          "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04",
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29
+        },
+        {
+          "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05",
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "title": "The Mysteries of Opal",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves. Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape. This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates. Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does.",
+          "rawText": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves. Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape. This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates. Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "The color and brilliance of opals depends on the size and spacing of the silica spheres. Larger spheres produce reds and oranges, while smaller spheres result in blues and greens. Because of Australia’s unique geological conditions, it is home to over 90 percent of the world’s opals. Opals are also fragile. Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes. Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals.",
+          "rawText": "The color and brilliance of opals depends on the size and spacing of the silica spheres. Larger spheres produce reds and oranges, while smaller spheres result in blues and greens. Because of Australia’s unique geological conditions, it is home to over 90 percent of the world’s opals. Opals are also fragile. Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes. Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "The color and brilliance of opals depends on the size and spacing of the silica spheres."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Larger spheres produce reds and oranges, while smaller spheres result in blues and greens."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "Because of Australia’s unique geological conditions, it is home to over 90 percent of the world’s opals."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Opals are also fragile."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p02-s06",
+              "sentenceOrder": 6,
+              "text": "Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "Ancient cultures believed opals had mystical properties and brought good luck. The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy.",
+          "rawText": "Ancient cultures believed opals had mystical properties and brought good luck. The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "Ancient cultures believed opals had mystical properties and brought good luck."
+            },
+            {
+              "sentenceId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "All of the following are mentioned as part of the formation process of opals EXCEPT:",
+      "rawDisplayText": "26. All of the following are mentioned as part of the formation process of opals EXCEPT:",
+      "payload": {
+        "passageId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01-opt-1",
+            "optionOrder": 1,
+            "text": "Water flows into cracks in rocks."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01-opt-2",
+            "optionOrder": 2,
+            "text": "The water dries up, leaving silica deposits behind."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01-opt-3",
+            "optionOrder": 3,
+            "text": "Small spheres of silica create the structure of the gemstones."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01-opt-4",
+            "optionOrder": 4,
+            "text": "The structure formed is rigid and non-varying."
+          }
+        ],
+        "correctOptionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author mention “a prism”?",
+      "rawDisplayText": "27. Why does the author mention “a prism”?",
+      "payload": {
+        "passageId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate how an opal affects light"
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To explain how the internal structure of opals is created"
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To give an example of how scientists study opals"
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To argue that opals do not truly diffract light"
+          }
+        ],
+        "correctOptionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is one consequence of the internal structure of opals?",
+      "rawDisplayText": "28. What is one consequence of the internal structure of opals?",
+      "payload": {
+        "passageId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03-opt-1",
+            "optionOrder": 1,
+            "text": "90 percent of them are red or orange."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Relatively little ancient opal jewelry has survived."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03-opt-3",
+            "optionOrder": 3,
+            "text": "They are easily damaged by water."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Jewelers must use special care to prevent opals from cracking."
+          }
+        ],
+        "correctOptionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q03-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "What does the passage suggest about ancient cultures’ view of opals?",
+      "rawDisplayText": "29. What does the passage suggest about ancient cultures’ view of opals?",
+      "payload": {
+        "passageId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04-opt-1",
+            "optionOrder": 1,
+            "text": "They understood how opals were formed."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04-opt-2",
+            "optionOrder": 2,
+            "text": "They found opals difficult to work with."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04-opt-3",
+            "optionOrder": 3,
+            "text": "They believed opals had special qualities that benefited their owners."
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04-opt-4",
+            "optionOrder": 4,
+            "text": "They considered opals to be very durable."
+          }
+        ],
+        "correctOptionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q04-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word “prophecy” in the passage is closest in meaning to",
+      "rawDisplayText": "30. The word “prophecy” in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05-opt-1",
+            "optionOrder": 1,
+            "text": "long life"
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05-opt-2",
+            "optionOrder": 2,
+            "text": "the ability to predict the future"
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05-opt-3",
+            "optionOrder": 3,
+            "text": "happiness"
+          },
+          {
+            "optionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05-opt-4",
+            "optionOrder": 4,
+            "text": "high status"
+          }
+        ],
+        "correctOptionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05-opt-2"
+      }
+    }
+  ]
+}

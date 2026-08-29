@@ -1,0 +1,1816 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.15",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The Pinta Island tortoise, a subspecies of giant tortoise native to Ecuador's Galapagos Islands, became extinct with the death of the last kn_ _ _ individual, Lonesome George, in 2012. Pinta tortoises were known for th_ _ _ domed she_ _ _ and lo_ _ necks ada_ _ _ _ for fee_ _ _ _; they pla_ _ _ a cru_ _ _ _ role i_ shaping veget_ _ _ _ _ by grazing on plants and dispersing seeds. The extinction of this subspecies highlights the impact of human activity on isolated ecosystems. Invasive species and habitat destruction were significant factors contributing to its decline.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The Pinta Island tortoise, a subspecies of giant tortoise native to Ecuador's Galapagos Islands, became extinct with the death of the last kn_ _ _ individual, Lonesome George, in 2012. Pinta tortoises were known for th_ _ _ domed she_ _ _ and lo_ _ necks ada_ _ _ _ for fee_ _ _ _; they pla_ _ _ a cru_ _ _ _ role i_ shaping veget_ _ _ _ _ by grazing on plants and dispersing seeds. The extinction of this subspecies highlights the impact of human activity on isolated ecosystems. Invasive species and habitat destruction were significant factors contributing to its decline.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The Pinta Island tortoise, a subspecies of giant tortoise native to Ecuador's Galapagos Islands, became extinct with the death of the last "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " individual, Lonesome George, in 2012. Pinta tortoises were known for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " domed "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " necks "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": "; they "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " role "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " shaping "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " by grazing on plants and dispersing seeds. The extinction of this subspecies highlights the impact of human activity on isolated ecosystems. Invasive species and habitat destruction were significant factors contributing to its decline."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "known",
+                "prefix": "kn",
+                "displayText": "kn_ _ _",
+                "missingText": "own",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "their",
+                "prefix": "th",
+                "displayText": "th_ _ _",
+                "missingText": "eir",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "shells",
+                "prefix": "she",
+                "displayText": "she_ _ _",
+                "missingText": "lls",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "long",
+                "prefix": "lo",
+                "displayText": "lo_ _",
+                "missingText": "ng",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "adapted",
+                "prefix": "ada",
+                "displayText": "ada_ _ _ _",
+                "missingText": "pted",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "feeding",
+                "prefix": "fee",
+                "displayText": "fee_ _ _ _",
+                "missingText": "ding",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "played",
+                "prefix": "pla",
+                "displayText": "pla_ _ _",
+                "missingText": "yed",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "crucial",
+                "prefix": "cru",
+                "displayText": "cru_ _ _ _",
+                "missingText": "cial",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "in",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q01-10-p01",
+                "answer": "vegetation",
+                "prefix": "veget",
+                "displayText": "veget_ _ _ _ _",
+                "missingText": "ation",
+                "missingLength": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing ove_ _ _ _ economic produc_ _ _ _ _ _ and fost_ _ _ _ _ international interde_ _ _ _ _ _ _ _. However, exce_ _ _ _ _ reliance o_ this mo_ _ _ can exp_ _ _ economies t_ significant ri_ _ _. Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing ove_ _ _ _ economic produc_ _ _ _ _ _ and fost_ _ _ _ _ international interde_ _ _ _ _ _ _ _. However, exce_ _ _ _ _ reliance o_ this mo_ _ _ can exp_ _ _ economies t_ significant ri_ _ _. Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In analyzing global trade dynamics, the principle of comparative advantage plays a foundational role. It suggests that nations should specialize in producing goods they can create most efficiently, thereby enhancing "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " economic "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " and "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " international "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". However, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " reliance "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " this "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " can "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " economies "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " significant "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Countries that concentrate on a limited range of exports may become vulnerable to market volatility, such as shifts in global demand or price fluctuations. While comparative advantage can stimulate growth, it must be strategically managed to ensure long-term economic sustainability."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "overall",
+                "prefix": "ove",
+                "displayText": "ove_ _ _ _",
+                "missingText": "rall",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "productivity",
+                "prefix": "produc",
+                "displayText": "produc_ _ _ _ _ _",
+                "missingText": "tivity",
+                "missingLength": 6
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "fostering",
+                "prefix": "fost",
+                "displayText": "fost_ _ _ _ _",
+                "missingText": "ering",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "interdependence",
+                "prefix": "interde",
+                "displayText": "interde_ _ _ _ _ _ _ _",
+                "missingText": "pendence",
+                "missingLength": 8
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "excessive",
+                "prefix": "exce",
+                "displayText": "exce_ _ _ _ _",
+                "missingText": "ssive",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "on",
+                "prefix": "o",
+                "displayText": "o_",
+                "missingText": "n",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "model",
+                "prefix": "mo",
+                "displayText": "mo_ _ _",
+                "missingText": "del",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "expose",
+                "prefix": "exp",
+                "displayText": "exp_ _ _",
+                "missingText": "ose",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-15-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-15-m1-ctw-q11-20-p01",
+                "answer": "risks",
+                "prefix": "ri",
+                "displayText": "ri_ _ _",
+                "missingText": "sks",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m1-rdl-03",
+      "module": "rdl",
+      "title": "North Bay",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-051",
+          "title": "North Bay",
+          "source": "material-index.json#RDL-051",
+          "sourceDate": "2026-05-24",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-051/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-051/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "What is the primary aim of the social media post?",
+          "rawDisplayText": "21. What is the primary aim of the social media post?",
+          "payload": {
+            "materialId": "RDL-051",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "To promote the establishment of a crafting club"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "To advertise a presentation by a renowned artisan"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "To inform craft enthusiasts about a creative gathering"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "To advertise newly-arrived crafting retail supplies"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "How can interested crafters learn more?",
+          "rawDisplayText": "22. How can interested crafters learn more?",
+          "payload": {
+            "materialId": "RDL-051",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "By sending an email"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "By visiting the Student Event Center"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "By arriving early at Grunfeld Commons"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "By visiting a webpage"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m1-rdl-05",
+      "module": "rdl",
+      "title": "Time Capsule Unearthed During Dorm Renovation",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-052",
+          "title": "Time Capsule Unearthed During Dorm Renovation",
+          "source": "material-index.json#RDL-052",
+          "sourceDate": "2026-05-24",
+          "yearMonth": "2026-05",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-052/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-052/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main topic of the article?",
+          "rawDisplayText": "23. What is the main topic of the article?",
+          "payload": {
+            "materialId": "RDL-052",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "The discovery of artifacts left by previous students"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "The ending of a beloved campus tradition"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "The renovation of a student residence hall"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "The nostalgia over past hopes and dreams"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q23-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "What is indicated about the time capsule itself?",
+          "rawDisplayText": "24. What is indicated about the time capsule itself?",
+          "payload": {
+            "materialId": "RDL-052",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "It relied on twentieth-century technology."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "It was buried more than a century ago."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "It was empty when it was opened."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Its contents were damaged."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "How did current students react to the discovery of the capsule?",
+          "rawDisplayText": "25. How did current students react to the discovery of the capsule?",
+          "payload": {
+            "materialId": "RDL-052",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "They showed little interest in the discovery."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "They criticized the plan for the exhibition."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "They were inspired to imitate the students of 1896."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "They insisted that it be reburied."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q25-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m1-rap-08",
+      "module": "rap",
+      "title": "Value Theory",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-15-m1-rap-p01",
+          "title": "Value Theory",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-15-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively. Central questions include: What makes something good? Are values objective features of the world or subjective preferences? A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end.",
+              "rawText": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively. Central questions include: What makes something good? Are values objective features of the world or subjective preferences? A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Value theory investigates the nature of values and the principles that determine what is worth pursuing, both individually and collectively."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Central questions include: What makes something good?"
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "Are values objective features of the world or subjective preferences?"
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "A key distinction in value theory is between intrinsic value, which denotes value something has in itself, and instrumental value, which refers to the value of something as a means to an end."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-15-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "One influential theory within this domain is utilitarianism. which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility. This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics. However, critics argue that utilitarianism's aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs. For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity.",
+              "rawText": "One influential theory within this domain is utilitarianism. which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility. This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics. However, critics argue that utilitarianism's aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs. For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "One influential theory within this domain is utilitarianism."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "which posits that the moral worth of actions is determined by their consequences, specifically the maximization of overall happiness or utility."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "This consequentialist framework has shaped ethical reasoning in fields ranging from public policy to economics."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "However, critics argue that utilitarianism's aggregation of happiness can negate individual rights and seemingly justify morally troubling trade-offs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "For example, allocating limited healthcare resources to benefit the majority may disadvantage those with rare or costly conditions, raising concerns about fairness and equity."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-15-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important. This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric.",
+              "rawText": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important. This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Contemporary value theorists often endorse value pluralism, the view that multiple, sometimes conflicting values—such as autonomy, justice, and compassion—are irreducibly important."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "This pluralistic approach emphasizes the complexity of ethical decision-making and the need to navigate competing goods instead of reducing them to a single metric."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, value theory is concerned with all of the following EXCEPT",
+          "rawDisplayText": "26. According to the passage, value theory is concerned with all of the following EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "how to determine what is good"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "whether values are personal preferences"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "how to distinguish between values and principles"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "the difference between intrinsic and instrumental value"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q26-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the phrase \"This consequentialist framework\" refer to?",
+          "rawDisplayText": "27. What does the phrase \"This consequentialist framework\" refer to?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "The view that the consequences of an action determine its morality"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "Theories that foreground the happiness of the individual in assigning value"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "The underlying view that theories of value have an impact on making life decisions"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "The debate about how best to balance competing outcomes of happiness and utility"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q27-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"allocating\" in the passage is closest in meaning to",
+          "rawDisplayText": "28. The word \"allocating\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "distributing"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "acquiring"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "increasing"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "tracking"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q28-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what is one main criticism of utilitarianism?",
+          "rawDisplayText": "29. According to the passage, what is one main criticism of utilitarianism?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "Its implementation may benefit public policy, but it is less helpful for economic decisions."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "Its priority of making healthcare more accessible creates higher costs for most people."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "In its efforts to benefit large numbers of people, it may harm some individuals."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "There is little evidence that it leads to improved healthcare for the majority."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about value pluralism?",
+          "rawDisplayText": "30. What does the passage suggest about value pluralism?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "It was a popular system for making decisions until quite recently."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "It gives primary consideration to compassion while autonomy plays a secondary role."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "It states that ethical decisions require the input of multiple decision-makers."
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "It argues that ethical decisions should not be based on just one criterion."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q30-opt-4"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m1-rap-13",
+      "module": "rap",
+      "title": "Social Networks and Influence",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-15-m1-rap-p02",
+          "title": "Social Networks and Influence",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-15-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Computational sociology studies how social networks—like friendships, professional connections, or online communities-affect how people think and act. Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior. If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views. These influences are especially strong when the conversations are emotionally charged or align with the person's values.",
+              "rawText": "Computational sociology studies how social networks—like friendships, professional connections, or online communities-affect how people think and act. Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior. If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views. These influences are especially strong when the conversations are emotionally charged or align with the person's values. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Computational sociology studies how social networks—like friendships, professional connections, or online communities-affect how people think and act."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Instead of just drawing diagrams of who is connected to whom, researchers now look more closely at how frequent interactions shape behavior."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "These influences are especially strong when the conversations are emotionally charged or align with the person's values."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-15-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "Interestingly, it is not always the most famous or powerful people who have the biggest impact. Everyday conversations—like repeated exchanges between coworkers— can be more influential than a single message from a celebrity or expert. Researchers use computational models to analyze how messages spread. An accurate model can predict which types of messages are likely to spread widely.",
+              "rawText": "Interestingly, it is not always the most famous or powerful people who have the biggest impact. ■ Everyday conversations—like repeated exchanges between coworkers— can be more influential than a single message from a celebrity or expert. Researchers use computational models to analyze how messages spread. ■ An accurate model can predict which types of messages are likely to spread widely. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Interestingly, it is not always the most famous or powerful people who have the biggest impact."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Everyday conversations—like repeated exchanges between coworkers— can be more influential than a single message from a celebrity or expert."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Researchers use computational models to analyze how messages spread."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "An accurate model can predict which types of messages are likely to spread widely."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-15-m1-rap-p02-p03",
+              "paragraphOrder": 3,
+              "text": "Still, predicting human behavior is incredibly complex. People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally. For example, a message that spreads quickly in one country might fall flat in another due to different cultural values. The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior.",
+              "rawText": "Still, predicting human behavior is incredibly complex. People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally. For example, a message that spreads quickly in one country might fall flat in another due to different cultural values. The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Still, predicting human behavior is incredibly complex."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "People are shaped by their culture, social norms, and personal experiences, which makes it hard to build models that work universally."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "For example, a message that spreads quickly in one country might fall flat in another due to different cultural values."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m1-rap-p02-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "The real challenge lies in understanding how all these subtle factors interact to drive large-scale changes in behavior."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_sentence_selection",
+          "stem": "Identify the sentence in paragraph 1 that illustrates how social network dynamics can affect personal beliefs. Select the sentence to make your choice.",
+          "rawDisplayText": "31. Identify the sentence in paragraph 1 that illustrates how social network dynamics can affect personal beliefs. Select the sentence to make your choice.",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p02",
+            "targetParagraphId": "reading-2026-06-15-m1-rap-p02-p01",
+            "correctSentenceId": "reading-2026-06-15-m1-rap-p02-p01-s03"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, computational sociologists study",
+          "rawDisplayText": "32. According to the passage, computational sociologists study",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "how having shared opinions strengthens a friendship"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "why it is important to develop complex diagrams of network connections"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "why emotionally charged conversations are ineffective at changing opinions"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "how human behavior is affected by frequent interactions"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q32-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"incredibly\" in the passage is closest in meaning to",
+          "rawDisplayText": "33. The word \"incredibly\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "generally"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "extremely"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "somewhat"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "often"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q33-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "According to the passage, what makes it difficult to model human behavior?",
+          "rawDisplayText": "34. According to the passage, what makes it difficult to model human behavior?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "The interaction of various factors that play a role in human behavior"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "The rapid spread of messages from one population to another"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "The frequent movement of humans among countries with different cultural values"
+              },
+              {
+                "optionId": "reading-2026-06-15-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "The lack of cooperation among researchers from different cultural backgrounds"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-15-m1-rap-p02",
+            "insertSentence": "In fact, influence often emerges from the bottom up, rather than being imposed from the top down.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-15-m1-q35-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-15-m1-rap-p02-p01",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-15-m1-rap-p02-p01-s04"
+              },
+              {
+                "anchorId": "reading-2026-06-15-m1-q35-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-15-m1-rap-p02-p02",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-15-m1-rap-p02-p02-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-15-m1-q35-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-15-m1-rap-p02-p02",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-15-m1-rap-p02-p02-s03"
+              },
+              {
+                "anchorId": "reading-2026-06-15-m1-q35-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-15-m1-rap-p02-p02",
+                "boundaryIndex": 4,
+                "afterSentenceId": "reading-2026-06-15-m1-rap-p02-p02-s04"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-15-m1-q35-anchor-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The development of jazz music in the United States in the early twentieth century represents a significant cultural milestone. Originating in the African American communities of New Orleans, jazz blended elements of blues, ragtime, and European classical music. Reflecting shi_ _ _ in cul_ _ _ _, jazz empl_ _ _ _ innovative techn_ _ _ _ _ like improv_ _ _ _ _ _ _ that chall_ _ _ _ _ traditional mus_ _ _ _ conventions, allo_ _ _ _ musicians t_ express th_ _ _ individuality. Figures like Louis Armstrong and Ella Fitzgerald popularized jazz, playing pivotal roles in advancing its stylistic innovations. The genre's influence extended globally, shaping various musical forms and inspiring new generations of artists.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The development of jazz music in the United States in the early twentieth century represents a significant cultural milestone. Originating in the African American communities of New Orleans, jazz blended elements of blues, ragtime, and European classical music. Reflecting shi_ _ _ in cul_ _ _ _, jazz empl_ _ _ _ innovative techn_ _ _ _ _ like improv_ _ _ _ _ _ _ that chall_ _ _ _ _ traditional mus_ _ _ _ conventions, allo_ _ _ _ musicians t_ express th_ _ _ individuality. Figures like Louis Armstrong and Ella Fitzgerald popularized jazz, playing pivotal roles in advancing its stylistic innovations. The genre's influence extended globally, shaping various musical forms and inspiring new generations of artists.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The development of jazz music in the United States in the early twentieth century represents a significant cultural milestone. Originating in the African American communities of New Orleans, jazz blended elements of blues, ragtime, and European classical music. Reflecting "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " in "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", jazz "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " innovative "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " like "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " that "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " traditional "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " conventions, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " musicians "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " express "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " individuality. Figures like Louis Armstrong and Ella Fitzgerald popularized jazz, playing pivotal roles in advancing its stylistic innovations. The genre's influence extended globally, shaping various musical forms and inspiring new generations of artists."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "shifts",
+                "prefix": "shi",
+                "displayText": "shi_ _ _",
+                "missingText": "fts",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "culture",
+                "prefix": "cul",
+                "displayText": "cul_ _ _ _",
+                "missingText": "ture",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "employed",
+                "prefix": "empl",
+                "displayText": "empl_ _ _ _",
+                "missingText": "oyed",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "techniques",
+                "prefix": "techn",
+                "displayText": "techn_ _ _ _ _",
+                "missingText": "iques",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "improvisation",
+                "prefix": "improv",
+                "displayText": "improv_ _ _ _ _ _ _",
+                "missingText": "isation",
+                "missingLength": 7
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "challenged",
+                "prefix": "chall",
+                "displayText": "chall_ _ _ _ _",
+                "missingText": "enged",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "musical",
+                "prefix": "mus",
+                "displayText": "mus_ _ _ _",
+                "missingText": "ical",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "allowing",
+                "prefix": "allo",
+                "displayText": "allo_ _ _ _",
+                "missingText": "wing",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "to",
+                "prefix": "t",
+                "displayText": "t_",
+                "missingText": "o",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-15-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-15-m2-ctw-q01-10-p01",
+                "answer": "their",
+                "prefix": "th",
+                "displayText": "th_ _ _",
+                "missingText": "eir",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-15-m2-rap-19",
+      "module": "rap",
+      "title": "Carthage's Trade Network",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.15",
+        "occurrenceDate": "2026-06-15",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.15.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.15_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-15-m2-rap-p01",
+          "title": "Carthage's Trade Network",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-15-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Carthage, founded by Phoenician merchants around 814 B.C.E.. became a powerful city-state due to its strategic location on the Mediterranean. This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia. Carthaginian traders dealt in goods such as silver, gold, tin, and textiles.",
+              "rawText": "Carthage, founded by Phoenician merchants around 814 B.C.E.. became a powerful city-state due to its strategic location on the Mediterranean. This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia. Carthaginian traders dealt in goods such as silver, gold, tin, and textiles.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Carthage, founded by Phoenician merchants around 814 B.C.E.."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "became a powerful city-state due to its strategic location on the Mediterranean."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This position allowed Carthage to establish a vast trade network that extended across the Mediterranean and into Africa, Europe, and Asia."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Carthaginian traders dealt in goods such as silver, gold, tin, and textiles."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-15-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport. They developed efficient trade routes and set up colonies, expanding their economic reach. Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world. Carthage's wealth was also built on innovations in agriculture. Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export.",
+              "rawText": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport. They developed efficient trade routes and set up colonies, expanding their economic reach. Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world. Carthage's wealth was also built on innovations in agriculture. Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The Carthaginians excelled in maritime technology, constructing advanced ships for long-distance journeys and bulky cargo transport."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "They developed efficient trade routes and set up colonies, expanding their economic reach."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Their prowess in navigation and trade transformed Carthage into one of the wealthiest cities in the ancient world."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Carthage's wealth was also built on innovations in agriculture."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Carthaginian farmers employed advanced irrigation techniques and crop rotation, leading to abundant harvests that supported both local consumption and export."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-15-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "However, Carthage's rise did not come without challenges. Its growing wealth and dominance in trade led to rivalry with Rome. The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes. Despite initial successes, Carthage was ultimately defeated. The final blow came when the Romans launched a brutal siege on Carthage. culminating in the city's destruction.",
+              "rawText": "However, Carthage's rise did not come without challenges. Its growing wealth and dominance in trade led to rivalry with Rome. The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes. Despite initial successes, Carthage was ultimately defeated. The final blow came when the Romans launched a brutal siege on Carthage. culminating in the city's destruction.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "However, Carthage's rise did not come without challenges."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Its growing wealth and dominance in trade led to rivalry with Rome."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "The Punic Wars, a series of three wars fought against Rome from 264 to 146 B.C.E., were rooted in competition for control of Mediterranean trade routes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p03-s04",
+                  "sentenceOrder": 4,
+                  "text": "Despite initial successes, Carthage was ultimately defeated."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p03-s05",
+                  "sentenceOrder": 5,
+                  "text": "The final blow came when the Romans launched a brutal siege on Carthage."
+                },
+                {
+                  "sentenceId": "reading-2026-06-15-m2-rap-p01-p03-s06",
+                  "sentenceOrder": 6,
+                  "text": "culminating in the city's destruction."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-15-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following contributed to the status of Carthage as a wealthy and powerful city-state EXCEPT",
+          "rawDisplayText": "11. All of the following contributed to the status of Carthage as a wealthy and powerful city-state EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-15-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "its trade network across three continents"
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "its geographic position"
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "its large fishing industry"
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "its ship-building technology"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m2-q11-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage indicates which of the following about Carthage's maritime technology?",
+          "rawDisplayText": "12. The passage indicates which of the following about Carthage's maritime technology?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "Carthaginians developed a system of switching ships at colonial ports to go longer distances."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "Carthage's ships were not as advanced as Roman ships."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "Carthage's ships were designed primarily for the transport of small items of high value, such as silver and gold."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "Carthaginians were skilled at navigating over long distances."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m2-q12-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be concluded from the passage about Carthaginian agriculture?",
+          "rawDisplayText": "13. What can be concluded from the passage about Carthaginian agriculture?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "It was far inferior to Carthaginian maritime technology."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "It produced more than enough food to feed the Carthaginians."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "Its innovations borrowed much from Roman technical knowledge."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "It was transformed by farmers from Africa, Europe, and Asia."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m2-q13-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "What can be inferred about the consequences of Carthage's success?",
+          "rawDisplayText": "14. What can be inferred about the consequences of Carthage's success?",
+          "payload": {
+            "passageId": "reading-2026-06-15-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "It led to mutually beneficial relations with Rome."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "It caused internal strife among Carthaginian traders."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "It led to a neglect of the military."
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "It contributed to external conflicts."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m2-q14-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-15-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_multiple_choice",
+          "stem": "The phrase \"culminating in\" in the final sentence is closest in meaning to",
+          "rawDisplayText": "15. The phrase \"culminating in\" in the final sentence is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-15-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-15-m2-q15-opt-1",
+                "optionOrder": 1,
+                "text": "revealing"
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q15-opt-2",
+                "optionOrder": 2,
+                "text": "ending with"
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q15-opt-3",
+                "optionOrder": 3,
+                "text": "coinciding with"
+              },
+              {
+                "optionId": "reading-2026-06-15-m2-q15-opt-4",
+                "optionOrder": 4,
+                "text": "following"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-15-m2-q15-opt-2"
+          }
+        }
+      ]
+    }
+  ]
+}

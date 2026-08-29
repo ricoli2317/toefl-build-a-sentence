@@ -19,7 +19,14 @@
     "benchmark:writing-kimi-weak-retest": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/benchmark-writing-review-kimi-weak-retest.ts",
     "benchmark:writing-kimi-medium-weak": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/benchmark-writing-review-kimi-medium-weak.ts",
     "benchmark:writing-kimi-hedged-weak": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/benchmark-writing-review-kimi-hedged-weak.ts",
-    "export:writing-current-reviews": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/export-writing-current-reviews.ts"
+    "export:writing-current-reviews": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/export-writing-current-reviews.ts",
+    "group:reading": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/group-reading-source.ts",
+    "import:reading": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/import-reading.ts",
+    "prepare:reading-r2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/publish-reading-r2.ts",
+    "publish:reading-r2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/publish-reading-r2.ts --publish",
+    "sync:reading-r2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/sync-reading-r2-references.ts",
+    "verify:reading-r2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-reading-r2-runtime.ts",
+    "verify:rdl-titles": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-rdl-title-consistency.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -31,6 +38,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1119.0",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",

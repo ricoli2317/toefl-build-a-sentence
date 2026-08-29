@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+    "module": "rap",
+    "title": "Linguistic Structural Diversity",
+    "firstSeenDate": "2026-06-01",
+    "firstSeenSourceLabel": "6.1A",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "e01f83375de9f2c96a209bc6aa80a1972808c4b77240e4d03889a8bb6f042cb4",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-1a-m2-rap-19",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "sourceKind": "docx",
+      "sourceLabel": "6.1A",
+      "occurrenceDate": "2026-06-01",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "title": "Linguistic Structural Diversity",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Linguistic typology investigates structural features across languages, revealing both universal patterns and language-specific variation. A central area of study is word order-the arrangement of subjects, verbs, and objects. English follows a subject-verb-object (SVO) pattern, while Japanese uses subject-object-verb (SOV). Most languages conform to a limited set of dominant word orders, which may reflect cognitive efficiency: Placing the subject first helps listeners quickly identify the sentence's main actor, aiding comprehension.",
+          "rawText": "Linguistic typology investigates structural features across languages, revealing both universal patterns and language-specific variation. A central area of study is word order-the arrangement of subjects, verbs, and objects. English follows a subject-verb-object (SVO) pattern, while Japanese uses subject-object-verb (SOV). Most languages conform to a limited set of dominant word orders, which may reflect cognitive efficiency: Placing the subject first helps listeners quickly identify the sentence's main actor, aiding comprehension.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Linguistic typology investigates structural features across languages, revealing both universal patterns and language-specific variation."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "A central area of study is word order-the arrangement of subjects, verbs, and objects."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "English follows a subject-verb-object (SVO) pattern, while Japanese uses subject-object-verb (SOV)."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p01-s04",
+              "sentenceOrder": 4,
+              "text": "Most languages conform to a limited set of dominant word orders, which may reflect cognitive efficiency: Placing the subject first helps listeners quickly identify the sentence's main actor, aiding comprehension."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "Beyond syntax, languages differ in morphological complexity —the degree to which inflection (such as noun or verb endings) marks grammatical relationships. Turkish uses extensive inflection to express subtle distinctions, whereas Mandarin Chinese relies more on word order and context. These contrasts suggest that languages balance morphology and syntax based on communicative needs. Highly inflected languages can afford flexible word order because grammatical roles are marked morphologically. In contrast, languages with minimal inflection often depend on fixed word order to maintain clarity.",
+          "rawText": "Beyond syntax, languages differ in morphological complexity —the degree to which inflection (such as noun or verb endings) marks grammatical relationships. Turkish uses extensive inflection to express subtle distinctions, whereas Mandarin Chinese relies more on word order and context. These contrasts suggest that languages balance morphology and syntax based on communicative needs. Highly inflected languages can afford flexible word order because grammatical roles are marked morphologically. In contrast, languages with minimal inflection often depend on fixed word order to maintain clarity.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "Beyond syntax, languages differ in morphological complexity —the degree to which inflection (such as noun or verb endings) marks grammatical relationships."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Turkish uses extensive inflection to express subtle distinctions, whereas Mandarin Chinese relies more on word order and context."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "These contrasts suggest that languages balance morphology and syntax based on communicative needs."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "Highly inflected languages can afford flexible word order because grammatical roles are marked morphologically."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p02-s05",
+              "sentenceOrder": 5,
+              "text": "In contrast, languages with minimal inflection often depend on fixed word order to maintain clarity."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "This trade-off reflects deeper functional pressures. Languages evolve not randomly but in response to cognitive constraints and social factors, including contact with other languages and cultural shifts. Studying this evolution helps linguists understand not only how languages differ but why certain grammatical strategies emerge and persist across communities.",
+          "rawText": "■ This trade-off reflects deeper functional pressures. ■ Languages evolve not randomly but in response to cognitive constraints and social factors, including contact with other languages and cultural shifts. ■ Studying this evolution helps linguists understand not only how languages differ but why certain grammatical strategies emerge and persist across communities. ■",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "This trade-off reflects deeper functional pressures."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "Languages evolve not randomly but in response to cognitive constraints and social factors, including contact with other languages and cultural shifts."
+            },
+            {
+              "sentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03-s03",
+              "sentenceOrder": 3,
+              "text": "Studying this evolution helps linguists understand not only how languages differ but why certain grammatical strategies emerge and persist across communities."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q01",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "Which of the following is NOT mentioned in the passage as an aspect of the study of linguistic typology?",
+      "rawDisplayText": "11. Which of the following is NOT mentioned in the passage as an aspect of the study of linguistic typology?",
+      "payload": {
+        "passageId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q01-opt-1",
+            "optionOrder": 1,
+            "text": "It includes the study of word order as a means of aiding comprehension."
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q01-opt-2",
+            "optionOrder": 2,
+            "text": "It has revealed both diversity and universality among structural linguistic features."
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q01-opt-3",
+            "optionOrder": 3,
+            "text": "It identifies three basic structural patterns across all languages."
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q01-opt-4",
+            "optionOrder": 4,
+            "text": "It examines differences in morphological complexity among languages."
+          }
+        ],
+        "correctOptionId": "reading-rap-e01f83375de9f2c96a209bc6-q01-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q02",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the author note that placing the subject first in a sentence aids comprehension?",
+      "rawDisplayText": "12. Why does the author note that placing the subject first in a sentence aids comprehension?",
+      "payload": {
+        "passageId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q02-opt-1",
+            "optionOrder": 1,
+            "text": "To suggest that a larger set of available word orders increases cognitive efficiency"
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q02-opt-2",
+            "optionOrder": 2,
+            "text": "To provide an example of a structural feature that follows a universal pattern"
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q02-opt-3",
+            "optionOrder": 3,
+            "text": "To help explain why there is only a small set of dominant word orders across languages"
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q02-opt-4",
+            "optionOrder": 4,
+            "text": "To suggest that languages that follow a different pattern are harder to learn"
+          }
+        ],
+        "correctOptionId": "reading-rap-e01f83375de9f2c96a209bc6-q02-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q03",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "What is suggested about the morphological complexity of Turkish?",
+      "rawDisplayText": "13. What is suggested about the morphological complexity of Turkish?",
+      "payload": {
+        "passageId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q03-opt-1",
+            "optionOrder": 1,
+            "text": "It is greater than the morphological complexity of Mandarin Chinese."
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q03-opt-2",
+            "optionOrder": 2,
+            "text": "It is balanced by a relatively simple inflection system."
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q03-opt-3",
+            "optionOrder": 3,
+            "text": "It developed independently of other elements of Turkish."
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q03-opt-4",
+            "optionOrder": 4,
+            "text": "It requires Turkish to adhere to a relatively rigid word order."
+          }
+        ],
+        "correctOptionId": "reading-rap-e01f83375de9f2c96a209bc6-q03-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q04",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"pressures\" in the passage is closest in meaning to",
+      "rawDisplayText": "14. The word \"pressures\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q04-opt-1",
+            "optionOrder": 1,
+            "text": "difficulties"
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q04-opt-2",
+            "optionOrder": 2,
+            "text": "conflicts"
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q04-opt-3",
+            "optionOrder": 3,
+            "text": "features"
+          },
+          {
+            "optionId": "reading-rap-e01f83375de9f2c96a209bc6-q04-opt-4",
+            "optionOrder": 4,
+            "text": "influences"
+          }
+        ],
+        "correctOptionId": "reading-rap-e01f83375de9f2c96a209bc6-q04-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q05",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "questionOrder": 5,
+      "questionType": "rap_sentence_insertion",
+      "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+      "payload": {
+        "passageId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01",
+        "insertSentence": "Such changes can alter the communicative priorities of a speech community, affecting which features are emphasized or simplified over time.",
+        "anchors": [
+          {
+            "anchorId": "reading-rap-e01f83375de9f2c96a209bc6-q05-anchor-1",
+            "anchorOrder": 1,
+            "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03",
+            "boundaryIndex": 0,
+            "afterSentenceId": null
+          },
+          {
+            "anchorId": "reading-rap-e01f83375de9f2c96a209bc6-q05-anchor-2",
+            "anchorOrder": 2,
+            "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03",
+            "boundaryIndex": 1,
+            "afterSentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03-s01"
+          },
+          {
+            "anchorId": "reading-rap-e01f83375de9f2c96a209bc6-q05-anchor-3",
+            "anchorOrder": 3,
+            "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03",
+            "boundaryIndex": 2,
+            "afterSentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03-s02"
+          },
+          {
+            "anchorId": "reading-rap-e01f83375de9f2c96a209bc6-q05-anchor-4",
+            "anchorOrder": 4,
+            "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03",
+            "boundaryIndex": 3,
+            "afterSentenceId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03-s03"
+          }
+        ],
+        "correctAnchorId": "reading-rap-e01f83375de9f2c96a209bc6-q05-anchor-3"
+      }
+    }
+  ]
+}

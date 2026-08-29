@@ -1,0 +1,1819 @@
+{
+  "schemaVersion": 1,
+  "sourceKind": "docx",
+  "sourceLabel": "6.1A",
+  "occurrences": [
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m1-ctw-01",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 1,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m1-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "Crop rotation is a farming technique that involves growing a series of different types of crops in the same area across a sequence of seasons. Different crops use different nutrients from the soil, so rotating them prevents the soil from becoming depleted. Th_ _ method he_ _ _ to red_ _ _ pests a_ _ diseases; i_ also decr_ _ _ _ _ the ne_ _ for chem_ _ _ _ fertilizers, prom_ _ _ _ _ sustainable agric_ _ _ _ _ _. Farmers use this practice to improve crop yields and maintain healthy soil.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "Crop rotation is a farming technique that involves growing a series of different types of crops in the same area across a sequence of seasons. Different crops use different nutrients from the soil, so rotating them prevents the soil from becoming depleted. Th_ _ method he_ _ _ to red_ _ _ pests a_ _ diseases; i_ also decr_ _ _ _ _ the ne_ _ for chem_ _ _ _ fertilizers, prom_ _ _ _ _ sustainable agric_ _ _ _ _ _. Farmers use this practice to improve crop yields and maintain healthy soil.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "Crop rotation is a farming technique that involves growing a series of different types of crops in the same area across a sequence of seasons. Different crops use different nutrients from the soil, so rotating them prevents the soil from becoming depleted. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " method "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " pests "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " diseases; "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " also "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " for "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " fertilizers, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " sustainable "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Farmers use this practice to improve crop yields and maintain healthy soil."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "This",
+                "prefix": "Th",
+                "displayText": "Th_ _",
+                "missingText": "is",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "helps",
+                "prefix": "he",
+                "displayText": "he_ _ _",
+                "missingText": "lps",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "reduce",
+                "prefix": "red",
+                "displayText": "red_ _ _",
+                "missingText": "uce",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "and",
+                "prefix": "a",
+                "displayText": "a_ _",
+                "missingText": "nd",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "it",
+                "prefix": "i",
+                "displayText": "i_",
+                "missingText": "t",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "decreases",
+                "prefix": "decr",
+                "displayText": "decr_ _ _ _ _",
+                "missingText": "eases",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "need",
+                "prefix": "ne",
+                "displayText": "ne_ _",
+                "missingText": "ed",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "chemical",
+                "prefix": "chem",
+                "displayText": "chem_ _ _ _",
+                "missingText": "ical",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "promoting",
+                "prefix": "prom",
+                "displayText": "prom_ _ _ _ _",
+                "missingText": "oting",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q01-10-p01",
+                "answer": "agriculture",
+                "prefix": "agric",
+                "displayText": "agric_ _ _ _ _ _",
+                "missingText": "ulture",
+                "missingLength": 6
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m1-ctw-02",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 2,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 20
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m1-ctw-q11-20",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 20,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "In recent years, the search for extraterrestrial organisms has increasingly focused on water as an important clue. On Earth, water supports biological processes, and its detection on ice-covered moons such as Europa and Enceladus has attracted scien_ _ _ _ _ attention. Evid_ _ _ _ suggests th_ _ these i_ _ moons con_ _ _ _ oceans ke_ _ liquid b_ tidal hea_ _ _ _, a pro_ _ _ _ in wh_ _ _ gravitational forces generated by nearby planets produce internal warmth. This energy source may create environments comparable to Earth's deep-sea hydrothermal regions, where biological activity occurs without sunlight.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "paragraphOrder": 1,
+                "rawText": "In recent years, the search for extraterrestrial organisms has increasingly focused on water as an important clue. On Earth, water supports biological processes, and its detection on ice-covered moons such as Europa and Enceladus has attracted scien_ _ _ _ _ attention. Evid_ _ _ _ suggests th_ _ these i_ _ moons con_ _ _ _ oceans ke_ _ liquid b_ tidal hea_ _ _ _, a pro_ _ _ _ in wh_ _ _ gravitational forces generated by nearby planets produce internal warmth. This energy source may create environments comparable to Earth's deep-sea hydrothermal regions, where biological activity occurs without sunlight.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "In recent years, the search for extraterrestrial organisms has increasingly focused on water as an important clue. On Earth, water supports biological processes, and its detection on ice-covered moons such as Europa and Enceladus has attracted "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " attention. "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " suggests "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " these "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " moons "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " oceans "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " liquid "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " tidal "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", a "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " in "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " gravitational forces generated by nearby planets produce internal warmth. This energy source may create environments comparable to Earth's deep-sea hydrothermal regions, where biological activity occurs without sunlight."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 11,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "scientific",
+                "prefix": "scien",
+                "displayText": "scien_ _ _ _ _",
+                "missingText": "tific",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 12,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "Evidence",
+                "prefix": "Evid",
+                "displayText": "Evid_ _ _ _",
+                "missingText": "ence",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 13,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "that",
+                "prefix": "th",
+                "displayText": "th_ _",
+                "missingText": "at",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 14,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "icy",
+                "prefix": "i",
+                "displayText": "i_ _",
+                "missingText": "cy",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 15,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "contain",
+                "prefix": "con",
+                "displayText": "con_ _ _ _",
+                "missingText": "tain",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 16,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "kept",
+                "prefix": "ke",
+                "displayText": "ke_ _",
+                "missingText": "pt",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 17,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "by",
+                "prefix": "b",
+                "displayText": "b_",
+                "missingText": "y",
+                "missingLength": 1
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 18,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "heating",
+                "prefix": "hea",
+                "displayText": "hea_ _ _ _",
+                "missingText": "ting",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 19,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "process",
+                "prefix": "pro",
+                "displayText": "pro_ _ _ _",
+                "missingText": "cess",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m1-ctw-q11-20-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 20,
+                "paragraphId": "reading-2026-06-01-a-m1-ctw-q11-20-p01",
+                "answer": "which",
+                "prefix": "wh",
+                "displayText": "wh_ _ _",
+                "missingText": "ich",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m1-rdl-03",
+      "module": "rdl",
+      "title": "Mental Well-Being Workshops",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 3,
+        "sourceQuestionStart": 21,
+        "sourceQuestionEnd": 22
+      },
+      "materials": [
+        {
+          "materialId": "RDL-057",
+          "title": "Mental Well-Being Workshops",
+          "source": "material-index.json#RDL-057",
+          "sourceDate": "2026-06-01",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-057/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-057/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m1-q21",
+          "questionOrder": 1,
+          "sourceQuestionStart": 21,
+          "sourceQuestionEnd": 21,
+          "questionType": "rdl",
+          "stem": "Which of the following is true of the workshops?",
+          "rawDisplayText": "21. Which of the following is true of the workshops?",
+          "payload": {
+            "materialId": "RDL-057",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q21-opt-1",
+                "optionOrder": 1,
+                "text": "They are intended for students in mental health fields."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q21-opt-2",
+                "optionOrder": 2,
+                "text": "They will run weekly between March 12 and April 9."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q21-opt-3",
+                "optionOrder": 3,
+                "text": "They will allow students to connect with each other."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q21-opt-4",
+                "optionOrder": 4,
+                "text": "They will include talks by Nursing School faculty."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q21-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q22",
+          "questionOrder": 2,
+          "sourceQuestionStart": 22,
+          "sourceQuestionEnd": 22,
+          "questionType": "rdl",
+          "stem": "Who will lead the workshops?",
+          "rawDisplayText": "22. Who will lead the workshops?",
+          "payload": {
+            "materialId": "RDL-057",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q22-opt-1",
+                "optionOrder": 1,
+                "text": "Students"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q22-opt-2",
+                "optionOrder": 2,
+                "text": "Professors"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q22-opt-3",
+                "optionOrder": 3,
+                "text": "Counselors"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q22-opt-4",
+                "optionOrder": 4,
+                "text": "Nurses"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q22-opt-1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m1-rdl-05",
+      "module": "rdl",
+      "title": "CampusConnect — We make campus commuting simple!",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 5,
+        "sourceQuestionStart": 23,
+        "sourceQuestionEnd": 25
+      },
+      "materials": [
+        {
+          "materialId": "RDL-058",
+          "title": "CampusConnect — We make campus commuting simple!",
+          "source": "material-index.json#RDL-058",
+          "sourceDate": "2026-06-01",
+          "yearMonth": "2026-06",
+          "bindingStatus": "bound",
+          "imageAssetPath": "/reading/rdl/rdl-058/material_final.png",
+          "hitboxDataPath": "/reading/rdl/rdl-058/selection_map.json"
+        }
+      ],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m1-q23",
+          "questionOrder": 1,
+          "sourceQuestionStart": 23,
+          "sourceQuestionEnd": 23,
+          "questionType": "rdl",
+          "stem": "What is the main purpose of the webpage?",
+          "rawDisplayText": "23. What is the main purpose of the webpage?",
+          "payload": {
+            "materialId": "RDL-058",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q23-opt-1",
+                "optionOrder": 1,
+                "text": "To provide historical background on campus transportation systems"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q23-opt-2",
+                "optionOrder": 2,
+                "text": "To critique existing public transit services available on campuses"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q23-opt-3",
+                "optionOrder": 3,
+                "text": "To introduce a new mobile app designed to simplify campus commuting"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q23-opt-4",
+                "optionOrder": 4,
+                "text": "To advertise rideshare companies to university students"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q23-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q24",
+          "questionOrder": 2,
+          "sourceQuestionStart": 24,
+          "sourceQuestionEnd": 24,
+          "questionType": "rdl",
+          "stem": "Who would benefit most from using the CampusConnect app?",
+          "rawDisplayText": "24. Who would benefit most from using the CampusConnect app?",
+          "payload": {
+            "materialId": "RDL-058",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q24-opt-1",
+                "optionOrder": 1,
+                "text": "International tourists visiting large metropolitan areas"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q24-opt-2",
+                "optionOrder": 2,
+                "text": "University students, faculty, and staff who do not own a car"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q24-opt-3",
+                "optionOrder": 3,
+                "text": "Professional city planners designing campus transit systems"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q24-opt-4",
+                "optionOrder": 4,
+                "text": "Students employed part-time as rideshare drivers"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q24-opt-2"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q25",
+          "questionOrder": 3,
+          "sourceQuestionStart": 25,
+          "sourceQuestionEnd": 25,
+          "questionType": "rdl",
+          "stem": "What can be inferred about CampusConnect's notification settings?",
+          "rawDisplayText": "25. What can be inferred about CampusConnect's notification settings?",
+          "payload": {
+            "materialId": "RDL-058",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q25-opt-1",
+                "optionOrder": 1,
+                "text": "They are identical for all users in order to maintain consistency."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q25-opt-2",
+                "optionOrder": 2,
+                "text": "They are set to a predetermined default profile that cannot be altered by users."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q25-opt-3",
+                "optionOrder": 3,
+                "text": "They are designed to minimize user interaction with unnecessary alerts."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q25-opt-4",
+                "optionOrder": 4,
+                "text": "They prioritize public transit notifications over rideshare notifications."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q25-opt-3"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m1-rap-08",
+      "module": "rap",
+      "title": "The Mysteries of Opal",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 8,
+        "sourceQuestionStart": 26,
+        "sourceQuestionEnd": 30
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-01-a-m1-rap-p01",
+          "title": "The Mysteries of Opal",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-01-a-m1-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves. Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape. This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates. Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does.",
+              "rawText": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves. Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape. This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates. Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Opal is a unique gemstone, known for its vibrant colors that shift as the stone moves."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "Unlike most gemstones, which form rigid, repeating crystalline structures, opals are amorphous, meaning they lack a fixed internal shape."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This is due to the formation process, where silica-rich water seeps into cracks in rocks deep underground, leaving silica deposits when it evaporates."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Tiny silica spheres create the internal structure of opals, and these spheres diffract light, separating it into colors, much like a prism does."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-a-m1-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "The color and brilliance of opals depends on the size and spacing of the silica spheres. Larger spheres produce reds and oranges, while smaller spheres result in blues and greens. Because of Australia's unique geological conditions, it is home to over 90 percent of the world's opals. Opals are also fragile. Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes. Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals.",
+              "rawText": "The color and brilliance of opals depends on the size and spacing of the silica spheres. Larger spheres produce reds and oranges, while smaller spheres result in blues and greens. Because of Australia's unique geological conditions, it is home to over 90 percent of the world's opals. Opals are also fragile. Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes. Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "The color and brilliance of opals depends on the size and spacing of the silica spheres."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Larger spheres produce reds and oranges, while smaller spheres result in blues and greens."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Because of Australia's unique geological conditions, it is home to over 90 percent of the world's opals."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Opals are also fragile."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "Their high water content and noncrystalline structure make them prone to cracking when exposed to sudden temperature changes."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "Modern jewelers use techniques such as laser cutting and humidity-controlled storage to better protect opals."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-a-m1-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "Ancient cultures believed opals had mystical properties and brought good luck. The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy.",
+              "rawText": "Ancient cultures believed opals had mystical properties and brought good luck. The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "Ancient cultures believed opals had mystical properties and brought good luck."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "The Romans saw them as a symbol of hope and purity, while the Greeks thought they gave the gift of prophecy."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m1-q26",
+          "questionOrder": 1,
+          "sourceQuestionStart": 26,
+          "sourceQuestionEnd": 26,
+          "questionType": "rap_multiple_choice",
+          "stem": "All of the following are mentioned as part of the formation process of opals EXCEPT:",
+          "rawDisplayText": "26. All of the following are mentioned as part of the formation process of opals EXCEPT:",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q26-opt-1",
+                "optionOrder": 1,
+                "text": "Water flows into cracks in rocks."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q26-opt-2",
+                "optionOrder": 2,
+                "text": "The water dries up, leaving silica deposits behind."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q26-opt-3",
+                "optionOrder": 3,
+                "text": "Small spheres of silica create the structure of the gemstones."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q26-opt-4",
+                "optionOrder": 4,
+                "text": "The structure formed is rigid and non-varying."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q26-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q27",
+          "questionOrder": 2,
+          "sourceQuestionStart": 27,
+          "sourceQuestionEnd": 27,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author mention \"a prism\"?",
+          "rawDisplayText": "27. Why does the author mention \"a prism\"?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q27-opt-1",
+                "optionOrder": 1,
+                "text": "To illustrate how an opal affects light"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q27-opt-2",
+                "optionOrder": 2,
+                "text": "To explain how the internal structure of opals is created"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q27-opt-3",
+                "optionOrder": 3,
+                "text": "To give an example of how scientists study opals"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q27-opt-4",
+                "optionOrder": 4,
+                "text": "To argue that opals do not truly diffract light"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q27-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q28",
+          "questionOrder": 3,
+          "sourceQuestionStart": 28,
+          "sourceQuestionEnd": 28,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is one consequence of the internal structure of opals?",
+          "rawDisplayText": "28. What is one consequence of the internal structure of opals?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q28-opt-1",
+                "optionOrder": 1,
+                "text": "90 percent of them are red or orange."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q28-opt-2",
+                "optionOrder": 2,
+                "text": "Relatively little ancient opal jewelry has survived."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q28-opt-3",
+                "optionOrder": 3,
+                "text": "They are easily damaged by water."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q28-opt-4",
+                "optionOrder": 4,
+                "text": "Jewelers must use special care to prevent opals from cracking."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q28-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q29",
+          "questionOrder": 4,
+          "sourceQuestionStart": 29,
+          "sourceQuestionEnd": 29,
+          "questionType": "rap_multiple_choice",
+          "stem": "What does the passage suggest about ancient cultures' view of opals?",
+          "rawDisplayText": "29. What does the passage suggest about ancient cultures' view of opals?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q29-opt-1",
+                "optionOrder": 1,
+                "text": "They understood how opals were formed."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q29-opt-2",
+                "optionOrder": 2,
+                "text": "They found opals difficult to work with."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q29-opt-3",
+                "optionOrder": 3,
+                "text": "They believed opals had special qualities that benefited their owners."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q29-opt-4",
+                "optionOrder": 4,
+                "text": "They considered opals to be very durable."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q29-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q30",
+          "questionOrder": 5,
+          "sourceQuestionStart": 30,
+          "sourceQuestionEnd": 30,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"prophecy\" in the passage is closest in meaning to",
+          "rawDisplayText": "30. The word \"prophecy\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q30-opt-1",
+                "optionOrder": 1,
+                "text": "long life"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q30-opt-2",
+                "optionOrder": 2,
+                "text": "the ability to predict the future"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q30-opt-3",
+                "optionOrder": 3,
+                "text": "happiness"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q30-opt-4",
+                "optionOrder": 4,
+                "text": "high status"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q30-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m1-rap-13",
+      "module": "rap",
+      "title": "Veganism in the United States",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m1",
+        "sourceOrder": 13,
+        "sourceQuestionStart": 31,
+        "sourceQuestionEnd": 35
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-01-a-m1-rap-p02",
+          "title": "Veganism in the United States",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-01-a-m1-rap-p02-p01",
+              "paragraphOrder": 1,
+              "text": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States. A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019. This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating. During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks.",
+              "rawText": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States. A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019. This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating. During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Veganism, a dietary approach that excludes all animal-based foods, has experienced notable shifts in popularity in the United States."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "A study conducted in 2020 showed a dramatic increase in the number of Americans adopting a plant-based diet between 2004 and 2019."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "This growth was fueled by expanding awareness of animal welfare, environmental concerns linked to industrial agriculture, and increased emphasis on healthy eating."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "During the 2010s, companies began to market plant-based meat alternatives that became highly popular with both restaurants and home cooks."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-a-m1-rap-p02-p02",
+              "paragraphOrder": 2,
+              "text": "By the mid-2020s, however, momentum began to level off. Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan. Several factors contributed to this plateau. Preparing vegan meals can be more involved than preparing meat-based meals. For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming. And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness. Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat. American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits.",
+              "rawText": "By the mid-2020s, however, momentum began to level off. Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan. Several factors contributed to this plateau. Preparing vegan meals can be more involved than preparing meat-based meals. For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming. And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness. Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat. American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "By the mid-2020s, however, momentum began to level off."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Surveys in 2025 indicated that only about three to four percent of Americans identified as vegan."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "Several factors contributed to this plateau."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Preparing vegan meals can be more involved than preparing meat-based meals."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "For example, a vegan cheese substitute can be made with nuts, but the process is time-consuming."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s06",
+                  "sentenceOrder": 6,
+                  "text": "And while home cooks can buy commercially manufactured vegan foods, those foods are highly processed, raising concerns about their healthfulness."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s07",
+                  "sentenceOrder": 7,
+                  "text": "Additionally, some social media influencers have begun to promote increased protein consumption, sparking increased consumer demand for meat."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m1-rap-p02-p02-s08",
+                  "sentenceOrder": 8,
+                  "text": "American food trends come and go, but while some consumers adopt extreme diets, Americans overall seem to be favoring more flexibility in their eating habits."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m1-q31",
+          "questionOrder": 1,
+          "sourceQuestionStart": 31,
+          "sourceQuestionEnd": 31,
+          "questionType": "rap_multiple_choice",
+          "stem": "The main purpose of this passage is to",
+          "rawDisplayText": "31. The main purpose of this passage is to",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q31-opt-1",
+                "optionOrder": 1,
+                "text": "describe the birth of veganism in the United States"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q31-opt-2",
+                "optionOrder": 2,
+                "text": "list the benefits of a vegan diet"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q31-opt-3",
+                "optionOrder": 3,
+                "text": "analyze some changes in Americans' attitudes toward veganism"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q31-opt-4",
+                "optionOrder": 4,
+                "text": "identify trends in American consumer preferences"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q31-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q32",
+          "questionOrder": 2,
+          "sourceQuestionStart": 32,
+          "sourceQuestionEnd": 32,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author notes all of the following as factors driving the popularity of veganism EXCEPT",
+          "rawDisplayText": "32. The author notes all of the following as factors driving the popularity of veganism EXCEPT",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q32-opt-1",
+                "optionOrder": 1,
+                "text": "concern for animals"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q32-opt-2",
+                "optionOrder": 2,
+                "text": "considerations about health"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q32-opt-3",
+                "optionOrder": 3,
+                "text": "the high cost of consuming meat"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q32-opt-4",
+                "optionOrder": 4,
+                "text": "a desire to protect the environment"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q32-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q33",
+          "questionOrder": 3,
+          "sourceQuestionStart": 33,
+          "sourceQuestionEnd": 33,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"involved\" in the passage is closest in meaning to",
+          "rawDisplayText": "33. The word \"involved\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q33-opt-1",
+                "optionOrder": 1,
+                "text": "unsatisfying"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q33-opt-2",
+                "optionOrder": 2,
+                "text": "expensive"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q33-opt-3",
+                "optionOrder": 3,
+                "text": "unpleasant"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q33-opt-4",
+                "optionOrder": 4,
+                "text": "complicated"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q33-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q34",
+          "questionOrder": 4,
+          "sourceQuestionStart": 34,
+          "sourceQuestionEnd": 34,
+          "questionType": "rap_multiple_choice",
+          "stem": "The author mentions \"a vegan cheese substitute\" primarily in order to",
+          "rawDisplayText": "34. The author mentions \"a vegan cheese substitute\" primarily in order to",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q34-opt-1",
+                "optionOrder": 1,
+                "text": "note a challenge inherent in preparing vegan meals"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q34-opt-2",
+                "optionOrder": 2,
+                "text": "identify a popular item used in many vegan recipes"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q34-opt-3",
+                "optionOrder": 3,
+                "text": "contrast the healthfulness of vegan and animal-based foods"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q34-opt-4",
+                "optionOrder": 4,
+                "text": "describe a cooking process popularized by vegans"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q34-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m1-q35",
+          "questionOrder": 5,
+          "sourceQuestionStart": 35,
+          "sourceQuestionEnd": 35,
+          "questionType": "rap_multiple_choice",
+          "stem": "The passage suggests which of the following about commercial meat-alternative products?",
+          "rawDisplayText": "35. The passage suggests which of the following about commercial meat-alternative products?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m1-rap-p02",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m1-q35-opt-1",
+                "optionOrder": 1,
+                "text": "They became increasingly popular with home cooks during the mid-2020s."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q35-opt-2",
+                "optionOrder": 2,
+                "text": "They are produced in a way that causes some people to doubt their healthfulness."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q35-opt-3",
+                "optionOrder": 3,
+                "text": "They are not popular with Americans concerned about food allergies."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m1-q35-opt-4",
+                "optionOrder": 4,
+                "text": "They have greatly improved in flavor since their introduction."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m1-q35-opt-2"
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m2-ctw-18",
+      "module": "ctw",
+      "title": null,
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 18,
+        "sourceQuestionStart": 1,
+        "sourceQuestionEnd": 10
+      },
+      "materials": [],
+      "passages": [],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m2-ctw-q01-10",
+          "questionOrder": 1,
+          "sourceQuestionStart": 1,
+          "sourceQuestionEnd": 10,
+          "questionType": "ctw",
+          "stem": "Fill in the missing letters in the paragraph.",
+          "rawDisplayText": "The formation of river deltas is a geographical process that illustrates the dynamic interaction between land and water. When a river reaches a body of water, such as an oc_ _ _ or s_ _, it sl_ _ _ down, depos_ _ _ _ _ the mate_ _ _ _ _ it has car_ _ _ _ from upst_ _ _ _. Gradually, t_ _ sediments accum_ _ _ _ _ to cre_ _ _ deltas, which are fertile landforms that extend into the water. Deltas not only support diverse ecosystems but also provide rich agricultural land.",
+          "payload": {
+            "paragraphs": [
+              {
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "paragraphOrder": 1,
+                "rawText": "The formation of river deltas is a geographical process that illustrates the dynamic interaction between land and water. When a river reaches a body of water, such as an oc_ _ _ or s_ _, it sl_ _ _ down, depos_ _ _ _ _ the mate_ _ _ _ _ it has car_ _ _ _ from upst_ _ _ _. Gradually, t_ _ sediments accum_ _ _ _ _ to cre_ _ _ deltas, which are fertile landforms that extend into the water. Deltas not only support diverse ecosystems but also provide rich agricultural land.",
+                "segments": [
+                  {
+                    "kind": "text",
+                    "text": "The formation of river deltas is a geographical process that illustrates the dynamic interaction between land and water. When a river reaches a body of water, such as an "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-01"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " or "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-02"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ", it "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-03"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " down, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-04"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " the "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-05"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " it has "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-06"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " from "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-07"
+                  },
+                  {
+                    "kind": "text",
+                    "text": ". Gradually, "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-08"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " sediments "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-09"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " to "
+                  },
+                  {
+                    "kind": "blank",
+                    "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-10"
+                  },
+                  {
+                    "kind": "text",
+                    "text": " deltas, which are fertile landforms that extend into the water. Deltas not only support diverse ecosystems but also provide rich agricultural land."
+                  }
+                ]
+              }
+            ],
+            "slots": [
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-01",
+                "slotOrder": 1,
+                "sourceQuestionNumber": 1,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "ocean",
+                "prefix": "oc",
+                "displayText": "oc_ _ _",
+                "missingText": "ean",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-02",
+                "slotOrder": 2,
+                "sourceQuestionNumber": 2,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "sea",
+                "prefix": "s",
+                "displayText": "s_ _",
+                "missingText": "ea",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-03",
+                "slotOrder": 3,
+                "sourceQuestionNumber": 3,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "slows",
+                "prefix": "sl",
+                "displayText": "sl_ _ _",
+                "missingText": "ows",
+                "missingLength": 3
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-04",
+                "slotOrder": 4,
+                "sourceQuestionNumber": 4,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "depositing",
+                "prefix": "depos",
+                "displayText": "depos_ _ _ _ _",
+                "missingText": "iting",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-05",
+                "slotOrder": 5,
+                "sourceQuestionNumber": 5,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "materials",
+                "prefix": "mate",
+                "displayText": "mate_ _ _ _ _",
+                "missingText": "rials",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-06",
+                "slotOrder": 6,
+                "sourceQuestionNumber": 6,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "carried",
+                "prefix": "car",
+                "displayText": "car_ _ _ _",
+                "missingText": "ried",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-07",
+                "slotOrder": 7,
+                "sourceQuestionNumber": 7,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "upstream",
+                "prefix": "upst",
+                "displayText": "upst_ _ _ _",
+                "missingText": "ream",
+                "missingLength": 4
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-08",
+                "slotOrder": 8,
+                "sourceQuestionNumber": 8,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "the",
+                "prefix": "t",
+                "displayText": "t_ _",
+                "missingText": "he",
+                "missingLength": 2
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-09",
+                "slotOrder": 9,
+                "sourceQuestionNumber": 9,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "accumulate",
+                "prefix": "accum",
+                "displayText": "accum_ _ _ _ _",
+                "missingText": "ulate",
+                "missingLength": 5
+              },
+              {
+                "slotId": "reading-2026-06-01-a-m2-ctw-q01-10-slot-10",
+                "slotOrder": 10,
+                "sourceQuestionNumber": 10,
+                "paragraphId": "reading-2026-06-01-a-m2-ctw-q01-10-p01",
+                "answer": "create",
+                "prefix": "cre",
+                "displayText": "cre_ _ _",
+                "missingText": "ate",
+                "missingLength": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "sourceOccurrenceId": "reading-source-6-1a-m2-rap-19",
+      "module": "rap",
+      "title": "Linguistic Structural Diversity",
+      "source": {
+        "sourceKind": "docx",
+        "sourceLabel": "6.1A",
+        "occurrenceDate": "2026-06-01",
+        "yearMonth": "2026-06",
+        "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.1A.docx",
+        "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.1A_Answers.docx",
+        "sourceModule": "m2",
+        "sourceOrder": 19,
+        "sourceQuestionStart": 11,
+        "sourceQuestionEnd": 15
+      },
+      "materials": [],
+      "passages": [
+        {
+          "passageId": "reading-2026-06-01-a-m2-rap-p01",
+          "title": "Linguistic Structural Diversity",
+          "paragraphs": [
+            {
+              "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p01",
+              "paragraphOrder": 1,
+              "text": "Linguistic typology investigates structural features across languages, revealing both universal patterns and language-specific variation. A central area of study is word order-the arrangement of subjects, verbs, and objects. English follows a subject-verb-object (SVO) pattern, while Japanese uses subject-object-verb (SOV). Most languages conform to a limited set of dominant word orders, which may reflect cognitive efficiency: Placing the subject first helps listeners quickly identify the sentence's main actor, aiding comprehension.",
+              "rawText": "Linguistic typology investigates structural features across languages, revealing both universal patterns and language-specific variation. A central area of study is word order-the arrangement of subjects, verbs, and objects. English follows a subject-verb-object (SVO) pattern, while Japanese uses subject-object-verb (SOV). Most languages conform to a limited set of dominant word orders, which may reflect cognitive efficiency: Placing the subject first helps listeners quickly identify the sentence's main actor, aiding comprehension.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p01-s01",
+                  "sentenceOrder": 1,
+                  "text": "Linguistic typology investigates structural features across languages, revealing both universal patterns and language-specific variation."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p01-s02",
+                  "sentenceOrder": 2,
+                  "text": "A central area of study is word order-the arrangement of subjects, verbs, and objects."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p01-s03",
+                  "sentenceOrder": 3,
+                  "text": "English follows a subject-verb-object (SVO) pattern, while Japanese uses subject-object-verb (SOV)."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p01-s04",
+                  "sentenceOrder": 4,
+                  "text": "Most languages conform to a limited set of dominant word orders, which may reflect cognitive efficiency: Placing the subject first helps listeners quickly identify the sentence's main actor, aiding comprehension."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p02",
+              "paragraphOrder": 2,
+              "text": "Beyond syntax, languages differ in morphological complexity —the degree to which inflection (such as noun or verb endings) marks grammatical relationships. Turkish uses extensive inflection to express subtle distinctions, whereas Mandarin Chinese relies more on word order and context. These contrasts suggest that languages balance morphology and syntax based on communicative needs. Highly inflected languages can afford flexible word order because grammatical roles are marked morphologically. In contrast, languages with minimal inflection often depend on fixed word order to maintain clarity.",
+              "rawText": "Beyond syntax, languages differ in morphological complexity —the degree to which inflection (such as noun or verb endings) marks grammatical relationships. Turkish uses extensive inflection to express subtle distinctions, whereas Mandarin Chinese relies more on word order and context. These contrasts suggest that languages balance morphology and syntax based on communicative needs. Highly inflected languages can afford flexible word order because grammatical roles are marked morphologically. In contrast, languages with minimal inflection often depend on fixed word order to maintain clarity.",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p02-s01",
+                  "sentenceOrder": 1,
+                  "text": "Beyond syntax, languages differ in morphological complexity —the degree to which inflection (such as noun or verb endings) marks grammatical relationships."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p02-s02",
+                  "sentenceOrder": 2,
+                  "text": "Turkish uses extensive inflection to express subtle distinctions, whereas Mandarin Chinese relies more on word order and context."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p02-s03",
+                  "sentenceOrder": 3,
+                  "text": "These contrasts suggest that languages balance morphology and syntax based on communicative needs."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p02-s04",
+                  "sentenceOrder": 4,
+                  "text": "Highly inflected languages can afford flexible word order because grammatical roles are marked morphologically."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p02-s05",
+                  "sentenceOrder": 5,
+                  "text": "In contrast, languages with minimal inflection often depend on fixed word order to maintain clarity."
+                }
+              ]
+            },
+            {
+              "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p03",
+              "paragraphOrder": 3,
+              "text": "This trade-off reflects deeper functional pressures. Languages evolve not randomly but in response to cognitive constraints and social factors, including contact with other languages and cultural shifts. Studying this evolution helps linguists understand not only how languages differ but why certain grammatical strategies emerge and persist across communities.",
+              "rawText": "■ This trade-off reflects deeper functional pressures. ■ Languages evolve not randomly but in response to cognitive constraints and social factors, including contact with other languages and cultural shifts. ■ Studying this evolution helps linguists understand not only how languages differ but why certain grammatical strategies emerge and persist across communities. ■",
+              "sentences": [
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p03-s01",
+                  "sentenceOrder": 1,
+                  "text": "This trade-off reflects deeper functional pressures."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p03-s02",
+                  "sentenceOrder": 2,
+                  "text": "Languages evolve not randomly but in response to cognitive constraints and social factors, including contact with other languages and cultural shifts."
+                },
+                {
+                  "sentenceId": "reading-2026-06-01-a-m2-rap-p01-p03-s03",
+                  "sentenceOrder": 3,
+                  "text": "Studying this evolution helps linguists understand not only how languages differ but why certain grammatical strategies emerge and persist across communities."
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "questionId": "reading-2026-06-01-a-m2-q11",
+          "questionOrder": 1,
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11,
+          "questionType": "rap_multiple_choice",
+          "stem": "Which of the following is NOT mentioned in the passage as an aspect of the study of linguistic typology?",
+          "rawDisplayText": "11. Which of the following is NOT mentioned in the passage as an aspect of the study of linguistic typology?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m2-q11-opt-1",
+                "optionOrder": 1,
+                "text": "It includes the study of word order as a means of aiding comprehension."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q11-opt-2",
+                "optionOrder": 2,
+                "text": "It has revealed both diversity and universality among structural linguistic features."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q11-opt-3",
+                "optionOrder": 3,
+                "text": "It identifies three basic structural patterns across all languages."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q11-opt-4",
+                "optionOrder": 4,
+                "text": "It examines differences in morphological complexity among languages."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m2-q11-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m2-q12",
+          "questionOrder": 2,
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12,
+          "questionType": "rap_multiple_choice",
+          "stem": "Why does the author note that placing the subject first in a sentence aids comprehension?",
+          "rawDisplayText": "12. Why does the author note that placing the subject first in a sentence aids comprehension?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m2-q12-opt-1",
+                "optionOrder": 1,
+                "text": "To suggest that a larger set of available word orders increases cognitive efficiency"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q12-opt-2",
+                "optionOrder": 2,
+                "text": "To provide an example of a structural feature that follows a universal pattern"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q12-opt-3",
+                "optionOrder": 3,
+                "text": "To help explain why there is only a small set of dominant word orders across languages"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q12-opt-4",
+                "optionOrder": 4,
+                "text": "To suggest that languages that follow a different pattern are harder to learn"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m2-q12-opt-3"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m2-q13",
+          "questionOrder": 3,
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13,
+          "questionType": "rap_multiple_choice",
+          "stem": "What is suggested about the morphological complexity of Turkish?",
+          "rawDisplayText": "13. What is suggested about the morphological complexity of Turkish?",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m2-q13-opt-1",
+                "optionOrder": 1,
+                "text": "It is greater than the morphological complexity of Mandarin Chinese."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q13-opt-2",
+                "optionOrder": 2,
+                "text": "It is balanced by a relatively simple inflection system."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q13-opt-3",
+                "optionOrder": 3,
+                "text": "It developed independently of other elements of Turkish."
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q13-opt-4",
+                "optionOrder": 4,
+                "text": "It requires Turkish to adhere to a relatively rigid word order."
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m2-q13-opt-1"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m2-q14",
+          "questionOrder": 4,
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14,
+          "questionType": "rap_multiple_choice",
+          "stem": "The word \"pressures\" in the passage is closest in meaning to",
+          "rawDisplayText": "14. The word \"pressures\" in the passage is closest in meaning to",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m2-rap-p01",
+            "options": [
+              {
+                "optionId": "reading-2026-06-01-a-m2-q14-opt-1",
+                "optionOrder": 1,
+                "text": "difficulties"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q14-opt-2",
+                "optionOrder": 2,
+                "text": "conflicts"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q14-opt-3",
+                "optionOrder": 3,
+                "text": "features"
+              },
+              {
+                "optionId": "reading-2026-06-01-a-m2-q14-opt-4",
+                "optionOrder": 4,
+                "text": "influences"
+              }
+            ],
+            "correctOptionId": "reading-2026-06-01-a-m2-q14-opt-4"
+          }
+        },
+        {
+          "questionId": "reading-2026-06-01-a-m2-q15",
+          "questionOrder": 5,
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15,
+          "questionType": "rap_sentence_insertion",
+          "stem": "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "rawDisplayText": "15. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+          "payload": {
+            "passageId": "reading-2026-06-01-a-m2-rap-p01",
+            "insertSentence": "Such changes can alter the communicative priorities of a speech community, affecting which features are emphasized or simplified over time.",
+            "anchors": [
+              {
+                "anchorId": "reading-2026-06-01-a-m2-q15-anchor-1",
+                "anchorOrder": 1,
+                "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p03",
+                "boundaryIndex": 0,
+                "afterSentenceId": null
+              },
+              {
+                "anchorId": "reading-2026-06-01-a-m2-q15-anchor-2",
+                "anchorOrder": 2,
+                "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p03",
+                "boundaryIndex": 1,
+                "afterSentenceId": "reading-2026-06-01-a-m2-rap-p01-p03-s01"
+              },
+              {
+                "anchorId": "reading-2026-06-01-a-m2-q15-anchor-3",
+                "anchorOrder": 3,
+                "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p03",
+                "boundaryIndex": 2,
+                "afterSentenceId": "reading-2026-06-01-a-m2-rap-p01-p03-s02"
+              },
+              {
+                "anchorId": "reading-2026-06-01-a-m2-q15-anchor-4",
+                "anchorOrder": 4,
+                "paragraphId": "reading-2026-06-01-a-m2-rap-p01-p03",
+                "boundaryIndex": 3,
+                "afterSentenceId": "reading-2026-06-01-a-m2-rap-p01-p03-s03"
+              }
+            ],
+            "correctAnchorId": "reading-2026-06-01-a-m2-q15-anchor-3"
+          }
+        }
+      ]
+    }
+  ]
+}

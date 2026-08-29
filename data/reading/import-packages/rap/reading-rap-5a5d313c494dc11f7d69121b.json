@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 2,
+  "item": {
+    "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+    "module": "rap",
+    "title": "Health Informatics: Revolutionizing Patient Care",
+    "firstSeenDate": "2026-06-07",
+    "firstSeenSourceLabel": "6.7B",
+    "firstSeenSourceOrder": 19,
+    "dedupFingerprint": "5a5d313c494dc11f7d69121b01dbb9ec91aa089529f28aa4a415c92559c97e44",
+    "questionCount": 5,
+    "scoredItemCount": 5,
+    "isActive": false
+  },
+  "occurrences": [
+    {
+      "occurrenceId": "reading-source-6-7b-m2-rap-19",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "sourceKind": "docx",
+      "sourceLabel": "6.7B",
+      "occurrenceDate": "2026-06-07",
+      "yearMonth": "2026-06",
+      "sourceQuestionFile": "data/reading/source-docx/2026-06/questions/TOEFL_Reading_6.7B.docx",
+      "sourceAnswerFile": "data/reading/source-docx/2026-06/answers/TOEFL_Reading_6.7B_Answers.docx",
+      "sourceModule": "m2",
+      "sourceOrder": 19,
+      "sourceQuestionStart": 11,
+      "sourceQuestionEnd": 15,
+      "questionSources": [
+        {
+          "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q01",
+          "sourceQuestionStart": 11,
+          "sourceQuestionEnd": 11
+        },
+        {
+          "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q02",
+          "sourceQuestionStart": 12,
+          "sourceQuestionEnd": 12
+        },
+        {
+          "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q03",
+          "sourceQuestionStart": 13,
+          "sourceQuestionEnd": 13
+        },
+        {
+          "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q04",
+          "sourceQuestionStart": 14,
+          "sourceQuestionEnd": 14
+        },
+        {
+          "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q05",
+          "sourceQuestionStart": 15,
+          "sourceQuestionEnd": 15
+        }
+      ]
+    }
+  ],
+  "materials": [],
+  "passages": [
+    {
+      "passageId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "title": "Health Informatics: Revolutionizing Patient Care",
+      "paragraphs": [
+        {
+          "paragraphId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p01",
+          "paragraphOrder": 1,
+          "text": "Health informatics, which integrates information technology and data science to enhance healthcare outcomes, is fundamentally reshaping how care is delivered. The transition from paper-based records to electronic health systems has significantly improved access to patient information and coordination among providers. Physicians can retrieve medical histories instantly, reducing the likelihood of errors and enabling more timely interventions.",
+          "rawText": "Health informatics, which integrates information technology and data science to enhance healthcare outcomes, is fundamentally reshaping how care is delivered. The transition from paper-based records to electronic health systems has significantly improved access to patient information and coordination among providers. Physicians can retrieve medical histories instantly, reducing the likelihood of errors and enabling more timely interventions.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p01-s01",
+              "sentenceOrder": 1,
+              "text": "Health informatics, which integrates information technology and data science to enhance healthcare outcomes, is fundamentally reshaping how care is delivered."
+            },
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p01-s02",
+              "sentenceOrder": 2,
+              "text": "The transition from paper-based records to electronic health systems has significantly improved access to patient information and coordination among providers."
+            },
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p01-s03",
+              "sentenceOrder": 3,
+              "text": "Physicians can retrieve medical histories instantly, reducing the likelihood of errors and enabling more timely interventions."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p02",
+          "paragraphOrder": 2,
+          "text": "This efficiency, however, introduces new complexities. Some critics argue that the growing reliance on digital tools may have the unfortunate side effects of diminishing the role of clinicians' intuition and reducing access to individualized care. For instance, when predictive algorithms assess disease risk using large datasets, they may fail to account for lifestyle choices and other unique patient variables that fall outside standard models. A patient might be flagged as low-risk for diabetes based on age and body mass index, while critical factors like family history or dietary habits are overlooked.",
+          "rawText": "This efficiency, however, introduces new complexities. Some critics argue that the growing reliance on digital tools may have the unfortunate side effects of diminishing the role of clinicians' intuition and reducing access to individualized care. For instance, when predictive algorithms assess disease risk using large datasets, they may fail to account for lifestyle choices and other unique patient variables that fall outside standard models. A patient might be flagged as low-risk for diabetes based on age and body mass index, while critical factors like family history or dietary habits are overlooked.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p02-s01",
+              "sentenceOrder": 1,
+              "text": "This efficiency, however, introduces new complexities."
+            },
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p02-s02",
+              "sentenceOrder": 2,
+              "text": "Some critics argue that the growing reliance on digital tools may have the unfortunate side effects of diminishing the role of clinicians' intuition and reducing access to individualized care."
+            },
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p02-s03",
+              "sentenceOrder": 3,
+              "text": "For instance, when predictive algorithms assess disease risk using large datasets, they may fail to account for lifestyle choices and other unique patient variables that fall outside standard models."
+            },
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p02-s04",
+              "sentenceOrder": 4,
+              "text": "A patient might be flagged as low-risk for diabetes based on age and body mass index, while critical factors like family history or dietary habits are overlooked."
+            }
+          ]
+        },
+        {
+          "paragraphId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p03",
+          "paragraphOrder": 3,
+          "text": "In addition, the design of digital record systems can subtly influence how doctors think, drawing attention to whatever fits neatly into templates and downplaying things that may be harder to quantify. As a result, while informatics can streamline care, it also risks oversimplifying human health, challenging clinicians to stay alert to what the system might miss.",
+          "rawText": "In addition, the design of digital record systems can subtly influence how doctors think, drawing attention to whatever fits neatly into templates and downplaying things that may be harder to quantify. As a result, while informatics can streamline care, it also risks oversimplifying human health, challenging clinicians to stay alert to what the system might miss.",
+          "sentences": [
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p03-s01",
+              "sentenceOrder": 1,
+              "text": "In addition, the design of digital record systems can subtly influence how doctors think, drawing attention to whatever fits neatly into templates and downplaying things that may be harder to quantify."
+            },
+            {
+              "sentenceId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p03-s02",
+              "sentenceOrder": 2,
+              "text": "As a result, while informatics can streamline care, it also risks oversimplifying human health, challenging clinicians to stay alert to what the system might miss."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q01",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "questionOrder": 1,
+      "questionType": "rap_multiple_choice",
+      "stem": "The word \"integrates\" in the passage is closest in meaning to",
+      "rawDisplayText": "11. The word \"integrates\" in the passage is closest in meaning to",
+      "payload": {
+        "passageId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q01-opt-1",
+            "optionOrder": 1,
+            "text": "improves"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q01-opt-2",
+            "optionOrder": 2,
+            "text": "requires"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q01-opt-3",
+            "optionOrder": 3,
+            "text": "produces"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q01-opt-4",
+            "optionOrder": 4,
+            "text": "combines"
+          }
+        ],
+        "correctOptionId": "reading-rap-5a5d313c494dc11f7d69121b-q01-opt-4"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q02",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "questionOrder": 2,
+      "questionType": "rap_multiple_choice",
+      "stem": "The passage mentions all of the following as benefits of \"efficiency\" EXCEPT",
+      "rawDisplayText": "12. The passage mentions all of the following as benefits of \"efficiency\" EXCEPT",
+      "payload": {
+        "passageId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q02-opt-1",
+            "optionOrder": 1,
+            "text": "improved communication among medical professionals"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q02-opt-2",
+            "optionOrder": 2,
+            "text": "reduced reliance on the medical judgment of individuals"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q02-opt-3",
+            "optionOrder": 3,
+            "text": "faster delivery of medical care"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q02-opt-4",
+            "optionOrder": 4,
+            "text": "lower risk of medical mistakes"
+          }
+        ],
+        "correctOptionId": "reading-rap-5a5d313c494dc11f7d69121b-q02-opt-2"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q03",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "questionOrder": 3,
+      "questionType": "rap_multiple_choice",
+      "stem": "In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+      "rawDisplayText": "13. In the second paragraph, what is the relationship between sentence 1 and sentence 2?",
+      "payload": {
+        "passageId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q03-opt-1",
+            "optionOrder": 1,
+            "text": "Sentence 1 describes changes in health outcomes, and sentence 2 provides examples."
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q03-opt-2",
+            "optionOrder": 2,
+            "text": "Sentence 1 presents a solution produced by health informatics, and sentence 2 describes flaws in that solution."
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q03-opt-3",
+            "optionOrder": 3,
+            "text": "Sentence 1 warns of problems related to health informatics, and sentence 2 provides examples."
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q03-opt-4",
+            "optionOrder": 4,
+            "text": "Sentence 1 notes a challenge that health informatics has solved, and sentence 2 describes new, unresolved challenges."
+          }
+        ],
+        "correctOptionId": "reading-rap-5a5d313c494dc11f7d69121b-q03-opt-3"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q04",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "questionOrder": 4,
+      "questionType": "rap_multiple_choice",
+      "stem": "Why does the passage provide the example of a patient flagged as low-risk for diabetes?",
+      "rawDisplayText": "14. Why does the passage provide the example of a patient flagged as low-risk for diabetes?",
+      "payload": {
+        "passageId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q04-opt-1",
+            "optionOrder": 1,
+            "text": "To illustrate how an algorithm might provide an incomplete assessment"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q04-opt-2",
+            "optionOrder": 2,
+            "text": "To show that body mass index is not a reliable health metric"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q04-opt-3",
+            "optionOrder": 3,
+            "text": "To suggest that family history is becoming more relevant to modern medicine"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q04-opt-4",
+            "optionOrder": 4,
+            "text": "To demonstrate the efficiency of digital diagnosis"
+          }
+        ],
+        "correctOptionId": "reading-rap-5a5d313c494dc11f7d69121b-q04-opt-1"
+      }
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q05",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "questionOrder": 5,
+      "questionType": "rap_multiple_choice",
+      "stem": "According to the passage, the tendency of health informatics to emphasize data that \"fits neatly into templates\" should cause doctors to",
+      "rawDisplayText": "15. According to the passage, the tendency of health informatics to emphasize data that \"fits neatly into templates\" should cause doctors to",
+      "payload": {
+        "passageId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01",
+        "options": [
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q05-opt-1",
+            "optionOrder": 1,
+            "text": "watch closely for details that digital systems may not perceive"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q05-opt-2",
+            "optionOrder": 2,
+            "text": "work harder to streamline medical care"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q05-opt-3",
+            "optionOrder": 3,
+            "text": "participate in the design of digital records systems"
+          },
+          {
+            "optionId": "reading-rap-5a5d313c494dc11f7d69121b-q05-opt-4",
+            "optionOrder": 4,
+            "text": "carefully evaluate their own ability to read electronic health data"
+          }
+        ],
+        "correctOptionId": "reading-rap-5a5d313c494dc11f7d69121b-q05-opt-1"
+      }
+    }
+  ]
+}
