@@ -873,7 +873,7 @@ function CtwBlankWord({
 }) {
   const activeCaretClass = readOnly
     ? ""
-    : "relative focus:after:pointer-events-none focus:after:absolute focus:after:right-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-pulse focus:after:bg-student-text focus:after:content-['']";
+    : "relative focus:after:pointer-events-none focus:after:absolute focus:after:right-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-ctw-caret-blink focus:after:bg-student-text focus:after:content-['']";
 
   return (
     <span className="inline whitespace-nowrap" data-ctw-slot={slotId}>

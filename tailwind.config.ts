@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      animation: {
+        "ctw-caret-blink": "ctw-caret-blink 1s step-end infinite"
+      },
       colors: {
         ink: "#18212f",
         line: "#d8dee8",
@@ -29,6 +32,12 @@ const config: Config = {
           "error-hover": "var(--student-error-hover)",
           "error-soft": "var(--student-error-soft)",
           "error-border": "var(--student-error-border)"
+        }
+      },
+      keyframes: {
+        "ctw-caret-blink": {
+          "0%, 49%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" }
         }
       }
     }

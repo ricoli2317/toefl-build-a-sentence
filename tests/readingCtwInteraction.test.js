@@ -185,6 +185,10 @@ test("active CTW position renders one non-layout blinking caret before its lette
     path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
     "utf8"
   );
+  const tailwindSource = fs.readFileSync(
+    path.join(__dirname, "../tailwind.config.ts"),
+    "utf8"
+  );
   const blankWordSource = source.slice(source.indexOf("function CtwBlankWord"), source.indexOf("function ctwPositionKey"));
   const caretClassSource = blankWordSource.slice(
     blankWordSource.indexOf("const activeCaretClass"),
@@ -199,10 +203,14 @@ test("active CTW position renders one non-layout blinking caret before its lette
   assert.doesNotMatch(caretClassSource, /focus:after:left-full|focus:after:-translate-x/);
   assert.match(caretClassSource, /focus:after:h-\[1em\]/);
   assert.match(caretClassSource, /focus:after:w-\[1\.5px\]/);
-  assert.match(caretClassSource, /focus:after:animate-pulse/);
+  assert.match(caretClassSource, /focus:after:animate-ctw-caret-blink/);
+  assert.doesNotMatch(caretClassSource, /focus:after:animate-pulse/);
   assert.match(caretClassSource, /focus:after:bg-student-text/);
   assert.match(caretClassSource, /focus:after:content-\[''\]/);
   assert.doesNotMatch(caretClassSource, /border|outline|ring/);
+  assert.match(tailwindSource, /"ctw-caret-blink": "ctw-caret-blink 1s step-end infinite"/);
+  assert.match(tailwindSource, /"0%, 49%": \{ opacity: "1" \}/);
+  assert.match(tailwindSource, /"50%, 100%": \{ opacity: "0" \}/);
   assert.equal((blankWordSource.match(/\$\{activeCaretClass\}/g) ?? []).length, 1);
   assert.ok(blankWordSource.indexOf("${activeCaretClass}") < blankWordSource.indexOf("data-filled"));
 });
