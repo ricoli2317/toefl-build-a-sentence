@@ -7,6 +7,7 @@ import type {
   ReadingInsertionAnchor,
   ReadingMaterial,
   ReadingOption,
+  ReadingPassageHighlightRange,
   ReadingPassageParagraph,
   ReadingSourceOccurrenceCandidate,
   ReadingSourceQuestion
@@ -237,12 +238,17 @@ function buildCandidate(
       sourceQuestionEnd: sourceNumber
     };
     const questionType = required(row, "question_type");
+    const highlightRanges = parseJson<ReadingPassageHighlightRange[]>(
+      required(row, "passage_highlights_json"),
+      "passage_highlights_json"
+    );
     if (questionType === "rap_multiple_choice") {
       return {
         ...common,
         questionType,
         payload: {
           passageId,
+          highlightRanges,
           options: parseJson<ReadingOption[]>(required(row, "options_json"), "options_json"),
           correctOptionId: required(row, "correct_option_id")
         }
@@ -254,6 +260,7 @@ function buildCandidate(
         questionType,
         payload: {
           passageId,
+          highlightRanges,
           insertSentence: required(row, "insert_sentence"),
           anchors: parseJson<ReadingInsertionAnchor[]>(
             required(row, "insertion_anchors_json"),
@@ -269,6 +276,7 @@ function buildCandidate(
         questionType,
         payload: {
           passageId,
+          highlightRanges,
           targetParagraphId: required(row, "target_paragraph_id"),
           correctSentenceId: required(row, "correct_sentence_id")
         }

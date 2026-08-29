@@ -1,0 +1,2653 @@
+{
+  "schemaVersion": 1,
+  "auditRangeCount": 186,
+  "logicalQuestionCount": 152,
+  "logicalRangeCount": 156,
+  "logicalItemCount": 96,
+  "multiSourceLogicalQuestionCount": 25,
+  "logicalConflictCount": 0,
+  "invalidParagraphOrRangeCount": 0,
+  "nonRapTargetCount": 0,
+  "databaseWrites": false,
+  "importsRun": false,
+  "targets": [
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q02",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p01",
+          "startOffset": 278,
+          "endOffset": 292
+        }
+      ],
+      "expectedTexts": [
+        "transformative"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-6a-m1-rap-08",
+        "reading-source-5-6b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-00d1af757b20b7f4f6440076-q04",
+      "logicalItemId": "reading-rap-00d1af757b20b7f4f6440076",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-00d1af757b20b7f4f6440076-passage-01-p03",
+          "startOffset": 448,
+          "endOffset": 488
+        }
+      ],
+      "expectedTexts": [
+        "the global spread of wireless technology"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-6a-m1-rap-08",
+        "reading-source-5-6b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q01",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p01",
+          "startOffset": 5,
+          "endOffset": 11
+        }
+      ],
+      "expectedTexts": [
+        "static"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-059ab1c8259c00f0242e7951-q04",
+      "logicalItemId": "reading-rap-059ab1c8259c00f0242e7951",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03",
+          "startOffset": 484,
+          "endOffset": 493
+        },
+        {
+          "paragraphId": "reading-rap-059ab1c8259c00f0242e7951-passage-01-p03",
+          "startOffset": 568,
+          "endOffset": 581
+        }
+      ],
+      "expectedTexts": [
+        "hospitals",
+        "office spaces"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-08b62a981873c3e2eef76ff4-q01",
+      "logicalItemId": "reading-rap-08b62a981873c3e2eef76ff4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-08b62a981873c3e2eef76ff4-passage-01-p01",
+          "startOffset": 492,
+          "endOffset": 548
+        }
+      ],
+      "expectedTexts": [
+        "neural pathways associated with attention and processing"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-08b62a981873c3e2eef76ff4-q05",
+      "logicalItemId": "reading-rap-08b62a981873c3e2eef76ff4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-08b62a981873c3e2eef76ff4-passage-01-p03",
+          "startOffset": 260,
+          "endOffset": 268
+        }
+      ],
+      "expectedTexts": [
+        "holistic"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-08f66e6c2b3e25bd34fa0651-q03",
+      "logicalItemId": "reading-rap-08f66e6c2b3e25bd34fa0651",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-08f66e6c2b3e25bd34fa0651-passage-01-p03",
+          "startOffset": 94,
+          "endOffset": 105
+        }
+      ],
+      "expectedTexts": [
+        "stewardship"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-30a-m2-rap-19",
+        "reading-source-6-30b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-0dd51c79faabdb5cfd63f07e-q02",
+      "logicalItemId": "reading-rap-0dd51c79faabdb5cfd63f07e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-0dd51c79faabdb5cfd63f07e-passage-01-p02",
+          "startOffset": 236,
+          "endOffset": 244
+        }
+      ],
+      "expectedTexts": [
+        "vigilant"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-5b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-12e71c91e8c595abfee101fb-q03",
+      "logicalItemId": "reading-rap-12e71c91e8c595abfee101fb",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-12e71c91e8c595abfee101fb-passage-01-p02",
+          "startOffset": 29,
+          "endOffset": 38
+        }
+      ],
+      "expectedTexts": [
+        "cultivate"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-24-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-150613dd5287e3f4b779eb5a-q03",
+      "logicalItemId": "reading-rap-150613dd5287e3f4b779eb5a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-150613dd5287e3f4b779eb5a-passage-01-p03",
+          "startOffset": 94,
+          "endOffset": 105
+        }
+      ],
+      "expectedTexts": [
+        "stewardship"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-18254e6c2471afbb626c22b4-q01",
+      "logicalItemId": "reading-rap-18254e6c2471afbb626c22b4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-18254e6c2471afbb626c22b4-passage-01-p01",
+          "startOffset": 5,
+          "endOffset": 11
+        }
+      ],
+      "expectedTexts": [
+        "static"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-18254e6c2471afbb626c22b4-q04",
+      "logicalItemId": "reading-rap-18254e6c2471afbb626c22b4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-18254e6c2471afbb626c22b4-passage-01-p03",
+          "startOffset": 484,
+          "endOffset": 493
+        },
+        {
+          "paragraphId": "reading-rap-18254e6c2471afbb626c22b4-passage-01-p03",
+          "startOffset": 568,
+          "endOffset": 581
+        }
+      ],
+      "expectedTexts": [
+        "hospitals",
+        "office spaces"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-199501db577904fb79815267-q01",
+      "logicalItemId": "reading-rap-199501db577904fb79815267",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-199501db577904fb79815267-passage-01-p01",
+          "startOffset": 290,
+          "endOffset": 299
+        }
+      ],
+      "expectedTexts": [
+        "anomalies"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-19-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q01",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p01",
+          "startOffset": 77,
+          "endOffset": 83
+        }
+      ],
+      "expectedTexts": [
+        "subtle"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q03",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p02",
+          "startOffset": 238,
+          "endOffset": 304
+        }
+      ],
+      "expectedTexts": [
+        "variations in rock density and the presence of faults or fractures"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-1f2a25af84cd749261037df0-q05",
+      "logicalItemId": "reading-rap-1f2a25af84cd749261037df0",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-1f2a25af84cd749261037df0-passage-01-p03",
+          "startOffset": 242,
+          "endOffset": 313
+        }
+      ],
+      "expectedTexts": [
+        "filtering methods and cross-referencing data from multiple seismometers"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-1f5a2a094976c7046412177a-q02",
+      "logicalItemId": "reading-rap-1f5a2a094976c7046412177a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-1f5a2a094976c7046412177a-passage-01-p02",
+          "startOffset": 147,
+          "endOffset": 173
+        }
+      ],
+      "expectedTexts": [
+        "fitting oranges into boxes"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-3-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-1f5a2a094976c7046412177a-q04",
+      "logicalItemId": "reading-rap-1f5a2a094976c7046412177a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-1f5a2a094976c7046412177a-passage-01-p04",
+          "startOffset": 73,
+          "endOffset": 78
+        }
+      ],
+      "expectedTexts": [
+        "belie"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-3-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-25e10401a0a3eeb038f2636e-q01",
+      "logicalItemId": "reading-rap-25e10401a0a3eeb038f2636e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-25e10401a0a3eeb038f2636e-passage-01-p01",
+          "startOffset": 77,
+          "endOffset": 83
+        }
+      ],
+      "expectedTexts": [
+        "subtle"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m1-rap-08",
+        "reading-source-6-1c-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-25e10401a0a3eeb038f2636e-q03",
+      "logicalItemId": "reading-rap-25e10401a0a3eeb038f2636e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-25e10401a0a3eeb038f2636e-passage-01-p02",
+          "startOffset": 238,
+          "endOffset": 304
+        }
+      ],
+      "expectedTexts": [
+        "variations in rock density and the presence of faults or fractures"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-25e10401a0a3eeb038f2636e-q05",
+      "logicalItemId": "reading-rap-25e10401a0a3eeb038f2636e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-25e10401a0a3eeb038f2636e-passage-01-p03",
+          "startOffset": 242,
+          "endOffset": 313
+        }
+      ],
+      "expectedTexts": [
+        "filtering methods and cross-referencing data from multiple seismometers"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-2662811490d7e1cb8ef50753-q02",
+      "logicalItemId": "reading-rap-2662811490d7e1cb8ef50753",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-2662811490d7e1cb8ef50753-passage-01-p02",
+          "startOffset": 206,
+          "endOffset": 237
+        }
+      ],
+      "expectedTexts": [
+        "This consequentialist framework"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-2662811490d7e1cb8ef50753-q03",
+      "logicalItemId": "reading-rap-2662811490d7e1cb8ef50753",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-2662811490d7e1cb8ef50753-passage-01-p02",
+          "startOffset": 482,
+          "endOffset": 492
+        }
+      ],
+      "expectedTexts": [
+        "allocating"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q02",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p01",
+          "startOffset": 450,
+          "endOffset": 482
+        }
+      ],
+      "expectedTexts": [
+        "sunlight becomes chemical energy"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-10-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-26d0ed793e40bbe883e60a6a-q04",
+      "logicalItemId": "reading-rap-26d0ed793e40bbe883e60a6a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-26d0ed793e40bbe883e60a6a-passage-01-p02",
+          "startOffset": 302,
+          "endOffset": 311
+        }
+      ],
+      "expectedTexts": [
+        "disparity"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-10-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-28b2cecf31bfee0a244d1a09-q03",
+      "logicalItemId": "reading-rap-28b2cecf31bfee0a244d1a09",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-28b2cecf31bfee0a244d1a09-passage-01-p03",
+          "startOffset": 259,
+          "endOffset": 272
+        }
+      ],
+      "expectedTexts": [
+        "fundamentally"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-20b-m2-rap-19",
+        "reading-source-5-24b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q02",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p01",
+          "startOffset": 507,
+          "endOffset": 514
+        }
+      ],
+      "expectedTexts": [
+        "a prism"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-q05",
+      "logicalItemId": "reading-rap-28ff52f3a4ffdbd69e8d95cd",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-28ff52f3a4ffdbd69e8d95cd-passage-01-p03",
+          "startOffset": 178,
+          "endOffset": 186
+        }
+      ],
+      "expectedTexts": [
+        "prophecy"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q01",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+          "startOffset": 208,
+          "endOffset": 213
+        }
+      ],
+      "expectedTexts": [
+        "norms"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-30a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-2a8207a6f456303be8bfd836-q04",
+      "logicalItemId": "reading-rap-2a8207a6f456303be8bfd836",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-2a8207a6f456303be8bfd836-passage-01-p01",
+          "startOffset": 1089,
+          "endOffset": 1103
+        }
+      ],
+      "expectedTexts": [
+        "these dynamics"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-30a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-2b14b33aacc064d75314fa53-q01",
+      "logicalItemId": "reading-rap-2b14b33aacc064d75314fa53",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-2b14b33aacc064d75314fa53-passage-01-p01",
+          "startOffset": 33,
+          "endOffset": 42
+        }
+      ],
+      "expectedTexts": [
+        "grappling"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q01",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p01",
+          "startOffset": 341,
+          "endOffset": 381
+        }
+      ],
+      "expectedTexts": [
+        "higher prevalence of metabolic disorders"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-34f6bce8fefcc9ea8c94efb8-q05",
+      "logicalItemId": "reading-rap-34f6bce8fefcc9ea8c94efb8",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-34f6bce8fefcc9ea8c94efb8-passage-01-p03",
+          "startOffset": 310,
+          "endOffset": 317
+        }
+      ],
+      "expectedTexts": [
+        "rectify"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1b-m2-rap-19",
+        "reading-source-6-29-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-356930309b8c015008667f85-q01",
+      "logicalItemId": "reading-rap-356930309b8c015008667f85",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-356930309b8c015008667f85-passage-01-p01",
+          "startOffset": 30,
+          "endOffset": 43
+        }
+      ],
+      "expectedTexts": [
+        "revolutionize"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-2-m1-rap-07"
+      ]
+    },
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q03",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02",
+          "startOffset": 233,
+          "endOffset": 241
+        }
+      ],
+      "expectedTexts": [
+        "involved"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-3c7da315889dceed32412dcf-q04",
+      "logicalItemId": "reading-rap-3c7da315889dceed32412dcf",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-3c7da315889dceed32412dcf-passage-01-p02",
+          "startOffset": 288,
+          "endOffset": 313
+        }
+      ],
+      "expectedTexts": [
+        "a vegan cheese substitute"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-4042fb1dc21bdf042d6ea366-q04",
+      "logicalItemId": "reading-rap-4042fb1dc21bdf042d6ea366",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-4042fb1dc21bdf042d6ea366-passage-01-p03",
+          "startOffset": 216,
+          "endOffset": 221
+        }
+      ],
+      "expectedTexts": [
+        "evoke"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-9-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-43fe10b35ebdf733d430c751-q05",
+      "logicalItemId": "reading-rap-43fe10b35ebdf733d430c751",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-43fe10b35ebdf733d430c751-passage-01-p03",
+          "startOffset": 413,
+          "endOffset": 427
+        }
+      ],
+      "expectedTexts": [
+        "culminating in"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-44052a9cdd0f99d094526a4b-q03",
+      "logicalItemId": "reading-rap-44052a9cdd0f99d094526a4b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-44052a9cdd0f99d094526a4b-passage-01-p02",
+          "startOffset": 69,
+          "endOffset": 82
+        }
+      ],
+      "expectedTexts": [
+        "sophisticated"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-6a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q01",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p01",
+          "startOffset": 587,
+          "endOffset": 594
+        }
+      ],
+      "expectedTexts": [
+        "harness"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-23-m1-rap-13",
+        "reading-source-5-5a-m1-rap-08",
+        "reading-source-5-5b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q03",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02",
+          "startOffset": 71,
+          "endOffset": 90
+        }
+      ],
+      "expectedTexts": [
+        "buoyancy principles"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-23-m1-rap-13",
+        "reading-source-5-5a-m1-rap-08",
+        "reading-source-5-5b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-4986420f2a3c5df66f0fe8d2-q04",
+      "logicalItemId": "reading-rap-4986420f2a3c5df66f0fe8d2",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-4986420f2a3c5df66f0fe8d2-passage-01-p02",
+          "startOffset": 405,
+          "endOffset": 418
+        }
+      ],
+      "expectedTexts": [
+        "wear and tear"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-23-m1-rap-13",
+        "reading-source-5-5a-m1-rap-08",
+        "reading-source-5-5b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-4f8833c13727320a3fbd20a9-q02",
+      "logicalItemId": "reading-rap-4f8833c13727320a3fbd20a9",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-4f8833c13727320a3fbd20a9-passage-01-p01",
+          "startOffset": 507,
+          "endOffset": 514
+        }
+      ],
+      "expectedTexts": [
+        "a prism"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-4f8833c13727320a3fbd20a9-q05",
+      "logicalItemId": "reading-rap-4f8833c13727320a3fbd20a9",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-4f8833c13727320a3fbd20a9-passage-01-p03",
+          "startOffset": 178,
+          "endOffset": 186
+        }
+      ],
+      "expectedTexts": [
+        "prophecy"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q01",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01",
+          "startOffset": 455,
+          "endOffset": 471
+        }
+      ],
+      "expectedTexts": [
+        "chemical changes"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-10-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-50cfc4c5fd006c1ec78a60b8-q02",
+      "logicalItemId": "reading-rap-50cfc4c5fd006c1ec78a60b8",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-50cfc4c5fd006c1ec78a60b8-passage-01-p01",
+          "startOffset": 658,
+          "endOffset": 698
+        }
+      ],
+      "expectedTexts": [
+        "a transitional moment in Greek sculpture"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-10-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q03",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p02",
+          "startOffset": 460,
+          "endOffset": 472
+        }
+      ],
+      "expectedTexts": [
+        "deliberately"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-13-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-51f18b2b4046d93a70bdd300-q04",
+      "logicalItemId": "reading-rap-51f18b2b4046d93a70bdd300",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-51f18b2b4046d93a70bdd300-passage-01-p03",
+          "startOffset": 280,
+          "endOffset": 321
+        }
+      ],
+      "expectedTexts": [
+        "autonomy and transparency in patient care"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-13-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-520073d086537b70cc6ba0fa-q03",
+      "logicalItemId": "reading-rap-520073d086537b70cc6ba0fa",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-520073d086537b70cc6ba0fa-passage-01-p02",
+          "startOffset": 69,
+          "endOffset": 82
+        }
+      ],
+      "expectedTexts": [
+        "sophisticated"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5773e5b9a84f86d3ac356a45-q04",
+      "logicalItemId": "reading-rap-5773e5b9a84f86d3ac356a45",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5773e5b9a84f86d3ac356a45-passage-01-p03",
+          "startOffset": 216,
+          "endOffset": 221
+        }
+      ],
+      "expectedTexts": [
+        "evoke"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-30a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5817366a9ff4cc9c334fb39a-q03",
+      "logicalItemId": "reading-rap-5817366a9ff4cc9c334fb39a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5817366a9ff4cc9c334fb39a-passage-01-p02",
+          "startOffset": 596,
+          "endOffset": 609
+        }
+      ],
+      "expectedTexts": [
+        "echo chambers"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-17-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5817366a9ff4cc9c334fb39a-q04",
+      "logicalItemId": "reading-rap-5817366a9ff4cc9c334fb39a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5817366a9ff4cc9c334fb39a-passage-01-p02",
+          "startOffset": 860,
+          "endOffset": 867
+        }
+      ],
+      "expectedTexts": [
+        "nuanced"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-17-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5a2d23cea681010acb956443-q04",
+      "logicalItemId": "reading-rap-5a2d23cea681010acb956443",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5a2d23cea681010acb956443-passage-01-p03",
+          "startOffset": 81,
+          "endOffset": 87
+        }
+      ],
+      "expectedTexts": [
+        "tailor"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-20a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q01",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p01",
+          "startOffset": 26,
+          "endOffset": 36
+        }
+      ],
+      "expectedTexts": [
+        "integrates"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q02",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p02",
+          "startOffset": 5,
+          "endOffset": 15
+        }
+      ],
+      "expectedTexts": [
+        "efficiency"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5a5d313c494dc11f7d69121b-q05",
+      "logicalItemId": "reading-rap-5a5d313c494dc11f7d69121b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5a5d313c494dc11f7d69121b-passage-01-p03",
+          "startOffset": 120,
+          "endOffset": 146
+        }
+      ],
+      "expectedTexts": [
+        "fits neatly into templates"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5a8c27c074aa0513d04f572b-q03",
+      "logicalItemId": "reading-rap-5a8c27c074aa0513d04f572b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5a8c27c074aa0513d04f572b-passage-01-p03",
+          "startOffset": 259,
+          "endOffset": 272
+        }
+      ],
+      "expectedTexts": [
+        "fundamentally"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5bf7db5133284be39a3b362d-q03",
+      "logicalItemId": "reading-rap-5bf7db5133284be39a3b362d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5bf7db5133284be39a3b362d-passage-01-p02",
+          "startOffset": 297,
+          "endOffset": 312
+        }
+      ],
+      "expectedTexts": [
+        "straightforward"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7c-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5e0859fbc2e185e743d11c4b-q02",
+      "logicalItemId": "reading-rap-5e0859fbc2e185e743d11c4b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5e0859fbc2e185e743d11c4b-passage-01-p01",
+          "startOffset": 278,
+          "endOffset": 292
+        }
+      ],
+      "expectedTexts": [
+        "transformative"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-5e0859fbc2e185e743d11c4b-q04",
+      "logicalItemId": "reading-rap-5e0859fbc2e185e743d11c4b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-5e0859fbc2e185e743d11c4b-passage-01-p03",
+          "startOffset": 448,
+          "endOffset": 488
+        }
+      ],
+      "expectedTexts": [
+        "the global spread of wireless technology"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-634cdcba16cac603d9436627-q02",
+      "logicalItemId": "reading-rap-634cdcba16cac603d9436627",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-634cdcba16cac603d9436627-passage-01-p01",
+          "startOffset": 507,
+          "endOffset": 514
+        }
+      ],
+      "expectedTexts": [
+        "a prism"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-634cdcba16cac603d9436627-q05",
+      "logicalItemId": "reading-rap-634cdcba16cac603d9436627",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-634cdcba16cac603d9436627-passage-01-p03",
+          "startOffset": 178,
+          "endOffset": 186
+        }
+      ],
+      "expectedTexts": [
+        "prophecy"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1a-m1-rap-08",
+        "reading-source-6-6a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q01",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p01",
+          "startOffset": 322,
+          "endOffset": 331
+        }
+      ],
+      "expectedTexts": [
+        "interplay"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-6522c75a66bfa0f293e67432-q04",
+      "logicalItemId": "reading-rap-6522c75a66bfa0f293e67432",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-6522c75a66bfa0f293e67432-passage-01-p02",
+          "startOffset": 495,
+          "endOffset": 518
+        }
+      ],
+      "expectedTexts": [
+        "patients before surgery"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-65673b292aab5d2297ddb13f-q01",
+      "logicalItemId": "reading-rap-65673b292aab5d2297ddb13f",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-65673b292aab5d2297ddb13f-passage-01-p01",
+          "startOffset": 290,
+          "endOffset": 299
+        }
+      ],
+      "expectedTexts": [
+        "anomalies"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-6a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-668702bfa1634d0e0a73a4d1-q03",
+      "logicalItemId": "reading-rap-668702bfa1634d0e0a73a4d1",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-668702bfa1634d0e0a73a4d1-passage-01-p03",
+          "startOffset": 36,
+          "endOffset": 46
+        }
+      ],
+      "expectedTexts": [
+        "incredibly"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-15-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-6832cb7ccf74f003a2ef7628-q01",
+      "logicalItemId": "reading-rap-6832cb7ccf74f003a2ef7628",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-6832cb7ccf74f003a2ef7628-passage-01-p01",
+          "startOffset": 5,
+          "endOffset": 11
+        }
+      ],
+      "expectedTexts": [
+        "static"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-3-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-6832cb7ccf74f003a2ef7628-q04",
+      "logicalItemId": "reading-rap-6832cb7ccf74f003a2ef7628",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-6832cb7ccf74f003a2ef7628-passage-01-p03",
+          "startOffset": 484,
+          "endOffset": 493
+        },
+        {
+          "paragraphId": "reading-rap-6832cb7ccf74f003a2ef7628-passage-01-p03",
+          "startOffset": 568,
+          "endOffset": 581
+        }
+      ],
+      "expectedTexts": [
+        "hospitals",
+        "office spaces"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-3-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-69611be5fee90ca9b207c69e-q03",
+      "logicalItemId": "reading-rap-69611be5fee90ca9b207c69e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-69611be5fee90ca9b207c69e-passage-01-p02",
+          "startOffset": 353,
+          "endOffset": 365
+        }
+      ],
+      "expectedTexts": [
+        "Collectively"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18a-m1-rap-08",
+        "reading-source-5-6b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-6c60773bbb66e0a8dc6adcc0-q05",
+      "logicalItemId": "reading-rap-6c60773bbb66e0a8dc6adcc0",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-6c60773bbb66e0a8dc6adcc0-passage-01-p03",
+          "startOffset": 260,
+          "endOffset": 268
+        }
+      ],
+      "expectedTexts": [
+        "holistic"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-21a-m1-rap-13",
+        "reading-source-6-21b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-7066f8dd9b44a5d1e065719d-q02",
+      "logicalItemId": "reading-rap-7066f8dd9b44a5d1e065719d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-7066f8dd9b44a5d1e065719d-passage-01-p02",
+          "startOffset": 206,
+          "endOffset": 237
+        }
+      ],
+      "expectedTexts": [
+        "This consequentialist framework"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-7066f8dd9b44a5d1e065719d-q03",
+      "logicalItemId": "reading-rap-7066f8dd9b44a5d1e065719d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-7066f8dd9b44a5d1e065719d-passage-01-p02",
+          "startOffset": 482,
+          "endOffset": 492
+        }
+      ],
+      "expectedTexts": [
+        "allocating"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-7447d5926c9979015af28e99-q03",
+      "logicalItemId": "reading-rap-7447d5926c9979015af28e99",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-7447d5926c9979015af28e99-passage-01-p03",
+          "startOffset": 36,
+          "endOffset": 46
+        }
+      ],
+      "expectedTexts": [
+        "incredibly"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-7945215d82567f1f6f2af63a-q01",
+      "logicalItemId": "reading-rap-7945215d82567f1f6f2af63a",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-7945215d82567f1f6f2af63a-passage-01-p01",
+          "startOffset": 33,
+          "endOffset": 42
+        }
+      ],
+      "expectedTexts": [
+        "grappling"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-7d5d0462cf877efd8ae523af-q01",
+      "logicalItemId": "reading-rap-7d5d0462cf877efd8ae523af",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-7d5d0462cf877efd8ae523af-passage-01-p01",
+          "startOffset": 68,
+          "endOffset": 78
+        }
+      ],
+      "expectedTexts": [
+        "consistent"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-2-m1-rap-12"
+      ]
+    },
+    {
+      "questionId": "reading-rap-80e0d016a21881694ab06335-q02",
+      "logicalItemId": "reading-rap-80e0d016a21881694ab06335",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-80e0d016a21881694ab06335-passage-01-p02",
+          "startOffset": 206,
+          "endOffset": 237
+        }
+      ],
+      "expectedTexts": [
+        "This consequentialist framework"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-15-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-80e0d016a21881694ab06335-q03",
+      "logicalItemId": "reading-rap-80e0d016a21881694ab06335",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-80e0d016a21881694ab06335-passage-01-p02",
+          "startOffset": 482,
+          "endOffset": 492
+        }
+      ],
+      "expectedTexts": [
+        "allocating"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-15-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-8371c3948e75cac783023b5c-q01",
+      "logicalItemId": "reading-rap-8371c3948e75cac783023b5c",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-8371c3948e75cac783023b5c-passage-01-p01",
+          "startOffset": 292,
+          "endOffset": 430
+        }
+      ],
+      "expectedTexts": [
+        "If someone regularly chats with a group of friends who share strong opinions about climate change, they may gradually adopt similar views."
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-23-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-8371c3948e75cac783023b5c-q03",
+      "logicalItemId": "reading-rap-8371c3948e75cac783023b5c",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-8371c3948e75cac783023b5c-passage-01-p03",
+          "startOffset": 36,
+          "endOffset": 46
+        }
+      ],
+      "expectedTexts": [
+        "incredibly"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-23-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-872c6a298ccb4eea664f4812-q04",
+      "logicalItemId": "reading-rap-872c6a298ccb4eea664f4812",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-872c6a298ccb4eea664f4812-passage-01-p02",
+          "startOffset": 632,
+          "endOffset": 639
+        }
+      ],
+      "expectedTexts": [
+        "unravel"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1c-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q02",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p01",
+          "startOffset": 467,
+          "endOffset": 477
+        }
+      ],
+      "expectedTexts": [
+        "escalating"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-23-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-88bc32dacb3916e75ed13c09-q04",
+      "logicalItemId": "reading-rap-88bc32dacb3916e75ed13c09",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-88bc32dacb3916e75ed13c09-passage-01-p02",
+          "startOffset": 198,
+          "endOffset": 208
+        }
+      ],
+      "expectedTexts": [
+        "tree rings"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-23-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-8ef2e4aefe74c7b7cdc2b9e1-q03",
+      "logicalItemId": "reading-rap-8ef2e4aefe74c7b7cdc2b9e1",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-8ef2e4aefe74c7b7cdc2b9e1-passage-01-p03",
+          "startOffset": 36,
+          "endOffset": 46
+        }
+      ],
+      "expectedTexts": [
+        "incredibly"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q03",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p02",
+          "startOffset": 283,
+          "endOffset": 294
+        }
+      ],
+      "expectedTexts": [
+        "tethered to"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-6a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-94b83368bbbce780f1162836-q04",
+      "logicalItemId": "reading-rap-94b83368bbbce780f1162836",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-94b83368bbbce780f1162836-passage-01-p03",
+          "startOffset": 275,
+          "endOffset": 327
+        }
+      ],
+      "expectedTexts": [
+        "all primates, including humans, are social creatures"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-6a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q03",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p02",
+          "startOffset": 338,
+          "endOffset": 345
+        }
+      ],
+      "expectedTexts": [
+        "context"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-17-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q04",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03",
+          "startOffset": 27,
+          "endOffset": 40
+        }
+      ],
+      "expectedTexts": [
+        "legal experts"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-17-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-9597f97b9636121c0ef7ec58-q05",
+      "logicalItemId": "reading-rap-9597f97b9636121c0ef7ec58",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-9597f97b9636121c0ef7ec58-passage-01-p03",
+          "startOffset": 492,
+          "endOffset": 502
+        }
+      ],
+      "expectedTexts": [
+        "cautiously"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-17-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-964b2c0d86db237d8e65b24e-q01",
+      "logicalItemId": "reading-rap-964b2c0d86db237d8e65b24e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-964b2c0d86db237d8e65b24e-passage-01-p01",
+          "startOffset": 147,
+          "endOffset": 155
+        }
+      ],
+      "expectedTexts": [
+        "profound"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-21b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-96e6fb86c216f62eead5bb01-q01",
+      "logicalItemId": "reading-rap-96e6fb86c216f62eead5bb01",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-96e6fb86c216f62eead5bb01-passage-01-p01",
+          "startOffset": 234,
+          "endOffset": 244
+        }
+      ],
+      "expectedTexts": [
+        "invaluable"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10a-m2-rap-19",
+        "reading-source-5-19-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q02",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p02",
+          "startOffset": 0,
+          "endOffset": 182
+        }
+      ],
+      "expectedTexts": [
+        "Bacteria develop resistance through a multitude of mechanisms, including genetic mutations and the sharing of genes, which allow them to survive antibiotic treatment and proliferate."
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-21a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-q04",
+      "logicalItemId": "reading-rap-98e3b20d6b6e1d9ce46eac7c",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-98e3b20d6b6e1d9ce46eac7c-passage-01-p03",
+          "startOffset": 26,
+          "endOffset": 39
+        }
+      ],
+      "expectedTexts": [
+        "comprehensive"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-21a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q02",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p01",
+          "startOffset": 559,
+          "endOffset": 580
+        }
+      ],
+      "expectedTexts": [
+        "gravitational lensing"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18a-m2-rap-19",
+        "reading-source-5-5a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-9e68f83255448c35a0994ea1-q03",
+      "logicalItemId": "reading-rap-9e68f83255448c35a0994ea1",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-9e68f83255448c35a0994ea1-passage-01-p02",
+          "startOffset": 392,
+          "endOffset": 401
+        }
+      ],
+      "expectedTexts": [
+        "minimized"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18a-m2-rap-19",
+        "reading-source-5-5a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a079611e1a822b5658af4b64-q03",
+      "logicalItemId": "reading-rap-a079611e1a822b5658af4b64",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a079611e1a822b5658af4b64-passage-01-p02",
+          "startOffset": 230,
+          "endOffset": 241
+        }
+      ],
+      "expectedTexts": [
+        "aspirations"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-14-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a5a1662900f8b43ba35add0e-q03",
+      "logicalItemId": "reading-rap-a5a1662900f8b43ba35add0e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a5a1662900f8b43ba35add0e-passage-01-p02",
+          "startOffset": 598,
+          "endOffset": 609
+        }
+      ],
+      "expectedTexts": [
+        "impediments"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a67642faa0d4a3f2aca802b5-q01",
+      "logicalItemId": "reading-rap-a67642faa0d4a3f2aca802b5",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a67642faa0d4a3f2aca802b5-passage-01-p01",
+          "startOffset": 243,
+          "endOffset": 253
+        }
+      ],
+      "expectedTexts": [
+        "seamlessly"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-12-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a6a1d2431d2335daacfac1f5-q02",
+      "logicalItemId": "reading-rap-a6a1d2431d2335daacfac1f5",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a6a1d2431d2335daacfac1f5-passage-01-p02",
+          "startOffset": 236,
+          "endOffset": 249
+        }
+      ],
+      "expectedTexts": [
+        "advocated for"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a6a1d2431d2335daacfac1f5-q03",
+      "logicalItemId": "reading-rap-a6a1d2431d2335daacfac1f5",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a6a1d2431d2335daacfac1f5-passage-01-p02",
+          "startOffset": 284,
+          "endOffset": 303
+        }
+      ],
+      "expectedTexts": [
+        "grid-based approach"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a892b1f2362ab7405dd93573-q01",
+      "logicalItemId": "reading-rap-a892b1f2362ab7405dd93573",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a892b1f2362ab7405dd93573-passage-01-p01",
+          "startOffset": 114,
+          "endOffset": 124
+        }
+      ],
+      "expectedTexts": [
+        "prevailing"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-a892b1f2362ab7405dd93573-q03",
+      "logicalItemId": "reading-rap-a892b1f2362ab7405dd93573",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-a892b1f2362ab7405dd93573-passage-01-p02",
+          "startOffset": 178,
+          "endOffset": 219
+        }
+      ],
+      "expectedTexts": [
+        "paraphrasing, summarizing, and clarifying"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-abf7cca7bbd44e6e78417d21-q01",
+      "logicalItemId": "reading-rap-abf7cca7bbd44e6e78417d21",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-abf7cca7bbd44e6e78417d21-passage-01-p01",
+          "startOffset": 399,
+          "endOffset": 408
+        }
+      ],
+      "expectedTexts": [
+        "anomalies"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-22-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-ac764d47560f731d32d42a93-q01",
+      "logicalItemId": "reading-rap-ac764d47560f731d32d42a93",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-ac764d47560f731d32d42a93-passage-01-p01",
+          "startOffset": 77,
+          "endOffset": 83
+        }
+      ],
+      "expectedTexts": [
+        "subtle"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-ac764d47560f731d32d42a93-q03",
+      "logicalItemId": "reading-rap-ac764d47560f731d32d42a93",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-ac764d47560f731d32d42a93-passage-01-p02",
+          "startOffset": 238,
+          "endOffset": 304
+        }
+      ],
+      "expectedTexts": [
+        "variations in rock density and the presence of faults or fractures"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-ac764d47560f731d32d42a93-q05",
+      "logicalItemId": "reading-rap-ac764d47560f731d32d42a93",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-ac764d47560f731d32d42a93-passage-01-p03",
+          "startOffset": 242,
+          "endOffset": 313
+        }
+      ],
+      "expectedTexts": [
+        "filtering methods and cross-referencing data from multiple seismometers"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-af29507332d217f7c7b827a7-q02",
+      "logicalItemId": "reading-rap-af29507332d217f7c7b827a7",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-af29507332d217f7c7b827a7-passage-01-p02",
+          "startOffset": 236,
+          "endOffset": 244
+        }
+      ],
+      "expectedTexts": [
+        "vigilant"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-31-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q02",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02",
+          "startOffset": 206,
+          "endOffset": 237
+        }
+      ],
+      "expectedTexts": [
+        "This consequentialist framework"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24a-m1-rap-13",
+        "reading-source-5-24b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-af2f63bf59d1743d597f47f4-q03",
+      "logicalItemId": "reading-rap-af2f63bf59d1743d597f47f4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-af2f63bf59d1743d597f47f4-passage-01-p02",
+          "startOffset": 482,
+          "endOffset": 492
+        }
+      ],
+      "expectedTexts": [
+        "allocating"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24a-m1-rap-13",
+        "reading-source-5-24b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-b5efb7a2f7351888b25fd0ae-q01",
+      "logicalItemId": "reading-rap-b5efb7a2f7351888b25fd0ae",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-b5efb7a2f7351888b25fd0ae-passage-01-p01",
+          "startOffset": 36,
+          "endOffset": 46
+        }
+      ],
+      "expectedTexts": [
+        "remarkable"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-6b-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-bad55ea4a5cad4980668095d-q01",
+      "logicalItemId": "reading-rap-bad55ea4a5cad4980668095d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-bad55ea4a5cad4980668095d-passage-01-p01",
+          "startOffset": 30,
+          "endOffset": 43
+        }
+      ],
+      "expectedTexts": [
+        "revolutionize"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-bad55ea4a5cad4980668095d-q04",
+      "logicalItemId": "reading-rap-bad55ea4a5cad4980668095d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-bad55ea4a5cad4980668095d-passage-01-p03",
+          "startOffset": 90,
+          "endOffset": 111
+        }
+      ],
+      "expectedTexts": [
+        "external disturbances"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-3b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-bbe98bba9b4c8463d35912f4-q03",
+      "logicalItemId": "reading-rap-bbe98bba9b4c8463d35912f4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-bbe98bba9b4c8463d35912f4-passage-01-p01",
+          "startOffset": 624,
+          "endOffset": 631
+        }
+      ],
+      "expectedTexts": [
+        "milieus"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-22-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-bbe98bba9b4c8463d35912f4-q04",
+      "logicalItemId": "reading-rap-bbe98bba9b4c8463d35912f4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-bbe98bba9b4c8463d35912f4-passage-01-p02",
+          "startOffset": 0,
+          "endOffset": 194
+        }
+      ],
+      "expectedTexts": [
+        "Some insist that despite linguistic and cultural variation, certain philosophical concerns—like suffering, justice, or mortality—are shared across societies, suggesting a basis for universality."
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-22-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-bd88c39e1718f0046a3df188-q02",
+      "logicalItemId": "reading-rap-bd88c39e1718f0046a3df188",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-bd88c39e1718f0046a3df188-passage-01-p02",
+          "startOffset": 235,
+          "endOffset": 242
+        }
+      ],
+      "expectedTexts": [
+        "fosters"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-24-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c0a09dd368b968fd01c859ed-q01",
+      "logicalItemId": "reading-rap-c0a09dd368b968fd01c859ed",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c0a09dd368b968fd01c859ed-passage-01-p01",
+          "startOffset": 290,
+          "endOffset": 299
+        }
+      ],
+      "expectedTexts": [
+        "anomalies"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-30b-m1-rap-13",
+        "reading-source-6-9-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c0a09dd368b968fd01c859ed-q03",
+      "logicalItemId": "reading-rap-c0a09dd368b968fd01c859ed",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c0a09dd368b968fd01c859ed-passage-01-p02",
+          "startOffset": 338,
+          "endOffset": 480
+        }
+      ],
+      "expectedTexts": [
+        "However, the effectiveness of these dashboards often hinges on the user's ability to interpret complex visual cues, which can be overwhelming."
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-30b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c2f68bcc6afcbbe710f5c87d-q02",
+      "logicalItemId": "reading-rap-c2f68bcc6afcbbe710f5c87d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c2f68bcc6afcbbe710f5c87d-passage-01-p02",
+          "startOffset": 147,
+          "endOffset": 173
+        }
+      ],
+      "expectedTexts": [
+        "fitting oranges into boxes"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c2f68bcc6afcbbe710f5c87d-q04",
+      "logicalItemId": "reading-rap-c2f68bcc6afcbbe710f5c87d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c2f68bcc6afcbbe710f5c87d-passage-01-p04",
+          "startOffset": 73,
+          "endOffset": 78
+        }
+      ],
+      "expectedTexts": [
+        "belie"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-24a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c3233ad427c0e207ebb6a110-q05",
+      "logicalItemId": "reading-rap-c3233ad427c0e207ebb6a110",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c3233ad427c0e207ebb6a110-passage-01-p03",
+          "startOffset": 413,
+          "endOffset": 427
+        }
+      ],
+      "expectedTexts": [
+        "culminating in"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-15-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c60864a200a09f24ffb1835d-q02",
+      "logicalItemId": "reading-rap-c60864a200a09f24ffb1835d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c60864a200a09f24ffb1835d-passage-01-p02",
+          "startOffset": 309,
+          "endOffset": 318
+        }
+      ],
+      "expectedTexts": [
+        "premature"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-23-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q01",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p01",
+          "startOffset": 466,
+          "endOffset": 475
+        },
+        {
+          "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p03",
+          "startOffset": 68,
+          "endOffset": 77
+        }
+      ],
+      "expectedTexts": [
+        "retention",
+        "retention"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7c-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-c63fb3651607230289cc9a21-q04",
+      "logicalItemId": "reading-rap-c63fb3651607230289cc9a21",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-c63fb3651607230289cc9a21-passage-01-p03",
+          "startOffset": 0,
+          "endOffset": 16
+        }
+      ],
+      "expectedTexts": [
+        "Not surprisingly"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-7c-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-cb3cd375aebae1a5539edb81-q03",
+      "logicalItemId": "reading-rap-cb3cd375aebae1a5539edb81",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-cb3cd375aebae1a5539edb81-passage-01-p03",
+          "startOffset": 267,
+          "endOffset": 278
+        }
+      ],
+      "expectedTexts": [
+        "impediments"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-18a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q01",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p01",
+          "startOffset": 199,
+          "endOffset": 209
+        }
+      ],
+      "expectedTexts": [
+        "exacerbate"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-28-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q03",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p02",
+          "startOffset": 34,
+          "endOffset": 51
+        }
+      ],
+      "expectedTexts": [
+        "beach nourishment"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-28-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-cb5360908903e7adcdf0760d-q04",
+      "logicalItemId": "reading-rap-cb5360908903e7adcdf0760d",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-cb5360908903e7adcdf0760d-passage-01-p03",
+          "startOffset": 33,
+          "endOffset": 51
+        }
+      ],
+      "expectedTexts": [
+        "natural approaches"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-28-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-cc8108658460dd4758f81cea-q03",
+      "logicalItemId": "reading-rap-cc8108658460dd4758f81cea",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-cc8108658460dd4758f81cea-passage-01-p02",
+          "startOffset": 128,
+          "endOffset": 134
+        }
+      ],
+      "expectedTexts": [
+        "lavish"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-20a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-cc8108658460dd4758f81cea-q04",
+      "logicalItemId": "reading-rap-cc8108658460dd4758f81cea",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-cc8108658460dd4758f81cea-passage-01-p02",
+          "startOffset": 160,
+          "endOffset": 176
+        }
+      ],
+      "expectedTexts": [
+        "heraldic emblems"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-20a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-ce5209524d2340201b2e81d2-q01",
+      "logicalItemId": "reading-rap-ce5209524d2340201b2e81d2",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-ce5209524d2340201b2e81d2-passage-01-p02",
+          "startOffset": 66,
+          "endOffset": 75
+        }
+      ],
+      "expectedTexts": [
+        "amplifies"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-10b-m1-rap-13",
+        "reading-source-5-11a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q02",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+          "startOffset": 236,
+          "endOffset": 249
+        }
+      ],
+      "expectedTexts": [
+        "advocated for"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m1-rap-13",
+        "reading-source-6-1c-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-d27de865cadb77d675378075-q03",
+      "logicalItemId": "reading-rap-d27de865cadb77d675378075",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-d27de865cadb77d675378075-passage-01-p02",
+          "startOffset": 284,
+          "endOffset": 303
+        }
+      ],
+      "expectedTexts": [
+        "grid-based approach"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-17-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-dbb5edec85e50734f930693e-q01",
+      "logicalItemId": "reading-rap-dbb5edec85e50734f930693e",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-dbb5edec85e50734f930693e-passage-01-p01",
+          "startOffset": 30,
+          "endOffset": 43
+        }
+      ],
+      "expectedTexts": [
+        "revolutionize"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-6a-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-e01f83375de9f2c96a209bc6-q04",
+      "logicalItemId": "reading-rap-e01f83375de9f2c96a209bc6",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-e01f83375de9f2c96a209bc6-passage-01-p03",
+          "startOffset": 42,
+          "endOffset": 51
+        }
+      ],
+      "expectedTexts": [
+        "pressures"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1a-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-e7ce2874e8c366c253f0bed0-q02",
+      "logicalItemId": "reading-rap-e7ce2874e8c366c253f0bed0",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-e7ce2874e8c366c253f0bed0-passage-01-p02",
+          "startOffset": 235,
+          "endOffset": 242
+        }
+      ],
+      "expectedTexts": [
+        "fosters"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-12-m1-rap-13",
+        "reading-source-5-20a-m1-rap-13",
+        "reading-source-5-31-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-e87bf5f62e80a618270d51db-q03",
+      "logicalItemId": "reading-rap-e87bf5f62e80a618270d51db",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-e87bf5f62e80a618270d51db-passage-01-p03",
+          "startOffset": 49,
+          "endOffset": 58
+        }
+      ],
+      "expectedTexts": [
+        "evocative"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-12-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-e9f22c72c388b25c9ccc03d8-q01",
+      "logicalItemId": "reading-rap-e9f22c72c388b25c9ccc03d8",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-e9f22c72c388b25c9ccc03d8-passage-01-p01",
+          "startOffset": 322,
+          "endOffset": 331
+        }
+      ],
+      "expectedTexts": [
+        "interplay"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-2-m2-rap-18"
+      ]
+    },
+    {
+      "questionId": "reading-rap-ed56100135e379e25de1a6d4-q05",
+      "logicalItemId": "reading-rap-ed56100135e379e25de1a6d4",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-ed56100135e379e25de1a6d4-passage-01-p04",
+          "startOffset": 63,
+          "endOffset": 83
+        }
+      ],
+      "expectedTexts": [
+        "still in its infancy"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-13-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f04bee90f6b464220dc4d249-q01",
+      "logicalItemId": "reading-rap-f04bee90f6b464220dc4d249",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f04bee90f6b464220dc4d249-passage-01-p01",
+          "startOffset": 447,
+          "endOffset": 455
+        }
+      ],
+      "expectedTexts": [
+        "fostered"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-14-m2-rap-19"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f1ccfc79e358e55f2ee63181-q02",
+      "logicalItemId": "reading-rap-f1ccfc79e358e55f2ee63181",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f1ccfc79e358e55f2ee63181-passage-01-p01",
+          "startOffset": 278,
+          "endOffset": 292
+        }
+      ],
+      "expectedTexts": [
+        "transformative"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f1ccfc79e358e55f2ee63181-q04",
+      "logicalItemId": "reading-rap-f1ccfc79e358e55f2ee63181",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f1ccfc79e358e55f2ee63181-passage-01-p03",
+          "startOffset": 448,
+          "endOffset": 488
+        }
+      ],
+      "expectedTexts": [
+        "the global spread of wireless technology"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-16a-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f3d29f9504924cfb48ba1434-q05",
+      "logicalItemId": "reading-rap-f3d29f9504924cfb48ba1434",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f3d29f9504924cfb48ba1434-passage-01-p02",
+          "startOffset": 700,
+          "endOffset": 712
+        }
+      ],
+      "expectedTexts": [
+        "precipitated"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-5a-m1-rap-13",
+        "reading-source-5-5b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q01",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p01",
+          "startOffset": 129,
+          "endOffset": 349
+        }
+      ],
+      "expectedTexts": [
+        "Unlike continuous geometry—which deals with shapes and structures that are smooth and unbroken, like curves and surfaces—discrete geometry focuses on objects that are finite or countable like points, lines, and polygons."
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-24-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f50dd6e4cd831e6155bb31ac-q04",
+      "logicalItemId": "reading-rap-f50dd6e4cd831e6155bb31ac",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f50dd6e4cd831e6155bb31ac-passage-01-p04",
+          "startOffset": 73,
+          "endOffset": 78
+        }
+      ],
+      "expectedTexts": [
+        "belie"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-24-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f9e62e69f26b24ec00d4aa76-q03",
+      "logicalItemId": "reading-rap-f9e62e69f26b24ec00d4aa76",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f9e62e69f26b24ec00d4aa76-passage-01-p02",
+          "startOffset": 233,
+          "endOffset": 241
+        }
+      ],
+      "expectedTexts": [
+        "involved"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-f9e62e69f26b24ec00d4aa76-q04",
+      "logicalItemId": "reading-rap-f9e62e69f26b24ec00d4aa76",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-f9e62e69f26b24ec00d4aa76-passage-01-p02",
+          "startOffset": 288,
+          "endOffset": 313
+        }
+      ],
+      "expectedTexts": [
+        "a vegan cheese substitute"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-1b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fcb877e86ce9cff28b0635f8-q05",
+      "logicalItemId": "reading-rap-fcb877e86ce9cff28b0635f8",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fcb877e86ce9cff28b0635f8-passage-01-p03",
+          "startOffset": 413,
+          "endOffset": 427
+        }
+      ],
+      "expectedTexts": [
+        "culminating in"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-3-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fdeb6000ce9ff3558cc559b5-q02",
+      "logicalItemId": "reading-rap-fdeb6000ce9ff3558cc559b5",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fdeb6000ce9ff3558cc559b5-passage-01-p01",
+          "startOffset": 399,
+          "endOffset": 419
+        }
+      ],
+      "expectedTexts": [
+        "our sense of control"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11b-m1-rap-08",
+        "reading-source-5-20b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fdeb6000ce9ff3558cc559b5-q04",
+      "logicalItemId": "reading-rap-fdeb6000ce9ff3558cc559b5",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fdeb6000ce9ff3558cc559b5-passage-01-p02",
+          "startOffset": 632,
+          "endOffset": 639
+        }
+      ],
+      "expectedTexts": [
+        "unravel"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-11b-m1-rap-08",
+        "reading-source-5-20b-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fe8411639546b0b11ec79d0b-q01",
+      "logicalItemId": "reading-rap-fe8411639546b0b11ec79d0b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fe8411639546b0b11ec79d0b-passage-01-p02",
+          "startOffset": 93,
+          "endOffset": 102
+        }
+      ],
+      "expectedTexts": [
+        "persevere"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-6-29-m1-rap-08",
+        "reading-source-6-7a-m1-rap-08",
+        "reading-source-6-7b-m1-rap-08"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fe9caa2af2e2e6e581d4400b-q02",
+      "logicalItemId": "reading-rap-fe9caa2af2e2e6e581d4400b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fe9caa2af2e2e6e581d4400b-passage-01-p01",
+          "startOffset": 162,
+          "endOffset": 172
+        }
+      ],
+      "expectedTexts": [
+        "persistent"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-28-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fe9caa2af2e2e6e581d4400b-q04",
+      "logicalItemId": "reading-rap-fe9caa2af2e2e6e581d4400b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fe9caa2af2e2e6e581d4400b-passage-01-p03",
+          "startOffset": 377,
+          "endOffset": 394
+        }
+      ],
+      "expectedTexts": [
+        "Patented GM seeds"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-28-m1-rap-13"
+      ]
+    },
+    {
+      "questionId": "reading-rap-fe9caa2af2e2e6e581d4400b-q05",
+      "logicalItemId": "reading-rap-fe9caa2af2e2e6e581d4400b",
+      "ranges": [
+        {
+          "paragraphId": "reading-rap-fe9caa2af2e2e6e581d4400b-passage-01-p03",
+          "startOffset": 594,
+          "endOffset": 632
+        }
+      ],
+      "expectedTexts": [
+        "the rapid pace of technological change"
+      ],
+      "sourceOccurrenceIds": [
+        "reading-source-5-28-m1-rap-13"
+      ]
+    }
+  ]
+}

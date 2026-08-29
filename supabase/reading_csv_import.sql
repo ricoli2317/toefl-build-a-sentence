@@ -128,15 +128,15 @@ begin
 
   insert into public.reading_questions (
     question_id, logical_item_id, question_order, module, question_type, stem,
-    raw_display_text, passage_id, material_id, correct_option_id, insert_sentence,
+    raw_display_text, passage_highlight_ranges, passage_id, material_id, correct_option_id, insert_sentence,
     correct_anchor_id, target_paragraph_id, correct_sentence_id
   )
   select question_id, logical_item_id, question_order, module, question_type, stem,
-    raw_display_text, passage_id, material_id, correct_option_id, insert_sentence,
+    raw_display_text, coalesce(passage_highlight_ranges, '[]'::jsonb), passage_id, material_id, correct_option_id, insert_sentence,
     correct_anchor_id, target_paragraph_id, correct_sentence_id
   from jsonb_to_recordset(coalesce(p_rows->'reading_questions', '[]'::jsonb)) as x(
     question_id text, logical_item_id text, question_order integer, module text,
-    question_type text, stem text, raw_display_text text, passage_id text,
+    question_type text, stem text, raw_display_text text, passage_highlight_ranges jsonb, passage_id text,
     material_id text, correct_option_id text, insert_sentence text,
     correct_anchor_id text, target_paragraph_id text, correct_sentence_id text
   )
@@ -144,6 +144,7 @@ begin
     question_order = excluded.question_order,
     stem = excluded.stem,
     raw_display_text = excluded.raw_display_text,
+    passage_highlight_ranges = excluded.passage_highlight_ranges,
     passage_id = excluded.passage_id,
     material_id = excluded.material_id,
     correct_option_id = excluded.correct_option_id,

@@ -12,6 +12,21 @@ export type ReadingImportResult = {
   pendingMaterialIds: string[];
 };
 
+export type ExistingReadingLogicalItem = {
+  logicalItemId: string;
+  dedupFingerprint: string;
+  date: string;
+  sourceLabel: string;
+  sourceOrder: number;
+};
+
+export type PreparedReadingImportPackage = {
+  packageData: ReadingImportPackage;
+  existingItem: ExistingReadingLogicalItem | null;
+  addedOccurrenceCount: number;
+  occurrenceConflict: string | null;
+};
+
 export class ReadingImportError extends Error {
   readonly operation: string;
   readonly logicalItemId: string;
@@ -35,6 +50,285 @@ export class ReadingImportError extends Error {
     this.questionId = input.questionId ?? null;
     this.cause = input.cause;
   }
+}
+
+/**
+ * Resolve current logical IDs first, then use the full CTW fingerprint as a
+ * compatibility fallback for legacy imports whose logical IDs predate the
+ * current fingerprint-derived convention.
+ */
+export async function prepareReadingPackagesForImport(
+  supabase: SupabaseClient,
+  packages: ReadingImportPackage[],
+  options: { enableCtwFingerprintFallback?: boolean } = {}
+): Promise<PreparedReadingImportPackage[]> {
+  const existingItems = await loadExistingReadingLogicalItems(
+    supabase,
+    packages,
+    options.enableCtwFingerprintFallback === true
+  );
+  const prepared = await Promise.all(packages.map(async (packageData) => {
+    const existingItem = existingItems.get(packageData.item.logicalItemId) ?? null;
+    const resolvedPackage = existingItem && existingItem.logicalItemId !== packageData.item.logicalItemId
+      ? await remapCtwPackageToExistingCanonical(supabase, packageData, existingItem.logicalItemId)
+      : packageData;
+    return { packageData: resolvedPackage, existingItem };
+  }));
+  const occurrenceIds = prepared.flatMap(({ packageData }) =>
+    packageData.occurrences.map((occurrence) => occurrence.occurrenceId)
+  );
+  const existingOccurrences = await loadExistingOccurrenceBindings(supabase, occurrenceIds);
+
+  return prepared.map(({ packageData, existingItem }) => {
+    let addedOccurrenceCount = 0;
+    let occurrenceConflict: string | null = null;
+    for (const occurrence of packageData.occurrences) {
+      const existingLogicalItemId = existingOccurrences.get(occurrence.occurrenceId);
+      if (existingLogicalItemId === undefined) {
+        addedOccurrenceCount += 1;
+        continue;
+      }
+      if (existingLogicalItemId !== packageData.item.logicalItemId) {
+        occurrenceConflict =
+          `Reading occurrence ${occurrence.occurrenceId} already belongs to logical item ` +
+          `${existingLogicalItemId}; refusing to rebind it to ${packageData.item.logicalItemId}`;
+      }
+    }
+    return { packageData, existingItem, addedOccurrenceCount, occurrenceConflict };
+  });
+}
+
+export function assertPreparedReadingPackageCanImport(prepared: { occurrenceConflict: string | null }) {
+  if (prepared.occurrenceConflict) throw new Error(prepared.occurrenceConflict);
+}
+
+async function loadExistingReadingLogicalItems(
+  supabase: SupabaseClient,
+  packages: ReadingImportPackage[],
+  enableCtwFingerprintFallback: boolean
+) {
+  const result = new Map<string, ExistingReadingLogicalItem>();
+  if (packages.length === 0) return result;
+  const packageById = new Map(packages.map((packageData) => [packageData.item.logicalItemId, packageData]));
+  const logicalIds = Array.from(packageById.keys());
+  const { data: idRows, error: idError } = await supabase
+    .from("reading_logical_items")
+    .select("logical_item_id,module,dedup_fingerprint,first_seen_date,first_seen_source_label,first_seen_source_order")
+    .in("logical_item_id", logicalIds);
+  if (idError) throw new Error(`read existing reading_logical_items: ${idError.message}`);
+
+  for (const row of idRows ?? []) {
+    const logicalItemId = String(row.logical_item_id);
+    const packageData = packageById.get(logicalItemId);
+    if (!packageData) continue;
+    const dedupFingerprint = String(row.dedup_fingerprint);
+    if (String(row.module) !== packageData.item.module || dedupFingerprint !== packageData.item.dedupFingerprint) {
+      throw new Error(`Reading logical ID ${logicalItemId} exists with different canonical content`);
+    }
+    result.set(logicalItemId, existingLogicalItem(row));
+  }
+
+  if (!enableCtwFingerprintFallback) return result;
+  const missingCtwPackages = packages.filter(
+    (packageData) => packageData.item.module === "ctw" && !result.has(packageData.item.logicalItemId)
+  );
+  if (missingCtwPackages.length === 0) return result;
+  const packageByFingerprint = new Map(
+    missingCtwPackages.map((packageData) => [packageData.item.dedupFingerprint, packageData])
+  );
+  const { data: fingerprintRows, error: fingerprintError } = await supabase
+    .from("reading_logical_items")
+    .select("logical_item_id,module,dedup_fingerprint,first_seen_date,first_seen_source_label,first_seen_source_order")
+    .in("dedup_fingerprint", Array.from(packageByFingerprint.keys()));
+  if (fingerprintError) {
+    throw new Error(`read existing reading_logical_items by fingerprint: ${fingerprintError.message}`);
+  }
+  for (const row of fingerprintRows ?? []) {
+    const dedupFingerprint = String(row.dedup_fingerprint);
+    const packageData = packageByFingerprint.get(dedupFingerprint);
+    if (!packageData) continue;
+    if (String(row.module) !== "ctw") {
+      throw new Error(`Reading fingerprint ${dedupFingerprint} belongs to a non-CTW logical item`);
+    }
+    result.set(packageData.item.logicalItemId, existingLogicalItem(row));
+  }
+  return result;
+}
+
+function existingLogicalItem(row: Record<string, unknown>): ExistingReadingLogicalItem {
+  return {
+    logicalItemId: String(row.logical_item_id),
+    dedupFingerprint: String(row.dedup_fingerprint),
+    date: String(row.first_seen_date),
+    sourceLabel: String(row.first_seen_source_label),
+    sourceOrder: Number(row.first_seen_source_order)
+  };
+}
+
+async function remapCtwPackageToExistingCanonical(
+  supabase: SupabaseClient,
+  packageData: ReadingImportPackage,
+  logicalItemId: string
+): Promise<ReadingImportPackage> {
+  if (packageData.item.module !== "ctw" || packageData.questions.length !== 1) {
+    throw new Error("Legacy logical ID remapping is supported only for one complete CTW item");
+  }
+  const incomingQuestion = packageData.questions[0];
+  if (incomingQuestion.questionType !== "ctw") {
+    throw new Error("Legacy CTW logical item does not contain a CTW question");
+  }
+  const { data: questionRows, error: questionError } = await supabase
+    .from("reading_questions")
+    .select("question_id,question_order,question_type")
+    .eq("logical_item_id", logicalItemId);
+  if (questionError) throw new Error(`read legacy CTW questions: ${questionError.message}`);
+  const orderedQuestions = [...(questionRows ?? [])].sort(
+    (left, right) => Number(left.question_order) - Number(right.question_order)
+  );
+  if (
+    orderedQuestions.length !== 1 ||
+    Number(orderedQuestions[0].question_order) !== 1 ||
+    String(orderedQuestions[0].question_type) !== "ctw"
+  ) {
+    throw new Error(`Legacy CTW ${logicalItemId} must contain exactly one canonical CTW question`);
+  }
+  const questionId = String(orderedQuestions[0].question_id);
+  const [{ data: paragraphRows, error: paragraphError }, { data: slotRows, error: slotError }] = await Promise.all([
+    supabase
+      .from("reading_ctw_paragraphs")
+      .select("question_id,paragraph_id,paragraph_order")
+      .eq("question_id", questionId),
+    supabase
+      .from("reading_ctw_slots")
+      .select("question_id,slot_id,slot_order,paragraph_id")
+      .eq("question_id", questionId)
+  ]);
+  if (paragraphError) throw new Error(`read legacy CTW paragraphs: ${paragraphError.message}`);
+  if (slotError) throw new Error(`read legacy CTW slots: ${slotError.message}`);
+
+  const paragraphIdByOrder = uniqueIdByOrder(
+    paragraphRows ?? [],
+    "paragraph_order",
+    "paragraph_id",
+    incomingQuestion.payload.paragraphs.length,
+    `Legacy CTW ${logicalItemId} paragraphs`
+  );
+  const slotIdByOrder = uniqueIdByOrder(
+    slotRows ?? [],
+    "slot_order",
+    "slot_id",
+    incomingQuestion.payload.slots.length,
+    `Legacy CTW ${logicalItemId} slots`
+  );
+  const incomingParagraphIdToExisting = new Map(
+    incomingQuestion.payload.paragraphs.map((paragraph) => [
+      paragraph.paragraphId,
+      requiredOrderedId(paragraphIdByOrder, paragraph.paragraphOrder, "paragraph")
+    ])
+  );
+  const incomingSlotIdToExisting = new Map(
+    incomingQuestion.payload.slots.map((slot) => [
+      slot.slotId,
+      requiredOrderedId(slotIdByOrder, slot.slotOrder, "slot")
+    ])
+  );
+  const existingSlotByOrder = new Map(
+    (slotRows ?? []).map((row) => [Number(row.slot_order), row])
+  );
+  for (const slot of incomingQuestion.payload.slots) {
+    const existingSlot = existingSlotByOrder.get(slot.slotOrder);
+    const expectedParagraphId = requiredMappedId(
+      incomingParagraphIdToExisting,
+      slot.paragraphId,
+      "paragraph"
+    );
+    if (!existingSlot || String(existingSlot.paragraph_id) !== expectedParagraphId) {
+      throw new Error(
+        `Legacy CTW ${logicalItemId} slot order ${slot.slotOrder} has a different canonical paragraph binding`
+      );
+    }
+  }
+  const remappedQuestion: ReadingQuestion = {
+    ...incomingQuestion,
+    questionId,
+    logicalItemId,
+    payload: {
+      paragraphs: incomingQuestion.payload.paragraphs.map((paragraph) => ({
+        ...paragraph,
+        paragraphId: requiredMappedId(incomingParagraphIdToExisting, paragraph.paragraphId, "paragraph"),
+        segments: paragraph.segments.map((segment) => segment.kind === "text"
+          ? segment
+          : {
+              ...segment,
+              slotId: requiredMappedId(incomingSlotIdToExisting, segment.slotId, "slot")
+            })
+      })),
+      slots: incomingQuestion.payload.slots.map((slot) => ({
+        ...slot,
+        slotId: requiredMappedId(incomingSlotIdToExisting, slot.slotId, "slot"),
+        paragraphId: requiredMappedId(incomingParagraphIdToExisting, slot.paragraphId, "paragraph")
+      }))
+    }
+  };
+  const remapped: ReadingImportPackage = {
+    ...packageData,
+    item: { ...packageData.item, logicalItemId },
+    questions: [remappedQuestion],
+    occurrences: packageData.occurrences.map((occurrence) => ({
+      ...occurrence,
+      logicalItemId,
+      questionSources: occurrence.questionSources.map((mapping) => ({ ...mapping, questionId }))
+    }))
+  };
+  return validateReadingImportPackage(remapped);
+}
+
+function uniqueIdByOrder(
+  rows: Array<Record<string, unknown>>,
+  orderField: string,
+  idField: string,
+  expectedCount: number,
+  label: string
+) {
+  if (rows.length !== expectedCount) {
+    throw new Error(`${label} count ${rows.length} does not match incoming count ${expectedCount}`);
+  }
+  const result = new Map<number, string>();
+  const seenIds = new Set<string>();
+  for (const row of rows) {
+    const order = Number(row[orderField]);
+    const id = String(row[idField]);
+    if (!Number.isInteger(order) || order < 1 || !id || result.has(order) || seenIds.has(id)) {
+      throw new Error(`${label} contain invalid or duplicate canonical order`);
+    }
+    result.set(order, id);
+    seenIds.add(id);
+  }
+  return result;
+}
+
+function requiredOrderedId(ids: Map<number, string>, order: number, label: string) {
+  const id = ids.get(order);
+  if (!id) throw new Error(`Legacy CTW is missing canonical ${label} order ${order}`);
+  return id;
+}
+
+function requiredMappedId(ids: Map<string, string>, sourceId: string, label: string) {
+  const id = ids.get(sourceId);
+  if (!id) throw new Error(`Legacy CTW is missing canonical ${label} mapping for ${sourceId}`);
+  return id;
+}
+
+async function loadExistingOccurrenceBindings(supabase: SupabaseClient, occurrenceIds: string[]) {
+  const result = new Map<string, string>();
+  if (occurrenceIds.length === 0) return result;
+  const { data, error } = await supabase
+    .from("reading_source_occurrences")
+    .select("occurrence_id,logical_item_id")
+    .in("occurrence_id", occurrenceIds);
+  if (error) throw new Error(`read existing reading_source_occurrences: ${error.message}`);
+  for (const row of data ?? []) result.set(String(row.occurrence_id), String(row.logical_item_id));
+  return result;
 }
 
 export function buildReadingImportRows(input: unknown) {
@@ -375,6 +669,7 @@ function questionRow(question: ReadingQuestion) {
     question_type: question.questionType,
     stem: question.stem,
     raw_display_text: question.rawDisplayText,
+    passage_highlight_ranges: rapHighlightRanges(question),
     passage_id: null as string | null,
     material_id: null as string | null,
     correct_option_id: null as string | null,
@@ -412,6 +707,17 @@ function questionRow(question: ReadingQuestion) {
         target_paragraph_id: question.payload.targetParagraphId,
         correct_sentence_id: question.payload.correctSentenceId
       };
+  }
+}
+
+function rapHighlightRanges(question: ReadingQuestion) {
+  switch (question.questionType) {
+    case "rap_multiple_choice":
+    case "rap_sentence_insertion":
+    case "rap_sentence_selection":
+      return question.payload.highlightRanges ?? [];
+    default:
+      return [];
   }
 }
 

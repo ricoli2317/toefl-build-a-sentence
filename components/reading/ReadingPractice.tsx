@@ -50,6 +50,7 @@ import type {
   StudentChoiceOption,
   StudentCtwQuestion,
   StudentRdlQuestion,
+  StudentRapHighlightRange,
   StudentRapQuestion,
   StudentReadingPracticePayload
 } from "@/lib/reading/studentPractice";
@@ -872,7 +873,7 @@ function CtwBlankWord({
 }) {
   const activeCaretClass = readOnly
     ? ""
-    : "relative focus:after:pointer-events-none focus:after:absolute focus:after:left-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:-translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-pulse focus:after:bg-student-text focus:after:content-['']";
+    : "relative focus:after:pointer-events-none focus:after:absolute focus:after:right-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-pulse focus:after:bg-student-text focus:after:content-['']";
 
   return (
     <span className="inline whitespace-nowrap" data-ctw-slot={slotId}>
@@ -1350,6 +1351,19 @@ function RapPracticeWorkspace({
       })),
     [passage.paragraphs]
   );
+  const sentenceStartOffsets = useMemo(() => {
+    const offsets = new Map<string, number>();
+    for (const paragraph of orderedParagraphs) {
+      let utf16Cursor = 0;
+      for (const sentence of paragraph.sentences) {
+        const utf16Start = paragraph.text.indexOf(sentence.text, utf16Cursor);
+        if (utf16Start < 0) continue;
+        offsets.set(sentence.sentenceId, Array.from(paragraph.text.slice(0, utf16Start)).length);
+        utf16Cursor = utf16Start + sentence.text.length;
+      }
+    }
+    return offsets;
+  }, [orderedParagraphs]);
   const selectedOptionId = answer?.kind === "choice" ? answer.optionId : null;
   const insertionValidation = useMemo(
     () => question.questionType === "rap_sentence_insertion"
@@ -1422,6 +1436,11 @@ function RapPracticeWorkspace({
     paragraph: (typeof orderedParagraphs)[number],
     sentence: (typeof orderedParagraphs)[number]["sentences"][number]
   ) => {
+    const highlightedText = renderRapHighlightedText(
+      sentence.text,
+      sentenceStartOffsets.get(sentence.sentenceId) ?? 0,
+      question.highlightRanges.filter((range) => range.paragraphId === paragraph.paragraphId)
+    );
     const selectable = question.questionType === "rap_sentence_selection"
       && sentenceTargetValidation !== null
       && isRapSentenceSelectable(sentenceTargetValidation, paragraph.paragraphId, sentence.sentenceId);
@@ -1444,13 +1463,13 @@ function RapPracticeWorkspace({
           style={rapFramelessInteractionStyle}
           tabIndex={readOnly ? undefined : 0}
         >
-          {sentence.text}
+          {highlightedText}
         </span>
       );
     }
     return (
       <span data-sentence-id={sentence.sentenceId} data-sentence-order={sentence.sentenceOrder}>
-        {sentence.text}
+        {highlightedText}
       </span>
     );
   };
@@ -1557,6 +1576,38 @@ function RapPracticeWorkspace({
       titleId="rap-passage-title"
     />
   );
+}
+
+function renderRapHighlightedText(
+  text: string,
+  sentenceStartOffset: number,
+  ranges: StudentRapHighlightRange[]
+) {
+  const codePoints = Array.from(text);
+  const sentenceEndOffset = sentenceStartOffset + codePoints.length;
+  const overlapping = ranges.filter((range) =>
+    range.startOffset < sentenceEndOffset && range.endOffset > sentenceStartOffset
+  );
+  if (overlapping.length === 0) return text;
+  const nodes: ReactNode[] = [];
+  let cursor = 0;
+  overlapping.forEach((range, index) => {
+    const start = Math.max(range.startOffset, sentenceStartOffset) - sentenceStartOffset;
+    const end = Math.min(range.endOffset, sentenceEndOffset) - sentenceStartOffset;
+    if (start > cursor) nodes.push(codePoints.slice(cursor, start).join(""));
+    nodes.push(
+      <mark
+        className="bg-student-primary font-bold text-white"
+        data-testid="rap-source-highlight"
+        key={`${range.paragraphId}:${range.startOffset}:${range.endOffset}:${index}`}
+      >
+        {codePoints.slice(start, end).join("")}
+      </mark>
+    );
+    cursor = end;
+  });
+  if (cursor < codePoints.length) nodes.push(codePoints.slice(cursor).join(""));
+  return nodes;
 }
 
 function RapInsertionMarker({ bracketed = false }: { bracketed?: boolean }) {

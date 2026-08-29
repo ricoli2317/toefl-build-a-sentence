@@ -51,11 +51,12 @@ Import never creates materials or touches R2.
 
 Fixed header:
 
-`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,source_question_number,passage_id,passage_title,passage_json,question_order,question_type,question_stem,raw_display_text,options_json,correct_option_id,insert_sentence,insertion_anchors_json,correct_anchor_id,target_paragraph_id,correct_sentence_id`
+`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,source_question_number,passage_id,passage_title,passage_json,question_order,question_type,question_stem,raw_display_text,passage_highlights_json,options_json,correct_option_id,insert_sentence,insertion_anchors_json,correct_anchor_id,target_paragraph_id,correct_sentence_id`
 
 One row is one question; equal common/group fields form one complete passage + question group. Every row in a group repeats the same `passage_id`, real `passage_title`, and semantically identical `passage_json`. A conflict rejects the full group.
 
 - `passage_json`: array of `{paragraphId,paragraphOrder,text,rawText,sentences}`; each sentence is `{sentenceId,sentenceOrder,text}`. Sentence boundaries are final and TPS never re-splits text.
+- `passage_highlights_json`: required per-question array of `{paragraphId,startOffset,endOffset}`. Offsets are zero-based, end-exclusive Unicode code-point positions in that paragraph's exact `text`. Use `[]` only when the authoritative source has no highlight for the question. TPS never derives these ranges from question type, stem, or passage wording.
 - `rap_multiple_choice`: fill `options_json` and `correct_option_id`.
 - `rap_sentence_insertion`: fill `insert_sentence`, `insertion_anchors_json`, and `correct_anchor_id`. Anchors are `{anchorId,anchorOrder,paragraphId,boundaryIndex,afterSentenceId}` and describe text/sentence boundaries, never pixels.
 - `rap_sentence_selection`: fill `target_paragraph_id` and `correct_sentence_id`; the sentence must belong to that paragraph.

@@ -53,6 +53,7 @@ export type StudentRapQuestion =
       questionOrder: number;
       questionType: "rap_multiple_choice";
       stem: string;
+      highlightRanges: StudentRapHighlightRange[];
       options: StudentChoiceOption[];
     }
   | {
@@ -60,6 +61,7 @@ export type StudentRapQuestion =
       questionOrder: number;
       questionType: "rap_sentence_insertion";
       stem: string;
+      highlightRanges: StudentRapHighlightRange[];
       insertSentence: string;
       anchors: Array<{
         anchorId: string;
@@ -74,8 +76,15 @@ export type StudentRapQuestion =
       questionOrder: number;
       questionType: "rap_sentence_selection";
       stem: string;
+      highlightRanges: StudentRapHighlightRange[];
       targetParagraphId: string;
     };
+
+export type StudentRapHighlightRange = {
+  paragraphId: string;
+  startOffset: number;
+  endOffset: number;
+};
 
 export type StudentReadingPracticePayload = {
   item: {
@@ -189,11 +198,17 @@ function toStudentQuestion(question: ReadingQuestion): StudentReadingPracticePay
     case "rdl":
       return { ...common, questionType: "rdl", options: question.payload.options };
     case "rap_multiple_choice":
-      return { ...common, questionType: "rap_multiple_choice", options: question.payload.options };
+      return {
+        ...common,
+        questionType: "rap_multiple_choice",
+        highlightRanges: question.payload.highlightRanges ?? [],
+        options: question.payload.options
+      };
     case "rap_sentence_insertion":
       return {
         ...common,
         questionType: "rap_sentence_insertion",
+        highlightRanges: question.payload.highlightRanges ?? [],
         insertSentence: question.payload.insertSentence,
         anchors: question.payload.anchors
       };
@@ -201,6 +216,7 @@ function toStudentQuestion(question: ReadingQuestion): StudentReadingPracticePay
       return {
         ...common,
         questionType: "rap_sentence_selection",
+        highlightRanges: question.payload.highlightRanges ?? [],
         targetParagraphId: question.payload.targetParagraphId
       };
   }
@@ -248,7 +264,7 @@ export async function loadStudentReadingPractice(
   }
   const { data: questionRows, error: questionError } = await db
     .from("reading_questions")
-    .select("question_id,question_order,module,question_type,stem,passage_id,material_id,insert_sentence,target_paragraph_id")
+    .select("question_id,question_order,module,question_type,stem,passage_id,material_id,insert_sentence,target_paragraph_id,passage_highlight_ranges")
     .eq("logical_item_id", itemId)
     .order("question_order", { ascending: true });
   if (questionError) throw databaseLoadError("questions", questionError);
@@ -435,7 +451,8 @@ export async function loadStudentReadingPractice(
     const common = {
       questionId: String(question.question_id),
       questionOrder: Number(question.question_order),
-      stem: String(question.stem)
+      stem: String(question.stem),
+      highlightRanges: parseStoredRapHighlightRanges(question.passage_highlight_ranges, passage, String(question.question_id))
     };
     if (question.question_type === "rap_multiple_choice") {
       const options = optionsFor(common.questionId);
@@ -479,6 +496,42 @@ export async function loadStudentReadingPractice(
     throw new StudentReadingLoadError(`unsupported or incomplete RAP question ${common.questionId}`, "这个阅读题尚未准备完整。", 422);
   });
   return { item: baseItem, material: null, passage, questions };
+}
+
+function parseStoredRapHighlightRanges(
+  value: unknown,
+  passage: NonNullable<StudentReadingPracticePayload["passage"]>,
+  questionId: string
+): StudentRapHighlightRange[] {
+  if (!Array.isArray(value)) {
+    throw new StudentReadingLoadError(`invalid RAP highlight ranges for ${questionId}`, "这个阅读题尚未准备完整。", 422);
+  }
+  const paragraphLengths = new Map(passage.paragraphs.map((paragraph) => [
+    paragraph.paragraphId,
+    Array.from(paragraph.text).length
+  ]));
+  const previousEndByParagraph = new Map<string, number>();
+  return value.map((candidate) => {
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
+      throw new StudentReadingLoadError(`invalid RAP highlight range for ${questionId}`, "这个阅读题尚未准备完整。", 422);
+    }
+    const range = candidate as Record<string, unknown>;
+    const paragraphId = String(range.paragraphId ?? "");
+    const startOffset = range.startOffset;
+    const endOffset = range.endOffset;
+    const paragraphLength = paragraphLengths.get(paragraphId);
+    const previousEnd = previousEndByParagraph.get(paragraphId);
+    if (
+      paragraphLength === undefined || typeof startOffset !== "number" || typeof endOffset !== "number"
+      || !Number.isInteger(startOffset) || !Number.isInteger(endOffset)
+      || startOffset < 0 || endOffset <= startOffset || endOffset > paragraphLength
+      || (previousEnd !== undefined && startOffset < previousEnd)
+    ) {
+      throw new StudentReadingLoadError(`invalid RAP highlight range for ${questionId}`, "这个阅读题尚未准备完整。", 422);
+    }
+    previousEndByParagraph.set(paragraphId, endOffset);
+    return { paragraphId, startOffset, endOffset };
+  });
 }
 
 function requiredStoredRdlTitle(value: unknown, materialId: string): string {

@@ -26,6 +26,7 @@ export const READ_IN_DAILY_LIFE_HEADERS = [
   "question_order",
   "question_stem",
   "raw_display_text",
+  "passage_highlights_json",
   "options_json",
   "correct_option_id"
 ] as const;

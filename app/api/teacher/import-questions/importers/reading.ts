@@ -1,7 +1,11 @@
 import { adaptReadingCsv } from "@/lib/reading/csvAdapter";
 import type { ReadingCsvType } from "@/lib/reading/csvSchemas";
 import { groupReadingSourceOccurrences } from "@/lib/reading/grouping";
-import { importReadingPackageAtomic } from "@/lib/reading/importer";
+import {
+  assertPreparedReadingPackageCanImport,
+  importReadingPackageAtomic,
+  prepareReadingPackagesForImport
+} from "@/lib/reading/importer";
 import type { ReadingMaterial } from "@/lib/reading/types";
 import { isRdlMaterialType } from "@/lib/reading/materialTypes";
 import type { ImporterContext, ImportResult } from "./types";
@@ -24,16 +28,16 @@ async function importReadingCsv(
     materials: materialCatalog
   });
   const grouped = groupReadingSourceOccurrences(adapted.candidates);
-  const logicalIds = grouped.packages.map((item) => item.item.logicalItemId);
-  const occurrenceIds = grouped.packages.flatMap((item) => item.occurrences.map((occurrence) => occurrence.occurrenceId));
-  const existingLogicalItems = await loadExistingLogicalItems(supabase, logicalIds);
-  const existingOccurrenceIds = await existingIds(
+  const preparedPackages = type === "complete_the_words"
+    ? await prepareReadingPackagesForImport(supabase, grouped.packages, {
+        enableCtwFingerprintFallback: true
+      })
+    : await prepareStandardReadingPackages(supabase, grouped.packages);
+  const historicalWarnings = await historicalPossibleDuplicates(
     supabase,
-    "reading_source_occurrences",
-    "occurrence_id",
-    occurrenceIds
+    type,
+    preparedPackages.map(({ packageData }) => packageData)
   );
-  const historicalWarnings = await historicalPossibleDuplicates(supabase, type, grouped.packages);
   const warnings = [
     ...grouped.report.possibleDuplicates.map((duplicate) => ({
       message: "可能重复的 Reading 内容已按独立题组保留，没有自动合并。",
@@ -55,13 +59,11 @@ async function importReadingCsv(
   let updatedCount = 0;
   let successCount = 0;
 
-  for (const packageData of grouped.packages) {
+  for (const prepared of preparedPackages) {
+    const { packageData, existingItem, addedOccurrenceCount } = prepared;
     try {
-      const existingItem = existingLogicalItems.get(packageData.item.logicalItemId);
+      assertPreparedReadingPackageCanImport(prepared);
       const existed = Boolean(existingItem);
-      const addedOccurrences = packageData.occurrences.filter(
-        (occurrence) => !existingOccurrenceIds.has(occurrence.occurrenceId)
-      ).length;
       const incomingFirst = {
         date: packageData.item.firstSeenDate,
         sourceLabel: packageData.item.firstSeenSourceLabel,
@@ -72,10 +74,10 @@ async function importReadingCsv(
         : incomingFirst;
       await importReadingPackageAtomic(supabase, packageData, { createdBy: userId, firstSeen });
       successCount += 1;
-      occurrenceInsertedCount += addedOccurrences;
+      occurrenceInsertedCount += addedOccurrenceCount;
       if (existed) {
         reusedCount += 1;
-        updatedCount += addedOccurrences > 0 ? 1 : 0;
+        updatedCount += addedOccurrenceCount > 0 ? 1 : 0;
       } else {
         createdCount += 1;
       }
@@ -133,6 +135,31 @@ async function loadMaterials(
     imageAssetPath: row.image_asset_path === null ? null : String(row.image_asset_path),
     hitboxDataPath: row.hitbox_data_path === null ? null : String(row.hitbox_data_path)
     } satisfies ReadingMaterial] as const;
+  }));
+}
+
+async function prepareStandardReadingPackages(
+  supabase: ImporterContext["supabase"],
+  packages: ReturnType<typeof groupReadingSourceOccurrences>["packages"]
+) {
+  const logicalIds = packages.map((item) => item.item.logicalItemId);
+  const occurrenceIds = packages.flatMap((item) =>
+    item.occurrences.map((occurrence) => occurrence.occurrenceId)
+  );
+  const existingLogicalItems = await loadExistingLogicalItems(supabase, logicalIds);
+  const existingOccurrenceIds = await existingIds(
+    supabase,
+    "reading_source_occurrences",
+    "occurrence_id",
+    occurrenceIds
+  );
+  return packages.map((packageData) => ({
+    packageData,
+    existingItem: existingLogicalItems.get(packageData.item.logicalItemId) ?? null,
+    addedOccurrenceCount: packageData.occurrences.filter(
+      (occurrence) => !existingOccurrenceIds.has(occurrence.occurrenceId)
+    ).length,
+    occurrenceConflict: null
   }));
 }
 

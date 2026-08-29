@@ -255,6 +255,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
           questionType: "rap_multiple_choice",
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
+            highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
             ...remapOptions(sourceQuestion.payload, questionId)
           }
         };
@@ -275,6 +276,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
           questionType: "rap_sentence_insertion",
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
+            highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
             insertSentence: sourceQuestion.payload.insertSentence,
             anchors,
             correctAnchorId: anchors[correctOrder].anchorId
@@ -287,6 +289,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
           questionType: "rap_sentence_selection",
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
+            highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
             targetParagraphId: requiredMap(paragraphIds, sourceQuestion.payload.targetParagraphId),
             correctSentenceId: requiredMap(sentenceIds, sourceQuestion.payload.correctSentenceId)
           }
@@ -294,6 +297,17 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
     }
   });
   return { materials: candidate.materials, passages, questions };
+}
+
+function remapHighlightRanges(
+  ranges: Array<{ paragraphId: string; startOffset: number; endOffset: number }> | undefined,
+  paragraphIds: Map<string, string>
+) {
+  return (ranges ?? []).map((range) => ({
+    paragraphId: requiredMap(paragraphIds, range.paragraphId),
+    startOffset: range.startOffset,
+    endOffset: range.endOffset
+  }));
 }
 
 function remapOptions(

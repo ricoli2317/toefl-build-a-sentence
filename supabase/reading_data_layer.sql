@@ -114,6 +114,8 @@ create table if not exists public.reading_questions (
   )),
   stem text not null,
   raw_display_text text,
+  passage_highlight_ranges jsonb not null default '[]'::jsonb
+    check (jsonb_typeof(passage_highlight_ranges) = 'array'),
   passage_id text references public.reading_passages(passage_id) on delete restrict,
   material_id text references public.reading_materials(material_id) on delete restrict,
   correct_option_id text,

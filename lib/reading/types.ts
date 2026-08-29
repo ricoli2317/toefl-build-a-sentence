@@ -116,6 +116,13 @@ export type ReadingInsertionAnchor = {
   afterSentenceId: string | null;
 };
 
+/** Zero-based, end-exclusive Unicode code-point offsets within one passage paragraph. */
+export type ReadingPassageHighlightRange = {
+  paragraphId: string;
+  startOffset: number;
+  endOffset: number;
+};
+
 type ReadingQuestionBase<TType extends ReadingQuestionType, TPayload> = {
   questionId: string;
   logicalItemId: string;
@@ -139,12 +146,14 @@ export type RdlQuestion = ReadingQuestionBase<"rdl", {
 
 export type RapMultipleChoiceQuestion = ReadingQuestionBase<"rap_multiple_choice", {
   passageId: string;
+  highlightRanges: ReadingPassageHighlightRange[];
   options: ReadingOption[];
   correctOptionId: string;
 }>;
 
 export type RapSentenceInsertionQuestion = ReadingQuestionBase<"rap_sentence_insertion", {
   passageId: string;
+  highlightRanges: ReadingPassageHighlightRange[];
   insertSentence: string;
   anchors: ReadingInsertionAnchor[];
   correctAnchorId: string;
@@ -152,6 +161,7 @@ export type RapSentenceInsertionQuestion = ReadingQuestionBase<"rap_sentence_ins
 
 export type RapSentenceSelectionQuestion = ReadingQuestionBase<"rap_sentence_selection", {
   passageId: string;
+  highlightRanges: ReadingPassageHighlightRange[];
   targetParagraphId: string;
   correctSentenceId: string;
 }>;

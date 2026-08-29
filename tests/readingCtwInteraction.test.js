@@ -180,7 +180,7 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.doesNotMatch(source, /rawText\.(match|replace)|querySelector|setTimeout/);
 });
 
-test("active CTW position renders one non-layout blinking caret in editable practice only", () => {
+test("active CTW position renders one non-layout blinking caret before its letter or underline", () => {
   const source = fs.readFileSync(
     path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
     "utf8"
@@ -194,6 +194,9 @@ test("active CTW position renders one non-layout blinking caret in editable prac
   assert.match(caretClassSource, /readOnly\s*\? ""/);
   assert.match(caretClassSource, /relative/);
   assert.match(caretClassSource, /focus:after:absolute/);
+  assert.match(caretClassSource, /focus:after:right-full/);
+  assert.match(caretClassSource, /focus:after:translate-x-\[0\.05em\]/);
+  assert.doesNotMatch(caretClassSource, /focus:after:left-full|focus:after:-translate-x/);
   assert.match(caretClassSource, /focus:after:h-\[1em\]/);
   assert.match(caretClassSource, /focus:after:w-\[1\.5px\]/);
   assert.match(caretClassSource, /focus:after:animate-pulse/);

@@ -38,6 +38,9 @@ class Block:
     kind: str
     text: str
     style: str | None
+    # Zero-based, end-exclusive Unicode code-point ranges taken only from Word
+    # run formatting. Historical files use teal w:shd rather than w:highlight.
+    highlight_ranges: tuple[tuple[int, int], ...] = ()
 
 
 class AdapterIssue(Exception):
@@ -60,6 +63,36 @@ def xml_text(node: etree._Element) -> str:
     return "".join(parts)
 
 
+def source_highlighted_run(run: etree._Element) -> bool:
+    run_properties = run.find(qn("rPr"))
+    if run_properties is None:
+        return False
+    highlight = run_properties.find(qn("highlight"))
+    if highlight is not None and highlight.get(qn("val")) not in {None, "none", "default"}:
+        return True
+    shading = run_properties.find(qn("shd"))
+    return (
+        shading is not None
+        and shading.get(qn("val")) == "clear"
+        and shading.get(qn("fill")) not in {None, "auto", "FFFFFF"}
+    )
+
+
+def xml_highlight_ranges(node: etree._Element) -> tuple[tuple[int, int], ...]:
+    ranges: list[tuple[int, int]] = []
+    cursor = 0
+    for run in node.iter(qn("r")):
+        run_text = xml_text(run)
+        end = cursor + len(run_text)
+        if run_text and source_highlighted_run(run):
+            if ranges and ranges[-1][1] == cursor:
+                ranges[-1] = (ranges[-1][0], end)
+            else:
+                ranges.append((cursor, end))
+        cursor = end
+    return tuple(ranges)
+
+
 def read_docx_blocks(path: Path) -> list[Block]:
     with zipfile.ZipFile(path) as archive:
         root = etree.fromstring(archive.read("word/document.xml"))
@@ -75,7 +108,7 @@ def read_docx_blocks(path: Path) -> list[Block]:
                 style_node = ppr.find(qn("pStyle"))
                 if style_node is not None:
                     style = style_node.get(qn("val"))
-            blocks.append(Block("paragraph", xml_text(child), style))
+            blocks.append(Block("paragraph", xml_text(child), style, xml_highlight_ranges(child)))
         elif child.tag == qn("tbl"):
             rows: list[str] = []
             for row in child.findall(qn("tr")):

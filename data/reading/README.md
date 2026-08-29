@@ -14,6 +14,8 @@ TPS:             final CSV -> database import -> runtime consumption
 
 TPS consumes only final Reading CSV, stable `material_id`, production references already registered in `reading_materials`, and R2 runtime assets through `lib/reading/assets.ts`. TPS must not produce or manage source PDFs, Reading DOCX, RDL crops/HD materials, selection maps, canonical assets, or content-production intermediates. Do not create a second canonical asset library under TPS `public/`, `data/`, or `tmp/`; do not copy `_work` into TPS; and do not add new `/Users/rico/Desktop/...` production/runtime dependencies.
 
+RAP passage highlights follow the same boundary. The Reading project must emit an explicit `passage_highlights_json` array for every RAP question, derived from the original DOCX run formatting. TPS stores and renders those zero-based, end-exclusive Unicode code-point ranges; it never derives a range from question type, stem keywords, quoted text, or a first-match search. Historical packages can be backfilled without changing their logical IDs because highlight presentation is deliberately excluded from the dedup identity. Apply `supabase/reading_rap_highlights.sql`, then the updated `supabase/reading_csv_import.sql`, before importing the regenerated final CSV.
+
 The remaining sections describe the completed May/June Batch 1B and Batch 1B-R2 historical initialization. Their files and paths are retained for audit/reproducibility only. They are not the workflow for future Reading months and must not be rerun unless a one-time migration/debug task is explicitly approved.
 
 The production boundary separates real source occurrences from student-facing logical practice items:

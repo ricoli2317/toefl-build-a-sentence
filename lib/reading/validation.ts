@@ -7,6 +7,7 @@ import {
   type ReadingMaterial,
   type ReadingOption,
   type ReadingPassage,
+  type ReadingPassageHighlightRange,
   type ReadingQuestion
 } from "./types.ts";
 import { fingerprintReadingSourceOccurrence } from "./grouping.ts";
@@ -414,12 +415,14 @@ function validateQuestion(
       break;
     }
     case "rap_multiple_choice": {
-      requirePassage(payload, payloadPath, questionContext, passageById);
+      const passage = requirePassage(payload, payloadPath, questionContext, passageById);
+      validateRapHighlights(payload, payloadPath, questionContext, passage);
       validateOptionsAndAnswer(payload, payloadPath, questionContext);
       break;
     }
     case "rap_sentence_insertion": {
       const passage = requirePassage(payload, payloadPath, questionContext, passageById);
+      validateRapHighlights(payload, payloadPath, questionContext, passage);
       nonEmptyString(payload.insertSentence, `${payloadPath}.insertSentence`, questionContext);
       const anchors = array(payload.anchors, `${payloadPath}.anchors`, questionContext);
       if (anchors.length !== 4) {
@@ -462,6 +465,7 @@ function validateQuestion(
     }
     case "rap_sentence_selection": {
       const passage = requirePassage(payload, payloadPath, questionContext, passageById);
+      validateRapHighlights(payload, payloadPath, questionContext, passage);
       const targetParagraphId = nonEmptyString(
         payload.targetParagraphId,
         `${payloadPath}.targetParagraphId`,
@@ -489,6 +493,40 @@ function validateQuestion(
     }
   }
   return value as ReadingQuestion;
+}
+
+function validateRapHighlights(
+  payload: RecordValue,
+  path: string,
+  context: ValidationContext,
+  passage: ReadingPassage
+) {
+  // Schema v2 packages created before source highlighting existed remain valid;
+  // their explicit normalized representation is an empty range list.
+  if (payload.highlightRanges === undefined) payload.highlightRanges = [];
+  const ranges = array(payload.highlightRanges, `${path}.highlightRanges`, context);
+  const paragraphById = new Map(passage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph]));
+  const previousEndByParagraph = new Map<string, number>();
+  ranges.forEach((rangeValue, index) => {
+    const rangePath = `${path}.highlightRanges[${index}]`;
+    const range = record(rangeValue, rangePath, context);
+    const paragraphId = nonEmptyString(range.paragraphId, `${rangePath}.paragraphId`, context);
+    const paragraph = paragraphById.get(paragraphId);
+    if (!paragraph) fail("paragraphId does not exist in passage", `${rangePath}.paragraphId`, context);
+    const startOffset = positiveInteger(range.startOffset, `${rangePath}.startOffset`, context, true);
+    const endOffset = positiveInteger(range.endOffset, `${rangePath}.endOffset`, context, true);
+    const paragraphLength = Array.from(paragraph.text).length;
+    if (endOffset <= startOffset) fail("endOffset must be greater than startOffset", rangePath, context);
+    if (endOffset > paragraphLength) {
+      fail("endOffset exceeds paragraph Unicode code-point length", `${rangePath}.endOffset`, context);
+    }
+    const previousEnd = previousEndByParagraph.get(paragraphId);
+    if (previousEnd !== undefined && startOffset < previousEnd) {
+      fail("ranges for a paragraph must be ordered and non-overlapping", rangePath, context);
+    }
+    previousEndByParagraph.set(paragraphId, endOffset);
+  });
+  return ranges as ReadingPassageHighlightRange[];
 }
 
 function validateCtwPayload(
