@@ -870,6 +870,10 @@ function CtwBlankWord({
   slotId: string;
   slotOrder: number;
 }) {
+  const activeCaretClass = readOnly
+    ? ""
+    : "relative focus:after:pointer-events-none focus:after:absolute focus:after:left-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:-translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-pulse focus:after:bg-student-text focus:after:content-['']";
+
   return (
     <span className="inline whitespace-nowrap" data-ctw-slot={slotId}>
       <span>{prefix}</span>
@@ -880,9 +884,9 @@ function CtwBlankWord({
         return (
           <span
             aria-label={`Blank ${slotOrder}, letter ${characterIndex + 1} of ${characters.length}`}
-            className={character
+            className={`${character
               ? `inline leading-[inherit] outline-none ${readOnly ? "cursor-default" : "cursor-text focus:rounded-[2px] focus:bg-amber-100 focus:shadow-[inset_0_-2px_0_#9a6b20]"}`
-              : `mx-[0.07em] inline-block h-[0.72em] w-[0.52em] border-b-[1.5px] border-student-muted align-baseline leading-none text-transparent outline-none ${readOnly ? "cursor-default" : "cursor-text focus:rounded-[2px] focus:border-student-primary focus:bg-student-primary-soft focus:shadow-[inset_0_-1px_0_currentColor]"}`}
+              : `mx-[0.07em] inline-block h-[0.72em] w-[0.52em] border-b-[1.5px] border-student-muted align-baseline leading-none text-transparent outline-none ${readOnly ? "cursor-default" : "cursor-text focus:rounded-[2px] focus:border-student-primary focus:bg-student-primary-soft focus:shadow-[inset_0_-1px_0_currentColor]"}`} ${activeCaretClass}`}
             data-character-index={characterIndex}
             data-ctw-position={key}
             data-filled={character ? "true" : "false"}

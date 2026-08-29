@@ -179,3 +179,27 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.match(source, /if \(module === "ctw" && !readOnly\)/);
   assert.doesNotMatch(source, /rawText\.(match|replace)|querySelector|setTimeout/);
 });
+
+test("active CTW position renders one non-layout blinking caret in editable practice only", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
+    "utf8"
+  );
+  const blankWordSource = source.slice(source.indexOf("function CtwBlankWord"), source.indexOf("function ctwPositionKey"));
+  const caretClassSource = blankWordSource.slice(
+    blankWordSource.indexOf("const activeCaretClass"),
+    blankWordSource.indexOf("return (")
+  );
+
+  assert.match(caretClassSource, /readOnly\s*\? ""/);
+  assert.match(caretClassSource, /relative/);
+  assert.match(caretClassSource, /focus:after:absolute/);
+  assert.match(caretClassSource, /focus:after:h-\[1em\]/);
+  assert.match(caretClassSource, /focus:after:w-\[1\.5px\]/);
+  assert.match(caretClassSource, /focus:after:animate-pulse/);
+  assert.match(caretClassSource, /focus:after:bg-student-text/);
+  assert.match(caretClassSource, /focus:after:content-\[''\]/);
+  assert.doesNotMatch(caretClassSource, /border|outline|ring/);
+  assert.equal((blankWordSource.match(/\$\{activeCaretClass\}/g) ?? []).length, 1);
+  assert.ok(blankWordSource.indexOf("${activeCaretClass}") < blankWordSource.indexOf("data-filled"));
+});
