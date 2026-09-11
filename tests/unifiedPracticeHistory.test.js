@@ -230,6 +230,34 @@ test("objective metrics and result/retake targets reuse the existing routes", ()
   });
 });
 
+test("Full Set history preserves every completed attempt and presents scaled ranges instead of x/50", () => {
+  const rows = ["full-b", "full-a"].map((attemptId, index) => ({
+    attempt_id: attemptId,
+    completed_at: `2026-08-29T0${8 - index}:00:00.000Z`,
+    duration_seconds: 900 + index,
+    full_set_id: "20260601A",
+    raw_min: 19,
+    raw_max: 26,
+    scaled_min: 4,
+    scaled_max: 4.5,
+    score_display: "4 - 4.5"
+  }));
+  const payload = fixture({ readingFullSetAttempts: rows });
+  const fullSets = payload.records.filter((record) => record.taskType === "full_set");
+  assert.deepEqual(fullSets.map((record) => record.attemptId), ["full-b", "full-a"]);
+  assert.deepEqual(fullSets[0].metrics, {
+    kind: "scaled",
+    display: "4 - 4.5",
+    rawMin: 19,
+    rawMax: 26,
+    scaledMin: 4,
+    scaledMax: 4.5
+  });
+  assert.equal(fullSets[0].resultTarget.href, "/student/reading/full-sets/20260601A/result/full-b");
+  assert.equal(fullSets[0].retakeTarget.label, "再次练习");
+  assert.doesNotMatch(JSON.stringify(fullSets), /50/);
+});
+
 test("pagination applies a bounded limit after global newest-first merge", () => {
   const payload = fixture({ limit: 2, offset: 2 });
   assert.deepEqual(payload.records.map((record) => record.attemptId), ["rdl-1", "ctw-1"]);
@@ -241,6 +269,8 @@ test("unified API reads only list projections and explicitly gates submitted row
   assert.match(source, /\.from\("attempts"\)[\s\S]*\.not\("submitted_at", "is", null\)/);
   assert.match(source, /\.from\("writing_attempts"\)[\s\S]*\.eq\("status", "submitted"\)/);
   assert.match(source, /\.from\("reading_attempts"\)[\s\S]*\.eq\("status", "submitted"\)/);
+  assert.match(source, /module_attempt_id,module_number,started_at,submitted_at/);
+  assert.match(source, /Math\.min\(elapsed, timeLimit \?\? 0\)/);
   assert.match(source, /limit/);
   assert.match(source, /offset/);
   assert.match(source, /official_score:published_scores->official_score->>teacher_score/);

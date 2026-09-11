@@ -14,6 +14,7 @@ import {
   Menu,
   MessageCircleMore,
   Puzzle,
+  Rows3,
   X
 } from "lucide-react";
 import clsx from "clsx";
@@ -92,6 +93,12 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
         icon: BookOpen,
         label: "Read an Academic Passage",
         match: (path) => path === STUDENT_ROUTES.readingRap
+      },
+      {
+        href: STUDENT_ROUTES.readingFullSets,
+        icon: Rows3,
+        label: "套题练习",
+        match: (path) => path.startsWith(STUDENT_ROUTES.readingFullSets)
       }
     ]
   },
@@ -132,6 +139,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/student/academic-discussion/practice/") ||
     pathname.startsWith("/student/academic-discussion/submission/") ||
     pathname.startsWith("/student/reading/practice/") ||
+    /^\/student\/reading\/full-sets\/[^/]+\/attempt\/[^/]+/.test(pathname) ||
     /^\/student\/assignments\/[^/]+/.test(pathname) ||
     pathname.startsWith("/student/writing-reviews/");
 

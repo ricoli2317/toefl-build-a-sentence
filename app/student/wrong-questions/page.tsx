@@ -1,4 +1,4 @@
-import { WrongQuestionsHome } from "@/components/WrongQuestions";
+import { WrongQuestionsHome } from "@/components/WrongQuestionsHome";
 import { StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentWrongQuestionsPage() {

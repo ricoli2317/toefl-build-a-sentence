@@ -1,7 +1,18 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { ReadingImportPackage, ReadingModule, ReadingQuestion } from "./types.ts";
+import type { ReadingImportPackage, ReadingMaterial, ReadingModule, ReadingQuestion } from "./types.ts";
 import { validateReadingImportPackage } from "./validation.ts";
 import { assertCanonicalRdlTitle } from "./rdlTitles.ts";
+import {
+  attachIncomingOccurrencesToHistoricalPackage,
+  loadHistoricalReadingPackages
+} from "./historicalDedup.ts";
+import {
+  arePossibleReadingDuplicates,
+  readingMaterialReviewIdentity,
+  readingMaterialStorageIdentity,
+  readingPossibleDuplicateFingerprint,
+  readingSemanticFingerprint
+} from "./semantic.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -23,6 +34,10 @@ export type ExistingReadingLogicalItem = {
 export type PreparedReadingImportPackage = {
   packageData: ReadingImportPackage;
   existingItem: ExistingReadingLogicalItem | null;
+  reuseKind: "new" | "exact_fingerprint" | "semantic";
+  batchSemanticReuseCount: number;
+  possibleDuplicateLogicalItemIds: string[];
+  materialMatchKind: "not_applicable" | "exact_material" | "semantic_material" | "possible_material_duplicate";
   addedOccurrenceCount: number;
   occurrenceConflict: string | null;
 };
@@ -52,37 +67,110 @@ export class ReadingImportError extends Error {
   }
 }
 
-/**
- * Resolve current logical IDs first, then use the full CTW fingerprint as a
- * compatibility fallback for legacy imports whose logical IDs predate the
- * current fingerprint-derived convention.
- */
+/** Resolve logical IDs and strict fingerprints first, then batch-match the
+ * historical canonical library with versioned semantic identities. */
 export async function prepareReadingPackagesForImport(
   supabase: SupabaseClient,
   packages: ReadingImportPackage[],
-  options: { enableCtwFingerprintFallback?: boolean } = {}
+  options: {
+    enableCtwFingerprintFallback?: boolean;
+    enableHistoricalSemanticFallback?: boolean;
+    rdlMaterialCatalog?: ReadingMaterial[];
+  } = {}
 ): Promise<PreparedReadingImportPackage[]> {
-  const existingItems = await loadExistingReadingLogicalItems(
+  const incoming = coalesceIncomingSemanticPackages(packages);
+  packages = incoming.packages;
+  const enableSemantic = options.enableHistoricalSemanticFallback === true;
+  const exactMatches = await loadExistingReadingLogicalItems(
     supabase,
     packages,
-    options.enableCtwFingerprintFallback === true
+    options.enableCtwFingerprintFallback === true || enableSemantic
   );
-  const prepared = await Promise.all(packages.map(async (packageData) => {
-    const existingItem = existingItems.get(packageData.item.logicalItemId) ?? null;
-    const resolvedPackage = existingItem && existingItem.logicalItemId !== packageData.item.logicalItemId
-      ? await remapCtwPackageToExistingCanonical(supabase, packageData, existingItem.logicalItemId)
-      : packageData;
-    return { packageData: resolvedPackage, existingItem };
+  const modules = Array.from(new Set(packages.map((item) => item.item.module)));
+  const historicalPackages = enableSemantic
+    ? await loadHistoricalReadingPackages(supabase, modules)
+    : [];
+  const historicalById = new Map(historicalPackages.map((item) => [item.item.logicalItemId, item]));
+  const historicalBySemantic = groupBy(historicalPackages, readingSemanticFingerprint);
+  const historicalByPossible = groupBy(historicalPackages, readingPossibleDuplicateFingerprint);
+
+  const prepared = await Promise.all(packages.map(async (incomingPackage) => {
+    let packageData = incomingPackage;
+    let existingItem = exactMatches.get(incomingPackage.item.logicalItemId) ?? null;
+    let reuseKind: PreparedReadingImportPackage["reuseKind"] = existingItem ? "exact_fingerprint" : "new";
+    let possibleDuplicateLogicalItemIds: string[] = [];
+
+    if (!existingItem && enableSemantic) {
+      const semanticCandidates = historicalBySemantic.get(readingSemanticFingerprint(incomingPackage)) ?? [];
+      if (semanticCandidates.length === 1) {
+        existingItem = existingLogicalItemFromPackage(semanticCandidates[0]);
+        reuseKind = "semantic";
+      } else {
+        possibleDuplicateLogicalItemIds = uniqueIds([
+          ...semanticCandidates,
+          ...(historicalByPossible.get(readingPossibleDuplicateFingerprint(incomingPackage)) ?? []),
+          ...historicalPackages.filter((historical) =>
+            readingSemanticFingerprint(historical) !== readingSemanticFingerprint(incomingPackage)
+            && arePossibleReadingDuplicates(incomingPackage, historical)
+          )
+        ]).filter((id) => id !== incomingPackage.item.logicalItemId);
+      }
+    }
+
+    if (existingItem && existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
+      const historical = historicalById.get(existingItem.logicalItemId);
+      if (historical) {
+        packageData = attachIncomingOccurrencesToHistoricalPackage(historical, incomingPackage);
+      } else if (incomingPackage.item.module === "ctw") {
+        packageData = await remapCtwPackageToExistingCanonical(
+          supabase,
+          incomingPackage,
+          existingItem.logicalItemId
+        );
+      } else {
+        throw new Error(`Historical Reading canonical content is missing for ${existingItem.logicalItemId}`);
+      }
+    }
+
+    return {
+      packageData,
+      existingItem,
+      reuseKind,
+      batchSemanticReuseCount: incoming.reuseCounts.get(incomingPackage.item.logicalItemId) ?? 0,
+      possibleDuplicateLogicalItemIds,
+      materialMatchKind: materialMatchKind(
+        incomingPackage,
+        existingItem,
+        historicalPackages,
+        options.rdlMaterialCatalog ?? []
+      )
+    };
   }));
   const occurrenceIds = prepared.flatMap(({ packageData }) =>
     packageData.occurrences.map((occurrence) => occurrence.occurrenceId)
   );
   const existingOccurrences = await loadExistingOccurrenceBindings(supabase, occurrenceIds);
+  const incomingOccurrenceOwners = new Map<string, Set<string>>();
+  for (const { packageData } of prepared) {
+    for (const occurrence of packageData.occurrences) {
+      const owners = incomingOccurrenceOwners.get(occurrence.occurrenceId) ?? new Set<string>();
+      owners.add(packageData.item.logicalItemId);
+      incomingOccurrenceOwners.set(occurrence.occurrenceId, owners);
+    }
+  }
 
-  return prepared.map(({ packageData, existingItem }) => {
+  return prepared.map((item) => {
+    const { packageData, existingItem } = item;
     let addedOccurrenceCount = 0;
     let occurrenceConflict: string | null = null;
     for (const occurrence of packageData.occurrences) {
+      const incomingOwners = incomingOccurrenceOwners.get(occurrence.occurrenceId);
+      if (incomingOwners && incomingOwners.size > 1) {
+        occurrenceConflict =
+          `Reading occurrence ${occurrence.occurrenceId} has different content in the current CSV; ` +
+          `refusing to bind it to ${Array.from(incomingOwners).join(", ")}`;
+        continue;
+      }
       const existingLogicalItemId = existingOccurrences.get(occurrence.occurrenceId);
       if (existingLogicalItemId === undefined) {
         addedOccurrenceCount += 1;
@@ -94,8 +182,32 @@ export async function prepareReadingPackagesForImport(
           `${existingLogicalItemId}; refusing to rebind it to ${packageData.item.logicalItemId}`;
       }
     }
-    return { packageData, existingItem, addedOccurrenceCount, occurrenceConflict };
+    return { ...item, addedOccurrenceCount, occurrenceConflict };
   });
+}
+
+function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
+  const bySemantic = groupBy(packages, readingSemanticFingerprint);
+  const result: ReadingImportPackage[] = [];
+  const reuseCounts = new Map<string, number>();
+  for (const group of Array.from(bySemantic.values())) {
+    const orderedGroup = [...group].sort((left, right) =>
+      left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
+      || left.item.firstSeenSourceLabel.localeCompare(right.item.firstSeenSourceLabel)
+      || left.item.firstSeenSourceOrder - right.item.firstSeenSourceOrder
+    );
+    const canonical = orderedGroup[0];
+    const occurrences = new Map(
+      canonical.occurrences.map((occurrence) => [occurrence.occurrenceId, occurrence])
+    );
+    for (const variant of orderedGroup.slice(1)) {
+      const remapped = attachIncomingOccurrencesToHistoricalPackage(canonical, variant);
+      for (const occurrence of remapped.occurrences) occurrences.set(occurrence.occurrenceId, occurrence);
+    }
+    result.push({ ...canonical, occurrences: Array.from(occurrences.values()) });
+    reuseCounts.set(canonical.item.logicalItemId, orderedGroup.length - 1);
+  }
+  return { packages: result, reuseCounts };
 }
 
 export function assertPreparedReadingPackageCanImport(prepared: { occurrenceConflict: string | null }) {
@@ -129,9 +241,7 @@ async function loadExistingReadingLogicalItems(
   }
 
   if (!enableCtwFingerprintFallback) return result;
-  const missingCtwPackages = packages.filter(
-    (packageData) => packageData.item.module === "ctw" && !result.has(packageData.item.logicalItemId)
-  );
+  const missingCtwPackages = packages.filter((packageData) => !result.has(packageData.item.logicalItemId));
   if (missingCtwPackages.length === 0) return result;
   const packageByFingerprint = new Map(
     missingCtwPackages.map((packageData) => [packageData.item.dedupFingerprint, packageData])
@@ -147,12 +257,77 @@ async function loadExistingReadingLogicalItems(
     const dedupFingerprint = String(row.dedup_fingerprint);
     const packageData = packageByFingerprint.get(dedupFingerprint);
     if (!packageData) continue;
-    if (String(row.module) !== "ctw") {
-      throw new Error(`Reading fingerprint ${dedupFingerprint} belongs to a non-CTW logical item`);
+    if (String(row.module) !== packageData.item.module) {
+      throw new Error(`Reading fingerprint ${dedupFingerprint} belongs to a different Reading module`);
     }
     result.set(packageData.item.logicalItemId, existingLogicalItem(row));
   }
   return result;
+}
+
+function existingLogicalItemFromPackage(packageData: ReadingImportPackage): ExistingReadingLogicalItem {
+  return {
+    logicalItemId: packageData.item.logicalItemId,
+    dedupFingerprint: packageData.item.dedupFingerprint,
+    date: packageData.item.firstSeenDate,
+    sourceLabel: packageData.item.firstSeenSourceLabel,
+    sourceOrder: packageData.item.firstSeenSourceOrder
+  };
+}
+
+function groupBy(
+  packages: ReadingImportPackage[],
+  key: (packageData: ReadingImportPackage) => string
+) {
+  const result = new Map<string, ReadingImportPackage[]>();
+  for (const packageData of packages) {
+    const value = key(packageData);
+    result.set(value, [...(result.get(value) ?? []), packageData]);
+  }
+  return result;
+}
+
+function uniqueIds(packages: ReadingImportPackage[]) {
+  return Array.from(new Set(packages.map((item) => item.item.logicalItemId)));
+}
+
+function materialMatchKind(
+  incoming: ReadingImportPackage,
+  existingItem: ExistingReadingLogicalItem | null,
+  historicalPackages: ReadingImportPackage[],
+  materialCatalog: ReadingMaterial[]
+): PreparedReadingImportPackage["materialMatchKind"] {
+  if (incoming.item.module !== "rdl") return "not_applicable";
+  const incomingMaterial = incoming.materials[0];
+  const existingPackage = existingItem
+    ? historicalPackages.find((item) => item.item.logicalItemId === existingItem.logicalItemId)
+    : null;
+  const existingMaterial = existingPackage?.materials[0];
+  if (incomingMaterial && (
+    existingMaterial?.materialId === incomingMaterial.materialId
+    || materialCatalog.some((material) => material.materialId === incomingMaterial.materialId)
+  )) return "exact_material";
+  const storageIdentity = readingMaterialStorageIdentity(incomingMaterial);
+  const storageKey = storageIdentity ? JSON.stringify(storageIdentity) : null;
+  if (existingMaterial && storageKey
+    && storageKey === JSON.stringify(readingMaterialStorageIdentity(existingMaterial))) {
+    return "semantic_material";
+  }
+  if (storageKey && materialCatalog.some((material) =>
+    material.materialId !== incomingMaterial?.materialId
+    && JSON.stringify(readingMaterialStorageIdentity(material)) === storageKey
+  )) return "semantic_material";
+  const review = JSON.stringify(readingMaterialReviewIdentity(incomingMaterial));
+  const possibleMaterials = [
+    ...historicalPackages.filter((item) => item.item.module === "rdl").map((item) => item.materials[0]),
+    ...materialCatalog
+  ];
+  const possible = possibleMaterials.some((material) =>
+    material?.materialId !== incomingMaterial?.materialId
+    && JSON.stringify(readingMaterialReviewIdentity(material)) === review
+    && (!storageKey || JSON.stringify(readingMaterialStorageIdentity(material)) !== storageKey)
+  );
+  return possible ? "possible_material_duplicate" : "exact_material";
 }
 
 function existingLogicalItem(row: Record<string, unknown>): ExistingReadingLogicalItem {

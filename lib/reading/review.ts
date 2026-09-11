@@ -3,17 +3,60 @@ import type { ReadingAnswerState } from "./practiceState.ts";
 import type { StudentReadingPracticePayload } from "./studentPractice.ts";
 
 export type SubmittedReadingAnswerRow = {
+  attempt_answer_id?: string;
   answer_kind: "ctw_slot" | "option" | "insertion_anchor" | "sentence_selection";
   question_id: string;
   slot_id: string | null;
   student_answer: string | null;
+  is_correct?: boolean;
+  question_time_seconds?: number | null;
+};
+
+export type SubmittedReadingReviewItem = {
+  answerId: string;
+  order: number;
+  isAnswered: boolean;
+  isCorrect: boolean;
+  questionId: string;
+  slotId: string | null;
+  questionTimeSeconds: number | null;
+  href?: string;
 };
 
 export type SubmittedReadingReviewPayload = {
   answers: ReadingAnswerState;
   attempt: ReadingAttemptSummary;
   practice: StudentReadingPracticePayload;
+  reviewItems: SubmittedReadingReviewItem[];
 };
+
+export function buildSubmittedReadingReviewItems(
+  practice: StudentReadingPracticePayload,
+  rows: SubmittedReadingAnswerRow[]
+): SubmittedReadingReviewItem[] {
+  const questionOrder = new Map(practice.questions.map((question, index) => [
+    question.questionId,
+    "questionOrder" in question && Number.isInteger(question.questionOrder)
+      ? Number(question.questionOrder)
+      : index + 1
+  ]));
+  const slotOrder = new Map(practice.questions.flatMap((question) =>
+    question.questionType === "ctw"
+      ? question.slots.map((slot) => [`${question.questionId}:${slot.slotId}`, slot.slotOrder] as const)
+      : []
+  ));
+  return rows.map((row, index) => ({
+    answerId: row.attempt_answer_id ?? `${row.question_id}:${row.slot_id ?? ""}:${index}`,
+    order: row.slot_id
+      ? slotOrder.get(`${row.question_id}:${row.slot_id}`) ?? index + 1
+      : questionOrder.get(row.question_id) ?? index + 1,
+    isAnswered: Boolean(row.student_answer?.trim()),
+    isCorrect: row.is_correct === true,
+    questionId: row.question_id,
+    slotId: row.slot_id,
+    questionTimeSeconds: row.question_time_seconds ?? null
+  })).sort((left, right) => left.order - right.order || left.answerId.localeCompare(right.answerId));
+}
 
 export function buildSubmittedReadingAnswerState(
   practice: StudentReadingPracticePayload,

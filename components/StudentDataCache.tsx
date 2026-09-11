@@ -32,6 +32,7 @@ export const STUDENT_ATTEMPT_CACHE_PREFIX = "attempt";
 export const STUDENT_READING_HISTORY_CACHE_PREFIX = "reading:history";
 export const STUDENT_READING_RESULT_CACHE_PREFIX = "reading:result";
 export const STUDENT_READING_CATALOG_CACHE_PREFIX = "reading:catalog";
+export const STUDENT_READING_FULL_SET_CACHE_PREFIX = "reading:full-sets";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
 export const STUDENT_WRITING_CATALOG_CACHE_PREFIX = "writing:catalog";

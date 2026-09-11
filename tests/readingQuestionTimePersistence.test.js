@@ -49,7 +49,7 @@ test("result time is loaded from the answer row and browser storage is not autho
   assert.doesNotMatch(resultUi, /mergeStoredReadingQuestionTimes/);
   assert.doesNotMatch(resultSession, /mergeStoredReadingQuestionTimes/);
   assert.match(resultSession, /storeReadingQuestionTimes/);
-  assert.match(resultUi, /if \(seconds === null\) return "时间暂无记录"/);
+  assert.match(resultUi, /if \(seconds === null\) return "—"/);
 });
 
 test("result mapper preserves DB question time and keeps legacy null", () => {

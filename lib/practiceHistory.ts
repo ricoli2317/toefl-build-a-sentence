@@ -158,7 +158,7 @@ function summarizeScope(
   };
 }
 
-function countCorrectedWrongAnswers(
+export function correctedWrongAnswerKeys(
   wrongAnswers: PracticeHistoryAnswer[],
   correctionAnswers: PracticeHistoryAnswer[],
   attempts: PracticeHistoryAttempt[]
@@ -182,7 +182,15 @@ function countCorrectedWrongAnswers(
     if (dateTime(answer.answeredAt) > wrongTime) correctedKeys.add(key);
   }
 
-  return correctedKeys.size;
+  return correctedKeys;
+}
+
+function countCorrectedWrongAnswers(
+  wrongAnswers: PracticeHistoryAnswer[],
+  correctionAnswers: PracticeHistoryAnswer[],
+  attempts: PracticeHistoryAttempt[]
+) {
+  return correctedWrongAnswerKeys(wrongAnswers, correctionAnswers, attempts).size;
 }
 
 function summarizeSets(attempts: PracticeHistoryAttempt[]) {

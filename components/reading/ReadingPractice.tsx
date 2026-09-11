@@ -79,14 +79,25 @@ import {
   readingLookupEnabled,
   type ReadingPracticeMode
 } from "@/lib/reading/lookupCapabilities";
-import type { SubmittedReadingReviewPayload } from "@/lib/reading/review";
+import type {
+  SubmittedReadingReviewItem,
+  SubmittedReadingReviewPayload
+} from "@/lib/reading/review";
 import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
 type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
 type ReviewResponse = Partial<SubmittedReadingReviewPayload> & { error?: string };
+type FullSetReviewResponse = {
+  answers?: ReadingAnswerState;
+  error?: string;
+  initialReviewIndex?: number;
+  practice?: StudentReadingPracticePayload;
+  reviewItems?: SubmittedReadingReviewItem[];
+  title?: string;
+};
 
-const readingTwoColumnScaleStyle = {
+export const readingTwoColumnScaleStyle = {
   "--reading-scale-unit": "clamp(0.875px, min(calc(0.5px + 0.034722vw), calc(0.4px + 0.066667vh)), 1.12px)",
   fontSize: "var(--reading-scale-unit)",
   maxWidth: "1440em",
@@ -303,6 +314,7 @@ export function ReadingSubmittedReview({
           || !payload.practice
           || !isReadingAttemptSummary(payload.attempt)
           || !payload.answers
+          || !Array.isArray(payload.reviewItems)
         ) {
           throw new Error(payload.error ?? "阅读作答加载失败，请稍后重试。");
         }
@@ -310,7 +322,7 @@ export function ReadingSubmittedReview({
           throw new Error("这次阅读作答暂时无法显示。");
         }
         if (!cancelled) {
-          setReview({ answers: payload.answers, attempt: payload.attempt, practice: payload.practice });
+          setReview({ answers: payload.answers, attempt: payload.attempt, practice: payload.practice, reviewItems: payload.reviewItems });
         }
       } catch (loadError) {
         if (!cancelled) {
@@ -339,9 +351,89 @@ export function ReadingSubmittedReview({
       attempt={review.attempt}
       initialAnswers={review.answers}
       initialQuestionIndex={initialQuestionIndex}
+      initialReviewIndex={initialQuestionIndex}
       mode="submitted_review"
       onBack={() => router.push(`/student/reading/results/${encodeURIComponent(attemptId)}`)}
       practice={review.practice}
+      reviewItems={review.reviewItems}
+    />
+  );
+}
+
+export function ReadingFullSetSubmittedReview({
+  attemptId,
+  fullSetId,
+  questionIndex
+}: {
+  attemptId: string;
+  fullSetId: string;
+  questionIndex: number;
+}) {
+  const router = useRouter();
+  const [payload, setPayload] = useState<Required<Pick<FullSetReviewResponse,
+    "answers" | "initialReviewIndex" | "practice" | "reviewItems" | "title">> | null>(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, []);
+  useEffect(() => {
+    let cancelled = false;
+    void createBrowserSupabase().auth.getSession().then(async ({ data }) => {
+      try {
+        if (!data.session) throw new Error("请先登录后再查看套题作答。");
+        const response = await fetch(
+          `/api/reading/full-sets/${encodeURIComponent(fullSetId)}/results/${encodeURIComponent(attemptId)}/review?questionIndex=${questionIndex}`,
+          { cache: "no-store", headers: { Authorization: `Bearer ${data.session.access_token}` } }
+        );
+        const result = await response.json().catch(() => ({})) as FullSetReviewResponse;
+        if (
+          !response.ok || result.error || !result.answers || !result.practice
+          || !Array.isArray(result.reviewItems) || !Number.isInteger(result.initialReviewIndex)
+          || typeof result.title !== "string"
+        ) {
+          throw new Error(result.error ?? "套题作答加载失败，请稍后重试。");
+        }
+        if (!cancelled) setPayload(result as Required<Pick<FullSetReviewResponse,
+          "answers" | "initialReviewIndex" | "practice" | "reviewItems" | "title">>);
+      } catch (loadError) {
+        if (!cancelled) setError(loadError instanceof Error ? loadError.message : "套题作答加载失败，请稍后重试。");
+      }
+    });
+    return () => { cancelled = true; };
+  }, [attemptId, fullSetId, questionIndex]);
+  const resultHref = `/student/reading/full-sets/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`;
+  if (error) return <ReadingPracticeMessage description={error} onLeave={() => router.push(resultHref)} title="无法打开套题作答" />;
+  if (!payload) return <ReadingPracticeMessage description="正在加载作答内容..." title="正在准备套题作答" />;
+  return (
+    <ReadingPracticeShell
+      attempt={{
+        attemptId,
+        logicalItemId: payload.practice.item.itemId,
+        taskType: payload.practice.item.module,
+        status: "submitted",
+        elapsedSeconds: 0,
+        startedAt: "",
+        submittedAt: null,
+        totalPoints: payload.reviewItems.length,
+        correctPoints: payload.reviewItems.filter((item) => item.isCorrect).length,
+        incorrectPoints: payload.reviewItems.filter((item) => item.isAnswered && !item.isCorrect).length,
+        unansweredPoints: payload.reviewItems.filter((item) => !item.isAnswered).length
+      }}
+      initialAnswers={payload.answers}
+      initialQuestionIndex={questionIndex}
+      initialReviewIndex={payload.initialReviewIndex}
+      mode="submitted_review"
+      onBack={() => router.push(resultHref)}
+      practice={payload.practice}
+      reviewItems={payload.reviewItems}
+      reviewTitle={payload.title}
     />
   );
 }
@@ -350,18 +442,24 @@ function ReadingPracticeShell({
   attempt: initialAttempt,
   initialAnswers = {},
   initialQuestionIndex = 0,
+  initialReviewIndex = 0,
   mode = "active",
   onBack,
   onExit,
-  practice
+  practice,
+  reviewItems = [],
+  reviewTitle
 }: {
   attempt: ReadingAttemptSummary;
   initialAnswers?: ReadingAnswerState;
   initialQuestionIndex?: number;
+  initialReviewIndex?: number;
   mode?: ReadingPracticeMode;
   onBack: () => void;
   onExit?: () => void;
   practice: StudentReadingPracticePayload;
+  reviewItems?: SubmittedReadingReviewItem[];
+  reviewTitle?: string;
 }) {
   const router = useRouter();
   const { invalidate } = useStudentDataCache();
@@ -384,6 +482,9 @@ function ReadingPracticeShell({
       currentIndex: Math.max(0, Math.min(created.workspaceCount - 1, initialQuestionIndex))
     };
   });
+  const [reviewIndex, setReviewIndex] = useState(() =>
+    Math.max(0, Math.min(reviewItems.length - 1, initialReviewIndex))
+  );
   const questionTimesRef = useRef<Record<string, number>>({});
   const activeQuestionIdRef = useRef(practice.questions[navigation.currentIndex]?.questionId ?? "");
   const questionStartedAtRef = useRef(Date.now());
@@ -406,7 +507,14 @@ function ReadingPracticeShell({
     router.replace(`/student/reading/results/${encodeURIComponent(attempt.attemptId)}`);
   }, [attempt.attemptId, attempt.status, readOnly, router]);
 
-  const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
+  const currentReviewItem = reviewItems[reviewIndex] ?? null;
+  const reviewQuestionIndex = currentReviewItem
+    ? practice.questions.findIndex((question) => question.questionId === currentReviewItem.questionId)
+    : -1;
+  const effectiveQuestionIndex = readOnly && reviewQuestionIndex >= 0
+    ? reviewQuestionIndex
+    : navigation.currentIndex;
+  const currentQuestion = practice.questions[effectiveQuestionIndex] ?? practice.questions[0];
   const captureCurrentQuestionTime = useCallback(() => {
     const questionId = activeQuestionIdRef.current;
     const elapsed = Math.max(0, Math.round((Date.now() - questionStartedAtRef.current) / 1000));
@@ -419,7 +527,19 @@ function ReadingPracticeShell({
     questionStartedAtRef.current = Date.now();
     return questionTimesRef.current;
   }, []);
+  const selectReviewItem = (index: number) => {
+    const target = reviewItems[index];
+    if (target?.href) {
+      router.push(target.href);
+      return;
+    }
+    setReviewIndex(index);
+  };
   const move = (direction: -1 | 1) => {
+    if (readOnly && reviewItems.length) {
+      selectReviewItem(Math.max(0, Math.min(reviewItems.length - 1, reviewIndex + direction)));
+      return;
+    }
     if (!readOnly) captureCurrentQuestionTime();
     setNavigation((current) => {
       const next = moveReadingNavigation(current, direction);
@@ -488,12 +608,20 @@ function ReadingPracticeShell({
         elapsedSeconds={elapsedSeconds}
         onBack={onBack}
         onExit={onExit}
-        title={practice.item.title}
+        showElapsed={!readOnly}
+        title={reviewTitle ?? practice.item.title}
       />
       <main
         className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
         style={practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
       >
+        {readOnly && currentReviewItem ? (
+          <ReadingReviewStatusBar
+            currentIndex={reviewIndex}
+            items={reviewItems}
+            onSelect={selectReviewItem}
+          />
+        ) : null}
         <section className={practice.item.module === "ctw"
           ? "min-h-0 flex-1 overflow-auto rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
           : "flex min-h-0 flex-1 flex-col overflow-hidden bg-white"}
@@ -505,12 +633,14 @@ function ReadingPracticeShell({
             onAnswerChange={updateAnswer}
             practice={practice}
             readOnly={readOnly}
+            reviewItems={reviewItems.filter((item) => item.questionId === currentQuestion.questionId)}
+            selectedReviewItem={currentReviewItem}
           />
           {practice.item.module !== "ctw" ? (
             <ReadingQuestionNavigation
-              canGoNext={navigation.currentIndex < navigation.workspaceCount - 1}
-              canGoPrevious={navigation.currentIndex > 0}
-              currentIndex={navigation.currentIndex}
+              canGoNext={readOnly ? reviewIndex < reviewItems.length - 1 : navigation.currentIndex < navigation.workspaceCount - 1}
+              canGoPrevious={readOnly ? reviewIndex > 0 : navigation.currentIndex > 0}
+              currentIndex={readOnly ? reviewIndex : navigation.currentIndex}
               embedded
               module={practice.item.module}
               onNext={() => move(1)}
@@ -519,15 +649,15 @@ function ReadingPracticeShell({
               readOnly={readOnly}
               submitError={submitError}
               submitting={submitting}
-              workspaceCount={navigation.workspaceCount}
+              workspaceCount={readOnly ? reviewItems.length : navigation.workspaceCount}
             />
           ) : null}
         </section>
         {practice.item.module === "ctw" ? (
           <ReadingQuestionNavigation
-            canGoNext={navigation.currentIndex < navigation.workspaceCount - 1}
-            canGoPrevious={navigation.currentIndex > 0}
-            currentIndex={navigation.currentIndex}
+            canGoNext={readOnly ? reviewIndex < reviewItems.length - 1 : navigation.currentIndex < navigation.workspaceCount - 1}
+            canGoPrevious={readOnly ? reviewIndex > 0 : navigation.currentIndex > 0}
+            currentIndex={readOnly ? reviewIndex : navigation.currentIndex}
             module={practice.item.module}
             onNext={() => move(1)}
             onPrevious={() => move(-1)}
@@ -535,7 +665,7 @@ function ReadingPracticeShell({
             readOnly={readOnly}
             submitError={submitError}
             submitting={submitting}
-            workspaceCount={navigation.workspaceCount}
+            workspaceCount={readOnly ? reviewItems.length : navigation.workspaceCount}
           />
         ) : null}
       </main>
@@ -548,12 +678,14 @@ function ReadingPracticeHeader({
   onBack,
   onExit,
   productName,
+  showElapsed = true,
   title
 }: {
   elapsedSeconds: number;
   onBack: () => void;
   onExit?: () => void;
   productName?: string;
+  showElapsed?: boolean;
   title: string;
 }) {
   return (
@@ -567,7 +699,7 @@ function ReadingPracticeHeader({
         <p className="max-w-[42vw] truncate text-sm font-bold text-student-primary">{title}</p>
       </div>
       <div className="flex items-center justify-self-end gap-3">
-        <div className="hidden min-h-[54px] items-center gap-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 text-student-primary sm:flex">
+        {showElapsed ? <div className="hidden min-h-[54px] items-center gap-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 text-student-primary sm:flex">
           <Clock3 aria-hidden="true" size={20} />
           <div className="text-center">
             <p className="text-[10px] font-semibold uppercase tracking-[0.08em]">Elapsed</p>
@@ -575,7 +707,7 @@ function ReadingPracticeHeader({
               {formatWritingTimer(elapsedSeconds)}
             </p>
           </div>
-        </div>
+        </div> : null}
         {onExit ? (
           <button className="writing-exit-button" onClick={onExit} type="button">
             <DoorOpen aria-hidden="true" size={19} />
@@ -587,13 +719,15 @@ function ReadingPracticeHeader({
   );
 }
 
-function ReadingWorkspaceRouter({
+export function ReadingWorkspaceRouter({
   answers,
   currentQuestion,
   lookupEnabled,
   onAnswerChange,
   practice,
-  readOnly
+  readOnly,
+  reviewItems = [],
+  selectedReviewItem = null
 }: {
   answers: ReadingAnswerState;
   currentQuestion: StudentReadingPracticePayload["questions"][number];
@@ -601,6 +735,8 @@ function ReadingWorkspaceRouter({
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   practice: StudentReadingPracticePayload;
   readOnly: boolean;
+  reviewItems?: SubmittedReadingReviewItem[];
+  selectedReviewItem?: SubmittedReadingReviewItem | null;
 }) {
   if (practice.item.module === "ctw" && currentQuestion.questionType === "ctw") {
     return (
@@ -610,6 +746,8 @@ function ReadingWorkspaceRouter({
         onAnswerChange={onAnswerChange}
         question={currentQuestion}
         readOnly={readOnly}
+        reviewItems={reviewItems}
+        selectedReviewItem={selectedReviewItem}
       />
     );
   }
@@ -747,13 +885,17 @@ function CtwPracticeWorkspace({
   lookupEnabled,
   onAnswerChange,
   question,
-  readOnly
+  readOnly,
+  reviewItems,
+  selectedReviewItem
 }: {
   answer: ReadingAnswer | undefined;
   lookupEnabled: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   question: StudentCtwQuestion;
   readOnly: boolean;
+  reviewItems: SubmittedReadingReviewItem[];
+  selectedReviewItem: SubmittedReadingReviewItem | null;
 }) {
   const emptySlots = useMemo(() => createCtwSlotAnswers(question.slots), [question.slots]);
   const slotAnswers = answer?.kind === "ctw" ? answer.slots : emptySlots;
@@ -827,6 +969,7 @@ function CtwPracticeWorkspace({
                 }
                 const slot = slotById.get(segment.slotId);
                 if (!slot) return null;
+                const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
                 return (
                   <CtwBlankWord
                     characters={slotAnswers[slot.slotId] ?? emptySlots[slot.slotId]}
@@ -837,6 +980,8 @@ function CtwPracticeWorkspace({
                     positionRefs={positionRefs}
                     prefix={slot.prefix}
                     readOnly={readOnly}
+                    resultState={reviewItem ? reviewItem.isAnswered ? reviewItem.isCorrect ? "correct" : "incorrect" : "unanswered" : null}
+                    selected={selectedReviewItem?.slotId === slot.slotId}
                     slotId={slot.slotId}
                     slotOrder={slot.slotOrder}
                   />
@@ -858,6 +1003,8 @@ function CtwBlankWord({
   positionRefs,
   prefix,
   readOnly,
+  resultState,
+  selected,
   slotId,
   slotOrder
 }: {
@@ -868,6 +1015,8 @@ function CtwBlankWord({
   positionRefs: { current: Map<string, HTMLSpanElement> };
   prefix: string;
   readOnly: boolean;
+  resultState: "correct" | "incorrect" | "unanswered" | null;
+  selected: boolean;
   slotId: string;
   slotOrder: number;
 }) {
@@ -876,9 +1025,21 @@ function CtwBlankWord({
     : "relative focus:after:pointer-events-none focus:after:absolute focus:after:right-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-ctw-caret-blink focus:after:bg-student-text focus:after:content-['']";
 
   return (
-    <span className="inline whitespace-nowrap" data-ctw-slot={slotId}>
+    <span
+      className={`inline whitespace-nowrap rounded-[0.2em] ${selected ? "bg-amber-100 ring-2 ring-amber-400 ring-offset-1" : ""}`}
+      data-ctw-slot={slotId}
+      data-current-slot={selected ? "true" : undefined}
+    >
       <span>{prefix}</span>
-      <span className="inline rounded-[0.15em] bg-[#f1f2f5] px-[0.08em]" data-ctw-fill-region="true">
+      <span
+        className={`inline rounded-[0.15em] px-[0.08em] ${resultState === "correct"
+          ? "bg-student-primary-soft text-student-primary"
+          : resultState === "incorrect"
+            ? "bg-student-error-soft text-student-error"
+            : "bg-[#f1f2f5]"}`}
+        data-answer-state={resultState ?? undefined}
+        data-ctw-fill-region="true"
+      >
         {characters.map((character, characterIndex) => {
         const position = { slotId, characterIndex };
         const key = ctwPositionKey(position);
@@ -909,6 +1070,64 @@ function CtwBlankWord({
       </span>
     </span>
   );
+}
+
+function ReadingReviewStatusBar({
+  currentIndex,
+  items,
+  onSelect
+}: {
+  currentIndex: number;
+  items: SubmittedReadingReviewItem[];
+  onSelect: (index: number) => void;
+}) {
+  const current = items[currentIndex];
+  if (!current) return null;
+  const currentState = !current.isAnswered ? "未作答" : current.isCorrect ? "正确" : "错误";
+  const currentTone = current.isCorrect
+    ? "text-student-primary"
+    : current.isAnswered
+      ? "text-student-error"
+      : "text-student-muted";
+  return (
+    <section className="mb-3 shrink-0 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-review-status">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className={`text-sm font-bold ${currentTone}`}>
+          第{current.order}题 · {currentState} · {formatReviewQuestionTime(current.questionTimeSeconds)}
+        </p>
+        <div className="flex max-w-full flex-wrap gap-1.5" aria-label="阅读作答题号导航">
+          {items.map((item, index) => {
+            const state = !item.isAnswered ? "unanswered" : item.isCorrect ? "correct" : "incorrect";
+            return (
+              <button
+                aria-current={index === currentIndex ? "true" : undefined}
+                className={`min-h-8 min-w-8 rounded-full border px-2 text-xs font-bold tabular-nums ${
+                  index === currentIndex
+                    ? "border-amber-500 bg-amber-100 text-student-text ring-2 ring-amber-200"
+                    : state === "correct"
+                      ? "border-student-primary-border bg-student-primary-soft text-student-primary"
+                      : state === "incorrect"
+                        ? "border-student-error-border bg-student-error-soft text-student-error"
+                        : "border-student-border bg-student-bg text-student-muted"
+                }`}
+                data-answer-state={state}
+                key={item.answerId}
+                onClick={() => onSelect(index)}
+                type="button"
+              >
+                {item.order}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function formatReviewQuestionTime(seconds: number | null) {
+  if (seconds === null) return "—";
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
 function ctwPositionKey(position: CtwPosition) {

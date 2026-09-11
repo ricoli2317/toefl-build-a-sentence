@@ -7,7 +7,8 @@ export const UNIFIED_HISTORY_TASK_TYPES = [
   "academic_discussion",
   "ctw",
   "rdl",
-  "rap"
+  "rap",
+  "full_set"
 ] as const;
 
 export type UnifiedHistoryTaskType = (typeof UNIFIED_HISTORY_TASK_TYPES)[number];
@@ -19,7 +20,8 @@ export const UNIFIED_HISTORY_TASK_LABELS: Record<UnifiedHistoryTaskType, string>
   academic_discussion: "Academic Discussion",
   ctw: "Complete the Words",
   rdl: "Read in Daily Life",
-  rap: "Read an Academic Passage"
+  rap: "Read an Academic Passage",
+  full_set: "Reading Full Set"
 };
 
 export type UnifiedHistoryObjectiveMetrics = {
@@ -36,6 +38,15 @@ export type UnifiedHistoryWritingMetrics = {
   wordCount: number;
 };
 
+export type UnifiedHistoryScaledMetrics = {
+  kind: "scaled";
+  display: string;
+  rawMin: number;
+  rawMax: number;
+  scaledMin: number;
+  scaledMax: number;
+};
+
 export type UnifiedHistoryTarget = {
   href: string;
   label: string;
@@ -46,7 +57,7 @@ export type UnifiedHistoryRecord = {
   attemptId: string;
   category: Exclude<UnifiedHistoryCategory, "all">;
   durationSeconds: number;
-  metrics: UnifiedHistoryObjectiveMetrics | UnifiedHistoryWritingMetrics;
+  metrics: UnifiedHistoryObjectiveMetrics | UnifiedHistoryWritingMetrics | UnifiedHistoryScaledMetrics;
   resultTarget: UnifiedHistoryTarget;
   retakeTarget: UnifiedHistoryTarget;
   submittedAt: string;
@@ -109,6 +120,18 @@ export type UnifiedReadingAttemptRow = {
   total_points: number | null;
 };
 
+export type UnifiedReadingFullSetAttemptRow = {
+  attempt_id: string;
+  completed_at: string;
+  duration_seconds: number;
+  full_set_id: string;
+  raw_min: number;
+  raw_max: number;
+  scaled_min: number;
+  scaled_max: number;
+  score_display: string;
+};
+
 export type UnifiedWritingReviewSummary = {
   officialScore: number;
 };
@@ -124,6 +147,7 @@ export function buildUnifiedPracticeHistory(input: {
   limit?: number;
   offset?: number;
   readingAttempts: UnifiedReadingAttemptRow[];
+  readingFullSetAttempts?: UnifiedReadingFullSetAttemptRow[];
   readingTitles?: Map<string, string>;
   taskType?: UnifiedHistoryTaskType | "all";
   todayEnd: number;
@@ -146,7 +170,8 @@ export function buildUnifiedPracticeHistory(input: {
       input.writingAssignments,
       input.writingReviews
     ),
-    ...buildReadingRecords(input.readingAttempts, input.readingTitles)
+    ...buildReadingRecords(input.readingAttempts, input.readingTitles),
+    ...buildReadingFullSetRecords(input.readingFullSetAttempts ?? [])
   ].sort(compareUnifiedHistoryRecords);
   const overview = buildUnifiedHistoryOverview(records, input.todayStart, input.todayEnd);
   const filtered = records.filter((record) =>
@@ -165,6 +190,38 @@ export function buildUnifiedPracticeHistory(input: {
     },
     records: filtered.slice(offset, offset + limit)
   };
+}
+
+function buildReadingFullSetRecords(
+  attempts: UnifiedReadingFullSetAttemptRow[]
+): UnifiedHistoryRecord[] {
+  return attempts.map((attempt) => ({
+    attemptId: attempt.attempt_id,
+    category: "reading" as const,
+    durationSeconds: duration(attempt.duration_seconds),
+    metrics: {
+      kind: "scaled" as const,
+      display: attempt.score_display,
+      rawMin: attempt.raw_min,
+      rawMax: attempt.raw_max,
+      scaledMin: attempt.scaled_min,
+      scaledMax: attempt.scaled_max
+    },
+    resultTarget: {
+      href: `/student/reading/full-sets/${encodeURIComponent(attempt.full_set_id)}/result/${encodeURIComponent(attempt.attempt_id)}`,
+      label: "查看结果",
+      method: "GET" as const
+    },
+    retakeTarget: {
+      href: attempt.full_set_id,
+      label: "再次练习",
+      method: "POST" as const
+    },
+    submittedAt: attempt.completed_at,
+    taskLabel: UNIFIED_HISTORY_TASK_LABELS.full_set,
+    taskType: "full_set" as const,
+    title: attempt.full_set_id
+  }));
 }
 
 export function buildUnifiedHistoryOverview(

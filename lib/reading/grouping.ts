@@ -35,6 +35,10 @@ export type ReadingGroupingResult = {
 
 const sourceLabelCollator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 
+export function compareReadingSourceLabels(left: string, right: string) {
+  return sourceLabelCollator.compare(left, right);
+}
+
 export function groupReadingSourceOccurrences(
   candidates: ReadingSourceOccurrenceCandidate[]
 ): ReadingGroupingResult {

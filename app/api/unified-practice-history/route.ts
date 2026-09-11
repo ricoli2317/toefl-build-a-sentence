@@ -5,6 +5,7 @@ import {
   isUnifiedHistoryTaskType,
   type UnifiedBasAttemptRow,
   type UnifiedReadingAttemptRow,
+  type UnifiedReadingFullSetAttemptRow,
   type UnifiedWritingAssignmentSummary,
   type UnifiedWritingAttemptRow,
   type UnifiedWritingReviewSummary
@@ -17,6 +18,8 @@ import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import { requireWritingStudent, writingJson } from "@/lib/writingServer";
+import { calculateReadingFullSetScoreRange } from "@/lib/reading/fullSetResults";
+import { loadReadingFullSets } from "@/lib/reading/fullSets.server";
 
 type WritingQuestionTitleRow = {
   question_id: string;
@@ -39,6 +42,26 @@ type WritingAssignmentRow = {
   assignment_id: string;
   question_source: "custom" | "question_bank";
   set_title: string | null;
+};
+
+type FullSetAttemptRow = {
+  attempt_id: string;
+  completed_at: string;
+  full_set_id: string;
+};
+
+type FullSetModuleRow = {
+  attempt_id: string;
+  module_attempt_id: string;
+  module_number: number;
+  started_at: string;
+  submitted_at: string | null;
+};
+
+type FullSetAnswerRow = {
+  module_attempt_id: string;
+  occurrence_id: string;
+  is_correct: boolean | null;
 };
 
 export const dynamic = "force-dynamic";
@@ -71,7 +94,8 @@ export async function GET(request: Request) {
       fallbackStart + 24 * 60 * 60 * 1000
     );
 
-    const [basResult, writingResult, readingResult] = await Promise.all([
+    const service = createServiceSupabase();
+    const [basResult, writingResult, readingResult, fullSetAttemptResult] = await Promise.all([
       timing.measure("database", "unified_history_bas_attempts", () =>
         readAllSupabaseRows<UnifiedBasAttemptRow>((from, to) =>
           auth.supabase!
@@ -108,14 +132,55 @@ export async function GET(request: Request) {
             .order("attempt_id", { ascending: false })
             .range(from, to)
         )
+      ),
+      timing.measure("database", "unified_history_reading_full_set_attempts", () =>
+        readAllSupabaseRows<FullSetAttemptRow>((from, to) =>
+          service.from("reading_full_set_attempts")
+            .select("attempt_id,full_set_id,completed_at")
+            .eq("student_id", auth.userId!)
+            .eq("status", "completed")
+            .not("completed_at", "is", null)
+            .order("completed_at", { ascending: false })
+            .order("attempt_id", { ascending: false })
+            .range(from, to)
+        )
       )
     ]);
-    const attemptError = basResult.error ?? writingResult.error ?? readingResult.error;
+    const attemptError = basResult.error ?? writingResult.error ?? readingResult.error
+      ?? fullSetAttemptResult.error;
     if (attemptError) throw new Error(attemptError.message);
 
     const basAttempts = basResult.data ?? [];
     const writingAttempts = writingResult.data ?? [];
     const readingAttempts = readingResult.data ?? [];
+    const completedFullSetAttempts = fullSetAttemptResult.data ?? [];
+    const fullSetAttemptIds = completedFullSetAttempts.map((attempt) => attempt.attempt_id);
+    const fullSetModuleResult = fullSetAttemptIds.length
+      ? await readAllSupabaseRows<FullSetModuleRow>((from, to) =>
+          service.from("reading_full_set_module_attempts")
+            .select("attempt_id,module_attempt_id,module_number,started_at,submitted_at")
+            .in("attempt_id", fullSetAttemptIds)
+            .eq("status", "submitted")
+            .range(from, to)
+        )
+      : { data: [] as FullSetModuleRow[], error: null };
+    if (fullSetModuleResult.error) throw new Error(fullSetModuleResult.error.message);
+    const fullSetModuleIds = (fullSetModuleResult.data ?? []).map((module) => module.module_attempt_id);
+    const fullSetAnswerResult = fullSetModuleIds.length
+      ? await readAllSupabaseRows<FullSetAnswerRow>((from, to) =>
+          service.from("reading_full_set_answers")
+            .select("module_attempt_id,occurrence_id,is_correct")
+            .in("module_attempt_id", fullSetModuleIds)
+            .range(from, to)
+        )
+      : { data: [] as FullSetAnswerRow[], error: null };
+    if (fullSetAnswerResult.error) throw new Error(fullSetAnswerResult.error.message);
+    const readingFullSetAttempts = buildFullSetHistoryRows(
+      completedFullSetAttempts,
+      fullSetModuleResult.data ?? [],
+      fullSetAnswerResult.data ?? [],
+      await loadReadingFullSets(service)
+    );
     const pageSkeleton = timing.measureSync("processing", "paginate_unified_practice_history", () =>
       buildUnifiedPracticeHistory({
         basAttempts,
@@ -123,6 +188,7 @@ export async function GET(request: Request) {
         limit,
         offset,
         readingAttempts,
+        readingFullSetAttempts,
         taskType: taskTypeValue,
         todayEnd,
         todayStart,
@@ -141,7 +207,6 @@ export async function GET(request: Request) {
     const visibleReadingAttempts = readingAttempts.filter((attempt) =>
       visibleRecordKeys.has(`${attempt.task_type}:${attempt.attempt_id}`)
     );
-    const service = createServiceSupabase();
     const emailIds = distinct(
       visibleWritingAttempts.filter((attempt) => attempt.task_type === "email").map((attempt) => attempt.question_id)
     );
@@ -239,6 +304,7 @@ export async function GET(request: Request) {
         limit,
         offset,
         readingAttempts,
+        readingFullSetAttempts,
         readingTitles: new Map(readingTitles.map((item) => [item.logical_item_id, item.title?.trim() || ""])),
         taskType: taskTypeValue,
         todayEnd,
@@ -255,6 +321,51 @@ export async function GET(request: Request) {
     });
     return respond({ error: "练习历史加载失败，请稍后重试。" }, { status: 500 });
   }
+}
+
+function buildFullSetHistoryRows(
+  attempts: FullSetAttemptRow[],
+  modules: FullSetModuleRow[],
+  answers: FullSetAnswerRow[],
+  fullSets: Awaited<ReturnType<typeof loadReadingFullSets>>
+): UnifiedReadingFullSetAttemptRow[] {
+  const fullSetById = new Map(fullSets.filter((fullSet) => fullSet.fullSetId).map((fullSet) => [fullSet.fullSetId!, fullSet]));
+  return attempts.flatMap((attempt) => {
+    const fullSet = fullSetById.get(attempt.full_set_id);
+    const attemptModules = modules.filter((module) => module.attempt_id === attempt.attempt_id);
+    if (!fullSet || attemptModules.length !== 2) return [];
+    const moduleIds = new Set(attemptModules.map((module) => module.module_attempt_id));
+    const attemptAnswers = answers.filter((answer) => moduleIds.has(answer.module_attempt_id));
+    const scores = Array.from(new Set(attemptAnswers.map((answer) => answer.occurrence_id))).map((occurrenceId) => ({
+      occurrenceId,
+      correctPoints: attemptAnswers.filter((answer) => answer.occurrence_id === occurrenceId && answer.is_correct === true).length
+    }));
+    try {
+      const score = calculateReadingFullSetScoreRange(fullSet, scores);
+      return [{
+        attempt_id: attempt.attempt_id,
+        completed_at: attempt.completed_at,
+        duration_seconds: attemptModules.reduce((sum, module) => {
+          const started = Date.parse(module.started_at);
+          const submitted = Date.parse(module.submitted_at ?? "");
+          if (!Number.isFinite(started) || !Number.isFinite(submitted)) return sum;
+          const elapsed = Math.max(0, Math.round((submitted - started) / 1000));
+          const timeLimit = module.module_number === 1
+            ? fullSet.module1.timeLimitSeconds
+            : fullSet.module2.timeLimitSeconds;
+          return sum + Math.min(elapsed, timeLimit ?? 0);
+        }, 0),
+        full_set_id: attempt.full_set_id,
+        raw_min: score.rawMin,
+        raw_max: score.rawMax,
+        scaled_min: score.scaledMin,
+        scaled_max: score.scaledMax,
+        score_display: score.display
+      }];
+    } catch {
+      return [];
+    }
+  });
 }
 
 async function readRowsInBatches<T>(

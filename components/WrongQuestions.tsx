@@ -92,7 +92,7 @@ export function WrongQuestionsHome() {
               开始订正
             </Link>
           )}
-          countLabel="待复习"
+          countLabel="待订正"
           countValue={todayCount}
           description="巩固今日所错，加深记忆，及时提升"
           footer="建议及时订正，强化薄弱知识点，避免重复犯错。"
@@ -256,7 +256,7 @@ export function TodayWrongQuestions() {
         <section className="student-card border-t-2 border-t-student-error-border">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-student-muted">待复习</p>
+              <p className="text-sm font-semibold text-student-muted">待订正</p>
               <p className="mt-1 text-2xl font-bold text-student-error">{questions.length}题</p>
             </div>
             <Link className="student-button-error" href="/student/wrong-questions/today/practice">

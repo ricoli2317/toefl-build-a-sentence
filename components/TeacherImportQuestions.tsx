@@ -21,6 +21,12 @@ import {
 
 type ImportResult = {
   success?: boolean;
+  preview?: boolean;
+  csvRowCount?: number;
+  acceptedRowCount?: number;
+  rejectedRowCount?: number;
+  occurrenceCount?: number;
+  blockerCount?: number;
   successCount: number;
   insertedCount: number;
   updatedCount: number;
@@ -29,6 +35,13 @@ type ImportResult = {
   logicalNeedsReviewCount: number;
   possibleDuplicateCount?: number;
   occurrenceInsertedCount: number;
+  exactFingerprintReuseCount?: number;
+  semanticReuseCount?: number;
+  existingOccurrenceCount?: number;
+  occurrenceConflictCount?: number;
+  rdlMaterialReuseCount?: number;
+  rdlNewMaterialCount?: number;
+  rdlMaterialWarningCount?: number;
   failedCount: number;
   warnings?: Array<{
     message: string;
@@ -117,6 +130,13 @@ export function TeacherImportQuestions() {
     questionType === "unknown" ? closestSchema?.difference.missingFields ?? [] : [];
   const unexpectedFields =
     questionType === "unknown" ? closestSchema?.difference.unexpectedFields ?? [] : [];
+  const readingType = isReadingQuestionType(questionType);
+  const readingPreflightComplete = readingType && result?.preview === true;
+  const readingPreflightBlocked = readingPreflightComplete && (
+    (result.rejectedRowCount ?? result.failedCount) > 0
+    || (result.occurrenceConflictCount ?? 0) > 0
+    || (result.blockerCount ?? result.failedCount) > 0
+  );
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -160,9 +180,9 @@ export function TeacherImportQuestions() {
   }
 
   async function importRows() {
+    const readingDryRun = isReadingQuestionType(questionType) && result?.preview !== true;
     setLoading(true);
     setError("");
-    setResult(null);
 
     if (rows.length === 0) {
       setError("请先选择 CSV 文件。");
@@ -176,6 +196,12 @@ export function TeacherImportQuestions() {
           missingFields.join(", ") || "无"
         }。非预期字段：${unexpectedFields.join(", ") || "无"}。`
       );
+      setLoading(false);
+      return;
+    }
+
+    if (readingPreflightBlocked) {
+      setError("当前 Reading 预检存在 rejected、occurrence conflict 或 blocker，禁止导入。");
       setLoading(false);
       return;
     }
@@ -195,7 +221,7 @@ export function TeacherImportQuestions() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token ?? ""}`
         },
-        body: JSON.stringify({ fileName, headers, rows })
+        body: JSON.stringify({ fileName, headers, rows, dryRun: readingDryRun })
       });
 
       const responseText = await response.text();
@@ -224,10 +250,12 @@ export function TeacherImportQuestions() {
         if (resultPayload.failedRows?.length > 0) {
           console.error("Import questions completed with failed rows", resultPayload);
         }
-        invalidate(TEACHER_STATS_CACHE_KEY);
-        invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
-        if (resultPayload.successCount > 0) {
-          broadcastQuestionBankUpdated();
+        if (!resultPayload.preview) {
+          invalidate(TEACHER_STATS_CACHE_KEY);
+          invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
+          if (resultPayload.successCount > 0) {
+            broadcastQuestionBankUpdated();
+          }
         }
         setResult(resultPayload);
         if (resultPayload.logicalNeedsReviewCount > 0) {
@@ -317,20 +345,34 @@ export function TeacherImportQuestions() {
 
         <div className="mx-6 grid gap-4 rounded-2xl border border-student-primary-border bg-student-primary-soft/45 p-5 sm:mx-8 md:grid-cols-3">
           <ImportStep icon={TableProperties} description="校验文件表头是否符合要求" title="CSV 表头校验" />
-          <ImportStep icon={FileSearch} description="预览前几行数据，确认内容无误" title="题目预览" />
-          <ImportStep icon={ClipboardCheck} description="查看导入统计与详细结果" title="导入结果" />
+          <ImportStep
+            icon={FileSearch}
+            description={readingType ? "只读检查格式、历史重复与来源冲突" : "预览前几行数据，确认内容无误"}
+            title={readingType ? "Reading 预检" : "题目预览"}
+          />
+          <ImportStep
+            icon={ClipboardCheck}
+            description={readingType ? "预检通过后由用户确认正式导入" : "查看导入统计与详细结果"}
+            title={readingType ? "确认导入" : "导入结果"}
+          />
         </div>
 
         <div className="mt-6 border-t border-student-border px-6 py-5 sm:px-8">
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <button
-              className="teacher-button-primary min-w-52"
-              disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown"}
-              onClick={importRows}
-              type="button"
-            >
-              {loading ? "正在导入..." : "开始导入"}
-            </button>
+            {!readingPreflightBlocked ? (
+              <button
+                className="teacher-button-primary min-w-52"
+                disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown"}
+                onClick={importRows}
+                type="button"
+              >
+                {loading
+                  ? (readingType && !readingPreflightComplete ? "正在预检..." : "正在导入...")
+                  : (readingType
+                      ? (readingPreflightComplete ? "确认导入" : "开始预检")
+                      : "开始导入")}
+              </button>
+            ) : null}
             {checkingRole ? <span className="text-sm font-semibold text-student-muted">正在检查教师权限...</span> : null}
             {rows.length > 0 ? (
               <span className="text-sm font-semibold text-student-primary">检测到 {rows.length} 行数据</span>
@@ -349,22 +391,39 @@ export function TeacherImportQuestions() {
             </p>
           ) : null}
           {error ? <pre className="teacher-error mt-4 whitespace-pre-wrap">{error}</pre> : null}
+          {readingPreflightBlocked ? (
+            <p className="teacher-error mt-4">
+              预检未通过：存在 rejected、occurrence conflict 或 blocker。请修正 CSV 后重新选择文件并再次预检。
+            </p>
+          ) : null}
         </div>
       </section>
 
       {result ? (
         <section className="teacher-card p-6">
-          <h2 className="text-xl font-bold text-student-text">导入结果</h2>
+          <h2 className="text-xl font-bold text-student-text">{result.preview ? "Reading CSV 预检结果" : "导入结果"}</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {isReadingQuestionType(questionType) ? (
               <>
-                <ResultMetric label="成功导入题组" value={result.successCount} />
-                <ResultMetric label="新建题组" value={result.insertedCount} />
-                <ResultMetric label="已有题组更新" value={result.updatedCount} />
-                <ResultMetric label="已有相同题组复用" value={result.logicalAutoMergeCount ?? 0} />
+                <ResultMetric label="CSV 行数" value={result.csvRowCount ?? rows.length} />
+                <ResultMetric label="Accepted" value={result.acceptedRowCount ?? 0} />
+                <ResultMetric label="Rejected" tone={(result.rejectedRowCount ?? 0) > 0 ? "error" : undefined} value={result.rejectedRowCount ?? 0} />
+                <ResultMetric label="Occurrences" value={result.occurrenceCount ?? 0} />
+                <ResultMetric label="新逻辑题" value={result.logicalNewItemCount ?? 0} />
+                <ResultMetric label="严格指纹复用" value={result.exactFingerprintReuseCount ?? 0} />
+                <ResultMetric label="语义复用" value={result.semanticReuseCount ?? 0} />
                 <ResultMetric label="新增来源记录" value={result.occurrenceInsertedCount ?? 0} />
-                <ResultMetric label="可能重复（已保留）" value={result.possibleDuplicateCount ?? 0} />
-                <ResultMetric label="失败" tone="error" value={result.failedCount} />
+                <ResultMetric label="已有相同来源" value={result.existingOccurrenceCount ?? 0} />
+                <ResultMetric label="来源冲突" tone={(result.occurrenceConflictCount ?? 0) > 0 ? "error" : undefined} value={result.occurrenceConflictCount ?? 0} />
+                <ResultMetric label="可能重复（warning）" tone={(result.possibleDuplicateCount ?? 0) > 0 ? "error" : undefined} value={result.possibleDuplicateCount ?? 0} />
+                <ResultMetric label="Blockers" tone={(result.blockerCount ?? 0) > 0 ? "error" : undefined} value={result.blockerCount ?? 0} />
+                {questionType === "read_in_daily_life" ? (
+                  <>
+                    <ResultMetric label="RDL 素材复用" value={result.rdlMaterialReuseCount ?? 0} />
+                    <ResultMetric label="RDL 新素材" value={result.rdlNewMaterialCount ?? 0} />
+                    <ResultMetric label="RDL 素材警告" tone={(result.rdlMaterialWarningCount ?? 0) > 0 ? "error" : undefined} value={result.rdlMaterialWarningCount ?? 0} />
+                  </>
+                ) : null}
               </>
             ) : (
               <>
@@ -432,7 +491,7 @@ export function TeacherImportQuestions() {
 
       {rows.length > 0 ? (
         <section className="teacher-card p-6">
-          <h2 className="text-xl font-bold text-student-text">题目预览</h2>
+          <h2 className="text-xl font-bold text-student-text">CSV 内容预览</h2>
           <div className="mt-4 overflow-x-auto rounded-xl border border-student-border">
             <table className="w-full min-w-[760px] border-collapse text-left text-sm">
               <thead>
@@ -589,6 +648,8 @@ function localizeImportOperation(operation?: string) {
     "upsert academic discussion questions": "写入 Academic Discussion 题目",
     "validate Reading group": "校验 Reading 题组",
     "check Reading possible duplicates": "检查 Reading 可能重复内容",
+    "check RDL canonical material": "检查 RDL canonical material",
+    "preflight Reading group": "只读预检 Reading 题组",
     "import Reading group atomically": "完整写入 Reading 题组",
     "import CSV questions": "导入 CSV 题目"
   };

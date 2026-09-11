@@ -11,6 +11,7 @@ import {
   FileText,
   Mail,
   MessageCircleMore,
+  Library,
   Puzzle,
   RotateCcw,
   Timer
@@ -23,6 +24,7 @@ import {
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { ReadingRetakeButton } from "@/components/reading/ReadingRetakeButton";
+import { ReadingFullSetRetakeButton } from "@/components/reading/ReadingFullSetRetakeButton";
 import {
   StudentEmptyState,
   StudentErrorState,
@@ -55,7 +57,8 @@ const TASK_ICONS: Record<UnifiedHistoryTaskType, HistoryIcon> = {
   academic_discussion: MessageCircleMore,
   ctw: CompleteTheWordsIcon,
   rdl: FileText,
-  rap: BookOpen
+  rap: BookOpen,
+  full_set: Library
 };
 
 export function UnifiedPracticeHistory() {
@@ -233,7 +236,9 @@ function HistoryRecords({ records }: { records: UnifiedHistoryRecord[] }) {
                   : <Eye aria-hidden="true" size={16} />}
                 {record.resultTarget.label}
               </Link>
-              {record.retakeTarget.method === "POST" ? (
+              {record.taskType === "full_set" ? (
+                <ReadingFullSetRetakeButton compact fullSetId={record.retakeTarget.href} />
+              ) : record.retakeTarget.method === "POST" ? (
                 <ReadingRetakeButton attemptId={record.attemptId} compact label={record.retakeTarget.label} />
               ) : (
                 <Link className="student-button-primary min-h-9 px-3 py-1.5 text-sm" href={record.retakeTarget.href}>
@@ -284,6 +289,9 @@ function formatMetrics(record: UnifiedHistoryRecord) {
   const duration = formatAttemptDuration(record.durationSeconds);
   if (record.metrics.kind === "objective") {
     return `得分 ${record.metrics.correct}/${record.metrics.total} · 正确率 ${Math.round(record.metrics.accuracy * 100)}% · 用时 ${duration}`;
+  }
+  if (record.metrics.kind === "scaled") {
+    return `得分 ${record.metrics.display} · 用时 ${duration}`;
   }
   return `${record.metrics.wordCount} words · 用时 ${duration} · ${record.metrics.hasPublishedReview
     ? `评分 ${record.metrics.reviewScore ?? "—"}/5`
@@ -348,7 +356,7 @@ async function loadUnifiedHistory(query: string, session: StudentCacheSession) {
 }
 
 function isReadingTask(taskType: UnifiedHistoryTaskType | "all") {
-  return taskType === "ctw" || taskType === "rdl" || taskType === "rap";
+  return taskType === "ctw" || taskType === "rdl" || taskType === "rap" || taskType === "full_set";
 }
 
 function isWritingTask(taskType: UnifiedHistoryTaskType | "all") {

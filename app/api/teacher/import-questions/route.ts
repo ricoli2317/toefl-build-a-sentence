@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireAdmin } from "@/lib/auth";
 import {
   QUESTION_TYPE_SCHEMAS,
   closestQuestionSchema,
@@ -35,6 +35,12 @@ const importedTaskTypes: Partial<Record<KnownQuestionType, PracticeTaskType>> = 
   email: "email",
   academic_discussion: "academic_discussion"
 };
+
+const readingQuestionTypes = new Set<KnownQuestionType>([
+  "complete_the_words",
+  "read_in_daily_life",
+  "read_an_academic_passage"
+]);
 
 function json(data: unknown, init?: ResponseInit) {
   return NextResponse.json(data, {
@@ -97,16 +103,16 @@ function headerMismatchResponse(headers: string[]) {
 
 export async function POST(request: Request) {
   try {
-    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    const auth = await requireAdmin(bearerToken(request));
     if (auth.error || !auth.userId) {
       return json(
         {
           success: false,
-          error: auth.error,
-          message: auth.error,
-          operation: "authorize teacher import"
+          error: "Forbidden",
+          message: "仅管理员可以导入题库。",
+          operation: "authorize admin import"
         },
-        { status: 401 }
+        { status: auth.role ? 403 : 401 }
       );
     }
 
@@ -114,6 +120,7 @@ export async function POST(request: Request) {
       headers?: unknown;
       rows?: unknown;
       fileName?: unknown;
+      dryRun?: unknown;
     };
     if (!Array.isArray(body.rows) || !body.rows.every((row) => row && typeof row === "object")) {
       return json(
@@ -148,11 +155,12 @@ export async function POST(request: Request) {
       rows,
       supabase: createServiceSupabase(),
       userId: auth.userId,
-      fileName: typeof body.fileName === "string" ? body.fileName : undefined
+      fileName: typeof body.fileName === "string" ? body.fileName : undefined,
+      dryRun: readingQuestionTypes.has(questionType) && body.dryRun === true
     });
 
     const importedTaskType = importedTaskTypes[questionType];
-    if (result.successCount > 0 && importedTaskType) {
+    if (!result.preview && result.successCount > 0 && importedTaskType) {
       revalidatePracticeCatalog(importedTaskType);
     }
 

@@ -21,7 +21,6 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import type {
   ReadingResultAnswer,
-  ReadingResultCtwParagraph,
   ReadingResultPayload
 } from "@/lib/reading/history";
 import {
@@ -59,7 +58,7 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
   if (state.loading) return <StudentLoadingState text="正在加载阅读结果..." />;
   if (state.error || !state.data) return <StudentErrorState text="没有找到阅读结果或加载失败。" />;
 
-  const { answers, attempt, ctwParagraphs } = state.data;
+  const { answers, attempt } = state.data;
   const scoreComparison = peerComparison
     ? formatScoreComparison(peerComparison)
     : RESULT_COMPARISON_LOADING_TEXT;
@@ -88,9 +87,7 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
       <ReadingDetailCard
         answers={answers}
         attemptId={attempt.attemptId}
-        ctwParagraphs={ctwParagraphs}
         submittedAt={attempt.submittedAt}
-        taskType={attempt.taskType}
       />
     </div>
   );
@@ -99,15 +96,11 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
 function ReadingDetailCard({
   answers,
   attemptId,
-  ctwParagraphs,
   submittedAt,
-  taskType
 }: {
   answers: ReadingResultAnswer[];
   attemptId: string;
-  ctwParagraphs: ReadingResultCtwParagraph[];
   submittedAt: string;
-  taskType: ReadingResultPayload["attempt"]["taskType"];
 }) {
   return (
     <section className="student-card" data-testid="reading-result-detail">
@@ -118,44 +111,8 @@ function ReadingDetailCard({
         </div>
         <ReadingRetakeButton attemptId={attemptId} />
       </div>
-      {taskType === "ctw" ? (
-        <CtwParagraphResult paragraphs={ctwParagraphs} />
-      ) : (
-        <ReadingQuestionStatusChips answers={answers} attemptId={attemptId} />
-      )}
+      <ReadingQuestionStatusChips answers={answers} attemptId={attemptId} />
     </section>
-  );
-}
-
-function CtwParagraphResult({ paragraphs }: { paragraphs: ReadingResultCtwParagraph[] }) {
-  return (
-    <article
-      className="mt-6 text-sm leading-6 text-student-text"
-      data-testid="ctw-result-passage"
-    >
-      {paragraphs.map((paragraph) => (
-        <p className="mb-4 last:mb-0" key={paragraph.paragraphId}>
-          {paragraph.segments.map((segment, index) => {
-            if (segment.kind === "text") {
-              return <span key={`${paragraph.paragraphId}:text:${index}`}>{segment.text}</span>;
-            }
-            return (
-              <span className="whitespace-nowrap" data-ctw-result-slot={segment.order} key={segment.answerId}>
-                <span>{segment.prefix}</span>
-                <span
-                  className={segment.isAnswered
-                    ? segment.isCorrect ? "font-semibold text-student-primary" : "font-semibold text-student-error"
-                    : "font-semibold text-student-muted"}
-                  data-answer-state={segment.isAnswered ? segment.isCorrect ? "correct" : "incorrect" : "unanswered"}
-                >
-                  {segment.studentAnswer || "____"}
-                </span>
-              </span>
-            );
-          })}
-        </p>
-      ))}
-    </article>
   );
 }
 
@@ -220,7 +177,7 @@ async function loadReadingPeerComparison(attemptId: string) {
 }
 
 function formatQuestionTime(seconds: number | null) {
-  if (seconds === null) return "时间暂无记录";
+  if (seconds === null) return "—";
   const minutes = Math.floor(seconds / 60);
   return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
 }

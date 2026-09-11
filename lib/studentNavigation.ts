@@ -13,6 +13,7 @@ export const STUDENT_ROUTES = {
   readingCtw: "/student/reading/ctw",
   readingRdl: "/student/reading/rdl",
   readingRap: "/student/reading/rap",
+  readingFullSets: "/student/reading/full-sets",
   grammarPractice: "/student/grammar-practice",
   wrongQuestions: "/student/wrong-questions"
 } as const;

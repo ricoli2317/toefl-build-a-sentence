@@ -39,15 +39,12 @@ test("Reading result summary is unified and removes duplicate completion copy", 
   assert.doesNotMatch(resultUi, /incorrectPoints=|unansweredPoints=|reading-result-breakdown/);
 });
 
-test("CTW result renders one paragraph with answer-only state colors", () => {
-  assert.match(resultUi, /data-testid="ctw-result-passage"/);
-  assert.match(resultUi, /<span>\{segment\.prefix\}<\/span>/);
-  assert.match(resultUi, /segment\.studentAnswer \|\| "____"/);
-  assert.match(resultUi, /text-student-primary/);
-  assert.match(resultUi, /text-student-error/);
-  assert.match(resultUi, /className="mt-6 text-sm leading-6 text-student-text"/);
-  assert.match(resultUi, /className="mb-4 last:mb-0"/);
-  assert.doesNotMatch(resultUi, /正确答案|你的答案|correctAnswer/);
+test("CTW result uses the same ten scoring-slot chips and opens the full paragraph review", () => {
+  assert.match(resultUi, /<ReadingQuestionStatusChips answers=\{answers\} attemptId=\{attemptId\} \/>/);
+  assert.match(resultUi, /第\{answer\.order\}题/);
+  assert.match(practiceUi, /data-current-slot/);
+  assert.match(practiceUi, /data-testid="ctw-passage"/);
+  assert.match(practiceUi, /reviewItems\.filter/);
   assert.doesNotMatch(resultRoute, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
 });
 
@@ -59,7 +56,7 @@ test("RDL and RAP share centered state chips with time and neutral unanswered st
   assert.match(resultUi, /border-student-border bg-student-bg text-student-muted/);
   assert.match(resultUi, /<Link[\s\S]*href=\{`\/student\/reading\/results\/\$\{encodeURIComponent\(attemptId\)\}\/questions\/\$\{questionIndex\}`\}/);
   assert.match(resultRoute, /question_time_seconds/);
-  assert.match(resultUi, /if \(seconds === null\) return "时间暂无记录"/);
+  assert.match(resultUi, /if \(seconds === null\) return "—"/);
 });
 
 test("question-time normalization keeps only finite non-negative whole seconds", () => {

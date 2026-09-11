@@ -1,6 +1,7 @@
 import { readingAttemptJson, requireReadingAttemptStudent } from "@/lib/reading/attemptServer";
 import {
   buildSubmittedReadingAnswerState,
+  buildSubmittedReadingReviewItems,
   type SubmittedReadingAnswerRow
 } from "@/lib/reading/review";
 import {
@@ -55,7 +56,7 @@ export async function GET(
 
   const answerResult = await db
     .from("reading_attempt_answers")
-    .select("question_id,slot_id,answer_kind,student_answer,is_correct")
+    .select("attempt_answer_id,question_id,slot_id,answer_kind,student_answer,is_correct,question_time_seconds")
     .eq("attempt_id", ownedAttempt.attempt_id);
   if (answerResult.error) return serverError("submitted answers", answerResult.error);
 
@@ -79,7 +80,8 @@ export async function GET(
         incorrectPoints,
         unansweredPoints
       },
-      practice: practiceResult
+      practice: practiceResult,
+      reviewItems: buildSubmittedReadingReviewItems(practiceResult, rows)
     });
   } catch (error) {
     console.error("Submitted Reading review mapping failed", {

@@ -83,6 +83,25 @@ test("RDL requires a known bound material with frozen object keys", () => {
   );
 });
 
+test("Admin RDL preflight accepts a registered versioned canonical asset pair", () => {
+  const document = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
+  const versioned = {
+    ...material,
+    imageAssetPath: "reading/rdl/RDL-001/release-2026-08/material_final.png",
+    hitboxDataPath: "reading/rdl/RDL-001/release-2026-08/selection_map.json"
+  };
+  const result = adaptReadingCsv({
+    type: "read_in_daily_life",
+    rows: document.rows,
+    sourceFile: "fixture.csv",
+    materials: new Map([[versioned.materialId, versioned]]),
+    allowRegisteredMaterialStorageKeys: true
+  });
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.candidates.length, 1);
+  assert.equal(result.candidates[0].materials[0].imageAssetPath, versioned.imageAssetPath);
+});
+
 test("RDL CSV requires the canonical material_type and rejects a mismatch", () => {
   const missing = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   missing.rows.forEach((row) => { row.material_type = ""; });

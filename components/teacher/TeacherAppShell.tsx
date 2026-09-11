@@ -20,7 +20,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { useTeacherCachedData } from "@/components/TeacherDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import { AdminAreaSwitch } from "@/components/RoleGate";
+import { AdminAreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 
 export type TeacherCrumb = { href?: string; label: string };
@@ -86,6 +86,7 @@ export function TeacherAppShell({
   workspace?: boolean;
 }) {
   const pathname = usePathname();
+  const { role } = useCurrentAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerOverlayOpen, setHeaderOverlayOpen] = useState(false);
   const [sidebarOverlayOpen, setSidebarOverlayOpen] = useState(false);
@@ -167,10 +168,12 @@ export function TeacherAppShell({
               </span>
             ) : null}
             <SignOutButton locale="zh-CN" showIdentity={false} variant="student" />
-            <Link className="teacher-button-primary" href="/teacher/import">
-              <CloudUpload aria-hidden="true" size={17} strokeWidth={2} />
-              导入 CSV
-            </Link>
+            {role === "admin" ? (
+              <Link className="teacher-button-primary" href="/teacher/import">
+                <CloudUpload aria-hidden="true" size={17} strokeWidth={2} />
+                导入 CSV
+              </Link>
+            ) : null}
           </div>
         </div>
       </header>
@@ -229,7 +232,7 @@ export function TeacherAppShell({
                   onClick={() => setMenuOpen(false)}
                 >
                   <Icon aria-hidden="true" size={22} strokeWidth={1.9} />
-                  <span>{item.label}</span>
+                  <span>{role === "teacher" && item.href === "/teacher/students" ? "学生" : item.label}</span>
                 </Link>
               );
             })}

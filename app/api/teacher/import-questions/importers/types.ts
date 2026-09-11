@@ -26,6 +26,12 @@ export type ImportWarning = {
 
 export type ImportResult = {
   success: true;
+  preview?: boolean;
+  csvRowCount?: number;
+  acceptedRowCount?: number;
+  rejectedRowCount?: number;
+  occurrenceCount?: number;
+  blockerCount?: number;
   successCount: number;
   insertedCount: number;
   updatedCount: number;
@@ -34,6 +40,13 @@ export type ImportResult = {
   logicalNeedsReviewCount: number;
   possibleDuplicateCount?: number;
   occurrenceInsertedCount: number;
+  exactFingerprintReuseCount?: number;
+  semanticReuseCount?: number;
+  existingOccurrenceCount?: number;
+  occurrenceConflictCount?: number;
+  rdlMaterialReuseCount?: number;
+  rdlNewMaterialCount?: number;
+  rdlMaterialWarningCount?: number;
   failedCount: number;
   failedRows: FailedRow[];
   warnings: ImportWarning[];
@@ -52,6 +65,7 @@ export type ImporterContext = {
   supabase: ImportSupabase;
   userId: string;
   fileName?: string;
+  dryRun?: boolean;
 };
 
 export type SupabaseLikeError = {

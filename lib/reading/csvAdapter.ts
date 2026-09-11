@@ -50,6 +50,7 @@ export function adaptReadingCsv(input: {
   rows: Array<Record<string, string>>;
   sourceFile: string;
   materials?: Map<string, ReadingMaterial>;
+  allowRegisteredMaterialStorageKeys?: boolean;
 }): ReadingCsvAdapterResult {
   const grouped = groupRows(input.rows);
   const candidates: ReadingSourceOccurrenceCandidate[] = [];
@@ -58,7 +59,13 @@ export function adaptReadingCsv(input: {
 
   for (const group of grouped) {
     try {
-      const candidate = buildCandidate(input.type, group.rows, input.sourceFile, input.materials);
+      const candidate = buildCandidate(
+        input.type,
+        group.rows,
+        input.sourceFile,
+        input.materials,
+        input.allowRegisteredMaterialStorageKeys
+      );
       const identity = [
         candidate.source.sourceKind,
         candidate.source.sourceLabel,
@@ -115,7 +122,8 @@ function buildCandidate(
   type: ReadingCsvType,
   rows: RowGroup["rows"],
   sourceFile: string,
-  materials?: Map<string, ReadingMaterial>
+  materials?: Map<string, ReadingMaterial>,
+  allowRegisteredMaterialStorageKeys = false
 ): ReadingSourceOccurrenceCandidate {
   if (rows.length === 0) throw new Error("group contains no rows");
   const first = rows[0];
@@ -179,7 +187,7 @@ function buildCandidate(
     }
     const material = materials?.get(materialId);
     if (!material) throw new Error(`material_id ${materialId} does not exist in reading_materials`);
-    validateProductionMaterial(material);
+    validateProductionMaterial(material, allowRegisteredMaterialStorageKeys);
     const materialType = required(first, "material_type");
     if (!isRdlMaterialType(materialType)) {
       throw new Error(`unsupported material_type ${materialType}`);
@@ -326,7 +334,10 @@ function buildCandidate(
   }
 }
 
-function validateProductionMaterial(material: ReadingMaterial) {
+function validateProductionMaterial(
+  material: ReadingMaterial,
+  allowRegisteredMaterialStorageKeys: boolean
+) {
   if (material.bindingStatus !== "bound") {
     throw new Error(`material_id ${material.materialId} is not production-ready (binding_status=${material.bindingStatus})`);
   }
@@ -340,8 +351,22 @@ function validateProductionMaterial(material: ReadingMaterial) {
   asReadingAssetObjectKey(material.hitboxDataPath);
   const expected = readingRdlObjectKeys(material.materialId);
   if (material.imageAssetPath !== expected.imageObjectKey || material.hitboxDataPath !== expected.selectionMapObjectKey) {
+    if (allowRegisteredMaterialStorageKeys && isVersionedCanonicalMaterialPair(material)) return;
     throw new Error(`material_id ${material.materialId} does not use the frozen production object-key convention`);
   }
+}
+
+function isVersionedCanonicalMaterialPair(material: ReadingMaterial) {
+  const prefix = `reading/rdl/${material.materialId}/`;
+  const imagePath = material.imageAssetPath ?? "";
+  const hitboxPath = material.hitboxDataPath ?? "";
+  const imageDirectory = imagePath.slice(0, imagePath.lastIndexOf("/"));
+  const hitboxDirectory = hitboxPath.slice(0, hitboxPath.lastIndexOf("/"));
+  return imagePath.startsWith(prefix)
+    && hitboxPath.startsWith(prefix)
+    && imageDirectory === hitboxDirectory
+    && imagePath.endsWith("/material_final.png")
+    && hitboxPath.endsWith("/selection_map.json");
 }
 
 function required(row: Record<string, string>, field: string) {
