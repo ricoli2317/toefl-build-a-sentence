@@ -4,7 +4,7 @@ import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createAnonSupabase } from "@/lib/supabase/server";
 import {
   isReadingFullSetAttemptSummary,
-  readingFullSetAttemptPhase,
+  readingFullSetActiveModuleAttempt,
   type ReadingFullSetAttemptSummary,
   type ReadingFullSetRunnerOccurrence,
   type ReadingFullSetRunnerPayload
@@ -88,10 +88,10 @@ export function buildReadingFullSetRunnerPayload(
   attempt: ReadingFullSetAttemptSummary,
   fullSet: ReadingFullSet
 ): ReadingFullSetRunnerPayload {
-  const phase = readingFullSetAttemptPhase(attempt);
-  const moduleOccurrences = phase === "module_1_active"
+  const activeModule = readingFullSetActiveModuleAttempt(attempt);
+  const moduleOccurrences = activeModule?.moduleNumber === 1
     ? fullSet.module1.occurrences
-    : phase === "module_2_active"
+    : activeModule?.moduleNumber === 2
       ? fullSet.module2.occurrences
       : [];
   return {

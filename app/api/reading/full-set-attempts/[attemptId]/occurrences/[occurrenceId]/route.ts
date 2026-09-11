@@ -7,7 +7,8 @@ import {
 } from "@/lib/reading/fullSetAttemptServer";
 import {
   isReadingFullSetAttemptSummary,
-  readingFullSetAttemptPhase
+  readingFullSetActiveModuleAttempt,
+  type ReadingFullSetAttemptSummary
 } from "@/lib/reading/fullSetAttempts";
 import { findValidReadingFullSet, type ReadingFullSetOccurrence } from "@/lib/reading/fullSets";
 import { loadReadingFullSets } from "@/lib/reading/fullSets.server";
@@ -129,11 +130,8 @@ export async function PUT(
   return readingFullSetAttemptJson(data, { status: data.accepted ? 200 : 409 });
 }
 
-function activeModule(attempt: Parameters<typeof readingFullSetAttemptPhase>[0]) {
-  const phase = readingFullSetAttemptPhase(attempt);
-  if (phase === "module_1_active") return attempt.module1;
-  if (phase === "module_2_active") return attempt.module2;
-  return null;
+function activeModule(attempt: ReadingFullSetAttemptSummary) {
+  return readingFullSetActiveModuleAttempt(attempt);
 }
 
 function moduleOccurrences(

@@ -5,22 +5,28 @@ const test = require("node:test");
 
 const {
   moveReadingFullSetPosition,
+  readingFullSetActiveModuleAttempt,
   readingFullSetAttemptPhase,
   readingFullSetDisplayRange,
   readingFullSetPrepAction,
-  readingFullSetRemainingSeconds
+  readingFullSetRemainingSeconds,
+  readingFullSetRunnerModuleKey
 } = require("../lib/reading/fullSetAttempts.ts");
 const { buildReadingSubmissionAnswers } = require("../lib/reading/attempts.ts");
 
 const root = path.join(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const migration = read("supabase/reading_full_set_attempts.sql");
+const loadingPauseHotfix = read("supabase/reading_full_set_loading_pause_hotfix_20260911.sql");
 const retakeHotfix = read("supabase/reading_full_set_retake_hotfix.sql");
 const attemptRoute = read("app/api/reading/full-set-attempts/route.ts");
 const runnerRoute = read("app/api/reading/full-set-attempts/[attemptId]/route.ts");
 const occurrenceRoute = read("app/api/reading/full-set-attempts/[attemptId]/occurrences/[occurrenceId]/route.ts");
 const submitRoute = read("app/api/reading/full-set-attempts/[attemptId]/modules/[moduleNumber]/submit/route.ts");
 const runnerUi = read("components/reading/ReadingFullSetRunner.tsx");
+const detailUi = read("components/reading/ReadingFullSetDetail.tsx");
+const loadPauseRoute = read("app/api/reading/full-set-attempts/[attemptId]/loads/route.ts");
+const loadPauseFinishRoute = read("app/api/reading/full-set-attempts/[attemptId]/loads/[loadId]/route.ts");
 const existingRuntime = read("components/reading/ReadingPractice.tsx");
 
 function moduleAttempt(moduleNumber, status = "active") {
@@ -62,6 +68,10 @@ test("Prep state maps active and transition states without exposing internal sta
   assert.equal(readingFullSetPrepAction(m2Ready).label, "开始 Module 2");
   const m2Active = attempt({ currentModule: 2, module1: moduleAttempt(1, "submitted"), module2: moduleAttempt(2) });
   assert.equal(readingFullSetPrepAction(m2Active).label, "继续 Module 2");
+  const recoverableM2 = { ...m2Active, currentModule: 1 };
+  assert.equal(readingFullSetAttemptPhase(recoverableM2), "module_2_active");
+  assert.equal(readingFullSetActiveModuleAttempt(recoverableM2).moduleNumber, 2);
+  assert.equal(readingFullSetRunnerModuleKey(recoverableM2), "module-2");
   const completed = attempt({ status: "completed", currentModule: 2, completedAt: "2026-08-30T01:00:00.000Z", module1: moduleAttempt(1, "submitted"), module2: moduleAttempt(2, "submitted") });
   assert.equal(readingFullSetPrepAction(completed).label, "练习已完成");
 });
@@ -125,7 +135,7 @@ test("migration makes Start idempotent and assigns authoritative Module deadline
   assert.match(migration, /return 1230/);
   assert.match(migration, /return 1110/);
   assert.match(migration, /return 540/);
-  assert.match(migration, /deadline_at = started_at \+ make_interval\(secs => time_limit_seconds\)/);
+  assert.match(migration, /deadline_at >= started_at \+ make_interval\(secs => time_limit_seconds\)/);
   assert.match(migration, /v_now \+ make_interval\(secs => v_time_limit\)/);
   assert.match(migration, /reading_full_set_module_time_limit\(p_full_set_id, 1::smallint\)/);
   assert.match(migration, /reading_full_set_module_time_limit\(p_full_set_id, 2::smallint\)/);
@@ -148,6 +158,14 @@ test("M1 lock, timeout reconciliation, manual submit, and M2 completion are serv
   assert.match(m1Creation, /module_number, status, time_limit_seconds/);
   assert.match(m1Creation, /v_attempt_id, 1, 'active'/);
   assert.doesNotMatch(m1Creation, /v_attempt_id, 2, 'active'/);
+  const startM2 = migration.slice(
+    migration.indexOf("create or replace function public.start_reading_full_set_module_2"),
+    migration.indexOf("create or replace function public.save_reading_full_set_occurrence_answers")
+  );
+  assert.match(startM2, /insert into public\.reading_full_set_module_attempts[\s\S]*module_number[\s\S]*2, 'active'/);
+  assert.match(startM2, /returning module_attempt_id into v_module_2_attempt_id[\s\S]*insert into public\.reading_full_set_load_pauses/);
+  assert.match(startM2, /update public\.reading_full_set_attempts[\s\S]*set current_module = 2/);
+  assert.match(m1Creation, /returning module_attempt_id into v_module_attempt_id[\s\S]*insert into public\.reading_full_set_load_pauses/);
 });
 
 test("answer mutation uses ownership, active lock, deadline, occurrence identity, and revision checks", () => {
@@ -171,6 +189,7 @@ test("student APIs enforce ownership and do not expose answer keys or the next M
   assert.match(occurrenceRoute, /select\("question_id,slot_id,answer_kind,student_answer,question_time_seconds"\)/);
   assert.doesNotMatch(occurrenceRoute, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text/);
   assert.match(runnerRoute, /buildReadingFullSetRunnerPayload/);
+  assert.match(read("lib/reading/fullSetAttemptServer.ts"), /readingFullSetActiveModuleAttempt\(attempt\)[\s\S]*activeModule\?\.moduleNumber === 2[\s\S]*fullSet\.module2\.occurrences/);
 });
 
 test("Full Set runner reuses the existing three-type workspace and implements autosave and server submit", () => {
@@ -183,4 +202,54 @@ test("Full Set runner reuses the existing three-type workspace and implements au
   assert.match(runnerUi, /Time Left/i);
   assert.match(runnerUi, /Questions \$\{displayRange\.start\}–\$\{displayRange\.end\}/);
   assert.match(runnerUi, /开始 Module 2/);
+});
+
+test("normal Full Set autosave is silent and does not disable navigation", () => {
+  assert.doesNotMatch(runnerUi, /正在保存答案|保存中|已保存/);
+  assert.doesNotMatch(runnerUi, /disabled=\{[^}]*saving/);
+  assert.match(runnerUi, /pendingSaveRef/);
+  assert.match(runnerUi, /saveChainRef/);
+  assert.match(runnerUi, /答案保存失败，请检查网络后重试。/);
+});
+
+test("same-route M2 transition invalidates M1 state and reloads the server runner", () => {
+  assert.match(runnerUi, /readingFullSetRunnerModuleKey\(current\.attempt\)[\s\S]*readingFullSetRunnerModuleKey\(attempt\)/);
+  assert.match(runnerUi, /occurrences: moduleChanged \? \[\] : current\.occurrences/);
+  assert.match(runnerUi, /moduleAttemptId: moduleAttempt\.moduleAttemptId/);
+  assert.match(runnerUi, /readingFullSetRunnerModuleKey\(activeRunner\.attempt\) !== pending\.moduleAttemptId/);
+  assert.match(runnerUi, /if \(submittingRef\.current\) return/);
+  assert.match(runnerUi, /runnerGenerationRef\.current \+= 1/);
+  assert.match(runnerUi, /occurrenceRequestRef\.current \+= 1/);
+  assert.match(runnerUi, /applyAttempt\(result\.attempt\)[\s\S]*beginLoadPause\(accessToken, null\)[\s\S]*loadRunner\(accessToken\)/);
+});
+
+test("occurrence loading has loaded/error convergence and Retry refreshes server truth", () => {
+  assert.match(runnerUi, /type OccurrenceLoadState/);
+  assert.match(runnerUi, /message: "题目加载失败，请重试。", status: "error"/);
+  assert.match(runnerUi, />\s*重试\s*</);
+  assert.match(runnerUi, /retryOccurrence[\s\S]*beginLoadPause\(accessToken, occurrenceId\)[\s\S]*loadRunner\(accessToken\)/);
+  assert.match(runnerUi, /requestId !== occurrenceRequestRef\.current \|\| generation !== runnerGenerationRef\.current/);
+});
+
+test("authoritative load pause is bounded, idempotent, and extends the server deadline once", () => {
+  for (const source of [migration, loadingPauseHotfix]) {
+    assert.match(source, /reading_full_set_load_pauses/);
+    assert.match(source, /reading_full_set_one_open_load_pause/);
+    assert.match(source, /interval '45 seconds'/);
+    assert.match(source, /300000 - v_already_compensated/);
+    assert.match(source, /deadline_at = deadline_at \+ make_interval/);
+    assert.match(source, /if v_pause\.finished_at is not null then return; end if/);
+    assert.match(source, /v_open_pause\.expires_at > v_now then return/);
+    assert.match(source, /if v_module\.deadline_at <= v_now then/);
+    assert.doesNotMatch(source, /if found and v_module\.deadline_at <= v_now/);
+  }
+  assert.match(loadPauseRoute, /begin_reading_full_set_load_pause/);
+  assert.match(loadPauseFinishRoute, /finish_reading_full_set_load_pause/);
+  assert.match(loadingPauseHotfix, /create or replace function public\.get_or_create_reading_full_set_attempt[\s\S]*insert into public\.reading_full_set_load_pauses/);
+  assert.match(runnerUi, /if \(timerPausedForLoad\) return/);
+  assert.match(runnerUi, /finishLoadPause\(accessToken, pause\.loadId\)/);
+});
+
+test("Prep refreshes authoritative attempt state so active M2 is never labeled as M1", () => {
+  assert.match(detailUi, /refreshOnMount: true/);
 });

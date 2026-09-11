@@ -72,6 +72,21 @@ export function readingFullSetAttemptPhase(
   return "module_1_active";
 }
 
+export function readingFullSetActiveModuleAttempt(
+  attempt: ReadingFullSetAttemptSummary
+): ReadingFullSetModuleAttemptSummary | null {
+  const phase = readingFullSetAttemptPhase(attempt);
+  if (phase === "module_1_active") return attempt.module1;
+  if (phase === "module_2_active") return attempt.module2;
+  return null;
+}
+
+export function readingFullSetRunnerModuleKey(
+  attempt: ReadingFullSetAttemptSummary
+) {
+  return readingFullSetActiveModuleAttempt(attempt)?.moduleAttemptId ?? null;
+}
+
 export function readingFullSetPrepAction(attempt: ReadingFullSetAttemptSummary | null) {
   if (!attempt) return { label: "开始 Module 1", action: "start_module_1" as const };
   switch (readingFullSetAttemptPhase(attempt)) {

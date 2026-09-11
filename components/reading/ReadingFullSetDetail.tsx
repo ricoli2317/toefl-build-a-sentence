@@ -46,7 +46,8 @@ export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
   );
   const attemptState = useStudentCachedData<ReadingFullSetAttemptPayload>(
     attemptCacheKey,
-    (session) => loadReadingFullSetAttempt(fullSetId, session)
+    (session) => loadReadingFullSetAttempt(fullSetId, session),
+    { refreshOnMount: true }
   );
   const title = detailState.data?.fullSet.title ?? fullSetId;
   const action = readingFullSetPrepAction(attemptState.data?.attempt ?? null);

@@ -21,9 +21,11 @@ import {
 } from "@/lib/reading/attempts";
 import {
   moveReadingFullSetPosition,
+  readingFullSetActiveModuleAttempt,
   readingFullSetAttemptPhase,
   readingFullSetDisplayRange,
   readingFullSetRemainingSeconds,
+  readingFullSetRunnerModuleKey,
   type ReadingFullSetAttemptSummary,
   type ReadingFullSetOccurrencePracticePayload,
   type ReadingFullSetRunnerPayload,
@@ -45,6 +47,13 @@ import {
 type RunnerResponse = { error?: string; runner?: ReadingFullSetRunnerPayload };
 type OccurrenceResponse = Partial<ReadingFullSetOccurrencePracticePayload> & { error?: string };
 type AttemptResponse = { attempt?: ReadingFullSetAttemptSummary; error?: string };
+type LoadPauseResponse = AttemptResponse & {
+  expiresAt?: string;
+  finished?: boolean;
+  loadId?: string;
+  reason?: "already_finished" | "no_active_module" | "pause_limit";
+  started?: boolean;
+};
 type SaveResponse = {
   accepted?: boolean;
   answerRevision?: number;
@@ -55,9 +64,16 @@ type SaveResponse = {
 
 type PendingSave = {
   answers: ReadingAnswerState;
+  moduleAttemptId: string;
+  moduleNumber: 1 | 2;
   occurrenceId: string;
   practice: ReadingFullSetOccurrencePracticePayload["practice"];
 };
+
+type OccurrenceLoadState =
+  | { status: "idle" }
+  | { occurrenceId: string; status: "loading" }
+  | { message: string; status: "error" };
 
 export function ReadingFullSetRunner({
   attemptId,
@@ -84,17 +100,41 @@ export function ReadingFullSetRunner({
   const syncRef = useRef({ clientNowAtSyncMs: Date.now(), serverNow: "" });
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [error, setError] = useState("");
+  const [saveError, setSaveError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [timerPausedForLoad, setTimerPausedForLoad] = useState(false);
+  const [occurrenceLoad, setOccurrenceLoad] = useState<OccurrenceLoadState>({ status: "idle" });
   const [submitting, setSubmitting] = useState(false);
+  const submittingRef = useRef(false);
   const [startingModule2, setStartingModule2] = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSaveRef = useRef<PendingSave | null>(null);
   const saveChainRef = useRef<Promise<void>>(Promise.resolve());
   const saveFailedRef = useRef(false);
   const timeoutSubmitStartedRef = useRef(false);
+  const runnerGenerationRef = useRef(0);
+  const occurrenceRequestRef = useRef(0);
+  const activeLoadPauseRef = useRef<{ expiresAt: string; loadId: string } | null>(null);
 
   const applyRunner = useCallback((next: ReadingFullSetRunnerPayload) => {
+    const previousModuleKey = runnerRef.current
+      ? readingFullSetRunnerModuleKey(runnerRef.current.attempt)
+      : null;
+    const nextModuleKey = readingFullSetRunnerModuleKey(next.attempt);
+    if (previousModuleKey !== nextModuleKey) {
+      runnerGenerationRef.current += 1;
+      occurrenceRequestRef.current += 1;
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+      pendingSaveRef.current = null;
+      setOccurrencePayloads({});
+      setAnswersByOccurrence({});
+      answersRef.current = {};
+      questionTimesRef.current = {};
+      activeTimingRef.current = null;
+      setPosition({ occurrenceIndex: 0, questionIndex: 0 });
+      setOccurrenceLoad({ status: "idle" });
+    }
     runnerRef.current = next;
     setRunner(next);
     setCachedData(`reading:full-sets:attempt:${next.attempt.fullSetId}`, {
@@ -104,12 +144,7 @@ export function ReadingFullSetRunner({
       invalidate(`${STUDENT_READING_FULL_SET_CACHE_PREFIX}:catalog`);
       invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
     }
-    const phase = readingFullSetAttemptPhase(next.attempt);
-    const moduleAttempt = phase === "module_1_active"
-      ? next.attempt.module1
-      : phase === "module_2_active"
-        ? next.attempt.module2
-        : null;
+    const moduleAttempt = readingFullSetActiveModuleAttempt(next.attempt);
     if (moduleAttempt) {
       revisionRef.current = moduleAttempt.answerRevision;
       syncRef.current = {
@@ -139,8 +174,77 @@ export function ReadingFullSetRunner({
       throw new Error("这次练习不属于当前套题。");
     }
     applyRunner(payload.runner);
-    setPosition({ occurrenceIndex: 0, questionIndex: 0 });
+    return payload.runner;
   }, [applyRunner, attemptId, expectedFullSetId]);
+
+  const applyAttempt = useCallback((attempt: ReadingFullSetAttemptSummary) => {
+    const current = runnerRef.current;
+    if (current) {
+      const moduleChanged = readingFullSetRunnerModuleKey(current.attempt)
+        !== readingFullSetRunnerModuleKey(attempt);
+      applyRunner({ ...current, attempt, occurrences: moduleChanged ? [] : current.occurrences });
+    }
+  }, [applyRunner]);
+
+  const finishLoadPause = useCallback(async (token: string, loadId: string) => {
+    let lastError: Error | null = null;
+    for (let attemptNumber = 0; attemptNumber < 2; attemptNumber += 1) {
+      try {
+        const response = await fetch(
+          `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/loads/${encodeURIComponent(loadId)}`,
+          { method: "PUT", cache: "no-store", headers: { Authorization: `Bearer ${token}` } }
+        );
+        const payload = await response.json().catch(() => ({})) as LoadPauseResponse;
+        if (!response.ok || !payload.finished || !payload.attempt) {
+          throw new Error(payload.error ?? "题目加载计时同步失败，请重试。");
+        }
+        applyAttempt(payload.attempt);
+        if (activeLoadPauseRef.current?.loadId === loadId) activeLoadPauseRef.current = null;
+        return;
+      } catch (finishError) {
+        lastError = finishError instanceof Error
+          ? finishError
+          : new Error("题目加载计时同步失败，请重试。");
+        if (attemptNumber === 0) await wait(500);
+      }
+    }
+    throw lastError ?? new Error("题目加载计时同步失败，请重试。");
+  }, [applyAttempt, attemptId]);
+
+  const beginLoadPause = useCallback(async (token: string, occurrenceId: string | null) => {
+    setTimerPausedForLoad(true);
+    const loadId = crypto.randomUUID();
+    const response = await fetch(
+      `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/loads`,
+      {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ loadId, occurrenceId })
+      }
+    );
+    const payload = await response.json().catch(() => ({})) as LoadPauseResponse;
+    if (!response.ok || typeof payload.started !== "boolean" || !payload.attempt) {
+      setTimerPausedForLoad(false);
+      throw new Error(payload.error ?? "题目加载计时同步失败，请重试。");
+    }
+    applyAttempt(payload.attempt);
+    if (!payload.started) {
+      setTimerPausedForLoad(false);
+      if (payload.reason === "no_active_module") return null;
+      throw new Error("题目加载失败，请重试。");
+    }
+    if (!payload.loadId || !payload.expiresAt) {
+      setTimerPausedForLoad(false);
+      throw new Error("题目加载计时同步失败，请重试。");
+    }
+    const activePause = { expiresAt: payload.expiresAt, loadId: payload.loadId };
+    activeLoadPauseRef.current = activePause;
+    return activePause;
+  }, [applyAttempt, attemptId]);
 
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
@@ -156,19 +260,31 @@ export function ReadingFullSetRunner({
   useEffect(() => {
     let cancelled = false;
     void createBrowserSupabase().auth.getSession().then(async ({ data }) => {
+      let initialPause: { expiresAt: string; loadId: string } | null = null;
+      let token = "";
       try {
         if (!data.session) throw new Error("请先登录后再开始套题练习。");
         if (cancelled) return;
-        setAccessToken(data.session.access_token);
-        await loadRunner(data.session.access_token);
+        token = data.session.access_token;
+        setAccessToken(token);
+        initialPause = await beginLoadPause(token, null);
+        if (cancelled) {
+          if (initialPause) await finishLoadPause(token, initialPause.loadId);
+          return;
+        }
+        await loadRunner(token);
       } catch (loadError) {
+        if (initialPause && token) {
+          await finishLoadPause(token, initialPause.loadId).catch(() => undefined);
+        }
+        setTimerPausedForLoad(false);
         if (!cancelled) setError(loadError instanceof Error ? loadError.message : "套题练习加载失败，请稍后重试。");
       } finally {
         if (!cancelled) setLoading(false);
       }
     });
     return () => { cancelled = true; };
-  }, [loadRunner]);
+  }, [beginLoadPause, finishLoadPause, loadRunner]);
 
   const currentOccurrence = runner?.occurrences[position.occurrenceIndex] ?? null;
   const currentPayload = currentOccurrence
@@ -178,37 +294,65 @@ export function ReadingFullSetRunner({
 
   useEffect(() => {
     if (!accessToken || !currentOccurrence || currentPayload) return;
-    let cancelled = false;
-    void fetch(
-      `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(currentOccurrence.occurrenceId)}`,
-      { cache: "no-store", headers: { Authorization: `Bearer ${accessToken}` } }
-    ).then(async (response) => {
-      const payload = await response.json().catch(() => ({})) as OccurrenceResponse;
-      if (!response.ok || !payload.practice || !payload.occurrence || !payload.answers || !Number.isInteger(payload.answerRevision)) {
-        throw new Error(payload.error ?? "套题题目加载失败，请稍后重试。");
+    const requestId = occurrenceRequestRef.current + 1;
+    occurrenceRequestRef.current = requestId;
+    const generation = runnerGenerationRef.current;
+    const controller = new AbortController();
+    let expiryTimer: ReturnType<typeof setTimeout> | null = null;
+    let pause = activeLoadPauseRef.current;
+    setOccurrenceLoad({ occurrenceId: currentOccurrence.occurrenceId, status: "loading" });
+    setTimerPausedForLoad(true);
+
+    void (async () => {
+      try {
+        if (!pause) pause = await beginLoadPause(accessToken, currentOccurrence.occurrenceId);
+        if (!pause) throw new Error("题目加载失败，请重试。");
+        const expiryDelay = Math.max(0, Date.parse(pause.expiresAt) - Date.now());
+        expiryTimer = setTimeout(() => controller.abort(), expiryDelay);
+        const response = await fetch(
+          `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(currentOccurrence.occurrenceId)}`,
+          {
+            cache: "no-store",
+            headers: { Authorization: `Bearer ${accessToken}` },
+            signal: controller.signal
+          }
+        );
+        const payload = await response.json().catch(() => ({})) as OccurrenceResponse;
+        if (!response.ok || !payload.practice || !payload.occurrence || !payload.answers || !Number.isInteger(payload.answerRevision)) {
+          throw new Error(payload.error ?? "题目加载失败，请重试。");
+        }
+        const completePayload = payload as ReadingFullSetOccurrencePracticePayload;
+        await finishLoadPause(accessToken, pause.loadId);
+        if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
+        revisionRef.current = Math.max(revisionRef.current, completePayload.answerRevision);
+        setOccurrencePayloads((current) => ({
+          ...current,
+          [currentOccurrence.occurrenceId]: completePayload
+        }));
+        setAnswersByOccurrence((current) => {
+          if (current[currentOccurrence.occurrenceId]) return current;
+          const next = { ...current, [currentOccurrence.occurrenceId]: completePayload.answers };
+          answersRef.current = next;
+          return next;
+        });
+        questionTimesRef.current = {
+          ...questionTimesRef.current,
+          [currentOccurrence.occurrenceId]: completePayload.questionTimes
+        };
+        setOccurrenceLoad({ status: "idle" });
+      } catch {
+        if (pause) await finishLoadPause(accessToken, pause.loadId).catch(() => undefined);
+        if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
+        setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
+      } finally {
+        if (expiryTimer) clearTimeout(expiryTimer);
+        if (requestId === occurrenceRequestRef.current && generation === runnerGenerationRef.current) {
+          setTimerPausedForLoad(false);
+        }
       }
-      if (cancelled) return;
-      const completePayload = payload as ReadingFullSetOccurrencePracticePayload;
-      revisionRef.current = Math.max(revisionRef.current, completePayload.answerRevision);
-      setOccurrencePayloads((current) => ({
-        ...current,
-        [currentOccurrence.occurrenceId]: completePayload
-      }));
-      setAnswersByOccurrence((current) => {
-        if (current[currentOccurrence.occurrenceId]) return current;
-        const next = { ...current, [currentOccurrence.occurrenceId]: completePayload.answers };
-        answersRef.current = next;
-        return next;
-      });
-      questionTimesRef.current = {
-        ...questionTimesRef.current,
-        [currentOccurrence.occurrenceId]: completePayload.questionTimes
-      };
-    }).catch((loadError) => {
-      if (!cancelled) setError(loadError instanceof Error ? loadError.message : "套题题目加载失败，请稍后重试。");
-    });
-    return () => { cancelled = true; };
-  }, [accessToken, attemptId, currentOccurrence, currentPayload]);
+    })();
+    return () => controller.abort();
+  }, [accessToken, attemptId, beginLoadPause, currentOccurrence, currentPayload, finishLoadPause]);
 
   const commitActiveQuestionTime = useCallback(() => {
     const active = activeTimingRef.current;
@@ -251,10 +395,7 @@ export function ReadingFullSetRunner({
     saveChainRef.current = saveChainRef.current.then(async () => {
       const activeRunner = runnerRef.current;
       if (!accessToken || !activeRunner) return;
-      const phase = readingFullSetAttemptPhase(activeRunner.attempt);
-      const moduleNumber = phase === "module_1_active" ? 1 : phase === "module_2_active" ? 2 : null;
-      if (!moduleNumber) return;
-      setSaving(true);
+      if (readingFullSetRunnerModuleKey(activeRunner.attempt) !== pending.moduleAttemptId) return;
       saveFailedRef.current = false;
       try {
         const answers: ReadingSubmittedAnswer[] = buildReadingSubmissionAnswers(
@@ -275,34 +416,36 @@ export function ReadingFullSetRunner({
             body: JSON.stringify({
               answers,
               expectedRevision: revisionRef.current,
-              moduleNumber
+              moduleNumber: pending.moduleNumber
             })
           }
         );
         const result = await response.json().catch(() => ({})) as SaveResponse;
+        if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== pending.moduleAttemptId) {
+          return;
+        }
         if (!response.ok || !result.accepted || !Number.isInteger(result.answerRevision)) {
-          if (result.attempt) {
-            const current = runnerRef.current;
-            if (current) applyRunner({ ...current, attempt: result.attempt, occurrences: [] });
-          }
+          if (result.attempt) applyAttempt(result.attempt);
           throw new Error(
             result.reason === "timed_out" || result.reason === "locked"
               ? "当前 Module 已结束，答案不能再修改。"
               : result.reason === "stale_revision"
                 ? "答案状态已在其他页面更新，请刷新后继续。"
-                : result.error ?? "答案保存失败，请稍后重试。"
+                : result.error ?? "答案保存失败，请检查网络后重试。"
           );
         }
         revisionRef.current = Number(result.answerRevision);
+        setSaveError("");
       } catch (saveError) {
+        if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== pending.moduleAttemptId) {
+          return;
+        }
         saveFailedRef.current = true;
-        setError(saveError instanceof Error ? saveError.message : "答案保存失败，请稍后重试。");
-      } finally {
-        setSaving(false);
+        setSaveError(saveError instanceof Error ? saveError.message : "答案保存失败，请检查网络后重试。");
       }
     });
     return saveChainRef.current;
-  }, [accessToken, applyRunner, attemptId, snapshotQuestionTimes]);
+  }, [accessToken, applyAttempt, attemptId, snapshotQuestionTimes]);
 
   const flushPendingSave = useCallback(async () => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -315,17 +458,22 @@ export function ReadingFullSetRunner({
   }, [persistSave]);
 
   const stageCurrentOccurrenceSave = useCallback(() => {
-    if (!currentOccurrence || !currentPayload) return;
+    if (!currentOccurrence || !currentPayload || !runner) return;
+    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
+    if (!moduleAttempt) return;
     pendingSaveRef.current = {
       answers: answersRef.current[currentOccurrence.occurrenceId] ?? {},
+      moduleAttemptId: moduleAttempt.moduleAttemptId,
+      moduleNumber: moduleAttempt.moduleNumber,
       occurrenceId: currentOccurrence.occurrenceId,
       practice: currentPayload.practice
     };
-  }, [currentOccurrence, currentPayload]);
+  }, [currentOccurrence, currentPayload, runner]);
 
   useEffect(() => {
     if (!currentOccurrence || !currentPayload) return;
     const timer = window.setInterval(() => {
+      if (submittingRef.current) return;
       commitActiveQuestionTime();
       stageCurrentOccurrenceSave();
       void flushPendingSave();
@@ -334,7 +482,9 @@ export function ReadingFullSetRunner({
   }, [commitActiveQuestionTime, currentOccurrence, currentPayload, flushPendingSave, stageCurrentOccurrenceSave]);
 
   const updateAnswer = useCallback((questionId: string, answer: ReadingAnswer) => {
-    if (!currentOccurrence || !currentPayload) return;
+    if (!currentOccurrence || !currentPayload || !runner || submittingRef.current) return;
+    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
+    if (!moduleAttempt) return;
     setAnswersByOccurrence((current) => {
       const occurrenceAnswers = current[currentOccurrence.occurrenceId] ?? {};
       const nextOccurrenceAnswers = setReadingAnswer(occurrenceAnswers, questionId, answer);
@@ -342,6 +492,8 @@ export function ReadingFullSetRunner({
       answersRef.current = next;
       pendingSaveRef.current = {
         answers: nextOccurrenceAnswers,
+        moduleAttemptId: moduleAttempt.moduleAttemptId,
+        moduleNumber: moduleAttempt.moduleNumber,
         occurrenceId: currentOccurrence.occurrenceId,
         practice: currentPayload.practice
       };
@@ -353,7 +505,7 @@ export function ReadingFullSetRunner({
       }, 600);
       return next;
     });
-  }, [currentOccurrence, currentPayload, persistSave]);
+  }, [currentOccurrence, currentPayload, persistSave, runner]);
 
   useEffect(() => {
     const saveBeforeLeaving = () => {
@@ -376,8 +528,16 @@ export function ReadingFullSetRunner({
     stageCurrentOccurrenceSave();
     const saved = await flushPendingSave();
     if (!saved) return;
-    setPosition((current) => moveReadingFullSetPosition(runner.occurrences, current, direction));
-  }, [commitActiveQuestionTime, currentPayload, flushPendingSave, runner, stageCurrentOccurrenceSave]);
+    const nextPosition = moveReadingFullSetPosition(runner.occurrences, position, direction);
+    const nextOccurrence = runner.occurrences[nextPosition.occurrenceIndex];
+    if (nextOccurrence?.occurrenceId !== currentOccurrence?.occurrenceId) {
+      activeTimingRef.current = null;
+    }
+    if (nextOccurrence && !occurrencePayloads[nextOccurrence.occurrenceId]) {
+      setTimerPausedForLoad(true);
+    }
+    setPosition(nextPosition);
+  }, [commitActiveQuestionTime, currentOccurrence, currentPayload, flushPendingSave, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
 
   const leavePractice = useCallback(async () => {
     commitActiveQuestionTime();
@@ -394,6 +554,7 @@ export function ReadingFullSetRunner({
     const moduleNumber = phase === "module_1_active" ? 1 : phase === "module_2_active" ? 2 : null;
     if (!moduleNumber) return;
     if (!automatic && !window.confirm(`确定提交 Module ${moduleNumber} 吗？\n提交后不能返回修改答案。`)) return;
+    submittingRef.current = true;
     setSubmitting(true);
     setError("");
     try {
@@ -423,20 +584,17 @@ export function ReadingFullSetRunner({
       timeoutSubmitStartedRef.current = false;
       setError(submitError instanceof Error ? submitError.message : "Module 提交失败，请稍后重试。");
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   }, [accessToken, applyRunner, attemptId, commitActiveQuestionTime, flushPendingSave, stageCurrentOccurrenceSave, submitting]);
 
   useEffect(() => {
     if (!runner) return;
-    const phase = readingFullSetAttemptPhase(runner.attempt);
-    const moduleAttempt = phase === "module_1_active"
-      ? runner.attempt.module1
-      : phase === "module_2_active"
-        ? runner.attempt.module2
-        : null;
+    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
     if (!moduleAttempt) return;
     const update = () => {
+      if (timerPausedForLoad) return;
       const remaining = readingFullSetRemainingSeconds({
         clientNowAtSyncMs: syncRef.current.clientNowAtSyncMs,
         clientNowMs: Date.now(),
@@ -452,12 +610,37 @@ export function ReadingFullSetRunner({
     update();
     const timer = window.setInterval(update, 250);
     return () => window.clearInterval(timer);
-  }, [runner, submitModule]);
+  }, [runner, submitModule, timerPausedForLoad]);
+
+  const retryOccurrence = useCallback(async () => {
+    if (!accessToken) return;
+    const occurrenceId = currentOccurrence?.occurrenceId ?? null;
+    setTimerPausedForLoad(true);
+    let pause: { expiresAt: string; loadId: string } | null = null;
+    try {
+      pause = await beginLoadPause(accessToken, occurrenceId);
+      runnerGenerationRef.current += 1;
+      occurrenceRequestRef.current += 1;
+      setOccurrencePayloads({});
+      setAnswersByOccurrence({});
+      answersRef.current = {};
+      questionTimesRef.current = {};
+      activeTimingRef.current = null;
+      await loadRunner(accessToken);
+      setOccurrenceLoad({ status: "idle" });
+    } catch {
+      if (pause) await finishLoadPause(accessToken, pause.loadId).catch(() => undefined);
+      setTimerPausedForLoad(false);
+      setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
+    }
+  }, [accessToken, beginLoadPause, currentOccurrence, finishLoadPause, loadRunner]);
 
   const startModule2 = async () => {
     if (!accessToken || !runner || startingModule2) return;
     setStartingModule2(true);
     setError("");
+    let pause: { expiresAt: string; loadId: string } | null = null;
+    let module2Started = false;
     try {
       const response = await fetch(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/2/start`,
@@ -465,13 +648,16 @@ export function ReadingFullSetRunner({
       );
       const result = await response.json().catch(() => ({})) as AttemptResponse;
       if (!response.ok || !result.attempt) throw new Error(result.error ?? "暂时无法开始 Module 2。");
-      setOccurrencePayloads({});
-      setAnswersByOccurrence({});
-      answersRef.current = {};
-      questionTimesRef.current = {};
-      activeTimingRef.current = null;
+      module2Started = readingFullSetAttemptPhase(result.attempt) === "module_2_active";
+      applyAttempt(result.attempt);
+      pause = await beginLoadPause(accessToken, null);
       await loadRunner(accessToken);
     } catch (startError) {
+      if (pause) await finishLoadPause(accessToken, pause.loadId).catch(() => undefined);
+      setTimerPausedForLoad(false);
+      if (module2Started) {
+        setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
+      }
       setError(startError instanceof Error ? startError.message : "暂时无法开始 Module 2。");
     } finally {
       setStartingModule2(false);
@@ -479,7 +665,16 @@ export function ReadingFullSetRunner({
   };
 
   if (loading) return <RunnerMessage title="正在准备套题练习" description="正在加载练习内容..." />;
-  if (!runner) return <RunnerMessage title="无法进入套题练习" description={error || "套题练习加载失败，请稍后重试。"} />;
+  if (!runner) {
+    return (
+      <RunnerMessage
+        actionLabel="重试"
+        description={error || "套题练习加载失败，请稍后重试。"}
+        onAction={() => window.location.reload()}
+        title="无法进入套题练习"
+      />
+    );
+  }
   const phase = readingFullSetAttemptPhase(runner.attempt);
   if (phase === "module_2_ready") {
     return (
@@ -550,7 +745,18 @@ export function ReadingFullSetRunner({
           ? "min-h-0 flex-1 overflow-auto rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
           : "flex min-h-0 flex-1 flex-col overflow-hidden bg-white"}
         >
-          {currentPayload && currentQuestion ? (
+          {occurrenceLoad.status === "error" ? (
+            <div className="m-auto grid justify-items-center gap-3 text-center">
+              <p className="text-sm font-semibold text-student-error">{occurrenceLoad.message}</p>
+              <button
+                className="student-button-secondary min-h-10 px-4"
+                onClick={() => void retryOccurrence()}
+                type="button"
+              >
+                重试
+              </button>
+            </div>
+          ) : currentPayload && currentQuestion ? (
             <ReadingWorkspaceRouter
               answers={currentAnswers}
               currentQuestion={currentQuestion}
@@ -564,7 +770,7 @@ export function ReadingFullSetRunner({
           )}
         </section>
         <nav className="mt-4 grid min-h-16 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 rounded-2xl border border-student-border bg-white px-4 py-2 shadow-sm" aria-label="套题题目导航">
-          <button className="student-button-secondary h-10 w-28 justify-self-start" disabled={isFirst || !currentPayload || saving || submitting} onClick={() => void move(-1)} type="button">
+          <button className="student-button-secondary h-10 w-28 justify-self-start" disabled={isFirst || !currentPayload || submitting} onClick={() => void move(-1)} type="button">
             <ChevronLeft aria-hidden="true" size={18} /> Previous
           </button>
           <p className="text-center text-sm font-bold text-student-text" data-testid="full-set-question-number">
@@ -573,16 +779,16 @@ export function ReadingFullSetRunner({
               : `Questions ${displayRange.start}–${displayRange.end} / ${moduleQuestionCount}`}
           </p>
           {isLast ? (
-            <button className="student-button-primary h-10 min-w-28 justify-self-end" disabled={!currentPayload || saving || submitting} onClick={() => void submitModule(false)} type="button">
+            <button className="student-button-primary h-10 min-w-28 justify-self-end" disabled={!currentPayload || submitting} onClick={() => void submitModule(false)} type="button">
               {submitting ? "Submitting..." : `Submit Module ${moduleNumber}`}
             </button>
           ) : (
-            <button className="student-button-secondary h-10 w-28 justify-self-end" disabled={!currentPayload || saving || submitting} onClick={() => void move(1)} type="button">
+            <button className="student-button-secondary h-10 w-28 justify-self-end" disabled={!currentPayload || submitting} onClick={() => void move(1)} type="button">
               Next <ChevronRight aria-hidden="true" size={18} />
             </button>
           )}
         </nav>
-        {saving ? <p className="mt-1 text-right text-xs text-student-muted">正在保存答案...</p> : null}
+        {saveError ? <p className="mt-1 text-sm font-semibold text-student-error">{saveError}</p> : null}
         {error ? <p className="mt-1 text-sm font-semibold text-student-error">{error}</p> : null}
       </main>
     </div>
@@ -620,4 +826,8 @@ function RunnerMessage({
       </section>
     </main>
   );
+}
+
+function wait(milliseconds: number) {
+  return new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
 }
