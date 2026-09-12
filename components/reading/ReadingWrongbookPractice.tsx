@@ -15,15 +15,21 @@ import type { ReadingAttemptSummary } from "@/lib/reading/attempts";
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import type { ReadingModule } from "@/lib/reading/types";
 import {
+  buildReadingWrongbookInitialAnswers,
   isReadingWrongbookAttemptSummary,
   isReadingWrongbookQueuePayload,
   selectReadingWrongbookPractice,
   type ReadingWrongbookQueuePayload,
+  type ReadingWrongbookPreservedAnswer,
   type ReadingWrongbookScope
 } from "@/lib/reading/wrongbook";
 
 type PracticeResponse = { error?: string; practice?: StudentReadingPracticePayload };
-type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
+type AttemptResponse = {
+  attempt?: ReadingAttemptSummary;
+  error?: string;
+  preservedAnswers?: ReadingWrongbookPreservedAnswer[];
+};
 
 export function ReadingWrongbookPractice({
   itemId,
@@ -53,11 +59,11 @@ export function ReadingWrongbookPractice({
     (session) => loadQueue(query, session),
     { refreshOnMount: true }
   );
-  const [index, setIndex] = useState(0);
+  const [index] = useState(0);
   const [practice, setPractice] = useState<StudentReadingPracticePayload | null>(null);
   const [attempt, setAttempt] = useState<ReadingAttemptSummary | null>(null);
+  const [initialAnswers, setInitialAnswers] = useState(() => ({}));
   const [loadError, setLoadError] = useState("");
-  const [complete, setComplete] = useState(false);
   const current = queue.data?.items[index] ?? null;
 
   useEffect(() => {
@@ -77,6 +83,7 @@ export function ReadingWrongbookPractice({
     let cancelled = false;
     setPractice(null);
     setAttempt(null);
+    setInitialAnswers({});
     setLoadError("");
     async function load() {
       try {
@@ -115,8 +122,13 @@ export function ReadingWrongbookPractice({
           || attemptPayload.attempt.taskType !== taskType
         ) throw new Error("错题订正记录与当前题目不一致。");
         if (!cancelled) {
-          setPractice(selectReadingWrongbookPractice(practicePayload.practice, queueItem.targets));
+          const selectedPractice = selectReadingWrongbookPractice(practicePayload.practice, queueItem.targets);
+          setPractice(selectedPractice);
           setAttempt(attemptPayload.attempt);
+          setInitialAnswers(buildReadingWrongbookInitialAnswers(
+            selectedPractice,
+            attemptPayload.preservedAnswers ?? []
+          ));
         }
       } catch (error) {
         if (!cancelled) {
@@ -141,13 +153,13 @@ export function ReadingWrongbookPractice({
       />
     );
   }
-  if (complete || !current || !practice || !attempt) {
+  if (!current || !practice || !attempt) {
     return (
       <WrongbookMessage
         actionLabel="返回错题集"
-        description={complete ? "本次错题订正已提交，错题状态将按真实作答结果更新。" : "当前范围内没有待订正错题。"}
+        description="当前范围内没有待订正错题。"
         onAction={() => router.push(STUDENT_ROUTES.wrongQuestions)}
-        title={complete ? "订正已完成" : "暂无待订正错题"}
+        title="暂无待订正错题"
       />
     );
   }
@@ -155,19 +167,16 @@ export function ReadingWrongbookPractice({
   return (
     <ReadingPracticeShell
       attempt={attempt}
+      initialAnswers={initialAnswers}
       onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
       onExit={() => router.push(STUDENT_ROUTES.wrongQuestions)}
       practice={practice}
       reviewTitle={`错题订正 · ${current.title} · ${index + 1}/${queue.data!.items.length}`}
       wrongbook={{
         targets: current.targets,
-        onSubmitted: () => {
+        onSubmitted: (submittedAttempt) => {
           cache.invalidate(queueKey);
-          if (index + 1 < (queue.data?.items.length ?? 0)) {
-            setIndex((value) => value + 1);
-          } else {
-            setComplete(true);
-          }
+          router.replace(`/student/reading/wrongbook-results/${encodeURIComponent(submittedAttempt.attemptId)}`);
         }
       }}
     />

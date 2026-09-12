@@ -118,10 +118,12 @@ function ReadingDetailCard({
 
 export function ReadingQuestionStatusChips({
   answers,
-  attemptId
+  attemptId,
+  questionHrefBase
 }: {
   answers: ReadingResultAnswer[];
   attemptId: string;
+  questionHrefBase?: string;
 }) {
   return (
     <div className="mt-6 flex flex-wrap justify-center gap-3" data-testid="reading-result-question-chips">
@@ -132,7 +134,16 @@ export function ReadingQuestionStatusChips({
           : state === "incorrect"
             ? "border-student-error-border bg-student-error-soft text-student-error"
             : "border-student-border bg-student-bg text-student-muted";
-        return (
+        return questionHrefBase ? (
+          <Link
+            className={`inline-flex min-h-10 items-center rounded-full border px-4 py-2 text-sm font-semibold tabular-nums ${className}`}
+            data-answer-state={state}
+            href={`${questionHrefBase}/questions/${questionIndex}`}
+            key={answer.answerId}
+          >
+            第{answer.order}题 · {formatQuestionTime(answer.questionTimeSeconds)}
+          </Link>
+        ) : (
           <Link
             className={`inline-flex min-h-10 items-center rounded-full border px-4 py-2 text-sm font-semibold tabular-nums ${className}`}
             data-answer-state={state}

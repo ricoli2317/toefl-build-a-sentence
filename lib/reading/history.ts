@@ -127,6 +127,7 @@ export function buildReadingResultPayload(input: {
   ctwParagraphs?: ReadingCtwParagraphResultRow[];
   ctwSegments?: ReadingCtwSegmentResultRow[];
   slots?: ReadingSlotResultRow[];
+  allowDisplayAnswerCountMismatch?: boolean;
 }): ReadingResultPayload {
   const questionById = new Map(input.questions.map((question) => [question.question_id, question]));
   const slotById = new Map((input.slots ?? []).map((slot) => [`${slot.question_id}:${slot.slot_id}`, slot]));
@@ -153,7 +154,7 @@ export function buildReadingResultPayload(input: {
     };
   }).sort((left, right) => left.order - right.order || left.answerId.localeCompare(right.answerId));
 
-  if (answers.length !== input.attempt.total_points) {
+  if (!input.allowDisplayAnswerCountMismatch && answers.length !== input.attempt.total_points) {
     throw new Error("READING_RESULT_ANSWER_COUNT_MISMATCH");
   }
 

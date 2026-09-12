@@ -110,6 +110,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
         icon: ClipboardX,
         label: STUDENT_UI_TEXT.wrongQuestions,
         match: (path) => path.startsWith(STUDENT_ROUTES.wrongQuestions)
+          || path.startsWith("/student/reading/wrongbook-results/")
       },
       {
         href: STUDENT_ROUTES.practiceHistory,

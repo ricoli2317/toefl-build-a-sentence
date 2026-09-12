@@ -76,6 +76,7 @@ export type ReadingWrongbookCorrectionAttempt = ReadingWrongQuestionAttempt & {
 
 export type ReadingWrongbookTarget = {
   questionId: string;
+  sourceAttemptId?: string;
   slotId: string | null;
 };
 
@@ -240,6 +241,7 @@ export function buildReadingWrongbookQueue(input: {
     const existing = byItem.get(attempt.logicalItemId);
     const target = {
       questionId: state.latest.questionId,
+      sourceAttemptId: state.latestWrongAttemptId,
       slotId: state.latest.slotId
     };
     if (!existing) {

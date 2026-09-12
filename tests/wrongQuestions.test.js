@@ -7,6 +7,9 @@ const {
   buildReadingWrongbookQueue,
   buildWrongQuestionsOverview
 } = require("../lib/wrongQuestions.ts");
+const {
+  buildReadingWrongbookInitialAnswers
+} = require("../lib/reading/wrongbook.ts");
 
 const projectRoot = path.resolve(__dirname, "..");
 
@@ -216,12 +219,12 @@ test("Reading canonical identities drive pending queues and correction answers u
 
   const ctwHistory = buildReadingWrongbookQueue({ ...input, scope: "history", taskType: "ctw" });
   assert.deepEqual(ctwHistory.map((item) => item.targets), [[
-    { questionId: "ctw-q", slotId: "slot-2" }
+    { questionId: "ctw-q", sourceAttemptId: "official-ctw", slotId: "slot-2" }
   ]]);
   assert.deepEqual(buildReadingWrongbookQueue({ ...input, scope: "today", taskType: "rdl" }), []);
   assert.deepEqual(
     buildReadingWrongbookQueue({ ...input, scope: "today", taskType: "rap" })[0].targets,
-    [{ questionId: "rap-q", slotId: null }]
+    [{ questionId: "rap-q", sourceAttemptId: "official-rap", slotId: null }]
   );
 });
 
@@ -248,6 +251,59 @@ test("Reading correction routes reuse the three existing renderers and persist i
   assert.match(migration, /create table if not exists public\.reading_wrongbook_attempts/);
   assert.match(migration, /create table if not exists public\.reading_wrongbook_attempt_answers/);
   assert.doesNotMatch(migration, /alter table public\.reading_attempts/);
+});
+
+test("CTW correction restores genuine correct slot text while leaving correction targets blank", () => {
+  const practice = {
+    item: {
+      itemId: "ctw-item",
+      module: "ctw",
+      productName: "Complete the Words",
+      questionCount: 1,
+      scoringPointCount: 2,
+      title: "套题001"
+    },
+    material: null,
+    passage: null,
+    questions: [{
+      paragraphs: [],
+      questionId: "ctw-q",
+      questionOrder: 1,
+      questionType: "ctw",
+      slots: [
+        { slotId: "correct-slot", slotOrder: 1, paragraphId: "p", prefix: "pre", missingLength: 3 },
+        { slotId: "wrong-slot", slotOrder: 2, paragraphId: "p", prefix: "mis", missingLength: 4 }
+      ],
+      stem: ""
+    }]
+  };
+  const answers = buildReadingWrongbookInitialAnswers(practice, [{
+    answerKind: "ctw_slot",
+    isCorrect: true,
+    questionId: "ctw-q",
+    slotId: "correct-slot",
+    studentAnswer: "fix"
+  }]);
+  assert.deepEqual(answers["ctw-q"].slots, {
+    "correct-slot": ["f", "i", "x"],
+    "wrong-slot": ["", "", "", ""]
+  });
+});
+
+test("Reading correction submit opens its exact isolated result and only correction review discloses keys", () => {
+  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
+  const ordinaryResult = fs.readFileSync(path.join(projectRoot, "app/api/reading/results/[attemptId]/route.ts"), "utf8");
+  const correctionResult = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/result/route.ts"), "utf8");
+  const correctionReview = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts"), "utf8");
+  const correctionReviewUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
+
+  assert.doesNotMatch(runtime, /订正已完成/);
+  assert.match(runtime, /wrongbook-results\/\$\{encodeURIComponent\(submittedAttempt\.attemptId\)\}/);
+  assert.match(correctionResult, /\.from\("reading_wrongbook_attempts"\)[\s\S]*\.eq\("attempt_id", params\.attemptId\)/);
+  assert.match(correctionResult, /reading_wrongbook_attempt_answers/);
+  assert.match(correctionReview, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
+  assert.match(correctionReviewUi, /reviewDisclosureLabel="Correct Answer"/);
+  assert.doesNotMatch(ordinaryResult, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
 });
 
 test("BAS correction routes keep single-card practice inside today/history wrongbook modes", () => {

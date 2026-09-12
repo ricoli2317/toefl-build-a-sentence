@@ -8,7 +8,11 @@ import {
   isReadingWrongbookAttemptSummary,
   isReadingWrongbookScope
 } from "@/lib/reading/wrongbook";
-import { loadReadingWrongbookQueue } from "@/lib/reading/wrongbook.server";
+import {
+  loadReadingWrongbookPreservedAnswers,
+  loadReadingWrongbookQueue,
+  toReadingWrongbookPreservedAnswers
+} from "@/lib/reading/wrongbook.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -79,7 +83,16 @@ export async function POST(request: Request) {
     if (!isReadingWrongbookAttemptSummary(data) || data.logicalItemId !== item.logicalItemId) {
       return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
     }
-    return readingAttemptJson({ attempt: data }, { status: data.created ? 201 : 200 });
+    const preservedAnswers = data.taskType === "ctw"
+      ? toReadingWrongbookPreservedAnswers(await loadReadingWrongbookPreservedAnswers({
+          before: data.startedAt,
+          db: createServiceSupabase(),
+          logicalItemId: data.logicalItemId,
+          studentId: auth.userId,
+          targets: data.targets
+        }))
+      : [];
+    return readingAttemptJson({ attempt: data, preservedAnswers }, { status: data.created ? 201 : 200 });
   } catch (error) {
     console.error("Reading wrongbook attempt creation failed", {
       message: error instanceof Error ? error.message : String(error)

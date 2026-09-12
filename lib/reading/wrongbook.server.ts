@@ -9,6 +9,8 @@ import {
 } from "@/lib/wrongQuestions";
 import { readingCatalogDisplayNumber } from "./catalog";
 import type { ReadingModule } from "./types";
+import type { ReadingWrongbookPreservedAnswer } from "./wrongbook";
+import { readingWrongbookTargetKey } from "./wrongbook";
 
 type ReadingAttemptRow = {
   attempt_id: string;
@@ -22,6 +24,17 @@ type ReadingAnswerRow = {
   is_correct: boolean;
   question_id: string;
   slot_id: string | null;
+};
+
+type PreservedAnswerRow = {
+  answer_kind: "ctw_slot" | "option" | "insertion_anchor" | "sentence_selection";
+  attempt_answer_id: string;
+  attempt_id: string;
+  is_correct: boolean;
+  question_id: string;
+  question_time_seconds: number | null;
+  slot_id: string | null;
+  student_answer: string | null;
 };
 
 type ReadingCorrectionAttemptRow = ReadingAttemptRow & {
@@ -123,6 +136,96 @@ export async function loadReadingWrongbookQueue(input: {
     : queue;
 }
 
+/**
+ * Restores only answers the student actually submitted and that were graded
+ * correct. The frozen source attempt carried by each target is preferred; older
+ * genuine correct submissions are used only as a compatibility fallback.
+ */
+export async function loadReadingWrongbookPreservedAnswers(input: {
+  before: string;
+  db: SupabaseClient;
+  logicalItemId: string;
+  studentId: string;
+  targets: Array<{ questionId: string; sourceAttemptId?: string; slotId: string | null }>;
+}): Promise<PreservedAnswerRow[]> {
+  const targetKeys = new Set(input.targets.map(readingWrongbookTargetKey));
+  const preferredIds = Array.from(new Set(input.targets
+    .map((target) => target.sourceAttemptId)
+    .filter((value): value is string => Boolean(value))));
+  const preferred = new Set(preferredIds);
+  const ordinaryAttemptsResult = await readAllSupabaseRows<{
+    attempt_id: string;
+    submitted_at: string;
+  }>((from, to) => {
+    let query = input.db.from("reading_attempts")
+      .select("attempt_id,submitted_at")
+      .eq("student_id", input.studentId)
+      .eq("logical_item_id", input.logicalItemId)
+      .eq("status", "submitted")
+      .order("submitted_at", { ascending: false })
+      .order("attempt_id", { ascending: true });
+    return query.range(from, to);
+  });
+  if (ordinaryAttemptsResult.error) throw new Error(ordinaryAttemptsResult.error.message);
+
+  const ordinaryIds = (ordinaryAttemptsResult.data ?? [])
+    .filter((attempt) => preferred.has(attempt.attempt_id)
+      || Date.parse(attempt.submitted_at) <= Date.parse(input.before))
+    .map((attempt) => attempt.attempt_id);
+  const priorCorrectionResult = await readAllSupabaseRows<{
+    attempt_id: string;
+    submitted_at: string;
+  }>((from, to) => input.db.from("reading_wrongbook_attempts")
+    .select("attempt_id,submitted_at")
+    .eq("student_id", input.studentId)
+    .eq("logical_item_id", input.logicalItemId)
+    .eq("status", "submitted")
+    .lte("submitted_at", input.before)
+    .order("submitted_at", { ascending: false })
+    .order("attempt_id", { ascending: true })
+    .range(from, to));
+  if (priorCorrectionResult.error) throw new Error(priorCorrectionResult.error.message);
+  const correctionIds = (priorCorrectionResult.data ?? []).map((attempt) => attempt.attempt_id);
+
+  const [ordinaryAnswers, correctionAnswers] = await Promise.all([
+    readPreservedAnswerRows(input.db, "reading_attempt_answers", ordinaryIds),
+    readPreservedAnswerRows(input.db, "reading_wrongbook_attempt_answers", correctionIds)
+  ]);
+  const rank = new Map([
+    ...preferredIds,
+    ...ordinaryIds.filter((id) => !preferred.has(id)),
+    ...correctionIds
+  ].map((id, index) => [id, index]));
+  const rows = [...ordinaryAnswers, ...correctionAnswers]
+    .filter((answer) => answer.is_correct && Boolean(answer.student_answer?.trim()))
+    .filter((answer) => !targetKeys.has(readingWrongbookTargetKey({
+      questionId: answer.question_id,
+      slotId: answer.slot_id
+    })))
+    .sort((left, right) =>
+      (rank.get(left.attempt_id) ?? Number.MAX_SAFE_INTEGER)
+      - (rank.get(right.attempt_id) ?? Number.MAX_SAFE_INTEGER)
+    );
+  const byTarget = new Map<string, PreservedAnswerRow>();
+  for (const row of rows) {
+    const key = readingWrongbookTargetKey({ questionId: row.question_id, slotId: row.slot_id });
+    if (!byTarget.has(key)) byTarget.set(key, row);
+  }
+  return Array.from(byTarget.values());
+}
+
+export function toReadingWrongbookPreservedAnswers(
+  rows: PreservedAnswerRow[]
+): ReadingWrongbookPreservedAnswer[] {
+  return rows.map((row) => ({
+    answerKind: row.answer_kind,
+    isCorrect: true,
+    questionId: row.question_id,
+    slotId: row.slot_id,
+    studentAnswer: row.student_answer!.trim()
+  }));
+}
+
 function normalizeAttempt(attempt: ReadingAttemptRow): ReadingWrongQuestionAttempt {
   return {
     attemptId: String(attempt.attempt_id),
@@ -162,6 +265,23 @@ async function readAnswers(
     data: results.flatMap((result) => result.data ?? []),
     error: results.find((result) => result.error)?.error ?? null
   };
+}
+
+async function readPreservedAnswerRows(
+  db: SupabaseClient,
+  table: "reading_attempt_answers" | "reading_wrongbook_attempt_answers",
+  attemptIds: string[]
+) {
+  if (attemptIds.length === 0) return [] as PreservedAnswerRow[];
+  const results = await Promise.all(chunk(attemptIds).map((ids) =>
+    readAllSupabaseRows<PreservedAnswerRow>((from, to) => db.from(table)
+      .select("attempt_answer_id,attempt_id,question_id,slot_id,answer_kind,student_answer,is_correct,question_time_seconds")
+      .in("attempt_id", ids)
+      .range(from, to))
+  ));
+  const error = results.find((result) => result.error)?.error;
+  if (error) throw new Error(error.message);
+  return results.flatMap((result) => result.data ?? []);
 }
 
 function buildReadingTitles(items: ReadingItemRow[]) {

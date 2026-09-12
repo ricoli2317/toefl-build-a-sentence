@@ -575,6 +575,8 @@ export function ReadingPracticeShell({
   onExit,
   practice,
   reviewItems = [],
+  reviewDisclosureLabel,
+  reviewDisclosures = {},
   reviewTitle,
   wrongbook
 }: {
@@ -587,6 +589,8 @@ export function ReadingPracticeShell({
   onExit?: () => void;
   practice: StudentReadingPracticePayload;
   reviewItems?: SubmittedReadingReviewItem[];
+  reviewDisclosureLabel?: string;
+  reviewDisclosures?: Record<string, string>;
   reviewTitle?: string;
   wrongbook?: {
     onSubmitted: (attempt: ReadingAttemptSummary) => void;
@@ -767,6 +771,8 @@ export function ReadingPracticeShell({
         {readOnly && currentReviewItem ? (
           <ReadingReviewStatusBar
             currentIndex={reviewIndex}
+            disclosure={reviewDisclosures[currentReviewItem.answerId]}
+            disclosureLabel={reviewDisclosureLabel}
             items={reviewItems}
             onSelect={selectReviewItem}
           />
@@ -1299,10 +1305,14 @@ function ReadingFullSetReviewStatusBar({
 
 function ReadingReviewStatusBar({
   currentIndex,
+  disclosure,
+  disclosureLabel,
   items,
   onSelect
 }: {
   currentIndex: number;
+  disclosure?: string;
+  disclosureLabel?: string;
   items: SubmittedReadingReviewItem[];
   onSelect: (index: number) => void;
 }) {
@@ -1346,6 +1356,12 @@ function ReadingReviewStatusBar({
           })}
         </div>
       </div>
+      {disclosure && disclosureLabel ? (
+        <div className="mt-3 border-t border-student-border pt-3 text-sm leading-6">
+          <span className="font-semibold text-student-muted">{disclosureLabel}</span>
+          <span className="ml-2 font-semibold text-student-text">{disclosure}</span>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -2187,7 +2203,7 @@ function ReadingQuestionNavigation({
   );
 }
 
-function ReadingPracticeMessage({
+export function ReadingPracticeMessage({
   description,
   onLeave,
   title
