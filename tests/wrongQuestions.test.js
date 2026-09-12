@@ -300,16 +300,33 @@ test("Reading correction submit opens its exact isolated result and only correct
   const correctionReview = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts"), "utf8");
   const correctionReviewUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
   const correctionResultUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookResult.tsx"), "utf8");
+  const correctionAnswerUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingCorrectionAnswerValue.tsx"), "utf8");
+  const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  const resultSummaryUi = fs.readFileSync(path.join(projectRoot, "components/PracticeResult.tsx"), "utf8");
 
   assert.doesNotMatch(runtime, /订正已完成/);
   assert.match(runtime, /wrongbook-results\/\$\{encodeURIComponent\(submittedAttempt\.attemptId\)\}/);
   assert.match(correctionResult, /\.from\("reading_wrongbook_attempts"\)[\s\S]*\.eq\("attempt_id", params\.attemptId\)/);
   assert.match(correctionResult, /reading_wrongbook_attempt_answers/);
   assert.match(correctionReview, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
+  assert.match(correctionReview, /buildReadingCorrectionAnswerPresentations/);
+  assert.match(correctionResult, /buildReadingCorrectionResultAnswers/);
   assert.match(correctionReviewUi, /reviewDisclosureLabel="正确答案"/);
   assert.match(correctionResultUi, /你的答案/);
   assert.match(correctionResultUi, /正确答案/);
   assert.match(correctionResultUi, /answer\.reviewIndex/);
+  assert.match(correctionResultUi, /scoreComparison=\{null\}/);
+  assert.match(correctionResultUi, /timeComparison=\{null\}/);
+  assert.match(correctionResultUi, /<Link[\s\S]*data-answer-state=\{state\}[\s\S]*href=\{`\$\{questionHrefBase\}\/questions\/\$\{answer\.reviewIndex\}`\}/);
+  assert.doesNotMatch(correctionResultUi, /<article/);
+  assert.match(correctionResultUi, /cursor-pointer/);
+  assert.match(correctionResultUi, /focus-visible:ring-2/);
+  assert.match(resultSummaryUi, /comparison \? "min-h-\[144px\]" : ""/);
+  assert.match(resultSummaryUi, /\{comparison \? \([\s\S]*\{comparison\}[\s\S]*\) : null\}/);
+  assert.match(correctionAnswerUi, /data-ctw-correct-fill/);
+  assert.match(correctionResultUi, /ReadingCorrectionAnswerValue/);
+  assert.match(practiceUi, /ReadingCorrectionAnswerValue answer=\{disclosure\.correctAnswer\}/);
+  assert.match(practiceUi, /你的答案/);
   assert.doesNotMatch(`${correctionReviewUi}\n${correctionResultUi}`, /Correct Answer/);
   assert.doesNotMatch(ordinaryResult, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
 });
@@ -339,7 +356,7 @@ test("Reading correction summaries map standard choices by option id and option 
   assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "B" });
 });
 
-test("non-standard choices retain their natural text instead of forcing A/B/C/D", () => {
+test("choice summaries map sparse option_order values by sorted position", () => {
   const answers = buildReadingCorrectionResultAnswers({
     allResultAnswers: [resultAnswer("choice-answer", 1, true)],
     correctionRows: [{
@@ -353,13 +370,58 @@ test("non-standard choices retain their natural text instead of forcing A/B/C/D"
     }],
     questions: [correctionQuestion("q-choice", "rap_multiple_choice", { correct_option_id: "option-yes" })],
     options: [
-      { option_id: "option-yes", option_order: 1, option_text: "Yes", question_id: "q-choice" },
-      { option_id: "option-no", option_order: 2, option_text: "No", question_id: "q-choice" }
+      { option_id: "option-yes", option_order: 10, option_text: "Yes", question_id: "q-choice" },
+      { option_id: "option-no", option_order: 20, option_text: "No", question_id: "q-choice" }
     ]
   });
 
-  assert.equal(answers[0].studentAnswer, "Yes");
-  assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "Yes" });
+  assert.equal(answers[0].studentAnswer, "A");
+  assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "A" });
+});
+
+test("standard choice summaries continue past D using authoritative option order", () => {
+  const options = Array.from({ length: 6 }, (_, index) => ({
+    option_id: `option-${index + 1}`,
+    option_order: index + 1,
+    option_text: `Full option ${index + 1}`,
+    question_id: "q-choice"
+  }));
+  const answers = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("choice-answer", 1, false)],
+    correctionRows: [{
+      answer_kind: "option",
+      attempt_answer_id: "choice-answer",
+      is_correct: false,
+      question_id: "q-choice",
+      question_time_seconds: 2,
+      slot_id: null,
+      student_answer: "option-5"
+    }],
+    questions: [correctionQuestion("q-choice", "rdl", { correct_option_id: "option-6" })],
+    options
+  });
+
+  assert.equal(answers[0].studentAnswer, "E");
+  assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "F" });
+});
+
+test("Reading homepage item links keep the complete correction lifecycle and reachable Submit", () => {
+  const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
+  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
+  const shell = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  const todayPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/today/reading/practice/page.tsx"), "utf8");
+  const historyPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/history/reading/practice/page.tsx"), "utf8");
+
+  assert.match(home, /group\.correctionHref/);
+  assert.match(runtime, /if \(itemId\) params\.set\("itemId", itemId\)/);
+  assert.match(runtime, /body: JSON\.stringify\(\{[\s\S]*itemId: queueItem\.logicalItemId,[\s\S]*scope,[\s\S]*taskType/);
+  assert.match(runtime, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
+  assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
+  assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
+  assert.match(shell, /if \(module === "ctw" && !readOnly\)[\s\S]*submitLabel=/);
+  assert.match(shell, /canGoNext \? \([\s\S]*Submit/);
+  assert.match(todayPage, /itemId=\{searchParams\.itemId\}/);
+  assert.match(historyPage, /itemId=\{searchParams\.itemId\}/);
 });
 
 test("CTW correction summaries rebuild the complete word and mark every missing letter", () => {

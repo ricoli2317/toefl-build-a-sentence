@@ -9,11 +9,11 @@ import {
 import { PracticeResultSummary } from "@/components/PracticeResult";
 import { StudentErrorState, StudentLoadingState, StudentNavigation } from "@/components/student/StudentUI";
 import type {
-  ReadingCorrectionAnswerDisplay,
   ReadingCorrectionResultAnswer,
   ReadingCorrectionResultPayload
 } from "@/lib/reading/correctionResult";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { ReadingCorrectionAnswerValue } from "./ReadingCorrectionAnswerValue";
 
 export function ReadingWrongbookResult({ attemptId }: { attemptId: string }) {
   const state = useStudentCachedData<ReadingCorrectionResultPayload>(
@@ -38,15 +38,15 @@ export function ReadingWrongbookResult({ attemptId }: { attemptId: string }) {
       <PracticeResultSummary
         correctPoints={attempt.correctPoints}
         elapsedSeconds={attempt.elapsedSeconds}
-        scoreComparison="本次订正按待订正题计分"
-        timeComparison="订正用时不参与班级比较"
+        scoreComparison={null}
+        timeComparison={null}
         title="订正结果"
         totalPoints={attempt.totalPoints}
       />
       <section className="student-card" data-testid="reading-wrongbook-result-detail">
         <div>
           <h2 className="text-xl font-bold text-student-text">本次订正作答</h2>
-          <p className="mt-1 text-sm text-student-muted">答案对比已直接显示；选择题号可查看完整原题。</p>
+          <p className="mt-1 text-sm text-student-muted">答案对比已直接显示；选择任一作答卡片可查看完整原题。</p>
         </div>
         <ReadingCorrectionAnswerCards
           answers={answers}
@@ -69,22 +69,22 @@ function ReadingCorrectionAnswerCards({
       {answers.map((answer) => {
         const state = !answer.isAnswered ? "unanswered" : answer.isCorrect ? "correct" : "incorrect";
         return (
-          <article
-            className={`rounded-xl border p-4 ${answer.isCorrect
+          <Link
+            className={`block cursor-pointer rounded-xl border p-4 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary focus-visible:ring-offset-2 ${answer.isCorrect
               ? "border-student-primary-border bg-student-primary-soft"
               : "border-student-error-border bg-student-error-soft"}`}
             data-answer-state={state}
+            href={`${questionHrefBase}/questions/${answer.reviewIndex}`}
             key={answer.answerId}
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <Link
+              <p
                 className={answer.isCorrect
                   ? "text-sm font-semibold text-student-primary hover:underline"
                   : "text-sm font-semibold text-student-error hover:underline"}
-                href={`${questionHrefBase}/questions/${answer.reviewIndex}`}
               >
                 第 {answer.order} 题
-              </Link>
+              </p>
               <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
                 <span className="rounded-full border border-student-border bg-white px-3 py-1 text-xs font-semibold tabular-nums text-student-muted">
                   用时 {formatQuestionTime(answer.questionTimeSeconds)}
@@ -105,28 +105,15 @@ function ReadingCorrectionAnswerCards({
               <div className="md:border-l md:border-student-border md:pl-5">
                 <dt className="font-semibold text-student-muted">正确答案</dt>
                 <dd className="mt-1 break-words leading-6 text-student-text">
-                  <CorrectionAnswerValue answer={answer.correctAnswer} />
+                  <ReadingCorrectionAnswerValue answer={answer.correctAnswer} />
                 </dd>
               </div>
             </dl>
-          </article>
+          </Link>
         );
       })}
     </div>
   );
-}
-
-function CorrectionAnswerValue({ answer }: { answer: ReadingCorrectionAnswerDisplay }) {
-  if (answer.kind === "text") return answer.text;
-  return answer.parts.map((part, index) => (
-    <span
-      className={part.emphasized ? "font-semibold text-student-primary" : undefined}
-      data-ctw-correct-fill={part.emphasized ? "true" : undefined}
-      key={`${index}:${part.text}`}
-    >
-      {part.text}
-    </span>
-  ));
 }
 
 function formatQuestionTime(seconds: number | null) {

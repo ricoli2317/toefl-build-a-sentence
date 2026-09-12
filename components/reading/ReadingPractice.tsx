@@ -18,6 +18,7 @@ import {
 } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { WritingPracticeActions } from "@/components/writing/WritingPracticeActions";
+import { ReadingCorrectionAnswerValue } from "@/components/reading/ReadingCorrectionAnswerValue";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
@@ -89,6 +90,7 @@ import type {
   SubmittedReadingReviewItem,
   SubmittedReadingReviewPayload
 } from "@/lib/reading/review";
+import type { ReadingCorrectionAnswerPresentation } from "@/lib/reading/correctionResult";
 import {
   findReadingFullSetReviewIndex,
   readingFullSetReviewItemLabel,
@@ -568,7 +570,7 @@ export function ReadingPracticeShell({
   practice: StudentReadingPracticePayload;
   reviewItems?: SubmittedReadingReviewItem[];
   reviewDisclosureLabel?: string;
-  reviewDisclosures?: Record<string, string>;
+  reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewTitle?: string;
   wrongbook?: {
     onSubmitted: (attempt: ReadingAttemptSummary) => void;
@@ -1294,7 +1296,7 @@ function ReadingReviewStatusBar({
   onSelect
 }: {
   currentIndex: number;
-  disclosure?: string;
+  disclosure?: ReadingCorrectionAnswerPresentation;
   disclosureLabel?: string;
   items: SubmittedReadingReviewItem[];
   onSelect: (index: number) => void;
@@ -1340,10 +1342,18 @@ function ReadingReviewStatusBar({
         </div>
       </div>
       {disclosure && disclosureLabel ? (
-        <div className="mt-3 border-t border-student-border pt-3 text-sm leading-6">
-          <span className="font-semibold text-student-muted">{disclosureLabel}</span>
-          <span className="ml-2 font-semibold text-student-text">{disclosure}</span>
-        </div>
+        <dl className="mt-3 grid gap-3 border-t border-student-border pt-3 text-sm leading-6 sm:grid-cols-2">
+          <div>
+            <dt className="inline font-semibold text-student-muted">你的答案</dt>
+            <dd className="ml-2 inline font-semibold text-student-text">{disclosure.studentAnswer}</dd>
+          </div>
+          <div>
+            <dt className="inline font-semibold text-student-muted">{disclosureLabel}</dt>
+            <dd className="ml-2 inline font-semibold text-student-text">
+              <ReadingCorrectionAnswerValue answer={disclosure.correctAnswer} />
+            </dd>
+          </div>
+        </dl>
       ) : null}
     </section>
   );

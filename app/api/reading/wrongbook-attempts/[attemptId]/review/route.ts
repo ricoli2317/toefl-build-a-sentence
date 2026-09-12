@@ -1,5 +1,14 @@
 import { readingAttemptJson, requireReadingAttemptStudent } from "@/lib/reading/attemptServer";
 import {
+  buildReadingCorrectionAnswerPresentations,
+  type ReadingCorrectionAnchorRow,
+  type ReadingCorrectionCtwSlotRow,
+  type ReadingCorrectionOptionRow,
+  type ReadingCorrectionQuestionRow,
+  type ReadingCorrectionSentenceRow
+} from "@/lib/reading/correctionResult";
+import type { ReadingAnswerRow } from "@/lib/reading/history";
+import {
   buildSubmittedReadingAnswerState,
   buildSubmittedReadingReviewItems,
   type SubmittedReadingAnswerRow
@@ -15,14 +24,6 @@ export const dynamic = "force-dynamic";
 type ReviewRow = SubmittedReadingAnswerRow & {
   attempt_answer_id: string;
   is_correct: boolean;
-};
-
-type KeyRow = {
-  correct_anchor_id: string | null;
-  correct_option_id: string | null;
-  correct_sentence_id: string | null;
-  question_id: string;
-  question_type: string;
 };
 
 export async function GET(
@@ -124,54 +125,33 @@ async function loadDisclosures(db: ReturnType<typeof createServiceSupabase>, row
     db.from("reading_questions")
       .select("question_id,question_type,correct_option_id,correct_anchor_id,correct_sentence_id")
       .in("question_id", questionIds),
-    db.from("reading_ctw_slots").select("question_id,slot_id,answer").in("question_id", questionIds),
-    db.from("reading_question_options").select("question_id,option_id,option_text").in("question_id", questionIds),
+    db.from("reading_ctw_slots").select("question_id,slot_id,prefix,answer,display_text,missing_text").in("question_id", questionIds),
+    db.from("reading_question_options").select("question_id,option_id,option_order,option_text").in("question_id", questionIds),
     db.from("reading_rap_insertion_anchors").select("question_id,anchor_id,anchor_order").in("question_id", questionIds)
   ]);
   const baseError = questionResult.error || slotResult.error || optionResult.error || anchorResult.error;
   if (baseError) throw new Error(baseError.message);
-  const keys = (questionResult.data ?? []) as KeyRow[];
-  const sentenceIds = keys
-    .map((question) => question.correct_sentence_id)
-    .filter((value): value is string => Boolean(value));
+  const questions = (questionResult.data ?? []) as ReadingCorrectionQuestionRow[];
+  const sentenceIds = Array.from(new Set([
+    ...questions.map((question) => question.correct_sentence_id),
+    ...rows
+      .filter((row) => row.answer_kind === "sentence_selection")
+      .map((row) => row.student_answer)
+  ].filter((value): value is string => Boolean(value))));
   const sentenceResult = sentenceIds.length
     ? await db.from("reading_passage_sentences").select("sentence_id,sentence_text").in("sentence_id", sentenceIds)
     : { data: [], error: null };
   if (sentenceResult.error) throw new Error(sentenceResult.error.message);
 
-  const keyByQuestion = new Map(keys.map((question) => [question.question_id, question]));
-  const slotText = new Map((slotResult.data ?? []).map((slot) => [
-    `${slot.question_id}:${slot.slot_id}`,
-    String(slot.answer)
-  ]));
-  const optionText = new Map((optionResult.data ?? []).map((option) => [
-    `${option.question_id}:${option.option_id}`,
-    String(option.option_text)
-  ]));
-  const anchorOrder = new Map((anchorResult.data ?? []).map((anchor) => [
-    `${anchor.question_id}:${anchor.anchor_id}`,
-    Number(anchor.anchor_order)
-  ]));
-  const sentenceText = new Map((sentenceResult.data ?? []).map((sentence) => [
-    String(sentence.sentence_id),
-    String(sentence.sentence_text)
-  ]));
-
-  return Object.fromEntries(rows.map((row) => {
-    const key = keyByQuestion.get(row.question_id);
-    let value = "";
-    if (row.answer_kind === "ctw_slot" && row.slot_id) {
-      value = slotText.get(`${row.question_id}:${row.slot_id}`) ?? "";
-    } else if (key?.correct_option_id) {
-      value = optionText.get(`${row.question_id}:${key.correct_option_id}`) ?? "";
-    } else if (key?.correct_anchor_id) {
-      const order = anchorOrder.get(`${row.question_id}:${key.correct_anchor_id}`);
-      value = order ? `Position ${order}` : "";
-    } else if (key?.correct_sentence_id) {
-      value = sentenceText.get(key.correct_sentence_id) ?? "";
-    }
-    return [row.attempt_answer_id, value];
-  }).filter((entry) => Boolean(entry[1])));
+  const presentations = buildReadingCorrectionAnswerPresentations({
+    anchors: (anchorResult.data ?? []) as ReadingCorrectionAnchorRow[],
+    correctionRows: rows as ReadingAnswerRow[],
+    ctwSlots: (slotResult.data ?? []) as ReadingCorrectionCtwSlotRow[],
+    options: (optionResult.data ?? []) as ReadingCorrectionOptionRow[],
+    questions,
+    sentences: (sentenceResult.data ?? []) as ReadingCorrectionSentenceRow[]
+  });
+  return presentations;
 }
 
 function isTargetRow(row: ReviewRow, targets: ReadingWrongbookTarget[]) {

@@ -254,9 +254,9 @@ export function PracticeResultSummary({
   correctPoints: number;
   elapsedSeconds: number | null;
   incorrectPoints?: number;
-  scoreComparison?: string;
+  scoreComparison?: string | null;
   scoreValue?: string;
-  timeComparison?: string;
+  timeComparison?: string | null;
   title: string;
   totalPoints: number;
   unansweredPoints?: number;
@@ -379,7 +379,7 @@ function ResultMetricCard({
   tone = "primary",
   value
 }: {
-  comparison: string;
+  comparison: string | null;
   icon: LucideIcon;
   label: string;
   tone?: "primary" | "error";
@@ -388,7 +388,7 @@ function ResultMetricCard({
   const error = tone === "error";
   return (
     <div
-      className={`flex min-h-[144px] items-center gap-4 rounded-2xl border p-5 ${
+      className={`flex items-center gap-4 rounded-2xl border p-5 ${comparison ? "min-h-[144px]" : ""} ${
         error
           ? "border-student-error-border bg-student-error-soft"
           : "border-student-primary-border bg-student-primary-soft"
@@ -412,7 +412,9 @@ function ResultMetricCard({
         >
           {value}
         </p>
-        <p className="mt-3 text-sm font-medium leading-5 text-student-muted">{comparison}</p>
+        {comparison ? (
+          <p className="mt-3 text-sm font-medium leading-5 text-student-muted">{comparison}</p>
+        ) : null}
       </div>
     </div>
   );

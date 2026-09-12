@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { isReadingAttemptSummary } from "@/lib/reading/attempts";
+import type { ReadingCorrectionAnswerPresentation } from "@/lib/reading/correctionResult";
 import type { SubmittedReadingReviewPayload } from "@/lib/reading/review";
 import { ReadingPracticeMessage, ReadingPracticeShell } from "./ReadingPractice";
 
 type Payload = Partial<SubmittedReadingReviewPayload> & {
-  disclosures?: Record<string, string>;
+  disclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   error?: string;
 };
 
@@ -21,7 +22,7 @@ export function ReadingWrongbookReview({
 }) {
   const router = useRouter();
   const [review, setReview] = useState<(SubmittedReadingReviewPayload & {
-    disclosures: Record<string, string>;
+    disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
   }) | null>(null);
   const [error, setError] = useState("");
   const resultHref = `/student/reading/wrongbook-results/${encodeURIComponent(attemptId)}`;

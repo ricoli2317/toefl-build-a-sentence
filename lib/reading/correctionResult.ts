@@ -24,6 +24,11 @@ export type ReadingCorrectionResultPayload = Omit<ReadingResultPayload, "answers
   answers: ReadingCorrectionResultAnswer[];
 };
 
+export type ReadingCorrectionAnswerPresentation = {
+  correctAnswer: ReadingCorrectionAnswerDisplay;
+  studentAnswer: string;
+};
+
 export type ReadingCorrectionQuestionRow = ReadingQuestionResultRow & {
   correct_anchor_id: string | null;
   correct_option_id: string | null;
@@ -57,19 +62,18 @@ export type ReadingCorrectionSentenceRow = {
   sentence_text: string;
 };
 
-export function buildReadingCorrectionResultAnswers(input: {
-  allResultAnswers: ReadingResultAnswer[];
+type ReadingCorrectionAnswerData = {
   correctionRows: ReadingAnswerRow[];
   questions: ReadingCorrectionQuestionRow[];
   options?: ReadingCorrectionOptionRow[];
   ctwSlots?: ReadingCorrectionCtwSlotRow[];
   anchors?: ReadingCorrectionAnchorRow[];
   sentences?: ReadingCorrectionSentenceRow[];
-}): ReadingCorrectionResultAnswer[] {
-  const resultById = new Map(input.allResultAnswers.map((answer, reviewIndex) => [
-    answer.answerId,
-    { answer, reviewIndex }
-  ]));
+};
+
+export function buildReadingCorrectionAnswerPresentations(
+  input: ReadingCorrectionAnswerData
+): Record<string, ReadingCorrectionAnswerPresentation> {
   const questionById = new Map(input.questions.map((question) => [question.question_id, question]));
   const optionsByQuestion = groupBy(input.options ?? [], (option) => option.question_id);
   const slotById = new Map((input.ctwSlots ?? []).map((slot) => [
@@ -82,10 +86,9 @@ export function buildReadingCorrectionResultAnswers(input: {
     sentence.sentence_text
   ]));
 
-  return input.correctionRows.map((row) => {
-    const result = resultById.get(row.attempt_answer_id);
+  return Object.fromEntries(input.correctionRows.map((row) => {
     const question = questionById.get(row.question_id);
-    if (!result || !question) throw new Error("READING_CORRECTION_RESULT_BASE_MISSING");
+    if (!question) throw new Error("READING_CORRECTION_RESULT_QUESTION_MISSING");
 
     let studentAnswer = "";
     let correctAnswer: ReadingCorrectionAnswerDisplay;
@@ -133,22 +136,38 @@ export function buildReadingCorrectionResultAnswers(input: {
       throw new Error("READING_CORRECTION_RESULT_ANSWER_KIND_INVALID");
     }
 
+    return [row.attempt_answer_id, { correctAnswer, studentAnswer }];
+  }));
+}
+
+export function buildReadingCorrectionResultAnswers(
+  input: ReadingCorrectionAnswerData & { allResultAnswers: ReadingResultAnswer[] }
+): ReadingCorrectionResultAnswer[] {
+  const resultById = new Map(input.allResultAnswers.map((answer, reviewIndex) => [
+    answer.answerId,
+    { answer, reviewIndex }
+  ]));
+  const presentations = buildReadingCorrectionAnswerPresentations(input);
+
+  return input.correctionRows.map((row) => {
+    const result = resultById.get(row.attempt_answer_id);
+    const presentation = presentations[row.attempt_answer_id];
+    if (!result || !presentation) throw new Error("READING_CORRECTION_RESULT_BASE_MISSING");
     return {
       ...result.answer,
-      correctAnswer,
-      reviewIndex: result.reviewIndex,
-      studentAnswer
+      ...presentation,
+      reviewIndex: result.reviewIndex
     };
   }).sort((left, right) => left.order - right.order || left.answerId.localeCompare(right.answerId));
 }
 
 function formatChoiceAnswer(options: ReadingCorrectionOptionRow[], optionId: string) {
   const ordered = [...options].sort((left, right) => left.option_order - right.option_order);
-  const option = ordered.find((candidate) => candidate.option_id === optionId);
-  if (!option) throw new Error("READING_CORRECTION_RESULT_OPTION_MISSING");
-  const isStandardAbcd = ordered.length === 4
-    && ordered.every((candidate, index) => candidate.option_order === index + 1);
-  return isStandardAbcd ? String.fromCharCode(64 + option.option_order) : option.option_text;
+  const optionIndex = ordered.findIndex((candidate) => candidate.option_id === optionId);
+  if (optionIndex < 0) throw new Error("READING_CORRECTION_RESULT_OPTION_MISSING");
+  return ordered.length <= 26
+    ? String.fromCharCode(65 + optionIndex)
+    : ordered[optionIndex].option_text;
 }
 
 function formatInsertionAnswer(anchors: ReadingCorrectionAnchorRow[], anchorId: string) {
@@ -175,7 +194,7 @@ function buildCtwCorrectAnswerParts(slot: ReadingCorrectionCtwSlotRow) {
       { emphasized: true, text: missingCharacters.join("") }
     ]);
   }
-  return [{ emphasized: true, text: slot.answer }];
+  throw new Error("READING_CORRECTION_RESULT_CTW_PATTERN_INVALID");
 }
 
 function fillCtwPattern(displayText: string, missingCharacters: string[]) {
