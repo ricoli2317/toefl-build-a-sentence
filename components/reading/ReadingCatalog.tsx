@@ -110,7 +110,7 @@ function ReadingCatalogActions({ item }: { item: ReadingCatalogItem }) {
   );
 }
 
-function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogItem["status"] }) {
+export function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogItem["status"] }) {
   const className = "inline-flex min-h-6 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold";
   if (status === "in_progress") return <span className={`${className} bg-blue-50 text-blue-600`}>练习中</span>;
   if (status === "completed") return <span className={`${className} bg-emerald-50 text-emerald-700`}>已完成</span>;

@@ -21,7 +21,8 @@ test("student Reading navigation exposes the Full Set catalog without replacing 
   assert.match(shell, /href: STUDENT_ROUTES\.readingCtw/);
   assert.match(shell, /href: STUDENT_ROUTES\.readingRdl/);
   assert.match(shell, /href: STUDENT_ROUTES\.readingRap/);
-  assert.match(shell, /href: STUDENT_ROUTES\.readingFullSets[\s\S]{0,120}label: "套题练习"/);
+  assert.match(shell, /href: STUDENT_ROUTES\.readingFullSets[\s\S]{0,120}label: "Full Set Practice"/);
+  assert.doesNotMatch(shell, /icon: CompleteTheWordsIcon,[\s\S]{0,80}iconClassName/);
   assert.match(shell, /path\.startsWith\(STUDENT_ROUTES\.readingFullSets\)/);
 });
 
@@ -29,21 +30,25 @@ test("Full Set catalog consumes the existing catalog API in its original order",
   assert.match(catalog, /fetch\("\/api\/reading\/full-sets"/);
   assert.match(catalog, /state\.data\.fullSets\.map\(\(fullSet\)/);
   assert.doesNotMatch(catalog, /\.sort\(|20260602|blacklist/i);
-  assert.match(catalog, /\{fullSet\.title\}/);
+  assert.match(catalog, /setTitle: fullSet\.title/);
   assert.doesNotMatch(catalog, /sourceLabel|occurrenceDate/);
-  assert.match(catalogPage, /title="套题练习"/);
-  assert.match(catalogPage, /subtitle=/);
+  assert.match(catalogPage, /title="Full Set Practice"/);
+  assert.doesNotMatch(catalogPage, /subtitle=/);
 });
 
-test("Full Set cards format both legal Module 1 times and the Module 2 time", () => {
+test("Full Set catalog reuses Reading list cards without Module previews", () => {
   assert.equal(formatReadingFullSetTime(1230), "20:30");
   assert.equal(formatReadingFullSetTime(1110), "18:30");
   assert.equal(formatReadingFullSetTime(540), "9:00");
-  assert.match(catalog, /questionCount=\{35\}/);
-  assert.match(catalog, /questionCount=\{15\}/);
-  assert.match(catalog, /module1TimeLimitSeconds/);
-  assert.match(catalog, /module2TimeLimitSeconds/);
-  assert.match(catalog, /共 50 题/);
+  assert.match(catalog, /PracticeSetCatalogList/);
+  assert.match(catalog, /PracticeSetAction/);
+  assert.match(catalog, /ReadingCatalogStatusBadge/);
+  assert.match(catalog, /questionCount: 50/);
+  assert.doesNotMatch(catalog, /ModuleSummary|module1TimeLimitSeconds|module2TimeLimitSeconds|共 50 题/);
+  assert.match(catalog, /开始练习/);
+  assert.match(catalog, /继续练习/);
+  assert.match(catalog, /查看结果/);
+  assert.match(catalog, /再练一次/);
 });
 
 test("Full Set UI keeps internal aggregation names out of student-facing rendering", () => {

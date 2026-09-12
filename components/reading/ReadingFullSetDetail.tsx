@@ -84,7 +84,7 @@ export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
         backHref={STUDENT_ROUTES.readingFullSets}
         crumbs={[
           { label: "学生首页", href: STUDENT_ROUTES.home },
-          { label: "套题练习", href: STUDENT_ROUTES.readingFullSets },
+          { label: "Full Set Practice", href: STUDENT_ROUTES.readingFullSets },
           { label: title }
         ]}
       />

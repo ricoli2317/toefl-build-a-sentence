@@ -130,6 +130,7 @@ test("catalog status prioritizes active and picks latest completed with a stable
 
 test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, readonly, and retake-enabled", () => {
   const resultUi = read("components/reading/ReadingFullSetResult.tsx");
+  const navigatorUi = read("components/reading/ReadingFullSetQuestionNavigator.tsx");
   const sharedSummary = read("components/PracticeResult.tsx");
   const resultRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/route.ts");
   const reviewRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/review/route.ts");
@@ -141,11 +142,14 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.match(sharedSummary, /label="用时"/);
   assert.match(sharedSummary, /scoreValue \?\? `\$\{correctPoints\}\/\$\{totalPoints\}`/);
   assert.doesNotMatch(resultUi, /\/ 50|\/50|CEFR/);
-  assert.match(resultUi, /Module \{module\.moduleNumber\}/);
-  assert.match(resultUi, /section\.taskName/);
-  assert.match(resultUi, /第\{answer\.order\}题 · \{formatQuestionTime/);
-  assert.match(resultUi, /aggregateCtwInteractionTime/);
-  assert.match(resultUi, /ctwTimeByOccurrence\.get\(answer\.occurrenceId\)/);
+  assert.match(resultUi, /buildReadingFullSetReviewItems/);
+  assert.match(resultUi, /ReadingFullSetQuestionNavigator/);
+  assert.match(resultUi, /scoreComparison=\{null\}/);
+  assert.match(resultUi, /timeComparison=\{null\}/);
+  assert.doesNotMatch(resultUi, /section\.taskName|formatQuestionTime|ctwTimeByOccurrence/);
+  assert.match(navigatorUi, /Module \{moduleNumber\}/);
+  assert.match(navigatorUi, /data-answer-state=\{state\}/);
+  assert.match(navigatorUi, /第\{readingFullSetReviewItemLabel\(current\)\}题 · \{currentState\} · 耗时:/);
   assert.match(resultRoute, /loadOwnedReadingFullSetAttempt/);
   assert.match(resultRoute, /owned\.attempt\.fullSetId !== params\.fullSetId/);
   assert.match(resultRoute, /status !== "completed"/);
@@ -246,8 +250,7 @@ test("Full Set review switches in memory and updates history without route navig
   assert.match(fullSetReview, /addEventListener\("popstate"/);
   assert.equal((fullSetReview.match(/fetch\(/g) ?? []).length, 1);
   assert.doesNotMatch(fullSetReview, /router\.push\(target\.href\)|questionIndex=\$\{questionIndex\}/);
-  assert.match(fullSetReview, /ReadingFullSetReviewStatusBar/);
-  assert.match(practice, /Module \{moduleNumber\}/);
+  assert.match(fullSetReview, /ReadingFullSetQuestionNavigator/);
   assert.match(fullSetReview, /statusLabel=\{statusLabel\}/);
   assert.match(fullSetReview, /activeSlotReview/);
   assert.match(fullSetReview, /item\.index === currentItem\.sourceAnswerIndex/);

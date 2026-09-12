@@ -220,7 +220,7 @@ test("RDL and RAP share one continuous practice shell with embedded navigation",
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
 });
 
-test("ordinary and wrongbook Reading use one natural page scroll while Full Set stays isolated", () => {
+test("ordinary, wrongbook, and Full Set Reading reviews use one natural page scroll", () => {
   const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const ordinaryLoader = source.slice(
     source.indexOf("export function ReadingPractice"),
@@ -249,8 +249,11 @@ test("ordinary and wrongbook Reading use one natural page scroll while Full Set 
   assert.match(practiceShell, /layoutMode="natural"/);
   assert.match(twoColumnShell, /naturalFlow \? "overflow-visible"/);
   assert.match(twoColumnShell, /naturalFlow \? "min-w-0"/);
-  assert.match(fullSetShell, /h-\[100dvh\] overflow-hidden/);
-  assert.match(fullSetShell, /document\.body\.style\.overflow = "hidden"/);
+  assert.match(fullSetShell, /min-h-\[100dvh\]/);
+  assert.match(fullSetShell, /min-h-\[calc\(100dvh-76px\)\]/);
+  assert.match(fullSetShell, /layoutMode="natural"/);
+  assert.doesNotMatch(fullSetShell, /className="h-\[100dvh\]|className="[^"]* h-\[calc\(100dvh-76px\)\]|overflow-hidden|overflow-auto/);
+  assert.doesNotMatch(fullSetShell, /document\.(body|documentElement)\.style\.overflow/);
 });
 
 test("CTW, RDL, and RAP natural layout keeps long content and bottom navigation in document flow", () => {

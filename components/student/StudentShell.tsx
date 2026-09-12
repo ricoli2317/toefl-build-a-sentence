@@ -78,7 +78,6 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
       {
         href: STUDENT_ROUTES.readingCtw,
         icon: CompleteTheWordsIcon,
-        iconClassName: "text-[#347fdc]",
         label: "Complete the Words",
         match: (path) => path === STUDENT_ROUTES.readingCtw
       },
@@ -97,7 +96,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
       {
         href: STUDENT_ROUTES.readingFullSets,
         icon: Rows3,
-        label: "套题练习",
+        label: "Full Set Practice",
         match: (path) => path.startsWith(STUDENT_ROUTES.readingFullSets)
       }
     ]

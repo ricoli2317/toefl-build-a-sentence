@@ -19,6 +19,7 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { WritingPracticeActions } from "@/components/writing/WritingPracticeActions";
 import { ReadingCorrectionAnswerValue } from "@/components/reading/ReadingCorrectionAnswerValue";
+import { ReadingFullSetQuestionNavigator } from "@/components/reading/ReadingFullSetQuestionNavigator";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
@@ -96,8 +97,6 @@ import {
 } from "@/lib/reading/correctionResult";
 import {
   findReadingFullSetReviewIndex,
-  readingFullSetReviewItemLabel,
-  type ReadingFullSetReviewItem,
   type ReadingFullSetReviewPayload
 } from "@/lib/reading/fullSetReview";
 import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
@@ -415,17 +414,6 @@ function ReadingFullSetReviewShell({
   );
 
   useEffect(() => {
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
     for (const occurrence of payload.occurrences) {
       const imageUrl = occurrence.practice.material?.imageUrl;
       if (imageUrl) {
@@ -476,10 +464,10 @@ function ReadingFullSetReviewShell({
   const selectedReviewItem = currentItem.taskType === "ctw"
     ? activeSlotReview ?? null
     : workspaceReviewItems[0] ?? null;
-  const statusLabel = `Question ${currentItem.orderStart}`;
+  const statusLabel = `第${currentItem.orderStart}题`;
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={onBack}
@@ -487,22 +475,26 @@ function ReadingFullSetReviewShell({
         title={`${payload.attempt.title} · Module ${currentItem.moduleNumber}`}
       />
       <main
-        className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
+        className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
         style={currentOccurrence.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
       >
-        <ReadingFullSetReviewStatusBar
-          currentIndex={activeIndex}
-          items={payload.reviewItems}
-          onSelect={selectReviewItem}
-        />
+        <div className="mb-3">
+          <ReadingFullSetQuestionNavigator
+            currentIndex={activeIndex}
+            items={payload.reviewItems}
+            onSelect={selectReviewItem}
+            showCurrentStatus
+          />
+        </div>
         <section className={currentOccurrence.practice.item.module === "ctw"
-          ? "min-h-0 flex-1 overflow-auto rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex min-h-0 flex-1 flex-col overflow-hidden bg-white"}
+          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
+          : "flex flex-1 flex-col bg-white"}
         >
           <ReadingWorkspaceRouter
             answers={currentOccurrence.answers}
             currentQuestion={currentQuestion}
             lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence.practice.item.module)}
+            layoutMode="natural"
             onAnswerChange={() => undefined}
             practice={currentOccurrence.practice}
             readOnly
@@ -1231,70 +1223,6 @@ function CtwBlankWord({
         })}
       </span>
     </span>
-  );
-}
-
-function ReadingFullSetReviewStatusBar({
-  currentIndex,
-  items,
-  onSelect
-}: {
-  currentIndex: number;
-  items: ReadingFullSetReviewItem[];
-  onSelect: (index: number) => void;
-}) {
-  const current = items[currentIndex];
-  if (!current) return null;
-  const currentState = !current.isAnswered ? "未作答" : current.isCorrect ? "正确" : "错误";
-  const currentTone = current.isCorrect
-    ? "text-student-primary"
-    : current.isAnswered
-      ? "text-student-error"
-      : "text-student-muted";
-  const currentLabel = current.orderStart === current.orderEnd
-    ? `Question ${current.orderStart}`
-    : `Questions ${readingFullSetReviewItemLabel(current)}`;
-  return (
-    <section className="mb-3 shrink-0 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-full-set-review-status">
-      <p className={`mb-3 text-sm font-bold ${currentTone}`}>
-        {currentLabel} · {currentState} · {formatReviewQuestionTime(current.questionTimeSeconds)}
-      </p>
-      <div className="grid gap-2" aria-label="完整阅读套题作答题号导航">
-        {([1, 2] as const).map((moduleNumber) => (
-          <div className="flex min-w-0 items-start gap-3" data-module-number={moduleNumber} key={moduleNumber}>
-            <p className="w-20 shrink-0 pt-1.5 text-xs font-bold text-student-text">Module {moduleNumber}</p>
-            <div className="flex min-w-0 flex-wrap gap-1.5">
-              {items.map((item, index) => {
-                if (item.moduleNumber !== moduleNumber) return null;
-                const state = !item.isAnswered ? "unanswered" : item.isCorrect ? "correct" : "incorrect";
-                return (
-                  <button
-                    aria-current={index === currentIndex ? "true" : undefined}
-                    aria-label={`Module ${moduleNumber} ${readingFullSetReviewItemLabel(item)}`}
-                    className={`min-h-8 min-w-8 rounded-full border px-2 text-xs font-bold tabular-nums ${
-                      index === currentIndex
-                        ? "border-amber-500 bg-amber-100 text-student-text ring-2 ring-amber-200"
-                        : state === "correct"
-                          ? "border-student-primary-border bg-student-primary-soft text-student-primary"
-                          : state === "incorrect"
-                            ? "border-student-error-border bg-student-error-soft text-student-error"
-                            : "border-student-border bg-student-bg text-student-muted"
-                    }`}
-                    data-answer-state={state}
-                    data-review-item-key={item.key}
-                    key={item.key}
-                    onClick={() => onSelect(index)}
-                    type="button"
-                  >
-                    {readingFullSetReviewItemLabel(item)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }
 

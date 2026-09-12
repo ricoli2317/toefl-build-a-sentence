@@ -14,10 +14,12 @@ import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 
 export function ReadingFullSetRetakeButton({
   compact = false,
-  fullSetId
+  fullSetId,
+  label
 }: {
   compact?: boolean;
   fullSetId: string;
+  label?: string;
 }) {
   const router = useRouter();
   const cache = useStudentDataCache();
@@ -55,13 +57,13 @@ export function ReadingFullSetRetakeButton({
   return (
     <div>
       <button
-        className={compact ? "student-button-primary min-h-9 px-3 py-1.5 text-sm" : "student-button-primary"}
+        className={compact ? "student-button-primary min-h-8 px-3 py-1 text-xs sm:text-[13px]" : "student-button-primary"}
         disabled={loading}
         onClick={retake}
         type="button"
       >
         <RotateCcw aria-hidden="true" size={17} />
-        {loading ? "正在准备..." : "再次练习"}
+        {loading ? "正在准备..." : label ?? "再次练习"}
       </button>
       {error ? <p className="mt-2 text-xs font-semibold text-student-error">{error}</p> : null}
     </div>
