@@ -73,6 +73,9 @@ import {
 import {
   insertionAnchorAtBoundary,
   isRapSentenceSelectable,
+  rapSentenceSelectionInstruction,
+  rapSentenceSelectionStem,
+  rapVisibleHighlightRanges,
   validateRapInsertionAnchors,
   validateRapSentenceTarget
 } from "@/lib/reading/rapInteraction";
@@ -477,13 +480,14 @@ function ReadingFullSetReviewShell({
     return <ReadingPracticeMessage description="套题作答内容不完整。" onLeave={onBack} title="无法打开套题作答" />;
   }
 
+  const activeSlotReview = currentItem.slotReviews.find(
+    (item) => item.index === currentItem.sourceAnswerIndex
+  );
   const workspaceReviewItems: SubmittedReadingReviewItem[] = currentItem.slotReviews;
   const selectedReviewItem = currentItem.taskType === "ctw"
-    ? null
+    ? activeSlotReview ?? null
     : workspaceReviewItems[0] ?? null;
-  const statusLabel = currentItem.orderStart === currentItem.orderEnd
-    ? `Question ${currentItem.orderStart}`
-    : `Questions ${readingFullSetReviewItemLabel(currentItem)}`;
+  const statusLabel = `Question ${currentItem.orderStart}`;
 
   return (
     <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
@@ -1787,6 +1791,11 @@ function RapPracticeWorkspace({
     && sentenceTargetValidation.sentenceIds.includes(answer.sentenceId ?? "")
     ? answer.sentenceId
     : null;
+  const visibleHighlightRanges = rapVisibleHighlightRanges(
+    question.questionType,
+    readOnly,
+    question.highlightRanges
+  );
 
   const insertionBoundary = (paragraphId: string, boundaryIndex: number) => {
     if (question.questionType !== "rap_sentence_insertion" || !insertionValidation) return null;
@@ -1839,7 +1848,7 @@ function RapPracticeWorkspace({
     const highlightedText = renderRapHighlightedText(
       sentence.text,
       sentenceStartOffsets.get(sentence.sentenceId) ?? 0,
-      question.highlightRanges.filter((range) => range.paragraphId === paragraph.paragraphId)
+      visibleHighlightRanges.filter((range) => range.paragraphId === paragraph.paragraphId)
     );
     const selectable = question.questionType === "rap_sentence_selection"
       && sentenceTargetValidation !== null
@@ -1956,8 +1965,8 @@ function RapPracticeWorkspace({
           </div>
         ) : question.questionType === "rap_sentence_selection" && sentenceTargetValidation?.valid ? (
           <div className="font-bold text-student-text" data-testid="rap-sentence-selection-instructions" style={readingQuestionTextStyle}>
-            <p id="rap-question-stem">{question.stem}</p>
-            <p style={{ marginTop: "1.75em" }}>Select the sentence to make your choice.</p>
+            <p id="rap-question-stem">{rapSentenceSelectionStem(question.stem)}</p>
+            <p style={{ marginTop: "1.75em" }}>{rapSentenceSelectionInstruction()}</p>
           </div>
         ) : (
           <>

@@ -302,6 +302,11 @@ export async function GET(request: Request) {
       selectedIds = wrongIds;
     }
 
+    const requestedQuestionId = searchParams.get("questionId")?.trim();
+    if (requestedQuestionId) {
+      selectedIds = selectedIds.filter((questionId) => questionId === requestedQuestionId);
+    }
+
     if (randomLimit > 0) {
       selectedIds = shuffle(selectedIds).slice(0, randomLimit);
     }

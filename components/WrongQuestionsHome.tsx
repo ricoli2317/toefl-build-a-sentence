@@ -77,7 +77,10 @@ export function WrongQuestionsHome() {
         <>
           <WrongQuestionOverviewCards stats={state.data.stats} />
           {activeTab === "build_sentence" ? (
-            <BasGrammarAnalysis items={state.data.grammarPoints} />
+            <>
+              <BasCorrectionActions />
+              <BasGrammarAnalysis items={state.data.grammarPoints} />
+            </>
           ) : null}
           <section aria-labelledby="wrong-question-list-title">
             <h2 className="mb-3 border-l-4 border-student-primary pl-3 text-lg font-bold text-student-text" id="wrong-question-list-title">
@@ -91,6 +94,25 @@ export function WrongQuestionsHome() {
         </>
       ) : null}
     </div>
+  );
+}
+
+function BasCorrectionActions() {
+  return (
+    <section className="rounded-2xl border border-student-error-border bg-white p-5 shadow-[0_2px_12px_rgba(60,47,119,0.04)]" data-testid="bas-wrong-question-correction">
+      <div>
+        <h2 className="text-lg font-bold text-student-text">错题订正</h2>
+        <p className="mt-1 text-sm text-student-muted">进入现有错题练习流程，分别处理今日待订正和历史错题。</p>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <Link className="student-button-error min-h-11" href="/student/wrong-questions/today/practice">
+          今日错题订正 <ArrowRight aria-hidden="true" size={16} />
+        </Link>
+        <Link className="student-button-secondary min-h-11" href="/student/wrong-questions/history/practice?mode=all">
+          历史错题订正 <ArrowRight aria-hidden="true" size={16} />
+        </Link>
+      </div>
+    </section>
   );
 }
 
@@ -243,9 +265,16 @@ function WrongQuestionGroupList({ groups }: { groups: WrongQuestionGroup[] }) {
               {group.pendingCount > 0 ? <span className="text-student-error">待订正 {group.pendingCount}</span> : null}
               <span className="text-xs font-medium text-student-muted">{formatWrongDate(group.latestWrongAt)}</span>
             </div>
-            <Link className="student-button-secondary min-h-9 px-3 py-1.5 text-sm" href={group.actionHref}>
-              查看错题 <ArrowRight aria-hidden="true" size={16} />
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              {group.taskType === "build_sentence" && group.pendingCount > 0 && group.correctionHref ? (
+                <Link className="student-button-error min-h-9 px-3 py-1.5 text-sm" href={group.correctionHref}>
+                  去订正 <ArrowRight aria-hidden="true" size={16} />
+                </Link>
+              ) : null}
+              <Link className="student-button-secondary min-h-9 px-3 py-1.5 text-sm" href={group.actionHref}>
+                查看错题 <ArrowRight aria-hidden="true" size={16} />
+              </Link>
+            </div>
           </article>
         );
       })}

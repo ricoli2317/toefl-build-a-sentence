@@ -7,6 +7,9 @@ const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
 const {
   insertionAnchorAtBoundary,
   isRapSentenceSelectable,
+  rapSentenceSelectionInstruction,
+  rapSentenceSelectionStem,
+  rapVisibleHighlightRanges,
   validateRapInsertionAnchors,
   validateRapSentenceTarget
 } = require("../lib/reading/rapInteraction.ts");
@@ -178,10 +181,42 @@ test("sentence selection remains one inline paragraph flow and only the selected
   assert.match(source, /onAnswerChange\(question\.questionId, \{ kind: "sentence_selection", sentenceId: sentence\.sentenceId \}\)/);
   assert.match(rapSource, /<p[\s\S]*?paragraph\.sentences\.map[\s\S]*?<\/p>/);
   assert.match(rapSource, /className="font-bold text-student-text" data-testid="rap-sentence-selection-instructions"/);
-  assert.match(selectionInstructionSource, /Select the sentence to make your choice\./);
+  assert.match(selectionInstructionSource, /rapSentenceSelectionStem\(question\.stem\)/);
+  assert.match(selectionInstructionSource, /rapSentenceSelectionInstruction\(\)/);
   assert.equal((selectionInstructionSource.match(/<p(?:\s|>)/g) ?? []).length, 2);
   assert.doesNotMatch(selectionInstructionSource, /text-student-muted|border-y|<hr/i);
   assert.doesNotMatch(rapSource, /includes\(sentence\.text\)|indexOf\(sentence\.text\)|getBoundingClientRect|split\([^)]*[.!?]/s);
+});
+
+test("active sentence selection hides source highlights and keeps selection answer-driven", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
+    "utf8"
+  );
+  const rapSource = source.slice(
+    source.indexOf("function RapPracticeWorkspace"),
+    source.indexOf("function ChoiceOptionList")
+  );
+  const ranges = [{ paragraphId: "p1", startOffset: 0, endOffset: 10 }];
+
+  assert.deepEqual(rapVisibleHighlightRanges("rap_sentence_selection", false, ranges), []);
+  assert.equal(rapVisibleHighlightRanges("rap_sentence_selection", true, ranges), ranges);
+  assert.equal(rapVisibleHighlightRanges("rap_sentence_insertion", false, ranges), ranges);
+  assert.equal(rapVisibleHighlightRanges("rap_multiple_choice", false, ranges), ranges);
+  assert.match(rapSource, /const selectedSentenceId = answer\?\.kind === "sentence_selection"/);
+  assert.match(rapSource, /const selected = selectable && sentence\.sentenceId === selectedSentenceId/);
+  assert.match(rapSource, /rapVisibleHighlightRanges\([\s\S]*?question\.questionType,[\s\S]*?readOnly,[\s\S]*?question\.highlightRanges/);
+  assert.doesNotMatch(rapSource, /correctSentenceId|correct_sentence_id/);
+});
+
+test("sentence-selection instruction is stripped from the stem and rendered once below it", () => {
+  const instruction = rapSentenceSelectionInstruction();
+  const rawStem = "Identify the sentence in paragraph 1 that illustrates the claim. Select the sentence to make your choice.";
+  const stem = rapSentenceSelectionStem(rawStem);
+
+  assert.equal(stem, "Identify the sentence in paragraph 1 that illustrates the claim.");
+  assert.equal(rapSentenceSelectionStem(stem), stem);
+  assert.equal(`${stem}\n${instruction}`.split(instruction).length - 1, 1);
 });
 
 test("special RAP inline interactions explicitly suppress every visual frame source", () => {

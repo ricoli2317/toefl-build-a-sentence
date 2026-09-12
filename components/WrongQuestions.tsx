@@ -301,10 +301,16 @@ export function HistoryWrongQuestions() {
   );
 }
 
-export function WrongQuestionsPractice({ mode }: { mode: "history-all" | "history-random" | "today" }) {
+export function WrongQuestionsPractice({
+  mode,
+  questionId
+}: {
+  mode: "history-all" | "history-random" | "today";
+  questionId?: string;
+}) {
   const scope = mode === "today" ? "today" : "history";
   const randomLimit = mode === "history-random" ? 10 : undefined;
-  const { error, loading, questions } = useWrongQuestions(scope, randomLimit);
+  const { error, loading, questions } = useWrongQuestions(scope, randomLimit, questionId);
   const today = useMemo(() => formatTimestamp(new Date()), []);
   const virtualSetId = useMemo(() => {
     if (mode === "today") return `wrongbook-today-${today.slice(0, 8)}`;
@@ -361,7 +367,7 @@ function WrongQuestionsNavigation({ current }: { current: string }) {
   );
 }
 
-function useWrongQuestions(scope: "history" | "today", randomLimit?: number) {
+function useWrongQuestions(scope: "history" | "today", randomLimit?: number, questionId?: string) {
   const todayRange = useMemo(() => getTodayRange(), []);
   const query = useMemo(() => {
     const params = new URLSearchParams({ scope });
@@ -370,8 +376,9 @@ function useWrongQuestions(scope: "history" | "today", randomLimit?: number) {
       params.set("todayEnd", todayRange.end);
     }
     if (randomLimit) params.set("randomLimit", String(randomLimit));
+    if (questionId) params.set("questionId", questionId);
     return params.toString();
-  }, [randomLimit, scope, todayRange.end, todayRange.start]);
+  }, [questionId, randomLimit, scope, todayRange.end, todayRange.start]);
   const { data, error, loading } = useStudentCachedData<WrongQuestionsPayload>(
     studentWrongQuestionsCacheKey(query),
     (session) => loadWrongQuestions(query, session)

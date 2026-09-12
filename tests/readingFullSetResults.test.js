@@ -144,6 +144,8 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.match(resultUi, /Module \{module\.moduleNumber\}/);
   assert.match(resultUi, /section\.taskName/);
   assert.match(resultUi, /第\{answer\.order\}题 · \{formatQuestionTime/);
+  assert.match(resultUi, /aggregateCtwInteractionTime/);
+  assert.match(resultUi, /ctwTimeByOccurrence\.get\(answer\.occurrenceId\)/);
   assert.match(resultRoute, /loadOwnedReadingFullSetAttempt/);
   assert.match(resultRoute, /owned\.attempt\.fullSetId !== params\.fullSetId/);
   assert.match(resultRoute, /status !== "completed"/);
@@ -198,28 +200,37 @@ function fullSetReviewAnswers() {
   return rows;
 }
 
-test("Full Set review navigation has two Module rows and interaction-level CTW ranges", () => {
+test("Full Set review navigation has two Module rows and one item per CTW slot", () => {
   const items = buildReadingFullSetReviewItems(fullSetReviewAnswers(), (index) => `/questions/${index}`);
-  assert.equal(items.length, 23);
+  assert.equal(items.length, 50);
   assert.deepEqual(
     items.filter((item) => item.moduleNumber === 1).map(readingFullSetReviewItemLabel),
-    ["1–10", "11–20", ...Array.from({ length: 15 }, (_, index) => String(index + 21))]
+    Array.from({ length: 35 }, (_, index) => String(index + 1))
   );
   assert.deepEqual(
     items.filter((item) => item.moduleNumber === 2).map(readingFullSetReviewItemLabel),
-    ["1–10", "11", "12", "13", "14", "15"]
+    Array.from({ length: 15 }, (_, index) => String(index + 1))
   );
-  assert.equal(items.filter((item) => item.taskType === "ctw").length, 3);
+  assert.equal(items.filter((item) => item.taskType === "ctw").length, 30);
   assert.equal(items[0].slotReviews.length, 10);
-  assert.equal(items[1].slotReviews.length, 10);
-  assert.equal(findReadingFullSetReviewIndex(items, items[1].slotReviews[4].index), 1);
+  assert.equal(items[10].slotReviews.length, 10);
+  assert.equal(findReadingFullSetReviewIndex(items, items[10].slotReviews[4].index), 14);
+  assert.deepEqual(
+    items.slice(0, 10).map((item) => [item.isAnswered, item.isCorrect, item.sourceAnswerIndex]),
+    fullSetReviewAnswers().slice(0, 10).map((answer) => [answer.isAnswered, answer.isCorrect, answer.index])
+  );
 });
 
-test("CTW review time de-duplicates the persisted interaction time and preserves missing history", () => {
+test("CTW review time supports real slot aggregation, legacy interaction timing, and missing history", () => {
   const complete = fullSetReviewAnswers();
   const ctw = complete.filter((answer) => answer.occurrenceId === "m1-ctw-a");
   assert.equal(aggregateCtwInteractionTime(ctw), 41);
   assert.equal(readingFullSetReviewTotalTime(complete), 271);
+  ctw.forEach((answer, index) => { answer.questionTimeSeconds = index + 1; });
+  assert.equal(aggregateCtwInteractionTime(ctw), 55);
+  const ctwItems = buildReadingFullSetReviewItems(complete, () => "")
+    .filter((item) => item.occurrenceId === "m1-ctw-a");
+  assert.deepEqual(ctwItems.map((item) => item.questionTimeSeconds), Array(10).fill(55));
   ctw[4].questionTimeSeconds = null;
   assert.equal(aggregateCtwInteractionTime(ctw), null);
   assert.equal(readingFullSetReviewTotalTime(complete), null);
@@ -238,6 +249,9 @@ test("Full Set review switches in memory and updates history without route navig
   assert.match(fullSetReview, /ReadingFullSetReviewStatusBar/);
   assert.match(practice, /Module \{moduleNumber\}/);
   assert.match(fullSetReview, /statusLabel=\{statusLabel\}/);
+  assert.match(fullSetReview, /activeSlotReview/);
+  assert.match(fullSetReview, /item\.index === currentItem\.sourceAnswerIndex/);
+  assert.doesNotMatch(fullSetReview, /key=\{currentItem/);
 });
 
 test("Full Set timing hotfix preserves unknown history as NULL and runner records real time", () => {

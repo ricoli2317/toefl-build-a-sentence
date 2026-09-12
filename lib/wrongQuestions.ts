@@ -32,6 +32,7 @@ export type WrongQuestionOverviewStats = {
 
 export type WrongQuestionGroup = {
   actionHref: string;
+  correctionHref: string | null;
   correctedCount: number;
   groupId: string;
   latestWrongAt: string;
@@ -114,6 +115,9 @@ export function buildWrongQuestionsOverview(input: {
     const latestWrongTime = answerTime(answer.answeredAt, attempt?.submittedAt);
     return {
       actionHref: `/student/results/${encodeURIComponent(answer.attemptId)}?source=practice-history`,
+      correctionHref: correctedBasKeys.has(key)
+        ? null
+        : basCorrectionHref(answer.questionId, latestWrongTime, input.todayStart, input.todayEnd),
       corrected: correctedBasKeys.has(key),
       firstWrongTime: firstBasWrongAt.get(key) ?? latestWrongTime,
       groupId: group.groupId,
@@ -143,6 +147,7 @@ export function buildWrongQuestionsOverview(input: {
 
 type AtomicWrongQuestion = {
   actionHref: string;
+  correctionHref: string | null;
   corrected: boolean;
   firstWrongTime: number;
   groupId: string;
@@ -209,6 +214,7 @@ function buildReadingAtomicWrongQuestions(input: {
     if (!attempt) return [];
     return [{
       actionHref: `/student/reading/results/${encodeURIComponent(state.latestWrongAttemptId)}`,
+      correctionHref: null,
       corrected: state.latest.isCorrect,
       firstWrongTime: state.firstWrongTime,
       groupId: attempt.logicalItemId,
@@ -221,13 +227,15 @@ function buildReadingAtomicWrongQuestions(input: {
 }
 
 function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
-  const groups = new Map<string, WrongQuestionGroup>();
+  const groups = new Map<string, WrongQuestionGroup & { correctionCandidateTime: number }>();
   for (const item of items) {
     const key = `${item.taskType}:${item.groupId}`;
     const existing = groups.get(key);
     if (!existing) {
       groups.set(key, {
         actionHref: item.actionHref,
+        correctionCandidateTime: item.correctionHref ? item.latestWrongTime : Number.NEGATIVE_INFINITY,
+        correctionHref: item.correctionHref,
         correctedCount: item.corrected ? 1 : 0,
         groupId: item.groupId,
         latestWrongAt: new Date(item.latestWrongTime).toISOString(),
@@ -242,16 +250,37 @@ function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
     existing.wrongCount += 1;
     existing.correctedCount += item.corrected ? 1 : 0;
     existing.pendingCount += item.corrected ? 0 : 1;
+    if (item.correctionHref && item.latestWrongTime > existing.correctionCandidateTime) {
+      existing.correctionCandidateTime = item.latestWrongTime;
+      existing.correctionHref = item.correctionHref;
+    }
     if (item.latestWrongTime > Date.parse(existing.latestWrongAt)) {
       existing.actionHref = item.actionHref;
       existing.latestWrongAt = new Date(item.latestWrongTime).toISOString();
     }
   }
-  return Array.from(groups.values()).sort((left, right) =>
-    Date.parse(right.latestWrongAt) - Date.parse(left.latestWrongAt)
-    || left.taskType.localeCompare(right.taskType)
-    || left.title.localeCompare(right.title)
-  );
+  return Array.from(groups.values())
+    .map(({ correctionCandidateTime: _correctionCandidateTime, ...group }) => group)
+    .sort((left, right) =>
+      Date.parse(right.latestWrongAt) - Date.parse(left.latestWrongAt)
+      || left.taskType.localeCompare(right.taskType)
+      || left.title.localeCompare(right.title)
+    );
+}
+
+function basCorrectionHref(
+  questionId: string,
+  latestWrongTime: number,
+  todayStart: number,
+  todayEnd: number
+) {
+  const today = latestWrongTime >= todayStart && latestWrongTime < todayEnd;
+  const base = today
+    ? "/student/wrong-questions/today/practice"
+    : "/student/wrong-questions/history/practice";
+  const params = new URLSearchParams({ questionId });
+  if (!today) params.set("mode", "all");
+  return `${base}?${params.toString()}`;
 }
 
 function readingAnswerKey(

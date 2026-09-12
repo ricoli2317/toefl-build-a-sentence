@@ -96,3 +96,23 @@ export function isRapSentenceSelectable(
     && validation.paragraphId === paragraphId
     && validation.sentenceIds.includes(sentenceId);
 }
+
+const SENTENCE_SELECTION_INSTRUCTION = "Select the sentence to make your choice.";
+
+export function rapSentenceSelectionStem(stem: string) {
+  return stem
+    .replace(/\s*Select the sentence to make your choice\.\s*$/i, "")
+    .trim();
+}
+
+export function rapVisibleHighlightRanges<T>(
+  questionType: string,
+  readOnly: boolean,
+  ranges: T[]
+) {
+  return questionType === "rap_sentence_selection" && !readOnly ? [] : ranges;
+}
+
+export function rapSentenceSelectionInstruction() {
+  return SENTENCE_SELECTION_INSTRUCTION;
+}

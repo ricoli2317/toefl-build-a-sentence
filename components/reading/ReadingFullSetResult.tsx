@@ -12,7 +12,10 @@ import {
   StudentNavigation
 } from "@/components/student/StudentUI";
 import type { ReadingFullSetResultPayload } from "@/lib/reading/fullSetResults";
-import { readingFullSetReviewTotalTime } from "@/lib/reading/fullSetReview";
+import {
+  aggregateCtwInteractionTime,
+  readingFullSetReviewTotalTime
+} from "@/lib/reading/fullSetReview";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
@@ -31,6 +34,14 @@ export function ReadingFullSetResult({
   if (state.error || !state.data) return <StudentErrorState text="没有找到套题结果或加载失败。" />;
   const result = state.data;
   const correctPoints = result.answers.filter((answer) => answer.isCorrect).length;
+  const ctwTimeByOccurrence = new Map<string, number | null>(result.answers
+    .filter((answer) => answer.taskType === "ctw")
+    .map((answer) => answer.occurrenceId)
+    .filter((occurrenceId, index, occurrenceIds) => occurrenceIds.indexOf(occurrenceId) === index)
+    .map((occurrenceId) => [
+      occurrenceId,
+      aggregateCtwInteractionTime(result.answers.filter((answer) => answer.occurrenceId === occurrenceId))
+    ] as const));
   return (
     <div className="grid gap-6">
       <StudentNavigation
@@ -73,6 +84,9 @@ export function ReadingFullSetResult({
                           attemptId={attemptId}
                           fullSetId={fullSetId}
                           key={answer.answerId}
+                          questionTimeSeconds={answer.taskType === "ctw"
+                            ? ctwTimeByOccurrence.get(answer.occurrenceId) ?? null
+                            : answer.questionTimeSeconds}
                         />
                       ))}
                     </div>
@@ -90,11 +104,13 @@ export function ReadingFullSetResult({
 function ResultChip({
   answer,
   attemptId,
-  fullSetId
+  fullSetId,
+  questionTimeSeconds
 }: {
   answer: ReadingFullSetResultPayload["answers"][number];
   attemptId: string;
   fullSetId: string;
+  questionTimeSeconds: number | null;
 }) {
   const state = !answer.isAnswered ? "unanswered" : answer.isCorrect ? "correct" : "incorrect";
   const className = state === "correct"
@@ -108,7 +124,7 @@ function ResultChip({
       data-answer-state={state}
       href={`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}/questions/${answer.index}`}
     >
-      第{answer.order}题 · {formatQuestionTime(answer.questionTimeSeconds)}
+      第{answer.order}题 · {formatQuestionTime(questionTimeSeconds)}
     </Link>
   );
 }

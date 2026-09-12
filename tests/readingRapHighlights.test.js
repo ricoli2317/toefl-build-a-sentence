@@ -86,7 +86,8 @@ test("RAP renderer slices source ranges without target-text matching and is shar
     source.indexOf("function renderRapHighlightedText"),
     source.indexOf("function ChoiceOptionList")
   );
-  assert.match(source, /question\.highlightRanges\.filter/);
+  assert.match(source, /visibleHighlightRanges\.filter/);
+  assert.match(source, /rapVisibleHighlightRanges\([\s\S]*?question\.highlightRanges/);
   assert.match(renderer, /Array\.from\(text\)/);
   assert.match(renderer, /range\.startOffset/);
   assert.match(renderer, /range\.endOffset/);

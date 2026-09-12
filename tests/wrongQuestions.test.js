@@ -133,6 +133,11 @@ test("wrong-question overview reuses BAS dedupe/correction and aggregates all fo
     ]
   );
   assert.equal(payload.groups.find((group) => group.taskType === "build_sentence").title, "套题112");
+  assert.equal(
+    payload.groups.find((group) => group.taskType === "build_sentence").correctionHref,
+    "/student/wrong-questions/today/practice?questionId=bas-q-today"
+  );
+  assert.equal(payload.groups.find((group) => group.taskType === "rdl").correctionHref, null);
   assert.deepEqual(payload.grammarPoints, [
     { tag: "从句", count: 1 },
     { tag: "时态", count: 1 }
@@ -144,6 +149,12 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
 
   assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasGrammarAnalysis/);
+  assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasCorrectionActions \/>[\s\S]*<BasGrammarAnalysis/);
+  assert.match(ui, /今日错题订正/);
+  assert.match(ui, /历史错题订正/);
+  assert.match(ui, /group\.taskType === "build_sentence" && group\.pendingCount > 0 && group\.correctionHref/);
+  assert.match(ui, /去订正/);
+  assert.match(ui, /查看错题/);
   assert.match(ui, /useState<WrongQuestionTaskType \| "all">\("all"\)/);
   assert.match(ui, /CompleteTheWordsIcon/);
   for (const label of ["待订正", "已订正", "本日新增", "总错题"]) assert.match(ui, new RegExp(label));
@@ -153,4 +164,58 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(route, /\.from\("reading_attempts"\)/);
   assert.match(route, /"reading_attempt_answers"/);
   assert.match(route, /"reading_logical_items"/);
+  assert.match(route, /searchParams\.get\("questionId"\)/);
+  assert.match(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
+});
+
+test("BAS correction routes keep single-card practice inside today/history wrongbook modes", () => {
+  const historyPage = fs.readFileSync(path.join(
+    projectRoot,
+    "app/student/wrong-questions/history/practice/page.tsx"
+  ), "utf8");
+  const todayPage = fs.readFileSync(path.join(
+    projectRoot,
+    "app/student/wrong-questions/today/practice/page.tsx"
+  ), "utf8");
+  const practice = fs.readFileSync(path.join(projectRoot, "components/WrongQuestions.tsx"), "utf8");
+
+  assert.match(historyPage, /mode=\{mode\} questionId=\{searchParams\.questionId\}/);
+  assert.match(todayPage, /mode="today" questionId=\{searchParams\.questionId\}/);
+  assert.match(practice, /if \(mode === "today"\) return `wrongbook-today-/);
+  assert.match(practice, /return `wrongbook-all-/);
+  assert.match(practice, /if \(questionId\) params\.set\("questionId", questionId\)/);
+});
+
+test("a fully corrected BAS group has no correction target", () => {
+  const payload = buildWrongQuestionsOverview({
+    basAttempts: [basAttempt("bas-old", "2026-08-28T08:00:00.000Z")],
+    basAnswers: [basAnswer({
+      answerId: "wrong",
+      attemptId: "bas-old",
+      finalSentence: "A corrected sentence.",
+      grammarTag: "时态",
+      isCorrect: false,
+      questionId: "bas-q-old",
+      time: "2026-08-28T08:00:00.000Z"
+    })],
+    basCorrectionAnswers: [basAnswer({
+      answerId: "corrected",
+      attemptId: "wrongbook-all",
+      finalSentence: "A corrected sentence.",
+      grammarTag: "时态",
+      isCorrect: true,
+      questionId: "bas-q-old",
+      time: "2026-08-29T08:00:00.000Z"
+    })],
+    basGroupsBySet: new Map([["bas-source-112", { groupId: "logical-bas-112", title: "套题112" }]]),
+    readingAnswers: [],
+    readingAttempts: [],
+    readingTitles: new Map(),
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  });
+
+  assert.equal(payload.groups[0].pendingCount, 0);
+  assert.equal(payload.groups[0].correctedCount, 1);
+  assert.equal(payload.groups[0].correctionHref, null);
 });
