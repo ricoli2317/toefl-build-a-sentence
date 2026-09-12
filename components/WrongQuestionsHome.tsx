@@ -108,10 +108,10 @@ function BasCorrectionActions() {
         <p className="mt-1 text-sm text-student-muted">进入现有错题练习流程，分别处理今日待订正和历史错题。</p>
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <Link className="student-button-error min-h-11" href="/student/wrong-questions/today/practice">
+        <Link className="student-button-error min-h-11" href="/student/wrong-questions/today/practice?scope=today">
           今日错题订正 <ArrowRight aria-hidden="true" size={16} />
         </Link>
-        <Link className="student-button-secondary min-h-11" href="/student/wrong-questions/history/practice?mode=all">
+        <Link className="student-button-secondary min-h-11" href="/student/wrong-questions/history/practice?scope=history&mode=all">
           历史错题订正 <ArrowRight aria-hidden="true" size={16} />
         </Link>
       </div>

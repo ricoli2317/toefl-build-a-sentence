@@ -4,7 +4,7 @@ import { StudentPage } from "@/components/student/StudentUI";
 export default function StudentTodayWrongQuestionsPracticePage() {
   return (
     <StudentPage title="Build a Sentence">
-      <WrongQuestionsPractice mode="today" />
+      <WrongQuestionsPractice scope="today" />
     </StudentPage>
   );
 }

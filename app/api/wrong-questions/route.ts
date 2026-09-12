@@ -4,21 +4,31 @@ import { bearerToken } from "@/lib/auth";
 import { parseGrammarTags } from "@/lib/grammarPractice";
 import {
   isOfficialPracticeSetId,
+  wrongAnswerDedupeKey,
   type PracticeHistoryAnswer
 } from "@/lib/practiceHistory";
 import { readingCatalogDisplayNumber } from "@/lib/reading/catalog";
 import { loadBuildSentenceHistoricalPracticeDisplayResolver } from "@/lib/historicalPracticeDisplay";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
-import { buildWrongQuestionsOverview } from "@/lib/wrongQuestions";
+import {
+  buildBasWrongbookEntryQuestionIds,
+  buildBasWrongbookPracticeQuestionIds,
+  buildWrongQuestionsOverview
+} from "@/lib/wrongQuestions";
 
 type AttemptRow = {
   attempt_id: string;
+  correct_count: number | null;
+  time_spent_seconds: number | null;
+  total_questions: number | null;
   set_id: string;
+  set_title: string | null;
   submitted_at: string | null;
   created_at: string | null;
 };
 
 type AnswerRow = {
+  attempt_answer_id: string;
   attempt_id: string;
   question_id: string;
   is_correct: boolean | null;
@@ -50,10 +60,6 @@ function questionTime(answer: AnswerRow, attemptById: Map<string, AttemptRow>) {
   return new Date(attempt?.submitted_at ?? attempt?.created_at ?? 0).getTime();
 }
 
-function attemptTime(attempt: AttemptRow) {
-  return new Date(attempt.submitted_at ?? attempt.created_at ?? 0).getTime();
-}
-
 function answerEventTime(answer: AnswerRow, attemptById: Map<string, AttemptRow>) {
   const answerTime = new Date(answer.answered_at ?? answer.created_at ?? 0).getTime();
   return Number.isFinite(answerTime) && answerTime > 0
@@ -63,21 +69,6 @@ function answerEventTime(answer: AnswerRow, attemptById: Map<string, AttemptRow>
 
 function isWrongBookAttempt(attempt: AttemptRow | undefined) {
   return Boolean(attempt?.set_id?.startsWith("wrongbook-"));
-}
-
-function isTodayWrongBookAttempt(attempt: AttemptRow | undefined) {
-  return Boolean(attempt?.set_id?.startsWith("wrongbook-today-"));
-}
-
-function isHistoryWrongBookAttempt(attempt: AttemptRow | undefined) {
-  return Boolean(
-    attempt?.set_id?.startsWith("wrongbook-all-") ||
-      attempt?.set_id?.startsWith("wrongbook-random-")
-  );
-}
-
-function isNormalPracticeAttempt(attempt: AttemptRow | undefined) {
-  return Boolean(attempt) && !isWrongBookAttempt(attempt);
 }
 
 function uniqueQuestionIds(ids: string[]) {
@@ -101,19 +92,11 @@ function normalizeQuestion(question: QuestionRow) {
   };
 }
 
-function normalizeForDedupe(value: string | null | undefined) {
-  return (value ?? "").replace(/\s+/g, " ").trim().toLocaleLowerCase();
-}
-
 function questionDedupeKey(question: ReturnType<typeof normalizeQuestion>) {
-  return [
-    question.prompt,
-    question.sentence_template,
-    question.final_sentence,
-    question.correct_order_text
-  ]
-    .map(normalizeForDedupe)
-    .join("|");
+  return wrongAnswerDedupeKey({
+    finalSentence: question.final_sentence,
+    questionId: question.question_id
+  });
 }
 
 function dedupeQuestionsByContent(
@@ -199,7 +182,14 @@ export async function GET(request: Request) {
     if (searchParams.get("view") === "overview") {
       return loadWrongQuestionsOverview(db, user.id, searchParams);
     }
-    const scope = searchParams.get("scope") ?? "today";
+    const scope = searchParams.get("scope");
+    if (scope !== "entry" && scope !== "today" && scope !== "history") {
+      return jsonError("Invalid BAS correction scope.", 400);
+    }
+    const groupId = searchParams.get("groupId")?.trim() ?? "";
+    if (scope === "entry" && !groupId) {
+      return jsonError("Missing BAS correction group id.", 400);
+    }
     const randomLimit = Number(searchParams.get("randomLimit") ?? 0);
     const todayStart = searchParams.get("todayStart");
     const todayEnd = searchParams.get("todayEnd");
@@ -210,11 +200,11 @@ export async function GET(request: Request) {
     ] = await Promise.all([
       db
         .from("attempts")
-        .select("attempt_id,set_id,submitted_at,created_at")
+        .select("attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at")
         .eq("student_id", user.id),
       db
         .from("attempt_answers")
-        .select("attempt_id,question_id,is_correct,answered_at,created_at")
+        .select("attempt_answer_id,attempt_id,question_id,is_correct,answered_at,created_at")
         .eq("student_id", user.id)
     ]);
 
@@ -233,9 +223,33 @@ export async function GET(request: Request) {
     }));
     const attemptById = new Map(attemptRows.map((attempt) => [attempt.attempt_id, attempt]));
 
-    const wrongIds = uniqueQuestionIds(
-      answerRows.filter((answer) => !answer.is_correct).map((answer) => answer.question_id)
-    );
+    const practiceAttempts = attemptRows.map((attempt) => ({
+      attemptId: attempt.attempt_id,
+      createdAt: attempt.created_at,
+      setId: attempt.set_id,
+      submittedAt: attempt.submitted_at
+    }));
+    const practiceAnswers = answerRows.map((answer) => ({
+      attemptId: answer.attempt_id,
+      isCorrect: Boolean(answer.is_correct),
+      questionId: answer.question_id
+    }));
+    const fallbackTodayStart = startOfLocalDay().getTime();
+    const parsedTodayStart = Date.parse(todayStart ?? "");
+    const parsedTodayEnd = Date.parse(todayEnd ?? "");
+    const practiceTodayStart = Number.isFinite(parsedTodayStart)
+      ? parsedTodayStart
+      : fallbackTodayStart;
+    const practiceTodayEnd = Number.isFinite(parsedTodayEnd)
+      ? parsedTodayEnd
+      : practiceTodayStart + 24 * 60 * 60 * 1000;
+    const wrongIds = buildBasWrongbookPracticeQuestionIds({
+      answers: practiceAnswers,
+      attempts: practiceAttempts,
+      scope: "history",
+      todayEnd: practiceTodayEnd,
+      todayStart: practiceTodayStart
+    });
 
     const latestByQuestion = new Map<string, AnswerRow>();
     for (const answer of answerRows) {
@@ -244,60 +258,27 @@ export async function GET(request: Request) {
         latestByQuestion.set(answer.question_id, answer);
       }
     }
-    const unresolvedIds = uniqueQuestionIds(
-      wrongIds.filter((questionId) => latestByQuestion.get(questionId)?.is_correct !== true)
-    );
-
     let selectedIds = wrongIds;
-    if (scope === "today") {
-      const startTime = todayStart ? new Date(todayStart).getTime() : startOfLocalDay().getTime();
-      const endTime = todayEnd ? new Date(todayEnd).getTime() : startTime + 24 * 60 * 60 * 1000;
-      const todayAttemptIds = new Set(
-        attemptRows
-          .filter((attempt) => {
-            const time = attemptTime(attempt);
-            return (
-              time >= startTime &&
-              time < endTime &&
-              (isNormalPracticeAttempt(attempt) ||
-                isTodayWrongBookAttempt(attempt) ||
-                isHistoryWrongBookAttempt(attempt))
-            );
-          })
-          .map((attempt) => attempt.attempt_id)
-      );
-      const todayWrongState = new Map<string, boolean>();
-      const todayAnswers = answerRows
-        .filter((answer) => todayAttemptIds.has(answer.attempt_id))
-        .sort((left, right) => questionTime(left, attemptById) - questionTime(right, attemptById));
-
-      for (const answer of todayAnswers) {
-        const attempt = attemptById.get(answer.attempt_id);
-
-        if (isNormalPracticeAttempt(attempt)) {
-          if (!answer.is_correct) {
-            todayWrongState.set(answer.question_id, true);
-          }
-          continue;
-        }
-
-        if (isHistoryWrongBookAttempt(attempt)) {
-          if (!answer.is_correct) {
-            todayWrongState.set(answer.question_id, true);
-          }
-          continue;
-        }
-
-        if (isTodayWrongBookAttempt(attempt)) {
-          todayWrongState.set(answer.question_id, !answer.is_correct);
-        }
-      }
-
-      selectedIds = Array.from(todayWrongState.entries())
-        .filter(([, needsReview]) => needsReview)
-        .map(([questionId]) => questionId);
-    } else if (scope === "unresolved") {
-      selectedIds = unresolvedIds;
+    let prefetchedQuestions: QuestionRow[] | null = null;
+    if (scope === "entry") {
+      const entrySelection = await loadBasWrongbookEntrySelection({
+        answerRows,
+        attemptRows,
+        db,
+        groupId,
+        todayEnd,
+        todayStart
+      });
+      selectedIds = entrySelection.questionIds;
+      prefetchedQuestions = entrySelection.questions;
+    } else if (scope === "today") {
+      selectedIds = buildBasWrongbookPracticeQuestionIds({
+        answers: practiceAnswers,
+        attempts: practiceAttempts,
+        scope: "today",
+        todayEnd: practiceTodayEnd,
+        todayStart: practiceTodayStart
+      });
     } else {
       selectedIds = wrongIds;
     }
@@ -345,20 +326,29 @@ export async function GET(request: Request) {
       return NextResponse.json({ count: 0, questions: [], stats: baseStats });
     }
 
-    const { data: questions, error: questionsError } = await db
-      .from("questions")
-      .select(
-        "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text"
-      )
-      .in("question_id", selectedIds);
+    let questionRows: QuestionRow[];
+    if (prefetchedQuestions) {
+      const selectedIdSet = new Set(selectedIds);
+      questionRows = prefetchedQuestions.filter((question) =>
+        selectedIdSet.has(String(question.question_id))
+      );
+    } else {
+      const { data: questions, error: questionsError } = await db
+        .from("questions")
+        .select(
+          "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text"
+        )
+        .in("question_id", selectedIds);
 
-    if (questionsError) {
-      return jsonError(`Failed to load questions: ${questionsError.message}`);
+      if (questionsError) {
+        return jsonError(`Failed to load questions: ${questionsError.message}`);
+      }
+      questionRows = (questions ?? []) as QuestionRow[];
     }
 
     const orderById = new Map(selectedIds.map((questionId, index) => [questionId, index]));
     const normalizedQuestions = dedupeQuestionsByContent(
-      ((questions ?? []) as QuestionRow[])
+      questionRows
       .map(normalizeQuestion)
       .sort((left, right) => {
         const orderCompare =
@@ -383,6 +373,114 @@ export async function GET(request: Request) {
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not load wrong questions.");
   }
+}
+
+async function loadBasWrongbookEntrySelection(input: {
+  answerRows: AnswerRow[];
+  attemptRows: AttemptRow[];
+  db: SupabaseClient;
+  groupId: string;
+  todayEnd: string | null;
+  todayStart: string | null;
+}) {
+  const allQuestionIds = uniqueQuestionIds(
+    input.answerRows.map((answer) => answer.question_id)
+  );
+  const questionResult = await readRowsInBatches<QuestionRow>(
+    input.db,
+    "questions",
+    "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text",
+    "question_id",
+    allQuestionIds
+  );
+  if (questionResult.error) {
+    throw new Error(`Failed to load BAS wrong questions: ${questionResult.error.message}`);
+  }
+
+  const questions = questionResult.data ?? [];
+  const questionById = new Map(
+    questions.map((question) => [String(question.question_id), question])
+  );
+  const realSetIds = new Set(questions.map((question) => String(question.set_id)));
+  const officialAttempts = input.attemptRows.filter((attempt) =>
+    isOfficialPracticeSetId(attempt.set_id, realSetIds)
+  );
+  const officialAttemptIds = new Set(
+    officialAttempts.map((attempt) => attempt.attempt_id)
+  );
+  const correctionAttemptIds = new Set(
+    input.attemptRows
+      .filter((attempt) => isWrongBookAttempt(attempt))
+      .map((attempt) => attempt.attempt_id)
+  );
+  const attemptById = new Map(
+    input.attemptRows.map((attempt) => [attempt.attempt_id, attempt])
+  );
+  const normalizeAnswer = (answer: AnswerRow): PracticeHistoryAnswer => {
+    const question = questionById.get(answer.question_id);
+    const attempt = attemptById.get(answer.attempt_id);
+    return {
+      answeredAt: answer.answered_at ?? answer.created_at ?? attempt?.submitted_at ?? attempt?.created_at ?? null,
+      attemptAnswerId: answer.attempt_answer_id,
+      attemptId: answer.attempt_id,
+      finalSentence: question?.final_sentence ?? "",
+      grammarTag: question?.grammar_tags_text ?? "",
+      isCorrect: Boolean(answer.is_correct),
+      optionsText: question?.options_text ?? "",
+      prompt: question?.prompt ?? "",
+      questionId: answer.question_id,
+      questionOrder: question?.question_order ?? 0,
+      questionTimeSeconds: null,
+      sentenceTemplate: question?.sentence_template ?? "",
+      submittedOrderText: ""
+    };
+  };
+  const basSetIds = Array.from(new Set(officialAttempts.map((attempt) => attempt.set_id)));
+  const displayResolver = await loadBuildSentenceHistoricalPracticeDisplayResolver(
+    input.db,
+    basSetIds
+  );
+  const basGroupsBySet = new Map(basSetIds.map((setId) => {
+    const attempt = officialAttempts.find((candidate) => candidate.set_id === setId);
+    const display = displayResolver.resolveBuildSentence({
+      fallbackDisplayName: attempt?.set_title?.trim() || setId,
+      rawSetId: setId
+    });
+    return [setId, {
+      groupId: display.itemId ?? setId,
+      title: display.displayName
+    }];
+  }));
+  const fallbackStart = startOfLocalDay().getTime();
+  const requestedStart = Date.parse(input.todayStart ?? "");
+  const requestedEnd = Date.parse(input.todayEnd ?? "");
+  const todayStart = Number.isFinite(requestedStart) ? requestedStart : fallbackStart;
+  const todayEnd = Number.isFinite(requestedEnd)
+    ? requestedEnd
+    : fallbackStart + 24 * 60 * 60 * 1000;
+  const questionIds = buildBasWrongbookEntryQuestionIds({
+    basAnswers: input.answerRows
+      .filter((answer) => officialAttemptIds.has(answer.attempt_id))
+      .map(normalizeAnswer),
+    basAttempts: officialAttempts.map((attempt) => ({
+      attemptId: attempt.attempt_id,
+      correctCount: attempt.correct_count ?? 0,
+      setId: attempt.set_id,
+      setTitle: attempt.set_title?.trim() || attempt.set_id,
+      submittedAt: attempt.submitted_at ?? attempt.created_at ?? null,
+      timeSpentSeconds: attempt.time_spent_seconds ?? 0,
+      totalQuestions: attempt.total_questions ?? 0
+    })),
+    basCorrectionAnswers: input.answerRows
+      .filter((answer) => correctionAttemptIds.has(answer.attempt_id) && Boolean(answer.is_correct))
+      .map(normalizeAnswer),
+    basGroupsBySet,
+    groupId: input.groupId,
+    todayEnd,
+    todayStart
+  });
+
+  return { questionIds, questions };
 }
 
 function startOfLocalDay() {

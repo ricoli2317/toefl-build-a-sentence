@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   BookOpen,
   CalendarDays,
@@ -88,7 +88,7 @@ export function WrongQuestionsHome() {
       <div className="grid items-stretch gap-5 xl:grid-cols-2">
         <WrongDashboardCard
           actions={(
-            <Link className="student-button-error min-h-[52px] w-full text-base" href="/student/wrong-questions/today/practice">
+            <Link className="student-button-error min-h-[52px] w-full text-base" href="/student/wrong-questions/today/practice?scope=today">
               开始订正
             </Link>
           )}
@@ -111,10 +111,10 @@ export function WrongQuestionsHome() {
         <WrongDashboardCard
           actions={(
             <div className="grid gap-3 sm:grid-cols-2">
-              <Link className="student-button-error min-h-[52px] w-full text-base" href="/student/wrong-questions/history/practice?mode=all">
+              <Link className="student-button-error min-h-[52px] w-full text-base" href="/student/wrong-questions/history/practice?scope=history&mode=all">
                 全部订正
               </Link>
-              <Link className="student-button-secondary min-h-[52px] w-full text-base" href="/student/wrong-questions/history/practice?mode=random">
+              <Link className="student-button-secondary min-h-[52px] w-full text-base" href="/student/wrong-questions/history/practice?scope=history&mode=random">
                 <Timer aria-hidden="true" size={20} strokeWidth={1.9} />
                 随机计时练习
               </Link>
@@ -259,7 +259,7 @@ export function TodayWrongQuestions() {
               <p className="text-sm font-semibold text-student-muted">待订正</p>
               <p className="mt-1 text-2xl font-bold text-student-error">{questions.length}题</p>
             </div>
-            <Link className="student-button-error" href="/student/wrong-questions/today/practice">
+            <Link className="student-button-error" href="/student/wrong-questions/today/practice?scope=today">
               开始订正
             </Link>
           </div>
@@ -287,10 +287,10 @@ export function HistoryWrongQuestions() {
               <p className="mt-1 text-2xl font-bold text-student-error">{questions.length}题</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Link className="student-button-error" href="/student/wrong-questions/history/practice?mode=all">
+              <Link className="student-button-error" href="/student/wrong-questions/history/practice?scope=history&mode=all">
                 全部订正
               </Link>
-              <Link className="student-button-secondary" href="/student/wrong-questions/history/practice?mode=random">
+              <Link className="student-button-secondary" href="/student/wrong-questions/history/practice?scope=history&mode=random">
                 随机计时练习
               </Link>
             </div>
@@ -301,47 +301,68 @@ export function HistoryWrongQuestions() {
   );
 }
 
-export function WrongQuestionsPractice({ mode }: { mode: "history-all" | "history-random" | "today" }) {
-  const scope = mode === "today" ? "today" : "history";
-  const randomLimit = mode === "history-random" ? 10 : undefined;
-  const { error, loading, questions } = useWrongQuestions(scope, randomLimit);
+export function WrongQuestionsPractice({
+  groupId,
+  mode = "all",
+  scope
+}: {
+  groupId?: string;
+  mode?: "all" | "random";
+  scope: "entry" | "history" | "today";
+}) {
+  const randomLimit = scope === "history" && mode === "random" ? 10 : undefined;
+  const { error, loading, questions } = useWrongQuestions(scope, randomLimit, groupId);
+  const sessionKey = `${scope}:${mode}:${groupId ?? "all"}`;
+  const [questionSnapshot, setQuestionSnapshot] = useState<{
+    key: string;
+    questions: PublicQuestion[];
+  } | null>(null);
+  useEffect(() => {
+    if (loading || error || questionSnapshot?.key === sessionKey) return;
+    setQuestionSnapshot({ key: sessionKey, questions: [...questions] });
+  }, [error, loading, questionSnapshot?.key, questions, sessionKey]);
+  const sessionQuestions = questionSnapshot?.key === sessionKey
+    ? questionSnapshot.questions
+    : null;
   const today = useMemo(() => formatTimestamp(new Date()), []);
   const virtualSetId = useMemo(() => {
-    if (mode === "today") return `wrongbook-today-${today.slice(0, 8)}`;
-    if (mode === "history-random") return `wrongbook-random-${today}`;
+    if (scope === "today") return `wrongbook-today-${today.slice(0, 8)}`;
+    if (scope === "history" && mode === "random") return `wrongbook-random-${today}`;
     return `wrongbook-all-${today}`;
-  }, [mode, today]);
-  const title = mode === "today"
+  }, [mode, scope, today]);
+  const title = scope === "today"
     ? "Today's Wrong Questions"
-    : mode === "history-random"
+    : scope === "entry"
+      ? "Set Wrong Questions"
+      : mode === "random"
       ? "Random Timed Wrong Questions"
       : "History Wrong Questions";
-  const timed = mode === "history-random";
+  const timed = scope === "history" && mode === "random";
   const totalSeconds = timed
-    ? Math.max(1, Math.round((DEFAULT_SET_TIME_SECONDS / 10) * Math.min(10, questions.length)))
+    ? Math.max(1, Math.round((DEFAULT_SET_TIME_SECONDS / 10) * Math.min(10, sessionQuestions?.length ?? 0)))
     : DEFAULT_SET_TIME_SECONDS;
 
-  if (loading) return <StudentLoadingState text="正在加载练习..." />;
   if (error) return <StudentErrorState text="加载错题练习失败，请稍后重试。" />;
-  if (questions.length === 0) {
+  if (loading || !sessionQuestions) return <StudentLoadingState text="正在加载练习..." />;
+  if (sessionQuestions.length === 0) {
     return (
       <div className="grid gap-5">
         <WrongQuestionsNavigation
-          current={mode === "today" ? STUDENT_UI_TEXT.todayWrongQuestions : STUDENT_UI_TEXT.historyWrongQuestions}
+          current={scope === "today" ? STUDENT_UI_TEXT.todayWrongQuestions : STUDENT_UI_TEXT.historyWrongQuestions}
         />
-        <StudentEmptyState text={mode === "today" ? "今日无错题。" : "暂无历史错题。"} />
+        <StudentEmptyState text={scope === "today" ? "今日无错题。" : "当前作用域暂无待订正错题。"} />
       </div>
     );
   }
 
   return (
     <PracticeSession
-      allowEndPractice={mode === "history-all"}
+      allowEndPractice={scope !== "today" && mode === "all"}
       hideQuestionCardNumber
-      initialQuestions={questions}
+      initialQuestions={sessionQuestions}
       setId={virtualSetId}
       setTitle={title}
-      submitAnsweredOnly={mode === "history-all"}
+      submitAnsweredOnly={scope !== "today" && mode === "all"}
       timed={timed}
       totalSeconds={totalSeconds}
     />
@@ -361,7 +382,11 @@ function WrongQuestionsNavigation({ current }: { current: string }) {
   );
 }
 
-function useWrongQuestions(scope: "history" | "today", randomLimit?: number) {
+function useWrongQuestions(
+  scope: "entry" | "history" | "today",
+  randomLimit?: number,
+  groupId?: string
+) {
   const todayRange = useMemo(() => getTodayRange(), []);
   const query = useMemo(() => {
     const params = new URLSearchParams({ scope });
@@ -370,8 +395,9 @@ function useWrongQuestions(scope: "history" | "today", randomLimit?: number) {
       params.set("todayEnd", todayRange.end);
     }
     if (randomLimit) params.set("randomLimit", String(randomLimit));
+    if (scope === "entry" && groupId) params.set("groupId", groupId);
     return params.toString();
-  }, [randomLimit, scope, todayRange.end, todayRange.start]);
+  }, [groupId, randomLimit, scope, todayRange.end, todayRange.start]);
   const { data, error, loading } = useStudentCachedData<WrongQuestionsPayload>(
     studentWrongQuestionsCacheKey(query),
     (session) => loadWrongQuestions(query, session)

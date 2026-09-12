@@ -4,6 +4,8 @@ const path = require("node:path");
 const test = require("node:test");
 
 const {
+  buildBasWrongbookEntryQuestionIds,
+  buildBasWrongbookPracticeQuestionIds,
   buildReadingWrongbookQueue,
   buildWrongQuestionsOverview
 } = require("../lib/wrongQuestions.ts");
@@ -17,10 +19,10 @@ const {
 
 const projectRoot = path.resolve(__dirname, "..");
 
-function basAttempt(attemptId, submittedAt) {
+function basAttempt(attemptId, submittedAt, setId = "bas-source-112") {
   return {
     attemptId,
-    setId: "bas-source-112",
+    setId,
     setTitle: "legacy title",
     correctCount: 0,
     totalQuestions: 2,
@@ -145,7 +147,7 @@ test("wrong-question overview reuses BAS dedupe/correction and aggregates all fo
   assert.equal(payload.groups.find((group) => group.taskType === "build_sentence").title, "套题112");
   assert.equal(
     payload.groups.find((group) => group.taskType === "build_sentence").correctionHref,
-    "/student/wrong-questions/today/practice"
+    "/student/wrong-questions/history/practice?scope=entry&groupId=logical-bas-112"
   );
   assert.equal(payload.groups.find((group) => group.taskType === "rdl").correctionHref, null);
   assert.match(
@@ -171,6 +173,8 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(ui, /今日错题订正/);
   assert.match(ui, /历史错题订正/);
   assert.match(ui, /group\.pendingCount > 0 && group\.correctionHref/);
+  assert.match(ui, /const groups = state\.data\?\.groups\.filter/);
+  assert.match(ui, /<WrongQuestionGroupList groups=\{groups\} \/>/);
   assert.match(ui, /ReadingCorrectionActions taskType=\{activeTab\}/);
   assert.match(ui, /readingCorrectionHref\("today", taskType\)/);
   assert.match(ui, /readingCorrectionHref\("history", taskType\)/);
@@ -700,7 +704,7 @@ function correctionQuestion(questionId, questionType, overrides = {}) {
   };
 }
 
-test("BAS correction routes preserve the complete today/history question list", () => {
+test("BAS correction routes use explicit isolated scopes and freeze the loaded question list", () => {
   const historyPage = fs.readFileSync(path.join(
     projectRoot,
     "app/student/wrong-questions/history/practice/page.tsx"
@@ -710,14 +714,27 @@ test("BAS correction routes preserve the complete today/history question list", 
     "app/student/wrong-questions/today/practice/page.tsx"
   ), "utf8");
   const practice = fs.readFileSync(path.join(projectRoot, "components/WrongQuestions.tsx"), "utf8");
+  const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
+  const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
   const session = fs.readFileSync(path.join(projectRoot, "components/PracticeSession.tsx"), "utf8");
 
-  assert.match(historyPage, /<WrongQuestionsPractice mode=\{mode\} \/>/);
-  assert.match(todayPage, /<WrongQuestionsPractice mode="today" \/>/);
+  assert.match(historyPage, /scope !== "entry" && scope !== "history"/);
+  assert.match(historyPage, /scope === "entry" && !searchParams\.groupId/);
+  assert.match(historyPage, /groupId=\{searchParams\.groupId\}[\s\S]*scope=\{scope\}/);
+  assert.match(todayPage, /<WrongQuestionsPractice scope="today" \/>/);
   assert.doesNotMatch(`${historyPage}\n${todayPage}\n${practice}`, /questionId\??:/);
-  assert.match(practice, /if \(mode === "today"\) return `wrongbook-today-/);
+  assert.match(home, /today\/practice\?scope=today/);
+  assert.match(home, /history\/practice\?scope=history&mode=all/);
+  assert.match(practice, /scope: "entry" \| "history" \| "today"/);
+  assert.match(practice, /if \(scope === "today"\) return `wrongbook-today-/);
   assert.match(practice, /return `wrongbook-all-/);
-  assert.match(practice, /initialQuestions=\{questions\}/);
+  assert.match(practice, /if \(scope === "entry" && groupId\) params\.set\("groupId", groupId\)/);
+  assert.match(route, /scope !== "entry" && scope !== "today" && scope !== "history"/);
+  assert.match(route, /if \(scope === "entry" && !groupId\)/);
+  assert.match(route, /buildBasWrongbookEntryQuestionIds/);
+  assert.match(practice, /setQuestionSnapshot\(\{ key: sessionKey, questions: \[\.\.\.questions\] \}\)/);
+  assert.match(practice, /questionSnapshot\?\.key === sessionKey[\s\S]*questionSnapshot\.questions/);
+  assert.match(practice, /initialQuestions=\{sessionQuestions\}/);
   assert.match(session, /const questions = useMemo\([\s\S]*initialQuestions \?\? cachedQuestions \?\? \[\]/);
   assert.match(session, /const isLastQuestion = currentIndex === questions\.length - 1/);
   assert.match(session, /if \(isLastQuestion\) \{[\s\S]*await submitAll\(savedAnswers\)[\s\S]*return;[\s\S]*setCurrentIndex\(\(index\) => index \+ 1\)/);
@@ -731,61 +748,199 @@ test("BAS correction routes preserve the complete today/history question list", 
   assert.match(session, /loadPracticeQuestions\(setId, session\)/);
 });
 
-test("BAS one, two, and three-plus pending questions all enter one batch correction session", () => {
+test("BAS entry scope returns exactly the card pending count for 9, 3, and 1 questions", () => {
   const todayStart = Date.parse("2026-08-30T00:00:00.000Z");
   const todayEnd = Date.parse("2026-08-31T00:00:00.000Z");
 
-  for (const count of [1, 2, 4]) {
-    const payload = buildWrongQuestionsOverview({
-      basAttempts: [basAttempt(`bas-${count}`, "2026-08-30T08:00:00.000Z")],
-      basAnswers: Array.from({ length: count }, (_, index) => basAnswer({
-        answerId: `wrong-${count}-${index}`,
-        attemptId: `bas-${count}`,
-        finalSentence: `Unique wrong sentence ${index}.`,
-        grammarTag: "时态",
-        isCorrect: false,
-        questionId: `bas-q-${count}-${index}`,
-        time: `2026-08-30T08:${String(index).padStart(2, "0")}:00.000Z`
-      })),
-      basCorrectionAnswers: [],
-      basGroupsBySet: new Map([["bas-source-112", { groupId: "logical-bas-112", title: "套题112" }]]),
-      readingAnswers: [],
-      readingAttempts: [],
-      readingTitles: new Map(),
+  for (const { correctedCount, expectedPending, wrongCount } of [
+    { correctedCount: 1, expectedPending: 9, wrongCount: 10 },
+    { correctedCount: 0, expectedPending: 3, wrongCount: 3 },
+    { correctedCount: 0, expectedPending: 1, wrongCount: 1 }
+  ]) {
+    const basAnswers = Array.from({ length: wrongCount }, (_, index) => basAnswer({
+      answerId: `wrong-${wrongCount}-${index}`,
+      attemptId: `bas-${wrongCount}`,
+      finalSentence: `Unique wrong sentence ${wrongCount}-${index}.`,
+      grammarTag: "时态",
+      isCorrect: false,
+      questionId: `bas-q-${wrongCount}-${index}`,
+      time: `2026-08-30T08:${String(index).padStart(2, "0")}:00.000Z`
+    }));
+    const basCorrectionAnswers = correctedCount === 0 ? [] : [basAnswer({
+      answerId: `corrected-${wrongCount}`,
+      attemptId: "wrongbook-all-correction",
+      finalSentence: `Unique wrong sentence ${wrongCount}-0.`,
+      grammarTag: "时态",
+      isCorrect: true,
+      questionId: `bas-q-${wrongCount}-0`,
+      time: "2026-08-30T09:00:00.000Z"
+    })];
+    const input = {
+      basAttempts: [basAttempt(`bas-${wrongCount}`, "2026-08-30T08:00:00.000Z")],
+      basAnswers,
+      basCorrectionAnswers,
+      basGroupsBySet: new Map([["bas-source-112", { groupId: "logical-bas-091", title: "套题091" }]]),
       todayStart,
       todayEnd
+    };
+    const payload = buildWrongQuestionsOverview({
+      ...input,
+      readingAnswers: [],
+      readingAttempts: [],
+      readingTitles: new Map()
+    });
+    const entryQuestionIds = buildBasWrongbookEntryQuestionIds({
+      ...input,
+      groupId: "logical-bas-091"
     });
 
-    assert.equal(payload.groups[0].pendingCount, count);
-    assert.equal(payload.groups[0].correctionHref, "/student/wrong-questions/today/practice");
-    assert.doesNotMatch(payload.groups[0].correctionHref, /questionId=/);
+    assert.equal(payload.groups[0].wrongCount, wrongCount);
+    assert.equal(payload.groups[0].correctedCount, correctedCount);
+    assert.equal(payload.groups[0].pendingCount, expectedPending);
+    assert.equal(entryQuestionIds.length, expectedPending);
+    assert.equal(
+      payload.groups[0].correctionHref,
+      "/student/wrong-questions/history/practice?scope=entry&groupId=logical-bas-091"
+    );
   }
+});
 
-  const historyPayload = buildWrongQuestionsOverview({
-    basAttempts: [basAttempt("bas-history", "2026-08-29T08:00:00.000Z")],
-    basAnswers: Array.from({ length: 3 }, (_, index) => basAnswer({
-      answerId: `history-wrong-${index}`,
-      attemptId: "bas-history",
-      finalSentence: `Unique historical sentence ${index}.`,
-      grammarTag: "从句",
-      isCorrect: false,
-      questionId: `bas-history-q-${index}`,
-      time: `2026-08-29T08:${String(index).padStart(2, "0")}:00.000Z`
-    })),
-    basCorrectionAnswers: [],
-    basGroupsBySet: new Map([["bas-source-112", { groupId: "logical-bas-112", title: "套题112" }]]),
-    readingAnswers: [],
-    readingAttempts: [],
-    readingTitles: new Map(),
-    todayStart,
-    todayEnd
+test("BAS today scope aggregates sets and clears only through today correction", () => {
+  const todayStart = Date.parse("2026-08-30T00:00:00.000Z");
+  const todayEnd = Date.parse("2026-08-31T00:00:00.000Z");
+  const attempts = [
+    { attemptId: "set-a", createdAt: null, setId: "raw-set-a", submittedAt: "2026-08-30T08:00:00.000Z" },
+    { attemptId: "set-b", createdAt: null, setId: "raw-set-b", submittedAt: "2026-08-30T09:00:00.000Z" }
+  ];
+  const answers = [
+    ...Array.from({ length: 2 }, (_, index) => ({ attemptId: "set-a", isCorrect: false, questionId: `a-${index}` })),
+    ...Array.from({ length: 3 }, (_, index) => ({ attemptId: "set-b", isCorrect: false, questionId: `b-${index}` }))
+  ];
+  assert.equal(buildBasWrongbookPracticeQuestionIds({
+    answers,
+    attempts,
+    scope: "today",
+    todayEnd,
+    todayStart
+  }).length, 5);
+
+  const correctionAttempt = {
+    attemptId: "today-correction",
+    createdAt: null,
+    setId: "wrongbook-today-20260830",
+    submittedAt: "2026-08-30T10:00:00.000Z"
+  };
+  const correctedAnswers = answers.map((answer) => ({
+    attemptId: correctionAttempt.attemptId,
+    isCorrect: true,
+    questionId: answer.questionId
+  }));
+  assert.deepEqual(buildBasWrongbookPracticeQuestionIds({
+    answers: [...answers, ...correctedAnswers],
+    attempts: [...attempts, correctionAttempt],
+    scope: "today",
+    todayEnd,
+    todayStart
+  }), []);
+});
+
+test("BAS history scope keeps all 80 historical errors after correction", () => {
+  const attempts = [
+    { attemptId: "history-source", createdAt: null, setId: "raw-history", submittedAt: "2026-08-20T08:00:00.000Z" },
+    { attemptId: "history-correction", createdAt: null, setId: "wrongbook-all-correction", submittedAt: "2026-08-30T08:00:00.000Z" }
+  ];
+  const wrongAnswers = Array.from({ length: 80 }, (_, index) => ({
+    attemptId: "history-source",
+    isCorrect: false,
+    questionId: `history-${index}`
+  }));
+  const correctionAnswers = wrongAnswers.map((answer) => ({
+    attemptId: "history-correction",
+    isCorrect: true,
+    questionId: answer.questionId
+  }));
+  const history = buildBasWrongbookPracticeQuestionIds({
+    answers: [...wrongAnswers, ...correctionAnswers],
+    attempts,
+    scope: "history",
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z"),
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z")
   });
-  assert.equal(historyPayload.groups[0].pendingCount, 3);
-  assert.equal(
-    historyPayload.groups[0].correctionHref,
-    "/student/wrong-questions/history/practice?mode=all"
+  assert.equal(history.length, 80);
+  assert.equal(new Set(history).size, 80);
+});
+
+test("BAS entry, today, and history scopes stay isolated", () => {
+  const todayStart = Date.parse("2026-08-30T00:00:00.000Z");
+  const todayEnd = Date.parse("2026-08-31T00:00:00.000Z");
+  const basAttempts = [
+    basAttempt("set-a", "2026-08-30T08:00:00.000Z", "raw-set-a"),
+    basAttempt("set-b", "2026-08-30T09:00:00.000Z", "raw-set-b"),
+    basAttempt("set-old", "2026-08-20T08:00:00.000Z", "raw-set-old")
+  ];
+  const makeAnswers = (attemptId, prefix, count, day) => Array.from(
+    { length: count },
+    (_, index) => basAnswer({
+      answerId: `${prefix}-${index}`,
+      attemptId,
+      finalSentence: `${prefix} sentence ${index}.`,
+      grammarTag: "时态",
+      isCorrect: false,
+      questionId: `${prefix}-q-${index}`,
+      time: `${day}T08:${String(index).padStart(2, "0")}:00.000Z`
+    })
   );
-  assert.doesNotMatch(historyPayload.groups[0].correctionHref, /questionId=/);
+  const basAnswers = [
+    ...makeAnswers("set-a", "a", 2, "2026-08-30"),
+    ...makeAnswers("set-b", "b", 3, "2026-08-30"),
+    ...makeAnswers("set-old", "old", 4, "2026-08-20")
+  ];
+  const entry = buildBasWrongbookEntryQuestionIds({
+    basAnswers,
+    basAttempts,
+    basCorrectionAnswers: [],
+    basGroupsBySet: new Map([
+      ["raw-set-a", { groupId: "group-a", title: "套题091" }],
+      ["raw-set-b", { groupId: "group-b", title: "套题092" }],
+      ["raw-set-old", { groupId: "group-old", title: "套题080" }]
+    ]),
+    groupId: "group-a",
+    todayEnd,
+    todayStart
+  });
+  const queueAttempts = basAttempts.map((attempt) => ({
+    attemptId: attempt.attemptId,
+    createdAt: null,
+    setId: attempt.setId,
+    submittedAt: attempt.submittedAt
+  }));
+  const queueAnswers = basAnswers.map((answer) => ({
+    attemptId: answer.attemptId,
+    isCorrect: answer.isCorrect,
+    questionId: answer.questionId
+  }));
+  const today = buildBasWrongbookPracticeQuestionIds({
+    answers: queueAnswers,
+    attempts: queueAttempts,
+    scope: "today",
+    todayEnd,
+    todayStart
+  });
+  const history = buildBasWrongbookPracticeQuestionIds({
+    answers: queueAnswers,
+    attempts: queueAttempts,
+    scope: "history",
+    todayEnd,
+    todayStart
+  });
+
+  assert.deepEqual(entry, ["a-q-1", "a-q-0"]);
+  assert.equal(today.length, 5);
+  assert.equal(history.length, 9);
+  assert.ok(today.includes("b-q-0"));
+  assert.ok(!entry.includes("b-q-0"));
+  assert.ok(history.includes("old-q-0"));
+  assert.ok(!today.includes("old-q-0"));
 });
 
 test("a fully corrected BAS group has no correction target", () => {

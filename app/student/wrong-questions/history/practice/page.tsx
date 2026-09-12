@@ -1,16 +1,25 @@
 import { WrongQuestionsPractice } from "@/components/WrongQuestions";
-import { StudentPage } from "@/components/student/StudentUI";
+import { StudentErrorState, StudentPage } from "@/components/student/StudentUI";
 
 export default function StudentHistoryWrongQuestionsPracticePage({
   searchParams
 }: {
-  searchParams: { mode?: string };
+  searchParams: { groupId?: string; mode?: string; scope?: string };
 }) {
-  const mode = searchParams.mode === "random" ? "history-random" : "history-all";
+  const scope = searchParams.scope;
+  const mode = searchParams.mode === "random" ? "random" : "all";
+
+  if ((scope !== "entry" && scope !== "history") || (scope === "entry" && !searchParams.groupId)) {
+    return (
+      <StudentPage title="Build a Sentence">
+        <StudentErrorState text="订正作用域无效，请从错题集重新进入。" />
+      </StudentPage>
+    );
+  }
 
   return (
     <StudentPage title="Build a Sentence">
-      <WrongQuestionsPractice mode={mode} />
+      <WrongQuestionsPractice groupId={searchParams.groupId} mode={mode} scope={scope} />
     </StudentPage>
   );
 }

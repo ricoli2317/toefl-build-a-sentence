@@ -56,6 +56,28 @@ export type BasWrongQuestionGroup = {
   title: string;
 };
 
+export type BasWrongbookPracticeAttempt = {
+  attemptId: string;
+  createdAt: string | null;
+  setId: string;
+  submittedAt: string | null;
+};
+
+export type BasWrongbookPracticeAnswer = {
+  attemptId: string;
+  isCorrect: boolean;
+  questionId: string;
+};
+
+type BasWrongQuestionStateInput = {
+  basAnswers: PracticeHistoryAnswer[];
+  basAttempts: BasWrongQuestionAttempt[];
+  basCorrectionAnswers: PracticeHistoryAnswer[];
+  basGroupsBySet: Map<string, BasWrongQuestionGroup>;
+  todayEnd: number;
+  todayStart: number;
+};
+
 export type ReadingWrongQuestionAttempt = {
   attemptId: string;
   logicalItemId: string;
@@ -102,6 +124,93 @@ export function buildWrongQuestionsOverview(input: {
   todayEnd: number;
   todayStart: number;
 }): WrongQuestionsOverviewPayload {
+  const { basHistory, items: basItems } = buildBasWrongQuestionState(input);
+
+  const atomic: AtomicWrongQuestion[] = basItems.map((item) => ({
+    actionHref: `/student/results/${encodeURIComponent(item.answer.attemptId)}?source=practice-history`,
+    correctionHref: item.corrected ? null : basCorrectionHref(item.groupId),
+    corrected: item.corrected,
+    firstWrongTime: item.firstWrongTime,
+    groupId: item.groupId,
+    latestWrongTime: item.latestWrongTime,
+    taskType: "build_sentence",
+    title: item.title
+  }));
+
+  atomic.push(...buildReadingAtomicWrongQuestions(input));
+  const groups = aggregateWrongQuestionGroups(atomic);
+  const corrected = atomic.filter((item) => item.corrected).length;
+
+  return {
+    grammarPoints: basHistory.history.grammarPoints,
+    groups,
+    stats: {
+      corrected,
+      pending: atomic.length - corrected,
+      todayNew: atomic.filter(
+        (item) => item.firstWrongTime >= input.todayStart && item.firstWrongTime < input.todayEnd
+      ).length,
+      total: atomic.length
+    }
+  };
+}
+
+export function buildBasWrongbookEntryQuestionIds(
+  input: BasWrongQuestionStateInput & { groupId: string }
+) {
+  return buildBasWrongQuestionState(input).items
+    .filter((item) => item.groupId === input.groupId && !item.corrected)
+    .map((item) => item.answer.questionId);
+}
+
+export function buildBasWrongbookPracticeQuestionIds(input: {
+  answers: BasWrongbookPracticeAnswer[];
+  attempts: BasWrongbookPracticeAttempt[];
+  scope: "history" | "today";
+  todayEnd: number;
+  todayStart: number;
+}) {
+  if (input.scope === "history") {
+    return uniqueIds(
+      input.answers.filter((answer) => !answer.isCorrect).map((answer) => answer.questionId)
+    );
+  }
+
+  const attemptById = new Map(input.attempts.map((attempt) => [attempt.attemptId, attempt]));
+  const todayAttemptIds = new Set(
+    input.attempts
+      .filter((attempt) => {
+        const time = answerTime(attempt.submittedAt, attempt.createdAt);
+        return time >= input.todayStart && time < input.todayEnd;
+      })
+      .map((attempt) => attempt.attemptId)
+  );
+  const todayWrongState = new Map<string, boolean>();
+  const todayAnswers = input.answers
+    .filter((answer) => todayAttemptIds.has(answer.attemptId))
+    .sort((left, right) => {
+      const leftAttempt = attemptById.get(left.attemptId);
+      const rightAttempt = attemptById.get(right.attemptId);
+      return answerTime(leftAttempt?.submittedAt, leftAttempt?.createdAt)
+        - answerTime(rightAttempt?.submittedAt, rightAttempt?.createdAt);
+    });
+
+  for (const answer of todayAnswers) {
+    const attempt = attemptById.get(answer.attemptId);
+    if (!attempt) continue;
+    if (attempt.setId.startsWith("wrongbook-today-")) {
+      todayWrongState.set(answer.questionId, !answer.isCorrect);
+      continue;
+    }
+    if (!answer.isCorrect) todayWrongState.set(answer.questionId, true);
+  }
+
+  return Array.from(todayWrongState.entries())
+    .filter(([, needsReview]) => needsReview)
+    .map(([questionId]) => questionId);
+}
+
+function buildBasWrongQuestionState(input: BasWrongQuestionStateInput) {
   const basHistory = buildPracticeHistoryPayload({
     answers: input.basAnswers,
     attempts: input.basAttempts,
@@ -125,7 +234,7 @@ export function buildWrongQuestionsOverview(input: {
     if (existing === undefined || time < existing) firstBasWrongAt.set(key, time);
   }
 
-  const atomic: AtomicWrongQuestion[] = basHistory.history.errors.map((answer) => {
+  const items = basHistory.history.errors.map((answer) => {
     const attempt = basAttemptById.get(answer.attemptId);
     const setId = attempt?.setId ?? "";
     const group = input.basGroupsBySet.get(setId) ?? {
@@ -135,35 +244,15 @@ export function buildWrongQuestionsOverview(input: {
     const key = wrongAnswerDedupeKey(answer);
     const latestWrongTime = answerTime(answer.answeredAt, attempt?.submittedAt);
     return {
-      actionHref: `/student/results/${encodeURIComponent(answer.attemptId)}?source=practice-history`,
-      correctionHref: correctedBasKeys.has(key)
-        ? null
-        : basCorrectionHref(latestWrongTime, input.todayStart, input.todayEnd),
+      answer,
       corrected: correctedBasKeys.has(key),
       firstWrongTime: firstBasWrongAt.get(key) ?? latestWrongTime,
       groupId: group.groupId,
       latestWrongTime,
-      taskType: "build_sentence",
       title: group.title
     };
   });
-
-  atomic.push(...buildReadingAtomicWrongQuestions(input));
-  const groups = aggregateWrongQuestionGroups(atomic);
-  const corrected = atomic.filter((item) => item.corrected).length;
-
-  return {
-    grammarPoints: basHistory.history.grammarPoints,
-    groups,
-    stats: {
-      corrected,
-      pending: atomic.length - corrected,
-      todayNew: atomic.filter(
-        (item) => item.firstWrongTime >= input.todayStart && item.firstWrongTime < input.todayEnd
-      ).length,
-      total: atomic.length
-    }
-  };
+  return { basHistory, items };
 }
 
 type AtomicWrongQuestion = {
@@ -386,15 +475,11 @@ function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
     );
 }
 
-function basCorrectionHref(
-  latestWrongTime: number,
-  todayStart: number,
-  todayEnd: number
-) {
-  const today = latestWrongTime >= todayStart && latestWrongTime < todayEnd;
-  return today
-    ? "/student/wrong-questions/today/practice"
-    : "/student/wrong-questions/history/practice?mode=all";
+function basCorrectionHref(groupId: string) {
+  return `/student/wrong-questions/history/practice?${new URLSearchParams({
+    scope: "entry",
+    groupId
+  }).toString()}`;
 }
 
 function readingCorrectionHref(
@@ -431,4 +516,8 @@ function answerTime(...values: Array<string | null | undefined>) {
     if (Number.isFinite(time)) return time;
   }
   return 0;
+}
+
+function uniqueIds(ids: string[]) {
+  return Array.from(new Set(ids.filter(Boolean)));
 }
