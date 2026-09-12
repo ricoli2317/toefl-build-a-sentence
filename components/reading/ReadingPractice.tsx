@@ -22,8 +22,10 @@ import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
   studentReadingCatalogCacheKey,
+  useStudentCachedData,
   useStudentDataCache
 } from "@/components/StudentDataCache";
+import type { StudentCacheSession } from "@/components/StudentDataCache";
 import { formatWritingTimer } from "@/lib/writing";
 import {
   buildReadingSubmissionAnswers,
@@ -83,19 +85,18 @@ import type {
   SubmittedReadingReviewItem,
   SubmittedReadingReviewPayload
 } from "@/lib/reading/review";
+import {
+  findReadingFullSetReviewIndex,
+  readingFullSetReviewItemLabel,
+  type ReadingFullSetReviewItem,
+  type ReadingFullSetReviewPayload
+} from "@/lib/reading/fullSetReview";
 import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
 type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
 type ReviewResponse = Partial<SubmittedReadingReviewPayload> & { error?: string };
-type FullSetReviewResponse = {
-  answers?: ReadingAnswerState;
-  error?: string;
-  initialReviewIndex?: number;
-  practice?: StudentReadingPracticePayload;
-  reviewItems?: SubmittedReadingReviewItem[];
-  title?: string;
-};
+type FullSetReviewResponse = Partial<ReadingFullSetReviewPayload> & { error?: string };
 
 export const readingTwoColumnScaleStyle = {
   "--reading-scale-unit": "clamp(0.875px, min(calc(0.5px + 0.034722vw), calc(0.4px + 0.066667vh)), 1.12px)",
@@ -370,9 +371,57 @@ export function ReadingFullSetSubmittedReview({
   questionIndex: number;
 }) {
   const router = useRouter();
-  const [payload, setPayload] = useState<Required<Pick<FullSetReviewResponse,
-    "answers" | "initialReviewIndex" | "practice" | "reviewItems" | "title">> | null>(null);
-  const [error, setError] = useState("");
+  const state = useStudentCachedData<ReadingFullSetReviewPayload>(
+    `reading:full-sets:review:${attemptId}`,
+    (session) => loadReadingFullSetReview(fullSetId, attemptId, session)
+  );
+  const resultHref = `/student/reading/full-sets/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`;
+  if (state.error) return <ReadingPracticeMessage description={state.error} onLeave={() => router.push(resultHref)} title="无法打开套题作答" />;
+  if (state.loading || !state.data) return <ReadingPracticeMessage description="正在加载作答内容..." title="正在准备套题作答" />;
+  return (
+    <ReadingFullSetReviewShell
+      initialSourceAnswerIndex={questionIndex}
+      onBack={() => router.push(resultHref)}
+      payload={state.data}
+    />
+  );
+}
+
+async function loadReadingFullSetReview(
+  fullSetId: string,
+  attemptId: string,
+  session: StudentCacheSession
+) {
+  const response = await fetch(
+    `/api/reading/full-sets/${encodeURIComponent(fullSetId)}/results/${encodeURIComponent(attemptId)}/review`,
+    { cache: "no-store", headers: { Authorization: `Bearer ${session.accessToken}` } }
+  );
+  const result = await response.json().catch(() => ({})) as FullSetReviewResponse;
+  if (
+    !response.ok || result.error || !result.attempt
+    || !Array.isArray(result.occurrences) || !Array.isArray(result.reviewItems)
+  ) {
+    throw new Error(result.error ?? "套题作答加载失败，请稍后重试。");
+  }
+  if (result.attempt.attemptId !== attemptId || result.attempt.fullSetId !== fullSetId) {
+    throw new Error("这次套题作答暂时无法显示。");
+  }
+  return result as ReadingFullSetReviewPayload;
+}
+
+function ReadingFullSetReviewShell({
+  initialSourceAnswerIndex,
+  onBack,
+  payload
+}: {
+  initialSourceAnswerIndex: number;
+  onBack: () => void;
+  payload: ReadingFullSetReviewPayload;
+}) {
+  const [activeIndex, setActiveIndex] = useState(() =>
+    findReadingFullSetReviewIndex(payload.reviewItems, initialSourceAnswerIndex)
+  );
+
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow = document.documentElement.style.overflow;
@@ -383,58 +432,126 @@ export function ReadingFullSetSubmittedReview({
       document.documentElement.style.overflow = previousHtmlOverflow;
     };
   }, []);
+
   useEffect(() => {
-    let cancelled = false;
-    void createBrowserSupabase().auth.getSession().then(async ({ data }) => {
-      try {
-        if (!data.session) throw new Error("请先登录后再查看套题作答。");
-        const response = await fetch(
-          `/api/reading/full-sets/${encodeURIComponent(fullSetId)}/results/${encodeURIComponent(attemptId)}/review?questionIndex=${questionIndex}`,
-          { cache: "no-store", headers: { Authorization: `Bearer ${data.session.access_token}` } }
-        );
-        const result = await response.json().catch(() => ({})) as FullSetReviewResponse;
-        if (
-          !response.ok || result.error || !result.answers || !result.practice
-          || !Array.isArray(result.reviewItems) || !Number.isInteger(result.initialReviewIndex)
-          || typeof result.title !== "string"
-        ) {
-          throw new Error(result.error ?? "套题作答加载失败，请稍后重试。");
-        }
-        if (!cancelled) setPayload(result as Required<Pick<FullSetReviewResponse,
-          "answers" | "initialReviewIndex" | "practice" | "reviewItems" | "title">>);
-      } catch (loadError) {
-        if (!cancelled) setError(loadError instanceof Error ? loadError.message : "套题作答加载失败，请稍后重试。");
+    for (const occurrence of payload.occurrences) {
+      const imageUrl = occurrence.practice.material?.imageUrl;
+      if (imageUrl) {
+        const image = new Image();
+        image.src = imageUrl;
       }
-    });
-    return () => { cancelled = true; };
-  }, [attemptId, fullSetId, questionIndex]);
-  const resultHref = `/student/reading/full-sets/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`;
-  if (error) return <ReadingPracticeMessage description={error} onLeave={() => router.push(resultHref)} title="无法打开套题作答" />;
-  if (!payload) return <ReadingPracticeMessage description="正在加载作答内容..." title="正在准备套题作答" />;
+    }
+  }, [payload.occurrences]);
+
+  useEffect(() => {
+    const selectFromHistory = () => {
+      const sourceIndex = Number(window.location.pathname.split("/").pop());
+      if (Number.isInteger(sourceIndex) && sourceIndex >= 0) {
+        setActiveIndex(findReadingFullSetReviewIndex(payload.reviewItems, sourceIndex));
+      }
+    };
+    window.addEventListener("popstate", selectFromHistory);
+    return () => window.removeEventListener("popstate", selectFromHistory);
+  }, [payload.reviewItems]);
+
+  const selectReviewItem = useCallback((index: number) => {
+    const bounded = Math.max(0, Math.min(payload.reviewItems.length - 1, index));
+    const target = payload.reviewItems[bounded];
+    if (!target) return;
+    setActiveIndex(bounded);
+    if (target.href && window.location.pathname !== target.href) {
+      window.history.pushState({ readingFullSetReviewIndex: bounded }, "", target.href);
+    }
+  }, [payload.reviewItems]);
+
+  const currentItem = payload.reviewItems[activeIndex] ?? payload.reviewItems[0];
+  const currentOccurrence = currentItem
+    ? payload.occurrences.find((occurrence) => occurrence.occurrenceId === currentItem.occurrenceId)
+    : null;
+  const currentQuestion = currentOccurrence && currentItem
+    ? currentOccurrence.practice.questions.find((question) => question.questionId === currentItem.questionId)
+      ?? currentOccurrence.practice.questions[0]
+    : null;
+
+  if (!currentItem || !currentOccurrence || !currentQuestion) {
+    return <ReadingPracticeMessage description="套题作答内容不完整。" onLeave={onBack} title="无法打开套题作答" />;
+  }
+
+  const workspaceReviewItems: SubmittedReadingReviewItem[] = currentItem.slotReviews;
+  const selectedReviewItem = currentItem.taskType === "ctw"
+    ? null
+    : workspaceReviewItems[0] ?? null;
+  const statusLabel = currentItem.orderStart === currentItem.orderEnd
+    ? `Question ${currentItem.orderStart}`
+    : `Questions ${readingFullSetReviewItemLabel(currentItem)}`;
+
   return (
-    <ReadingPracticeShell
-      attempt={{
-        attemptId,
-        logicalItemId: payload.practice.item.itemId,
-        taskType: payload.practice.item.module,
-        status: "submitted",
-        elapsedSeconds: 0,
-        startedAt: "",
-        submittedAt: null,
-        totalPoints: payload.reviewItems.length,
-        correctPoints: payload.reviewItems.filter((item) => item.isCorrect).length,
-        incorrectPoints: payload.reviewItems.filter((item) => item.isAnswered && !item.isCorrect).length,
-        unansweredPoints: payload.reviewItems.filter((item) => !item.isAnswered).length
-      }}
-      initialAnswers={payload.answers}
-      initialQuestionIndex={questionIndex}
-      initialReviewIndex={payload.initialReviewIndex}
-      mode="submitted_review"
-      onBack={() => router.push(resultHref)}
-      practice={payload.practice}
-      reviewItems={payload.reviewItems}
-      reviewTitle={payload.title}
-    />
+    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+      <ReadingPracticeHeader
+        elapsedSeconds={0}
+        onBack={onBack}
+        showElapsed={false}
+        title={`${payload.attempt.title} · Module ${currentItem.moduleNumber}`}
+      />
+      <main
+        className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
+        style={currentOccurrence.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
+      >
+        <ReadingFullSetReviewStatusBar
+          currentIndex={activeIndex}
+          items={payload.reviewItems}
+          onSelect={selectReviewItem}
+        />
+        <section className={currentOccurrence.practice.item.module === "ctw"
+          ? "min-h-0 flex-1 overflow-auto rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
+          : "flex min-h-0 flex-1 flex-col overflow-hidden bg-white"}
+        >
+          <ReadingWorkspaceRouter
+            answers={currentOccurrence.answers}
+            currentQuestion={currentQuestion}
+            lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence.practice.item.module)}
+            onAnswerChange={() => undefined}
+            practice={currentOccurrence.practice}
+            readOnly
+            reviewItems={workspaceReviewItems}
+            selectedReviewItem={selectedReviewItem}
+          />
+          {currentOccurrence.practice.item.module !== "ctw" ? (
+            <ReadingQuestionNavigation
+              canGoNext={activeIndex < payload.reviewItems.length - 1}
+              canGoPrevious={activeIndex > 0}
+              currentIndex={activeIndex}
+              embedded
+              module={currentOccurrence.practice.item.module}
+              onNext={() => selectReviewItem(activeIndex + 1)}
+              onPrevious={() => selectReviewItem(activeIndex - 1)}
+              onSubmit={() => undefined}
+              readOnly
+              statusLabel={statusLabel}
+              submitError=""
+              submitting={false}
+              workspaceCount={payload.reviewItems.length}
+            />
+          ) : null}
+        </section>
+        {currentOccurrence.practice.item.module === "ctw" ? (
+          <ReadingQuestionNavigation
+            canGoNext={activeIndex < payload.reviewItems.length - 1}
+            canGoPrevious={activeIndex > 0}
+            currentIndex={activeIndex}
+            module={currentOccurrence.practice.item.module}
+            onNext={() => selectReviewItem(activeIndex + 1)}
+            onPrevious={() => selectReviewItem(activeIndex - 1)}
+            onSubmit={() => undefined}
+            readOnly
+            statusLabel={statusLabel}
+            submitError=""
+            submitting={false}
+            workspaceCount={payload.reviewItems.length}
+          />
+        ) : null}
+      </main>
+    </div>
   );
 }
 
@@ -1069,6 +1186,70 @@ function CtwBlankWord({
         })}
       </span>
     </span>
+  );
+}
+
+function ReadingFullSetReviewStatusBar({
+  currentIndex,
+  items,
+  onSelect
+}: {
+  currentIndex: number;
+  items: ReadingFullSetReviewItem[];
+  onSelect: (index: number) => void;
+}) {
+  const current = items[currentIndex];
+  if (!current) return null;
+  const currentState = !current.isAnswered ? "未作答" : current.isCorrect ? "正确" : "错误";
+  const currentTone = current.isCorrect
+    ? "text-student-primary"
+    : current.isAnswered
+      ? "text-student-error"
+      : "text-student-muted";
+  const currentLabel = current.orderStart === current.orderEnd
+    ? `Question ${current.orderStart}`
+    : `Questions ${readingFullSetReviewItemLabel(current)}`;
+  return (
+    <section className="mb-3 shrink-0 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-full-set-review-status">
+      <p className={`mb-3 text-sm font-bold ${currentTone}`}>
+        {currentLabel} · {currentState} · {formatReviewQuestionTime(current.questionTimeSeconds)}
+      </p>
+      <div className="grid gap-2" aria-label="完整阅读套题作答题号导航">
+        {([1, 2] as const).map((moduleNumber) => (
+          <div className="flex min-w-0 items-start gap-3" data-module-number={moduleNumber} key={moduleNumber}>
+            <p className="w-20 shrink-0 pt-1.5 text-xs font-bold text-student-text">Module {moduleNumber}</p>
+            <div className="flex min-w-0 flex-wrap gap-1.5">
+              {items.map((item, index) => {
+                if (item.moduleNumber !== moduleNumber) return null;
+                const state = !item.isAnswered ? "unanswered" : item.isCorrect ? "correct" : "incorrect";
+                return (
+                  <button
+                    aria-current={index === currentIndex ? "true" : undefined}
+                    aria-label={`Module ${moduleNumber} ${readingFullSetReviewItemLabel(item)}`}
+                    className={`min-h-8 min-w-8 rounded-full border px-2 text-xs font-bold tabular-nums ${
+                      index === currentIndex
+                        ? "border-amber-500 bg-amber-100 text-student-text ring-2 ring-amber-200"
+                        : state === "correct"
+                          ? "border-student-primary-border bg-student-primary-soft text-student-primary"
+                          : state === "incorrect"
+                            ? "border-student-error-border bg-student-error-soft text-student-error"
+                            : "border-student-border bg-student-bg text-student-muted"
+                    }`}
+                    data-answer-state={state}
+                    data-review-item-key={item.key}
+                    key={item.key}
+                    onClick={() => onSelect(index)}
+                    type="button"
+                  >
+                    {readingFullSetReviewItemLabel(item)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -1892,6 +2073,7 @@ function ReadingQuestionNavigation({
   onPrevious,
   onSubmit,
   readOnly,
+  statusLabel,
   submitError,
   submitting,
   workspaceCount
@@ -1905,6 +2087,7 @@ function ReadingQuestionNavigation({
   onPrevious: () => void;
   onSubmit: () => void;
   readOnly: boolean;
+  statusLabel?: string;
   submitError: string;
   submitting: boolean;
   workspaceCount: number;
@@ -1935,7 +2118,7 @@ function ReadingQuestionNavigation({
         <ChevronLeft aria-hidden="true" size={18} /> Previous
       </button>
       <p className="text-center text-sm font-bold text-student-text" data-testid="reading-navigation-status">
-        Question {currentIndex + 1} of {workspaceCount}
+        {statusLabel ?? `Question ${currentIndex + 1} of ${workspaceCount}`}
       </p>
       {readOnly ? (
         <button className={`${stepButtonClassName} justify-self-end`} disabled={!canGoNext} onClick={onNext} type="button">

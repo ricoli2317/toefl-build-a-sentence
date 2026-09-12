@@ -83,7 +83,7 @@ test("result chip route keeps submitted attempt id plus zero-based question inde
 test("submitted review reuses ReadingPractice shell while suppressing every answer mutation and Submit", () => {
   const reviewLoader = practiceUi.slice(
     practiceUi.indexOf("export function ReadingSubmittedReview"),
-    practiceUi.indexOf("function ReadingPracticeShell")
+    practiceUi.indexOf("export function ReadingFullSetSubmittedReview")
   );
   assert.match(reviewLoader, /mode="submitted_review"/);
   assert.match(reviewLoader, /\/review`/);

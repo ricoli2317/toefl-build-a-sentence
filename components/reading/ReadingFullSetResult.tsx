@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Award } from "lucide-react";
 import {
   useStudentCachedData,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
+import { PracticeResultSummary } from "@/components/PracticeResult";
 import {
   StudentErrorState,
   StudentLoadingState,
   StudentNavigation
 } from "@/components/student/StudentUI";
 import type { ReadingFullSetResultPayload } from "@/lib/reading/fullSetResults";
+import { readingFullSetReviewTotalTime } from "@/lib/reading/fullSetReview";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
@@ -29,6 +30,7 @@ export function ReadingFullSetResult({
   if (state.loading) return <StudentLoadingState text="正在加载套题结果..." />;
   if (state.error || !state.data) return <StudentErrorState text="没有找到套题结果或加载失败。" />;
   const result = state.data;
+  const correctPoints = result.answers.filter((answer) => answer.isCorrect).length;
   return (
     <div className="grid gap-6">
       <StudentNavigation
@@ -39,17 +41,13 @@ export function ReadingFullSetResult({
           { label: result.attempt.title }
         ]}
       />
-      <section className="student-card flex min-h-36 items-center gap-5" data-testid="full-set-score-card">
-        <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
-          <Award aria-hidden="true" size={29} />
-        </span>
-        <div>
-          <h1 className="text-sm font-semibold text-student-muted">得分</h1>
-          <p className="mt-1 text-4xl font-bold tabular-nums text-student-primary" data-testid="full-set-scaled-score">
-            {result.score.display}
-          </p>
-        </div>
-      </section>
+      <PracticeResultSummary
+        correctPoints={correctPoints}
+        elapsedSeconds={readingFullSetReviewTotalTime(result.answers)}
+        scoreValue={result.score.display}
+        title={result.attempt.title}
+        totalPoints={result.answers.length}
+      />
       <section className="student-card" data-testid="full-set-result-detail">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>

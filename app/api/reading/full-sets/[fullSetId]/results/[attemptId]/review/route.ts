@@ -6,6 +6,7 @@ import {
   requireReadingFullSetStudent
 } from "@/lib/reading/fullSetAttemptServer";
 import { loadReadingFullSetResult } from "@/lib/reading/fullSetResultServer";
+import { buildReadingFullSetReviewItems } from "@/lib/reading/fullSetReview";
 import { buildSubmittedReadingAnswerState } from "@/lib/reading/review";
 import { loadStudentReadingPractice } from "@/lib/reading/studentPractice";
 import { createServiceSupabase } from "@/lib/supabase/server";
@@ -22,10 +23,6 @@ export async function GET(
   if (!isFullSetId(params.fullSetId) || !isUuid(params.attemptId)) {
     return readingFullSetAttemptJson({ error: "无效的套题作答请求。" }, { status: 400 });
   }
-  const questionIndex = Number(new URL(request.url).searchParams.get("questionIndex"));
-  if (!Number.isInteger(questionIndex) || questionIndex < 0 || questionIndex >= 50) {
-    return readingFullSetAttemptJson({ error: "无效的套题题号。" }, { status: 400 });
-  }
   const owned = await loadOwnedReadingFullSetAttempt(auth.client, params.attemptId);
   if (owned.error || !owned.attempt || owned.attempt.fullSetId !== params.fullSetId) {
     return readingFullSetAttemptJson({ error: "没有找到这次套题作答。" }, { status: 404 });
@@ -41,31 +38,48 @@ export async function GET(
       status: owned.attempt.status,
       completed_at: owned.attempt.completedAt
     });
-    const selected = result.answers[questionIndex];
-    if (!selected) throw new Error("READING_FULL_SET_REVIEW_QUESTION_MISSING");
-    const practice = await loadStudentReadingPractice(db, selected.logicalItemId);
-    const occurrenceAnswers = result.answers.filter((answer) => answer.occurrenceId === selected.occurrenceId);
-    const answerIds = occurrenceAnswers.map((answer) => answer.answerId);
+    const occurrenceMetadata = Array.from(new Map(result.answers.map((answer) => [
+      answer.occurrenceId,
+      {
+        logicalItemId: answer.logicalItemId,
+        moduleNumber: answer.moduleNumber,
+        occurrenceId: answer.occurrenceId
+      }
+    ])).values());
+    const practices = await Promise.all(occurrenceMetadata.map((occurrence) =>
+      loadStudentReadingPractice(db, occurrence.logicalItemId)
+    ));
+    const answerIds = result.answers.map((answer) => answer.answerId);
     const answerResult = await db.from("reading_full_set_answers")
-      .select("answer_id,question_id,slot_id,answer_kind,student_answer")
+      .select("answer_id,occurrence_id,question_id,slot_id,answer_kind,student_answer")
       .in("answer_id", answerIds);
     if (answerResult.error) throw new Error(answerResult.error.message);
-    const answers = buildSubmittedReadingAnswerState(practice, answerResult.data ?? []);
+    const submittedRows = answerResult.data ?? [];
+    const occurrences = occurrenceMetadata.map((occurrence, index) => {
+      const practice = practices[index];
+      if (!practice) throw new Error("READING_FULL_SET_REVIEW_PRACTICE_MISSING");
+      return {
+        answers: buildSubmittedReadingAnswerState(
+          practice,
+          submittedRows.filter((row) => row.occurrence_id === occurrence.occurrenceId)
+        ),
+        moduleNumber: occurrence.moduleNumber,
+        occurrenceId: occurrence.occurrenceId,
+        practice
+      };
+    });
+    const reviewBaseHref = `/student/reading/full-sets/${encodeURIComponent(params.fullSetId)}/result/${encodeURIComponent(params.attemptId)}/questions`;
     return readingFullSetAttemptJson({
-      answers,
-      initialReviewIndex: questionIndex,
-      practice,
-      reviewItems: result.answers.map((answer) => ({
-        answerId: answer.answerId,
-        order: answer.order,
-        isAnswered: answer.isAnswered,
-        isCorrect: answer.isCorrect,
-        questionId: answer.questionId,
-        slotId: answer.slotId,
-        questionTimeSeconds: answer.questionTimeSeconds,
-        href: `/student/reading/full-sets/${encodeURIComponent(params.fullSetId)}/result/${encodeURIComponent(params.attemptId)}/questions/${answer.index}`
-      })),
-      title: `${result.attempt.title} · Module ${selected.moduleNumber}`
+      attempt: {
+        attemptId: result.attempt.attemptId,
+        fullSetId: result.attempt.fullSetId,
+        title: result.attempt.title
+      },
+      occurrences,
+      reviewItems: buildReadingFullSetReviewItems(
+        result.answers,
+        (sourceAnswerIndex) => `${reviewBaseHref}/${sourceAnswerIndex}`
+      )
     });
   } catch (loadError) {
     console.error("Reading Full Set review load failed", {

@@ -245,15 +245,17 @@ export function PracticeResultSummary({
   elapsedSeconds,
   incorrectPoints,
   scoreComparison = "练习已完成",
+  scoreValue,
   timeComparison = "本次练习用时",
   title,
   totalPoints,
   unansweredPoints
 }: {
   correctPoints: number;
-  elapsedSeconds: number;
+  elapsedSeconds: number | null;
   incorrectPoints?: number;
   scoreComparison?: string;
+  scoreValue?: string;
   timeComparison?: string;
   title: string;
   totalPoints: number;
@@ -270,7 +272,7 @@ export function PracticeResultSummary({
           comparison={scoreComparison}
           icon={Trophy}
           label="得分"
-          value={`${correctPoints}/${totalPoints}`}
+          value={scoreValue ?? `${correctPoints}/${totalPoints}`}
         />
         <ResultMetricCard
           comparison={scoreComparison}
@@ -283,7 +285,7 @@ export function PracticeResultSummary({
           icon={Clock3}
           label="用时"
           tone="error"
-          value={formatDuration(elapsedSeconds)}
+          value={elapsedSeconds === null ? "—" : formatDuration(elapsedSeconds)}
         />
       </div>
       {incorrectPoints !== undefined && unansweredPoints !== undefined ? (

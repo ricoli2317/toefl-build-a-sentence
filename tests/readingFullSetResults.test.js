@@ -8,6 +8,13 @@ const {
   readingRawToScaled
 } = require("../lib/reading/fullSetResults.ts");
 const {
+  aggregateCtwInteractionTime,
+  buildReadingFullSetReviewItems,
+  findReadingFullSetReviewIndex,
+  readingFullSetReviewItemLabel,
+  readingFullSetReviewTotalTime
+} = require("../lib/reading/fullSetReview.ts");
+const {
   buildReadingFullSetCatalogStates,
   buildReadingFullSets
 } = require("../lib/reading/fullSets.ts");
@@ -123,11 +130,16 @@ test("catalog status prioritizes active and picks latest completed with a stable
 
 test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, readonly, and retake-enabled", () => {
   const resultUi = read("components/reading/ReadingFullSetResult.tsx");
+  const sharedSummary = read("components/PracticeResult.tsx");
   const resultRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/route.ts");
   const reviewRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/review/route.ts");
   const practice = read("components/reading/ReadingPractice.tsx");
-  assert.match(resultUi, /得分/);
-  assert.match(resultUi, /result\.score\.display/);
+  assert.match(resultUi, /<PracticeResultSummary/);
+  assert.match(resultUi, /scoreValue=\{result\.score\.display\}/);
+  assert.match(sharedSummary, /label="得分"/);
+  assert.match(sharedSummary, /label="正确率"/);
+  assert.match(sharedSummary, /label="用时"/);
+  assert.match(sharedSummary, /scoreValue \?\? `\$\{correctPoints\}\/\$\{totalPoints\}`/);
   assert.doesNotMatch(resultUi, /\/ 50|\/50|CEFR/);
   assert.match(resultUi, /Module \{module\.moduleNumber\}/);
   assert.match(resultUi, /section\.taskName/);
@@ -135,10 +147,97 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.match(resultRoute, /loadOwnedReadingFullSetAttempt/);
   assert.match(resultRoute, /owned\.attempt\.fullSetId !== params\.fullSetId/);
   assert.match(resultRoute, /status !== "completed"/);
-  assert.match(reviewRoute, /questionIndex/);
+  assert.doesNotMatch(reviewRoute, /searchParams|get\("questionIndex"\)/);
+  assert.match(reviewRoute, /buildReadingFullSetReviewItems/);
+  assert.match(reviewRoute, /Promise\.all\(occurrenceMetadata\.map/);
   assert.match(practice, /data-testid="reading-review-status"/);
   assert.match(practice, /data-current-slot/);
   assert.doesNotMatch(practice, />只读</);
+});
+
+function reviewAnswer({
+  index,
+  moduleNumber,
+  occurrenceId,
+  order,
+  taskType,
+  time = 7
+}) {
+  return {
+    answerId: `answer-${index}`,
+    index,
+    moduleNumber,
+    taskType,
+    occurrenceId,
+    logicalItemId: `item-${occurrenceId}`,
+    order,
+    questionId: taskType === "ctw" ? `question-${occurrenceId}` : `question-${index}`,
+    slotId: taskType === "ctw" ? `slot-${index}` : null,
+    isAnswered: true,
+    isCorrect: true,
+    questionTimeSeconds: time
+  };
+}
+
+function fullSetReviewAnswers() {
+  const rows = [];
+  let index = 0;
+  const add = (moduleNumber, occurrenceId, taskType, start, count, time = 7) => {
+    for (let offset = 0; offset < count; offset += 1) {
+      rows.push(reviewAnswer({
+        index: index++, moduleNumber, occurrenceId, order: start + offset, taskType, time
+      }));
+    }
+  };
+  add(1, "m1-ctw-a", "ctw", 1, 10, 41);
+  add(1, "m1-rdl", "rdl", 11, 10);
+  add(1, "m1-ctw-b", "ctw", 21, 10, 53);
+  add(1, "m1-rap", "rap", 31, 5);
+  add(2, "m2-ctw", "ctw", 1, 10, 37);
+  add(2, "m2-rap", "rap", 11, 5);
+  return rows;
+}
+
+test("Full Set review navigation has two Module rows and interaction-level CTW ranges", () => {
+  const items = buildReadingFullSetReviewItems(fullSetReviewAnswers(), (index) => `/questions/${index}`);
+  assert.equal(items.length, 23);
+  assert.deepEqual(
+    items.filter((item) => item.moduleNumber === 1).map(readingFullSetReviewItemLabel),
+    ["1–10", "11–20", ...Array.from({ length: 15 }, (_, index) => String(index + 21))]
+  );
+  assert.deepEqual(
+    items.filter((item) => item.moduleNumber === 2).map(readingFullSetReviewItemLabel),
+    ["1–10", "11", "12", "13", "14", "15"]
+  );
+  assert.equal(items.filter((item) => item.taskType === "ctw").length, 3);
+  assert.equal(items[0].slotReviews.length, 10);
+  assert.equal(items[1].slotReviews.length, 10);
+  assert.equal(findReadingFullSetReviewIndex(items, items[1].slotReviews[4].index), 1);
+});
+
+test("CTW review time de-duplicates the persisted interaction time and preserves missing history", () => {
+  const complete = fullSetReviewAnswers();
+  const ctw = complete.filter((answer) => answer.occurrenceId === "m1-ctw-a");
+  assert.equal(aggregateCtwInteractionTime(ctw), 41);
+  assert.equal(readingFullSetReviewTotalTime(complete), 271);
+  ctw[4].questionTimeSeconds = null;
+  assert.equal(aggregateCtwInteractionTime(ctw), null);
+  assert.equal(readingFullSetReviewTotalTime(complete), null);
+});
+
+test("Full Set review switches in memory and updates history without route navigation or per-question fetch", () => {
+  const practice = read("components/reading/ReadingPractice.tsx");
+  const fullSetStart = practice.indexOf("export function ReadingFullSetSubmittedReview");
+  const fullSetEnd = practice.indexOf("function ReadingPracticeShell", fullSetStart);
+  const fullSetReview = practice.slice(fullSetStart, fullSetEnd);
+  assert.match(fullSetReview, /useStudentCachedData<ReadingFullSetReviewPayload>/);
+  assert.match(fullSetReview, /window\.history\.pushState/);
+  assert.match(fullSetReview, /addEventListener\("popstate"/);
+  assert.equal((fullSetReview.match(/fetch\(/g) ?? []).length, 1);
+  assert.doesNotMatch(fullSetReview, /router\.push\(target\.href\)|questionIndex=\$\{questionIndex\}/);
+  assert.match(fullSetReview, /ReadingFullSetReviewStatusBar/);
+  assert.match(practice, /Module \{moduleNumber\}/);
+  assert.match(fullSetReview, /statusLabel=\{statusLabel\}/);
 });
 
 test("Full Set timing hotfix preserves unknown history as NULL and runner records real time", () => {
