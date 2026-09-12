@@ -138,7 +138,7 @@ export function buildWrongQuestionsOverview(input: {
       actionHref: `/student/results/${encodeURIComponent(answer.attemptId)}?source=practice-history`,
       correctionHref: correctedBasKeys.has(key)
         ? null
-        : basCorrectionHref(answer.questionId, latestWrongTime, input.todayStart, input.todayEnd),
+        : basCorrectionHref(latestWrongTime, input.todayStart, input.todayEnd),
       corrected: correctedBasKeys.has(key),
       firstWrongTime: firstBasWrongAt.get(key) ?? latestWrongTime,
       groupId: group.groupId,
@@ -387,18 +387,14 @@ function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
 }
 
 function basCorrectionHref(
-  questionId: string,
   latestWrongTime: number,
   todayStart: number,
   todayEnd: number
 ) {
   const today = latestWrongTime >= todayStart && latestWrongTime < todayEnd;
-  const base = today
+  return today
     ? "/student/wrong-questions/today/practice"
-    : "/student/wrong-questions/history/practice";
-  const params = new URLSearchParams({ questionId });
-  if (!today) params.set("mode", "all");
-  return `${base}?${params.toString()}`;
+    : "/student/wrong-questions/history/practice?mode=all";
 }
 
 function readingCorrectionHref(

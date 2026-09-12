@@ -145,7 +145,7 @@ test("wrong-question overview reuses BAS dedupe/correction and aggregates all fo
   assert.equal(payload.groups.find((group) => group.taskType === "build_sentence").title, "套题112");
   assert.equal(
     payload.groups.find((group) => group.taskType === "build_sentence").correctionHref,
-    "/student/wrong-questions/today/practice?questionId=bas-q-today"
+    "/student/wrong-questions/today/practice"
   );
   assert.equal(payload.groups.find((group) => group.taskType === "rdl").correctionHref, null);
   assert.match(
@@ -185,8 +185,8 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(route, /\.from\("reading_attempts"\)/);
   assert.match(route, /"reading_attempt_answers"/);
   assert.match(route, /"reading_logical_items"/);
-  assert.match(route, /searchParams\.get\("questionId"\)/);
-  assert.match(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
+  assert.doesNotMatch(route, /searchParams\.get\("questionId"\)/);
+  assert.doesNotMatch(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
 });
 
 test("Reading canonical identities drive pending queues and correction answers update only their exact targets", () => {
@@ -700,7 +700,7 @@ function correctionQuestion(questionId, questionType, overrides = {}) {
   };
 }
 
-test("BAS correction routes keep single-card practice inside today/history wrongbook modes", () => {
+test("BAS correction routes preserve the complete today/history question list", () => {
   const historyPage = fs.readFileSync(path.join(
     projectRoot,
     "app/student/wrong-questions/history/practice/page.tsx"
@@ -710,12 +710,82 @@ test("BAS correction routes keep single-card practice inside today/history wrong
     "app/student/wrong-questions/today/practice/page.tsx"
   ), "utf8");
   const practice = fs.readFileSync(path.join(projectRoot, "components/WrongQuestions.tsx"), "utf8");
+  const session = fs.readFileSync(path.join(projectRoot, "components/PracticeSession.tsx"), "utf8");
 
-  assert.match(historyPage, /mode=\{mode\} questionId=\{searchParams\.questionId\}/);
-  assert.match(todayPage, /mode="today" questionId=\{searchParams\.questionId\}/);
+  assert.match(historyPage, /<WrongQuestionsPractice mode=\{mode\} \/>/);
+  assert.match(todayPage, /<WrongQuestionsPractice mode="today" \/>/);
+  assert.doesNotMatch(`${historyPage}\n${todayPage}\n${practice}`, /questionId\??:/);
   assert.match(practice, /if \(mode === "today"\) return `wrongbook-today-/);
   assert.match(practice, /return `wrongbook-all-/);
-  assert.match(practice, /if \(questionId\) params\.set\("questionId", questionId\)/);
+  assert.match(practice, /initialQuestions=\{questions\}/);
+  assert.match(session, /const questions = useMemo\([\s\S]*initialQuestions \?\? cachedQuestions \?\? \[\]/);
+  assert.match(session, /const isLastQuestion = currentIndex === questions\.length - 1/);
+  assert.match(session, /if \(isLastQuestion\) \{[\s\S]*await submitAll\(savedAnswers\)[\s\S]*return;[\s\S]*setCurrentIndex\(\(index\) => index \+ 1\)/);
+  assert.match(session, /questions\.map\(\(question\) => question\.question_id\)/);
+  const goNext = session.slice(
+    session.indexOf("async function goNext"),
+    session.indexOf("async function endPractice")
+  );
+  assert.doesNotMatch(goNext, /isCorrect|invalidate/);
+  assert.match(session, /enabled: !usesProvidedQuestions/);
+  assert.match(session, /loadPracticeQuestions\(setId, session\)/);
+});
+
+test("BAS one, two, and three-plus pending questions all enter one batch correction session", () => {
+  const todayStart = Date.parse("2026-08-30T00:00:00.000Z");
+  const todayEnd = Date.parse("2026-08-31T00:00:00.000Z");
+
+  for (const count of [1, 2, 4]) {
+    const payload = buildWrongQuestionsOverview({
+      basAttempts: [basAttempt(`bas-${count}`, "2026-08-30T08:00:00.000Z")],
+      basAnswers: Array.from({ length: count }, (_, index) => basAnswer({
+        answerId: `wrong-${count}-${index}`,
+        attemptId: `bas-${count}`,
+        finalSentence: `Unique wrong sentence ${index}.`,
+        grammarTag: "时态",
+        isCorrect: false,
+        questionId: `bas-q-${count}-${index}`,
+        time: `2026-08-30T08:${String(index).padStart(2, "0")}:00.000Z`
+      })),
+      basCorrectionAnswers: [],
+      basGroupsBySet: new Map([["bas-source-112", { groupId: "logical-bas-112", title: "套题112" }]]),
+      readingAnswers: [],
+      readingAttempts: [],
+      readingTitles: new Map(),
+      todayStart,
+      todayEnd
+    });
+
+    assert.equal(payload.groups[0].pendingCount, count);
+    assert.equal(payload.groups[0].correctionHref, "/student/wrong-questions/today/practice");
+    assert.doesNotMatch(payload.groups[0].correctionHref, /questionId=/);
+  }
+
+  const historyPayload = buildWrongQuestionsOverview({
+    basAttempts: [basAttempt("bas-history", "2026-08-29T08:00:00.000Z")],
+    basAnswers: Array.from({ length: 3 }, (_, index) => basAnswer({
+      answerId: `history-wrong-${index}`,
+      attemptId: "bas-history",
+      finalSentence: `Unique historical sentence ${index}.`,
+      grammarTag: "从句",
+      isCorrect: false,
+      questionId: `bas-history-q-${index}`,
+      time: `2026-08-29T08:${String(index).padStart(2, "0")}:00.000Z`
+    })),
+    basCorrectionAnswers: [],
+    basGroupsBySet: new Map([["bas-source-112", { groupId: "logical-bas-112", title: "套题112" }]]),
+    readingAnswers: [],
+    readingAttempts: [],
+    readingTitles: new Map(),
+    todayStart,
+    todayEnd
+  });
+  assert.equal(historyPayload.groups[0].pendingCount, 3);
+  assert.equal(
+    historyPayload.groups[0].correctionHref,
+    "/student/wrong-questions/history/practice?mode=all"
+  );
+  assert.doesNotMatch(historyPayload.groups[0].correctionHref, /questionId=/);
 });
 
 test("a fully corrected BAS group has no correction target", () => {
