@@ -185,15 +185,15 @@ test("RDL and RAP share one continuous practice shell with embedded navigation",
   );
 
   assert.match(headerSource, /productName \? <p/);
-  const submittedReturn = shellSource.indexOf(
-    'return (\n      <div className="h-[100dvh]',
-    shellSource.indexOf("if (attempt.status === \"submitted\")")
-  );
   const activeShellSource = shellSource.slice(
-    shellSource.indexOf('return (\n    <div className="h-[100dvh]', submittedReturn + 1),
+    shellSource.indexOf("export function ReadingPracticeShell"),
     shellSource.indexOf("function ReadingPracticeHeader")
   );
   assert.doesNotMatch(activeShellSource, /productName=/);
+  assert.match(activeShellSource, /min-h-\[100dvh\]/);
+  assert.match(activeShellSource, /min-h-\[calc\(100dvh-76px\)\]/);
+  assert.match(activeShellSource, /layoutMode="natural"/);
+  assert.doesNotMatch(activeShellSource, /className="h-\[100dvh\]|className="[^"]* h-\[calc\(100dvh-76px\)\]|overflow-hidden|overflow-auto/);
   assert.match(activeShellSource, /style=\{practice\.item\.module === "ctw" \? undefined : readingTwoColumnScaleStyle\}/);
   assert.match(shellSource, /"--reading-scale-unit": "clamp\(0\.875px, min\(calc\(0\.5px \+ 0\.034722vw\), calc\(0\.4px \+ 0\.066667vh\)\), 1\.12px\)"/);
   assert.match(shellSource, /fontSize: "var\(--reading-scale-unit\)"/);
@@ -218,4 +218,63 @@ test("RDL and RAP share one continuous practice shell with embedded navigation",
   assert.match(navigationSource, /`student-button-primary \$\{navigationButtonSizeClassName\} justify-self-end`/);
   assert.match(shellSource, /rdlMaterialInstruction\(material\.materialType\)/);
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
+});
+
+test("ordinary and wrongbook Reading use one natural page scroll while Full Set stays isolated", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
+  const ordinaryLoader = source.slice(
+    source.indexOf("export function ReadingPractice"),
+    source.indexOf("export function ReadingSubmittedReview")
+  );
+  const submittedReview = source.slice(
+    source.indexOf("export function ReadingSubmittedReview"),
+    source.indexOf("export function ReadingFullSetSubmittedReview")
+  );
+  const fullSetShell = source.slice(
+    source.indexOf("function ReadingFullSetReviewShell"),
+    source.indexOf("export function ReadingPracticeShell")
+  );
+  const practiceShell = source.slice(
+    source.indexOf("export function ReadingPracticeShell"),
+    source.indexOf("function ReadingPracticeHeader")
+  );
+  const twoColumnShell = source.slice(
+    source.indexOf("function ReadingTwoColumnPracticeShell"),
+    source.indexOf("function RdlPracticeWorkspace")
+  );
+
+  assert.doesNotMatch(ordinaryLoader, /document\.(body|documentElement)\.style\.overflow/);
+  assert.doesNotMatch(submittedReview, /document\.(body|documentElement)\.style\.overflow/);
+  assert.match(practiceShell, /min-h-\[100dvh\]/);
+  assert.match(practiceShell, /layoutMode="natural"/);
+  assert.match(twoColumnShell, /naturalFlow \? "overflow-visible"/);
+  assert.match(twoColumnShell, /naturalFlow \? "min-w-0"/);
+  assert.match(fullSetShell, /h-\[100dvh\] overflow-hidden/);
+  assert.match(fullSetShell, /document\.body\.style\.overflow = "hidden"/);
+});
+
+test("CTW, RDL, and RAP natural layout keeps long content and bottom navigation in document flow", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
+  const practiceShell = source.slice(
+    source.indexOf("export function ReadingPracticeShell"),
+    source.indexOf("function ReadingPracticeHeader")
+  );
+  const rdlSource = source.slice(
+    source.indexOf("function RdlPracticeWorkspace"),
+    source.indexOf("function sameRdlRect")
+  );
+  const rapSource = source.slice(
+    source.indexOf("function RapPracticeWorkspace"),
+    source.indexOf("function renderRapHighlightedText")
+  );
+
+  assert.match(practiceShell, /\? "flex-1 rounded-2xl/);
+  assert.doesNotMatch(practiceShell, /max-h-|fixed|absolute/);
+  assert.ok(practiceShell.indexOf("<ReadingWorkspaceRouter") < practiceShell.indexOf("<ReadingQuestionNavigation"));
+  assert.match(rdlSource, /naturalFlow \? "h-auto" : "h-full"/);
+  assert.match(rdlSource, /naturalFlow[\s\S]*?overflow-visible/);
+  assert.match(rapSource, /naturalFlow[\s\S]*?\? "min-w-0"/);
+  assert.match(rapSource, /question\.questionType === "rap_multiple_choice"/);
+  assert.match(rapSource, /question\.questionType === "rap_sentence_insertion"/);
+  assert.match(rapSource, /question\.questionType === "rap_sentence_selection"/);
 });

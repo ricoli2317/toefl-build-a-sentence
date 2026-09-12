@@ -197,17 +197,6 @@ export function ReadingPractice({ itemId }: { itemId: string }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
@@ -292,17 +281,6 @@ export function ReadingSubmittedReview({
   const router = useRouter();
   const [review, setReview] = useState<SubmittedReadingReviewPayload | null>(null);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
-    };
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -756,7 +734,7 @@ export function ReadingPracticeShell({
   }
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
       <ReadingPracticeHeader
         elapsedSeconds={elapsedSeconds}
         onBack={onBack}
@@ -765,7 +743,7 @@ export function ReadingPracticeShell({
         title={reviewTitle ?? practice.item.title}
       />
       <main
-        className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
+        className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
         style={practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
       >
         {readOnly && currentReviewItem ? (
@@ -778,14 +756,15 @@ export function ReadingPracticeShell({
           />
         ) : null}
         <section className={practice.item.module === "ctw"
-          ? "min-h-0 flex-1 overflow-auto rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex min-h-0 flex-1 flex-col overflow-hidden bg-white"}
+          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
+          : "flex flex-1 flex-col bg-white"}
         >
           <ReadingWorkspaceRouter
             answers={answers}
             currentQuestion={currentQuestion}
             editableSlotIds={editableSlotIds}
             lookupEnabled={lookupEnabled}
+            layoutMode="natural"
             onAnswerChange={updateAnswer}
             practice={practice}
             readOnly={readOnly}
@@ -880,6 +859,7 @@ export function ReadingWorkspaceRouter({
   currentQuestion,
   editableSlotIds,
   lookupEnabled,
+  layoutMode = "bounded",
   onAnswerChange,
   practice,
   readOnly,
@@ -890,6 +870,7 @@ export function ReadingWorkspaceRouter({
   currentQuestion: StudentReadingPracticePayload["questions"][number];
   editableSlotIds?: ReadonlySet<string>;
   lookupEnabled: boolean;
+  layoutMode?: "bounded" | "natural";
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   practice: StudentReadingPracticePayload;
   readOnly: boolean;
@@ -915,6 +896,7 @@ export function ReadingWorkspaceRouter({
       <RdlPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
         lookupEnabled={lookupEnabled}
+        naturalFlow={layoutMode === "natural"}
         material={practice.material}
         onAnswerChange={onAnswerChange}
         question={currentQuestion}
@@ -927,6 +909,7 @@ export function ReadingWorkspaceRouter({
       <RapPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
         lookupEnabled={lookupEnabled}
+        naturalFlow={layoutMode === "natural"}
         onAnswerChange={onAnswerChange}
         passage={practice.passage}
         question={currentQuestion as StudentRapQuestion}
@@ -1378,6 +1361,7 @@ function ctwPositionKey(position: CtwPosition) {
 function ReadingTwoColumnPracticeShell({
   left,
   lookupEnabled,
+  naturalFlow,
   ratio,
   right,
   testId,
@@ -1386,6 +1370,7 @@ function ReadingTwoColumnPracticeShell({
 }: {
   left: ReactNode;
   lookupEnabled: boolean;
+  naturalFlow: boolean;
   ratio: "rdl" | "rap";
   right: ReactNode;
   testId: "rdl-workspace" | "rap-workspace";
@@ -1408,9 +1393,9 @@ function ReadingTwoColumnPracticeShell({
       >
         {title}
       </h1>
-      <div className={`grid min-h-0 flex-1 grid-cols-1 overflow-y-auto lg:overflow-hidden ${desktopColumns}`}>
-        <div className="min-w-0 lg:h-full lg:min-h-0">{left}</div>
-        <div className="min-w-0 lg:h-full lg:min-h-0">{right}</div>
+      <div className={`grid min-h-0 flex-1 grid-cols-1 ${naturalFlow ? "overflow-visible" : "overflow-y-auto lg:overflow-hidden"} ${desktopColumns}`}>
+        <div className={naturalFlow ? "min-w-0" : "min-w-0 lg:h-full lg:min-h-0"}>{left}</div>
+        <div className={naturalFlow ? "min-w-0" : "min-w-0 lg:h-full lg:min-h-0"}>{right}</div>
       </div>
     </div>
   );
@@ -1418,15 +1403,19 @@ function ReadingTwoColumnPracticeShell({
 
 function ReadingQuestionColumn({
   children,
-  labelledBy
+  labelledBy,
+  naturalFlow
 }: {
   children: ReactNode;
   labelledBy: string;
+  naturalFlow: boolean;
 }) {
   return (
     <section
       aria-labelledby={labelledBy}
-      className="min-w-0 overflow-visible bg-white lg:h-full lg:overflow-y-auto"
+      className={naturalFlow
+        ? "min-w-0 overflow-visible bg-white"
+        : "min-w-0 overflow-visible bg-white lg:h-full lg:overflow-y-auto"}
       style={readingColumnStyle}
     >
       <div className="w-full">{children}</div>
@@ -1437,6 +1426,7 @@ function ReadingQuestionColumn({
 function RdlPracticeWorkspace({
   answer,
   lookupEnabled,
+  naturalFlow,
   material,
   onAnswerChange,
   question,
@@ -1444,6 +1434,7 @@ function RdlPracticeWorkspace({
 }: {
   answer: ReadingAnswer | undefined;
   lookupEnabled: boolean;
+  naturalFlow: boolean;
   material: NonNullable<StudentReadingPracticePayload["material"]>;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   question: StudentRdlQuestion;
@@ -1651,8 +1642,17 @@ function RdlPracticeWorkspace({
   return (
     <ReadingTwoColumnPracticeShell
       left={(
-        <figure className="flex min-h-[320px] flex-col bg-white lg:h-full lg:min-h-0">
-        <div className="relative flex min-h-[320px] flex-1 items-start justify-center overflow-hidden lg:min-h-0" ref={imageStageRef} style={readingMaterialStageStyle}>
+        <figure className={naturalFlow
+          ? "flex min-h-[320px] flex-col bg-white"
+          : "flex min-h-[320px] flex-col bg-white lg:h-full lg:min-h-0"}
+        >
+        <div
+          className={naturalFlow
+            ? "relative flex min-h-[320px] items-start justify-center overflow-visible"
+            : "relative flex min-h-[320px] flex-1 items-start justify-center overflow-hidden lg:min-h-0"}
+          ref={imageStageRef}
+          style={readingMaterialStageStyle}
+        >
           {assetStatus === "loading" ? (
             <p className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-student-muted" role="status">
               正在加载阅读材料...
@@ -1665,7 +1665,7 @@ function RdlPracticeWorkspace({
           ) : (
             <img
               alt={material.title}
-              className={`h-full w-full object-contain ${assetStatus === "ready" ? "opacity-100" : "opacity-0"}`}
+              className={`${naturalFlow ? "h-auto" : "h-full"} w-full object-contain ${assetStatus === "ready" ? "opacity-100" : "opacity-0"}`}
               onError={() => setAssetStatus("error")}
               onLoad={(event) => {
                 setImageDimensions({
@@ -1748,9 +1748,10 @@ function RdlPracticeWorkspace({
       </figure>
       )}
       lookupEnabled={lookupEnabled}
+      naturalFlow={naturalFlow}
       ratio="rdl"
       right={(
-      <ReadingQuestionColumn labelledBy="rdl-question-stem">
+      <ReadingQuestionColumn labelledBy="rdl-question-stem" naturalFlow={naturalFlow}>
         <h2 className="font-bold text-student-text" id="rdl-question-stem" style={readingQuestionTextStyle}>
           {question.stem}
         </h2>
@@ -1790,6 +1791,7 @@ function assetFileName(assetUrl: string) {
 function RapPracticeWorkspace({
   answer,
   lookupEnabled,
+  naturalFlow,
   onAnswerChange,
   passage,
   question,
@@ -1797,6 +1799,7 @@ function RapPracticeWorkspace({
 }: {
   answer: ReadingAnswer | undefined;
   lookupEnabled: boolean;
+  naturalFlow: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   passage: NonNullable<StudentReadingPracticePayload["passage"]>;
   question: StudentRapQuestion;
@@ -1945,7 +1948,9 @@ function RapPracticeWorkspace({
       <DomTextLookupRegion enabled={lookupEnabled}>
       <article
         aria-labelledby="rap-passage-title"
-        className="min-w-0 lg:h-full lg:min-h-0 lg:overflow-y-auto"
+        className={naturalFlow
+          ? "min-w-0"
+          : "min-w-0 lg:h-full lg:min-h-0 lg:overflow-y-auto"}
         data-passage-id={passage.passageId}
         data-testid="rap-passage"
         style={readingColumnStyle}
@@ -1991,9 +1996,10 @@ function RapPracticeWorkspace({
       </DomTextLookupRegion>
       )}
       lookupEnabled={lookupEnabled}
+      naturalFlow={naturalFlow}
       ratio="rap"
       right={(
-      <ReadingQuestionColumn labelledBy="rap-question-stem">
+      <ReadingQuestionColumn labelledBy="rap-question-stem" naturalFlow={naturalFlow}>
         {question.questionType === "rap_multiple_choice" ? (
           <>
             <h2 className="font-bold text-student-text" id="rap-question-stem" style={readingQuestionTextStyle}>

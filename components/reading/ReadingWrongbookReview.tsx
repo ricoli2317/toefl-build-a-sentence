@@ -71,7 +71,7 @@ export function ReadingWrongbookReview({
       mode="submitted_review"
       onBack={() => router.push(resultHref)}
       practice={review.practice}
-      reviewDisclosureLabel="Correct Answer"
+      reviewDisclosureLabel="正确答案"
       reviewDisclosures={review.disclosures}
       reviewItems={review.reviewItems}
       reviewTitle="错题订正结果"

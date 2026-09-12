@@ -124,7 +124,7 @@ async function loadDisclosures(db: ReturnType<typeof createServiceSupabase>, row
     db.from("reading_questions")
       .select("question_id,question_type,correct_option_id,correct_anchor_id,correct_sentence_id")
       .in("question_id", questionIds),
-    db.from("reading_ctw_slots").select("question_id,slot_id,missing_text").in("question_id", questionIds),
+    db.from("reading_ctw_slots").select("question_id,slot_id,answer").in("question_id", questionIds),
     db.from("reading_question_options").select("question_id,option_id,option_text").in("question_id", questionIds),
     db.from("reading_rap_insertion_anchors").select("question_id,anchor_id,anchor_order").in("question_id", questionIds)
   ]);
@@ -142,7 +142,7 @@ async function loadDisclosures(db: ReturnType<typeof createServiceSupabase>, row
   const keyByQuestion = new Map(keys.map((question) => [question.question_id, question]));
   const slotText = new Map((slotResult.data ?? []).map((slot) => [
     `${slot.question_id}:${slot.slot_id}`,
-    String(slot.missing_text)
+    String(slot.answer)
   ]));
   const optionText = new Map((optionResult.data ?? []).map((option) => [
     `${option.question_id}:${option.option_id}`,

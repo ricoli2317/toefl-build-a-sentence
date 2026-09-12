@@ -5,9 +5,16 @@ import {
   type ReadingCtwParagraphResultRow,
   type ReadingCtwSegmentResultRow,
   type ReadingItemRow,
-  type ReadingQuestionResultRow,
   type ReadingSlotResultRow
 } from "@/lib/reading/history";
+import {
+  buildReadingCorrectionResultAnswers,
+  type ReadingCorrectionAnchorRow,
+  type ReadingCorrectionCtwSlotRow,
+  type ReadingCorrectionOptionRow,
+  type ReadingCorrectionQuestionRow,
+  type ReadingCorrectionSentenceRow
+} from "@/lib/reading/correctionResult";
 import { readingAttemptJson, requireReadingAttemptStudent } from "@/lib/reading/attemptServer";
 import { loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.server";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
@@ -75,14 +82,40 @@ export async function GET(
   const questionIds = Array.from(new Set(answers.map((answer) => answer.question_id)));
   if (questionIds.length === 0) return serverError("correction result answers", null);
   const questionResult = await db.from("reading_questions")
-    .select("question_id,question_order,question_type")
+    .select("question_id,question_order,question_type,correct_option_id,correct_anchor_id,correct_sentence_id")
     .eq("logical_item_id", attempt.logical_item_id)
     .in("question_id", questionIds);
   if (questionResult.error) return serverError("correction result questions", questionResult.error);
 
+  const questions = (questionResult.data ?? []) as ReadingCorrectionQuestionRow[];
+  const sentenceIds = Array.from(new Set([
+    ...questions.map((question) => question.correct_sentence_id),
+    ...(correctionAnswerResult.data ?? [])
+      .filter((answer) => answer.answer_kind === "sentence_selection")
+      .map((answer) => answer.student_answer)
+  ].filter((value): value is string => Boolean(value))));
+  const [optionResult, anchorResult, sentenceResult] = await Promise.all([
+    db.from("reading_question_options")
+      .select("question_id,option_id,option_order,option_text")
+      .in("question_id", questionIds)
+      .order("option_order", { ascending: true }),
+    db.from("reading_rap_insertion_anchors")
+      .select("question_id,anchor_id,anchor_order")
+      .in("question_id", questionIds)
+      .order("anchor_order", { ascending: true }),
+    sentenceIds.length
+      ? db.from("reading_passage_sentences")
+          .select("sentence_id,sentence_text")
+          .in("sentence_id", sentenceIds)
+      : Promise.resolve({ data: [], error: null })
+  ]);
+  const answerDetailError = optionResult.error || anchorResult.error || sentenceResult.error;
+  if (answerDetailError) return serverError("correction result answer details", answerDetailError);
+
   let ctwParagraphs: ReadingCtwParagraphResultRow[] = [];
   let ctwSegments: ReadingCtwSegmentResultRow[] = [];
   let slots: ReadingSlotResultRow[] = [];
+  let correctionCtwSlots: ReadingCorrectionCtwSlotRow[] = [];
   if (attempt.task_type === "ctw") {
     const [paragraphResult, segmentResult, slotResult] = await Promise.all([
       db.from("reading_ctw_paragraphs")
@@ -94,7 +127,7 @@ export async function GET(
         .in("question_id", questionIds)
         .order("segment_order", { ascending: true }),
       db.from("reading_ctw_slots")
-        .select("question_id,slot_id,slot_order,prefix")
+        .select("question_id,slot_id,slot_order,prefix,answer,display_text,missing_text")
         .in("question_id", questionIds)
         .order("slot_order", { ascending: true })
     ]);
@@ -103,19 +136,32 @@ export async function GET(
     ctwParagraphs = (paragraphResult.data ?? []) as ReadingCtwParagraphResultRow[];
     ctwSegments = (segmentResult.data ?? []) as ReadingCtwSegmentResultRow[];
     slots = (slotResult.data ?? []) as ReadingSlotResultRow[];
+    correctionCtwSlots = (slotResult.data ?? []) as ReadingCorrectionCtwSlotRow[];
   }
 
   try {
-    return readingAttemptJson(buildReadingResultPayload({
+    const payload = buildReadingResultPayload({
       allowDisplayAnswerCountMismatch: attempt.task_type === "ctw",
       answers,
       attempt: attempt as ReadingAttemptRow & { submitted_at: string },
       ctwParagraphs,
       ctwSegments,
       item: itemResult.data as ReadingItemRow,
-      questions: (questionResult.data ?? []) as ReadingQuestionResultRow[],
+      questions,
       slots
-    }));
+    });
+    return readingAttemptJson({
+      ...payload,
+      answers: buildReadingCorrectionResultAnswers({
+        allResultAnswers: payload.answers,
+        anchors: (anchorResult.data ?? []) as ReadingCorrectionAnchorRow[],
+        correctionRows: (correctionAnswerResult.data ?? []) as ReadingAnswerRow[],
+        ctwSlots: correctionCtwSlots,
+        options: (optionResult.data ?? []) as ReadingCorrectionOptionRow[],
+        questions,
+        sentences: (sentenceResult.data ?? []) as ReadingCorrectionSentenceRow[]
+      })
+    });
   } catch (error) {
     console.error("Reading correction result mapping failed", {
       attemptId: params.attemptId,

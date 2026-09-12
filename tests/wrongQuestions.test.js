@@ -10,6 +10,9 @@ const {
 const {
   buildReadingWrongbookInitialAnswers
 } = require("../lib/reading/wrongbook.ts");
+const {
+  buildReadingCorrectionResultAnswers
+} = require("../lib/reading/correctionResult.ts");
 
 const projectRoot = path.resolve(__dirname, "..");
 
@@ -296,15 +299,201 @@ test("Reading correction submit opens its exact isolated result and only correct
   const correctionResult = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/result/route.ts"), "utf8");
   const correctionReview = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts"), "utf8");
   const correctionReviewUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
+  const correctionResultUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookResult.tsx"), "utf8");
 
   assert.doesNotMatch(runtime, /订正已完成/);
   assert.match(runtime, /wrongbook-results\/\$\{encodeURIComponent\(submittedAttempt\.attemptId\)\}/);
   assert.match(correctionResult, /\.from\("reading_wrongbook_attempts"\)[\s\S]*\.eq\("attempt_id", params\.attemptId\)/);
   assert.match(correctionResult, /reading_wrongbook_attempt_answers/);
   assert.match(correctionReview, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
-  assert.match(correctionReviewUi, /reviewDisclosureLabel="Correct Answer"/);
+  assert.match(correctionReviewUi, /reviewDisclosureLabel="正确答案"/);
+  assert.match(correctionResultUi, /你的答案/);
+  assert.match(correctionResultUi, /正确答案/);
+  assert.match(correctionResultUi, /answer\.reviewIndex/);
+  assert.doesNotMatch(`${correctionReviewUi}\n${correctionResultUi}`, /Correct Answer/);
   assert.doesNotMatch(ordinaryResult, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
 });
+
+test("Reading correction summaries map standard choices by option id and option order", () => {
+  const answers = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("choice-answer", 1, false)],
+    correctionRows: [{
+      answer_kind: "option",
+      attempt_answer_id: "choice-answer",
+      is_correct: false,
+      question_id: "q-choice",
+      question_time_seconds: 9,
+      slot_id: null,
+      student_answer: "option-a"
+    }],
+    questions: [correctionQuestion("q-choice", "rdl", { correct_option_id: "option-b" })],
+    options: [
+      { option_id: "option-b", option_order: 2, option_text: "Full option B", question_id: "q-choice" },
+      { option_id: "option-a", option_order: 1, option_text: "Full option A", question_id: "q-choice" },
+      { option_id: "option-d", option_order: 4, option_text: "Full option D", question_id: "q-choice" },
+      { option_id: "option-c", option_order: 3, option_text: "Full option C", question_id: "q-choice" }
+    ]
+  });
+
+  assert.equal(answers[0].studentAnswer, "A");
+  assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "B" });
+});
+
+test("non-standard choices retain their natural text instead of forcing A/B/C/D", () => {
+  const answers = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("choice-answer", 1, true)],
+    correctionRows: [{
+      answer_kind: "option",
+      attempt_answer_id: "choice-answer",
+      is_correct: true,
+      question_id: "q-choice",
+      question_time_seconds: 2,
+      slot_id: null,
+      student_answer: "option-yes"
+    }],
+    questions: [correctionQuestion("q-choice", "rap_multiple_choice", { correct_option_id: "option-yes" })],
+    options: [
+      { option_id: "option-yes", option_order: 1, option_text: "Yes", question_id: "q-choice" },
+      { option_id: "option-no", option_order: 2, option_text: "No", question_id: "q-choice" }
+    ]
+  });
+
+  assert.equal(answers[0].studentAnswer, "Yes");
+  assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "Yes" });
+});
+
+test("CTW correction summaries rebuild the complete word and mark every missing letter", () => {
+  const answers = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("ctw-answer", 3, false)],
+    correctionRows: [{
+      answer_kind: "ctw_slot",
+      attempt_answer_id: "ctw-answer",
+      is_correct: false,
+      question_id: "q-ctw",
+      question_time_seconds: 4,
+      slot_id: "slot-3",
+      student_answer: "a"
+    }],
+    questions: [correctionQuestion("q-ctw", "ctw")],
+    ctwSlots: [{
+      answer: "work",
+      display_text: "w_rk",
+      missing_text: "o",
+      prefix: "w",
+      question_id: "q-ctw",
+      slot_id: "slot-3"
+    }]
+  });
+
+  assert.equal(answers[0].studentAnswer, "wark");
+  assert.deepEqual(answers[0].correctAnswer, {
+    kind: "ctw_word",
+    parts: [
+      { emphasized: false, text: "w" },
+      { emphasized: true, text: "o" },
+      { emphasized: false, text: "rk" }
+    ]
+  });
+
+  const multiLetter = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("multi-ctw-answer", 4, true)],
+    correctionRows: [{
+      answer_kind: "ctw_slot",
+      attempt_answer_id: "multi-ctw-answer",
+      is_correct: true,
+      question_id: "q-ctw",
+      question_time_seconds: 3,
+      slot_id: "slot-4",
+      student_answer: "ation"
+    }],
+    questions: [correctionQuestion("q-ctw", "ctw")],
+    ctwSlots: [{
+      answer: "population",
+      display_text: "popul_____",
+      missing_text: "ation",
+      prefix: "popul",
+      question_id: "q-ctw",
+      slot_id: "slot-4"
+    }]
+  });
+  assert.equal(multiLetter[0].studentAnswer, "population");
+  assert.deepEqual(multiLetter[0].correctAnswer, {
+    kind: "ctw_word",
+    parts: [
+      { emphasized: false, text: "popul" },
+      { emphasized: true, text: "ation" }
+    ]
+  });
+});
+
+test("RAP insertion and sentence-selection summaries use their natural answer forms", () => {
+  const answers = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [
+      resultAnswer("insertion-answer", 2, false),
+      resultAnswer("sentence-answer", 3, false)
+    ],
+    correctionRows: [
+      {
+        answer_kind: "insertion_anchor",
+        attempt_answer_id: "insertion-answer",
+        is_correct: false,
+        question_id: "q-insertion",
+        question_time_seconds: 5,
+        slot_id: null,
+        student_answer: "anchor-1"
+      },
+      {
+        answer_kind: "sentence_selection",
+        attempt_answer_id: "sentence-answer",
+        is_correct: false,
+        question_id: "q-sentence",
+        question_time_seconds: 6,
+        slot_id: null,
+        student_answer: "sentence-1"
+      }
+    ],
+    questions: [
+      correctionQuestion("q-insertion", "rap_sentence_insertion", { correct_anchor_id: "anchor-3" }),
+      correctionQuestion("q-sentence", "rap_sentence_selection", { correct_sentence_id: "sentence-2" })
+    ],
+    anchors: [
+      { anchor_id: "anchor-1", anchor_order: 1, question_id: "q-insertion" },
+      { anchor_id: "anchor-3", anchor_order: 3, question_id: "q-insertion" }
+    ],
+    sentences: [
+      { sentence_id: "sentence-1", sentence_text: "The student's selected sentence." },
+      { sentence_id: "sentence-2", sentence_text: "The correct selected sentence." }
+    ]
+  });
+
+  assert.equal(answers[0].studentAnswer, "Position 1");
+  assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "Position 3" });
+  assert.equal(answers[1].studentAnswer, "The student's selected sentence.");
+  assert.deepEqual(answers[1].correctAnswer, { kind: "text", text: "The correct selected sentence." });
+});
+
+function resultAnswer(answerId, order, isCorrect) {
+  return {
+    answerId,
+    isAnswered: true,
+    isCorrect,
+    order,
+    questionId: `question-${order}`,
+    questionTimeSeconds: order
+  };
+}
+
+function correctionQuestion(questionId, questionType, overrides = {}) {
+  return {
+    correct_anchor_id: null,
+    correct_option_id: null,
+    correct_sentence_id: null,
+    question_id: questionId,
+    question_order: 1,
+    question_type: questionType,
+    ...overrides
+  };
+}
 
 test("BAS correction routes keep single-card practice inside today/history wrongbook modes", () => {
   const historyPage = fs.readFileSync(path.join(
