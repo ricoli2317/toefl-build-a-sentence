@@ -408,10 +408,17 @@ test("standard choice summaries continue past D using authoritative option order
 
 test("RDL and RAP correction reviews mark wrong choices orange and correct choices purple", () => {
   const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
-  const optionStateSource = practiceUi.slice(
-    practiceUi.indexOf("const optionClassName"),
-    practiceUi.indexOf("const radioClassName")
+  const choiceSource = practiceUi.slice(
+    practiceUi.indexOf("function ChoiceOptionList"),
+    practiceUi.indexOf("function ReadingQuestionNavigation")
   );
+  const optionTextStateStart = choiceSource.indexOf("const optionTextClassName");
+  const optionTextStateSource = choiceSource.slice(
+    optionTextStateStart,
+    choiceSource.indexOf("return (", optionTextStateStart)
+  );
+  const optionButtonSource = choiceSource.slice(choiceSource.indexOf("<button"), choiceSource.indexOf("</button>"));
+  const optionButtonClassName = optionButtonSource.match(/<button[\s\S]*?className="([^"]+)"/)?.[1] ?? "";
   const options = ["a", "b", "c", "d"].map((letter, index) => ({
     option_id: `option-${letter}`,
     option_order: index + 1,
@@ -475,13 +482,17 @@ test("RDL and RAP correction reviews mark wrong choices orange and correct choic
     assert.equal(readingCorrectionMarkState(unanswered[0], "choice", "option-b"), null);
   }
 
-  assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "choice", option\.optionId\)/);
-  assert.match(optionStateSource, /bg-student-primary font-bold text-white/);
-  assert.match(optionStateSource, /bg-student-error font-bold text-white/);
-  assert.doesNotMatch(optionStateSource, /\bborder(?:-|\b)/);
-  assert.doesNotMatch(optionStateSource, /line-through|decoration-2/);
-  assert.match(practiceUi, /correctionState \? "font-bold text-white" : "font-normal text-inherit"/);
-  assert.match(practiceUi, /data-correction-state=\{correctionState \?\? undefined\}/);
+  assert.match(choiceSource, /readingCorrectionMarkState\(reviewPresentation, "choice", option\.optionId\)/);
+  assert.match(optionTextStateSource, /rounded-sm bg-student-primary px-\[0\.12em\] font-bold text-white/);
+  assert.match(optionTextStateSource, /rounded-sm bg-student-error px-\[0\.12em\] font-bold text-white/);
+  assert.doesNotMatch(optionTextStateSource, /line-through|decoration-2/);
+  assert.match(choiceSource, /<span className=\{optionTextClassName\} data-option-text-state=\{correctionState \?\? undefined\}>\{option\.text\}<\/span>/);
+  assert.doesNotMatch(optionButtonClassName, /(?:^|\s)bg-student-(?:primary|error)(?:\s|$)/);
+  assert.match(optionButtonSource, /className="flex w-full items-start rounded-lg text-left font-normal text-student-text transition-colors hover:bg-student-primary-soft\/40/);
+  assert.match(optionButtonSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
+  assert.match(optionButtonSource, /selected \? "border-student-primary" : "border-student-muted"/);
+  assert.match(optionButtonSource, /selected \? <span className="rounded-full bg-student-primary" style=\{readingRadioDotStyle\} \/> : null/);
+  assert.match(choiceSource, /style=\{readingChoiceListStyle\}/);
 });
 
 test("Reading homepage item links keep the complete correction lifecycle and reachable Submit", () => {

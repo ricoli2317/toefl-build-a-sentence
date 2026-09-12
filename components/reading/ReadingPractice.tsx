@@ -2166,23 +2166,15 @@ function ChoiceOptionList({
         const correctionState = readOnly
           ? readingCorrectionMarkState(reviewPresentation, "choice", option.optionId)
           : null;
-        const optionClassName = correctionState === "correct"
-          ? "bg-student-primary font-bold text-white"
+        const optionTextClassName = correctionState === "correct"
+          ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
           : correctionState === "incorrect"
-            ? "bg-student-error font-bold text-white"
-            : "text-student-text";
-        const radioClassName = correctionState === "incorrect"
-          ? "border-student-error"
-          : selected || correctionState === "correct"
-            ? "border-student-primary"
-            : "border-student-muted";
-        const radioDotClassName = correctionState === "incorrect"
-          ? "bg-student-error"
-          : "bg-student-primary";
+            ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white"
+            : "font-normal text-inherit";
         return (
           <button
             aria-checked={selected}
-            className={`flex w-full items-start rounded-lg text-left font-normal transition-colors hover:bg-student-primary-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary ${optionClassName}`}
+            className="flex w-full items-start rounded-lg text-left font-normal text-student-text transition-colors hover:bg-student-primary-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary"
             data-correction-state={correctionState ?? undefined}
             disabled={readOnly}
             key={option.optionId}
@@ -2193,16 +2185,12 @@ function ChoiceOptionList({
           >
             <span
               aria-hidden="true"
-              className={`flex shrink-0 items-center justify-center rounded-full border-solid ${radioClassName}`}
+              className={`flex shrink-0 items-center justify-center rounded-full border-solid ${selected ? "border-student-primary" : "border-student-muted"}`}
               style={readingRadioStyle}
             >
-              {selected || correctionState === "correct" ? (
-                <span className={`rounded-full ${radioDotClassName}`} style={readingRadioDotStyle} />
-              ) : null}
+              {selected ? <span className="rounded-full bg-student-primary" style={readingRadioDotStyle} /> : null}
             </span>
-            <span className={correctionState ? "font-bold text-white" : "font-normal text-inherit"}>
-              {option.text}
-            </span>
+            <span className={optionTextClassName} data-option-text-state={correctionState ?? undefined}>{option.text}</span>
           </button>
         );
       })}
