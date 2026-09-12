@@ -120,14 +120,13 @@ test("sentence insertion uses inline purple square markers and keeps the inserte
     insertionSource.indexOf("<RapInsertionMarker />")
   );
   const markerClassName = markerButtonSource.match(/className="([^"]*)"/)?.[1];
-  const insertedSentenceClassName = insertionSource.match(/<strong className="([^"]*)" data-testid="rap-inserted-sentence">/)?.[1];
 
   assert.equal(markerClassName, "mx-[0.3em] inline align-baseline leading-[inherit] text-student-primary");
   assert.doesNotMatch(markerClassName, /(?:^|[:\s])(?:border|outline|ring|shadow)(?:-|$)/);
   assert.match(markerButtonSource, /style=\{rapFramelessInteractionStyle\}/);
   assert.match(insertionSource, /<RapInsertionMarker \/>/);
-  assert.equal(insertedSentenceClassName, "font-bold");
-  assert.doesNotMatch(insertedSentenceClassName, /(?:^|[:\s])(?:border|outline|ring|shadow)(?:-|$)/);
+  assert.match(insertionSource, /: "font-bold"/);
+  assert.match(insertionSource, /const inserted = selected \|\| correctionState !== null/);
   assert.equal((insertionSource.match(/style=\{rapFramelessInteractionStyle\}/g) ?? []).length, 2);
   assert.doesNotMatch(insertionSource, /◆|inline-flex|h-6 w-6/);
   assert.match(source, /data-testid="rap-insertion-marker">■<\/span>/);
@@ -177,7 +176,7 @@ test("sentence selection remains one inline paragraph flow and only the selected
   assert.doesNotMatch(renderSentenceSource, /<button[\s\S]*?data-testid="rap-selectable-sentence"/);
   assert.doesNotMatch(selectableClassName, /(?:^|[:\s])(?:border|outline|ring|shadow)(?:-|$)/);
   assert.match(renderSentenceSource, /style=\{rapFramelessInteractionStyle\}/);
-  assert.match(renderSentenceSource, /selected \? "font-bold" : "font-normal"/);
+  assert.match(renderSentenceSource, /: selected[\s\S]*\? "font-bold text-inherit"[\s\S]*: "font-normal text-inherit"/);
   assert.match(source, /onAnswerChange\(question\.questionId, \{ kind: "sentence_selection", sentenceId: sentence\.sentenceId \}\)/);
   assert.match(rapSource, /<p[\s\S]*?paragraph\.sentences\.map[\s\S]*?<\/p>/);
   assert.match(rapSource, /className="font-bold text-student-text" data-testid="rap-sentence-selection-instructions"/);

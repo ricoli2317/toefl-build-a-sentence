@@ -105,7 +105,7 @@ export async function GET(
       .order("anchor_order", { ascending: true }),
     sentenceIds.length
       ? db.from("reading_passage_sentences")
-          .select("sentence_id,sentence_text")
+          .select("sentence_id,sentence_order,sentence_text")
           .in("sentence_id", sentenceIds)
       : Promise.resolve({ data: [], error: null })
   ]);

@@ -11,7 +11,8 @@ const {
   buildReadingWrongbookInitialAnswers
 } = require("../lib/reading/wrongbook.ts");
 const {
-  buildReadingCorrectionResultAnswers
+  buildReadingCorrectionResultAnswers,
+  readingCorrectionMarkState
 } = require("../lib/reading/correctionResult.ts");
 
 const projectRoot = path.resolve(__dirname, "..");
@@ -405,6 +406,77 @@ test("standard choice summaries continue past D using authoritative option order
   assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "F" });
 });
 
+test("RDL and RAP correction reviews mark wrong choices orange and correct choices purple", () => {
+  const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  const options = ["a", "b", "c", "d"].map((letter, index) => ({
+    option_id: `option-${letter}`,
+    option_order: index + 1,
+    option_text: `Option ${letter.toUpperCase()}`,
+    question_id: "q-choice"
+  }));
+
+  for (const questionType of ["rdl", "rap_multiple_choice"]) {
+    const wrong = buildReadingCorrectionResultAnswers({
+      allResultAnswers: [resultAnswer("choice-wrong", 1, false)],
+      correctionRows: [{
+        answer_kind: "option",
+        attempt_answer_id: "choice-wrong",
+        is_correct: false,
+        question_id: "q-choice",
+        question_time_seconds: 4,
+        slot_id: null,
+        student_answer: "option-b"
+      }],
+      questions: [correctionQuestion("q-choice", questionType, { correct_option_id: "option-d" })],
+      options
+    });
+    assert.equal(wrong[0].studentAnswer, "B");
+    assert.deepEqual(wrong[0].correctAnswer, { kind: "text", text: "D" });
+    assert.equal(readingCorrectionMarkState(wrong[0], "choice", "option-b"), "incorrect");
+    assert.equal(readingCorrectionMarkState(wrong[0], "choice", "option-d"), "correct");
+
+    const correct = buildReadingCorrectionResultAnswers({
+      allResultAnswers: [resultAnswer("choice-correct", 1, true)],
+      correctionRows: [{
+        answer_kind: "option",
+        attempt_answer_id: "choice-correct",
+        is_correct: true,
+        question_id: "q-choice",
+        question_time_seconds: 3,
+        slot_id: null,
+        student_answer: "option-d"
+      }],
+      questions: [correctionQuestion("q-choice", questionType, { correct_option_id: "option-d" })],
+      options
+    });
+    assert.equal(readingCorrectionMarkState(correct[0], "choice", "option-d"), "correct");
+    assert.equal(readingCorrectionMarkState(correct[0], "choice", "option-b"), null);
+
+    const unanswered = buildReadingCorrectionResultAnswers({
+      allResultAnswers: [{ ...resultAnswer("choice-unanswered", 1, false), isAnswered: false }],
+      correctionRows: [{
+        answer_kind: "option",
+        attempt_answer_id: "choice-unanswered",
+        is_correct: false,
+        question_id: "q-choice",
+        question_time_seconds: 1,
+        slot_id: null,
+        student_answer: null
+      }],
+      questions: [correctionQuestion("q-choice", questionType, { correct_option_id: "option-d" })],
+      options
+    });
+    assert.equal(unanswered[0].studentAnswer, "未作答");
+    assert.equal(readingCorrectionMarkState(unanswered[0], "choice", "option-d"), "correct");
+    assert.equal(readingCorrectionMarkState(unanswered[0], "choice", "option-b"), null);
+  }
+
+  assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "choice", option\.optionId\)/);
+  assert.match(practiceUi, /border-student-primary-border bg-student-primary-soft text-student-primary/);
+  assert.match(practiceUi, /border-student-error-border bg-student-error-soft text-student-error/);
+  assert.match(practiceUi, /data-correction-state=\{correctionState \?\? undefined\}/);
+});
+
 test("Reading homepage item links keep the complete correction lifecycle and reachable Submit", () => {
   const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
   const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
@@ -523,15 +595,64 @@ test("RAP insertion and sentence-selection summaries use their natural answer fo
       { anchor_id: "anchor-3", anchor_order: 3, question_id: "q-insertion" }
     ],
     sentences: [
-      { sentence_id: "sentence-1", sentence_text: "The student's selected sentence." },
-      { sentence_id: "sentence-2", sentence_text: "The correct selected sentence." }
+      { sentence_id: "sentence-1", sentence_order: 1, sentence_text: "The student's selected sentence." },
+      { sentence_id: "sentence-2", sentence_order: 2, sentence_text: "The correct selected sentence." }
     ]
   });
 
   assert.equal(answers[0].studentAnswer, "Position 1");
   assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "Position 3" });
-  assert.equal(answers[1].studentAnswer, "The student's selected sentence.");
-  assert.deepEqual(answers[1].correctAnswer, { kind: "text", text: "The correct selected sentence." });
+  assert.equal(answers[1].studentAnswer, "Sentence 1");
+  assert.deepEqual(answers[1].correctAnswer, { kind: "text", text: "Sentence 2" });
+  assert.equal(readingCorrectionMarkState(answers[0], "insertion", "anchor-1"), "incorrect");
+  assert.equal(readingCorrectionMarkState(answers[0], "insertion", "anchor-3"), "correct");
+  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-1"), "incorrect");
+  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-3"), null);
+  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-2"), "correct");
+
+  const correctInsertion = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("correct-insertion", 1, true)],
+    correctionRows: [{
+      answer_kind: "insertion_anchor",
+      attempt_answer_id: "correct-insertion",
+      is_correct: true,
+      question_id: "q-insertion",
+      question_time_seconds: 2,
+      slot_id: null,
+      student_answer: "anchor-2"
+    }],
+    questions: [correctionQuestion("q-insertion", "rap_sentence_insertion", { correct_anchor_id: "anchor-2" })],
+    anchors: [
+      { anchor_id: "anchor-1", anchor_order: 1, question_id: "q-insertion" },
+      { anchor_id: "anchor-2", anchor_order: 2, question_id: "q-insertion" }
+    ]
+  });
+  assert.equal(readingCorrectionMarkState(correctInsertion[0], "insertion", "anchor-2"), "correct");
+  assert.equal(readingCorrectionMarkState(correctInsertion[0], "insertion", "anchor-1"), null);
+
+  const correctSelection = buildReadingCorrectionResultAnswers({
+    allResultAnswers: [resultAnswer("correct-selection", 1, true)],
+    correctionRows: [{
+      answer_kind: "sentence_selection",
+      attempt_answer_id: "correct-selection",
+      is_correct: true,
+      question_id: "q-sentence",
+      question_time_seconds: 2,
+      slot_id: null,
+      student_answer: "sentence-2"
+    }],
+    questions: [correctionQuestion("q-sentence", "rap_sentence_selection", { correct_sentence_id: "sentence-2" })],
+    sentences: [{ sentence_id: "sentence-2", sentence_order: 2, sentence_text: "The correct selected sentence." }]
+  });
+  assert.equal(readingCorrectionMarkState(correctSelection[0], "sentence_selection", "sentence-2"), "correct");
+  assert.equal(readingCorrectionMarkState(correctSelection[0], "sentence_selection", "sentence-1"), null);
+  assert.equal(readingCorrectionMarkState(correctSelection[0], "choice", "sentence-2"), null);
+
+  const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "insertion", anchor\.anchorId\)/);
+  assert.match(practiceUi, /bg-student-error[^\n]*line-through decoration-2/);
+  assert.match(practiceUi, /data-strikethrough=\{correctionState === "incorrect" \? "true" : undefined\}/);
+  assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "sentence_selection", sentence\.sentenceId\)/);
 });
 
 function resultAnswer(answerId, order, isCorrect) {

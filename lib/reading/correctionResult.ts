@@ -26,8 +26,17 @@ export type ReadingCorrectionResultPayload = Omit<ReadingResultPayload, "answers
 
 export type ReadingCorrectionAnswerPresentation = {
   correctAnswer: ReadingCorrectionAnswerDisplay;
+  reviewState?: ReadingCorrectionReviewState;
   studentAnswer: string;
 };
+
+export type ReadingCorrectionReviewState = {
+  correctAnswerId: string;
+  kind: "choice" | "insertion" | "sentence_selection";
+  studentAnswerId: string | null;
+};
+
+export type ReadingCorrectionMarkState = "correct" | "incorrect" | null;
 
 export type ReadingCorrectionQuestionRow = ReadingQuestionResultRow & {
   correct_anchor_id: string | null;
@@ -59,6 +68,7 @@ export type ReadingCorrectionAnchorRow = {
 
 export type ReadingCorrectionSentenceRow = {
   sentence_id: string;
+  sentence_order: number;
   sentence_text: string;
 };
 
@@ -83,7 +93,7 @@ export function buildReadingCorrectionAnswerPresentations(
   const anchorsByQuestion = groupBy(input.anchors ?? [], (anchor) => anchor.question_id);
   const sentenceById = new Map((input.sentences ?? []).map((sentence) => [
     sentence.sentence_id,
-    sentence.sentence_text
+    sentence
   ]));
 
   return Object.fromEntries(input.correctionRows.map((row) => {
@@ -92,6 +102,7 @@ export function buildReadingCorrectionAnswerPresentations(
 
     let studentAnswer = "";
     let correctAnswer: ReadingCorrectionAnswerDisplay;
+    let reviewState: ReadingCorrectionReviewState | undefined;
     if (row.answer_kind === "ctw_slot" && row.slot_id) {
       const slot = slotById.get(`${row.question_id}:${row.slot_id}`);
       if (!slot) throw new Error("READING_CORRECTION_RESULT_CTW_SLOT_MISSING");
@@ -109,6 +120,11 @@ export function buildReadingCorrectionAnswerPresentations(
         kind: "text",
         text: formatChoiceAnswer(options, question.correct_option_id)
       };
+      reviewState = {
+        correctAnswerId: question.correct_option_id,
+        kind: "choice",
+        studentAnswerId: row.student_answer
+      };
     } else if (row.answer_kind === "insertion_anchor") {
       const anchors = anchorsByQuestion.get(row.question_id) ?? [];
       if (!question.correct_anchor_id) throw new Error("READING_CORRECTION_RESULT_ANCHOR_KEY_MISSING");
@@ -119,25 +135,47 @@ export function buildReadingCorrectionAnswerPresentations(
         kind: "text",
         text: formatInsertionAnswer(anchors, question.correct_anchor_id)
       };
+      reviewState = {
+        correctAnswerId: question.correct_anchor_id,
+        kind: "insertion",
+        studentAnswerId: row.student_answer
+      };
     } else if (row.answer_kind === "sentence_selection") {
       if (!question.correct_sentence_id) throw new Error("READING_CORRECTION_RESULT_SENTENCE_KEY_MISSING");
       studentAnswer = row.student_answer
-        ? requiredMapValue(sentenceById, row.student_answer, "READING_CORRECTION_RESULT_STUDENT_SENTENCE_MISSING")
+        ? formatSentenceAnswer(sentenceById, row.student_answer, "READING_CORRECTION_RESULT_STUDENT_SENTENCE_MISSING")
         : "未作答";
       correctAnswer = {
         kind: "text",
-        text: requiredMapValue(
+        text: formatSentenceAnswer(
           sentenceById,
           question.correct_sentence_id,
           "READING_CORRECTION_RESULT_CORRECT_SENTENCE_MISSING"
         )
       };
+      reviewState = {
+        correctAnswerId: question.correct_sentence_id,
+        kind: "sentence_selection",
+        studentAnswerId: row.student_answer
+      };
     } else {
       throw new Error("READING_CORRECTION_RESULT_ANSWER_KIND_INVALID");
     }
 
-    return [row.attempt_answer_id, { correctAnswer, studentAnswer }];
+    return [row.attempt_answer_id, { correctAnswer, reviewState, studentAnswer }];
   }));
+}
+
+export function readingCorrectionMarkState(
+  presentation: ReadingCorrectionAnswerPresentation | undefined,
+  kind: ReadingCorrectionReviewState["kind"],
+  answerId: string
+): ReadingCorrectionMarkState {
+  const state = presentation?.reviewState;
+  if (!state || state.kind !== kind) return null;
+  if (answerId === state.correctAnswerId) return "correct";
+  if (answerId === state.studentAnswerId) return "incorrect";
+  return null;
 }
 
 export function buildReadingCorrectionResultAnswers(
@@ -174,6 +212,15 @@ function formatInsertionAnswer(anchors: ReadingCorrectionAnchorRow[], anchorId: 
   const anchor = anchors.find((candidate) => candidate.anchor_id === anchorId);
   if (!anchor) throw new Error("READING_CORRECTION_RESULT_ANCHOR_MISSING");
   return `Position ${anchor.anchor_order}`;
+}
+
+function formatSentenceAnswer(
+  sentences: Map<string, ReadingCorrectionSentenceRow>,
+  sentenceId: string,
+  missingCode: string
+) {
+  const sentence = requiredMapValue(sentences, sentenceId, missingCode);
+  return `Sentence ${sentence.sentence_order}`;
 }
 
 function buildCtwStudentWord(displayText: string, prefix: string, studentMissingText: string) {
@@ -251,8 +298,8 @@ function groupBy<T>(values: T[], keyFor: (value: T) => string) {
   return groups;
 }
 
-function requiredMapValue(map: Map<string, string>, key: string, errorCode: string) {
+function requiredMapValue<T>(map: Map<string, T>, key: string, errorCode: string) {
   const value = map.get(key);
-  if (!value) throw new Error(errorCode);
+  if (value === undefined) throw new Error(errorCode);
   return value;
 }

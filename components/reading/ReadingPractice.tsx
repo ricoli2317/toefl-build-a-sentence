@@ -90,7 +90,10 @@ import type {
   SubmittedReadingReviewItem,
   SubmittedReadingReviewPayload
 } from "@/lib/reading/review";
-import type { ReadingCorrectionAnswerPresentation } from "@/lib/reading/correctionResult";
+import {
+  readingCorrectionMarkState,
+  type ReadingCorrectionAnswerPresentation
+} from "@/lib/reading/correctionResult";
 import {
   findReadingFullSetReviewIndex,
   readingFullSetReviewItemLabel,
@@ -770,6 +773,9 @@ export function ReadingPracticeShell({
             onAnswerChange={updateAnswer}
             practice={practice}
             readOnly={readOnly}
+            reviewPresentation={readOnly && currentReviewItem
+              ? reviewDisclosures[currentReviewItem.answerId]
+              : undefined}
             reviewItems={reviewItems.filter((item) => item.questionId === currentQuestion.questionId)}
             selectedReviewItem={currentReviewItem}
           />
@@ -865,6 +871,7 @@ export function ReadingWorkspaceRouter({
   onAnswerChange,
   practice,
   readOnly,
+  reviewPresentation,
   reviewItems = [],
   selectedReviewItem = null
 }: {
@@ -876,6 +883,7 @@ export function ReadingWorkspaceRouter({
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   practice: StudentReadingPracticePayload;
   readOnly: boolean;
+  reviewPresentation?: ReadingCorrectionAnswerPresentation;
   reviewItems?: SubmittedReadingReviewItem[];
   selectedReviewItem?: SubmittedReadingReviewItem | null;
 }) {
@@ -903,6 +911,7 @@ export function ReadingWorkspaceRouter({
         onAnswerChange={onAnswerChange}
         question={currentQuestion}
         readOnly={readOnly}
+        reviewPresentation={reviewPresentation}
       />
     );
   }
@@ -916,6 +925,7 @@ export function ReadingWorkspaceRouter({
         passage={practice.passage}
         question={currentQuestion as StudentRapQuestion}
         readOnly={readOnly}
+        reviewPresentation={reviewPresentation}
       />
     );
   }
@@ -1440,7 +1450,8 @@ function RdlPracticeWorkspace({
   material,
   onAnswerChange,
   question,
-  readOnly
+  readOnly,
+  reviewPresentation
 }: {
   answer: ReadingAnswer | undefined;
   lookupEnabled: boolean;
@@ -1449,6 +1460,7 @@ function RdlPracticeWorkspace({
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   question: StudentRdlQuestion;
   readOnly: boolean;
+  reviewPresentation?: ReadingCorrectionAnswerPresentation;
 }) {
   const [assetStatus, setAssetStatus] = useState<"loading" | "ready" | "error">("loading");
   const [selectionMap, setSelectionMap] = useState<RdlSelectionMap | null>(null);
@@ -1770,6 +1782,7 @@ function RdlPracticeWorkspace({
           onSelect={(optionId) => onAnswerChange(question.questionId, { kind: "choice", optionId })}
           options={question.options}
           readOnly={readOnly}
+          reviewPresentation={reviewPresentation}
           selectedOptionId={selectedOptionId}
         />
       </ReadingQuestionColumn>
@@ -1805,7 +1818,8 @@ function RapPracticeWorkspace({
   onAnswerChange,
   passage,
   question,
-  readOnly
+  readOnly,
+  reviewPresentation
 }: {
   answer: ReadingAnswer | undefined;
   lookupEnabled: boolean;
@@ -1814,6 +1828,7 @@ function RapPracticeWorkspace({
   passage: NonNullable<StudentReadingPracticePayload["passage"]>;
   question: StudentRapQuestion;
   readOnly: boolean;
+  reviewPresentation?: ReadingCorrectionAnswerPresentation;
 }) {
   const orderedParagraphs = useMemo(
     () => [...passage.paragraphs]
@@ -1871,12 +1886,21 @@ function RapPracticeWorkspace({
     const anchor = insertionAnchorAtBoundary(insertionValidation, paragraphId, boundaryIndex);
     if (!anchor) return null;
     const selected = anchor.anchorId === selectedAnchorId;
+    const correctionState = readOnly
+      ? readingCorrectionMarkState(reviewPresentation, "insertion", anchor.anchorId)
+      : null;
+    const inserted = selected || correctionState !== null;
+    const insertedClassName = correctionState === "correct"
+      ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
+      : correctionState === "incorrect"
+        ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white line-through decoration-2"
+        : "font-bold";
     return (
       <Fragment key={`boundary:${paragraphId}:${boundaryIndex}`}>
-        {selected ? (
+        {inserted ? (
           <>
             <button
-              aria-checked="true"
+              aria-checked={selected}
               aria-label={`Insertion position ${anchor.anchorOrder} of 4`}
               className="sr-only"
               data-anchor-order={anchor.anchorOrder}
@@ -1888,7 +1912,14 @@ function RapPracticeWorkspace({
               type="button"
             />
             {boundaryIndex > 0 ? " " : null}
-            <strong className="font-bold" data-testid="rap-inserted-sentence">{question.insertSentence}</strong>{" "}
+            <strong
+              className={insertedClassName}
+              data-correction-state={correctionState ?? undefined}
+              data-strikethrough={correctionState === "incorrect" ? "true" : undefined}
+              data-testid="rap-inserted-sentence"
+            >
+              {question.insertSentence}
+            </strong>{" "}
           </>
         ) : (
           <button
@@ -1923,11 +1954,22 @@ function RapPracticeWorkspace({
       && sentenceTargetValidation !== null
       && isRapSentenceSelectable(sentenceTargetValidation, paragraph.paragraphId, sentence.sentenceId);
     const selected = selectable && sentence.sentenceId === selectedSentenceId;
+    const correctionState = selectable && readOnly
+      ? readingCorrectionMarkState(reviewPresentation, "sentence_selection", sentence.sentenceId)
+      : null;
+    const sentenceClassName = correctionState === "correct"
+      ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
+      : correctionState === "incorrect"
+        ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white"
+        : selected
+          ? "font-bold text-inherit"
+          : "font-normal text-inherit";
     if (selectable) {
       return (
         <span
           aria-checked={selected}
-          className={`inline cursor-pointer leading-[inherit] text-inherit ${selected ? "font-bold" : "font-normal"}`}
+          className={`inline cursor-pointer leading-[inherit] ${sentenceClassName}`}
+          data-correction-state={correctionState ?? undefined}
           data-sentence-id={sentence.sentenceId}
           data-sentence-order={sentence.sentenceOrder}
           data-testid="rap-selectable-sentence"
@@ -2020,6 +2062,7 @@ function RapPracticeWorkspace({
               onSelect={(optionId) => onAnswerChange(question.questionId, { kind: "choice", optionId })}
               options={question.options}
               readOnly={readOnly}
+              reviewPresentation={reviewPresentation}
               selectedOptionId={selectedOptionId}
             />
           </>
@@ -2101,12 +2144,14 @@ function ChoiceOptionList({
   onSelect,
   options,
   readOnly,
+  reviewPresentation,
   selectedOptionId
 }: {
   labelledBy: string;
   onSelect: (optionId: string) => void;
   options: StudentChoiceOption[];
   readOnly: boolean;
+  reviewPresentation?: ReadingCorrectionAnswerPresentation;
   selectedOptionId: string | null;
 }) {
   const orderedOptions = useMemo(
@@ -2118,10 +2163,27 @@ function ChoiceOptionList({
     <div aria-labelledby={labelledBy} className="flex flex-col" data-testid="reading-choice-options" role="radiogroup" style={readingChoiceListStyle}>
       {orderedOptions.map((option) => {
         const selected = selectedOptionId === option.optionId;
+        const correctionState = readOnly
+          ? readingCorrectionMarkState(reviewPresentation, "choice", option.optionId)
+          : null;
+        const optionClassName = correctionState === "correct"
+          ? "border border-student-primary-border bg-student-primary-soft text-student-primary"
+          : correctionState === "incorrect"
+            ? "border border-student-error-border bg-student-error-soft text-student-error"
+            : "border border-transparent text-student-text";
+        const radioClassName = correctionState === "incorrect"
+          ? "border-student-error"
+          : selected || correctionState === "correct"
+            ? "border-student-primary"
+            : "border-student-muted";
+        const radioDotClassName = correctionState === "incorrect"
+          ? "bg-student-error"
+          : "bg-student-primary";
         return (
           <button
             aria-checked={selected}
-            className="flex w-full items-start rounded-lg text-left font-normal text-student-text transition-colors hover:bg-student-primary-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary"
+            className={`flex w-full items-start rounded-lg text-left font-normal transition-colors hover:bg-student-primary-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary ${optionClassName}`}
+            data-correction-state={correctionState ?? undefined}
             disabled={readOnly}
             key={option.optionId}
             onClick={readOnly ? undefined : () => onSelect(option.optionId)}
@@ -2131,12 +2193,14 @@ function ChoiceOptionList({
           >
             <span
               aria-hidden="true"
-              className={`flex shrink-0 items-center justify-center rounded-full border-solid ${selected ? "border-student-primary" : "border-student-muted"}`}
+              className={`flex shrink-0 items-center justify-center rounded-full border-solid ${radioClassName}`}
               style={readingRadioStyle}
             >
-              {selected ? <span className="rounded-full bg-student-primary" style={readingRadioDotStyle} /> : null}
+              {selected || correctionState === "correct" ? (
+                <span className={`rounded-full ${radioDotClassName}`} style={readingRadioDotStyle} />
+              ) : null}
             </span>
-            <span className="font-normal">{option.text}</span>
+            <span className="font-normal text-inherit">{option.text}</span>
           </button>
         );
       })}

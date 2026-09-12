@@ -139,7 +139,7 @@ async function loadDisclosures(db: ReturnType<typeof createServiceSupabase>, row
       .map((row) => row.student_answer)
   ].filter((value): value is string => Boolean(value))));
   const sentenceResult = sentenceIds.length
-    ? await db.from("reading_passage_sentences").select("sentence_id,sentence_text").in("sentence_id", sentenceIds)
+    ? await db.from("reading_passage_sentences").select("sentence_id,sentence_order,sentence_text").in("sentence_id", sentenceIds)
     : { data: [], error: null };
   if (sentenceResult.error) throw new Error(sentenceResult.error.message);
 
