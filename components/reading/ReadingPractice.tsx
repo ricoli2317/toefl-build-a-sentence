@@ -1945,11 +1945,6 @@ function RapPracticeWorkspace({
     paragraph: (typeof orderedParagraphs)[number],
     sentence: (typeof orderedParagraphs)[number]["sentences"][number]
   ) => {
-    const highlightedText = renderRapHighlightedText(
-      sentence.text,
-      sentenceStartOffsets.get(sentence.sentenceId) ?? 0,
-      visibleHighlightRanges.filter((range) => range.paragraphId === paragraph.paragraphId)
-    );
     const selectable = question.questionType === "rap_sentence_selection"
       && sentenceTargetValidation !== null
       && isRapSentenceSelectable(sentenceTargetValidation, paragraph.paragraphId, sentence.sentenceId);
@@ -1957,6 +1952,13 @@ function RapPracticeWorkspace({
     const correctionState = selectable && readOnly
       ? readingCorrectionMarkState(reviewPresentation, "sentence_selection", sentence.sentenceId)
       : null;
+    const highlightedText = correctionState
+      ? sentence.text
+      : renderRapHighlightedText(
+          sentence.text,
+          sentenceStartOffsets.get(sentence.sentenceId) ?? 0,
+          visibleHighlightRanges.filter((range) => range.paragraphId === paragraph.paragraphId)
+        );
     const sentenceClassName = correctionState === "correct"
       ? "font-bold text-student-primary"
       : correctionState === "incorrect"

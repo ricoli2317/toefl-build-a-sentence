@@ -185,6 +185,7 @@ test("sentence selection keeps active interaction frameless and makes readonly t
   assert.match(renderSentenceSource, /font-bold text-student-primary/);
   assert.match(renderSentenceSource, /font-bold text-student-error/);
   assert.doesNotMatch(renderSentenceSource, /bg-student-(?:primary|error)|text-white/);
+  assert.match(renderSentenceSource, /const highlightedText = correctionState[\s\S]*\? sentence\.text[\s\S]*: renderRapHighlightedText/);
   assert.doesNotMatch(renderSentenceSource, /line-through|decoration-2/);
   assert.match(renderSentenceSource, /: selected[\s\S]*\? "font-bold text-inherit"[\s\S]*: "font-normal text-inherit"/);
   assert.match(source, /onAnswerChange\(question\.questionId, \{ kind: "sentence_selection", sentenceId: sentence\.sentenceId \}\)/);
