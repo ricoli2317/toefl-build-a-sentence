@@ -21,7 +21,11 @@ import {
   type ReadingWrongbookPreservedAnswer,
   type ReadingWrongbookScope
 } from "@/lib/reading/wrongbook";
-import type { ReadingFullSetWrongbookTarget } from "@/lib/wrongQuestions";
+import {
+  buildReadingFullSetWrongbookProgress,
+  readingFullSetWrongbookProgressLabel,
+  type ReadingFullSetWrongbookTarget
+} from "@/lib/wrongQuestions";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { useStudentDataCache, STUDENT_WRONG_QUESTIONS_CACHE_PREFIX } from "@/components/StudentDataCache";
 import { ReadingWorkspaceRouter, readingTwoColumnScaleStyle } from "./ReadingPractice";
@@ -33,7 +37,9 @@ type LoadedOccurrence = {
   targets: ReadingFullSetWrongbookTarget[];
 };
 
-type Step = { occurrenceIndex: number; questionId: string };
+type Step = ReturnType<typeof buildReadingFullSetWrongbookProgress>["screens"][number] & {
+  occurrenceIndex: number;
+};
 
 export function ReadingFullSetWrongbookPractice({
   scope,
@@ -142,11 +148,14 @@ export function ReadingFullSetWrongbookPractice({
     return () => { cancelled = true; };
   }, [scope, sourceAttemptId, todayRange.end, todayRange.start]);
 
-  const steps = useMemo(() => occurrences.flatMap((occurrence, occurrenceIndex): Step[] =>
-    occurrence.practice.item.module === "ctw"
-      ? [{ occurrenceIndex, questionId: occurrence.practice.questions[0]?.questionId ?? "" }]
-      : occurrence.practice.questions.map((question) => ({ occurrenceIndex, questionId: question.questionId }))
-  ).filter((step) => step.questionId), [occurrences]);
+  const progress = useMemo(
+    () => buildReadingFullSetWrongbookProgress(attempt?.targets ?? []),
+    [attempt?.targets]
+  );
+  const steps = useMemo(() => progress.screens.flatMap((screen): Step[] => {
+    const occurrenceIndex = occurrences.findIndex((occurrence) => occurrence.occurrenceId === screen.occurrenceId);
+    return occurrenceIndex >= 0 ? [{ ...screen, occurrenceIndex }] : [];
+  }), [occurrences, progress.screens]);
   const step = steps[stepIndex];
   const current = step ? occurrences[step.occurrenceIndex] : null;
   const currentQuestion = current?.practice.questions.find((question) => question.questionId === step?.questionId);
@@ -243,7 +252,7 @@ export function ReadingFullSetWrongbookPractice({
       </header>
       <main className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
         style={current.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}>
-        <p className="mb-3 text-center text-sm font-bold text-student-muted">第 {stepIndex + 1} / {steps.length} 题 · Module {current.targets[0]?.moduleNumber}</p>
+        <p className="mb-3 text-center text-sm font-bold text-student-muted">{readingFullSetWrongbookProgressLabel(step, progress.wrongQuestionCount)} · Module {current.targets[0]?.moduleNumber}</p>
         <section className={current.practice.item.module === "ctw"
           ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
           : "flex flex-1 flex-col bg-white"}>

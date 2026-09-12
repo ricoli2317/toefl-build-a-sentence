@@ -281,15 +281,26 @@ test("RDL logical semantics ignore storage path representations after exact cano
   }
 });
 
-test("RDL same material with a different question set is possible duplicate, not semantic reuse", async () => {
+test("RDL same material reuses canonical questions despite substantive source differences", async () => {
   const historical = packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   const incoming = incomingVariant(historical, (candidate) => {
     candidate.questions[0].stem = "A substantively different question?";
+    const question = candidate.questions[0];
+    question.payload.correctOptionId = question.payload.options.find(
+      (option) => option.optionId !== question.payload.correctOptionId
+    ).optionId;
   });
   const { prepared } = await historicalMatch(historical, incoming);
-  assert.equal(prepared.reuseKind, "new");
+  assert.equal(prepared.reuseKind, "semantic");
   assert.equal(prepared.materialMatchKind, "exact_material");
-  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+  assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
+  assert.equal(
+    prepared.packageData.questions[0].payload.correctOptionId,
+    historical.questions[0].payload.correctOptionId
+  );
+  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
 test("RDL unresolved material similarity remains possible material duplicate and never auto-merges", async () => {
@@ -399,7 +410,7 @@ test("RAP option-order-only and correct-letter-only changes reuse historical pas
   assert.equal(buildReadingImportRows(prepared.packageData).reading_logical_items[0].dedup_fingerprint, historical.item.dedupFingerprint);
 });
 
-test("RAP internal passage/anchor IDs do not affect semantics, but different questions do", async () => {
+test("RAP internal IDs and source-question differences do not split one passage", async () => {
   const historical = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
   const idVariant = structuredClone(historical);
   const insertion = idVariant.questions.find((question) => question.questionType === "rap_sentence_insertion");
@@ -413,11 +424,26 @@ test("RAP internal passage/anchor IDs do not affect semantics, but different que
     candidate.questions[0].stem = "A different academic question?";
   });
   const { prepared } = await historicalMatch(historical, incoming);
-  assert.equal(prepared.reuseKind, "new");
-  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+  assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
+  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
-test("same occurrence with semantically changed content remains a fail-safe conflict", async () => {
+test("RAP identity ignores title when the actual passage is unchanged", async () => {
+  const historical = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.title = "A Completely Different Display Title";
+    candidate.passages[0].title = "A Completely Different Display Title";
+  });
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(historical, incoming), true);
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+});
+
+test("same RAP occurrence with changed source questions keeps canonical content", async () => {
   const historical = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
   const incoming = incomingVariant(historical, (candidate) => {
     candidate.sourceOccurrenceId = historical.occurrences[0].occurrenceId;
@@ -428,10 +454,13 @@ test("same occurrence with semantically changed content remains a fail-safe conf
   const [prepared] = await prepareReadingPackagesForImport(database, [incoming], {
     enableHistoricalSemanticFallback: true
   });
-  assert.match(prepared.occurrenceConflict, /refusing to rebind/);
+  assert.equal(prepared.occurrenceConflict, null);
+  assert.equal(prepared.addedOccurrenceCount, 0);
+  assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
+  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
 });
 
-test("semantic variants in one CSV coalesce before import, while conflicting shared occurrences fail", async () => {
+test("same-material variants in one CSV coalesce and preserve the earliest canonical questions", async () => {
   const first = packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   const optionOrderVariant = incomingVariant(first, (candidate) => {
     for (const question of candidate.questions) {
@@ -451,13 +480,16 @@ test("semantic variants in one CSV coalesce before import, while conflicting sha
     candidate.sourceOccurrenceId = first.occurrences[0].occurrenceId;
     candidate.questions[0].stem = "Substantively different current-batch content";
   });
-  const preparedConflict = await prepareReadingPackagesForImport(
+  const preparedDifference = await prepareReadingPackagesForImport(
     historicalDatabase(),
     [first, conflicting],
     { enableHistoricalSemanticFallback: true }
   );
-  assert.equal(preparedConflict.length, 2);
-  assert.ok(preparedConflict.every((prepared) => /current CSV/.test(prepared.occurrenceConflict)));
+  assert.equal(preparedDifference.length, 1);
+  assert.equal(preparedDifference[0].reuseKind, "new");
+  assert.equal(preparedDifference[0].packageData.questions[0].stem, first.questions[0].stem);
+  assert.match(preparedDifference[0].dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(preparedDifference[0].occurrenceConflict, null);
 });
 
 const historicalRdlClusters = [
@@ -524,6 +556,7 @@ const historicalRapClusters = [
     "reading-rap-7945215d82567f1f6f2af63a"
   ]],
   ["Quantum Computing duplicate subset", [
+    "reading-rap-356930309b8c015008667f85",
     "reading-rap-bad55ea4a5cad4980668095d",
     "reading-rap-dbb5edec85e50734f930693e"
   ]],
@@ -668,12 +701,12 @@ test("highlight-only and option-order compound variants reuse for three audited 
   }
 });
 
-test("Quantum insertion-answer variant and same-title Social Networks variant remain distinct", () => {
+test("Quantum answer-key variant shares passage identity while Social Networks title-only match stays distinct", () => {
   const quantumAnswerVariant = historicalPackage("rap", "reading-rap-356930309b8c015008667f85");
   const quantumDuplicate = historicalPackage("rap", "reading-rap-bad55ea4a5cad4980668095d");
   assert.equal(
     areReadingPackagesHistoricalSemanticEquivalents(quantumAnswerVariant, quantumDuplicate),
-    false
+    true
   );
 
   const socialDifferent = historicalPackage("rap", "reading-rap-5817366a9ff4cc9c334fb39a");
@@ -684,14 +717,77 @@ test("Quantum insertion-answer variant and same-title Social Networks variant re
   );
 });
 
-test("substantive answers and RAP semantic positions remain identity-critical", () => {
+test("Quantum Computing 5.3B, 6.2, and 6.6A reuse one logical without overwriting its answer", async () => {
+  const historical = [
+    "reading-rap-bad55ea4a5cad4980668095d",
+    "reading-rap-356930309b8c015008667f85",
+    "reading-rap-dbb5edec85e50734f930693e"
+  ].map((id) => historicalPackage("rap", id));
+  const source62 = historical.find((item) => item.item.logicalItemId === "reading-rap-356930309b8c015008667f85");
+  const incoming = incomingVariant(source62, () => {});
+  const [prepared] = await prepareReadingPackagesForImport(
+    historicalDatabase(...historical),
+    [incoming],
+    { enableHistoricalSemanticFallback: true }
+  );
+  const survivor = historical.find((item) => item.item.firstSeenSourceLabel === "5.3B");
+  const canonicalInsertion = survivor.questions.find((item) => item.questionType === "rap_sentence_insertion");
+  const incomingInsertion = source62.questions.find((item) => item.questionType === "rap_sentence_insertion");
+  const canonicalCorrect = canonicalInsertion.payload.anchors.find(
+    (anchor) => anchor.anchorId === canonicalInsertion.payload.correctAnchorId
+  );
+  const incomingCorrect = incomingInsertion.payload.anchors.find(
+    (anchor) => anchor.anchorId === incomingInsertion.payload.correctAnchorId
+  );
+
+  assert.equal(incomingCorrect.boundaryIndex, 4);
+  assert.equal(canonicalCorrect.boundaryIndex, 3);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.existingItem.logicalItemId, survivor.item.logicalItemId);
+  assert.equal(prepared.packageData.item.logicalItemId, survivor.item.logicalItemId);
+  const retainedInsertion = prepared.packageData.questions.find(
+    (item) => item.questionType === "rap_sentence_insertion"
+  );
+  const retainedCorrect = retainedInsertion.payload.anchors.find(
+    (anchor) => anchor.anchorId === retainedInsertion.payload.correctAnchorId
+  );
+  assert.equal(retainedCorrect.boundaryIndex, 3);
+  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(prepared.addedOccurrenceCount, 1);
+});
+
+test("same passage with an unmappable question count is a blocker, not a new logical item", async () => {
+  const historical = historicalPackage("rap", "reading-rap-bad55ea4a5cad4980668095d");
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.questions.pop();
+  });
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.existingItem.logicalItemId, historical.item.logicalItemId);
+  assert.match(prepared.occurrenceConflict, /题目内容存在异常，需要核对.*question count/);
+  assert.throws(() => assertPreparedReadingPackageCanImport(prepared), /题目内容存在异常，需要核对/);
+});
+
+test("substantively different RAP passage stays distinct even when its title is unchanged", async () => {
+  const historical = historicalPackage("rap", "reading-rap-6522c75a66bfa0f293e67432");
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.passages[0].paragraphs[0].text =
+      "This is a substantively different academic passage about volcanic geology and tectonic plates.";
+  });
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(historical, incoming), false);
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "new");
+  assert.equal(prepared.existingItem, null);
+});
+
+test("same RAP passage remains one identity despite answer and semantic-position discrepancies", () => {
   const multipleChoice = historicalPackage("rap", "reading-rap-6522c75a66bfa0f293e67432");
   const differentAnswer = contentVariant(multipleChoice, (candidate) => {
     const question = candidate.questions.find((item) => item.questionType === "rap_multiple_choice");
     const alternative = question.payload.options.find((option) => option.optionId !== question.payload.correctOptionId);
     question.payload.correctOptionId = alternative.optionId;
   });
-  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(multipleChoice, differentAnswer), false);
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(multipleChoice, differentAnswer), true);
 
   const selection = historicalPackage("rap", "reading-rap-199501db577904fb79815267");
   const differentSelection = contentVariant(selection, (candidate) => {
@@ -704,23 +800,21 @@ test("substantive answers and RAP semantic positions remain identity-critical", 
     );
     question.payload.correctSentenceId = alternative.sentenceId;
   });
-  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(selection, differentSelection), false);
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(selection, differentSelection), true);
 });
 
-test("possible duplicates are blockers instead of silently creating a new logical item", async () => {
+test("same RDL material is reused instead of becoming a possible duplicate", async () => {
   const historical = packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   const incoming = incomingVariant(historical, (candidate) => {
     candidate.questions[0].stem = "A substantively different question?";
   });
   const { prepared } = await historicalMatch(historical, incoming);
-  assert.equal(prepared.reuseKind, "new");
-  assert.throws(
-    () => assertPreparedReadingPackageCanImport(prepared),
-    /需确认的相似题/
-  );
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+  assert.doesNotThrow(() => assertPreparedReadingPackageCanImport(prepared));
 });
 
-test("multiple candidates that are not one equivalence class block instead of choosing or creating", async () => {
+test("multiple same-passage candidates choose the stable survivor despite question differences", async () => {
   const base = historicalPackage("rap", "reading-rap-af2f63bf59d1743d597f47f4");
   const candidateA = contentVariant(base, (candidate) => {
     const option = candidate.questions[1].payload.options.find((item) => /utility/i.test(item.text));
@@ -735,20 +829,22 @@ test("multiple candidates that are not one equivalence class block instead of ch
   });
   assert.equal(areReadingPackagesHistoricalSemanticEquivalents(incoming, candidateA), true);
   assert.equal(areReadingPackagesHistoricalSemanticEquivalents(incoming, candidateB), true);
-  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(candidateA, candidateB), false);
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(candidateA, candidateB), true);
 
   const [prepared] = await prepareReadingPackagesForImport(
     historicalDatabase(candidateA, candidateB),
     [incoming],
     { enableHistoricalSemanticFallback: true }
   );
-  assert.equal(prepared.reuseKind, "new");
-  assert.equal(prepared.existingItem, null);
-  assert.deepEqual(
-    new Set(prepared.possibleDuplicateLogicalItemIds),
-    new Set([candidateA.item.logicalItemId, candidateB.item.logicalItemId])
-  );
-  assert.throws(() => assertPreparedReadingPackageCanImport(prepared), /需确认的相似题/);
+  const expected = [candidateA, candidateB].sort((left, right) =>
+    left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
+    || left.item.logicalItemId.localeCompare(right.item.logicalItemId)
+  )[0];
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.existingItem.logicalItemId, expected.item.logicalItemId);
+  assert.equal(prepared.packageData.item.logicalItemId, expected.item.logicalItemId);
+  assert.equal(prepared.historicalDuplicateLogicalItemIds.length, 1);
+  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
 });
 
 function occurrenceAwareFrom(originalFrom, occurrences) {

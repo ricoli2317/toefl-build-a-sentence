@@ -111,8 +111,21 @@ export function attachIncomingOccurrencesToHistoricalPackage(
   historical: ReadingImportPackage,
   incoming: ReadingImportPackage
 ): ReadingImportPackage {
+  if (historical.item.module !== "ctw" && historical.questions.length !== incoming.questions.length) {
+    throw new Error(
+      `question count ${incoming.questions.length} does not match canonical count ${historical.questions.length}`
+    );
+  }
   const incomingQuestions = new Map(incoming.questions.map((item) => [item.questionId, item]));
   const historicalByOrder = new Map(historical.questions.map((item) => [item.questionOrder, item]));
+  if (historical.item.module !== "ctw") {
+    for (const incomingQuestion of incoming.questions) {
+      const historicalQuestion = historicalByOrder.get(incomingQuestion.questionOrder);
+      if (!historicalQuestion || historicalQuestion.questionType !== incomingQuestion.questionType) {
+        throw new Error(`question order/type cannot map safely at order ${incomingQuestion.questionOrder}`);
+      }
+    }
+  }
   return {
     ...historical,
     item: {

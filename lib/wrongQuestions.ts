@@ -148,6 +148,21 @@ export type ReadingFullSetWrongbookQueueItem = {
   title: string;
 };
 
+export type ReadingFullSetWrongbookScreen = {
+  occurrenceId: string;
+  questionId: string;
+  taskType: ReadingModule;
+  wrongQuestionCount: number;
+  wrongQuestionEnd: number;
+  wrongQuestionStart: number;
+};
+
+export type ReadingFullSetWrongbookProgress = {
+  screenCount: number;
+  screens: ReadingFullSetWrongbookScreen[];
+  wrongQuestionCount: number;
+};
+
 export function buildWrongQuestionsOverview(input: {
   basAnswers: PracticeHistoryAnswer[];
   basAttempts: BasWrongQuestionAttempt[];
@@ -296,6 +311,52 @@ export function compareReadingFullSetTargets(
     || left.order - right.order
     || left.occurrenceId.localeCompare(right.occurrenceId)
     || (left.slotId ?? "").localeCompare(right.slotId ?? "");
+}
+
+/**
+ * Correction screens and scoring points are deliberately separate: one CTW
+ * passage is one screen, while every pending CTW slot remains one wrong question.
+ */
+export function buildReadingFullSetWrongbookProgress(
+  targets: ReadingFullSetWrongbookTarget[]
+): ReadingFullSetWrongbookProgress {
+  const ordered = [...targets].sort(compareReadingFullSetTargets);
+  const groups = new Map<string, ReadingFullSetWrongbookTarget[]>();
+  for (const target of ordered) {
+    const key = target.taskType === "ctw"
+      ? `ctw:${target.occurrenceId}`
+      : `${target.taskType}:${target.occurrenceId}:${target.questionId}`;
+    groups.set(key, [...(groups.get(key) ?? []), target]);
+  }
+  let wrongQuestionPosition = 0;
+  const screens = Array.from(groups.values()).map((screenTargets) => {
+    const first = screenTargets[0]!;
+    const wrongQuestionStart = wrongQuestionPosition + 1;
+    wrongQuestionPosition += screenTargets.length;
+    return {
+      occurrenceId: first.occurrenceId,
+      questionId: first.questionId,
+      taskType: first.taskType,
+      wrongQuestionCount: screenTargets.length,
+      wrongQuestionEnd: wrongQuestionPosition,
+      wrongQuestionStart
+    };
+  });
+  return {
+    screenCount: screens.length,
+    screens,
+    wrongQuestionCount: ordered.length
+  };
+}
+
+export function readingFullSetWrongbookProgressLabel(
+  screen: ReadingFullSetWrongbookScreen,
+  wrongQuestionCount: number
+) {
+  const position = screen.wrongQuestionStart === screen.wrongQuestionEnd
+    ? String(screen.wrongQuestionStart)
+    : `${screen.wrongQuestionStart}–${screen.wrongQuestionEnd}`;
+  return `第 ${position} / ${wrongQuestionCount} 题`;
 }
 
 function readingFullSetAnswerKey(answer: Pick<ReadingFullSetWrongQuestionAnswer, "logicalItemId" | "occurrenceId" | "questionId" | "slotId">) {

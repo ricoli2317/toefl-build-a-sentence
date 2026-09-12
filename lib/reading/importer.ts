@@ -9,6 +9,7 @@ import {
 import {
   areReadingPackagesHistoricalSemanticEquivalents,
   arePossibleReadingDuplicates,
+  haveSameReadingCanonicalQuestions,
   readingMaterialReviewIdentity,
   readingMaterialStorageIdentity,
   readingPossibleDuplicateFingerprint,
@@ -38,6 +39,8 @@ export type PreparedReadingImportPackage = {
   reuseKind: "new" | "exact_fingerprint" | "semantic";
   batchSemanticReuseCount: number;
   possibleDuplicateLogicalItemIds: string[];
+  dataQualityWarning: string | null;
+  historicalDuplicateLogicalItemIds: string[];
   materialMatchKind: "not_applicable" | "exact_material" | "semantic_material" | "possible_material_duplicate";
   addedOccurrenceCount: number;
   occurrenceConflict: string | null;
@@ -100,9 +103,16 @@ export async function prepareReadingPackagesForImport(
     let existingItem = exactMatches.get(incomingPackage.item.logicalItemId) ?? null;
     let reuseKind: PreparedReadingImportPackage["reuseKind"] = existingItem ? "exact_fingerprint" : "new";
     let possibleDuplicateLogicalItemIds: string[] = [];
-    const matchedExistingLogicalId = existingItem?.logicalItemId === incomingPackage.item.logicalItemId;
+    let dataQualityWarning: string | null = incoming.dataQualityWarnings.has(incomingPackage.item.logicalItemId)
+      ? "来源题目或答案与题库不一致，已保留题库题目与答案。"
+      : null;
+    let historicalDuplicateLogicalItemIds: string[] = [];
+    let preparationConflict: string | null = incoming.preparationConflicts.get(incomingPackage.item.logicalItemId) ?? null;
+    const shouldResolveIdentity = enableSemantic && (
+      !existingItem || incomingPackage.item.module === "rdl" || incomingPackage.item.module === "rap"
+    );
 
-    if (enableSemantic && !matchedExistingLogicalId) {
+    if (shouldResolveIdentity) {
       existingItem = null;
       reuseKind = "new";
       const semanticFingerprint = readingSemanticFingerprint(incomingPackage);
@@ -120,7 +130,18 @@ export async function prepareReadingPackagesForImport(
       if (equivalentCandidates.length > 0 && isOneSemanticEquivalenceClass(equivalentCandidates)) {
         const survivor = stableHistoricalSurvivor(equivalentCandidates);
         existingItem = existingLogicalItemFromPackage(survivor);
-        reuseKind = "semantic";
+        reuseKind = equivalentCandidates.length === 1
+          && survivor.item.logicalItemId === incomingPackage.item.logicalItemId
+          && exactMatches.has(incomingPackage.item.logicalItemId)
+          ? "exact_fingerprint"
+          : "semantic";
+        historicalDuplicateLogicalItemIds = equivalentCandidates
+          .map((candidate) => candidate.item.logicalItemId)
+          .filter((logicalItemId) => logicalItemId !== survivor.item.logicalItemId)
+          .sort();
+        if (!haveSameReadingCanonicalQuestions(incomingPackage, survivor)) {
+          dataQualityWarning = "来源题目或答案与题库不一致，已保留题库题目与答案。";
+        }
       } else {
         possibleDuplicateLogicalItemIds = uniqueIds([
           ...equivalentCandidates,
@@ -136,7 +157,12 @@ export async function prepareReadingPackagesForImport(
     if (existingItem && existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
       const historical = historicalById.get(existingItem.logicalItemId);
       if (historical) {
-        packageData = attachIncomingOccurrencesToHistoricalPackage(historical, incomingPackage);
+        try {
+          packageData = attachIncomingOccurrencesToHistoricalPackage(historical, incomingPackage);
+        } catch (error) {
+          preparationConflict =
+            `题目内容存在异常，需要核对：${error instanceof Error ? error.message : String(error)}`;
+        }
       } else if (incomingPackage.item.module === "ctw") {
         packageData = await remapCtwPackageToExistingCanonical(
           supabase,
@@ -154,6 +180,9 @@ export async function prepareReadingPackagesForImport(
       reuseKind,
       batchSemanticReuseCount: incoming.reuseCounts.get(incomingPackage.item.logicalItemId) ?? 0,
       possibleDuplicateLogicalItemIds,
+      dataQualityWarning,
+      historicalDuplicateLogicalItemIds,
+      preparationConflict,
       materialMatchKind: materialMatchKind(
         incomingPackage,
         existingItem,
@@ -178,7 +207,7 @@ export async function prepareReadingPackagesForImport(
   return prepared.map((item) => {
     const { packageData, existingItem } = item;
     let addedOccurrenceCount = 0;
-    let occurrenceConflict: string | null = null;
+    let occurrenceConflict: string | null = item.preparationConflict;
     for (const occurrence of packageData.occurrences) {
       const incomingOwners = incomingOccurrenceOwners.get(occurrence.occurrenceId);
       if (incomingOwners && incomingOwners.size > 1) {
@@ -203,10 +232,22 @@ export async function prepareReadingPackagesForImport(
 }
 
 function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
-  const bySemantic = groupBy(packages, readingSemanticFingerprint);
+  const identityGroups: ReadingImportPackage[][] = [];
+  for (const packageData of packages) {
+    const group = identityGroups.find((candidateGroup) =>
+      candidateGroup.every((candidate) => packageData.item.module === "ctw"
+        ? readingSemanticFingerprint(packageData) === readingSemanticFingerprint(candidate)
+        : areReadingPackagesHistoricalSemanticEquivalents(packageData, candidate)
+      )
+    );
+    if (group) group.push(packageData);
+    else identityGroups.push([packageData]);
+  }
   const result: ReadingImportPackage[] = [];
   const reuseCounts = new Map<string, number>();
-  for (const group of Array.from(bySemantic.values())) {
+  const dataQualityWarnings = new Set<string>();
+  const preparationConflicts = new Map<string, string>();
+  for (const group of identityGroups) {
     const orderedGroup = [...group].sort((left, right) =>
       left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
       || left.item.firstSeenSourceLabel.localeCompare(right.item.firstSeenSourceLabel)
@@ -217,13 +258,23 @@ function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
       canonical.occurrences.map((occurrence) => [occurrence.occurrenceId, occurrence])
     );
     for (const variant of orderedGroup.slice(1)) {
-      const remapped = attachIncomingOccurrencesToHistoricalPackage(canonical, variant);
-      for (const occurrence of remapped.occurrences) occurrences.set(occurrence.occurrenceId, occurrence);
+      if (!haveSameReadingCanonicalQuestions(canonical, variant)) {
+        dataQualityWarnings.add(canonical.item.logicalItemId);
+      }
+      try {
+        const remapped = attachIncomingOccurrencesToHistoricalPackage(canonical, variant);
+        for (const occurrence of remapped.occurrences) occurrences.set(occurrence.occurrenceId, occurrence);
+      } catch (error) {
+        preparationConflicts.set(
+          canonical.item.logicalItemId,
+          `题目内容存在异常，需要核对：${error instanceof Error ? error.message : String(error)}`
+        );
+      }
     }
     result.push({ ...canonical, occurrences: Array.from(occurrences.values()) });
     reuseCounts.set(canonical.item.logicalItemId, orderedGroup.length - 1);
   }
-  return { packages: result, reuseCounts };
+  return { packages: result, reuseCounts, dataQualityWarnings, preparationConflicts };
 }
 
 export function assertPreparedReadingPackageCanImport(prepared: {

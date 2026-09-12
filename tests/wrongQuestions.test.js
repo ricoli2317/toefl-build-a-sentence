@@ -6,9 +6,11 @@ const test = require("node:test");
 const {
   buildBasWrongbookEntryQuestionIds,
   buildBasWrongbookPracticeQuestionIds,
+  buildReadingFullSetWrongbookProgress,
   buildReadingFullSetWrongbookQueue,
   buildReadingWrongbookQueue,
-  buildWrongQuestionsOverview
+  buildWrongQuestionsOverview,
+  readingFullSetWrongbookProgressLabel
 } = require("../lib/wrongQuestions.ts");
 const {
   buildReadingWrongbookInitialAnswers
@@ -318,6 +320,114 @@ test("Reading Full Set correction clears only exact source occurrence scoring po
   };
   assert.deepEqual(buildReadingFullSetWrongbookQueue({ ...input, sourceAttemptId: sourceA }), []);
   assert.equal(buildReadingFullSetWrongbookQueue({ ...input, sourceAttemptId: sourceB })[0].targets.length, 1);
+});
+
+function fullSetProgressTarget(taskType, occurrenceId, questionId, order, slotId = null) {
+  return {
+    logicalItemId: `reading-${taskType}-${occurrenceId.padEnd(24, "a").slice(0, 24)}`,
+    moduleNumber: 1,
+    occurrenceId,
+    order,
+    questionId,
+    slotId,
+    taskType
+  };
+}
+
+function fullSetOverviewGroup(targets) {
+  const attemptId = "11111111-1111-4111-8111-111111111111";
+  const payload = buildWrongQuestionsOverview({
+    basAnswers: [], basAttempts: [], basCorrectionAnswers: [], basGroupsBySet: new Map(),
+    readingAnswers: [], readingAttempts: [], readingTitles: new Map(),
+    fullSetAnswers: targets.map((target) => ({ ...target, attemptId, isCorrect: false })),
+    fullSetAttempts: [{ attemptId, completedAt: "2026-08-30T08:00:00.000Z", fullSetId: "20260830A", title: "20260830A" }],
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  });
+  return payload.groups.find((group) => group.taskType === "full_set");
+}
+
+test("Full Set progress counts ten wrong CTW slots as ten questions on one screen", () => {
+  const targets = Array.from({ length: 10 }, (_, index) =>
+    fullSetProgressTarget("ctw", "ctw-all", "ctw-question", index + 1, `slot-${index + 1}`)
+  );
+  const progress = buildReadingFullSetWrongbookProgress(targets);
+  assert.equal(progress.screenCount, 1);
+  assert.equal(progress.wrongQuestionCount, 10);
+  assert.equal(progress.screens[0].wrongQuestionCount, 10);
+  assert.equal(fullSetOverviewGroup(targets).wrongCount, 10);
+  assert.equal(fullSetOverviewGroup(targets).pendingCount, 10);
+  assert.equal(readingFullSetWrongbookProgressLabel(progress.screens[0], progress.wrongQuestionCount), "第 1–10 / 10 题");
+});
+
+test("Full Set progress uses CTW slots plus individual RDL and RAP questions", () => {
+  const targets = [
+    ...Array.from({ length: 4 }, (_, index) =>
+      fullSetProgressTarget("ctw", "ctw-part", "ctw-question", index + 1, `slot-${index + 1}`)
+    ),
+    ...Array.from({ length: 3 }, (_, index) =>
+      fullSetProgressTarget("rdl", "rdl", `rdl-${index + 1}`, index + 11)
+    ),
+    ...Array.from({ length: 2 }, (_, index) =>
+      fullSetProgressTarget("rap", "rap", `rap-${index + 1}`, index + 20)
+    )
+  ];
+  const progress = buildReadingFullSetWrongbookProgress(targets);
+  assert.equal(progress.screenCount, 6);
+  assert.equal(progress.wrongQuestionCount, 9);
+  assert.equal(fullSetOverviewGroup(targets).wrongCount, 9);
+  assert.equal(progress.screens[1].wrongQuestionStart, 5);
+  assert.equal(readingFullSetWrongbookProgressLabel(progress.screens[1], progress.wrongQuestionCount), "第 5 / 9 题");
+  assert.deepEqual(progress.screens.slice(1).map((screen) => screen.wrongQuestionCount), [1, 1, 1, 1, 1]);
+});
+
+test("Full Set progress reports sixteen questions instead of seven screens", () => {
+  const targets = [
+    ...Array.from({ length: 10 }, (_, index) =>
+      fullSetProgressTarget("ctw", "ctw-ten", "ctw-question", index + 1, `slot-${index + 1}`)
+    ),
+    ...Array.from({ length: 3 }, (_, index) =>
+      fullSetProgressTarget("rdl", "rdl-six", `rdl-${index + 1}`, index + 11)
+    ),
+    ...Array.from({ length: 3 }, (_, index) =>
+      fullSetProgressTarget("rap", "rap-six", `rap-${index + 1}`, index + 20)
+    )
+  ];
+  const progress = buildReadingFullSetWrongbookProgress(targets);
+  assert.equal(progress.screenCount, 7);
+  assert.equal(progress.wrongQuestionCount, 16);
+  assert.equal(fullSetOverviewGroup(targets).pendingCount, 16);
+  assert.equal(progress.screens[1].wrongQuestionStart, 11);
+  assert.equal(readingFullSetWrongbookProgressLabel(progress.screens[0], progress.wrongQuestionCount), "第 1–10 / 16 题");
+});
+
+test("Full Set pending progress removes only individually corrected CTW slots", () => {
+  const sourceAttemptId = "11111111-1111-4111-8111-111111111111";
+  const correctionAttemptId = "correction-four-slots";
+  const original = Array.from({ length: 10 }, (_, index) => ({
+    ...fullSetProgressTarget("ctw", "ctw-pending", "ctw-question", index + 1, `slot-${index + 1}`),
+    attemptId: sourceAttemptId,
+    isCorrect: false
+  }));
+  const corrected = original.slice(0, 4).map((answer) => ({
+    ...answer,
+    attemptId: correctionAttemptId,
+    isCorrect: true
+  }));
+  const queue = buildReadingFullSetWrongbookQueue({
+    fullSetAnswers: original,
+    fullSetAttempts: [{ attemptId: sourceAttemptId, completedAt: "2026-08-28T08:00:00.000Z", fullSetId: "20260828A", title: "20260828A" }],
+    fullSetCorrectionAnswers: corrected,
+    fullSetCorrectionAttempts: [{ attemptId: correctionAttemptId, sourceAttemptId, submittedAt: "2026-08-29T08:00:00.000Z" }],
+    scope: "history",
+    sourceAttemptId,
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  });
+  assert.equal(queue[0].targets.length, 6);
+  const progress = buildReadingFullSetWrongbookProgress(queue[0].targets);
+  assert.equal(progress.screenCount, 1);
+  assert.equal(progress.wrongQuestionCount, 6);
 });
 
 test("Reading Full Set correction reuses Reading workspaces, submit route, result cards, and readonly answer renderers", () => {

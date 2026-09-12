@@ -56,6 +56,24 @@ async function importReadingCsv(
         }]
       : []
   );
+  const dataQualityWarnings = preparedPackages.flatMap((prepared) => {
+    const warnings = [];
+    if (prepared.dataQualityWarning) {
+      warnings.push({
+        message: prepared.dataQualityWarning,
+        operation: "check Reading source content",
+        details: `module=${prepared.packageData.item.module}; action=keep canonical questions and answers`
+      });
+    }
+    if (prepared.historicalDuplicateLogicalItemIds.length > 0) {
+      warnings.push({
+        message: "同一素材或文章存在历史重复，已稳定复用最早题目，等待后续清理。",
+        operation: "check Reading historical duplicates",
+        details: `existing=${prepared.historicalDuplicateLogicalItemIds.join(",")}; action=reuse stable survivor`
+      });
+    }
+    return warnings;
+  });
   const groupedPossibleDuplicateWarnings = grouped.report.possibleDuplicates.filter((duplicate) =>
       !preparedSourceSets.some((sources) => duplicate.sourceOccurrences.every((source) => sources.has(source)))
     ).map((duplicate) => ({
@@ -69,7 +87,8 @@ async function importReadingCsv(
   ];
   const warnings = [
     ...possibleDuplicateWarnings,
-    ...materialWarnings
+    ...materialWarnings,
+    ...dataQualityWarnings
   ];
   const failedRows = adapted.failures.map((failure) => ({
     rowNumber: failure.rowNumber,

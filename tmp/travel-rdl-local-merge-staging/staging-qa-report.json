@@ -27,12 +27,12 @@
       "final_status",
       "selection_status",
       "selection_image_sha256",
-      "material_final"
-    ],
-    "optional_authoritative_fields": [
-      "canonical_source",
+      "material_final",
       "source_reference",
       "release_acceptance"
+    ],
+    "optional_authoritative_fields": [
+      "canonical_source"
     ],
     "historical_recovery_fields_required": false
   },

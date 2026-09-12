@@ -53,6 +53,8 @@ const GENERIC_REQUIRED_FIELDS = [
   "selection_status",
   "selection_image_sha256",
   "material_final",
+  "source_reference",
+  "release_acceptance",
 ];
 const CONVERSION_RECORD = {
   from_schema: 1,
@@ -237,6 +239,16 @@ async function validateGenericAsset(packageRoot, asset) {
       && asset.material_final?.sha256 === imageHash
       && asset.material_final?.frozen === true,
     `${materialId}: material_final freeze binding mismatch`,
+  );
+  assert(
+    asset.source_reference?.manifest === "RDL_WORK_INCREMENTAL_MANIFEST.local.json"
+      && asset.source_reference?.canonical_asset_id === materialId,
+    `${materialId}: authoritative source reference mismatch`,
+  );
+  assert(
+    asset.release_acceptance?.manifest === "RDL_FINAL_RELEASE_MAP.local.json"
+      && asset.release_acceptance?.status === "FROZEN_SELECTION_QA_PASS",
+    `${materialId}: release acceptance mismatch`,
   );
 }
 
@@ -442,7 +454,7 @@ async function main() {
     asset_contract: {
       schema_version: "rdl-production-asset-v1",
       required_fields: GENERIC_REQUIRED_FIELDS,
-      optional_authoritative_fields: ["canonical_source", "source_reference", "release_acceptance"],
+      optional_authoritative_fields: ["canonical_source"],
       historical_recovery_fields_required: false,
     },
     cloud_metadata_available_count: conversionResults.filter((row) => row.cloud_metadata_available).length,
