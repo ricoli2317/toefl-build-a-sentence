@@ -163,6 +163,24 @@ test("RAP groups all supported question shapes and rejects conflicting passage r
   assert.match(invalid.failures[0].reason, /passage_json conflicts/);
 });
 
+test("RAP production schema reconstructs quoted highlights and defaults others to an empty list", () => {
+  const document = template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  const passage = JSON.parse(document.rows[0].passage_json);
+  const phrase = passage[0].text.slice(0, 4);
+  document.rows[0].question_stem = `Why does the author mention “${phrase}”?`;
+  document.headers = document.headers.filter((header) => header !== "passage_highlights_json");
+  document.rows.forEach((row) => { delete row.passage_highlights_json; });
+  const result = adapt("read_an_academic_passage", document);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.candidates.length, 1);
+  assert.deepEqual(result.candidates[0].questions[0].payload.highlightRanges, [{
+    paragraphId: passage[0].paragraphId,
+    startOffset: 0,
+    endOffset: phrase.length
+  }]);
+  assert.deepEqual(result.candidates[0].questions[1].payload.highlightRanges, []);
+});
+
 test("RAP keeps its complete original passage title even when it exceeds five words", () => {
   const document = template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
   const longTitle = "A Complete Academic Passage Title With Seven Words";

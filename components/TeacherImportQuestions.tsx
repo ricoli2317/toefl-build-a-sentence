@@ -137,6 +137,8 @@ export function TeacherImportQuestions() {
     || (result.occurrenceConflictCount ?? 0) > 0
     || (result.blockerCount ?? result.failedCount) > 0
   );
+  const reusedReadingQuestionCount = (result?.exactFingerprintReuseCount ?? 0)
+    + (result?.semanticReuseCount ?? 0);
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -166,7 +168,11 @@ export function TeacherImportQuestions() {
     setRows(parsedRows);
 
     if (detectedQuestionType === "unknown") {
-      setError("无法识别题型：CSV 表头与现有题型格式不匹配");
+      const closest = closestQuestionSchema(parsed.headers);
+      setError(formatCsvFormatError(
+        closest?.difference.missingFields ?? [],
+        closest?.difference.unexpectedFields ?? []
+      ));
     } else if (parsedRows.length === 0) {
       setError("CSV 中没有数据行。");
     }
@@ -191,17 +197,13 @@ export function TeacherImportQuestions() {
     }
 
     if (questionType === "unknown") {
-      setError(
-        `无法识别题型：CSV 表头与现有题型格式不匹配。缺少字段：${
-          missingFields.join(", ") || "无"
-        }。非预期字段：${unexpectedFields.join(", ") || "无"}。`
-      );
+      setError(formatCsvFormatError(missingFields, unexpectedFields));
       setLoading(false);
       return;
     }
 
     if (readingPreflightBlocked) {
-      setError("当前 Reading 预检存在 rejected、occurrence conflict 或 blocker，禁止导入。");
+      setError("预检发现无法自动处理的内容，请修正 CSV 或处理冲突后重新预检。");
       setLoading(false);
       return;
     }
@@ -325,11 +327,7 @@ export function TeacherImportQuestions() {
                   <p className="text-student-primary">
                     已识别题型：{QUESTION_TYPE_LABELS[questionType]}
                   </p>
-                ) : (
-                  <p className="text-student-error">
-                    无法识别题型：CSV 表头与现有题型格式不匹配
-                  </p>
-                )}
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -378,22 +376,10 @@ export function TeacherImportQuestions() {
               <span className="text-sm font-semibold text-student-primary">检测到 {rows.length} 行数据</span>
             ) : null}
           </div>
-          {missingFields.length > 0 ? (
-            <p className="teacher-error mt-4">缺少字段：{missingFields.join(", ")}</p>
-          ) : null}
-          {unexpectedFields.length > 0 ? (
-            <p className="teacher-error mt-4">存在非预期字段：{unexpectedFields.join(", ")}</p>
-          ) : null}
-          {questionType === "unknown" && closestSchema ? (
-            <p className="teacher-error mt-4 break-words">
-              最接近的格式：{QUESTION_TYPE_LABELS[closestSchema.questionType]}；所需表头：
-              {closestSchema.schema.join(",")}
-            </p>
-          ) : null}
           {error ? <pre className="teacher-error mt-4 whitespace-pre-wrap">{error}</pre> : null}
           {readingPreflightBlocked ? (
             <p className="teacher-error mt-4">
-              预检未通过：存在 rejected、occurrence conflict 或 blocker。请修正 CSV 后重新选择文件并再次预检。
+              预检未通过。请修正无法导入的内容或来源冲突后，重新选择文件并再次预检。
             </p>
           ) : null}
         </div>
@@ -405,23 +391,29 @@ export function TeacherImportQuestions() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {isReadingQuestionType(questionType) ? (
               <>
-                <ResultMetric label="CSV 行数" value={result.csvRowCount ?? rows.length} />
-                <ResultMetric label="Accepted" value={result.acceptedRowCount ?? 0} />
-                <ResultMetric label="Rejected" tone={(result.rejectedRowCount ?? 0) > 0 ? "error" : undefined} value={result.rejectedRowCount ?? 0} />
-                <ResultMetric label="Occurrences" value={result.occurrenceCount ?? 0} />
-                <ResultMetric label="新逻辑题" value={result.logicalNewItemCount ?? 0} />
-                <ResultMetric label="严格指纹复用" value={result.exactFingerprintReuseCount ?? 0} />
-                <ResultMetric label="语义复用" value={result.semanticReuseCount ?? 0} />
-                <ResultMetric label="新增来源记录" value={result.occurrenceInsertedCount ?? 0} />
-                <ResultMetric label="已有相同来源" value={result.existingOccurrenceCount ?? 0} />
-                <ResultMetric label="来源冲突" tone={(result.occurrenceConflictCount ?? 0) > 0 ? "error" : undefined} value={result.occurrenceConflictCount ?? 0} />
-                <ResultMetric label="可能重复（warning）" tone={(result.possibleDuplicateCount ?? 0) > 0 ? "error" : undefined} value={result.possibleDuplicateCount ?? 0} />
-                <ResultMetric label="Blockers" tone={(result.blockerCount ?? 0) > 0 ? "error" : undefined} value={result.blockerCount ?? 0} />
+                <ResultMetric label="本次题组" value={result.occurrenceCount ?? result.successCount} />
+                <ResultMetric label="复用已有题目" value={reusedReadingQuestionCount} />
+                <ResultMetric label="新增题目" value={result.logicalNewItemCount ?? 0} />
+                <ResultMetric label="新增来源" value={result.occurrenceInsertedCount ?? 0} />
+                {(result.existingOccurrenceCount ?? 0) > 0 ? (
+                  <ResultMetric label="已存在来源" value={result.existingOccurrenceCount ?? 0} />
+                ) : null}
+                {(result.possibleDuplicateCount ?? 0) > 0 ? (
+                  <ResultMetric label="需确认的相似题" tone="warning" value={result.possibleDuplicateCount ?? 0} />
+                ) : null}
+                {(result.occurrenceConflictCount ?? 0) > 0 ? (
+                  <ResultMetric label="来源冲突" tone="error" value={result.occurrenceConflictCount ?? 0} />
+                ) : null}
+                {(result.blockerCount ?? result.failedCount) > 0 ? (
+                  <ResultMetric label="无法导入" tone="error" value={result.blockerCount ?? result.failedCount} />
+                ) : null}
                 {questionType === "read_in_daily_life" ? (
                   <>
-                    <ResultMetric label="RDL 素材复用" value={result.rdlMaterialReuseCount ?? 0} />
-                    <ResultMetric label="RDL 新素材" value={result.rdlNewMaterialCount ?? 0} />
-                    <ResultMetric label="RDL 素材警告" tone={(result.rdlMaterialWarningCount ?? 0) > 0 ? "error" : undefined} value={result.rdlMaterialWarningCount ?? 0} />
+                    <ResultMetric label="复用已有素材" value={result.rdlMaterialReuseCount ?? 0} />
+                    <ResultMetric label="新增素材" value={result.rdlNewMaterialCount ?? 0} />
+                    {(result.rdlMaterialWarningCount ?? 0) > 0 ? (
+                      <ResultMetric label="需确认的相似素材" tone="warning" value={result.rdlMaterialWarningCount ?? 0} />
+                    ) : null}
                   </>
                 ) : null}
               </>
@@ -447,10 +439,14 @@ export function TeacherImportQuestions() {
             <div className="mt-5 grid gap-3">
               {result.warnings.map((warning, index) => (
                 <pre
-                  className="whitespace-pre-wrap rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text"
+                  className={isReadingQuestionType(questionType)
+                    ? "whitespace-pre-wrap rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800"
+                    : "whitespace-pre-wrap rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text"}
                   key={`${warning.operation ?? "warning"}-${index}`}
                 >
-                  {formatImportWarning(warning)}
+                  {isReadingQuestionType(questionType)
+                    ? formatReadingWarning(warning)
+                    : formatImportWarning(warning)}
                 </pre>
               ))}
             </div>
@@ -581,6 +577,7 @@ function isReadingQuestionType(questionType: QuestionType) {
 }
 
 function formatImportError(payload: ImportErrorPayload) {
+  if (payload.code === "CSV_HEADER_MISMATCH") return "CSV 格式不正确";
   return [
     `错误信息：${localizeImportMessage(payload.message ?? payload.error ?? "导入失败。")}`,
     `错误代码：${payload.code ?? "无"}`,
@@ -606,6 +603,22 @@ function formatImportWarning(warning: NonNullable<ImportResult["warnings"]>[numb
   ]
     .filter(Boolean)
     .join("\n");
+}
+
+function formatReadingWarning(warning: NonNullable<ImportResult["warnings"]>[number]) {
+  return warning.operation === "check RDL canonical material"
+    ? "发现需确认的相似素材。"
+    : "发现需确认的相似题。";
+}
+
+function formatCsvFormatError(missingFields: string[], unexpectedFields: string[]) {
+  return [
+    "CSV 格式不正确",
+    missingFields.length > 0 ? `缺少字段：${missingFields.join(", ")}` : null,
+    unexpectedFields.length > 0
+      ? `存在不属于该题型的字段：${unexpectedFields.join(", ")}`
+      : null
+  ].filter(Boolean).join("\n");
 }
 
 function localizeImportMessage(message: string) {
@@ -706,11 +719,34 @@ function ImportStep({
   );
 }
 
-function ResultMetric({ label, tone, value }: { label: string; tone?: "error"; value: number }) {
+function ResultMetric({
+  label,
+  tone,
+  value
+}: {
+  label: string;
+  tone?: "warning" | "error";
+  value: number;
+}) {
+  const className = tone === "error"
+    ? "rounded-xl border border-student-error-border bg-student-error-soft p-4"
+    : tone === "warning"
+      ? "rounded-xl border border-amber-200 bg-amber-50 p-4"
+      : "rounded-xl border border-student-primary-border bg-student-primary-soft p-4";
+  const labelClassName = tone === "error"
+    ? "text-sm font-semibold text-student-error"
+    : tone === "warning"
+      ? "text-sm font-semibold text-amber-700"
+      : "text-sm font-semibold text-student-primary";
+  const valueClassName = tone === "error"
+    ? "mt-1 text-2xl font-bold text-student-error"
+    : tone === "warning"
+      ? "mt-1 text-2xl font-bold text-amber-800"
+      : "mt-1 text-2xl font-bold text-student-text";
   return (
-    <div className={tone === "error" ? "rounded-xl border border-student-error-border bg-student-error-soft p-4" : "rounded-xl border border-student-primary-border bg-student-primary-soft p-4"}>
-      <p className={tone === "error" ? "text-sm font-semibold text-student-error" : "text-sm font-semibold text-student-primary"}>{label}</p>
-      <p className={tone === "error" ? "mt-1 text-2xl font-bold text-student-error" : "mt-1 text-2xl font-bold text-student-text"}>{value}</p>
+    <div className={className}>
+      <p className={labelClassName}>{label}</p>
+      <p className={valueClassName}>{value}</p>
     </div>
   );
 }

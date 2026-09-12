@@ -246,10 +246,7 @@ function buildCandidate(
       sourceQuestionEnd: sourceNumber
     };
     const questionType = required(row, "question_type");
-    const highlightRanges = parseJson<ReadingPassageHighlightRange[]>(
-      required(row, "passage_highlights_json"),
-      "passage_highlights_json"
-    );
+    const highlightRanges = rapHighlightRanges(row, passageJson);
     if (questionType === "rap_multiple_choice") {
       return {
         ...common,
@@ -354,6 +351,32 @@ function validateProductionMaterial(
     if (allowRegisteredMaterialStorageKeys && isVersionedCanonicalMaterialPair(material)) return;
     throw new Error(`material_id ${material.materialId} does not use the frozen production object-key convention`);
   }
+}
+
+function rapHighlightRanges(
+  row: Record<string, string>,
+  paragraphs: ReadingPassageParagraph[]
+): ReadingPassageHighlightRange[] {
+  const serialized = optional(row, "passage_highlights_json");
+  if (serialized) {
+    return parseJson<ReadingPassageHighlightRange[]>(serialized, "passage_highlights_json");
+  }
+
+  const quotedPhrases = Array.from(
+    required(row, "question_stem").matchAll(/[“"]([^”"]+)[”"]/g),
+    (match) => match[1]
+  );
+  return quotedPhrases.flatMap((phrase) => {
+    const matches = paragraphs.flatMap((paragraph) => {
+      const startOffset = paragraph.text.indexOf(phrase);
+      return startOffset < 0 ? [] : [{
+        paragraphId: paragraph.paragraphId,
+        startOffset,
+        endOffset: startOffset + phrase.length
+      }];
+    });
+    return matches.length === 1 ? matches : [];
+  });
 }
 
 function isVersionedCanonicalMaterialPair(material: ReadingMaterial) {
