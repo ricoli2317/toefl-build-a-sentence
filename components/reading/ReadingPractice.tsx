@@ -1960,15 +1960,15 @@ function RapPracticeWorkspace({
     const sentenceClassName = correctionState === "correct"
       ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
       : correctionState === "incorrect"
-        ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white"
+        ? "rounded-sm bg-student-error-soft px-[0.12em] font-bold text-student-error"
         : selected
           ? "font-bold text-inherit"
           : "font-normal text-inherit";
     if (selectable) {
       return (
         <span
-          aria-checked={selected}
-          className={`inline cursor-pointer leading-[inherit] ${sentenceClassName}`}
+          aria-checked={readOnly ? undefined : selected}
+          className={`inline leading-[inherit] ${readOnly ? "cursor-text select-text" : "cursor-pointer"} ${sentenceClassName}`}
           data-correction-state={correctionState ?? undefined}
           data-sentence-id={sentence.sentenceId}
           data-sentence-order={sentence.sentenceOrder}
@@ -1979,8 +1979,8 @@ function RapPracticeWorkspace({
             event.preventDefault();
             onAnswerChange(question.questionId, { kind: "sentence_selection", sentenceId: sentence.sentenceId });
           }}
-          role="radio"
-          style={rapFramelessInteractionStyle}
+          role={readOnly ? undefined : "radio"}
+          style={readOnly ? undefined : rapFramelessInteractionStyle}
           tabIndex={readOnly ? undefined : 0}
         >
           {highlightedText}
@@ -2167,10 +2167,10 @@ function ChoiceOptionList({
           ? readingCorrectionMarkState(reviewPresentation, "choice", option.optionId)
           : null;
         const optionClassName = correctionState === "correct"
-          ? "border border-student-primary-border bg-student-primary-soft text-student-primary"
+          ? "bg-student-primary-soft text-student-primary"
           : correctionState === "incorrect"
-            ? "border border-student-error-border bg-student-error-soft text-student-error"
-            : "border border-transparent text-student-text";
+            ? "bg-student-error-soft text-student-error"
+            : "text-student-text";
         const radioClassName = correctionState === "incorrect"
           ? "border-student-error"
           : selected || correctionState === "correct"

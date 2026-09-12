@@ -408,6 +408,10 @@ test("standard choice summaries continue past D using authoritative option order
 
 test("RDL and RAP correction reviews mark wrong choices orange and correct choices purple", () => {
   const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  const optionStateSource = practiceUi.slice(
+    practiceUi.indexOf("const optionClassName"),
+    practiceUi.indexOf("const radioClassName")
+  );
   const options = ["a", "b", "c", "d"].map((letter, index) => ({
     option_id: `option-${letter}`,
     option_order: index + 1,
@@ -472,8 +476,9 @@ test("RDL and RAP correction reviews mark wrong choices orange and correct choic
   }
 
   assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "choice", option\.optionId\)/);
-  assert.match(practiceUi, /border-student-primary-border bg-student-primary-soft text-student-primary/);
-  assert.match(practiceUi, /border-student-error-border bg-student-error-soft text-student-error/);
+  assert.match(optionStateSource, /bg-student-primary-soft text-student-primary/);
+  assert.match(optionStateSource, /bg-student-error-soft text-student-error/);
+  assert.doesNotMatch(optionStateSource, /\bborder(?:-|\b)/);
   assert.match(practiceUi, /data-correction-state=\{correctionState \?\? undefined\}/);
 });
 
@@ -588,7 +593,7 @@ test("RAP insertion and sentence-selection summaries use their natural answer fo
     ],
     questions: [
       correctionQuestion("q-insertion", "rap_sentence_insertion", { correct_anchor_id: "anchor-3" }),
-      correctionQuestion("q-sentence", "rap_sentence_selection", { correct_sentence_id: "sentence-2" })
+      correctionQuestion("q-sentence", "rap_sentence_selection", { correct_sentence_id: "sentence-3" })
     ],
     anchors: [
       { anchor_id: "anchor-1", anchor_order: 1, question_id: "q-insertion" },
@@ -596,19 +601,19 @@ test("RAP insertion and sentence-selection summaries use their natural answer fo
     ],
     sentences: [
       { sentence_id: "sentence-1", sentence_order: 1, sentence_text: "The student's selected sentence." },
-      { sentence_id: "sentence-2", sentence_order: 2, sentence_text: "The correct selected sentence." }
+      { sentence_id: "sentence-3", sentence_order: 3, sentence_text: "The correct selected sentence." }
     ]
   });
 
   assert.equal(answers[0].studentAnswer, "Position 1");
   assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "Position 3" });
   assert.equal(answers[1].studentAnswer, "Sentence 1");
-  assert.deepEqual(answers[1].correctAnswer, { kind: "text", text: "Sentence 2" });
+  assert.deepEqual(answers[1].correctAnswer, { kind: "text", text: "Sentence 3" });
   assert.equal(readingCorrectionMarkState(answers[0], "insertion", "anchor-1"), "incorrect");
   assert.equal(readingCorrectionMarkState(answers[0], "insertion", "anchor-3"), "correct");
   assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-1"), "incorrect");
-  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-3"), null);
-  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-2"), "correct");
+  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-2"), null);
+  assert.equal(readingCorrectionMarkState(answers[1], "sentence_selection", "sentence-3"), "correct");
 
   const correctInsertion = buildReadingCorrectionResultAnswers({
     allResultAnswers: [resultAnswer("correct-insertion", 1, true)],
@@ -653,6 +658,9 @@ test("RAP insertion and sentence-selection summaries use their natural answer fo
   assert.match(practiceUi, /bg-student-error[^\n]*line-through decoration-2/);
   assert.match(practiceUi, /data-strikethrough=\{correctionState === "incorrect" \? "true" : undefined\}/);
   assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "sentence_selection", sentence\.sentenceId\)/);
+  assert.match(practiceUi, /bg-student-error-soft[^\n]*text-student-error/);
+  assert.match(practiceUi, /readOnly \? "cursor-text select-text" : "cursor-pointer"/);
+  assert.match(practiceUi, /style=\{readOnly \? undefined : rapFramelessInteractionStyle\}/);
 });
 
 function resultAnswer(answerId, order, isCorrect) {

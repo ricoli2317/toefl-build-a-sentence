@@ -152,7 +152,7 @@ test("sentence insertion right column has only the official three-paragraph hier
   assert.doesNotMatch(instructionSource, /Sentence to insert|Choose one of the four markers|border-y|<hr/i);
 });
 
-test("sentence selection remains one inline paragraph flow and only the selected sentence becomes bold", () => {
+test("sentence selection keeps active interaction frameless and makes readonly text selectable", () => {
   const source = fs.readFileSync(
     path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
     "utf8"
@@ -175,7 +175,12 @@ test("sentence selection remains one inline paragraph flow and only the selected
   assert.match(renderSentenceSource, /<span[\s\S]*?data-testid="rap-selectable-sentence"/);
   assert.doesNotMatch(renderSentenceSource, /<button[\s\S]*?data-testid="rap-selectable-sentence"/);
   assert.doesNotMatch(selectableClassName, /(?:^|[:\s])(?:border|outline|ring|shadow)(?:-|$)/);
-  assert.match(renderSentenceSource, /style=\{rapFramelessInteractionStyle\}/);
+  assert.match(renderSentenceSource, /style=\{readOnly \? undefined : rapFramelessInteractionStyle\}/);
+  assert.match(renderSentenceSource, /readOnly \? "cursor-text select-text" : "cursor-pointer"/);
+  assert.match(renderSentenceSource, /role=\{readOnly \? undefined : "radio"\}/);
+  assert.match(renderSentenceSource, /aria-checked=\{readOnly \? undefined : selected\}/);
+  assert.match(renderSentenceSource, /bg-student-error-soft[^\n]*text-student-error/);
+  assert.doesNotMatch(renderSentenceSource, /bg-student-error-soft[^\n]*text-white/);
   assert.match(renderSentenceSource, /: selected[\s\S]*\? "font-bold text-inherit"[\s\S]*: "font-normal text-inherit"/);
   assert.match(source, /onAnswerChange\(question\.questionId, \{ kind: "sentence_selection", sentenceId: sentence\.sentenceId \}\)/);
   assert.match(rapSource, /<p[\s\S]*?paragraph\.sentences\.map[\s\S]*?<\/p>/);
