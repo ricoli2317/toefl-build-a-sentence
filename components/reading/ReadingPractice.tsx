@@ -1891,9 +1891,9 @@ function RapPracticeWorkspace({
       : null;
     const inserted = selected || correctionState !== null;
     const insertedClassName = correctionState === "correct"
-      ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
+      ? "font-bold text-student-primary"
       : correctionState === "incorrect"
-        ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white line-through decoration-2"
+        ? "font-bold text-student-error line-through decoration-2"
         : "font-bold";
     return (
       <Fragment key={`boundary:${paragraphId}:${boundaryIndex}`}>
@@ -1958,9 +1958,9 @@ function RapPracticeWorkspace({
       ? readingCorrectionMarkState(reviewPresentation, "sentence_selection", sentence.sentenceId)
       : null;
     const sentenceClassName = correctionState === "correct"
-      ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
+      ? "font-bold text-student-primary"
       : correctionState === "incorrect"
-        ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white"
+        ? "font-bold text-student-error"
         : selected
           ? "font-bold text-inherit"
           : "font-normal text-inherit";
@@ -2167,9 +2167,9 @@ function ChoiceOptionList({
           ? readingCorrectionMarkState(reviewPresentation, "choice", option.optionId)
           : null;
         const optionTextClassName = correctionState === "correct"
-          ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
+          ? "font-bold text-student-primary"
           : correctionState === "incorrect"
-            ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white"
+            ? "font-bold text-student-error"
             : "font-normal text-inherit";
         return (
           <button

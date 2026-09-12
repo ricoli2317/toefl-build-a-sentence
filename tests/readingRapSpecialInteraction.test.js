@@ -125,6 +125,9 @@ test("sentence insertion uses inline purple square markers and keeps the inserte
   assert.doesNotMatch(markerClassName, /(?:^|[:\s])(?:border|outline|ring|shadow)(?:-|$)/);
   assert.match(markerButtonSource, /style=\{rapFramelessInteractionStyle\}/);
   assert.match(insertionSource, /<RapInsertionMarker \/>/);
+  assert.match(insertionSource, /\? "font-bold text-student-primary"/);
+  assert.match(insertionSource, /\? "font-bold text-student-error line-through decoration-2"/);
+  assert.doesNotMatch(insertionSource, /bg-student-(?:primary|error)|text-white/);
   assert.match(insertionSource, /: "font-bold"/);
   assert.match(insertionSource, /const inserted = selected \|\| correctionState !== null/);
   assert.equal((insertionSource.match(/style=\{rapFramelessInteractionStyle\}/g) ?? []).length, 2);
@@ -179,8 +182,9 @@ test("sentence selection keeps active interaction frameless and makes readonly t
   assert.match(renderSentenceSource, /readOnly \? "cursor-text select-text" : "cursor-pointer"/);
   assert.match(renderSentenceSource, /role=\{readOnly \? undefined : "radio"\}/);
   assert.match(renderSentenceSource, /aria-checked=\{readOnly \? undefined : selected\}/);
-  assert.match(renderSentenceSource, /bg-student-primary[^\n]*font-bold text-white/);
-  assert.match(renderSentenceSource, /bg-student-error[^\n]*font-bold text-white/);
+  assert.match(renderSentenceSource, /font-bold text-student-primary/);
+  assert.match(renderSentenceSource, /font-bold text-student-error/);
+  assert.doesNotMatch(renderSentenceSource, /bg-student-(?:primary|error)|text-white/);
   assert.doesNotMatch(renderSentenceSource, /line-through|decoration-2/);
   assert.match(renderSentenceSource, /: selected[\s\S]*\? "font-bold text-inherit"[\s\S]*: "font-normal text-inherit"/);
   assert.match(source, /onAnswerChange\(question\.questionId, \{ kind: "sentence_selection", sentenceId: sentence\.sentenceId \}\)/);

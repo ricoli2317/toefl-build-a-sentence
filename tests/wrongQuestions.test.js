@@ -483,8 +483,9 @@ test("RDL and RAP correction reviews mark wrong choices orange and correct choic
   }
 
   assert.match(choiceSource, /readingCorrectionMarkState\(reviewPresentation, "choice", option\.optionId\)/);
-  assert.match(optionTextStateSource, /rounded-sm bg-student-primary px-\[0\.12em\] font-bold text-white/);
-  assert.match(optionTextStateSource, /rounded-sm bg-student-error px-\[0\.12em\] font-bold text-white/);
+  assert.match(optionTextStateSource, /font-bold text-student-primary/);
+  assert.match(optionTextStateSource, /font-bold text-student-error/);
+  assert.doesNotMatch(optionTextStateSource, /bg-student-(?:primary|error)|text-white/);
   assert.doesNotMatch(optionTextStateSource, /line-through|decoration-2/);
   assert.match(choiceSource, /<span className=\{optionTextClassName\} data-option-text-state=\{correctionState \?\? undefined\}>\{option\.text\}<\/span>/);
   assert.doesNotMatch(optionButtonClassName, /(?:^|\s)bg-student-(?:primary|error)(?:\s|$)/);
@@ -668,10 +669,10 @@ test("RAP insertion and sentence-selection summaries use their natural answer fo
 
   const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
   assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "insertion", anchor\.anchorId\)/);
-  assert.match(practiceUi, /bg-student-error[^\n]*line-through decoration-2/);
+  assert.match(practiceUi, /font-bold text-student-error line-through decoration-2/);
   assert.match(practiceUi, /data-strikethrough=\{correctionState === "incorrect" \? "true" : undefined\}/);
   assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "sentence_selection", sentence\.sentenceId\)/);
-  assert.match(practiceUi, /bg-student-error[^\n]*font-bold text-white/);
+  assert.match(practiceUi, /font-bold text-student-error/);
   assert.match(practiceUi, /readOnly \? "cursor-text select-text" : "cursor-pointer"/);
   assert.match(practiceUi, /style=\{readOnly \? undefined : rapFramelessInteractionStyle\}/);
 });
