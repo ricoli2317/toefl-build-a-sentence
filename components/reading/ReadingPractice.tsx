@@ -1960,7 +1960,7 @@ function RapPracticeWorkspace({
     const sentenceClassName = correctionState === "correct"
       ? "rounded-sm bg-student-primary px-[0.12em] font-bold text-white"
       : correctionState === "incorrect"
-        ? "rounded-sm bg-student-error-soft px-[0.12em] font-bold text-student-error"
+        ? "rounded-sm bg-student-error px-[0.12em] font-bold text-white"
         : selected
           ? "font-bold text-inherit"
           : "font-normal text-inherit";
@@ -2167,9 +2167,9 @@ function ChoiceOptionList({
           ? readingCorrectionMarkState(reviewPresentation, "choice", option.optionId)
           : null;
         const optionClassName = correctionState === "correct"
-          ? "bg-student-primary-soft text-student-primary"
+          ? "bg-student-primary font-bold text-white"
           : correctionState === "incorrect"
-            ? "bg-student-error-soft text-student-error"
+            ? "bg-student-error font-bold text-white"
             : "text-student-text";
         const radioClassName = correctionState === "incorrect"
           ? "border-student-error"
@@ -2200,7 +2200,9 @@ function ChoiceOptionList({
                 <span className={`rounded-full ${radioDotClassName}`} style={readingRadioDotStyle} />
               ) : null}
             </span>
-            <span className="font-normal text-inherit">{option.text}</span>
+            <span className={correctionState ? "font-bold text-white" : "font-normal text-inherit"}>
+              {option.text}
+            </span>
           </button>
         );
       })}

@@ -476,9 +476,11 @@ test("RDL and RAP correction reviews mark wrong choices orange and correct choic
   }
 
   assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "choice", option\.optionId\)/);
-  assert.match(optionStateSource, /bg-student-primary-soft text-student-primary/);
-  assert.match(optionStateSource, /bg-student-error-soft text-student-error/);
+  assert.match(optionStateSource, /bg-student-primary font-bold text-white/);
+  assert.match(optionStateSource, /bg-student-error font-bold text-white/);
   assert.doesNotMatch(optionStateSource, /\bborder(?:-|\b)/);
+  assert.doesNotMatch(optionStateSource, /line-through|decoration-2/);
+  assert.match(practiceUi, /correctionState \? "font-bold text-white" : "font-normal text-inherit"/);
   assert.match(practiceUi, /data-correction-state=\{correctionState \?\? undefined\}/);
 });
 
@@ -658,7 +660,7 @@ test("RAP insertion and sentence-selection summaries use their natural answer fo
   assert.match(practiceUi, /bg-student-error[^\n]*line-through decoration-2/);
   assert.match(practiceUi, /data-strikethrough=\{correctionState === "incorrect" \? "true" : undefined\}/);
   assert.match(practiceUi, /readingCorrectionMarkState\(reviewPresentation, "sentence_selection", sentence\.sentenceId\)/);
-  assert.match(practiceUi, /bg-student-error-soft[^\n]*text-student-error/);
+  assert.match(practiceUi, /bg-student-error[^\n]*font-bold text-white/);
   assert.match(practiceUi, /readOnly \? "cursor-text select-text" : "cursor-pointer"/);
   assert.match(practiceUi, /style=\{readOnly \? undefined : rapFramelessInteractionStyle\}/);
 });

@@ -179,8 +179,9 @@ test("sentence selection keeps active interaction frameless and makes readonly t
   assert.match(renderSentenceSource, /readOnly \? "cursor-text select-text" : "cursor-pointer"/);
   assert.match(renderSentenceSource, /role=\{readOnly \? undefined : "radio"\}/);
   assert.match(renderSentenceSource, /aria-checked=\{readOnly \? undefined : selected\}/);
-  assert.match(renderSentenceSource, /bg-student-error-soft[^\n]*text-student-error/);
-  assert.doesNotMatch(renderSentenceSource, /bg-student-error-soft[^\n]*text-white/);
+  assert.match(renderSentenceSource, /bg-student-primary[^\n]*font-bold text-white/);
+  assert.match(renderSentenceSource, /bg-student-error[^\n]*font-bold text-white/);
+  assert.doesNotMatch(renderSentenceSource, /line-through|decoration-2/);
   assert.match(renderSentenceSource, /: selected[\s\S]*\? "font-bold text-inherit"[\s\S]*: "font-normal text-inherit"/);
   assert.match(source, /onAnswerChange\(question\.questionId, \{ kind: "sentence_selection", sentenceId: sentence\.sentenceId \}\)/);
   assert.match(rapSource, /<p[\s\S]*?paragraph\.sentences\.map[\s\S]*?<\/p>/);
