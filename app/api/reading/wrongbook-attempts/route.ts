@@ -5,9 +5,14 @@ import {
   requireReadingAttemptStudent
 } from "@/lib/reading/attemptServer";
 import {
+  isReadingFullSetWrongbookAttemptSummary,
   isReadingWrongbookAttemptSummary,
   isReadingWrongbookScope
 } from "@/lib/reading/wrongbook";
+import {
+  loadReadingFullSetPreservedAnswers,
+  loadReadingFullSetWrongbookQueue
+} from "@/lib/reading/fullSetWrongbook.server";
 import {
   loadReadingWrongbookPreservedAnswers,
   loadReadingWrongbookQueue,
@@ -27,6 +32,17 @@ export async function GET(request: Request) {
   if (!parsed) return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
 
   try {
+    if (parsed.taskType === "full_set") {
+      const items = await loadReadingFullSetWrongbookQueue({
+        db: createServiceSupabase(),
+        scope: parsed.scope,
+        sourceAttemptId: parsed.sourceAttemptId,
+        studentId: auth.userId,
+        todayEnd: parsed.todayEnd,
+        todayStart: parsed.todayStart
+      });
+      return readingAttemptJson({ items, scope: parsed.scope, taskType: "full_set" });
+    }
     const items = await loadReadingWrongbookQueue({
       db: createServiceSupabase(),
       itemId: parsed.itemId,
@@ -53,15 +69,49 @@ export async function POST(request: Request) {
   }
   const body = await request.json().catch(() => ({})) as Record<string, unknown>;
   const params = new URLSearchParams();
-  for (const key of ["itemId", "scope", "taskType", "todayEnd", "todayStart"] as const) {
+  for (const key of ["itemId", "scope", "sourceAttemptId", "taskType", "todayEnd", "todayStart"] as const) {
     if (typeof body[key] === "string") params.set(key, body[key]);
   }
   const parsed = parseQueueRequest(params, true);
-  if (!parsed?.itemId) {
+  if (!parsed || (parsed.taskType === "full_set" ? !parsed.sourceAttemptId : !parsed.itemId)) {
     return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
   }
 
   try {
+    if (parsed.taskType === "full_set") {
+      const [item] = await loadReadingFullSetWrongbookQueue({
+        db: createServiceSupabase(),
+        scope: parsed.scope,
+        sourceAttemptId: parsed.sourceAttemptId,
+        studentId: auth.userId,
+        todayEnd: parsed.todayEnd,
+        todayStart: parsed.todayStart
+      });
+      if (!item) return readingAttemptJson({ error: "这套错题已经订正完成。" }, { status: 409 });
+      const { data, error } = await auth.client.rpc("get_or_create_reading_full_set_wrongbook_attempt", {
+        p_full_set_id: item.fullSetId,
+        p_scope: parsed.scope,
+        p_source_attempt_id: item.sourceAttemptId,
+        p_targets: item.targets
+      });
+      if (error) return readingAttemptError(error, "暂时无法进入错题订正，请稍后重试。");
+      if (
+        !isReadingFullSetWrongbookAttemptSummary(data)
+        || data.sourceAttemptId !== item.sourceAttemptId
+        || data.sourceFullSetId !== item.fullSetId
+      ) return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
+      const preservedAnswersByOccurrence = await loadReadingFullSetPreservedAnswers({
+        before: data.startedAt,
+        db: createServiceSupabase(),
+        excludeAttemptId: data.attemptId,
+        sourceAttemptId: item.sourceAttemptId,
+        targets: item.targets
+      });
+      return readingAttemptJson(
+        { attempt: data, preservedAnswersByOccurrence },
+        { status: data.created ? 201 : 200 }
+      );
+    }
     const [item] = await loadReadingWrongbookQueue({
       db: createServiceSupabase(),
       itemId: parsed.itemId,
@@ -103,19 +153,27 @@ export async function POST(request: Request) {
 
 function parseQueueRequest(params: URLSearchParams, requireItem = false) {
   const scope = params.get("scope");
-  const taskType = params.get("taskType");
+  const requestedTaskType = params.get("taskType");
+  const taskType = requestedTaskType === "full_set"
+    ? "full_set" as const
+    : isReadingModule(requestedTaskType)
+      ? requestedTaskType
+      : null;
   const itemId = params.get("itemId")?.trim() || null;
+  const sourceAttemptId = params.get("sourceAttemptId")?.trim() || null;
   const todayStart = Date.parse(params.get("todayStart") ?? "");
   const todayEnd = Date.parse(params.get("todayEnd") ?? "");
   if (
     !isReadingWrongbookScope(scope)
-    || !isReadingModule(taskType)
-    || (requireItem && !itemId)
+    || !taskType
+    || (requireItem && taskType === "full_set" && !sourceAttemptId)
+    || (requireItem && taskType !== "full_set" && !itemId)
     || (itemId && !/^reading-(ctw|rdl|rap)-[a-f0-9]{24}$/.test(itemId))
+    || (sourceAttemptId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sourceAttemptId))
     || !Number.isFinite(todayStart)
     || !Number.isFinite(todayEnd)
     || todayEnd <= todayStart
     || todayEnd - todayStart > 26 * 60 * 60 * 1000
   ) return null;
-  return { itemId, scope, taskType, todayEnd, todayStart };
+  return { itemId, scope, sourceAttemptId, taskType, todayEnd, todayStart };
 }

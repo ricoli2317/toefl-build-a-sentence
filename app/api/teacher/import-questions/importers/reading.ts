@@ -40,9 +40,9 @@ async function importReadingCsv(
   const logicalWarnings = preparedPackages.flatMap((prepared) => {
     const warnings = prepared.possibleDuplicateLogicalItemIds.length > 0
       ? [{
-          message: "可能重复的 Reading 内容存在实质差异，已保留为独立题组。",
+          message: "可能重复的 Reading 内容存在实质差异，需确认后才能导入。",
           operation: "check Reading possible duplicates",
-          details: `module=${prepared.packageData.item.module}; existing=${prepared.possibleDuplicateLogicalItemIds.join(",")}; action=preserve as new`
+          details: `module=${prepared.packageData.item.module}; existing=${prepared.possibleDuplicateLogicalItemIds.join(",")}; action=block pending review`
         }]
       : [];
     return warnings;
@@ -59,9 +59,9 @@ async function importReadingCsv(
   const groupedPossibleDuplicateWarnings = grouped.report.possibleDuplicates.filter((duplicate) =>
       !preparedSourceSets.some((sources) => duplicate.sourceOccurrences.every((source) => sources.has(source)))
     ).map((duplicate) => ({
-      message: "可能重复的 Reading 内容已按独立题组保留，没有自动合并。",
+      message: "可能重复的 Reading 内容需确认后才能导入。",
       operation: "check Reading possible duplicates",
-      details: `${duplicate.reason}; sources=${duplicate.sourceOccurrences.join(", ")}; action=preserve as new`
+      details: `${duplicate.reason}; sources=${duplicate.sourceOccurrences.join(", ")}; action=block pending review`
     }));
   const possibleDuplicateWarnings = [
     ...groupedPossibleDuplicateWarnings,
@@ -91,6 +91,9 @@ async function importReadingCsv(
   for (const prepared of preparedPackages) {
     const { packageData, existingItem, addedOccurrenceCount } = prepared;
     try {
+      if (possibleDuplicateWarnings.length > 0) {
+        throw new Error("发现需确认的相似题；明确处理前不能导入为新题。");
+      }
       assertPreparedReadingPackageCanImport(prepared);
       const existed = Boolean(existingItem);
       const incomingFirst = {
@@ -152,7 +155,7 @@ async function importReadingCsv(
       (count, item) => count + item.batchSemanticReuseCount,
       0
     ),
-    logicalNeedsReviewCount: 0,
+    logicalNeedsReviewCount: possibleDuplicateWarnings.length,
     possibleDuplicateCount: possibleDuplicateWarnings.length,
     occurrenceInsertedCount,
     exactFingerprintReuseCount,

@@ -6,8 +6,13 @@ const test = require("node:test");
 const { parseCsvDocument } = require("../lib/csv.ts");
 const { adaptReadingCsv } = require("../lib/reading/csvAdapter.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
-const { buildReadingImportRows, prepareReadingPackagesForImport } = require("../lib/reading/importer.ts");
 const {
+  assertPreparedReadingPackageCanImport,
+  buildReadingImportRows,
+  prepareReadingPackagesForImport
+} = require("../lib/reading/importer.ts");
+const {
+  areReadingPackagesHistoricalSemanticEquivalents,
   normalizeReadingSemanticText,
   readingPossibleDuplicateFingerprint,
   readingSemanticFingerprint
@@ -53,6 +58,13 @@ function packagesFromRdlFixture(file, materialCatalog) {
   });
   assert.deepEqual(adapted.failures, []);
   return groupReadingSourceOccurrences(adapted.candidates).packages;
+}
+
+function historicalPackage(module, logicalItemId) {
+  return JSON.parse(fs.readFileSync(path.join(
+    __dirname,
+    `../data/reading/import-packages/${module}/${logicalItemId}.json`
+  ), "utf8"));
 }
 
 function incomingVariant(historical, mutate) {
@@ -299,6 +311,7 @@ test("RDL unresolved material similarity remains possible material duplicate and
   assert.equal(prepared.reuseKind, "new");
   assert.equal(prepared.materialMatchKind, "possible_material_duplicate");
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.throws(() => assertPreparedReadingPackageCanImport(prepared), /需确认/);
 });
 
 test("7.15A RDL-013 and RDL-014 reuse historical logical items across versioned asset keys", async () => {
@@ -445,6 +458,297 @@ test("semantic variants in one CSV coalesce before import, while conflicting sha
   );
   assert.equal(preparedConflict.length, 2);
   assert.ok(preparedConflict.every((prepared) => /current CSV/.test(prepared.occurrenceConflict)));
+});
+
+const historicalRdlClusters = [
+  ["Mini Fridge Repair Chat", [
+    "reading-rdl-148c9722abd9aaa17f9726fd",
+    "reading-rdl-8a2b06d3d54b3dbbc242334d",
+    "reading-rdl-bf33fe2c2695a9b1bffcbb13"
+  ]],
+  ["Global Cultures Documentary", [
+    "reading-rdl-4e019fb07512c8980a703524",
+    "reading-rdl-618bf4056104c302387d73c6",
+    "reading-rdl-6cd25d7e2010341609c5c804"
+  ]],
+  ["Dental Appointment", [
+    "reading-rdl-6c6546f79c781b9849ca098d",
+    "reading-rdl-d7cff4d1c3f5fbdc819182c0"
+  ]],
+  ["Concert Planning Chat", [
+    "reading-rdl-75ae12fd735b71b1b761a4d6",
+    "reading-rdl-79a7fed6dab3ea6be215f43a"
+  ]],
+  ["Sign Language Interpreter Needed", [
+    "reading-rdl-84169206138631781d46b7f7",
+    "reading-rdl-f2d78b3e065372b894c1b5cf"
+  ]],
+  ["University Photography Club", [
+    "reading-rdl-93162d8f9d1db0491ad81016",
+    "reading-rdl-ea4eba6be59eb0d54561689d"
+  ]]
+];
+
+const historicalRapClusters = [
+  ["Radio Astronomy", [
+    "reading-rap-00d1af757b20b7f4f6440076",
+    "reading-rap-5e0859fbc2e185e743d11c4b",
+    "reading-rap-f1ccfc79e358e55f2ee63181"
+  ]],
+  ["Benefits of Music Education", [
+    "reading-rap-08b62a981873c3e2eef76ff4",
+    "reading-rap-6c60773bbb66e0a8dc6adcc0"
+  ]],
+  ["Data Visualization in Action", [
+    "reading-rap-199501db577904fb79815267",
+    "reading-rap-65673b292aab5d2297ddb13f",
+    "reading-rap-c0a09dd368b968fd01c859ed"
+  ]],
+  ["Hidden Structures in Discrete Geometry", [
+    "reading-rap-1f5a2a094976c7046412177a",
+    "reading-rap-c2f68bcc6afcbbe710f5c87d",
+    "reading-rap-f50dd6e4cd831e6155bb31ac"
+  ]],
+  ["Value Theory", [
+    "reading-rap-2662811490d7e1cb8ef50753",
+    "reading-rap-7066f8dd9b44a5d1e065719d",
+    "reading-rap-80e0d016a21881694ab06335",
+    "reading-rap-af2f63bf59d1743d597f47f4"
+  ]],
+  ["Theater Lighting Innovations", [
+    "reading-rap-28b2cecf31bfee0a244d1a09",
+    "reading-rap-5a8c27c074aa0513d04f572b"
+  ]],
+  ["Noise Control in Urban Areas", [
+    "reading-rap-2b14b33aacc064d75314fa53",
+    "reading-rap-7945215d82567f1f6f2af63a"
+  ]],
+  ["Quantum Computing duplicate subset", [
+    "reading-rap-bad55ea4a5cad4980668095d",
+    "reading-rap-dbb5edec85e50734f930693e"
+  ]],
+  ["Veganism in the United States", [
+    "reading-rap-3c7da315889dceed32412dcf",
+    "reading-rap-f9e62e69f26b24ec00d4aa76"
+  ]],
+  ["The Power of Music", [
+    "reading-rap-6522c75a66bfa0f293e67432",
+    "reading-rap-e9f22c72c388b25c9ccc03d8"
+  ]],
+  ["Social Networks and Influence", [
+    "reading-rap-668702bfa1634d0e0a73a4d1",
+    "reading-rap-7447d5926c9979015af28e99",
+    "reading-rap-8371c3948e75cac783023b5c",
+    "reading-rap-8ef2e4aefe74c7b7cdc2b9e1"
+  ]],
+  ["Free Will and Determinism", [
+    "reading-rap-872c6a298ccb4eea664f4812",
+    "reading-rap-fdeb6000ce9ff3558cc559b5"
+  ]],
+  ["Urban Resilience", [
+    "reading-rap-bd88c39e1718f0046a3df188",
+    "reading-rap-e7ce2874e8c366c253f0bed0"
+  ]],
+  ["Carthage's Trade Network", [
+    "reading-rap-43fe10b35ebdf733d430c751",
+    "reading-rap-c3233ad427c0e207ebb6a110",
+    "reading-rap-fcb877e86ce9cff28b0635f8"
+  ]]
+];
+
+test("all 6 audited RDL historical clusters reuse a stable existing survivor", async (t) => {
+  for (const [name, ids] of historicalRdlClusters) {
+    await t.test(name, async () => {
+      const historical = ids.map((id) => {
+        const packageData = historicalPackage("rdl", id);
+        packageData.item.title = name;
+        packageData.materials[0].title = name;
+        return packageData;
+      });
+      const incoming = incomingVariant(historical.at(-1), (candidate) => {
+        candidate.questions[0].stem = `${candidate.questions[0].stem}.`;
+      });
+      assert.ok(historical.every((item) =>
+        areReadingPackagesHistoricalSemanticEquivalents(incoming, item)
+      ));
+      const [prepared] = await prepareReadingPackagesForImport(
+        historicalDatabase(...historical),
+        [incoming],
+        { enableHistoricalSemanticFallback: true }
+      );
+      const expectedSurvivor = [...historical].sort((left, right) =>
+        left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
+        || left.item.logicalItemId.localeCompare(right.item.logicalItemId)
+      )[0];
+      assert.equal(prepared.reuseKind, "semantic");
+      assert.equal(prepared.existingItem.logicalItemId, expectedSurvivor.item.logicalItemId);
+      assert.equal(prepared.packageData.item.logicalItemId, expectedSurvivor.item.logicalItemId);
+      assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+      assert.equal(prepared.addedOccurrenceCount, 1);
+    });
+  }
+});
+
+test("all 14 audited RAP historical clusters reuse and never create a third logical item", async (t) => {
+  for (const [name, ids] of historicalRapClusters) {
+    await t.test(name, async () => {
+      const historical = ids.map((id) => historicalPackage("rap", id));
+      const incoming = incomingVariant(historical.at(-1), (candidate) => {
+        candidate.questions[0].stem = `${candidate.questions[0].stem}.`;
+      });
+      assert.ok(historical.every((item) =>
+        areReadingPackagesHistoricalSemanticEquivalents(incoming, item)
+      ));
+      const [prepared] = await prepareReadingPackagesForImport(
+        historicalDatabase(...historical),
+        [incoming],
+        { enableHistoricalSemanticFallback: true }
+      );
+      const expectedSurvivor = [...historical].sort((left, right) =>
+        left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
+        || left.item.logicalItemId.localeCompare(right.item.logicalItemId)
+      )[0];
+      assert.equal(prepared.reuseKind, "semantic");
+      assert.equal(prepared.existingItem.logicalItemId, expectedSurvivor.item.logicalItemId);
+      assert.equal(prepared.packageData.item.logicalItemId, expectedSurvivor.item.logicalItemId);
+      assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+      assert.equal(prepared.addedOccurrenceCount, 1);
+    });
+  }
+});
+
+test("Value Theory reuses across comma/period, trailing colon, quote, and utility OCR variants", async () => {
+  const historical = historicalPackage("rap", "reading-rap-af2f63bf59d1743d597f47f4");
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.passages[0].paragraphs[0].text = candidate.passages[0].paragraphs[0].text.replace(",", ".");
+    candidate.questions[0].stem = `${candidate.questions[0].stem.replaceAll('"', "“")}:`;
+    const utility = candidate.questions[1].payload.options.find((option) => /utility/i.test(option.text));
+    assert.ok(utility);
+    utility.text = utility.text.replace(/utility/i, "utillity");
+  });
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+});
+
+test("highlight-only and option-order compound variants reuse for three audited RAP clusters", async (t) => {
+  for (const [name, id] of [
+    ["Benefits of Music Education", "reading-rap-08b62a981873c3e2eef76ff4"],
+    ["The Power of Music", "reading-rap-6522c75a66bfa0f293e67432"],
+    ["Free Will and Determinism", "reading-rap-872c6a298ccb4eea664f4812"]
+  ]) {
+    await t.test(name, async () => {
+      const base = historicalPackage("rap", id);
+      const historical = contentVariant(base, (candidate) => {
+        const question = candidate.questions.find((item) =>
+          item.questionType === "rap_multiple_choice" && /[“"][^”"]+[”"]/.test(item.stem)
+        );
+        assert.ok(question);
+        const target = question.stem.match(/[“"]([^”"]+)[”"]/)?.[1];
+        assert.ok(target);
+        const paragraph = candidate.passages[0].paragraphs.find((item) => item.text.includes(target));
+        assert.ok(paragraph);
+        const startOffset = paragraph.text.indexOf(target);
+        question.payload.highlightRanges = [{
+          paragraphId: paragraph.paragraphId,
+          startOffset,
+          endOffset: startOffset + target.length
+        }];
+      });
+      const incoming = incomingVariant(base, (candidate) => {
+        for (const question of candidate.questions) {
+          if (question.questionType !== "rap_multiple_choice") continue;
+          question.payload.options.reverse().forEach((option, index) => { option.optionOrder = index + 1; });
+        }
+      });
+      const { prepared } = await historicalMatch(historical, incoming);
+      assert.equal(prepared.reuseKind, "semantic");
+      assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+    });
+  }
+});
+
+test("Quantum insertion-answer variant and same-title Social Networks variant remain distinct", () => {
+  const quantumAnswerVariant = historicalPackage("rap", "reading-rap-356930309b8c015008667f85");
+  const quantumDuplicate = historicalPackage("rap", "reading-rap-bad55ea4a5cad4980668095d");
+  assert.equal(
+    areReadingPackagesHistoricalSemanticEquivalents(quantumAnswerVariant, quantumDuplicate),
+    false
+  );
+
+  const socialDifferent = historicalPackage("rap", "reading-rap-5817366a9ff4cc9c334fb39a");
+  const socialDuplicate = historicalPackage("rap", "reading-rap-668702bfa1634d0e0a73a4d1");
+  assert.equal(
+    areReadingPackagesHistoricalSemanticEquivalents(socialDifferent, socialDuplicate),
+    false
+  );
+});
+
+test("substantive answers and RAP semantic positions remain identity-critical", () => {
+  const multipleChoice = historicalPackage("rap", "reading-rap-6522c75a66bfa0f293e67432");
+  const differentAnswer = contentVariant(multipleChoice, (candidate) => {
+    const question = candidate.questions.find((item) => item.questionType === "rap_multiple_choice");
+    const alternative = question.payload.options.find((option) => option.optionId !== question.payload.correctOptionId);
+    question.payload.correctOptionId = alternative.optionId;
+  });
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(multipleChoice, differentAnswer), false);
+
+  const selection = historicalPackage("rap", "reading-rap-199501db577904fb79815267");
+  const differentSelection = contentVariant(selection, (candidate) => {
+    const question = candidate.questions.find((item) => item.questionType === "rap_sentence_selection");
+    const paragraph = candidate.passages[0].paragraphs.find(
+      (item) => item.paragraphId === question.payload.targetParagraphId
+    );
+    const alternative = paragraph.sentences.find(
+      (sentence) => sentence.sentenceId !== question.payload.correctSentenceId
+    );
+    question.payload.correctSentenceId = alternative.sentenceId;
+  });
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(selection, differentSelection), false);
+});
+
+test("possible duplicates are blockers instead of silently creating a new logical item", async () => {
+  const historical = packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.questions[0].stem = "A substantively different question?";
+  });
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "new");
+  assert.throws(
+    () => assertPreparedReadingPackageCanImport(prepared),
+    /需确认的相似题/
+  );
+});
+
+test("multiple candidates that are not one equivalence class block instead of choosing or creating", async () => {
+  const base = historicalPackage("rap", "reading-rap-af2f63bf59d1743d597f47f4");
+  const candidateA = contentVariant(base, (candidate) => {
+    const option = candidate.questions[1].payload.options.find((item) => /utility/i.test(item.text));
+    option.text = option.text.replace(/utility/i, "xxility");
+  });
+  const candidateB = contentVariant(base, (candidate) => {
+    const option = candidate.questions[1].payload.options.find((item) => /utility/i.test(item.text));
+    option.text = option.text.replace(/utility/i, "utilitz");
+  });
+  const incoming = incomingVariant(base, (candidate) => {
+    candidate.questions[0].stem = `${candidate.questions[0].stem}.`;
+  });
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(incoming, candidateA), true);
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(incoming, candidateB), true);
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(candidateA, candidateB), false);
+
+  const [prepared] = await prepareReadingPackagesForImport(
+    historicalDatabase(candidateA, candidateB),
+    [incoming],
+    { enableHistoricalSemanticFallback: true }
+  );
+  assert.equal(prepared.reuseKind, "new");
+  assert.equal(prepared.existingItem, null);
+  assert.deepEqual(
+    new Set(prepared.possibleDuplicateLogicalItemIds),
+    new Set([candidateA.item.logicalItemId, candidateB.item.logicalItemId])
+  );
+  assert.throws(() => assertPreparedReadingPackageCanImport(prepared), /需确认的相似题/);
 });
 
 function occurrenceAwareFrom(originalFrom, occurrences) {

@@ -78,4 +78,7 @@ test("preflight response separates duplicates, material warnings, rejections, co
   assert.match(readingImporter, /rejectedRowCount,/);
   assert.match(readingImporter, /occurrenceConflictCount,/);
   assert.match(readingImporter, /blockerCount: failedRows\.length/);
+  assert.match(readingImporter, /action=block pending review/);
+  assert.doesNotMatch(readingImporter, /action=preserve as new/);
+  assert.match(readingImporter, /possibleDuplicateWarnings\.length > 0[\s\S]*明确处理前不能导入为新题/);
 });

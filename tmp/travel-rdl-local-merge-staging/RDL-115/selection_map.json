@@ -1,0 +1,4727 @@
+{
+  "schema_version": 2,
+  "image_file": "material_final.png",
+  "image_sha256": "54aa0c6e14bfe135527e2d176f0836eae2fd79adfad5663975162af0d5d952ea",
+  "canvas_width": 1654,
+  "canvas_height": 988,
+  "coordinate_space": "normalized_top_left_xywh_0_1",
+  "visible_text": "Review: The Silent Echo\nAvailable now at the University Bookstore, Jaden Park’s\nnovel introduces Ben, a man burdened by regret who\nseeks refuge in nature.\nDescriptions of the landscape reflect Ben’s complex\ninner life as revealed through the diary he keeps.\nRecommended if you prefer character development to\naction-packed plots.",
+  "lines": [
+    {
+      "line_index": 0,
+      "text": "Review: The Silent Echo",
+      "bbox": {
+        "x": 0.05441354,
+        "y": 0.2854251,
+        "width": 0.5241838,
+        "height": 0.05566802
+      },
+      "words": [
+        {
+          "id": "l0w0",
+          "line_index": 0,
+          "word_index": 0,
+          "text": "Review:",
+          "bbox": {
+            "x": 0.05441354,
+            "y": 0.28643725,
+            "width": 0.17049577,
+            "height": 0.05465587
+          },
+          "chars": [
+            {
+              "id": "l0w0c0",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 0,
+              "char": "R",
+              "bbox": {
+                "x": 0.05441354,
+                "y": 0.28643725,
+                "width": 0.02999525,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l0w0c1",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 1,
+              "char": "e",
+              "bbox": {
+                "x": 0.08440879,
+                "y": 0.28643725,
+                "width": 0.02655566,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l0w0c2",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 2,
+              "char": "v",
+              "bbox": {
+                "x": 0.11096445,
+                "y": 0.28643725,
+                "width": 0.02554402,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l0w0c3",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 3,
+              "char": "i",
+              "bbox": {
+                "x": 0.13650847,
+                "y": 0.28643725,
+                "width": 0.01198798,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l0w0c4",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 4,
+              "char": "e",
+              "bbox": {
+                "x": 0.14849645,
+                "y": 0.28643725,
+                "width": 0.02655566,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l0w0c5",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 5,
+              "char": "w",
+              "bbox": {
+                "x": 0.17505211,
+                "y": 0.28643725,
+                "width": 0.03530638,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l0w0c6",
+              "line_index": 0,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 6,
+              "char": ":",
+              "bbox": {
+                "x": 0.2103585,
+                "y": 0.28643725,
+                "width": 0.01455082,
+                "height": 0.05465587
+              }
+            }
+          ]
+        },
+        {
+          "id": "l0w1",
+          "line_index": 0,
+          "word_index": 1,
+          "text": "The",
+          "bbox": {
+            "x": 0.24486094,
+            "y": 0.2854251,
+            "width": 0.07799274,
+            "height": 0.05566802
+          },
+          "chars": [
+            {
+              "id": "l0w1c0",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 7,
+              "char": "T",
+              "bbox": {
+                "x": 0.24486094,
+                "y": 0.2854251,
+                "width": 0.02561542,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w1c1",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 8,
+              "char": "h",
+              "bbox": {
+                "x": 0.27047637,
+                "y": 0.2854251,
+                "width": 0.02658174,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w1c2",
+              "line_index": 0,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 9,
+              "char": "e",
+              "bbox": {
+                "x": 0.2970581,
+                "y": 0.2854251,
+                "width": 0.02579558,
+                "height": 0.05566802
+              }
+            }
+          ]
+        },
+        {
+          "id": "l0w2",
+          "line_index": 0,
+          "word_index": 2,
+          "text": "Silent",
+          "bbox": {
+            "x": 0.33796856,
+            "y": 0.2854251,
+            "width": 0.12696493,
+            "height": 0.05566802
+          },
+          "chars": [
+            {
+              "id": "l0w2c0",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 10,
+              "char": "S",
+              "bbox": {
+                "x": 0.33796856,
+                "y": 0.2854251,
+                "width": 0.02846158,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w2c1",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 11,
+              "char": "i",
+              "bbox": {
+                "x": 0.36643014,
+                "y": 0.2854251,
+                "width": 0.01245304,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w2c2",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 12,
+              "char": "l",
+              "bbox": {
+                "x": 0.37888318,
+                "y": 0.2854251,
+                "width": 0.01245304,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w2c3",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 13,
+              "char": "e",
+              "bbox": {
+                "x": 0.39133622,
+                "y": 0.2854251,
+                "width": 0.02758584,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w2c4",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 4,
+              "global_index": 14,
+              "char": "n",
+              "bbox": {
+                "x": 0.41892206,
+                "y": 0.2854251,
+                "width": 0.02842655,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w2c5",
+              "line_index": 0,
+              "word_index": 2,
+              "char_index": 5,
+              "global_index": 15,
+              "char": "t",
+              "bbox": {
+                "x": 0.44734861,
+                "y": 0.2854251,
+                "width": 0.01758488,
+                "height": 0.05566802
+              }
+            }
+          ]
+        },
+        {
+          "id": "l0w3",
+          "line_index": 0,
+          "word_index": 3,
+          "text": "Echo",
+          "bbox": {
+            "x": 0.4764208,
+            "y": 0.2854251,
+            "width": 0.10217654,
+            "height": 0.05566802
+          },
+          "chars": [
+            {
+              "id": "l0w3c0",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 16,
+              "char": "E",
+              "bbox": {
+                "x": 0.4764208,
+                "y": 0.2854251,
+                "width": 0.02660043,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w3c1",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 17,
+              "char": "c",
+              "bbox": {
+                "x": 0.50302122,
+                "y": 0.2854251,
+                "width": 0.02314796,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w3c2",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 18,
+              "char": "h",
+              "bbox": {
+                "x": 0.52616918,
+                "y": 0.2854251,
+                "width": 0.02668263,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l0w3c3",
+              "line_index": 0,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 19,
+              "char": "o",
+              "bbox": {
+                "x": 0.55285181,
+                "y": 0.2854251,
+                "width": 0.02574553,
+                "height": 0.05566802
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 1,
+      "text": "Available now at the University Bookstore, Jaden Park’s",
+      "bbox": {
+        "x": 0.05380895,
+        "y": 0.40283401,
+        "width": 0.88633615,
+        "height": 0.06174089
+      },
+      "words": [
+        {
+          "id": "l1w0",
+          "line_index": 1,
+          "word_index": 0,
+          "text": "Available",
+          "bbox": {
+            "x": 0.05380895,
+            "y": 0.40283401,
+            "width": 0.15114873,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l1w0c0",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 20,
+              "char": "A",
+              "bbox": {
+                "x": 0.05380895,
+                "y": 0.40283401,
+                "width": 0.02254932,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c1",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 21,
+              "char": "v",
+              "bbox": {
+                "x": 0.07635827,
+                "y": 0.40283401,
+                "width": 0.01951012,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c2",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 22,
+              "char": "a",
+              "bbox": {
+                "x": 0.0958684,
+                "y": 0.40283401,
+                "width": 0.02020553,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c3",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 23,
+              "char": "i",
+              "bbox": {
+                "x": 0.11607393,
+                "y": 0.40283401,
+                "width": 0.00915624,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c4",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 24,
+              "char": "l",
+              "bbox": {
+                "x": 0.12523017,
+                "y": 0.40283401,
+                "width": 0.00915624,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c5",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 25,
+              "char": "a",
+              "bbox": {
+                "x": 0.1343864,
+                "y": 0.40283401,
+                "width": 0.02020553,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c6",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 26,
+              "char": "b",
+              "bbox": {
+                "x": 0.15459194,
+                "y": 0.40283401,
+                "width": 0.0209267,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c7",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 27,
+              "char": "l",
+              "bbox": {
+                "x": 0.17551864,
+                "y": 0.40283401,
+                "width": 0.00915624,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w0c8",
+              "line_index": 1,
+              "word_index": 0,
+              "char_index": 8,
+              "global_index": 28,
+              "char": "e",
+              "bbox": {
+                "x": 0.18467488,
+                "y": 0.40283401,
+                "width": 0.0202828,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w1",
+          "line_index": 1,
+          "word_index": 1,
+          "text": "now",
+          "bbox": {
+            "x": 0.21523579,
+            "y": 0.41801619,
+            "width": 0.06892382,
+            "height": 0.03036437
+          },
+          "chars": [
+            {
+              "id": "l1w1c0",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 29,
+              "char": "n",
+              "bbox": {
+                "x": 0.21523579,
+                "y": 0.41801619,
+                "width": 0.02117421,
+                "height": 0.03036437
+              }
+            },
+            {
+              "id": "l1w1c1",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 30,
+              "char": "o",
+              "bbox": {
+                "x": 0.23641,
+                "y": 0.41801619,
+                "width": 0.02043057,
+                "height": 0.03036437
+              }
+            },
+            {
+              "id": "l1w1c2",
+              "line_index": 1,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 31,
+              "char": "w",
+              "bbox": {
+                "x": 0.25684057,
+                "y": 0.41801619,
+                "width": 0.02731904,
+                "height": 0.03036437
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w2",
+          "line_index": 1,
+          "word_index": 2,
+          "text": "at",
+          "bbox": {
+            "x": 0.29564692,
+            "y": 0.40991903,
+            "width": 0.02841596,
+            "height": 0.03846154
+          },
+          "chars": [
+            {
+              "id": "l1w2c0",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 32,
+              "char": "a",
+              "bbox": {
+                "x": 0.29564692,
+                "y": 0.40991903,
+                "width": 0.01732788,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l1w2c1",
+              "line_index": 1,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 33,
+              "char": "t",
+              "bbox": {
+                "x": 0.3129748,
+                "y": 0.40991903,
+                "width": 0.01108808,
+                "height": 0.03846154
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w3",
+          "line_index": 1,
+          "word_index": 3,
+          "text": "the",
+          "bbox": {
+            "x": 0.33434099,
+            "y": 0.40283401,
+            "width": 0.04836759,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l1w3c0",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 34,
+              "char": "t",
+              "bbox": {
+                "x": 0.33434099,
+                "y": 0.40283401,
+                "width": 0.01155665,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w3c1",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 35,
+              "char": "h",
+              "bbox": {
+                "x": 0.34589765,
+                "y": 0.40283401,
+                "width": 0.01868172,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w3c2",
+              "line_index": 1,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 36,
+              "char": "e",
+              "bbox": {
+                "x": 0.36457937,
+                "y": 0.40283401,
+                "width": 0.01812921,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w4",
+          "line_index": 1,
+          "word_index": 4,
+          "text": "University",
+          "bbox": {
+            "x": 0.39359129,
+            "y": 0.4048583,
+            "width": 0.1668682,
+            "height": 0.0597166
+          },
+          "chars": [
+            {
+              "id": "l1w4c0",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 37,
+              "char": "U",
+              "bbox": {
+                "x": 0.39359129,
+                "y": 0.4048583,
+                "width": 0.02421301,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c1",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 38,
+              "char": "n",
+              "bbox": {
+                "x": 0.4178043,
+                "y": 0.4048583,
+                "width": 0.02096996,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c2",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 39,
+              "char": "i",
+              "bbox": {
+                "x": 0.43877427,
+                "y": 0.4048583,
+                "width": 0.00918647,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c3",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 40,
+              "char": "v",
+              "bbox": {
+                "x": 0.44796074,
+                "y": 0.4048583,
+                "width": 0.01957455,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c4",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 41,
+              "char": "e",
+              "bbox": {
+                "x": 0.46753529,
+                "y": 0.4048583,
+                "width": 0.02034978,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c5",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 42,
+              "char": "r",
+              "bbox": {
+                "x": 0.48788507,
+                "y": 0.4048583,
+                "width": 0.01360528,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c6",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 43,
+              "char": "s",
+              "bbox": {
+                "x": 0.50149035,
+                "y": 0.4048583,
+                "width": 0.01723594,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c7",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 44,
+              "char": "i",
+              "bbox": {
+                "x": 0.51872629,
+                "y": 0.4048583,
+                "width": 0.00918647,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c8",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 8,
+              "global_index": 45,
+              "char": "t",
+              "bbox": {
+                "x": 0.52791276,
+                "y": 0.4048583,
+                "width": 0.01297218,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l1w4c9",
+              "line_index": 1,
+              "word_index": 4,
+              "char_index": 9,
+              "global_index": 46,
+              "char": "y",
+              "bbox": {
+                "x": 0.54088494,
+                "y": 0.4048583,
+                "width": 0.01957455,
+                "height": 0.0597166
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w5",
+          "line_index": 1,
+          "word_index": 5,
+          "text": "Bookstore,",
+          "bbox": {
+            "x": 0.57073761,
+            "y": 0.40283401,
+            "width": 0.16444982,
+            "height": 0.05364372
+          },
+          "chars": [
+            {
+              "id": "l1w5c0",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 47,
+              "char": "B",
+              "bbox": {
+                "x": 0.57073761,
+                "y": 0.40283401,
+                "width": 0.02105226,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c1",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 48,
+              "char": "o",
+              "bbox": {
+                "x": 0.59178987,
+                "y": 0.40283401,
+                "width": 0.0187744,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c2",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 49,
+              "char": "o",
+              "bbox": {
+                "x": 0.61056427,
+                "y": 0.40283401,
+                "width": 0.0187744,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c3",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 50,
+              "char": "k",
+              "bbox": {
+                "x": 0.62933866,
+                "y": 0.40283401,
+                "width": 0.01777933,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c4",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 4,
+              "global_index": 51,
+              "char": "s",
+              "bbox": {
+                "x": 0.64711799,
+                "y": 0.40283401,
+                "width": 0.01599301,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c5",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 5,
+              "global_index": 52,
+              "char": "t",
+              "bbox": {
+                "x": 0.663111,
+                "y": 0.40283401,
+                "width": 0.01203671,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c6",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 6,
+              "global_index": 53,
+              "char": "o",
+              "bbox": {
+                "x": 0.67514772,
+                "y": 0.40283401,
+                "width": 0.0187744,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c7",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 7,
+              "global_index": 54,
+              "char": "r",
+              "bbox": {
+                "x": 0.69392211,
+                "y": 0.40283401,
+                "width": 0.01262416,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c8",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 8,
+              "global_index": 55,
+              "char": "e",
+              "bbox": {
+                "x": 0.70654628,
+                "y": 0.40283401,
+                "width": 0.0188823,
+                "height": 0.05364372
+              }
+            },
+            {
+              "id": "l1w5c9",
+              "line_index": 1,
+              "word_index": 5,
+              "char_index": 9,
+              "global_index": 56,
+              "char": ",",
+              "bbox": {
+                "x": 0.72542857,
+                "y": 0.40283401,
+                "width": 0.00975885,
+                "height": 0.05364372
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w6",
+          "line_index": 1,
+          "word_index": 6,
+          "text": "Jaden",
+          "bbox": {
+            "x": 0.74486094,
+            "y": 0.40384615,
+            "width": 0.08887545,
+            "height": 0.05566802
+          },
+          "chars": [
+            {
+              "id": "l1w6c0",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 57,
+              "char": "J",
+              "bbox": {
+                "x": 0.74486094,
+                "y": 0.40384615,
+                "width": 0.00938869,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l1w6c1",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 58,
+              "char": "a",
+              "bbox": {
+                "x": 0.75424963,
+                "y": 0.40384615,
+                "width": 0.01951107,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l1w6c2",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 59,
+              "char": "d",
+              "bbox": {
+                "x": 0.7737607,
+                "y": 0.40384615,
+                "width": 0.02020745,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l1w6c3",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 60,
+              "char": "e",
+              "bbox": {
+                "x": 0.79396814,
+                "y": 0.40384615,
+                "width": 0.01958568,
+                "height": 0.05566802
+              }
+            },
+            {
+              "id": "l1w6c4",
+              "line_index": 1,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 61,
+              "char": "n",
+              "bbox": {
+                "x": 0.81355382,
+                "y": 0.40384615,
+                "width": 0.02018257,
+                "height": 0.05566802
+              }
+            }
+          ]
+        },
+        {
+          "id": "l1w7",
+          "line_index": 1,
+          "word_index": 7,
+          "text": "Park’s",
+          "bbox": {
+            "x": 0.84401451,
+            "y": 0.40283401,
+            "width": 0.09613059,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l1w7c0",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 62,
+              "char": "P",
+              "bbox": {
+                "x": 0.84401451,
+                "y": 0.40283401,
+                "width": 0.01903625,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w7c1",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 63,
+              "char": "a",
+              "bbox": {
+                "x": 0.86305076,
+                "y": 0.40283401,
+                "width": 0.01934448,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w7c2",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 2,
+              "global_index": 64,
+              "char": "r",
+              "bbox": {
+                "x": 0.88239524,
+                "y": 0.40283401,
+                "width": 0.01298262,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w7c3",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 3,
+              "global_index": 65,
+              "char": "k",
+              "bbox": {
+                "x": 0.89537786,
+                "y": 0.40283401,
+                "width": 0.01828417,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w7c4",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 4,
+              "global_index": 66,
+              "char": "’",
+              "bbox": {
+                "x": 0.91366203,
+                "y": 0.40283401,
+                "width": 0.01003595,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l1w7c5",
+              "line_index": 1,
+              "word_index": 7,
+              "char_index": 5,
+              "global_index": 67,
+              "char": "s",
+              "bbox": {
+                "x": 0.92369798,
+                "y": 0.40283401,
+                "width": 0.01644712,
+                "height": 0.04554656
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 2,
+      "text": "novel introduces Ben, a man burdened by regret who",
+      "bbox": {
+        "x": 0.05380895,
+        "y": 0.4757085,
+        "width": 0.84340992,
+        "height": 0.06072874
+      },
+      "words": [
+        {
+          "id": "l2w0",
+          "line_index": 2,
+          "word_index": 0,
+          "text": "novel",
+          "bbox": {
+            "x": 0.05380895,
+            "y": 0.4757085,
+            "width": 0.08766626,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l2w0c0",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 68,
+              "char": "n",
+              "bbox": {
+                "x": 0.05380895,
+                "y": 0.4757085,
+                "width": 0.02035513,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w0c1",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 69,
+              "char": "o",
+              "bbox": {
+                "x": 0.07416408,
+                "y": 0.4757085,
+                "width": 0.01964025,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w0c2",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 70,
+              "char": "v",
+              "bbox": {
+                "x": 0.09380433,
+                "y": 0.4757085,
+                "width": 0.01900063,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w0c3",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 71,
+              "char": "e",
+              "bbox": {
+                "x": 0.11280496,
+                "y": 0.4757085,
+                "width": 0.01975313,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w0c4",
+              "line_index": 2,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 72,
+              "char": "l",
+              "bbox": {
+                "x": 0.13255809,
+                "y": 0.4757085,
+                "width": 0.00891713,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w1",
+          "line_index": 2,
+          "word_index": 1,
+          "text": "introduces",
+          "bbox": {
+            "x": 0.15235792,
+            "y": 0.4757085,
+            "width": 0.16807739,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l2w1c0",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 73,
+              "char": "i",
+              "bbox": {
+                "x": 0.15235792,
+                "y": 0.4757085,
+                "width": 0.00883767,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c1",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 74,
+              "char": "n",
+              "bbox": {
+                "x": 0.16119559,
+                "y": 0.4757085,
+                "width": 0.02017376,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c2",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 75,
+              "char": "t",
+              "bbox": {
+                "x": 0.18136936,
+                "y": 0.4757085,
+                "width": 0.01247964,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c3",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 76,
+              "char": "r",
+              "bbox": {
+                "x": 0.193849,
+                "y": 0.4757085,
+                "width": 0.01308871,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c4",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 77,
+              "char": "o",
+              "bbox": {
+                "x": 0.2069377,
+                "y": 0.4757085,
+                "width": 0.01946526,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c5",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 78,
+              "char": "d",
+              "bbox": {
+                "x": 0.22640296,
+                "y": 0.4757085,
+                "width": 0.02019862,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c6",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 6,
+              "global_index": 79,
+              "char": "u",
+              "bbox": {
+                "x": 0.24660158,
+                "y": 0.4757085,
+                "width": 0.02017376,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c7",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 7,
+              "global_index": 80,
+              "char": "c",
+              "bbox": {
+                "x": 0.26677534,
+                "y": 0.4757085,
+                "width": 0.01750133,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c8",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 8,
+              "global_index": 81,
+              "char": "e",
+              "bbox": {
+                "x": 0.28427667,
+                "y": 0.4757085,
+                "width": 0.01957713,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w1c9",
+              "line_index": 2,
+              "word_index": 1,
+              "char_index": 9,
+              "global_index": 82,
+              "char": "s",
+              "bbox": {
+                "x": 0.30385379,
+                "y": 0.4757085,
+                "width": 0.01658151,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w2",
+          "line_index": 2,
+          "word_index": 2,
+          "text": "Ben,",
+          "bbox": {
+            "x": 0.33131802,
+            "y": 0.47672065,
+            "width": 0.06711004,
+            "height": 0.05161943
+          },
+          "chars": [
+            {
+              "id": "l2w2c0",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 83,
+              "char": "B",
+              "bbox": {
+                "x": 0.33131802,
+                "y": 0.47672065,
+                "width": 0.02043086,
+                "height": 0.05161943
+              }
+            },
+            {
+              "id": "l2w2c1",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 84,
+              "char": "e",
+              "bbox": {
+                "x": 0.35174888,
+                "y": 0.47672065,
+                "width": 0.01832495,
+                "height": 0.05161943
+              }
+            },
+            {
+              "id": "l2w2c2",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 85,
+              "char": "n",
+              "bbox": {
+                "x": 0.37007383,
+                "y": 0.47672065,
+                "width": 0.01888342,
+                "height": 0.05161943
+              }
+            },
+            {
+              "id": "l2w2c3",
+              "line_index": 2,
+              "word_index": 2,
+              "char_index": 3,
+              "global_index": 86,
+              "char": ",",
+              "bbox": {
+                "x": 0.38895725,
+                "y": 0.47672065,
+                "width": 0.0094708,
+                "height": 0.05161943
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w3",
+          "line_index": 2,
+          "word_index": 3,
+          "text": "a",
+          "bbox": {
+            "x": 0.41777509,
+            "y": 0.49089069,
+            "width": 0.00785973,
+            "height": 0.02935223
+          },
+          "chars": [
+            {
+              "id": "l2w3c0",
+              "line_index": 2,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 87,
+              "char": "a",
+              "bbox": {
+                "x": 0.41777509,
+                "y": 0.49089069,
+                "width": 0.00785973,
+                "height": 0.02935223
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w4",
+          "line_index": 2,
+          "word_index": 4,
+          "text": "man",
+          "bbox": {
+            "x": 0.43651753,
+            "y": 0.49089069,
+            "width": 0.06952842,
+            "height": 0.02935223
+          },
+          "chars": [
+            {
+              "id": "l2w4c0",
+              "line_index": 2,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 88,
+              "char": "m",
+              "bbox": {
+                "x": 0.43651753,
+                "y": 0.49089069,
+                "width": 0.03049664,
+                "height": 0.02935223
+              }
+            },
+            {
+              "id": "l2w4c1",
+              "line_index": 2,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 89,
+              "char": "a",
+              "bbox": {
+                "x": 0.46701417,
+                "y": 0.49089069,
+                "width": 0.01918573,
+                "height": 0.02935223
+              }
+            },
+            {
+              "id": "l2w4c2",
+              "line_index": 2,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 90,
+              "char": "n",
+              "bbox": {
+                "x": 0.4861999,
+                "y": 0.49089069,
+                "width": 0.01984605,
+                "height": 0.02935223
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w5",
+          "line_index": 2,
+          "word_index": 5,
+          "text": "burdened",
+          "bbox": {
+            "x": 0.51511487,
+            "y": 0.4757085,
+            "width": 0.15296252,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l2w5c0",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 91,
+              "char": "b",
+              "bbox": {
+                "x": 0.51511487,
+                "y": 0.4757085,
+                "width": 0.02016911,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c1",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 92,
+              "char": "u",
+              "bbox": {
+                "x": 0.53528398,
+                "y": 0.4757085,
+                "width": 0.02014428,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c2",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 93,
+              "char": "r",
+              "bbox": {
+                "x": 0.55542827,
+                "y": 0.4757085,
+                "width": 0.01306958,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c3",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 94,
+              "char": "d",
+              "bbox": {
+                "x": 0.56849785,
+                "y": 0.4757085,
+                "width": 0.02016911,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c4",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 4,
+              "global_index": 95,
+              "char": "e",
+              "bbox": {
+                "x": 0.58866696,
+                "y": 0.4757085,
+                "width": 0.01954852,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c5",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 5,
+              "global_index": 96,
+              "char": "n",
+              "bbox": {
+                "x": 0.60821548,
+                "y": 0.4757085,
+                "width": 0.02014428,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c6",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 6,
+              "global_index": 97,
+              "char": "e",
+              "bbox": {
+                "x": 0.62835976,
+                "y": 0.4757085,
+                "width": 0.01954852,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w5c7",
+              "line_index": 2,
+              "word_index": 5,
+              "char_index": 7,
+              "global_index": 98,
+              "char": "d",
+              "bbox": {
+                "x": 0.64790828,
+                "y": 0.4757085,
+                "width": 0.02016911,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w6",
+          "line_index": 2,
+          "word_index": 6,
+          "text": "by",
+          "bbox": {
+            "x": 0.6783555,
+            "y": 0.4757085,
+            "width": 0.03929867,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l2w6c0",
+              "line_index": 2,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 99,
+              "char": "b",
+              "bbox": {
+                "x": 0.6783555,
+                "y": 0.4757085,
+                "width": 0.02033769,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l2w6c1",
+              "line_index": 2,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 100,
+              "char": "y",
+              "bbox": {
+                "x": 0.69869319,
+                "y": 0.4757085,
+                "width": 0.01896098,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w7",
+          "line_index": 2,
+          "word_index": 7,
+          "text": "regret",
+          "bbox": {
+            "x": 0.72732769,
+            "y": 0.48178138,
+            "width": 0.09189843,
+            "height": 0.05465587
+          },
+          "chars": [
+            {
+              "id": "l2w7c0",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 101,
+              "char": "r",
+              "bbox": {
+                "x": 0.72732769,
+                "y": 0.48178138,
+                "width": 0.01227255,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l2w7c1",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 102,
+              "char": "e",
+              "bbox": {
+                "x": 0.73960024,
+                "y": 0.48178138,
+                "width": 0.01835638,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l2w7c2",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 2,
+              "global_index": 103,
+              "char": "g",
+              "bbox": {
+                "x": 0.75795661,
+                "y": 0.48178138,
+                "width": 0.01893912,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l2w7c3",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 3,
+              "global_index": 104,
+              "char": "r",
+              "bbox": {
+                "x": 0.77689573,
+                "y": 0.48178138,
+                "width": 0.01227255,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l2w7c4",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 4,
+              "global_index": 105,
+              "char": "e",
+              "bbox": {
+                "x": 0.78916828,
+                "y": 0.48178138,
+                "width": 0.01835638,
+                "height": 0.05465587
+              }
+            },
+            {
+              "id": "l2w7c5",
+              "line_index": 2,
+              "word_index": 7,
+              "char_index": 5,
+              "global_index": 106,
+              "char": "t",
+              "bbox": {
+                "x": 0.80752466,
+                "y": 0.48178138,
+                "width": 0.01170146,
+                "height": 0.05465587
+              }
+            }
+          ]
+        },
+        {
+          "id": "l2w8",
+          "line_index": 2,
+          "word_index": 8,
+          "text": "who",
+          "bbox": {
+            "x": 0.82889964,
+            "y": 0.4757085,
+            "width": 0.06831923,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l2w8c0",
+              "line_index": 2,
+              "word_index": 8,
+              "char_index": 0,
+              "global_index": 107,
+              "char": "w",
+              "bbox": {
+                "x": 0.82889964,
+                "y": 0.4757085,
+                "width": 0.0270794,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w8c1",
+              "line_index": 2,
+              "word_index": 8,
+              "char_index": 1,
+              "global_index": 108,
+              "char": "h",
+              "bbox": {
+                "x": 0.85597904,
+                "y": 0.4757085,
+                "width": 0.02098847,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l2w8c2",
+              "line_index": 2,
+              "word_index": 8,
+              "char_index": 2,
+              "global_index": 109,
+              "char": "o",
+              "bbox": {
+                "x": 0.87696751,
+                "y": 0.4757085,
+                "width": 0.02025135,
+                "height": 0.04554656
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 3,
+      "text": "seeks refuge in nature.",
+      "bbox": {
+        "x": 0.05441354,
+        "y": 0.5465587,
+        "width": 0.356711,
+        "height": 0.06072874
+      },
+      "words": [
+        {
+          "id": "l3w0",
+          "line_index": 3,
+          "word_index": 0,
+          "text": "seeks",
+          "bbox": {
+            "x": 0.05441354,
+            "y": 0.5465587,
+            "width": 0.08403869,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l3w0c0",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 110,
+              "char": "s",
+              "bbox": {
+                "x": 0.05441354,
+                "y": 0.5465587,
+                "width": 0.0153551,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l3w0c1",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 111,
+              "char": "e",
+              "bbox": {
+                "x": 0.06976865,
+                "y": 0.5465587,
+                "width": 0.01812915,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l3w0c2",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 112,
+              "char": "e",
+              "bbox": {
+                "x": 0.0878978,
+                "y": 0.5465587,
+                "width": 0.01812915,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l3w0c3",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 113,
+              "char": "k",
+              "bbox": {
+                "x": 0.10602695,
+                "y": 0.5465587,
+                "width": 0.01707018,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l3w0c4",
+              "line_index": 3,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 114,
+              "char": "s",
+              "bbox": {
+                "x": 0.12309713,
+                "y": 0.5465587,
+                "width": 0.0153551,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l3w1",
+          "line_index": 3,
+          "word_index": 1,
+          "text": "refuge",
+          "bbox": {
+            "x": 0.14933495,
+            "y": 0.5465587,
+            "width": 0.10036276,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l3w1c0",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 115,
+              "char": "r",
+              "bbox": {
+                "x": 0.14933495,
+                "y": 0.5465587,
+                "width": 0.01265349,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l3w1c1",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 116,
+              "char": "e",
+              "bbox": {
+                "x": 0.16198844,
+                "y": 0.5465587,
+                "width": 0.01892617,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l3w1c2",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 117,
+              "char": "f",
+              "bbox": {
+                "x": 0.18091461,
+                "y": 0.5465587,
+                "width": 0.01082697,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l3w1c3",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 118,
+              "char": "u",
+              "bbox": {
+                "x": 0.19174158,
+                "y": 0.5465587,
+                "width": 0.01950296,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l3w1c4",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 119,
+              "char": "g",
+              "bbox": {
+                "x": 0.21124454,
+                "y": 0.5465587,
+                "width": 0.019527,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l3w1c5",
+              "line_index": 3,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 120,
+              "char": "e",
+              "bbox": {
+                "x": 0.23077154,
+                "y": 0.5465587,
+                "width": 0.01892617,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l3w2",
+          "line_index": 3,
+          "word_index": 2,
+          "text": "in",
+          "bbox": {
+            "x": 0.26118501,
+            "y": 0.548583,
+            "width": 0.03022975,
+            "height": 0.04251012
+          },
+          "chars": [
+            {
+              "id": "l3w2c0",
+              "line_index": 3,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 121,
+              "char": "i",
+              "bbox": {
+                "x": 0.26118501,
+                "y": 0.548583,
+                "width": 0.0092088,
+                "height": 0.04251012
+              }
+            },
+            {
+              "id": "l3w2c1",
+              "line_index": 3,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 122,
+              "char": "n",
+              "bbox": {
+                "x": 0.27039381,
+                "y": 0.548583,
+                "width": 0.02102094,
+                "height": 0.04251012
+              }
+            }
+          ]
+        },
+        {
+          "id": "l3w3",
+          "line_index": 3,
+          "word_index": 3,
+          "text": "nature.",
+          "bbox": {
+            "x": 0.30108827,
+            "y": 0.55263158,
+            "width": 0.11003628,
+            "height": 0.03846154
+          },
+          "chars": [
+            {
+              "id": "l3w3c0",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 123,
+              "char": "n",
+              "bbox": {
+                "x": 0.30108827,
+                "y": 0.55263158,
+                "width": 0.01928397,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l3w3c1",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 124,
+              "char": "a",
+              "bbox": {
+                "x": 0.32037224,
+                "y": 0.55263158,
+                "width": 0.01864236,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l3w3c2",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 125,
+              "char": "t",
+              "bbox": {
+                "x": 0.33901461,
+                "y": 0.55263158,
+                "width": 0.01192921,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l3w3c3",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 126,
+              "char": "u",
+              "bbox": {
+                "x": 0.35094382,
+                "y": 0.55263158,
+                "width": 0.01928397,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l3w3c4",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 127,
+              "char": "r",
+              "bbox": {
+                "x": 0.37022779,
+                "y": 0.55263158,
+                "width": 0.01251141,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l3w3c5",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 128,
+              "char": "e",
+              "bbox": {
+                "x": 0.3827392,
+                "y": 0.55263158,
+                "width": 0.01871365,
+                "height": 0.03846154
+              }
+            },
+            {
+              "id": "l3w3c6",
+              "line_index": 3,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 129,
+              "char": ".",
+              "bbox": {
+                "x": 0.40145286,
+                "y": 0.55263158,
+                "width": 0.00967169,
+                "height": 0.03846154
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 4,
+      "text": "Descriptions of the landscape reflect Ben’s complex",
+      "bbox": {
+        "x": 0.05562273,
+        "y": 0.63360324,
+        "width": 0.81197098,
+        "height": 0.06174089
+      },
+      "words": [
+        {
+          "id": "l4w0",
+          "line_index": 4,
+          "word_index": 0,
+          "text": "Descriptions",
+          "bbox": {
+            "x": 0.05562273,
+            "y": 0.63562753,
+            "width": 0.19891173,
+            "height": 0.0597166
+          },
+          "chars": [
+            {
+              "id": "l4w0c0",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 130,
+              "char": "D",
+              "bbox": {
+                "x": 0.05562273,
+                "y": 0.63562753,
+                "width": 0.02463431,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c1",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 131,
+              "char": "e",
+              "bbox": {
+                "x": 0.08025704,
+                "y": 0.63562753,
+                "width": 0.01968495,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c2",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 132,
+              "char": "s",
+              "bbox": {
+                "x": 0.09994199,
+                "y": 0.63562753,
+                "width": 0.01667284,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c3",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 133,
+              "char": "c",
+              "bbox": {
+                "x": 0.11661483,
+                "y": 0.63562753,
+                "width": 0.01759772,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c4",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 134,
+              "char": "r",
+              "bbox": {
+                "x": 0.13421255,
+                "y": 0.63562753,
+                "width": 0.01316079,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c5",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 135,
+              "char": "i",
+              "bbox": {
+                "x": 0.14737335,
+                "y": 0.63562753,
+                "width": 0.00888635,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c6",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 136,
+              "char": "p",
+              "bbox": {
+                "x": 0.15625969,
+                "y": 0.63562753,
+                "width": 0.02030987,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c7",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 137,
+              "char": "t",
+              "bbox": {
+                "x": 0.17656956,
+                "y": 0.63562753,
+                "width": 0.01254837,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c8",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 8,
+              "global_index": 138,
+              "char": "i",
+              "bbox": {
+                "x": 0.18911794,
+                "y": 0.63562753,
+                "width": 0.00888635,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c9",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 9,
+              "global_index": 139,
+              "char": "o",
+              "bbox": {
+                "x": 0.19800429,
+                "y": 0.63562753,
+                "width": 0.01957246,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c10",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 10,
+              "global_index": 140,
+              "char": "n",
+              "bbox": {
+                "x": 0.21757675,
+                "y": 0.63562753,
+                "width": 0.02028487,
+                "height": 0.0597166
+              }
+            },
+            {
+              "id": "l4w0c11",
+              "line_index": 4,
+              "word_index": 0,
+              "char_index": 11,
+              "global_index": 141,
+              "char": "s",
+              "bbox": {
+                "x": 0.23786162,
+                "y": 0.63562753,
+                "width": 0.01667284,
+                "height": 0.0597166
+              }
+            }
+          ]
+        },
+        {
+          "id": "l4w1",
+          "line_index": 4,
+          "word_index": 1,
+          "text": "of",
+          "bbox": {
+            "x": 0.26602177,
+            "y": 0.63360324,
+            "width": 0.03143894,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l4w1c0",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 142,
+              "char": "o",
+              "bbox": {
+                "x": 0.26602177,
+                "y": 0.63360324,
+                "width": 0.01995678,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w1c1",
+              "line_index": 4,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 143,
+              "char": "f",
+              "bbox": {
+                "x": 0.28597854,
+                "y": 0.63360324,
+                "width": 0.01148216,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l4w2",
+          "line_index": 4,
+          "word_index": 2,
+          "text": "the",
+          "bbox": {
+            "x": 0.30652963,
+            "y": 0.63461538,
+            "width": 0.04836759,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l4w2c0",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 144,
+              "char": "t",
+              "bbox": {
+                "x": 0.30652963,
+                "y": 0.63461538,
+                "width": 0.01155665,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l4w2c1",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 145,
+              "char": "h",
+              "bbox": {
+                "x": 0.31808628,
+                "y": 0.63461538,
+                "width": 0.01868172,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l4w2c2",
+              "line_index": 4,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 146,
+              "char": "e",
+              "bbox": {
+                "x": 0.336768,
+                "y": 0.63461538,
+                "width": 0.01812921,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l4w3",
+          "line_index": 4,
+          "word_index": 3,
+          "text": "landscape",
+          "bbox": {
+            "x": 0.36577993,
+            "y": 0.63461538,
+            "width": 0.15779927,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l4w3c0",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 147,
+              "char": "l",
+              "bbox": {
+                "x": 0.36577993,
+                "y": 0.63461538,
+                "width": 0.00860459,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c1",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 148,
+              "char": "a",
+              "bbox": {
+                "x": 0.37438452,
+                "y": 0.63461538,
+                "width": 0.01898819,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c2",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 149,
+              "char": "n",
+              "bbox": {
+                "x": 0.39337271,
+                "y": 0.63461538,
+                "width": 0.01964171,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c3",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 150,
+              "char": "d",
+              "bbox": {
+                "x": 0.41301442,
+                "y": 0.63461538,
+                "width": 0.01966591,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c4",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 151,
+              "char": "s",
+              "bbox": {
+                "x": 0.43268033,
+                "y": 0.63461538,
+                "width": 0.0161442,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c5",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 152,
+              "char": "c",
+              "bbox": {
+                "x": 0.44882453,
+                "y": 0.63461538,
+                "width": 0.01703976,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c6",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 153,
+              "char": "a",
+              "bbox": {
+                "x": 0.46586429,
+                "y": 0.63461538,
+                "width": 0.01898819,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c7",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 7,
+              "global_index": 154,
+              "char": "p",
+              "bbox": {
+                "x": 0.48485248,
+                "y": 0.63461538,
+                "width": 0.01966591,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w3c8",
+              "line_index": 4,
+              "word_index": 3,
+              "char_index": 8,
+              "global_index": 155,
+              "char": "e",
+              "bbox": {
+                "x": 0.5045184,
+                "y": 0.63461538,
+                "width": 0.01906081,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l4w4",
+          "line_index": 4,
+          "word_index": 4,
+          "text": "reflect",
+          "bbox": {
+            "x": 0.53446191,
+            "y": 0.63360324,
+            "width": 0.09613059,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l4w4c0",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 156,
+              "char": "r",
+              "bbox": {
+                "x": 0.53446191,
+                "y": 0.63360324,
+                "width": 0.01230406,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w4c1",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 157,
+              "char": "e",
+              "bbox": {
+                "x": 0.54676597,
+                "y": 0.63360324,
+                "width": 0.01840351,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w4c2",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 158,
+              "char": "f",
+              "bbox": {
+                "x": 0.56516948,
+                "y": 0.63360324,
+                "width": 0.01052798,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w4c3",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 159,
+              "char": "l",
+              "bbox": {
+                "x": 0.57569746,
+                "y": 0.63360324,
+                "width": 0.00830787,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w4c4",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 160,
+              "char": "e",
+              "bbox": {
+                "x": 0.58400533,
+                "y": 0.63360324,
+                "width": 0.01840351,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w4c5",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 161,
+              "char": "c",
+              "bbox": {
+                "x": 0.60240884,
+                "y": 0.63360324,
+                "width": 0.01645215,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l4w4c6",
+              "line_index": 4,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 162,
+              "char": "t",
+              "bbox": {
+                "x": 0.618861,
+                "y": 0.63360324,
+                "width": 0.01173151,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l4w5",
+          "line_index": 4,
+          "word_index": 5,
+          "text": "Ben’s",
+          "bbox": {
+            "x": 0.64087062,
+            "y": 0.63562753,
+            "width": 0.0834341,
+            "height": 0.04352227
+          },
+          "chars": [
+            {
+              "id": "l4w5c0",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 163,
+              "char": "B",
+              "bbox": {
+                "x": 0.64087062,
+                "y": 0.63562753,
+                "width": 0.02062944,
+                "height": 0.04352227
+              }
+            },
+            {
+              "id": "l4w5c1",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 164,
+              "char": "e",
+              "bbox": {
+                "x": 0.66150006,
+                "y": 0.63562753,
+                "width": 0.01850306,
+                "height": 0.04352227
+              }
+            },
+            {
+              "id": "l4w5c2",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 165,
+              "char": "n",
+              "bbox": {
+                "x": 0.68000311,
+                "y": 0.63562753,
+                "width": 0.01906696,
+                "height": 0.04352227
+              }
+            },
+            {
+              "id": "l4w5c3",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 166,
+              "char": "’",
+              "bbox": {
+                "x": 0.69907007,
+                "y": 0.63562753,
+                "width": 0.00956285,
+                "height": 0.04352227
+              }
+            },
+            {
+              "id": "l4w5c4",
+              "line_index": 4,
+              "word_index": 5,
+              "char_index": 4,
+              "global_index": 167,
+              "char": "s",
+              "bbox": {
+                "x": 0.70863292,
+                "y": 0.63562753,
+                "width": 0.0156718,
+                "height": 0.04352227
+              }
+            }
+          ]
+        },
+        {
+          "id": "l4w6",
+          "line_index": 4,
+          "word_index": 6,
+          "text": "complex",
+          "bbox": {
+            "x": 0.73518742,
+            "y": 0.63461538,
+            "width": 0.13240629,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l4w6c0",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 168,
+              "char": "c",
+              "bbox": {
+                "x": 0.73518742,
+                "y": 0.63461538,
+                "width": 0.01711291,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w6c1",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 169,
+              "char": "o",
+              "bbox": {
+                "x": 0.75230034,
+                "y": 0.63461538,
+                "width": 0.01903325,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w6c2",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 170,
+              "char": "m",
+              "bbox": {
+                "x": 0.77133359,
+                "y": 0.63461538,
+                "width": 0.03031222,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w6c3",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 171,
+              "char": "p",
+              "bbox": {
+                "x": 0.8016458,
+                "y": 0.63461538,
+                "width": 0.01975034,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w6c4",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 172,
+              "char": "l",
+              "bbox": {
+                "x": 0.82139614,
+                "y": 0.63461538,
+                "width": 0.00864153,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w6c5",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 5,
+              "global_index": 173,
+              "char": "e",
+              "bbox": {
+                "x": 0.83003768,
+                "y": 0.63461538,
+                "width": 0.01914264,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l4w6c6",
+              "line_index": 4,
+              "word_index": 6,
+              "char_index": 6,
+              "global_index": 174,
+              "char": "x",
+              "bbox": {
+                "x": 0.84918032,
+                "y": 0.63461538,
+                "width": 0.0184134,
+                "height": 0.06072874
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 5,
+      "text": "inner life as revealed through the diary he keeps.",
+      "bbox": {
+        "x": 0.05562273,
+        "y": 0.70445344,
+        "width": 0.7738815,
+        "height": 0.06072874
+      },
+      "words": [
+        {
+          "id": "l5w0",
+          "line_index": 5,
+          "word_index": 0,
+          "text": "inner",
+          "bbox": {
+            "x": 0.05562273,
+            "y": 0.70647773,
+            "width": 0.0828295,
+            "height": 0.04251012
+          },
+          "chars": [
+            {
+              "id": "l5w0c0",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 175,
+              "char": "i",
+              "bbox": {
+                "x": 0.05562273,
+                "y": 0.70647773,
+                "width": 0.00894332,
+                "height": 0.04251012
+              }
+            },
+            {
+              "id": "l5w0c1",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 176,
+              "char": "n",
+              "bbox": {
+                "x": 0.06456606,
+                "y": 0.70647773,
+                "width": 0.02041493,
+                "height": 0.04251012
+              }
+            },
+            {
+              "id": "l5w0c2",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 177,
+              "char": "n",
+              "bbox": {
+                "x": 0.08498098,
+                "y": 0.70647773,
+                "width": 0.02041493,
+                "height": 0.04251012
+              }
+            },
+            {
+              "id": "l5w0c3",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 178,
+              "char": "e",
+              "bbox": {
+                "x": 0.10539591,
+                "y": 0.70647773,
+                "width": 0.01981116,
+                "height": 0.04251012
+              }
+            },
+            {
+              "id": "l5w0c4",
+              "line_index": 5,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 179,
+              "char": "r",
+              "bbox": {
+                "x": 0.12520706,
+                "y": 0.70647773,
+                "width": 0.01324517,
+                "height": 0.04251012
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w1",
+          "line_index": 5,
+          "word_index": 1,
+          "text": "life",
+          "bbox": {
+            "x": 0.14812576,
+            "y": 0.70445344,
+            "width": 0.04897219,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l5w1c0",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 180,
+              "char": "l",
+              "bbox": {
+                "x": 0.14812576,
+                "y": 0.70445344,
+                "width": 0.00893259,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w1c1",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 181,
+              "char": "i",
+              "bbox": {
+                "x": 0.15705834,
+                "y": 0.70445344,
+                "width": 0.00893259,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w1c2",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 182,
+              "char": "f",
+              "bbox": {
+                "x": 0.16599093,
+                "y": 0.70445344,
+                "width": 0.01131964,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w1c3",
+              "line_index": 5,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 183,
+              "char": "e",
+              "bbox": {
+                "x": 0.17731057,
+                "y": 0.70445344,
+                "width": 0.01978738,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w2",
+          "line_index": 5,
+          "word_index": 2,
+          "text": "as",
+          "bbox": {
+            "x": 0.20858525,
+            "y": 0.71963563,
+            "width": 0.03143894,
+            "height": 0.02935223
+          },
+          "chars": [
+            {
+              "id": "l5w2c0",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 184,
+              "char": "a",
+              "bbox": {
+                "x": 0.20858525,
+                "y": 0.71963563,
+                "width": 0.01699197,
+                "height": 0.02935223
+              }
+            },
+            {
+              "id": "l5w2c1",
+              "line_index": 5,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 185,
+              "char": "s",
+              "bbox": {
+                "x": 0.22557722,
+                "y": 0.71963563,
+                "width": 0.01444697,
+                "height": 0.02935223
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w3",
+          "line_index": 5,
+          "word_index": 3,
+          "text": "revealed",
+          "bbox": {
+            "x": 0.25090689,
+            "y": 0.70445344,
+            "width": 0.13422007,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l5w3c0",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 186,
+              "char": "r",
+              "bbox": {
+                "x": 0.25090689,
+                "y": 0.70445344,
+                "width": 0.01262134,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c1",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 187,
+              "char": "e",
+              "bbox": {
+                "x": 0.26352823,
+                "y": 0.70445344,
+                "width": 0.01887807,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c2",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 188,
+              "char": "v",
+              "bbox": {
+                "x": 0.2824063,
+                "y": 0.70445344,
+                "width": 0.0181589,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c3",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 189,
+              "char": "e",
+              "bbox": {
+                "x": 0.3005652,
+                "y": 0.70445344,
+                "width": 0.01887807,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c4",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 190,
+              "char": "a",
+              "bbox": {
+                "x": 0.31944327,
+                "y": 0.70445344,
+                "width": 0.01880615,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c5",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 191,
+              "char": "l",
+              "bbox": {
+                "x": 0.33824942,
+                "y": 0.70445344,
+                "width": 0.0085221,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c6",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 6,
+              "global_index": 192,
+              "char": "e",
+              "bbox": {
+                "x": 0.34677152,
+                "y": 0.70445344,
+                "width": 0.01887807,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w3c7",
+              "line_index": 5,
+              "word_index": 3,
+              "char_index": 7,
+              "global_index": 193,
+              "char": "d",
+              "bbox": {
+                "x": 0.36564959,
+                "y": 0.70445344,
+                "width": 0.01947737,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w4",
+          "line_index": 5,
+          "word_index": 4,
+          "text": "through",
+          "bbox": {
+            "x": 0.39600967,
+            "y": 0.70445344,
+            "width": 0.12696493,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l5w4c0",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 194,
+              "char": "t",
+              "bbox": {
+                "x": 0.39600967,
+                "y": 0.70445344,
+                "width": 0.01259986,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w4c1",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 195,
+              "char": "h",
+              "bbox": {
+                "x": 0.40860953,
+                "y": 0.70445344,
+                "width": 0.0203681,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w4c2",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 196,
+              "char": "r",
+              "bbox": {
+                "x": 0.42897764,
+                "y": 0.70445344,
+                "width": 0.01321479,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w4c3",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 197,
+              "char": "o",
+              "bbox": {
+                "x": 0.44219243,
+                "y": 0.70445344,
+                "width": 0.01965277,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w4c4",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 198,
+              "char": "u",
+              "bbox": {
+                "x": 0.4618452,
+                "y": 0.70445344,
+                "width": 0.0203681,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w4c5",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 199,
+              "char": "g",
+              "bbox": {
+                "x": 0.4822133,
+                "y": 0.70445344,
+                "width": 0.0203932,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w4c6",
+              "line_index": 5,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 200,
+              "char": "h",
+              "bbox": {
+                "x": 0.50260651,
+                "y": 0.70445344,
+                "width": 0.0203681,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w5",
+          "line_index": 5,
+          "word_index": 5,
+          "text": "the",
+          "bbox": {
+            "x": 0.53325272,
+            "y": 0.70445344,
+            "width": 0.047763,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l5w5c0",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 201,
+              "char": "t",
+              "bbox": {
+                "x": 0.53325272,
+                "y": 0.70445344,
+                "width": 0.0114122,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w5c1",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 202,
+              "char": "h",
+              "bbox": {
+                "x": 0.54466492,
+                "y": 0.70445344,
+                "width": 0.0184482,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w5c2",
+              "line_index": 5,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 203,
+              "char": "e",
+              "bbox": {
+                "x": 0.56311312,
+                "y": 0.70445344,
+                "width": 0.0179026,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w6",
+          "line_index": 5,
+          "word_index": 6,
+          "text": "diary",
+          "bbox": {
+            "x": 0.59250302,
+            "y": 0.70445344,
+            "width": 0.0828295,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l5w6c0",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 204,
+              "char": "d",
+              "bbox": {
+                "x": 0.59250302,
+                "y": 0.70445344,
+                "width": 0.02079375,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w6c1",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 205,
+              "char": "i",
+              "bbox": {
+                "x": 0.61329677,
+                "y": 0.70445344,
+                "width": 0.00909807,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w6c2",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 2,
+              "global_index": 206,
+              "char": "a",
+              "bbox": {
+                "x": 0.62239484,
+                "y": 0.70445344,
+                "width": 0.02007717,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w6c3",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 3,
+              "global_index": 207,
+              "char": "r",
+              "bbox": {
+                "x": 0.642472,
+                "y": 0.70445344,
+                "width": 0.01347435,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w6c4",
+              "line_index": 5,
+              "word_index": 6,
+              "char_index": 4,
+              "global_index": 208,
+              "char": "y",
+              "bbox": {
+                "x": 0.65594635,
+                "y": 0.70445344,
+                "width": 0.01938617,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w7",
+          "line_index": 5,
+          "word_index": 7,
+          "text": "he",
+          "bbox": {
+            "x": 0.68500605,
+            "y": 0.70445344,
+            "width": 0.03688029,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l5w7c0",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 0,
+              "global_index": 209,
+              "char": "h",
+              "bbox": {
+                "x": 0.68500605,
+                "y": 0.70445344,
+                "width": 0.01871692,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l5w7c1",
+              "line_index": 5,
+              "word_index": 7,
+              "char_index": 1,
+              "global_index": 210,
+              "char": "e",
+              "bbox": {
+                "x": 0.70372297,
+                "y": 0.70445344,
+                "width": 0.01816337,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l5w8",
+          "line_index": 5,
+          "word_index": 8,
+          "text": "keeps.",
+          "bbox": {
+            "x": 0.73216445,
+            "y": 0.70445344,
+            "width": 0.09733978,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l5w8c0",
+              "line_index": 5,
+              "word_index": 8,
+              "char_index": 0,
+              "global_index": 211,
+              "char": "k",
+              "bbox": {
+                "x": 0.73216445,
+                "y": 0.70445344,
+                "width": 0.01717284,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w8c1",
+              "line_index": 5,
+              "word_index": 8,
+              "char_index": 1,
+              "global_index": 212,
+              "char": "e",
+              "bbox": {
+                "x": 0.74933729,
+                "y": 0.70445344,
+                "width": 0.01823818,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w8c2",
+              "line_index": 5,
+              "word_index": 8,
+              "char_index": 2,
+              "global_index": 213,
+              "char": "e",
+              "bbox": {
+                "x": 0.76757547,
+                "y": 0.70445344,
+                "width": 0.01823818,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w8c3",
+              "line_index": 5,
+              "word_index": 8,
+              "char_index": 3,
+              "global_index": 214,
+              "char": "p",
+              "bbox": {
+                "x": 0.78581365,
+                "y": 0.70445344,
+                "width": 0.01881717,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w8c4",
+              "line_index": 5,
+              "word_index": 8,
+              "char_index": 4,
+              "global_index": 215,
+              "char": "s",
+              "bbox": {
+                "x": 0.80463083,
+                "y": 0.70445344,
+                "width": 0.01544745,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l5w8c5",
+              "line_index": 5,
+              "word_index": 8,
+              "char_index": 5,
+              "global_index": 216,
+              "char": ".",
+              "bbox": {
+                "x": 0.82007828,
+                "y": 0.70445344,
+                "width": 0.00942596,
+                "height": 0.06072874
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 6,
+      "text": "Recommended if you prefer character development to",
+      "bbox": {
+        "x": 0.05622733,
+        "y": 0.79453441,
+        "width": 0.856711,
+        "height": 0.06072874
+      },
+      "words": [
+        {
+          "id": "l6w0",
+          "line_index": 6,
+          "word_index": 0,
+          "text": "Recommended",
+          "bbox": {
+            "x": 0.05622733,
+            "y": 0.79453441,
+            "width": 0.23881499,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l6w0c0",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 217,
+              "char": "R",
+              "bbox": {
+                "x": 0.05622733,
+                "y": 0.79453441,
+                "width": 0.02196866,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c1",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 218,
+              "char": "e",
+              "bbox": {
+                "x": 0.07819599,
+                "y": 0.79453441,
+                "width": 0.01944949,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c2",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 219,
+              "char": "c",
+              "bbox": {
+                "x": 0.09764547,
+                "y": 0.79453441,
+                "width": 0.01738722,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c3",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 220,
+              "char": "o",
+              "bbox": {
+                "x": 0.1150327,
+                "y": 0.79453441,
+                "width": 0.01933835,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c4",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 221,
+              "char": "m",
+              "bbox": {
+                "x": 0.13437104,
+                "y": 0.79453441,
+                "width": 0.03079811,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c5",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 222,
+              "char": "m",
+              "bbox": {
+                "x": 0.16516915,
+                "y": 0.79453441,
+                "width": 0.03079811,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c6",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 223,
+              "char": "e",
+              "bbox": {
+                "x": 0.19596726,
+                "y": 0.79453441,
+                "width": 0.01944949,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c7",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 224,
+              "char": "n",
+              "bbox": {
+                "x": 0.21541674,
+                "y": 0.79453441,
+                "width": 0.02004223,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c8",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 8,
+              "global_index": 225,
+              "char": "d",
+              "bbox": {
+                "x": 0.23545897,
+                "y": 0.79453441,
+                "width": 0.02006693,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c9",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 9,
+              "global_index": 226,
+              "char": "e",
+              "bbox": {
+                "x": 0.25552591,
+                "y": 0.79453441,
+                "width": 0.01944949,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w0c10",
+              "line_index": 6,
+              "word_index": 0,
+              "char_index": 10,
+              "global_index": 227,
+              "char": "d",
+              "bbox": {
+                "x": 0.27497539,
+                "y": 0.79453441,
+                "width": 0.02006693,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l6w1",
+          "line_index": 6,
+          "word_index": 1,
+          "text": "if",
+          "bbox": {
+            "x": 0.30652963,
+            "y": 0.79453441,
+            "width": 0.02237001,
+            "height": 0.04453441
+          },
+          "chars": [
+            {
+              "id": "l6w1c0",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 228,
+              "char": "i",
+              "bbox": {
+                "x": 0.30652963,
+                "y": 0.79453441,
+                "width": 0.00986667,
+                "height": 0.04453441
+              }
+            },
+            {
+              "id": "l6w1c1",
+              "line_index": 6,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 229,
+              "char": "f",
+              "bbox": {
+                "x": 0.3163963,
+                "y": 0.79453441,
+                "width": 0.01250334,
+                "height": 0.04453441
+              }
+            }
+          ]
+        },
+        {
+          "id": "l6w2",
+          "line_index": 6,
+          "word_index": 2,
+          "text": "you",
+          "bbox": {
+            "x": 0.33736397,
+            "y": 0.8097166,
+            "width": 0.0592503,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l6w2c0",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 0,
+              "global_index": 230,
+              "char": "y",
+              "bbox": {
+                "x": 0.33736397,
+                "y": 0.8097166,
+                "width": 0.01908253,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w2c1",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 1,
+              "global_index": 231,
+              "char": "o",
+              "bbox": {
+                "x": 0.35644649,
+                "y": 0.8097166,
+                "width": 0.01972491,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w2c2",
+              "line_index": 6,
+              "word_index": 2,
+              "char_index": 2,
+              "global_index": 232,
+              "char": "u",
+              "bbox": {
+                "x": 0.3761714,
+                "y": 0.8097166,
+                "width": 0.02044287,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l6w3",
+          "line_index": 6,
+          "word_index": 3,
+          "text": "prefer",
+          "bbox": {
+            "x": 0.40689238,
+            "y": 0.79453441,
+            "width": 0.0949214,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l6w3c0",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 0,
+              "global_index": 233,
+              "char": "p",
+              "bbox": {
+                "x": 0.40689238,
+                "y": 0.79453441,
+                "width": 0.01982103,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w3c1",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 1,
+              "global_index": 234,
+              "char": "r",
+              "bbox": {
+                "x": 0.42671342,
+                "y": 0.79453441,
+                "width": 0.01284403,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w3c2",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 2,
+              "global_index": 235,
+              "char": "e",
+              "bbox": {
+                "x": 0.43955744,
+                "y": 0.79453441,
+                "width": 0.01921116,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w3c3",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 3,
+              "global_index": 236,
+              "char": "f",
+              "bbox": {
+                "x": 0.4587686,
+                "y": 0.79453441,
+                "width": 0.01099,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w3c4",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 4,
+              "global_index": 237,
+              "char": "e",
+              "bbox": {
+                "x": 0.4697586,
+                "y": 0.79453441,
+                "width": 0.01921116,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w3c5",
+              "line_index": 6,
+              "word_index": 3,
+              "char_index": 5,
+              "global_index": 238,
+              "char": "r",
+              "bbox": {
+                "x": 0.48896976,
+                "y": 0.79453441,
+                "width": 0.01284403,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l6w4",
+          "line_index": 6,
+          "word_index": 4,
+          "text": "character",
+          "bbox": {
+            "x": 0.51269649,
+            "y": 0.79453441,
+            "width": 0.143289,
+            "height": 0.04554656
+          },
+          "chars": [
+            {
+              "id": "l6w4c0",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 0,
+              "global_index": 239,
+              "char": "c",
+              "bbox": {
+                "x": 0.51269649,
+                "y": 0.79453441,
+                "width": 0.01645334,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c1",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 1,
+              "global_index": 240,
+              "char": "h",
+              "bbox": {
+                "x": 0.52914984,
+                "y": 0.79453441,
+                "width": 0.01896575,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c2",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 2,
+              "global_index": 241,
+              "char": "a",
+              "bbox": {
+                "x": 0.54811559,
+                "y": 0.79453441,
+                "width": 0.01833473,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c3",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 3,
+              "global_index": 242,
+              "char": "r",
+              "bbox": {
+                "x": 0.56645032,
+                "y": 0.79453441,
+                "width": 0.01230495,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c4",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 4,
+              "global_index": 243,
+              "char": "a",
+              "bbox": {
+                "x": 0.57875527,
+                "y": 0.79453441,
+                "width": 0.01833473,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c5",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 5,
+              "global_index": 244,
+              "char": "c",
+              "bbox": {
+                "x": 0.59709,
+                "y": 0.79453441,
+                "width": 0.01645334,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c6",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 6,
+              "global_index": 245,
+              "char": "t",
+              "bbox": {
+                "x": 0.61354334,
+                "y": 0.79453441,
+                "width": 0.01173236,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c7",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 7,
+              "global_index": 246,
+              "char": "e",
+              "bbox": {
+                "x": 0.6252757,
+                "y": 0.79453441,
+                "width": 0.01840484,
+                "height": 0.04554656
+              }
+            },
+            {
+              "id": "l6w4c8",
+              "line_index": 6,
+              "word_index": 4,
+              "char_index": 8,
+              "global_index": 247,
+              "char": "r",
+              "bbox": {
+                "x": 0.64368054,
+                "y": 0.79453441,
+                "width": 0.01230495,
+                "height": 0.04554656
+              }
+            }
+          ]
+        },
+        {
+          "id": "l6w5",
+          "line_index": 6,
+          "word_index": 5,
+          "text": "development",
+          "bbox": {
+            "x": 0.6668682,
+            "y": 0.79453441,
+            "width": 0.20677146,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l6w5c0",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 0,
+              "global_index": 248,
+              "char": "d",
+              "bbox": {
+                "x": 0.6668682,
+                "y": 0.79453441,
+                "width": 0.019896,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c1",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 1,
+              "global_index": 249,
+              "char": "e",
+              "bbox": {
+                "x": 0.6867642,
+                "y": 0.79453441,
+                "width": 0.01928381,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c2",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 2,
+              "global_index": 250,
+              "char": "v",
+              "bbox": {
+                "x": 0.70604801,
+                "y": 0.79453441,
+                "width": 0.01854919,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c3",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 3,
+              "global_index": 251,
+              "char": "e",
+              "bbox": {
+                "x": 0.7245972,
+                "y": 0.79453441,
+                "width": 0.01928381,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c4",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 4,
+              "global_index": 252,
+              "char": "l",
+              "bbox": {
+                "x": 0.74388102,
+                "y": 0.79453441,
+                "width": 0.00870526,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c5",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 5,
+              "global_index": 253,
+              "char": "o",
+              "bbox": {
+                "x": 0.75258628,
+                "y": 0.79453441,
+                "width": 0.01917362,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c6",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 6,
+              "global_index": 254,
+              "char": "p",
+              "bbox": {
+                "x": 0.7717599,
+                "y": 0.79453441,
+                "width": 0.019896,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c7",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 7,
+              "global_index": 255,
+              "char": "m",
+              "bbox": {
+                "x": 0.7916559,
+                "y": 0.79453441,
+                "width": 0.03053577,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c8",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 8,
+              "global_index": 256,
+              "char": "e",
+              "bbox": {
+                "x": 0.82219167,
+                "y": 0.79453441,
+                "width": 0.01928381,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c9",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 9,
+              "global_index": 257,
+              "char": "n",
+              "bbox": {
+                "x": 0.84147548,
+                "y": 0.79453441,
+                "width": 0.01987151,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l6w5c10",
+              "line_index": 6,
+              "word_index": 5,
+              "char_index": 10,
+              "global_index": 258,
+              "char": "t",
+              "bbox": {
+                "x": 0.861347,
+                "y": 0.79453441,
+                "width": 0.01229267,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l6w6",
+          "line_index": 6,
+          "word_index": 6,
+          "text": "to",
+          "bbox": {
+            "x": 0.88391778,
+            "y": 0.80060729,
+            "width": 0.02902056,
+            "height": 0.03947368
+          },
+          "chars": [
+            {
+              "id": "l6w6c0",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 0,
+              "global_index": 259,
+              "char": "t",
+              "bbox": {
+                "x": 0.88391778,
+                "y": 0.80060729,
+                "width": 0.01133721,
+                "height": 0.03947368
+              }
+            },
+            {
+              "id": "l6w6c1",
+              "line_index": 6,
+              "word_index": 6,
+              "char_index": 1,
+              "global_index": 260,
+              "char": "o",
+              "bbox": {
+                "x": 0.89525499,
+                "y": 0.80060729,
+                "width": 0.01768334,
+                "height": 0.03947368
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "line_index": 7,
+      "text": "action-packed plots.",
+      "bbox": {
+        "x": 0.05622733,
+        "y": 0.86639676,
+        "width": 0.31862152,
+        "height": 0.06072874
+      },
+      "words": [
+        {
+          "id": "l7w0",
+          "line_index": 7,
+          "word_index": 0,
+          "text": "action-packed",
+          "bbox": {
+            "x": 0.05622733,
+            "y": 0.86639676,
+            "width": 0.22249093,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l7w0c0",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 0,
+              "global_index": 261,
+              "char": "a",
+              "bbox": {
+                "x": 0.05622733,
+                "y": 0.86639676,
+                "width": 0.01929731,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c1",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 1,
+              "global_index": 262,
+              "char": "c",
+              "bbox": {
+                "x": 0.07552463,
+                "y": 0.86639676,
+                "width": 0.01731715,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c2",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 2,
+              "global_index": 263,
+              "char": "t",
+              "bbox": {
+                "x": 0.09284178,
+                "y": 0.86639676,
+                "width": 0.01234831,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c3",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 3,
+              "global_index": 264,
+              "char": "i",
+              "bbox": {
+                "x": 0.10519009,
+                "y": 0.86639676,
+                "width": 0.00874467,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c4",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 4,
+              "global_index": 265,
+              "char": "o",
+              "bbox": {
+                "x": 0.11393476,
+                "y": 0.86639676,
+                "width": 0.01926041,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c5",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 5,
+              "global_index": 266,
+              "char": "n",
+              "bbox": {
+                "x": 0.13319517,
+                "y": 0.86639676,
+                "width": 0.01996146,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c6",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 6,
+              "global_index": 267,
+              "char": "-",
+              "bbox": {
+                "x": 0.15315663,
+                "y": 0.86639676,
+                "width": 0.01136438,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c7",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 7,
+              "global_index": 268,
+              "char": "p",
+              "bbox": {
+                "x": 0.16452101,
+                "y": 0.86639676,
+                "width": 0.01998606,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c8",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 8,
+              "global_index": 269,
+              "char": "a",
+              "bbox": {
+                "x": 0.18450706,
+                "y": 0.86639676,
+                "width": 0.01929731,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c9",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 9,
+              "global_index": 270,
+              "char": "c",
+              "bbox": {
+                "x": 0.20380437,
+                "y": 0.86639676,
+                "width": 0.01731715,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c10",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 10,
+              "global_index": 271,
+              "char": "k",
+              "bbox": {
+                "x": 0.22112152,
+                "y": 0.86639676,
+                "width": 0.01823958,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c11",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 11,
+              "global_index": 272,
+              "char": "e",
+              "bbox": {
+                "x": 0.2393611,
+                "y": 0.86639676,
+                "width": 0.0193711,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w0c12",
+              "line_index": 7,
+              "word_index": 0,
+              "char_index": 12,
+              "global_index": 273,
+              "char": "d",
+              "bbox": {
+                "x": 0.2587322,
+                "y": 0.86639676,
+                "width": 0.01998606,
+                "height": 0.06072874
+              }
+            }
+          ]
+        },
+        {
+          "id": "l7w1",
+          "line_index": 7,
+          "word_index": 1,
+          "text": "plots.",
+          "bbox": {
+            "x": 0.28899637,
+            "y": 0.86639676,
+            "width": 0.08585248,
+            "height": 0.06072874
+          },
+          "chars": [
+            {
+              "id": "l7w1c0",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 0,
+              "global_index": 274,
+              "char": "p",
+              "bbox": {
+                "x": 0.28899637,
+                "y": 0.86639676,
+                "width": 0.01977747,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w1c1",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 1,
+              "global_index": 275,
+              "char": "l",
+              "bbox": {
+                "x": 0.30877384,
+                "y": 0.86639676,
+                "width": 0.0086534,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w1c2",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 2,
+              "global_index": 276,
+              "char": "o",
+              "bbox": {
+                "x": 0.31742725,
+                "y": 0.86639676,
+                "width": 0.0190594,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w1c3",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 3,
+              "global_index": 277,
+              "char": "t",
+              "bbox": {
+                "x": 0.33648664,
+                "y": 0.86639676,
+                "width": 0.01221943,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w1c4",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 4,
+              "global_index": 278,
+              "char": "s",
+              "bbox": {
+                "x": 0.34870608,
+                "y": 0.86639676,
+                "width": 0.01623578,
+                "height": 0.06072874
+              }
+            },
+            {
+              "id": "l7w1c5",
+              "line_index": 7,
+              "word_index": 1,
+              "char_index": 5,
+              "global_index": 279,
+              "char": ".",
+              "bbox": {
+                "x": 0.36494186,
+                "y": 0.86639676,
+                "width": 0.00990699,
+                "height": 0.06072874
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

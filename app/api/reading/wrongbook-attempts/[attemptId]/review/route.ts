@@ -18,6 +18,10 @@ import { loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.se
 import { loadStudentReadingPractice, StudentReadingLoadError } from "@/lib/reading/studentPractice";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  loadReadingFullSetWrongbookReviewData,
+  type FullSetWrongbookAttemptRow
+} from "@/lib/reading/fullSetWrongbookResult.server";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +45,7 @@ export async function GET(
 
   const { data: attempt, error: attemptError } = await auth.client
     .from("reading_wrongbook_attempts")
-    .select("attempt_id,logical_item_id,task_type,status,scope,targets,elapsed_seconds,started_at,submitted_at,total_points,correct_points")
+    .select("attempt_id,logical_item_id,task_type,status,scope,targets,elapsed_seconds,started_at,submitted_at,total_points,correct_points,source_full_set_id,source_attempt_id")
     .eq("attempt_id", params.attemptId)
     .maybeSingle();
   if (attemptError) return serverError("owned correction attempt", attemptError);
@@ -51,6 +55,34 @@ export async function GET(
   }
 
   const db = createServiceSupabase();
+  if (attempt.task_type === "full_set") {
+    try {
+      const result = await loadReadingFullSetWrongbookReviewData({
+        attempt: attempt as FullSetWrongbookAttemptRow,
+        db
+      });
+      return readingAttemptJson({
+        attempt: {
+          attemptId: attempt.attempt_id,
+          correctPoints: attempt.correct_points,
+          elapsedSeconds: attempt.elapsed_seconds,
+          sourceAttemptId: attempt.source_attempt_id,
+          sourceFullSetId: attempt.source_full_set_id,
+          status: "submitted",
+          submittedAt: attempt.submitted_at,
+          taskType: "full_set",
+          title: result.title,
+          totalPoints: attempt.total_points
+        },
+        disclosures: result.presentations,
+        fullSet: true,
+        occurrences: result.occurrences,
+        reviewItems: result.reviewItems
+      });
+    } catch (error) {
+      return serverError("Full Set correction review", asError(error));
+    }
+  }
   let fullPractice: Awaited<ReturnType<typeof loadStudentReadingPractice>>;
   try {
     fullPractice = await loadStudentReadingPractice(db, attempt.logical_item_id);

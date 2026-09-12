@@ -11,7 +11,8 @@ export const WRONG_QUESTION_TASK_TYPES = [
   "build_sentence",
   "ctw",
   "rdl",
-  "rap"
+  "rap",
+  "full_set"
 ] as const;
 
 export type WrongQuestionTaskType = (typeof WRONG_QUESTION_TASK_TYPES)[number];
@@ -20,7 +21,8 @@ export const WRONG_QUESTION_TASK_LABELS: Record<WrongQuestionTaskType, string> =
   build_sentence: "Build a Sentence",
   ctw: "Complete the Words",
   rdl: "Read in Daily Life",
-  rap: "Read an Academic Passage"
+  rap: "Read an Academic Passage",
+  full_set: "Reading Full Set"
 };
 
 export type WrongQuestionOverviewStats = {
@@ -111,6 +113,41 @@ export type ReadingWrongbookQueueItem = {
   title: string;
 };
 
+export type ReadingFullSetWrongQuestionAttempt = {
+  attemptId: string;
+  completedAt: string;
+  fullSetId: string;
+  title: string;
+};
+
+export type ReadingFullSetWrongQuestionAnswer = {
+  attemptId: string;
+  isCorrect: boolean;
+  logicalItemId: string;
+  moduleNumber: 1 | 2;
+  occurrenceId: string;
+  order: number;
+  questionId: string;
+  slotId: string | null;
+  taskType: ReadingModule;
+};
+
+export type ReadingFullSetWrongbookCorrectionAttempt = {
+  attemptId: string;
+  sourceAttemptId: string;
+  submittedAt: string;
+};
+
+export type ReadingFullSetWrongbookTarget = Omit<ReadingFullSetWrongQuestionAnswer, "attemptId" | "isCorrect">;
+
+export type ReadingFullSetWrongbookQueueItem = {
+  fullSetId: string;
+  latestWrongAt: string;
+  sourceAttemptId: string;
+  targets: ReadingFullSetWrongbookTarget[];
+  title: string;
+};
+
 export function buildWrongQuestionsOverview(input: {
   basAnswers: PracticeHistoryAnswer[];
   basAttempts: BasWrongQuestionAttempt[];
@@ -121,6 +158,10 @@ export function buildWrongQuestionsOverview(input: {
   readingCorrectionAnswers?: ReadingWrongQuestionAnswer[];
   readingCorrectionAttempts?: ReadingWrongbookCorrectionAttempt[];
   readingTitles: Map<string, string>;
+  fullSetAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetAttempts?: ReadingFullSetWrongQuestionAttempt[];
+  fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];
   todayEnd: number;
   todayStart: number;
 }): WrongQuestionsOverviewPayload {
@@ -138,6 +179,7 @@ export function buildWrongQuestionsOverview(input: {
   }));
 
   atomic.push(...buildReadingAtomicWrongQuestions(input));
+  atomic.push(...buildReadingFullSetAtomicWrongQuestions(input));
   const groups = aggregateWrongQuestionGroups(atomic);
   const corrected = atomic.filter((item) => item.corrected).length;
 
@@ -153,6 +195,111 @@ export function buildWrongQuestionsOverview(input: {
       total: atomic.length
     }
   };
+}
+
+function buildReadingFullSetAtomicWrongQuestions(input: {
+  fullSetAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetAttempts?: ReadingFullSetWrongQuestionAttempt[];
+  fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];
+  todayEnd: number;
+  todayStart: number;
+}) {
+  const attempts = input.fullSetAttempts ?? [];
+  const attemptById = new Map(attempts.map((attempt) => [attempt.attemptId, attempt]));
+  const correctionState = buildReadingFullSetCorrectionState(input);
+
+  return (input.fullSetAnswers ?? []).flatMap((answer): AtomicWrongQuestion[] => {
+    if (answer.isCorrect) return [];
+    const attempt = attemptById.get(answer.attemptId);
+    if (!attempt) return [];
+    const corrected = correctionState.get(attempt.attemptId)?.get(readingFullSetAnswerKey(answer)) ?? false;
+    const wrongTime = answerTime(attempt.completedAt);
+    const scope = wrongTime >= input.todayStart && wrongTime < input.todayEnd ? "today" : "history";
+    return [{
+      actionHref: `/student/reading/full-sets/${encodeURIComponent(attempt.fullSetId)}/result/${encodeURIComponent(attempt.attemptId)}`,
+      correctionHref: corrected ? null : `/student/wrong-questions/${scope}/reading/practice?${new URLSearchParams({
+        sourceAttemptId: attempt.attemptId,
+        taskType: "full_set"
+      }).toString()}`,
+      corrected,
+      firstWrongTime: wrongTime,
+      groupId: attempt.attemptId,
+      latestWrongTime: wrongTime,
+      taskType: "full_set",
+      title: attempt.title
+    }];
+  });
+}
+
+export function buildReadingFullSetWrongbookQueue(input: {
+  fullSetAnswers: ReadingFullSetWrongQuestionAnswer[];
+  fullSetAttempts: ReadingFullSetWrongQuestionAttempt[];
+  fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];
+  scope: "history" | "today";
+  sourceAttemptId?: string | null;
+  todayEnd: number;
+  todayStart: number;
+}): ReadingFullSetWrongbookQueueItem[] {
+  const correctionState = buildReadingFullSetCorrectionState(input);
+  return input.fullSetAttempts
+    .filter((attempt) => !input.sourceAttemptId || attempt.attemptId === input.sourceAttemptId)
+    .filter((attempt) => input.scope === "history" || (
+      answerTime(attempt.completedAt) >= input.todayStart
+      && answerTime(attempt.completedAt) < input.todayEnd
+    ))
+    .map((attempt) => ({
+      fullSetId: attempt.fullSetId,
+      latestWrongAt: attempt.completedAt,
+      sourceAttemptId: attempt.attemptId,
+      targets: input.fullSetAnswers
+        .filter((answer) => answer.attemptId === attempt.attemptId && !answer.isCorrect)
+        .filter((answer) => !(correctionState.get(attempt.attemptId)?.get(readingFullSetAnswerKey(answer)) ?? false))
+        .map(({ attemptId: _attemptId, isCorrect: _isCorrect, ...target }) => target)
+        .sort(compareReadingFullSetTargets),
+      title: attempt.title
+    }))
+    .filter((item) => item.targets.length > 0)
+    .sort((left, right) => answerTime(right.latestWrongAt) - answerTime(left.latestWrongAt));
+}
+
+function buildReadingFullSetCorrectionState(input: {
+  fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];
+}) {
+  const correctionAnswersByAttempt = new Map<string, ReadingFullSetWrongQuestionAnswer[]>();
+  for (const answer of input.fullSetCorrectionAnswers ?? []) {
+    correctionAnswersByAttempt.set(answer.attemptId, [
+      ...(correctionAnswersByAttempt.get(answer.attemptId) ?? []),
+      answer
+    ]);
+  }
+  const stateBySource = new Map<string, Map<string, boolean>>();
+  const orderedAttempts = [...(input.fullSetCorrectionAttempts ?? [])]
+    .sort((left, right) => answerTime(left.submittedAt) - answerTime(right.submittedAt));
+  for (const attempt of orderedAttempts) {
+    const state = stateBySource.get(attempt.sourceAttemptId) ?? new Map<string, boolean>();
+    for (const answer of correctionAnswersByAttempt.get(attempt.attemptId) ?? []) {
+      state.set(readingFullSetAnswerKey(answer), answer.isCorrect);
+    }
+    stateBySource.set(attempt.sourceAttemptId, state);
+  }
+  return stateBySource;
+}
+
+export function compareReadingFullSetTargets(
+  left: ReadingFullSetWrongbookTarget,
+  right: ReadingFullSetWrongbookTarget
+) {
+  return left.moduleNumber - right.moduleNumber
+    || left.order - right.order
+    || left.occurrenceId.localeCompare(right.occurrenceId)
+    || (left.slotId ?? "").localeCompare(right.slotId ?? "");
+}
+
+function readingFullSetAnswerKey(answer: Pick<ReadingFullSetWrongQuestionAnswer, "logicalItemId" | "occurrenceId" | "questionId" | "slotId">) {
+  return [answer.occurrenceId, answer.logicalItemId, answer.questionId, answer.slotId ?? "question"].join(":");
 }
 
 export function buildBasWrongbookEntryQuestionIds(

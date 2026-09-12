@@ -8,6 +8,7 @@ import {
   type PracticeHistoryAnswer
 } from "@/lib/practiceHistory";
 import { readingCatalogDisplayNumber } from "@/lib/reading/catalog";
+import { loadReadingFullSetWrongbookData } from "@/lib/reading/fullSetWrongbook.server";
 import { loadBuildSentenceHistoricalPracticeDisplayResolver } from "@/lib/historicalPracticeDisplay";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
@@ -575,6 +576,7 @@ async function loadWrongQuestionsOverview(
         .select("attempt_id,logical_item_id,task_type,scope,submitted_at")
         .eq("student_id", studentId)
         .eq("status", "submitted")
+        .in("task_type", ["ctw", "rdl", "rap"])
         .order("attempt_id", { ascending: true })
         .range(from, to)
     )
@@ -715,6 +717,12 @@ async function loadWrongQuestionsOverview(
   const todayEnd = Number.isFinite(requestedEnd)
     ? requestedEnd
     : fallbackStart + 24 * 60 * 60 * 1000;
+  let fullSetWrongbook;
+  try {
+    fullSetWrongbook = await loadReadingFullSetWrongbookData(db, studentId);
+  } catch (error) {
+    return jsonError(`Failed to load Reading Full Set wrong questions: ${error instanceof Error ? error.message : "unknown"}`);
+  }
   const payload = buildWrongQuestionsOverview({
     basAnswers,
     basAttempts,
@@ -735,6 +743,7 @@ async function loadWrongQuestionsOverview(
     })),
     readingCorrectionAttempts,
     readingTitles: buildReadingWrongQuestionTitles(readingItemResult.data ?? []),
+    ...fullSetWrongbook,
     todayEnd,
     todayStart
   });

@@ -1,0 +1,27 @@
+{
+  "schema_version": "rdl-production-asset-v1",
+  "material_id": "RDL-113",
+  "active_image": "material_final.png",
+  "active_selection": "selection_map.json",
+  "image_sha256": "95f127e7192167d5c432ff39db9eb70c46d1e2222f9030979ff8d1bc9df73be1",
+  "selection_sha256": "be3cce4034804541c97ebc65b6ddd4c46c0b881c7180a6237e3ca00264ace8ad",
+  "width": 1571,
+  "height": 1020,
+  "hd_status": "passed",
+  "final_status": "passed",
+  "selection_status": "passed",
+  "selection_image_sha256": "95f127e7192167d5c432ff39db9eb70c46d1e2222f9030979ff8d1bc9df73be1",
+  "material_final": {
+    "file": "material_final.png",
+    "sha256": "95f127e7192167d5c432ff39db9eb70c46d1e2222f9030979ff8d1bc9df73be1",
+    "frozen": true
+  },
+  "source_reference": {
+    "manifest": "RDL_WORK_INCREMENTAL_MANIFEST.local.json",
+    "canonical_asset_id": "RDL-113"
+  },
+  "release_acceptance": {
+    "manifest": "RDL_FINAL_RELEASE_MAP.local.json",
+    "status": "FROZEN_SELECTION_QA_PASS"
+  }
+}

@@ -19,6 +19,10 @@ import { readingAttemptJson, requireReadingAttemptStudent } from "@/lib/reading/
 import { loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.server";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  loadReadingFullSetWrongbookResultData,
+  type FullSetWrongbookAttemptRow
+} from "@/lib/reading/fullSetWrongbookResult.server";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +41,7 @@ export async function GET(
 
   const { data: attempt, error: attemptError } = await auth.client
     .from("reading_wrongbook_attempts")
-    .select("attempt_id,logical_item_id,task_type,status,scope,targets,elapsed_seconds,started_at,submitted_at,total_points,correct_points")
+    .select("attempt_id,logical_item_id,task_type,status,scope,targets,elapsed_seconds,started_at,submitted_at,total_points,correct_points,source_full_set_id,source_attempt_id")
     .eq("attempt_id", params.attemptId)
     .maybeSingle();
   if (attemptError) return serverError("owned correction attempt", attemptError);
@@ -47,6 +51,32 @@ export async function GET(
   }
 
   const db = createServiceSupabase();
+  if (attempt.task_type === "full_set") {
+    try {
+      const result = await loadReadingFullSetWrongbookResultData({
+        attempt: attempt as FullSetWrongbookAttemptRow,
+        db
+      });
+      return readingAttemptJson({
+        answers: result.answers,
+        attempt: {
+          accuracy: attempt.total_points > 0 ? attempt.correct_points / attempt.total_points : 0,
+          attemptId: attempt.attempt_id,
+          correctPoints: attempt.correct_points,
+          elapsedSeconds: attempt.elapsed_seconds,
+          itemTitle: result.title,
+          logicalItemId: attempt.source_full_set_id,
+          submittedAt: attempt.submitted_at,
+          taskName: "Reading Full Set",
+          taskType: "full_set",
+          totalPoints: attempt.total_points
+        },
+        ctwParagraphs: []
+      });
+    } catch (error) {
+      return serverError("Full Set correction result", asError(error));
+    }
+  }
   let base;
   try {
     base = await Promise.all([

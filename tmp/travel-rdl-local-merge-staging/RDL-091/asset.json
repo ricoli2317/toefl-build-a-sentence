@@ -1,0 +1,34 @@
+{
+  "schema_version": "rdl-production-asset-v1",
+  "material_id": "RDL-091",
+  "active_image": "material_final.png",
+  "active_selection": "selection_map.json",
+  "image_sha256": "18149fd374bb6ef8d7ef6e772790eb754e647540bb8aaf33bab84684882edd9f",
+  "selection_sha256": "9130cb84922d43b2bee5611a743f9d4df3d80db861d77a227aaaa8453cbca31f",
+  "width": 1359,
+  "height": 1157,
+  "hd_status": "passed",
+  "final_status": "passed",
+  "selection_status": "passed",
+  "selection_image_sha256": "18149fd374bb6ef8d7ef6e772790eb754e647540bb8aaf33bab84684882edd9f",
+  "material_final": {
+    "file": "material_final.png",
+    "sha256": "18149fd374bb6ef8d7ef6e772790eb754e647540bb8aaf33bab84684882edd9f",
+    "frozen": true
+  },
+  "source_reference": {
+    "manifest": "RDL_WORK_INCREMENTAL_MANIFEST.local.json",
+    "canonical_asset_id": "RDL-091"
+  },
+  "release_acceptance": {
+    "manifest": "RDL_FINAL_RELEASE_MAP.local.json",
+    "status": "FROZEN_SELECTION_QA_PASS"
+  },
+  "canonical_source": {
+    "set": "7.5A",
+    "file": "7月/题目/M1_20260705A_R_01-35_PDF.pdf",
+    "page": 3,
+    "render_dpi": 300,
+    "crop_method": "manual_safe_crop_reviewed"
+  }
+}

@@ -3,6 +3,10 @@ import type { ReadingAnswerState } from "./practiceState";
 import type { StudentReadingPracticePayload } from "./studentPractice";
 import type { ReadingModule } from "./types";
 import type { ReadingWrongbookQueueItem, ReadingWrongbookTarget } from "../wrongQuestions";
+import type {
+  ReadingFullSetWrongbookQueueItem,
+  ReadingFullSetWrongbookTarget
+} from "../wrongQuestions";
 
 export type ReadingWrongbookScope = "history" | "today";
 
@@ -23,6 +27,32 @@ export type ReadingWrongbookPreservedAnswer = {
   questionId: string;
   slotId: string | null;
   studentAnswer: string;
+};
+
+export type ReadingFullSetWrongbookAttemptSummary = {
+  attemptId: string;
+  correctPoints: number;
+  elapsedSeconds: number;
+  incorrectPoints: number;
+  scope: ReadingWrongbookScope;
+  sourceAttemptId: string;
+  sourceFullSetId: string;
+  startedAt: string;
+  status: "draft" | "submitted";
+  submittedAt: string | null;
+  targets: ReadingFullSetWrongbookTarget[];
+  taskType: "full_set";
+  totalPoints: number;
+  unansweredPoints: number;
+  created?: boolean;
+  resumed?: boolean;
+  alreadySubmitted?: boolean;
+};
+
+export type ReadingFullSetWrongbookQueuePayload = {
+  items: ReadingFullSetWrongbookQueueItem[];
+  scope: ReadingWrongbookScope;
+  taskType: "full_set";
 };
 
 export function isReadingWrongbookScope(value: unknown): value is ReadingWrongbookScope {
@@ -66,6 +96,47 @@ export function isReadingWrongbookQueuePayload(
       && Array.isArray(item.targets)
       && item.targets.length > 0
       && item.targets.every(isReadingWrongbookTarget)
+    ));
+}
+
+export function isReadingFullSetWrongbookAttemptSummary(
+  value: unknown
+): value is ReadingFullSetWrongbookAttemptSummary {
+  if (!value || typeof value !== "object") return false;
+  const attempt = value as Partial<ReadingFullSetWrongbookAttemptSummary>;
+  return typeof attempt.attemptId === "string"
+    && attempt.taskType === "full_set"
+    && (attempt.scope === "history" || attempt.scope === "today")
+    && typeof attempt.sourceAttemptId === "string"
+    && typeof attempt.sourceFullSetId === "string"
+    && (attempt.status === "draft" || attempt.status === "submitted")
+    && Number.isInteger(attempt.elapsedSeconds)
+    && typeof attempt.startedAt === "string"
+    && Number.isInteger(attempt.totalPoints)
+    && Number.isInteger(attempt.correctPoints)
+    && Number.isInteger(attempt.incorrectPoints)
+    && Number.isInteger(attempt.unansweredPoints)
+    && Array.isArray(attempt.targets)
+    && attempt.targets.length > 0
+    && attempt.targets.every(isReadingFullSetWrongbookTarget);
+}
+
+export function isReadingFullSetWrongbookQueuePayload(
+  value: unknown
+): value is ReadingFullSetWrongbookQueuePayload {
+  if (!value || typeof value !== "object") return false;
+  const payload = value as Partial<ReadingFullSetWrongbookQueuePayload>;
+  return isReadingWrongbookScope(payload.scope)
+    && payload.taskType === "full_set"
+    && Array.isArray(payload.items)
+    && payload.items.every((item) => Boolean(
+      item
+      && typeof item.fullSetId === "string"
+      && typeof item.sourceAttemptId === "string"
+      && typeof item.title === "string"
+      && Array.isArray(item.targets)
+      && item.targets.length > 0
+      && item.targets.every(isReadingFullSetWrongbookTarget)
     ));
 }
 
@@ -138,4 +209,16 @@ function isReadingWrongbookTarget(value: unknown): value is ReadingWrongbookTarg
   return typeof target.questionId === "string"
     && (target.sourceAttemptId === undefined || typeof target.sourceAttemptId === "string")
     && (target.slotId === null || typeof target.slotId === "string");
+}
+
+function isReadingFullSetWrongbookTarget(value: unknown): value is ReadingFullSetWrongbookTarget {
+  if (!value || typeof value !== "object") return false;
+  const target = value as Partial<ReadingFullSetWrongbookTarget>;
+  return typeof target.logicalItemId === "string"
+    && (target.moduleNumber === 1 || target.moduleNumber === 2)
+    && typeof target.occurrenceId === "string"
+    && Number.isInteger(target.order)
+    && typeof target.questionId === "string"
+    && (target.slotId === null || typeof target.slotId === "string")
+    && (target.taskType === "ctw" || target.taskType === "rdl" || target.taskType === "rap");
 }

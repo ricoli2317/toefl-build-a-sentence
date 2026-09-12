@@ -6,6 +6,7 @@ const test = require("node:test");
 const {
   buildBasWrongbookEntryQuestionIds,
   buildBasWrongbookPracticeQuestionIds,
+  buildReadingFullSetWrongbookQueue,
   buildReadingWrongbookQueue,
   buildWrongQuestionsOverview
 } = require("../lib/wrongQuestions.ts");
@@ -234,6 +235,110 @@ test("Reading canonical identities drive pending queues and correction answers u
     buildReadingWrongbookQueue({ ...input, scope: "today", taskType: "rap" })[0].targets,
     [{ questionId: "rap-q", sourceAttemptId: "official-rap", slotId: null }]
   );
+});
+
+test("Reading Full Set wrongbook keeps one attempt-scoped entry and original mixed occurrence order", () => {
+  const sourceA = "11111111-1111-4111-8111-111111111111";
+  const sourceB = "22222222-2222-4222-8222-222222222222";
+  const attempt = (attemptId, fullSetId, completedAt, title) => ({ attemptId, fullSetId, completedAt, title });
+  const answer = (attemptId, occurrenceId, logicalItemId, taskType, moduleNumber, order, questionId, slotId = null, isCorrect = false) => ({
+    attemptId, occurrenceId, logicalItemId, taskType, moduleNumber, order, questionId, slotId, isCorrect
+  });
+  const input = {
+    fullSetAttempts: [
+      attempt(sourceA, "20260830A", "2026-08-30T08:00:00.000Z", "20260830A"),
+      attempt(sourceB, "20260829B", "2026-08-29T08:00:00.000Z", "20260829B")
+    ],
+    fullSetAnswers: [
+      answer(sourceA, "occ-ctw-a", "reading-ctw-aaaaaaaaaaaaaaaaaaaaaaaa", "ctw", 1, 1, "ctw-a", "slot-1"),
+      answer(sourceA, "occ-rdl", "reading-rdl-bbbbbbbbbbbbbbbbbbbbbbbb", "rdl", 1, 12, "rdl-q2"),
+      answer(sourceA, "occ-rap", "reading-rap-cccccccccccccccccccccccc", "rap", 1, 16, "rap-insertion"),
+      answer(sourceA, "occ-ctw-b", "reading-ctw-dddddddddddddddddddddddd", "ctw", 1, 21, "ctw-b", "slot-7"),
+      answer(sourceA, "occ-rap-b", "reading-rap-eeeeeeeeeeeeeeeeeeeeeeee", "rap", 1, 34, "rap-selection"),
+      answer(sourceB, "occ-other", "reading-rap-ffffffffffffffffffffffff", "rap", 1, 5, "other-q")
+    ],
+    fullSetCorrectionAttempts: [],
+    fullSetCorrectionAnswers: [],
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  };
+
+  const queue = buildReadingFullSetWrongbookQueue({ ...input, scope: "today", sourceAttemptId: sourceA });
+  assert.equal(queue.length, 1);
+  assert.equal(queue[0].sourceAttemptId, sourceA);
+  assert.deepEqual(queue[0].targets.map((target) => [target.taskType, target.occurrenceId, target.order]), [
+    ["ctw", "occ-ctw-a", 1],
+    ["rdl", "occ-rdl", 12],
+    ["rap", "occ-rap", 16],
+    ["ctw", "occ-ctw-b", 21],
+    ["rap", "occ-rap-b", 34]
+  ]);
+
+  const overview = buildWrongQuestionsOverview({
+    basAnswers: [], basAttempts: [], basCorrectionAnswers: [], basGroupsBySet: new Map(),
+    readingAnswers: [], readingAttempts: [], readingTitles: new Map(),
+    ...input
+  });
+  const fullSetGroups = overview.groups.filter((group) => group.taskType === "full_set");
+  assert.equal(fullSetGroups.length, 2);
+  assert.equal(fullSetGroups.find((group) => group.groupId === sourceA).wrongCount, 5);
+  assert.match(fullSetGroups.find((group) => group.groupId === sourceA).correctionHref, new RegExp(`sourceAttemptId=${sourceA}`));
+});
+
+test("Reading Full Set correction clears only exact source occurrence scoring points", () => {
+  const sourceA = "11111111-1111-4111-8111-111111111111";
+  const sourceB = "22222222-2222-4222-8222-222222222222";
+  const baseTarget = {
+    logicalItemId: "reading-ctw-aaaaaaaaaaaaaaaaaaaaaaaa",
+    moduleNumber: 1,
+    occurrenceId: "occ-ctw",
+    order: 1,
+    questionId: "ctw-q",
+    slotId: "slot-1",
+    taskType: "ctw"
+  };
+  const input = {
+    fullSetAttempts: [
+      { attemptId: sourceA, completedAt: "2026-08-28T08:00:00.000Z", fullSetId: "20260828A", title: "20260828A" },
+      { attemptId: sourceB, completedAt: "2026-08-29T08:00:00.000Z", fullSetId: "20260829B", title: "20260829B" }
+    ],
+    fullSetAnswers: [
+      { ...baseTarget, attemptId: sourceA, isCorrect: false },
+      { ...baseTarget, attemptId: sourceB, isCorrect: false }
+    ],
+    fullSetCorrectionAttempts: [
+      { attemptId: "correction-a", sourceAttemptId: sourceA, submittedAt: "2026-08-30T08:00:00.000Z" }
+    ],
+    fullSetCorrectionAnswers: [
+      { ...baseTarget, attemptId: "correction-a", isCorrect: true }
+    ],
+    scope: "history",
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  };
+  assert.deepEqual(buildReadingFullSetWrongbookQueue({ ...input, sourceAttemptId: sourceA }), []);
+  assert.equal(buildReadingFullSetWrongbookQueue({ ...input, sourceAttemptId: sourceB })[0].targets.length, 1);
+});
+
+test("Reading Full Set correction reuses Reading workspaces, submit route, result cards, and readonly answer renderers", () => {
+  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingFullSetWrongbookPractice.tsx"), "utf8");
+  const review = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
+  const result = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookResult.tsx"), "utf8");
+  const queueRoute = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/route.ts"), "utf8");
+  const submitRoute = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/submit/route.ts"), "utf8");
+  const migration = fs.readFileSync(path.join(projectRoot, "supabase/reading_full_set_wrongbook_corrections.sql"), "utf8");
+  assert.match(runtime, /ReadingWorkspaceRouter/);
+  assert.match(runtime, /selectReadingWrongbookPractice/);
+  assert.match(runtime, /readingWrongbookEditableSlotIds/);
+  assert.match(runtime, /buildReadingWrongbookInitialAnswers/);
+  assert.match(runtime, /selectReadingWrongbookSubmissionAnswers/);
+  assert.match(queueRoute, /loadReadingFullSetWrongbookQueue/);
+  assert.match(submitRoute, /submit_reading_full_set_wrongbook_attempt/);
+  assert.match(result, /ReadingCorrectionAnswerValue/);
+  assert.match(review, /ReadingWorkspaceRouter/);
+  assert.match(review, /reviewPresentation=\{disclosure\}/);
+  assert.match(migration, /source_attempt_id uuid references public\.reading_full_set_attempts/);
+  assert.match(migration, /source_occurrence_id text references public\.reading_source_occurrences/);
 });
 
 test("Reading correction routes reuse the three existing renderers and persist isolated wrongbook attempts", () => {

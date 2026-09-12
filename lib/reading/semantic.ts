@@ -66,6 +66,29 @@ export function arePossibleReadingDuplicates(
   return leftText === rightText || diceCoefficient(leftText, rightText) >= 0.82;
 }
 
+/**
+ * A deliberately narrow second-layer equivalence check for already-known
+ * historical RDL/RAP transcription variants. The strict fingerprint remains
+ * the primary identity; this function is only safe because every text
+ * relaxation is guarded by the complete material/passage and question
+ * structure.
+ */
+export function areReadingPackagesHistoricalSemanticEquivalents(
+  left: ReadingImportPackage,
+  right: ReadingImportPackage
+) {
+  if (left.item.module !== right.item.module || left.item.module === "ctw") return false;
+  if (left.item.module === "rdl") {
+    if (
+      left.materials[0]?.materialId !== right.materials[0]?.materialId
+      || left.questions.length !== right.questions.length
+    ) return false;
+    return historicalQuestionsEquivalent(left, right);
+  }
+  return historicalRapPassagesEquivalent(left, right)
+    && historicalQuestionsEquivalent(left, right);
+}
+
 export function readingMaterialSemanticIdentity(material: ReadingMaterial | undefined) {
   if (!material) return null;
   return { materialId: material.materialId };
@@ -193,6 +216,265 @@ function rapPassageIdentity(passage: ReadingPassage | undefined, loose: boolean)
         .map((sentence) => text(sentence.text))
     }))
   };
+}
+
+function historicalRapPassagesEquivalent(
+  left: ReadingImportPackage,
+  right: ReadingImportPackage
+) {
+  if (left.passages.length !== right.passages.length) return false;
+  const leftPassages = [...left.passages].sort((a, b) => a.passageId.localeCompare(b.passageId));
+  const rightPassages = [...right.passages].sort((a, b) => a.passageId.localeCompare(b.passageId));
+  return leftPassages.every((passage, index) => {
+    const other = rightPassages[index];
+    if (
+      !other
+      || !historicalTextEquivalent(passage.title, other.title)
+      || passage.paragraphs.length !== other.paragraphs.length
+    ) return false;
+    const paragraphs = ordered(passage.paragraphs, (item) => item.paragraphOrder);
+    const otherParagraphs = ordered(other.paragraphs, (item) => item.paragraphOrder);
+    return paragraphs.every((paragraph, paragraphIndex) =>
+      paragraph.paragraphOrder === otherParagraphs[paragraphIndex]?.paragraphOrder
+      && historicalTextEquivalent(paragraph.text, otherParagraphs[paragraphIndex]?.text ?? "")
+    );
+  });
+}
+
+function historicalQuestionsEquivalent(
+  left: ReadingImportPackage,
+  right: ReadingImportPackage
+) {
+  if (left.questions.length !== right.questions.length) return false;
+  const leftQuestions = ordered(left.questions, (item) => item.questionOrder);
+  const rightQuestions = ordered(right.questions, (item) => item.questionOrder);
+  const leftPassages = new Map(left.passages.map((passage) => [passage.passageId, passage]));
+  const rightPassages = new Map(right.passages.map((passage) => [passage.passageId, passage]));
+  return leftQuestions.every((question, index) => {
+    const other = rightQuestions[index];
+    if (
+      !other
+      || question.questionOrder !== other.questionOrder
+      || question.questionType !== other.questionType
+      || !historicalTextEquivalent(
+        historicalQuestionStem(question),
+        historicalQuestionStem(other)
+      )
+    ) return false;
+
+    if (question.questionType === "rdl" && other.questionType === "rdl") {
+      return historicalMultipleChoiceEquivalent(question, other);
+    }
+    if (question.questionType === "rap_multiple_choice" && other.questionType === "rap_multiple_choice") {
+      const passage = leftPassages.get(question.payload.passageId);
+      const otherPassage = rightPassages.get(other.payload.passageId);
+      return Boolean(
+        passage
+        && otherPassage
+        && historicalMultipleChoiceEquivalent(question, other)
+        && historicalHighlightsEquivalent(question, passage, other, otherPassage)
+      );
+    }
+    if (question.questionType === "rap_sentence_insertion" && other.questionType === "rap_sentence_insertion") {
+      const passage = leftPassages.get(question.payload.passageId);
+      const otherPassage = rightPassages.get(other.payload.passageId);
+      if (!passage || !otherPassage || !historicalTextEquivalent(
+        question.payload.insertSentence,
+        other.payload.insertSentence
+      )) return false;
+      const positions = insertionPositions(question, passage);
+      const otherPositions = insertionPositions(other, otherPassage);
+      return stableStringify(positions.all) === stableStringify(otherPositions.all)
+        && stableStringify(positions.correct) === stableStringify(otherPositions.correct);
+    }
+    if (question.questionType === "rap_sentence_selection" && other.questionType === "rap_sentence_selection") {
+      const passage = leftPassages.get(question.payload.passageId);
+      const otherPassage = rightPassages.get(other.payload.passageId);
+      if (!passage || !otherPassage) return false;
+      const target = selectedSentenceIdentity(question, passage);
+      const otherTarget = selectedSentenceIdentity(other, otherPassage);
+      return target.paragraphOrder === otherTarget.paragraphOrder
+        && target.sentenceOrder === otherTarget.sentenceOrder
+        && historicalTextEquivalent(target.text, otherTarget.text);
+    }
+    return false;
+  });
+}
+
+function historicalQuestionStem(question: ReadingQuestion) {
+  return question.questionType === "rap_sentence_selection"
+    ? question.stem.replace(/\s+select the sentence to make your choice[.!?]*\s*$/i, "")
+    : question.stem;
+}
+
+function historicalMultipleChoiceEquivalent(
+  left: Extract<ReadingQuestion, { questionType: "rdl" | "rap_multiple_choice" }>,
+  right: Extract<ReadingQuestion, { questionType: "rdl" | "rap_multiple_choice" }>
+) {
+  const leftCorrect = left.payload.options.find((option) => option.optionId === left.payload.correctOptionId);
+  const rightCorrect = right.payload.options.find((option) => option.optionId === right.payload.correctOptionId);
+  return Boolean(
+    leftCorrect
+    && rightCorrect
+    && historicalTextEquivalent(leftCorrect.text, rightCorrect.text)
+    && historicalTextMultisetEquivalent(
+      left.payload.options.map((option) => option.text),
+      right.payload.options.map((option) => option.text)
+    )
+  );
+}
+
+function historicalTextMultisetEquivalent(left: string[], right: string[]) {
+  if (left.length !== right.length) return false;
+  const match = (index: number, used: Set<number>): boolean => {
+    if (index === left.length) return true;
+    for (let otherIndex = 0; otherIndex < right.length; otherIndex += 1) {
+      if (used.has(otherIndex) || !historicalTextEquivalent(left[index], right[otherIndex])) continue;
+      used.add(otherIndex);
+      if (match(index + 1, used)) return true;
+      used.delete(otherIndex);
+    }
+    return false;
+  };
+  return match(0, new Set());
+}
+
+function historicalHighlightsEquivalent(
+  left: Extract<ReadingQuestion, { questionType: "rap_multiple_choice" }>,
+  leftPassage: ReadingPassage,
+  right: Extract<ReadingQuestion, { questionType: "rap_multiple_choice" }>,
+  rightPassage: ReadingPassage
+) {
+  const leftTargets = highlightedTexts(left.payload.highlightRanges, leftPassage);
+  const rightTargets = highlightedTexts(right.payload.highlightRanges, rightPassage);
+  if (leftTargets.length === 0 && rightTargets.length === 0) return true;
+  if (leftTargets.length > 0 && rightTargets.length > 0) {
+    return historicalTextMultisetEquivalent(leftTargets, rightTargets);
+  }
+  const explicitTargets = quotedTargets(left.stem);
+  if (!historicalTextMultisetEquivalent(explicitTargets, quotedTargets(right.stem))) return false;
+  const presentTargets = leftTargets.length > 0 ? leftTargets : rightTargets;
+  return presentTargets.length > 0
+    && presentTargets.every((target) => explicitTargets.some((quoted) => historicalTextEquivalent(target, quoted)));
+}
+
+function highlightedTexts(
+  ranges: Array<{ paragraphId: string; startOffset: number; endOffset: number }> | undefined,
+  passage: ReadingPassage
+) {
+  const paragraphs = new Map(passage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph]));
+  return (ranges ?? []).flatMap((range) => {
+    const paragraph = paragraphs.get(range.paragraphId);
+    if (!paragraph || range.startOffset < 0 || range.endOffset <= range.startOffset) return [];
+    const target = paragraph.text.slice(range.startOffset, range.endOffset).trim();
+    return target ? [target] : [];
+  });
+}
+
+function quotedTargets(value: string) {
+  const normalized = normalizeReadingSemanticText(value);
+  const doubleQuoted = Array.from(normalized.matchAll(/"([^"]+)"/g), (match) => match[1].trim())
+    .filter(Boolean);
+  if (doubleQuoted.length > 0) return doubleQuoted;
+  return Array.from(
+    normalized.matchAll(/(?:^|\s)'([^']+)'(?=\s|[.,!?;:]|$)/g),
+    (match) => match[1].trim()
+  ).filter(Boolean);
+}
+
+function insertionPositions(
+  question: Extract<ReadingQuestion, { questionType: "rap_sentence_insertion" }>,
+  passage: ReadingPassage
+) {
+  const paragraphOrder = new Map(
+    passage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder])
+  );
+  const position = (anchor: (typeof question.payload.anchors)[number]) => ({
+    paragraphOrder: requiredMap(paragraphOrder, anchor.paragraphId),
+    boundaryIndex: anchor.boundaryIndex
+  });
+  const correct = question.payload.anchors.find((anchor) => anchor.anchorId === question.payload.correctAnchorId);
+  if (!correct) return { all: [], correct: null };
+  return {
+    all: question.payload.anchors.map(position).sort(comparePosition),
+    correct: position(correct)
+  };
+}
+
+function selectedSentenceIdentity(
+  question: Extract<ReadingQuestion, { questionType: "rap_sentence_selection" }>,
+  passage: ReadingPassage
+) {
+  const paragraph = passage.paragraphs.find(
+    (item) => item.paragraphId === question.payload.targetParagraphId
+  );
+  const sentence = paragraph?.sentences.find(
+    (item) => item.sentenceId === question.payload.correctSentenceId
+  );
+  return {
+    paragraphOrder: paragraph?.paragraphOrder ?? -1,
+    sentenceOrder: sentence?.sentenceOrder ?? -1,
+    text: sentence?.text ?? ""
+  };
+}
+
+function historicalTextEquivalent(left: string, right: string) {
+  const leftTokens = historicalTextTokens(left);
+  const rightTokens = historicalTextTokens(right);
+  if (leftTokens.length !== rightTokens.length) return false;
+  let editCount = 0;
+  for (let index = 0; index < leftTokens.length; index += 1) {
+    if (leftTokens[index] === rightTokens[index]) continue;
+    const distance = boundedEditDistance(leftTokens[index], rightTokens[index], 2);
+    if (
+      distance === 0
+      || distance > (Math.min(leftTokens[index].length, rightTokens[index].length) >= 6 ? 2 : 1)
+      || Math.min(leftTokens[index].length, rightTokens[index].length) < 4
+    ) return false;
+    editCount += distance;
+    if (editCount > 2) return false;
+  }
+  return true;
+}
+
+function historicalTextTokens(value: string) {
+  return normalizeReadingSemanticText(value)
+    .replace(/[\u0406\u0456]/g, (letter) => letter === "\u0406" ? "I" : "i")
+    .replace(/[\u0410\u0430\u0412\u0432\u0421\u0441\u0415\u0435\u041d\u043d\u041a\u043a\u041c\u043c\u041e\u043e\u0420\u0440\u0422\u0442\u0425\u0445\u0423\u0443]/g, (letter) => ({
+      "\u0410": "A", "\u0430": "a", "\u0412": "B", "\u0432": "b", "\u0421": "C", "\u0441": "c",
+      "\u0415": "E", "\u0435": "e", "\u041d": "H", "\u043d": "h", "\u041a": "K", "\u043a": "k",
+      "\u041c": "M", "\u043c": "m", "\u041e": "O", "\u043e": "o", "\u0420": "P", "\u0440": "p",
+      "\u0422": "T", "\u0442": "t", "\u0425": "X", "\u0445": "x", "\u0423": "Y", "\u0443": "y"
+    }[letter] ?? letter))
+    .toLocaleLowerCase("en-US")
+    .replace(/\b([ap])\.?\s*m\.?\b/g, "$1m")
+    .replace(/[-\u2010-\u2015]/g, " ")
+    .replace(/[.,:;]+/g, " ")
+    .replace(/[!?]+(?=\s*$)/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .filter(Boolean);
+}
+
+function boundedEditDistance(left: string, right: string, maximum: number) {
+  if (Math.abs(left.length - right.length) > maximum) return maximum + 1;
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    const current = [leftIndex];
+    let rowMinimum = leftIndex;
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      current[rightIndex] = Math.min(
+        previous[rightIndex] + 1,
+        current[rightIndex - 1] + 1,
+        previous[rightIndex - 1] + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1)
+      );
+      rowMinimum = Math.min(rowMinimum, current[rightIndex]);
+    }
+    if (rowMinimum > maximum) return maximum + 1;
+    previous = current;
+  }
+  return previous[right.length];
 }
 
 function highlightIdentity(

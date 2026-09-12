@@ -7,6 +7,7 @@ import {
   loadHistoricalReadingPackages
 } from "./historicalDedup.ts";
 import {
+  areReadingPackagesHistoricalSemanticEquivalents,
   arePossibleReadingDuplicates,
   readingMaterialReviewIdentity,
   readingMaterialStorageIdentity,
@@ -99,18 +100,33 @@ export async function prepareReadingPackagesForImport(
     let existingItem = exactMatches.get(incomingPackage.item.logicalItemId) ?? null;
     let reuseKind: PreparedReadingImportPackage["reuseKind"] = existingItem ? "exact_fingerprint" : "new";
     let possibleDuplicateLogicalItemIds: string[] = [];
+    const matchedExistingLogicalId = existingItem?.logicalItemId === incomingPackage.item.logicalItemId;
 
-    if (!existingItem && enableSemantic) {
-      const semanticCandidates = historicalBySemantic.get(readingSemanticFingerprint(incomingPackage)) ?? [];
-      if (semanticCandidates.length === 1) {
-        existingItem = existingLogicalItemFromPackage(semanticCandidates[0]);
+    if (enableSemantic && !matchedExistingLogicalId) {
+      existingItem = null;
+      reuseKind = "new";
+      const semanticFingerprint = readingSemanticFingerprint(incomingPackage);
+      const semanticCandidates = historicalBySemantic.get(semanticFingerprint) ?? [];
+      const historicalEquivalentCandidates = incomingPackage.item.module === "ctw"
+        ? semanticCandidates
+        : historicalPackages.filter((historical) =>
+            historical.item.module === incomingPackage.item.module
+            && areReadingPackagesHistoricalSemanticEquivalents(incomingPackage, historical)
+          );
+      const equivalentCandidates = uniquePackages([
+        ...semanticCandidates,
+        ...historicalEquivalentCandidates
+      ]);
+      if (equivalentCandidates.length > 0 && isOneSemanticEquivalenceClass(equivalentCandidates)) {
+        const survivor = stableHistoricalSurvivor(equivalentCandidates);
+        existingItem = existingLogicalItemFromPackage(survivor);
         reuseKind = "semantic";
       } else {
         possibleDuplicateLogicalItemIds = uniqueIds([
-          ...semanticCandidates,
+          ...equivalentCandidates,
           ...(historicalByPossible.get(readingPossibleDuplicateFingerprint(incomingPackage)) ?? []),
           ...historicalPackages.filter((historical) =>
-            readingSemanticFingerprint(historical) !== readingSemanticFingerprint(incomingPackage)
+            readingSemanticFingerprint(historical) !== semanticFingerprint
             && arePossibleReadingDuplicates(incomingPackage, historical)
           )
         ]).filter((id) => id !== incomingPackage.item.logicalItemId);
@@ -210,8 +226,18 @@ function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
   return { packages: result, reuseCounts };
 }
 
-export function assertPreparedReadingPackageCanImport(prepared: { occurrenceConflict: string | null }) {
+export function assertPreparedReadingPackageCanImport(prepared: {
+  occurrenceConflict: string | null;
+  possibleDuplicateLogicalItemIds?: string[];
+  materialMatchKind?: PreparedReadingImportPackage["materialMatchKind"];
+}) {
   if (prepared.occurrenceConflict) throw new Error(prepared.occurrenceConflict);
+  if ((prepared.possibleDuplicateLogicalItemIds?.length ?? 0) > 0) {
+    throw new Error("发现需确认的相似题；明确处理前不能导入为新题。");
+  }
+  if (prepared.materialMatchKind === "possible_material_duplicate") {
+    throw new Error("发现需确认的相似素材；明确处理前不能导入。");
+  }
 }
 
 async function loadExistingReadingLogicalItems(
@@ -289,6 +315,33 @@ function groupBy(
 
 function uniqueIds(packages: ReadingImportPackage[]) {
   return Array.from(new Set(packages.map((item) => item.item.logicalItemId)));
+}
+
+function uniquePackages(packages: ReadingImportPackage[]) {
+  return Array.from(new Map(
+    packages.map((item) => [item.item.logicalItemId, item])
+  ).values());
+}
+
+function isOneSemanticEquivalenceClass(packages: ReadingImportPackage[]) {
+  for (let leftIndex = 0; leftIndex < packages.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < packages.length; rightIndex += 1) {
+      const left = packages[leftIndex];
+      const right = packages[rightIndex];
+      if (
+        readingSemanticFingerprint(left) !== readingSemanticFingerprint(right)
+        && !areReadingPackagesHistoricalSemanticEquivalents(left, right)
+      ) return false;
+    }
+  }
+  return true;
+}
+
+function stableHistoricalSurvivor(packages: ReadingImportPackage[]) {
+  return [...packages].sort((left, right) =>
+    left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
+    || left.item.logicalItemId.localeCompare(right.item.logicalItemId)
+  )[0];
 }
 
 function materialMatchKind(

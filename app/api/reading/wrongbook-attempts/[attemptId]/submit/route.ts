@@ -5,6 +5,7 @@ import {
   requireReadingAttemptStudent
 } from "@/lib/reading/attemptServer";
 import { isReadingWrongbookAttemptSummary } from "@/lib/reading/wrongbook";
+import { isReadingFullSetWrongbookAttemptSummary } from "@/lib/reading/wrongbook";
 
 export const dynamic = "force-dynamic";
 
@@ -22,15 +23,38 @@ export async function POST(
     answers?: unknown;
     elapsedSeconds?: unknown;
     logicalItemId?: unknown;
+    sourceAttemptId?: unknown;
+    sourceFullSetId?: unknown;
+    taskType?: unknown;
   };
   const elapsedSeconds = Number(body.elapsedSeconds);
   if (
-    typeof body.logicalItemId !== "string"
-    || !Number.isInteger(elapsedSeconds)
+    !Number.isInteger(elapsedSeconds)
     || elapsedSeconds < 0
     || elapsedSeconds > 604800
     || !Array.isArray(body.answers)
   ) {
+    return readingAttemptJson({ error: "无效的错题订正提交。" }, { status: 400 });
+  }
+
+  if (body.taskType === "full_set") {
+    if (typeof body.sourceAttemptId !== "string" || typeof body.sourceFullSetId !== "string") {
+      return readingAttemptJson({ error: "无效的错题订正提交。" }, { status: 400 });
+    }
+    const { data, error } = await auth.client.rpc("submit_reading_full_set_wrongbook_attempt", {
+      p_answers: body.answers,
+      p_attempt_id: params.attemptId,
+      p_elapsed_seconds: elapsedSeconds,
+      p_full_set_id: body.sourceFullSetId,
+      p_source_attempt_id: body.sourceAttemptId
+    });
+    if (error) return readingAttemptError(error, "错题订正提交失败，请稍后重试。");
+    if (!isReadingFullSetWrongbookAttemptSummary(data) || data.status !== "submitted") {
+      return readingAttemptJson({ error: "错题订正结果返回了无效数据。" }, { status: 500 });
+    }
+    return readingAttemptJson({ attempt: data });
+  }
+  if (typeof body.logicalItemId !== "string") {
     return readingAttemptJson({ error: "无效的错题订正提交。" }, { status: 400 });
   }
 

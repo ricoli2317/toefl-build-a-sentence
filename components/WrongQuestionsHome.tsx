@@ -9,6 +9,7 @@ import {
   CircleCheckBig,
   ClipboardList,
   FileText,
+  Library,
   Puzzle,
   Target
 } from "lucide-react";
@@ -40,7 +41,8 @@ const WRONG_QUESTION_ICONS: Record<WrongQuestionTaskType, WrongQuestionIcon> = {
   build_sentence: Puzzle,
   ctw: CompleteTheWordsIcon,
   rdl: FileText,
-  rap: BookOpen
+  rap: BookOpen,
+  full_set: Library
 };
 
 export function WrongQuestionsHome() {
@@ -82,7 +84,7 @@ export function WrongQuestionsHome() {
               <BasGrammarAnalysis items={state.data.grammarPoints} />
             </>
           ) : null}
-          {activeTab !== "all" && activeTab !== "build_sentence" ? (
+          {activeTab !== "all" && activeTab !== "build_sentence" && activeTab !== "full_set" ? (
             <ReadingCorrectionActions taskType={activeTab} />
           ) : null}
           <section aria-labelledby="wrong-question-list-title">

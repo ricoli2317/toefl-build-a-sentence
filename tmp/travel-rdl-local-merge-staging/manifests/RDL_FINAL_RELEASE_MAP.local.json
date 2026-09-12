@@ -1,0 +1,2360 @@
+{
+  "schema_version": 1,
+  "package_type": "rdl_final_release_map",
+  "status": "COMPLETE",
+  "generated_at_utc": "2026-09-02T02:39:38Z",
+  "purpose": "Authoritative handoff mapping for local merge, R2 upload, Reading CSV generation, and TPS import. This file supersedes any RDL-CAND identifiers in older source manifests.",
+  "handoff_target": [
+    "download production/rdl/",
+    "merge same-name RDL-xxx folders into local canonical RDL library",
+    "download the final manifests",
+    "upload material_final.png and selection_map.json to R2 using the existing RDL-xxx object-key convention",
+    "generate Reading CSV from DOCX/source content; use occurrences[].canonical_asset_id as each RDL row's material_id",
+    "run the normal CSV preflight/import into TPS"
+  ],
+  "canonical_summary": {
+    "historical_assets": 86,
+    "work_created_assets": 46,
+    "total_canonical_assets": 132,
+    "retired_ids": [
+      "RDL-105",
+      "RDL-109"
+    ],
+    "new_candidate_assets_finalized": 25
+  },
+  "candidate_to_canonical": [
+    {
+      "candidate_id": "RDL-CAND-001",
+      "canonical_asset_id": "RDL-110",
+      "canonical_title": "Herb Garden at Newton University"
+    },
+    {
+      "candidate_id": "RDL-CAND-002",
+      "canonical_asset_id": "RDL-111",
+      "canonical_title": "Library Café Early Closure"
+    },
+    {
+      "candidate_id": "RDL-CAND-003",
+      "canonical_asset_id": "RDL-112",
+      "canonical_title": "Baker Rugby Championship"
+    },
+    {
+      "candidate_id": "RDL-CAND-004",
+      "canonical_asset_id": "RDL-113",
+      "canonical_title": "Free Health Screening Event"
+    },
+    {
+      "candidate_id": "RDL-CAND-005",
+      "canonical_asset_id": "RDL-114",
+      "canonical_title": "Survey of Literary Theory"
+    },
+    {
+      "candidate_id": "RDL-CAND-006",
+      "canonical_asset_id": "RDL-115",
+      "canonical_title": "The Silent Echo"
+    },
+    {
+      "candidate_id": "RDL-CAND-007",
+      "canonical_asset_id": "RDL-116",
+      "canonical_title": "Math Tutoring Program"
+    },
+    {
+      "candidate_id": "RDL-CAND-008",
+      "canonical_asset_id": "RDL-117",
+      "canonical_title": "History 302 Research Assignment"
+    },
+    {
+      "candidate_id": "RDL-CAND-009",
+      "canonical_asset_id": "RDL-118",
+      "canonical_title": "Echoes of Tomorrow"
+    },
+    {
+      "candidate_id": "RDL-CAND-010",
+      "canonical_asset_id": "RDL-119",
+      "canonical_title": "Application for Research Assistant Position"
+    },
+    {
+      "candidate_id": "RDL-CAND-011",
+      "canonical_asset_id": "RDL-120",
+      "canonical_title": "Gardener’s Delight Soil Mix"
+    },
+    {
+      "candidate_id": "RDL-CAND-012",
+      "canonical_asset_id": "RDL-121",
+      "canonical_title": "Science Research Proposal Workshop"
+    },
+    {
+      "candidate_id": "RDL-CAND-013",
+      "canonical_asset_id": "RDL-122",
+      "canonical_title": "Mindfulness Workshop"
+    },
+    {
+      "candidate_id": "RDL-CAND-014",
+      "canonical_asset_id": "RDL-123",
+      "canonical_title": "Renewable Energy Research Paper"
+    },
+    {
+      "candidate_id": "RDL-CAND-015",
+      "canonical_asset_id": "RDL-124",
+      "canonical_title": "Eastwood Campus Dining Options"
+    },
+    {
+      "candidate_id": "RDL-CAND-016",
+      "canonical_asset_id": "RDL-125",
+      "canonical_title": "Mediation Options"
+    },
+    {
+      "candidate_id": "RDL-CAND-017",
+      "canonical_asset_id": "RDL-126",
+      "canonical_title": "Summer House and Pet Sitting"
+    },
+    {
+      "candidate_id": "RDL-CAND-018",
+      "canonical_asset_id": "RDL-127",
+      "canonical_title": "Physics for Engineers I"
+    },
+    {
+      "candidate_id": "RDL-CAND-019",
+      "canonical_asset_id": "RDL-128",
+      "canonical_title": "EX-5000 3D Printer Instructions"
+    },
+    {
+      "candidate_id": "RDL-CAND-020",
+      "canonical_asset_id": "RDL-129",
+      "canonical_title": "Exploring Cultural Artifacts"
+    },
+    {
+      "candidate_id": "RDL-CAND-021",
+      "canonical_asset_id": "RDL-130",
+      "canonical_title": "AI Robot Baristas"
+    },
+    {
+      "candidate_id": "RDL-CAND-022",
+      "canonical_asset_id": "RDL-131",
+      "canonical_title": "Student Council Meeting Plans"
+    },
+    {
+      "candidate_id": "RDL-CAND-023",
+      "canonical_asset_id": "RDL-132",
+      "canonical_title": "TrailBlayzer Hiking Boots"
+    },
+    {
+      "candidate_id": "RDL-CAND-024",
+      "canonical_asset_id": "RDL-133",
+      "canonical_title": "Remote Learning Assignment Discussion"
+    },
+    {
+      "candidate_id": "RDL-CAND-025",
+      "canonical_asset_id": "RDL-134",
+      "canonical_title": "Question About Group Project Guidelines"
+    }
+  ],
+  "work_created_assets": [
+    {
+      "canonical_asset_id": "RDL-087",
+      "canonical_title": "Study Abroad in Valencia",
+      "material_final_path": "production/rdl/RDL-087/material_final.png",
+      "selection_map_path": "production/rdl/RDL-087/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-088",
+      "canonical_title": "Winter Creative Writing Seminar",
+      "material_final_path": "production/rdl/RDL-088/material_final.png",
+      "selection_map_path": "production/rdl/RDL-088/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-089",
+      "canonical_title": "Join the Mechanicsburg Clean-Up Day!",
+      "material_final_path": "production/rdl/RDL-089/material_final.png",
+      "selection_map_path": "production/rdl/RDL-089/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-090",
+      "canonical_title": "Campus Iyengar Yoga Classes",
+      "material_final_path": "production/rdl/RDL-090/material_final.png",
+      "selection_map_path": "production/rdl/RDL-090/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-091",
+      "canonical_title": "Join the Campus Historical Society!",
+      "material_final_path": "production/rdl/RDL-091/material_final.png",
+      "selection_map_path": "production/rdl/RDL-091/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-092",
+      "canonical_title": "Fairmount University Ceramics Workshop",
+      "material_final_path": "production/rdl/RDL-092/material_final.png",
+      "selection_map_path": "production/rdl/RDL-092/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-093",
+      "canonical_title": "Residence-Hall Vegan Menu Expansion",
+      "material_final_path": "production/rdl/RDL-093/material_final.png",
+      "selection_map_path": "production/rdl/RDL-093/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-094",
+      "canonical_title": "Foundations of Graphic Design",
+      "material_final_path": "production/rdl/RDL-094/material_final.png",
+      "selection_map_path": "production/rdl/RDL-094/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-095",
+      "canonical_title": "Physics for Engineers I",
+      "material_final_path": "production/rdl/RDL-095/material_final.png",
+      "selection_map_path": "production/rdl/RDL-095/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-096",
+      "canonical_title": "Innovation Hub: Student Showcase",
+      "material_final_path": "production/rdl/RDL-096/material_final.png",
+      "selection_map_path": "production/rdl/RDL-096/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-097",
+      "canonical_title": "Campus Dining: Healthy Meal Options",
+      "material_final_path": "production/rdl/RDL-097/material_final.png",
+      "selection_map_path": "production/rdl/RDL-097/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-098",
+      "canonical_title": "Breakfast Service Changes",
+      "material_final_path": "production/rdl/RDL-098/material_final.png",
+      "selection_map_path": "production/rdl/RDL-098/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-099",
+      "canonical_title": "Prague Summer Study Program",
+      "material_final_path": "production/rdl/RDL-099/material_final.png",
+      "selection_map_path": "production/rdl/RDL-099/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-100",
+      "canonical_title": "Rescheduled Architecture Lecture",
+      "material_final_path": "production/rdl/RDL-100/material_final.png",
+      "selection_map_path": "production/rdl/RDL-100/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-101",
+      "canonical_title": "The Review of Whispering Woods",
+      "material_final_path": "production/rdl/RDL-101/material_final.png",
+      "selection_map_path": "production/rdl/RDL-101/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-102",
+      "canonical_title": "Harrison University Bike Sharing",
+      "material_final_path": "production/rdl/RDL-102/material_final.png",
+      "selection_map_path": "production/rdl/RDL-102/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-103",
+      "canonical_title": "ALL-DAY CRAFT FAIR",
+      "material_final_path": "production/rdl/RDL-103/material_final.png",
+      "selection_map_path": "production/rdl/RDL-103/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-104",
+      "canonical_title": "Hamartia Discussion",
+      "material_final_path": "production/rdl/RDL-104/material_final.png",
+      "selection_map_path": "production/rdl/RDL-104/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-106",
+      "canonical_title": "World Cultures Club",
+      "material_final_path": "production/rdl/RDL-106/material_final.png",
+      "selection_map_path": "production/rdl/RDL-106/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-107",
+      "canonical_title": "Contemporary Art History",
+      "material_final_path": "production/rdl/RDL-107/material_final.png",
+      "selection_map_path": "production/rdl/RDL-107/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-108",
+      "canonical_title": "Student Engagement Initiatives",
+      "material_final_path": "production/rdl/RDL-108/material_final.png",
+      "selection_map_path": "production/rdl/RDL-108/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-110",
+      "canonical_title": "Herb Garden at Newton University",
+      "material_final_path": "production/rdl/RDL-110/material_final.png",
+      "selection_map_path": "production/rdl/RDL-110/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-111",
+      "canonical_title": "Library Café Early Closure",
+      "material_final_path": "production/rdl/RDL-111/material_final.png",
+      "selection_map_path": "production/rdl/RDL-111/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-112",
+      "canonical_title": "Baker Rugby Championship",
+      "material_final_path": "production/rdl/RDL-112/material_final.png",
+      "selection_map_path": "production/rdl/RDL-112/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-113",
+      "canonical_title": "Free Health Screening Event",
+      "material_final_path": "production/rdl/RDL-113/material_final.png",
+      "selection_map_path": "production/rdl/RDL-113/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-114",
+      "canonical_title": "Survey of Literary Theory",
+      "material_final_path": "production/rdl/RDL-114/material_final.png",
+      "selection_map_path": "production/rdl/RDL-114/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-115",
+      "canonical_title": "The Silent Echo",
+      "material_final_path": "production/rdl/RDL-115/material_final.png",
+      "selection_map_path": "production/rdl/RDL-115/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-116",
+      "canonical_title": "Math Tutoring Program",
+      "material_final_path": "production/rdl/RDL-116/material_final.png",
+      "selection_map_path": "production/rdl/RDL-116/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-117",
+      "canonical_title": "History 302 Research Assignment",
+      "material_final_path": "production/rdl/RDL-117/material_final.png",
+      "selection_map_path": "production/rdl/RDL-117/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-118",
+      "canonical_title": "Echoes of Tomorrow",
+      "material_final_path": "production/rdl/RDL-118/material_final.png",
+      "selection_map_path": "production/rdl/RDL-118/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-119",
+      "canonical_title": "Application for Research Assistant Position",
+      "material_final_path": "production/rdl/RDL-119/material_final.png",
+      "selection_map_path": "production/rdl/RDL-119/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-120",
+      "canonical_title": "Gardener’s Delight Soil Mix",
+      "material_final_path": "production/rdl/RDL-120/material_final.png",
+      "selection_map_path": "production/rdl/RDL-120/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-121",
+      "canonical_title": "Science Research Proposal Workshop",
+      "material_final_path": "production/rdl/RDL-121/material_final.png",
+      "selection_map_path": "production/rdl/RDL-121/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-122",
+      "canonical_title": "Mindfulness Workshop",
+      "material_final_path": "production/rdl/RDL-122/material_final.png",
+      "selection_map_path": "production/rdl/RDL-122/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-123",
+      "canonical_title": "Renewable Energy Research Paper",
+      "material_final_path": "production/rdl/RDL-123/material_final.png",
+      "selection_map_path": "production/rdl/RDL-123/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-124",
+      "canonical_title": "Eastwood Campus Dining Options",
+      "material_final_path": "production/rdl/RDL-124/material_final.png",
+      "selection_map_path": "production/rdl/RDL-124/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-125",
+      "canonical_title": "Mediation Options",
+      "material_final_path": "production/rdl/RDL-125/material_final.png",
+      "selection_map_path": "production/rdl/RDL-125/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-126",
+      "canonical_title": "Summer House and Pet Sitting",
+      "material_final_path": "production/rdl/RDL-126/material_final.png",
+      "selection_map_path": "production/rdl/RDL-126/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-127",
+      "canonical_title": "Physics for Engineers I",
+      "material_final_path": "production/rdl/RDL-127/material_final.png",
+      "selection_map_path": "production/rdl/RDL-127/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-128",
+      "canonical_title": "EX-5000 3D Printer Instructions",
+      "material_final_path": "production/rdl/RDL-128/material_final.png",
+      "selection_map_path": "production/rdl/RDL-128/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-129",
+      "canonical_title": "Exploring Cultural Artifacts",
+      "material_final_path": "production/rdl/RDL-129/material_final.png",
+      "selection_map_path": "production/rdl/RDL-129/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-130",
+      "canonical_title": "AI Robot Baristas",
+      "material_final_path": "production/rdl/RDL-130/material_final.png",
+      "selection_map_path": "production/rdl/RDL-130/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-131",
+      "canonical_title": "Student Council Meeting Plans",
+      "material_final_path": "production/rdl/RDL-131/material_final.png",
+      "selection_map_path": "production/rdl/RDL-131/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-132",
+      "canonical_title": "TrailBlayzer Hiking Boots",
+      "material_final_path": "production/rdl/RDL-132/material_final.png",
+      "selection_map_path": "production/rdl/RDL-132/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-133",
+      "canonical_title": "Remote Learning Assignment Discussion",
+      "material_final_path": "production/rdl/RDL-133/material_final.png",
+      "selection_map_path": "production/rdl/RDL-133/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    },
+    {
+      "canonical_asset_id": "RDL-134",
+      "canonical_title": "Question About Group Project Guidelines",
+      "material_final_path": "production/rdl/RDL-134/material_final.png",
+      "selection_map_path": "production/rdl/RDL-134/selection_map.json",
+      "status": "FROZEN_SELECTION_QA_PASS"
+    }
+  ],
+  "occurrences": [
+    {
+      "source_set": "20260701A",
+      "source_label": "7.1A",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a webpage.",
+      "canonical_asset_id": "RDL-087",
+      "canonical_title": "Study Abroad in Valencia",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.1A",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-070",
+      "canonical_title": "Gym Membership",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260701A",
+      "source_label": "7.1A",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a course description.",
+      "canonical_asset_id": "RDL-088",
+      "canonical_title": "Winter Creative Writing Seminar",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.1A",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a message exchange.",
+      "canonical_asset_id": "RDL-032",
+      "canonical_title": "Student Hiking Plans",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260701B",
+      "source_label": "7.1B",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a webpage.",
+      "canonical_asset_id": "RDL-087",
+      "canonical_title": "Study Abroad in Valencia",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.1B",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-070",
+      "canonical_title": "Gym Membership",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260701B",
+      "source_label": "7.1B",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a course description.",
+      "canonical_asset_id": "RDL-088",
+      "canonical_title": "Winter Creative Writing Seminar",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.1B",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a message exchange.",
+      "canonical_asset_id": "RDL-032",
+      "canonical_title": "Student Hiking Plans",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260701C",
+      "source_label": "7.1C",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a poster.",
+      "canonical_asset_id": "RDL-089",
+      "canonical_title": "Join the Mechanicsburg Clean-Up Day!",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260701C",
+      "source_label": "7.1C",
+      "source_date": "2026-07-01",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-090",
+      "canonical_title": "Campus Iyengar Yoga Classes",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260705A",
+      "source_label": "7.5A",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a poster.",
+      "canonical_asset_id": "RDL-091",
+      "canonical_title": "Join the Campus Historical Society!",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5A",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read some instructions.",
+      "canonical_asset_id": "RDL-020",
+      "canonical_title": "Dorm Router Reset Instructions",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5A",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5A",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-018",
+      "canonical_title": "Internship Fair Follow-Up",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260705B",
+      "source_label": "7.5B",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a poster.",
+      "canonical_asset_id": "RDL-091",
+      "canonical_title": "Join the Campus Historical Society!",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5B",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read some instructions.",
+      "canonical_asset_id": "RDL-020",
+      "canonical_title": "Dorm Router Reset Instructions",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5B",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5B",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-018",
+      "canonical_title": "Internship Fair Follow-Up",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5C",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read some instructions.",
+      "canonical_asset_id": "RDL-020",
+      "canonical_title": "Dorm Router Reset Instructions",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260705C",
+      "source_label": "7.5C",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read a poster.",
+      "canonical_asset_id": "RDL-092",
+      "canonical_title": "Fairmount University Ceramics Workshop",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.5C",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260705C",
+      "source_label": "7.5C",
+      "source_date": "2026-07-05",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-093",
+      "canonical_title": "Residence-Hall Vegan Menu Expansion",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260706A",
+      "source_label": "7.6A",
+      "source_date": "2026-07-06",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-070",
+      "canonical_title": "Gym Membership",
+      "mapping_basis": "20260706A source manifest historical reuse"
+    },
+    {
+      "source_set": "20260706A",
+      "source_label": "7.6A",
+      "source_date": "2026-07-06",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read a course description.",
+      "canonical_asset_id": "RDL-094",
+      "canonical_title": "Foundations of Graphic Design",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260706A",
+      "source_label": "7.6A",
+      "source_date": "2026-07-06",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-048",
+      "canonical_title": "Attention Residents!",
+      "mapping_basis": "20260706A source manifest historical reuse"
+    },
+    {
+      "source_set": "20260706A",
+      "source_label": "7.6A",
+      "source_date": "2026-07-06",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a flyer.",
+      "canonical_asset_id": "RDL-056",
+      "canonical_title": "Study Smarter: Academic Success Workshop",
+      "mapping_basis": "20260706A source manifest historical reuse"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.7A",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read some instructions.",
+      "canonical_asset_id": "RDL-020",
+      "canonical_title": "Dorm Router Reset Instructions",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260707A",
+      "source_label": "7.7A",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read a course description.",
+      "canonical_asset_id": "RDL-095",
+      "canonical_title": "Physics for Engineers I",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.7A",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-034",
+      "canonical_title": "The University Photography Club",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260707A",
+      "source_label": "7.7A",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a poster.",
+      "canonical_asset_id": "RDL-096",
+      "canonical_title": "Innovation Hub: Student Showcase",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260707B",
+      "source_label": "7.7B",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260707B__Q21-22",
+      "canonical_asset_id": "RDL-020",
+      "canonical_title": "Dorm Router Reset Instructions",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260707B",
+      "source_label": "7.7B",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260707B__Q23-24",
+      "canonical_asset_id": "RDL-077",
+      "canonical_title": "Poetry Magazine Submissions",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260707B",
+      "source_label": "7.7B",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260707B__Q25-27",
+      "canonical_asset_id": "RDL-034",
+      "canonical_title": "The University Photography Club",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260707B",
+      "source_label": "7.7B",
+      "source_date": "2026-07-07",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260707B__Q28-30",
+      "canonical_asset_id": "RDL-086",
+      "canonical_title": "Sustainable Campus Housing",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260708A",
+      "source_label": "7.8A",
+      "source_date": "2026-07-08",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-097",
+      "canonical_title": "Campus Dining: Healthy Meal Options",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.8A",
+      "source_date": "2026-07-08",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read an article in a student newspaper.",
+      "canonical_asset_id": "RDL-079",
+      "canonical_title": "University Research Reactor",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260708B",
+      "source_label": "7.8B",
+      "source_date": "2026-07-08",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-097",
+      "canonical_title": "Campus Dining: Healthy Meal Options",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.8B",
+      "source_date": "2026-07-08",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read an article in a student newspaper.",
+      "canonical_asset_id": "RDL-079",
+      "canonical_title": "University Research Reactor",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.11A",
+      "source_date": "2026-07-11",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-009",
+      "canonical_title": "Mystery Is A Must-See",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.11A",
+      "source_date": "2026-07-11",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-010",
+      "canonical_title": "Student Film Showcase",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260714A",
+      "source_label": "7.14A",
+      "source_date": "2026-07-14",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-098",
+      "canonical_title": "Breakfast Service Changes",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.14A",
+      "source_date": "2026-07-14",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read some instructions.",
+      "canonical_asset_id": "RDL-020",
+      "canonical_title": "Dorm Router Reset Instructions",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260714A",
+      "source_label": "7.14A",
+      "source_date": "2026-07-14",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a poster.",
+      "canonical_asset_id": "RDL-099",
+      "canonical_title": "Prague Summer Study Program",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.14A",
+      "source_date": "2026-07-14",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a social media post.",
+      "canonical_asset_id": "RDL-037",
+      "canonical_title": "Flex And Flow Opening",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.15A",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a review.",
+      "canonical_asset_id": "RDL-013",
+      "canonical_title": "Tasty Bites",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.15A",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read a newspaper article.",
+      "canonical_asset_id": "RDL-014",
+      "canonical_title": "Revitalizing Ridgeview Campus Life",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260715B",
+      "source_label": "7.15B",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-100",
+      "canonical_title": "Rescheduled Architecture Lecture",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.15B",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-015",
+      "canonical_title": "Goodbooks Shipment",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260715B",
+      "source_label": "7.15B",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-090",
+      "canonical_title": "Campus Iyengar Yoga Classes",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.15B",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260715C",
+      "source_label": "7.15C",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-100",
+      "canonical_title": "Rescheduled Architecture Lecture",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.15C",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read an email.",
+      "canonical_asset_id": "RDL-015",
+      "canonical_title": "Goodbooks Shipment",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260715C",
+      "source_label": "7.15C",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-090",
+      "canonical_title": "Campus Iyengar Yoga Classes",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.15C",
+      "source_date": "2026-07-15",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260720A",
+      "source_label": "7.20A",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a review.",
+      "canonical_asset_id": "RDL-101",
+      "canonical_title": "The Review of Whispering Woods",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.20A",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read a webpage.",
+      "canonical_asset_id": "RDL-036",
+      "canonical_title": "Welcome To Movie Mania",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260720A",
+      "source_label": "7.20A",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-102",
+      "canonical_title": "Harrison University Bike Sharing",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.20A",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260720B",
+      "source_label": "7.20B",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a review.",
+      "canonical_asset_id": "RDL-101",
+      "canonical_title": "The Review of Whispering Woods",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.20B",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read a webpage.",
+      "canonical_asset_id": "RDL-036",
+      "canonical_title": "Welcome To Movie Mania",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260720B",
+      "source_label": "7.20B",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-102",
+      "canonical_title": "Harrison University Bike Sharing",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.20B",
+      "source_date": "2026-07-20",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a text chain.",
+      "canonical_asset_id": "RDL-017",
+      "canonical_title": "Concert Planning Chat",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260721A",
+      "source_label": "7.21A",
+      "source_date": "2026-07-21",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read an advertisement.",
+      "canonical_asset_id": "RDL-103",
+      "canonical_title": "ALL-DAY CRAFT FAIR",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260721A",
+      "source_label": "7.21A",
+      "source_date": "2026-07-21",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read an online discussion.",
+      "canonical_asset_id": "RDL-104",
+      "canonical_title": "Hamartia Discussion",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260721B",
+      "source_label": "7.21B",
+      "source_date": "2026-07-21",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a notice.",
+      "canonical_asset_id": "RDL-106",
+      "canonical_title": "World Cultures Club",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.21B",
+      "source_date": "2026-07-21",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "rdl_type": "Read a webpage.",
+      "canonical_asset_id": "RDL-036",
+      "canonical_title": "Welcome To Movie Mania",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.21B",
+      "source_date": "2026-07-21",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "rdl_type": "Read a social media post.",
+      "canonical_asset_id": "RDL-037",
+      "canonical_title": "Flex And Flow Opening",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": null,
+      "source_label": "7.21B",
+      "source_date": "2026-07-21",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "rdl_type": "Read a webpage.",
+      "canonical_asset_id": "RDL-058",
+      "canonical_title": "Campusconnect",
+      "mapping_basis": "pre-existing RDL_CURRENT_GLOBAL_MANIFEST"
+    },
+    {
+      "source_set": "20260722A",
+      "source_label": "7.22A",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260722A__Q21-22",
+      "canonical_asset_id": "RDL-107",
+      "canonical_title": "Contemporary Art History",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260722A",
+      "source_label": "7.22A",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260722A__Q23-25",
+      "canonical_asset_id": "RDL-108",
+      "canonical_title": "Student Engagement Initiatives",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260722B",
+      "source_label": "7.22B",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260722B__Q21-22",
+      "canonical_asset_id": "RDL-110",
+      "canonical_title": "Herb Garden at Newton University",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260722B",
+      "source_label": "7.22B",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260722B__Q23-24",
+      "canonical_asset_id": "RDL-111",
+      "canonical_title": "Library Café Early Closure",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260722B",
+      "source_label": "7.22B",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260722B__Q25-27",
+      "canonical_asset_id": "RDL-018",
+      "canonical_title": "Internship Fair Follow-Up",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260722B",
+      "source_label": "7.22B",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260722B__Q28-30",
+      "canonical_asset_id": "RDL-112",
+      "canonical_title": "Baker Rugby Championship",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260722C",
+      "source_label": "7.22C",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "rdl_type": "Read a course description.",
+      "canonical_asset_id": "RDL-107",
+      "canonical_title": "Contemporary Art History",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260722C",
+      "source_label": "7.22C",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "rdl_type": "Read an article.",
+      "canonical_asset_id": "RDL-108",
+      "canonical_title": "Student Engagement Initiatives",
+      "mapping_basis": "locked source manifest / finalized Work asset"
+    },
+    {
+      "source_set": "20260722D",
+      "source_label": "7.22D",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260722D__Q21-22",
+      "canonical_asset_id": "RDL-107",
+      "canonical_title": "Contemporary Art History",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260722D",
+      "source_label": "7.22D",
+      "source_date": "2026-07-22",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260722D__Q23-25",
+      "canonical_asset_id": "RDL-108",
+      "canonical_title": "Student Engagement Initiatives",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260802A",
+      "source_label": "8.2A",
+      "source_date": "2026-08-02",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260802A__Q21-22",
+      "canonical_asset_id": "RDL-087",
+      "canonical_title": "Study Abroad in Valencia",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260802A",
+      "source_label": "8.2A",
+      "source_date": "2026-08-02",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260802A__Q23-24",
+      "canonical_asset_id": "RDL-070",
+      "canonical_title": "Gym Membership",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260802A",
+      "source_label": "8.2A",
+      "source_date": "2026-08-02",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260802A__Q25-27",
+      "canonical_asset_id": "RDL-088",
+      "canonical_title": "Winter Creative Writing Seminar",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260802A",
+      "source_label": "8.2A",
+      "source_date": "2026-08-02",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260802A__Q28-30",
+      "canonical_asset_id": "RDL-032",
+      "canonical_title": "Student Hiking Plans",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260804A",
+      "source_label": "8.4A",
+      "source_date": "2026-08-04",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260804A__Q21-22",
+      "canonical_asset_id": "RDL-113",
+      "canonical_title": "Free Health Screening Event",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260804A",
+      "source_label": "8.4A",
+      "source_date": "2026-08-04",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260804A__Q23-25",
+      "canonical_asset_id": "RDL-114",
+      "canonical_title": "Survey of Literary Theory",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260805A",
+      "source_label": "8.5A",
+      "source_date": "2026-08-05",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260805A__Q21-22",
+      "canonical_asset_id": "RDL-115",
+      "canonical_title": "The Silent Echo",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260805A",
+      "source_label": "8.5A",
+      "source_date": "2026-08-05",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260805A__Q23-24",
+      "canonical_asset_id": "RDL-116",
+      "canonical_title": "Math Tutoring Program",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260805A",
+      "source_label": "8.5A",
+      "source_date": "2026-08-05",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260805A__Q25-27",
+      "canonical_asset_id": "RDL-026",
+      "canonical_title": "Actor Returns To Campus",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260805A",
+      "source_label": "8.5A",
+      "source_date": "2026-08-05",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260805A__Q28-30",
+      "canonical_asset_id": "RDL-117",
+      "canonical_title": "History 302 Research Assignment",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808A",
+      "source_label": "8.8A",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260808A__Q21-22",
+      "canonical_asset_id": "RDL-118",
+      "canonical_title": "Echoes of Tomorrow",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808A",
+      "source_label": "8.8A",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260808A__Q23-24",
+      "canonical_asset_id": "RDL-078",
+      "canonical_title": "Bridgeford University Music & Culture Night",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260808A",
+      "source_label": "8.8A",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260808A__Q25-27",
+      "canonical_asset_id": "RDL-018",
+      "canonical_title": "Internship Fair Follow-Up",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260808A",
+      "source_label": "8.8A",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260808A__Q28-30",
+      "canonical_asset_id": "RDL-119",
+      "canonical_title": "Application for Research Assistant Position",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808B",
+      "source_label": "8.8B",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260808B__Q21-22",
+      "canonical_asset_id": "RDL-118",
+      "canonical_title": "Echoes of Tomorrow",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808B",
+      "source_label": "8.8B",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260808B__Q23-24",
+      "canonical_asset_id": "RDL-120",
+      "canonical_title": "Gardener’s Delight Soil Mix",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808B",
+      "source_label": "8.8B",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260808B__Q25-27",
+      "canonical_asset_id": "RDL-134",
+      "canonical_title": "Question About Group Project Guidelines",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808B",
+      "source_label": "8.8B",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260808B__Q28-30",
+      "canonical_asset_id": "RDL-018",
+      "canonical_title": "Internship Fair Follow-Up",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260808C",
+      "source_label": "8.8C",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260808C__Q21-22",
+      "canonical_asset_id": "RDL-121",
+      "canonical_title": "Science Research Proposal Workshop",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808C",
+      "source_label": "8.8C",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260808C__Q23-25",
+      "canonical_asset_id": "RDL-004",
+      "canonical_title": "Full-Spectrum Wellness Journey",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260808D",
+      "source_label": "8.8D",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260808D__Q21-22",
+      "canonical_asset_id": "RDL-121",
+      "canonical_title": "Science Research Proposal Workshop",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260808D",
+      "source_label": "8.8D",
+      "source_date": "2026-08-08",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260808D__Q23-25",
+      "canonical_asset_id": "RDL-004",
+      "canonical_title": "Full-Spectrum Wellness Journey",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260809A",
+      "source_label": "8.9A",
+      "source_date": "2026-08-09",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260809A__Q21-22",
+      "canonical_asset_id": "RDL-043",
+      "canonical_title": "Introductory Physics Course",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260809A",
+      "source_label": "8.9A",
+      "source_date": "2026-08-09",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260809A__Q23-24",
+      "canonical_asset_id": "RDL-122",
+      "canonical_title": "Mindfulness Workshop",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260809A",
+      "source_label": "8.9A",
+      "source_date": "2026-08-09",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260809A__Q25-27",
+      "canonical_asset_id": "RDL-034",
+      "canonical_title": "The University Photography Club",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260809A",
+      "source_label": "8.9A",
+      "source_date": "2026-08-09",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260809A__Q28-30",
+      "canonical_asset_id": "RDL-123",
+      "canonical_title": "Renewable Energy Research Paper",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260809B",
+      "source_label": "8.9B",
+      "source_date": "2026-08-09",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260809B__Q21-22",
+      "canonical_asset_id": "RDL-095",
+      "canonical_title": "Physics for Engineers I",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260809B",
+      "source_label": "8.9B",
+      "source_date": "2026-08-09",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260809B__Q23-25",
+      "canonical_asset_id": "RDL-117",
+      "canonical_title": "History 302 Research Assignment",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260812A",
+      "source_label": "8.12A",
+      "source_date": "2026-08-12",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260812A__Q21-22",
+      "canonical_asset_id": "RDL-124",
+      "canonical_title": "Eastwood Campus Dining Options",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260812A",
+      "source_label": "8.12A",
+      "source_date": "2026-08-12",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260812A__Q23-24",
+      "canonical_asset_id": "RDL-097",
+      "canonical_title": "Campus Dining: Healthy Meal Options",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260812A",
+      "source_label": "8.12A",
+      "source_date": "2026-08-12",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260812A__Q25-27",
+      "canonical_asset_id": "RDL-125",
+      "canonical_title": "Mediation Options",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260812A",
+      "source_label": "8.12A",
+      "source_date": "2026-08-12",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260812A__Q28-30",
+      "canonical_asset_id": "RDL-126",
+      "canonical_title": "Summer House and Pet Sitting",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260812B",
+      "source_label": "8.12B",
+      "source_date": "2026-08-12",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260812B__Q21-22",
+      "canonical_asset_id": "RDL-127",
+      "canonical_title": "Physics for Engineers I",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260812B",
+      "source_label": "8.12B",
+      "source_date": "2026-08-12",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260812B__Q23-25",
+      "canonical_asset_id": "RDL-128",
+      "canonical_title": "EX-5000 3D Printer Instructions",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260818A",
+      "source_label": "8.18A",
+      "source_date": "2026-08-18",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260818A__Q21-22",
+      "canonical_asset_id": "RDL-129",
+      "canonical_title": "Exploring Cultural Artifacts",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260818A",
+      "source_label": "8.18A",
+      "source_date": "2026-08-18",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260818A__Q23-25",
+      "canonical_asset_id": "RDL-130",
+      "canonical_title": "AI Robot Baristas",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260818B",
+      "source_label": "8.18B",
+      "source_date": "2026-08-18",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260818B__Q21-22",
+      "canonical_asset_id": "RDL-002",
+      "canonical_title": "Dorm Printer Setup Instructions",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260818B",
+      "source_label": "8.18B",
+      "source_date": "2026-08-18",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260818B__Q23-24",
+      "canonical_asset_id": "RDL-082",
+      "canonical_title": "Lit304 Shakespeare's Kings",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260818B",
+      "source_label": "8.18B",
+      "source_date": "2026-08-18",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260818B__Q25-27",
+      "canonical_asset_id": "RDL-131",
+      "canonical_title": "Student Council Meeting Plans",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260818B",
+      "source_label": "8.18B",
+      "source_date": "2026-08-18",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260818B__Q28-30",
+      "canonical_asset_id": "RDL-034",
+      "canonical_title": "The University Photography Club",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260819A",
+      "source_label": "8.19A",
+      "source_date": "2026-08-19",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260819A__Q21-22",
+      "canonical_asset_id": "RDL-078",
+      "canonical_title": "Bridgeford University Music & Culture Night",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260819A",
+      "source_label": "8.19A",
+      "source_date": "2026-08-19",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 25
+      },
+      "source_occurrence_key": "20260819A__Q23-25",
+      "canonical_asset_id": "RDL-004",
+      "canonical_title": "Full-Spectrum Wellness Journey",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260819B",
+      "source_label": "8.19B",
+      "source_date": "2026-08-19",
+      "module": "M1",
+      "rdl_index": 1,
+      "question_range": {
+        "start": 21,
+        "end": 22
+      },
+      "source_occurrence_key": "20260819B__Q21-22",
+      "canonical_asset_id": "RDL-013",
+      "canonical_title": "Tasty Bites",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID"
+    },
+    {
+      "source_set": "20260819B",
+      "source_label": "8.19B",
+      "source_date": "2026-08-19",
+      "module": "M1",
+      "rdl_index": 2,
+      "question_range": {
+        "start": 23,
+        "end": 24
+      },
+      "source_occurrence_key": "20260819B__Q23-24",
+      "canonical_asset_id": "RDL-132",
+      "canonical_title": "TrailBlayzer Hiking Boots",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260819B",
+      "source_label": "8.19B",
+      "source_date": "2026-08-19",
+      "module": "M1",
+      "rdl_index": 3,
+      "question_range": {
+        "start": 25,
+        "end": 27
+      },
+      "source_occurrence_key": "20260819B__Q25-27",
+      "canonical_asset_id": "RDL-133",
+      "canonical_title": "Remote Learning Assignment Discussion",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    },
+    {
+      "source_set": "20260819B",
+      "source_label": "8.19B",
+      "source_date": "2026-08-19",
+      "module": "M1",
+      "rdl_index": 4,
+      "question_range": {
+        "start": 28,
+        "end": 30
+      },
+      "source_occurrence_key": "20260819B__Q28-30",
+      "canonical_asset_id": "RDL-134",
+      "canonical_title": "Question About Group Project Guidelines",
+      "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE"
+    }
+  ],
+  "invariants": {
+    "candidate_ids_allowed_as_material_id": false,
+    "one_occurrence_one_canonical_asset": true,
+    "all_work_created_titles_max_5_words": true,
+    "runtime_files_per_asset": [
+      "material_final.png",
+      "selection_map.json"
+    ],
+    "csv_rdl_material_id_source": "occurrences[].canonical_asset_id"
+  },
+  "notes": [
+    "Older source manifests that still contain RDL-CAND-xxx are superseded by this final release map.",
+    "RDL occurrence and canonical asset are distinct; repeated occurrences reuse the same canonical_asset_id.",
+    "No further cloud dedup/HD/geometry/selection production is required for this closed Travel RDL campaign."
+  ],
+  "selection_conversion": {
+    "from_schema": 1,
+    "to_schema": 2,
+    "method": "deterministic_structure_conversion",
+    "content_geometry_changed": false,
+    "converted_asset_count": 46
+  }
+}

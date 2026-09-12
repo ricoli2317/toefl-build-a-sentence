@@ -1,0 +1,34 @@
+{
+  "schema_version": "rdl-production-asset-v1",
+  "material_id": "RDL-102",
+  "active_image": "material_final.png",
+  "active_selection": "selection_map.json",
+  "image_sha256": "c5f9010e6d8fcd41c9e4a1002a5a0569d7f933d83d2291b8e4f7046513c48c45",
+  "selection_sha256": "911bb7c8e60c5227afda85b826f24a6bb7673755d2ab5bdd7c13c40eb6360e20",
+  "width": 1286,
+  "height": 1223,
+  "hd_status": "passed",
+  "final_status": "passed",
+  "selection_status": "passed",
+  "selection_image_sha256": "c5f9010e6d8fcd41c9e4a1002a5a0569d7f933d83d2291b8e4f7046513c48c45",
+  "material_final": {
+    "file": "material_final.png",
+    "sha256": "c5f9010e6d8fcd41c9e4a1002a5a0569d7f933d83d2291b8e4f7046513c48c45",
+    "frozen": true
+  },
+  "source_reference": {
+    "manifest": "RDL_WORK_INCREMENTAL_MANIFEST.local.json",
+    "canonical_asset_id": "RDL-102"
+  },
+  "release_acceptance": {
+    "manifest": "RDL_FINAL_RELEASE_MAP.local.json",
+    "status": "FROZEN_SELECTION_QA_PASS"
+  },
+  "canonical_source": {
+    "set": "7.20A",
+    "file": "7月/题目/M1_20260720A_ R_01-35_PDF.pdf",
+    "page": 7,
+    "render_dpi": 300,
+    "crop_method": "manual_safe_crop_reviewed"
+  }
+}
