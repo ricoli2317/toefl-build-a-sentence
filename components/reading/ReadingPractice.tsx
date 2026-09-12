@@ -21,6 +21,7 @@ import { WritingPracticeActions } from "@/components/writing/WritingPracticeActi
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
+  STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
   studentReadingCatalogCacheKey,
   useStudentCachedData,
   useStudentDataCache
@@ -95,6 +96,11 @@ import {
   type ReadingFullSetReviewPayload
 } from "@/lib/reading/fullSetReview";
 import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
+import {
+  readingWrongbookEditableSlotIds,
+  selectReadingWrongbookSubmissionAnswers
+} from "@/lib/reading/wrongbook";
+import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
 type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
@@ -559,7 +565,7 @@ function ReadingFullSetReviewShell({
   );
 }
 
-function ReadingPracticeShell({
+export function ReadingPracticeShell({
   attempt: initialAttempt,
   initialAnswers = {},
   initialQuestionIndex = 0,
@@ -569,7 +575,8 @@ function ReadingPracticeShell({
   onExit,
   practice,
   reviewItems = [],
-  reviewTitle
+  reviewTitle,
+  wrongbook
 }: {
   attempt: ReadingAttemptSummary;
   initialAnswers?: ReadingAnswerState;
@@ -581,6 +588,10 @@ function ReadingPracticeShell({
   practice: StudentReadingPracticePayload;
   reviewItems?: SubmittedReadingReviewItem[];
   reviewTitle?: string;
+  wrongbook?: {
+    onSubmitted: (attempt: ReadingAttemptSummary) => void;
+    targets: ReadingWrongbookTarget[];
+  };
 }) {
   const router = useRouter();
   const { invalidate } = useStudentDataCache();
@@ -589,6 +600,11 @@ function ReadingPracticeShell({
   const [elapsedSeconds, setElapsedSeconds] = useState(initialAttempt.elapsedSeconds);
   const readOnly = mode === "submitted_review";
   const lookupEnabled = readingLookupEnabled(mode, practice.item.module);
+  const wrongbookTargets = wrongbook?.targets;
+  const editableSlotIds = useMemo(
+    () => wrongbookTargets ? readingWrongbookEditableSlotIds(wrongbookTargets) : undefined,
+    [wrongbookTargets]
+  );
   const [answers, setAnswers] = useState<ReadingAnswerState>(initialAnswers);
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -684,7 +700,9 @@ function ReadingPracticeShell({
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("请先登录后再提交阅读练习。");
       const response = await fetch(
-        `/api/reading/attempts/${encodeURIComponent(attempt.attemptId)}/submit`,
+        wrongbook
+          ? `/api/reading/wrongbook-attempts/${encodeURIComponent(attempt.attemptId)}/submit`
+          : `/api/reading/attempts/${encodeURIComponent(attempt.attemptId)}/submit`,
         {
           method: "POST",
           cache: "no-store",
@@ -695,7 +713,12 @@ function ReadingPracticeShell({
           body: JSON.stringify({
             logicalItemId: practice.item.itemId,
             elapsedSeconds,
-            answers: buildReadingSubmissionAnswers(practice, answers, questionTimes)
+            answers: wrongbook
+              ? selectReadingWrongbookSubmissionAnswers(
+                  buildReadingSubmissionAnswers(practice, answers, questionTimes),
+                  wrongbook.targets
+                )
+              : buildReadingSubmissionAnswers(practice, answers, questionTimes)
           })
         }
       );
@@ -703,11 +726,16 @@ function ReadingPracticeShell({
       if (!response.ok || !isReadingAttemptSummary(result.attempt)) {
         throw new Error(result.error ?? "阅读答案提交失败，请稍后重试。");
       }
-      storeReadingQuestionTimes(result.attempt.attemptId, questionTimes);
-      invalidate(STUDENT_READING_HISTORY_CACHE_PREFIX);
-      invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
-      invalidate(studentReadingCatalogCacheKey(result.attempt.taskType));
-      router.replace(`/student/reading/results/${encodeURIComponent(result.attempt.attemptId)}`);
+      if (wrongbook) {
+        invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+        wrongbook.onSubmitted(result.attempt);
+      } else {
+        storeReadingQuestionTimes(result.attempt.attemptId, questionTimes);
+        invalidate(STUDENT_READING_HISTORY_CACHE_PREFIX);
+        invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
+        invalidate(studentReadingCatalogCacheKey(result.attempt.taskType));
+        router.replace(`/student/reading/results/${encodeURIComponent(result.attempt.attemptId)}`);
+      }
     } catch (submitFailure) {
       setSubmitError(
         submitFailure instanceof Error
@@ -717,7 +745,7 @@ function ReadingPracticeShell({
     } finally {
       setSubmitting(false);
     }
-  }, [answers, attempt, captureCurrentQuestionTime, elapsedSeconds, invalidate, practice, readOnly, router, submitting]);
+  }, [answers, attempt, captureCurrentQuestionTime, elapsedSeconds, invalidate, practice, readOnly, router, submitting, wrongbook]);
 
   if (!readOnly && attempt.status === "submitted") {
     return <ReadingPracticeMessage description="正在打开已提交的练习结果..." title="正在打开练习结果" />;
@@ -750,6 +778,7 @@ function ReadingPracticeShell({
           <ReadingWorkspaceRouter
             answers={answers}
             currentQuestion={currentQuestion}
+            editableSlotIds={editableSlotIds}
             lookupEnabled={lookupEnabled}
             onAnswerChange={updateAnswer}
             practice={practice}
@@ -843,6 +872,7 @@ function ReadingPracticeHeader({
 export function ReadingWorkspaceRouter({
   answers,
   currentQuestion,
+  editableSlotIds,
   lookupEnabled,
   onAnswerChange,
   practice,
@@ -852,6 +882,7 @@ export function ReadingWorkspaceRouter({
 }: {
   answers: ReadingAnswerState;
   currentQuestion: StudentReadingPracticePayload["questions"][number];
+  editableSlotIds?: ReadonlySet<string>;
   lookupEnabled: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   practice: StudentReadingPracticePayload;
@@ -863,6 +894,7 @@ export function ReadingWorkspaceRouter({
     return (
       <CtwPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
+        editableSlotIds={editableSlotIds}
         lookupEnabled={lookupEnabled}
         onAnswerChange={onAnswerChange}
         question={currentQuestion}
@@ -1003,6 +1035,7 @@ function DomTextLookupRegion({ children, enabled }: { children: ReactNode; enabl
 
 function CtwPracticeWorkspace({
   answer,
+  editableSlotIds,
   lookupEnabled,
   onAnswerChange,
   question,
@@ -1011,6 +1044,7 @@ function CtwPracticeWorkspace({
   selectedReviewItem
 }: {
   answer: ReadingAnswer | undefined;
+  editableSlotIds?: ReadonlySet<string>;
   lookupEnabled: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   question: StudentCtwQuestion;
@@ -1020,6 +1054,12 @@ function CtwPracticeWorkspace({
 }) {
   const emptySlots = useMemo(() => createCtwSlotAnswers(question.slots), [question.slots]);
   const slotAnswers = answer?.kind === "ctw" ? answer.slots : emptySlots;
+  const interactionSlots = useMemo(
+    () => editableSlotIds
+      ? question.slots.filter((slot) => editableSlotIds.has(slot.slotId))
+      : question.slots,
+    [editableSlotIds, question.slots]
+  );
   const slotById = useMemo(
     () => new Map(question.slots.map((slot) => [slot.slotId, slot])),
     [question.slots]
@@ -1032,11 +1072,11 @@ function CtwPracticeWorkspace({
 
   useEffect(() => {
     if (readOnly) return;
-    focusPosition(firstCtwPosition(question.slots));
-  }, [focusPosition, question.questionId, question.slots, readOnly]);
+    focusPosition(firstCtwPosition(interactionSlots));
+  }, [focusPosition, interactionSlots, question.questionId, readOnly]);
 
   const applyLetter = (position: CtwPosition, input: string) => {
-    const result = enterCtwLetter(question.slots, slotAnswers, position, input);
+    const result = enterCtwLetter(interactionSlots, slotAnswers, position, input);
     if (!result.accepted) return;
     onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
     focusPosition(result.focus);
@@ -1051,14 +1091,14 @@ function CtwPracticeWorkspace({
     }
     if (event.key === "Backspace") {
       event.preventDefault();
-      const result = backspaceCtwLetter(question.slots, slotAnswers, position);
+      const result = backspaceCtwLetter(interactionSlots, slotAnswers, position);
       onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
       focusPosition(result.focus);
       return;
     }
     if (event.key === "Delete") {
       event.preventDefault();
-      const result = deleteCtwLetter(question.slots, slotAnswers, position);
+      const result = deleteCtwLetter(interactionSlots, slotAnswers, position);
       onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
       focusPosition(result.focus);
       return;
@@ -1100,7 +1140,7 @@ function CtwPracticeWorkspace({
                     onPaste={handlePaste}
                     positionRefs={positionRefs}
                     prefix={slot.prefix}
-                    readOnly={readOnly}
+                    readOnly={readOnly || Boolean(editableSlotIds && !editableSlotIds.has(slot.slotId))}
                     resultState={reviewItem ? reviewItem.isAnswered ? reviewItem.isCorrect ? "correct" : "incorrect" : "unanswered" : null}
                     selected={selectedReviewItem?.slotId === slot.slotId}
                     slotId={slot.slotId}

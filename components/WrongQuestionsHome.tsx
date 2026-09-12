@@ -82,6 +82,9 @@ export function WrongQuestionsHome() {
               <BasGrammarAnalysis items={state.data.grammarPoints} />
             </>
           ) : null}
+          {activeTab !== "all" && activeTab !== "build_sentence" ? (
+            <ReadingCorrectionActions taskType={activeTab} />
+          ) : null}
           <section aria-labelledby="wrong-question-list-title">
             <h2 className="mb-3 border-l-4 border-student-primary pl-3 text-lg font-bold text-student-text" id="wrong-question-list-title">
               我的错题
@@ -109,6 +112,28 @@ function BasCorrectionActions() {
           今日错题订正 <ArrowRight aria-hidden="true" size={16} />
         </Link>
         <Link className="student-button-secondary min-h-11" href="/student/wrong-questions/history/practice?mode=all">
+          历史错题订正 <ArrowRight aria-hidden="true" size={16} />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function ReadingCorrectionActions({ taskType }: { taskType: "ctw" | "rdl" | "rap" }) {
+  return (
+    <section
+      className="rounded-2xl border border-student-error-border bg-white p-5 shadow-[0_2px_12px_rgba(60,47,119,0.04)]"
+      data-testid={`${taskType}-wrong-question-correction`}
+    >
+      <div>
+        <h2 className="text-lg font-bold text-student-text">错题订正</h2>
+        <p className="mt-1 text-sm text-student-muted">使用当前题型原有练习界面，分别订正今日待处理和历史错题。</p>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <Link className="student-button-error min-h-11" href={readingCorrectionHref("today", taskType)}>
+          今日错题订正 <ArrowRight aria-hidden="true" size={16} />
+        </Link>
+        <Link className="student-button-secondary min-h-11" href={readingCorrectionHref("history", taskType)}>
           历史错题订正 <ArrowRight aria-hidden="true" size={16} />
         </Link>
       </div>
@@ -266,7 +291,7 @@ function WrongQuestionGroupList({ groups }: { groups: WrongQuestionGroup[] }) {
               <span className="text-xs font-medium text-student-muted">{formatWrongDate(group.latestWrongAt)}</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              {group.taskType === "build_sentence" && group.pendingCount > 0 && group.correctionHref ? (
+              {group.pendingCount > 0 && group.correctionHref ? (
                 <Link className="student-button-error min-h-9 px-3 py-1.5 text-sm" href={group.correctionHref}>
                   去订正 <ArrowRight aria-hidden="true" size={16} />
                 </Link>
@@ -284,6 +309,10 @@ function WrongQuestionGroupList({ groups }: { groups: WrongQuestionGroup[] }) {
 
 function grammarPracticeHref(tag: string) {
   return `${STUDENT_ROUTES.grammarPractice}/practice?${new URLSearchParams({ mode: "all", tag }).toString()}`;
+}
+
+function readingCorrectionHref(scope: "history" | "today", taskType: "ctw" | "rdl" | "rap") {
+  return `/student/wrong-questions/${scope}/reading/practice?${new URLSearchParams({ taskType }).toString()}`;
 }
 
 function formatWrongDate(value: string) {

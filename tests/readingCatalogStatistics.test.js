@@ -151,9 +151,8 @@ test("Submit and draft/retake invalidate only the exact Reading catalog plus Rea
   assert.match(readingPractice, /invalidate\(studentReadingCatalogCacheKey\(result\.attempt\.taskType\)\)/);
   assert.match(readingPractice, /studentReadingCatalogCacheKey\(attemptResult\.attempt\.taskType\)/);
   assert.match(retakeUi, /invalidate\(studentReadingCatalogCacheKey\(payload\.attempt\.taskType\)\)/);
-  for (const source of [readingPractice, retakeUi]) {
-    assert.doesNotMatch(source, /STUDENT_(SETS|WRITING|LOGICAL|QUESTIONS|WRONG)_/);
-  }
+  assert.doesNotMatch(readingPractice, /STUDENT_(SETS|WRITING|LOGICAL|QUESTIONS)_/);
+  assert.doesNotMatch(retakeUi, /STUDENT_(SETS|WRITING|LOGICAL|QUESTIONS|WRONG)_/);
 });
 
 const statsInput = {

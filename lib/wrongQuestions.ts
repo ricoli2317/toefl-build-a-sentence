@@ -70,6 +70,24 @@ export type ReadingWrongQuestionAnswer = {
   slotId: string | null;
 };
 
+export type ReadingWrongbookCorrectionAttempt = ReadingWrongQuestionAttempt & {
+  scope: "history" | "today";
+};
+
+export type ReadingWrongbookTarget = {
+  questionId: string;
+  slotId: string | null;
+};
+
+export type ReadingWrongbookQueueItem = {
+  latestWrongAt: string;
+  latestWrongAttemptId: string;
+  logicalItemId: string;
+  targets: ReadingWrongbookTarget[];
+  taskType: ReadingModule;
+  title: string;
+};
+
 export function buildWrongQuestionsOverview(input: {
   basAnswers: PracticeHistoryAnswer[];
   basAttempts: BasWrongQuestionAttempt[];
@@ -77,6 +95,8 @@ export function buildWrongQuestionsOverview(input: {
   basGroupsBySet: Map<string, BasWrongQuestionGroup>;
   readingAnswers: ReadingWrongQuestionAnswer[];
   readingAttempts: ReadingWrongQuestionAttempt[];
+  readingCorrectionAnswers?: ReadingWrongQuestionAnswer[];
+  readingCorrectionAttempts?: ReadingWrongbookCorrectionAttempt[];
   readingTitles: Map<string, string>;
   todayEnd: number;
   todayStart: number;
@@ -159,9 +179,114 @@ type AtomicWrongQuestion = {
 function buildReadingAtomicWrongQuestions(input: {
   readingAnswers: ReadingWrongQuestionAnswer[];
   readingAttempts: ReadingWrongQuestionAttempt[];
+  readingCorrectionAnswers?: ReadingWrongQuestionAnswer[];
+  readingCorrectionAttempts?: ReadingWrongbookCorrectionAttempt[];
   readingTitles: Map<string, string>;
+  todayEnd: number;
+  todayStart: number;
 }) {
-  const attemptById = new Map(input.readingAttempts.map((attempt) => [attempt.attemptId, attempt]));
+  const { attemptById, stateByKey } = buildReadingWrongbookState(input);
+
+  return Array.from(stateByKey.values()).flatMap((state): AtomicWrongQuestion[] => {
+    const latestAttempt = attemptById.get(state.latest.attemptId);
+    const latestWrongAttempt = attemptById.get(state.latestWrongAttemptId);
+    const attempt = latestAttempt ?? latestWrongAttempt;
+    if (!attempt) return [];
+    return [{
+      actionHref: `/student/reading/results/${encodeURIComponent(state.latestWrongAttemptId)}`,
+      correctionHref: state.latest.isCorrect
+        ? null
+        : readingCorrectionHref(
+            attempt.taskType,
+            attempt.logicalItemId,
+            state.latestWrongTime,
+            input.todayStart,
+            input.todayEnd
+          ),
+      corrected: state.latest.isCorrect,
+      firstWrongTime: state.firstWrongTime,
+      groupId: attempt.logicalItemId,
+      latestWrongTime: state.latestWrongTime,
+      taskType: attempt.taskType,
+      title: input.readingTitles.get(attempt.logicalItemId)?.trim()
+        || WRONG_QUESTION_TASK_LABELS[attempt.taskType]
+    }];
+  });
+}
+
+export function buildReadingWrongbookQueue(input: {
+  readingAnswers: ReadingWrongQuestionAnswer[];
+  readingAttempts: ReadingWrongQuestionAttempt[];
+  readingCorrectionAnswers?: ReadingWrongQuestionAnswer[];
+  readingCorrectionAttempts?: ReadingWrongbookCorrectionAttempt[];
+  readingTitles: Map<string, string>;
+  scope: "history" | "today";
+  taskType: ReadingModule;
+  todayEnd: number;
+  todayStart: number;
+}): ReadingWrongbookQueueItem[] {
+  const { attemptById, stateByKey } = buildReadingWrongbookState(input);
+  const byItem = new Map<string, ReadingWrongbookQueueItem>();
+
+  for (const state of Array.from(stateByKey.values())) {
+    if (state.latest.isCorrect) continue;
+    const attempt = attemptById.get(state.latest.attemptId)
+      ?? attemptById.get(state.latestWrongAttemptId);
+    if (!attempt || attempt.taskType !== input.taskType) continue;
+    if (
+      input.scope === "today"
+      && (state.latestWrongTime < input.todayStart || state.latestWrongTime >= input.todayEnd)
+    ) continue;
+    const existing = byItem.get(attempt.logicalItemId);
+    const target = {
+      questionId: state.latest.questionId,
+      slotId: state.latest.slotId
+    };
+    if (!existing) {
+      byItem.set(attempt.logicalItemId, {
+        latestWrongAt: new Date(state.latestWrongTime).toISOString(),
+        latestWrongAttemptId: state.latestWrongAttemptId,
+        logicalItemId: attempt.logicalItemId,
+        targets: [target],
+        taskType: attempt.taskType,
+        title: input.readingTitles.get(attempt.logicalItemId)?.trim()
+          || WRONG_QUESTION_TASK_LABELS[attempt.taskType]
+      });
+      continue;
+    }
+    existing.targets.push(target);
+    if (state.latestWrongTime > Date.parse(existing.latestWrongAt)) {
+      existing.latestWrongAt = new Date(state.latestWrongTime).toISOString();
+      existing.latestWrongAttemptId = state.latestWrongAttemptId;
+    }
+  }
+
+  return Array.from(byItem.values())
+    .map((item) => ({
+      ...item,
+      targets: [...item.targets].sort((left, right) =>
+        left.questionId.localeCompare(right.questionId)
+        || (left.slotId ?? "").localeCompare(right.slotId ?? "")
+      )
+    }))
+    .sort((left, right) =>
+      Date.parse(right.latestWrongAt) - Date.parse(left.latestWrongAt)
+      || left.logicalItemId.localeCompare(right.logicalItemId)
+    );
+}
+
+function buildReadingWrongbookState(input: {
+  readingAnswers: ReadingWrongQuestionAnswer[];
+  readingAttempts: ReadingWrongQuestionAttempt[];
+  readingCorrectionAnswers?: ReadingWrongQuestionAnswer[];
+  readingCorrectionAttempts?: ReadingWrongbookCorrectionAttempt[];
+}) {
+  const officialAttemptIds = new Set(input.readingAttempts.map((attempt) => attempt.attemptId));
+  const attempts = [
+    ...input.readingAttempts,
+    ...(input.readingCorrectionAttempts ?? [])
+  ];
+  const attemptById = new Map(attempts.map((attempt) => [attempt.attemptId, attempt]));
   const stateByKey = new Map<string, {
     firstWrongTime: number;
     latest: ReadingWrongQuestionAnswer;
@@ -169,8 +294,10 @@ function buildReadingAtomicWrongQuestions(input: {
     latestWrongAttemptId: string;
     latestWrongTime: number;
   }>();
-
-  const answers = [...input.readingAnswers].sort((left, right) => {
+  const answers = [
+    ...input.readingAnswers,
+    ...(input.readingCorrectionAnswers ?? [])
+  ].sort((left, right) => {
     const leftAttempt = attemptById.get(left.attemptId);
     const rightAttempt = attemptById.get(right.attemptId);
     return answerTime(leftAttempt?.submittedAt) - answerTime(rightAttempt?.submittedAt)
@@ -183,9 +310,12 @@ function buildReadingAtomicWrongQuestions(input: {
     const time = answerTime(attempt.submittedAt);
     const key = readingAnswerKey(answer, attempt);
     const existing = stateByKey.get(key);
+    const official = officialAttemptIds.has(answer.attemptId);
 
     if (!existing) {
-      if (answer.isCorrect) continue;
+      // Correction sessions may only update a canonical wrong item created by
+      // ordinary Reading practice; they never create a second wrongbook identity.
+      if (!official || answer.isCorrect) continue;
       stateByKey.set(key, {
         firstWrongTime: time,
         latest: answer,
@@ -196,8 +326,10 @@ function buildReadingAtomicWrongQuestions(input: {
       continue;
     }
 
-    if (!answer.isCorrect && time < existing.firstWrongTime) existing.firstWrongTime = time;
-    if (!answer.isCorrect && time >= existing.latestWrongTime) {
+    if (official && !answer.isCorrect && time < existing.firstWrongTime) {
+      existing.firstWrongTime = time;
+    }
+    if (official && !answer.isCorrect && time >= existing.latestWrongTime) {
       existing.latestWrongAttemptId = answer.attemptId;
       existing.latestWrongTime = time;
     }
@@ -207,23 +339,7 @@ function buildReadingAtomicWrongQuestions(input: {
     }
   }
 
-  return Array.from(stateByKey.values()).flatMap((state): AtomicWrongQuestion[] => {
-    const latestAttempt = attemptById.get(state.latest.attemptId);
-    const latestWrongAttempt = attemptById.get(state.latestWrongAttemptId);
-    const attempt = latestAttempt ?? latestWrongAttempt;
-    if (!attempt) return [];
-    return [{
-      actionHref: `/student/reading/results/${encodeURIComponent(state.latestWrongAttemptId)}`,
-      correctionHref: null,
-      corrected: state.latest.isCorrect,
-      firstWrongTime: state.firstWrongTime,
-      groupId: attempt.logicalItemId,
-      latestWrongTime: state.latestWrongTime,
-      taskType: attempt.taskType,
-      title: input.readingTitles.get(attempt.logicalItemId)?.trim()
-        || WRONG_QUESTION_TASK_LABELS[attempt.taskType]
-    }];
-  });
+  return { attemptById, stateByKey };
 }
 
 function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
@@ -281,6 +397,22 @@ function basCorrectionHref(
   const params = new URLSearchParams({ questionId });
   if (!today) params.set("mode", "all");
   return `${base}?${params.toString()}`;
+}
+
+function readingCorrectionHref(
+  taskType: ReadingModule,
+  logicalItemId: string,
+  latestWrongTime: number,
+  todayStart: number,
+  todayEnd: number
+) {
+  const scope = latestWrongTime >= todayStart && latestWrongTime < todayEnd
+    ? "today"
+    : "history";
+  return `/student/wrong-questions/${scope}/reading/practice?${new URLSearchParams({
+    itemId: logicalItemId,
+    taskType
+  }).toString()}`;
 }
 
 function readingAnswerKey(

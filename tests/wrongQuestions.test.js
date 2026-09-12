@@ -3,7 +3,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 
-const { buildWrongQuestionsOverview } = require("../lib/wrongQuestions.ts");
+const {
+  buildReadingWrongbookQueue,
+  buildWrongQuestionsOverview
+} = require("../lib/wrongQuestions.ts");
 
 const projectRoot = path.resolve(__dirname, "..");
 
@@ -138,6 +141,14 @@ test("wrong-question overview reuses BAS dedupe/correction and aggregates all fo
     "/student/wrong-questions/today/practice?questionId=bas-q-today"
   );
   assert.equal(payload.groups.find((group) => group.taskType === "rdl").correctionHref, null);
+  assert.match(
+    payload.groups.find((group) => group.taskType === "ctw").correctionHref,
+    /^\/student\/wrong-questions\/history\/reading\/practice\?/
+  );
+  assert.match(
+    payload.groups.find((group) => group.taskType === "rap").correctionHref,
+    /^\/student\/wrong-questions\/today\/reading\/practice\?/
+  );
   assert.deepEqual(payload.grammarPoints, [
     { tag: "从句", count: 1 },
     { tag: "时态", count: 1 }
@@ -152,7 +163,10 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasCorrectionActions \/>[\s\S]*<BasGrammarAnalysis/);
   assert.match(ui, /今日错题订正/);
   assert.match(ui, /历史错题订正/);
-  assert.match(ui, /group\.taskType === "build_sentence" && group\.pendingCount > 0 && group\.correctionHref/);
+  assert.match(ui, /group\.pendingCount > 0 && group\.correctionHref/);
+  assert.match(ui, /ReadingCorrectionActions taskType=\{activeTab\}/);
+  assert.match(ui, /readingCorrectionHref\("today", taskType\)/);
+  assert.match(ui, /readingCorrectionHref\("history", taskType\)/);
   assert.match(ui, /去订正/);
   assert.match(ui, /查看错题/);
   assert.match(ui, /useState<WrongQuestionTaskType \| "all">\("all"\)/);
@@ -166,6 +180,74 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(route, /"reading_logical_items"/);
   assert.match(route, /searchParams\.get\("questionId"\)/);
   assert.match(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
+});
+
+test("Reading canonical identities drive pending queues and correction answers update only their exact targets", () => {
+  const input = {
+    readingAttempts: [
+      { attemptId: "official-ctw", logicalItemId: "ctw-item", submittedAt: "2026-08-28T10:00:00.000Z", taskType: "ctw" },
+      { attemptId: "official-rdl", logicalItemId: "rdl-item", submittedAt: "2026-08-30T10:00:00.000Z", taskType: "rdl" },
+      { attemptId: "official-rap", logicalItemId: "rap-item", submittedAt: "2026-08-30T11:00:00.000Z", taskType: "rap" }
+    ],
+    readingAnswers: [
+      { attemptId: "official-ctw", isCorrect: false, questionId: "ctw-q", slotId: "slot-1" },
+      { attemptId: "official-ctw", isCorrect: false, questionId: "ctw-q", slotId: "slot-2" },
+      { attemptId: "official-rdl", isCorrect: false, questionId: "rdl-q", slotId: null },
+      { attemptId: "official-rap", isCorrect: false, questionId: "rap-q", slotId: null }
+    ],
+    readingCorrectionAttempts: [
+      { attemptId: "correction-ctw", logicalItemId: "ctw-item", scope: "history", submittedAt: "2026-08-29T10:00:00.000Z", taskType: "ctw" },
+      { attemptId: "correction-rdl", logicalItemId: "rdl-item", scope: "today", submittedAt: "2026-08-30T12:00:00.000Z", taskType: "rdl" }
+    ],
+    readingCorrectionAnswers: [
+      { attemptId: "correction-ctw", isCorrect: true, questionId: "ctw-q", slotId: "slot-1" },
+      { attemptId: "correction-rdl", isCorrect: true, questionId: "rdl-q", slotId: null },
+      // A correction answer with no official wrong identity must never create an item.
+      { attemptId: "correction-rdl", isCorrect: false, questionId: "unrelated-q", slotId: null }
+    ],
+    readingTitles: new Map([
+      ["ctw-item", "套题001"],
+      ["rdl-item", "RDL material"],
+      ["rap-item", "RAP passage"]
+    ]),
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  };
+
+  const ctwHistory = buildReadingWrongbookQueue({ ...input, scope: "history", taskType: "ctw" });
+  assert.deepEqual(ctwHistory.map((item) => item.targets), [[
+    { questionId: "ctw-q", slotId: "slot-2" }
+  ]]);
+  assert.deepEqual(buildReadingWrongbookQueue({ ...input, scope: "today", taskType: "rdl" }), []);
+  assert.deepEqual(
+    buildReadingWrongbookQueue({ ...input, scope: "today", taskType: "rap" })[0].targets,
+    [{ questionId: "rap-q", slotId: null }]
+  );
+});
+
+test("Reading correction routes reuse the three existing renderers and persist isolated wrongbook attempts", () => {
+  const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
+  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
+  const renderer = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  const queueRoute = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/route.ts"), "utf8");
+  const submitRoute = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/submit/route.ts"), "utf8");
+  const migration = fs.readFileSync(path.join(projectRoot, "supabase/reading_wrongbook_corrections.sql"), "utf8");
+
+  assert.match(home, /taskType: "ctw" \| "rdl" \| "rap"/);
+  assert.match(home, /data-testid=\{`\$\{taskType\}-wrong-question-correction`\}/);
+  assert.match(runtime, /ReadingPracticeShell/);
+  assert.match(runtime, /selectReadingWrongbookPractice/);
+  assert.doesNotMatch(runtime, /full-sets|\/student\/reading\/\$\{taskType\}/);
+  assert.match(renderer, /practice\.item\.module === "ctw"[\s\S]*<CtwPracticeWorkspace/);
+  assert.match(renderer, /practice\.item\.module === "rdl"[\s\S]*<RdlPracticeWorkspace/);
+  assert.match(renderer, /practice\.item\.module === "rap"[\s\S]*<RapPracticeWorkspace/);
+  assert.match(renderer, /STUDENT_WRONG_QUESTIONS_CACHE_PREFIX/);
+  assert.match(renderer, /selectReadingWrongbookSubmissionAnswers/);
+  assert.match(queueRoute, /loadReadingWrongbookQueue/);
+  assert.match(submitRoute, /submit_reading_wrongbook_attempt/);
+  assert.match(migration, /create table if not exists public\.reading_wrongbook_attempts/);
+  assert.match(migration, /create table if not exists public\.reading_wrongbook_attempt_answers/);
+  assert.doesNotMatch(migration, /alter table public\.reading_attempts/);
 });
 
 test("BAS correction routes keep single-card practice inside today/history wrongbook modes", () => {

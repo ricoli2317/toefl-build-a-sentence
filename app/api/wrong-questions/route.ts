@@ -436,12 +436,21 @@ type OverviewReadingItemRow = {
   title: string | null;
 };
 
+type OverviewReadingCorrectionAttemptRow = OverviewReadingAttemptRow & {
+  scope: "history" | "today";
+};
+
 async function loadWrongQuestionsOverview(
   db: SupabaseClient,
   studentId: string,
   searchParams: URLSearchParams
 ) {
-  const [basAttemptResult, basAnswerResult, readingAttemptResult] = await Promise.all([
+  const [
+    basAttemptResult,
+    basAnswerResult,
+    readingAttemptResult,
+    readingCorrectionAttemptResult
+  ] = await Promise.all([
     readAllSupabaseRows<OverviewBasAttemptRow>((from, to) =>
       db
         .from("attempts")
@@ -466,9 +475,19 @@ async function loadWrongQuestionsOverview(
         .eq("status", "submitted")
         .order("attempt_id", { ascending: true })
         .range(from, to)
+    ),
+    readAllSupabaseRows<OverviewReadingCorrectionAttemptRow>((from, to) =>
+      db
+        .from("reading_wrongbook_attempts")
+        .select("attempt_id,logical_item_id,task_type,scope,submitted_at")
+        .eq("student_id", studentId)
+        .eq("status", "submitted")
+        .order("attempt_id", { ascending: true })
+        .range(from, to)
     )
   ]);
-  const initialError = basAttemptResult.error ?? basAnswerResult.error ?? readingAttemptResult.error;
+  const initialError = basAttemptResult.error ?? basAnswerResult.error ?? readingAttemptResult.error
+    ?? readingCorrectionAttemptResult.error;
   if (initialError) return jsonError(`Failed to load wrong-question overview: ${initialError.message}`);
 
   const allBasAttempts = (basAttemptResult.data ?? []).map((attempt) => ({
@@ -560,13 +579,28 @@ async function loadWrongQuestionsOverview(
     taskType: attempt.task_type
   }));
   const readingAttemptIds = readingAttempts.map((attempt) => attempt.attemptId);
-  const [readingAnswerResult, readingItemResult] = await Promise.all([
+  const readingCorrectionAttempts = (readingCorrectionAttemptResult.data ?? []).map((attempt) => ({
+    attemptId: String(attempt.attempt_id),
+    logicalItemId: String(attempt.logical_item_id),
+    scope: attempt.scope,
+    submittedAt: attempt.submitted_at,
+    taskType: attempt.task_type
+  }));
+  const [readingAnswerResult, readingCorrectionAnswerResult, readingItemResult] = await Promise.all([
     readRowsInBatches<OverviewReadingAnswerRow>(
       db,
       "reading_attempt_answers",
       "attempt_id,question_id,slot_id,is_correct",
       "attempt_id",
       readingAttemptIds,
+      ["attempt_id", "question_id", "slot_id"]
+    ),
+    readRowsInBatches<OverviewReadingAnswerRow>(
+      db,
+      "reading_wrongbook_attempt_answers",
+      "attempt_id,question_id,slot_id,is_correct",
+      "attempt_id",
+      readingCorrectionAttempts.map((attempt) => attempt.attemptId),
       ["attempt_id", "question_id", "slot_id"]
     ),
     readAllSupabaseRows<OverviewReadingItemRow>((from, to) =>
@@ -577,7 +611,8 @@ async function loadWrongQuestionsOverview(
         .range(from, to)
     )
   ]);
-  const readingError = readingAnswerResult.error ?? readingItemResult.error;
+  const readingError = readingAnswerResult.error ?? readingCorrectionAnswerResult.error
+    ?? readingItemResult.error;
   if (readingError) return jsonError(`Failed to load Reading wrong questions: ${readingError.message}`);
 
   const requestedStart = Date.parse(searchParams.get("todayStart") ?? "");
@@ -599,6 +634,13 @@ async function loadWrongQuestionsOverview(
       slotId: answer.slot_id ? String(answer.slot_id) : null
     })),
     readingAttempts,
+    readingCorrectionAnswers: (readingCorrectionAnswerResult.data ?? []).map((answer) => ({
+      attemptId: String(answer.attempt_id),
+      isCorrect: Boolean(answer.is_correct),
+      questionId: String(answer.question_id),
+      slotId: answer.slot_id ? String(answer.slot_id) : null
+    })),
+    readingCorrectionAttempts,
     readingTitles: buildReadingWrongQuestionTitles(readingItemResult.data ?? []),
     todayEnd,
     todayStart
