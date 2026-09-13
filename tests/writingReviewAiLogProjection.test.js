@@ -34,12 +34,34 @@ test("list projection exposes cost whitelist without diagnostics", () => {
   assert.equal(JSON.stringify(projected).includes("must not leave"), false);
 });
 
-test("detail projection includes only bounded overlap diagnostics", () => {
+test("detail projection includes only bounded actionable diagnostics", () => {
   const projected = projectWritingReviewAiLog(row(), { includeDiagnostics: true });
   assert.deepEqual(projected.diagnostics, {
     language_edit_overlap: { group_count: 1 }
   });
   assert.equal(JSON.stringify(projected).includes("arbitrary_secret"), false);
+});
+
+test("detail projection exposes the preserved Supabase persistence error", () => {
+  const projected = projectWritingReviewAiLog(row({
+    diagnostics: {
+      database_error: {
+        operation: "insert",
+        code: "22P05",
+        message: "unsupported Unicode escape sequence",
+        details: "\\u0000 cannot be converted to text.",
+        hint: null
+      }
+    }
+  }), { includeDiagnostics: true });
+
+  assert.deepEqual(projected.diagnostics.database_error, {
+    operation: "insert",
+    code: "22P05",
+    message: "unsupported Unicode escape sequence",
+    details: "\\u0000 cannot be converted to text.",
+    hint: null
+  });
 });
 
 test("historical numeric costs are explicit legacy USD fallbacks", () => {

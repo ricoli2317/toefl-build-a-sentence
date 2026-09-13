@@ -61,27 +61,17 @@ import {
   mergeRegeneratedWritingReviewTeacherState
 } from "@/lib/writingReviewFullRegeneration";
 import { loadWritingReviewWorkspace } from "@/lib/writingReviewWorkspaceServer";
+import {
+  prepareWritingReviewForPersistence,
+  WritingReviewDatabaseError,
+  writingReviewDatabaseDiagnostic,
+  type SupabaseDatabaseError
+} from "@/lib/writingReviewPersistence";
 
 export const dynamic = "force-dynamic";
 // Keep the hosting function alive beyond C3's 210s internal deadline so the
 // route can still persist the result and its observability record.
 export const maxDuration = 240;
-
-type DatabaseError = { code?: string; message: string };
-
-class WritingReviewDatabaseError extends Error {
-  code: "DATABASE_READ_FAILED" | "REVIEW_SAVE_FAILED" | "EXISTING_REVIEW_INVALID";
-  status = 500;
-
-  constructor(
-    code: "DATABASE_READ_FAILED" | "REVIEW_SAVE_FAILED" | "EXISTING_REVIEW_INVALID",
-    message: string
-  ) {
-    super(message);
-    this.name = "WritingReviewDatabaseError";
-    this.code = code;
-  }
-}
 
 function json(data: unknown, init?: ResponseInit) {
   return NextResponse.json(data, {
@@ -123,7 +113,8 @@ function createWritingReviewRepository(
         if (!isUsableExistingAiReview(data)) {
           throw new WritingReviewDatabaseError(
             "EXISTING_REVIEW_INVALID",
-            "An existing AI writing review is incomplete and was left unchanged."
+            "An existing AI writing review is incomplete and was left unchanged.",
+            "read"
           );
         }
         return {
@@ -156,36 +147,37 @@ function createWritingReviewRepository(
     },
 
     async insertReview(input: WritingReviewInsert) {
+      const persistenceInput = prepareWritingReviewForPersistence(input);
       if (manualReview) {
-        const aiScores = input.scores as AIReviewResultV22["scores"];
+        const aiScores = persistenceInput.scores as AIReviewResultV22["scores"];
         const mergedItems = overwriteTeacherContent
           ? {
-              language_edits: input.language_edits,
-              content_feedback: input.content_feedback.items
+              language_edits: persistenceInput.language_edits,
+              content_feedback: persistenceInput.content_feedback.items
             }
           : mergeRegeneratedWritingReviewItems(
               reviewResponseText,
-              input.language_edits as AIReviewResultV22["language_edits"],
-              input.content_feedback.items as AIReviewResultV22["content_feedback"],
+              persistenceInput.language_edits as AIReviewResultV22["language_edits"],
+              persistenceInput.content_feedback.items as AIReviewResultV22["content_feedback"],
               manualReview
             );
         const teacherState = overwriteTeacherContent
           ? {
               scores: structuredClone(aiScores),
-              overall_feedback: input.content_feedback.overall_feedback,
+              overall_feedback: persistenceInput.content_feedback.overall_feedback,
               teacher_comment: ""
             }
           : mergeRegeneratedWritingReviewTeacherState(
               aiScores,
               manualReview,
-              input.content_feedback.overall_feedback
+              persistenceInput.content_feedback.overall_feedback
             );
         const { data, error } = await supabase
           .from("writing_reviews")
           .update({
-            ai_model: input.ai_model,
-            ai_review_raw: input.ai_review_raw,
-            ai_generated_at: input.ai_generated_at,
+            ai_model: persistenceInput.ai_model,
+            ai_review_raw: persistenceInput.ai_review_raw,
+            ai_generated_at: persistenceInput.ai_generated_at,
             language_edits: mergedItems.language_edits,
             scores: teacherState.scores,
             content_feedback: {
@@ -201,7 +193,9 @@ function createWritingReviewRepository(
         if (error) {
           throw new WritingReviewDatabaseError(
             "REVIEW_SAVE_FAILED",
-            "The validated AI writing review could not be saved."
+            "The validated AI writing review could not be saved.",
+            "update",
+            error
           );
         }
         if (!data) throw new WritingReviewPersistenceConflictError();
@@ -209,7 +203,7 @@ function createWritingReviewRepository(
       }
       const { data, error } = await supabase
         .from("writing_reviews")
-        .insert(input)
+        .insert(persistenceInput)
         .select("review_id")
         .single();
       if (error?.code === "23505") {
@@ -218,7 +212,14 @@ function createWritingReviewRepository(
       if (error || !data) {
         throw new WritingReviewDatabaseError(
           "REVIEW_SAVE_FAILED",
-          "The validated AI writing review could not be saved."
+          "The validated AI writing review could not be saved.",
+          "insert",
+          error ?? {
+            code: "PGRST_NO_MUTATION_RESULT",
+            message: "Supabase returned no writing review row after insert.",
+            details: null,
+            hint: null
+          }
         );
       }
       return { review_id: String(data.review_id) };
@@ -226,11 +227,13 @@ function createWritingReviewRepository(
   };
 }
 
-function throwReadError(error: DatabaseError | null, resource: string) {
+function throwReadError(error: SupabaseDatabaseError | null, resource: string) {
   if (error) {
     throw new WritingReviewDatabaseError(
       "DATABASE_READ_FAILED",
-      `Could not read ${resource}.`
+      `Could not read ${resource}.`,
+      "read",
+      error
     );
   }
 }
@@ -416,7 +419,8 @@ export async function POST(
     if (error instanceof WritingReviewDatabaseError) {
       console.error("Writing review database error", {
         attemptId: params.attemptId,
-        code: error.code
+        code: error.code,
+        database: writingReviewDatabaseDiagnostic(error)
       });
       return json({ code: error.code, message: error.message }, { status: error.status });
     }
@@ -434,6 +438,7 @@ export async function POST(
   async function logPipeline(error?: unknown) {
     if (operationStartedAt === null || !aiLogClient) return;
     const classified = error ? classifyWritingReviewAiFailure(error) : null;
+    const databaseDiagnostic = writingReviewDatabaseDiagnostic(error);
     const outcome = classified
       ? aiStartedAt === null && classified.pipeline_stage === "review_persistence"
         ? { ...classified, pipeline_stage: "request_preparation" as const }
@@ -485,6 +490,7 @@ export async function POST(
       normalization_applied: overlapDiagnostic !== null,
       diagnostics: {
         pipeline: logMetadata.pipeline,
+        ...(databaseDiagnostic ? { database_error: databaseDiagnostic } : {}),
         ...(costObservability ? { cost_observability: costObservability } : {}),
         ...(hedgeTelemetry?.billing_completeness
           ? {

@@ -195,9 +195,15 @@ function safeCostValue(key: (typeof COST_KEYS)[number], value: unknown) {
 
 function safeDetailDiagnostics(diagnostics: Record<string, unknown>) {
   const overlap = diagnostics.language_edit_overlap;
-  return overlap === undefined
-    ? {}
-    : { language_edit_overlap: boundedJson(overlap, 0) };
+  const databaseError = diagnostics.database_error;
+  return {
+    ...(overlap === undefined
+      ? {}
+      : { language_edit_overlap: boundedJson(overlap, 0) }),
+    ...(databaseError === undefined
+      ? {}
+      : { database_error: boundedJson(databaseError, 0) })
+  };
 }
 
 function boundedJson(value: unknown, depth: number): unknown {
