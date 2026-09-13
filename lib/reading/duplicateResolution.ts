@@ -128,13 +128,13 @@ export function resolveReadingDuplicateImports(
       for (const occurrence of mapped.occurrences) occurrences.set(occurrence.occurrenceId, occurrence);
     }
     const rootPrepared = preparedById.get(rootId);
-    const rootReview = reviewByIncomingId.get(rootId);
-    const rootIsNewPending = Boolean(
-      rootPrepared && rootReview
-      && resolutions.get(rootReview.pendingId)?.action === "create_new"
-    );
-    const existingItem = rootPrepared?.existingItem
-      ?? (rootPrepared && rootIsNewPending ? null : existingLogicalItemFromPackage(canonical));
+    // An incoming root without a historical match is still new. Only roots
+    // that came exclusively from the candidate library may be synthesized as
+    // existing; treating every canonical package as existing corrupts final
+    // import metrics while the RPC still creates the row.
+    const existingItem = rootPrepared
+      ? rootPrepared.existingItem
+      : existingLogicalItemFromPackage(canonical);
     const orderedOccurrences = Array.from(occurrences.values()).sort(compareOccurrences);
     const firstOccurrence = orderedOccurrences[0];
     return {

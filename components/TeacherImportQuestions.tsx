@@ -71,6 +71,7 @@ type ImportResult = {
   insertedCount: number;
   updatedCount: number;
   logicalNewItemCount: number;
+  logicalReusedItemCount?: number;
   logicalAutoMergeCount: number;
   logicalNeedsReviewCount: number;
   possibleDuplicateCount?: number;
@@ -191,9 +192,10 @@ export function TeacherImportQuestions() {
   const manuallyCreatedReadingCount = pendingReadingDuplicates.filter(
     (review) => readingResolutionDrafts[review.pendingId]?.action === "create_new"
   ).length;
-  const reusedReadingQuestionCount = (result?.exactFingerprintReuseCount ?? 0)
-    + (result?.semanticReuseCount ?? 0)
-    + (result?.manualReuseCount ?? 0)
+  const reusedReadingQuestionCount = (result?.logicalReusedItemCount
+    ?? ((result?.exactFingerprintReuseCount ?? 0)
+      + (result?.semanticReuseCount ?? 0)
+      + (result?.manualReuseCount ?? 0)))
     + manuallyReusedReadingCount;
   const newReadingQuestionCount = (result?.logicalNewItemCount ?? 0) + manuallyCreatedReadingCount;
   const resolvedPendingReviews = pendingReadingDuplicates.filter(

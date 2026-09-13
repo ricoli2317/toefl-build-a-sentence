@@ -66,7 +66,7 @@ test("CSV format errors are concise and never expose the complete required schem
 });
 
 test("Reading dry-run never calls the atomic write path or cache revalidation", () => {
-  assert.match(readingImporter, /if \(!dryRun\) \{\s*await importReadingPackageAtomic/);
+  assert.match(readingImporter, /if \(!dryRun\) \{[\s\S]*?await importReadingPackageAtomic/);
   assert.doesNotMatch(readingImporter, /if \(dryRun\)[\s\S]{0,120}importReadingPackageAtomic/);
   assert.match(readingImporter, /allowRegisteredMaterialStorageKeys: type === "read_in_daily_life"/);
   assert.match(route, /if \(!result\.preview && result\.successCount > 0 && importedTaskType\)/);

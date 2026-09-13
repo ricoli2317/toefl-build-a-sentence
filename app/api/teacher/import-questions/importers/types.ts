@@ -76,6 +76,7 @@ export type ImportResult = {
   insertedCount: number;
   updatedCount: number;
   logicalNewItemCount: number;
+  logicalReusedItemCount?: number;
   logicalAutoMergeCount: number;
   logicalNeedsReviewCount: number;
   possibleDuplicateCount?: number;

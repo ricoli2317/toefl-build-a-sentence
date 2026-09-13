@@ -142,7 +142,16 @@ test("manual reuse keeps the historical logical content and only writes the rema
   await importReadingPackageAtomic({
     async rpc(name, args) {
       calls.push({ name, args });
-      return { data: { inserted_question_count: 0, updated_question_count: 1 }, error: null };
+      return {
+        data: {
+          logical_item_action: "reuse_existing",
+          inserted_occurrence_count: 1,
+          existing_occurrence_count: 0,
+          inserted_question_count: 0,
+          updated_question_count: 1
+        },
+        error: null
+      };
     }
   }, resolved.packageData);
   assert.equal(calls.length, 1);
@@ -182,6 +191,10 @@ test("manual create keeps and writes a distinct logical item while another pendi
     resolved.find((item) => item.packageData.item.logicalItemId === newIncoming.item.logicalItemId).existingItem,
     null
   );
+  assert.equal(
+    resolved.find((item) => item.packageData.item.logicalItemId === normalIncoming.item.logicalItemId).existingItem,
+    null
+  );
   const newResolved = resolved.find(
     (item) => item.packageData.item.logicalItemId === newIncoming.item.logicalItemId
   );
@@ -189,7 +202,16 @@ test("manual create keeps and writes a distinct logical item while another pendi
   await importReadingPackageAtomic({
     async rpc(name, args) {
       calls.push({ name, args });
-      return { data: { inserted_question_count: 1, updated_question_count: 0 }, error: null };
+      return {
+        data: {
+          logical_item_action: "create_new",
+          inserted_occurrence_count: 1,
+          existing_occurrence_count: 0,
+          inserted_question_count: 1,
+          updated_question_count: 0
+        },
+        error: null
+      };
     }
   }, newResolved.packageData);
   assert.equal(calls.length, 1);

@@ -258,11 +258,22 @@ test("atomic importer sends one complete package to one RPC", async () => {
       assert.equal(name, "import_reading_package_atomic");
       assert.equal(args.p_rows.reading_logical_items.length, 1);
       assert.equal(args.p_rows.reading_ctw_slots.length, 2);
-      return { data: { inserted_question_count: 1, updated_question_count: 0 }, error: null };
+      return {
+        data: {
+          logical_item_action: "create_new",
+          inserted_occurrence_count: 1,
+          existing_occurrence_count: 0,
+          inserted_question_count: 1,
+          updated_question_count: 0
+        },
+        error: null
+      };
     }
   };
-  await importReadingPackageAtomic(supabase, packageData, { createdBy: "teacher" });
+  const result = await importReadingPackageAtomic(supabase, packageData, { createdBy: "teacher" });
   assert.equal(calls, 1);
+  assert.equal(result.logicalItemAction, "create_new");
+  assert.equal(result.insertedOccurrenceCount, 1);
 });
 
 test("legacy CTW logical ID with the same fingerprint reuses all canonical identities", async () => {
@@ -451,6 +462,9 @@ test("all three templates generate identical business keys on a second upload", 
 test("atomic migration is idempotent and preserves the earlier first-seen tuple", () => {
   const sql = fs.readFileSync(path.join(__dirname, "../supabase/reading_csv_import.sql"), "utf8");
   assert.match(sql, /create or replace function public\.import_reading_package_atomic/);
+  assert.match(sql, /logical_item_action/);
+  assert.match(sql, /inserted_occurrence_count/);
+  assert.match(sql, /existing_occurrence_count/);
   assert.match(sql, /on conflict \(logical_item_id\) do update/);
   assert.match(sql, /first_seen_date = excluded\.first_seen_date/);
   assert.match(sql, /numeric source-label/);
@@ -567,6 +581,15 @@ function readingImportDatabase({ logicalItems = [], questions = [], paragraphs =
       ).length;
       return {
         data: {
+          logical_item_action: logicalItems.some((item) =>
+            item.logical_item_id === args.p_rows.reading_logical_items[0].logical_item_id
+          ) ? "reuse_existing" : "create_new",
+          inserted_occurrence_count: args.p_rows.reading_source_occurrences.filter((occurrence) =>
+            !occurrences.some((existing) => existing.occurrence_id === occurrence.occurrence_id)
+          ).length,
+          existing_occurrence_count: args.p_rows.reading_source_occurrences.filter((occurrence) =>
+            occurrences.some((existing) => existing.occurrence_id === occurrence.occurrence_id)
+          ).length,
           inserted_question_count: args.p_rows.reading_questions.length - existingQuestionCount,
           updated_question_count: existingQuestionCount
         },

@@ -14,6 +14,11 @@ import {
 } from "@/lib/reading/duplicateResolution";
 import type { ReadingImportPackage, ReadingMaterial, ReadingQuestion } from "@/lib/reading/types";
 import { isRdlMaterialType } from "@/lib/reading/materialTypes";
+import {
+  summarizeReadingImportExecutions,
+  type ReadingImportExecution,
+  type ReadingLogicalReuseKind
+} from "@/lib/reading/importExecution";
 import type {
   ImporterContext,
   ImportResult,
@@ -101,13 +106,7 @@ async function importReadingCsv(
     reason: failure.reason,
     operation: "validate Reading group"
   }));
-  let createdCount = 0;
-  let reusedCount = 0;
-  let occurrenceInsertedCount = 0;
-  let existingOccurrenceCount = 0;
-  let exactFingerprintReuseCount = 0;
-  let semanticReuseCount = 0;
-  let manualReuseCount = 0;
+  const executions: ReadingImportExecution[] = [];
   let occurrenceConflictCount = 0;
   let updatedCount = 0;
   let successCount = 0;
@@ -151,33 +150,34 @@ async function importReadingCsv(
           sourceOrder: member.packageData.item.firstSeenSourceOrder
         }))
       ].sort(compareFirstSeen)[0];
-      if (!dryRun) {
-        await importReadingPackageAtomic(supabase, packageData, { createdBy: userId, firstSeen });
-      }
-      successCount += members.length;
-      occurrenceInsertedCount += addedOccurrenceCount;
-      existingOccurrenceCount += members.reduce(
-        (count, member) => count + member.packageData.occurrences.length - member.addedOccurrenceCount,
-        0
-      );
-      semanticReuseCount += members.reduce((count, member) => count + member.batchSemanticReuseCount, 0);
       const manualActions = members.flatMap((member) => {
         const review = reviewPlans.find((candidate) => candidate.incoming === member);
         const resolution = review ? resolutionByPendingId.get(review.pendingId) : undefined;
         return resolution ? [resolution.action] : [];
       });
-      manualReuseCount += manualActions.filter((action) => action === "reuse_existing").length;
-      createdCount += manualActions.filter((action) => action === "create_new").length;
-      if (existed) {
-        reusedCount += members.filter((member) => !reviewPlans.some((review) => review.incoming === member)).length;
-        for (const member of members) {
-          if (reviewPlans.some((review) => review.incoming === member)) continue;
-          if (member.reuseKind === "semantic") semanticReuseCount += 1;
-          else exactFingerprintReuseCount += 1;
-        }
-        updatedCount += addedOccurrenceCount > 0 ? 1 : 0;
-      } else if (manualActions.length === 0) {
-        createdCount += 1;
+      let execution: ReadingImportExecution;
+      if (!dryRun) {
+        const imported = await importReadingPackageAtomic(supabase, packageData, { createdBy: userId, firstSeen });
+        execution = {
+          logicalItemAction: imported.logicalItemAction,
+          logicalReuseKind: imported.logicalItemAction === "reuse_existing"
+            ? logicalReuseKind(members, manualActions)
+            : null,
+          insertedOccurrenceCount: imported.insertedOccurrenceCount,
+          existingOccurrenceCount: imported.existingOccurrenceCount
+        };
+      } else {
+        execution = {
+          logicalItemAction: existed ? "reuse_existing" : "create_new",
+          logicalReuseKind: existed ? logicalReuseKind(members, manualActions) : null,
+          insertedOccurrenceCount: addedOccurrenceCount,
+          existingOccurrenceCount: packageData.occurrences.length - addedOccurrenceCount
+        };
+      }
+      executions.push(execution);
+      successCount += members.length;
+      if (execution.logicalItemAction === "reuse_existing" && execution.insertedOccurrenceCount > 0) {
+        updatedCount += 1;
       }
     } catch (error) {
       if (members.some((member) => member.occurrenceConflict)) occurrenceConflictCount += 1;
@@ -198,6 +198,7 @@ async function importReadingCsv(
     row.source_label?.trim() ?? "",
     row.source_group_id?.trim() ?? ""
   ].join("\u001f"))).length;
+  const executionSummary = summarizeReadingImportExecutions(executions);
 
   return {
     success: true,
@@ -208,21 +209,19 @@ async function importReadingCsv(
     occurrenceCount: adapted.candidates.length,
     blockerCount: failedRows.length,
     successCount,
-    insertedCount: createdCount,
+    insertedCount: executionSummary.logicalNewItemCount,
     updatedCount,
-    logicalNewItemCount: createdCount,
-    logicalAutoMergeCount: reusedCount + manualReuseCount + preparedPackages.reduce(
-      (count, item) => count + item.batchSemanticReuseCount,
-      0
-    ),
+    logicalNewItemCount: executionSummary.logicalNewItemCount,
+    logicalReusedItemCount: executionSummary.logicalReusedItemCount,
+    logicalAutoMergeCount: executionSummary.logicalReusedItemCount,
     logicalNeedsReviewCount: dryRun ? pendingDuplicates.length : 0,
     possibleDuplicateCount: dryRun ? pendingDuplicates.length : 0,
     pendingDuplicates: dryRun ? pendingDuplicates : [],
-    occurrenceInsertedCount,
-    exactFingerprintReuseCount,
-    semanticReuseCount,
-    manualReuseCount,
-    existingOccurrenceCount,
+    occurrenceInsertedCount: executionSummary.occurrenceInsertedCount,
+    exactFingerprintReuseCount: executionSummary.exactFingerprintReuseCount,
+    semanticReuseCount: executionSummary.semanticReuseCount,
+    manualReuseCount: executionSummary.manualReuseCount,
+    existingOccurrenceCount: executionSummary.existingOccurrenceCount,
     occurrenceConflictCount,
     rdlMaterialReuseCount: preparedPackages.filter((item) =>
       item.materialMatchKind === "exact_material" || item.materialMatchKind === "semantic_material"
@@ -235,6 +234,16 @@ async function importReadingCsv(
     failedRows,
     warnings
   };
+}
+
+function logicalReuseKind(
+  members: PreparedReadingImportPackage[],
+  manualActions: Array<"reuse_existing" | "create_new">
+): ReadingLogicalReuseKind {
+  if (manualActions.includes("reuse_existing")) return "manual";
+  if (members.some((member) => member.existingItem && member.reuseKind === "semantic")) return "semantic";
+  if (members.some((member) => member.existingItem)) return "exact_fingerprint";
+  return null;
 }
 
 type CandidateOccurrence = ReadingDuplicateCandidate["sourceOccurrences"][number];

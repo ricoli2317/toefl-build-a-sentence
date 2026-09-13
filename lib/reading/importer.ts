@@ -15,6 +15,7 @@ import {
   readingPossibleDuplicateFingerprint,
   readingSemanticFingerprint
 } from "./semantic.ts";
+import type { ReadingLogicalItemAction } from "./importExecution.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -23,6 +24,12 @@ export type ReadingImportResult = {
   insertedQuestionCount: number;
   updatedQuestionCount: number;
   pendingMaterialIds: string[];
+};
+
+export type ReadingAtomicImportResult = ReadingImportResult & {
+  logicalItemAction: ReadingLogicalItemAction;
+  insertedOccurrenceCount: number;
+  existingOccurrenceCount: number;
 };
 
 export type ExistingReadingLogicalItem = {
@@ -759,7 +766,7 @@ export async function importReadingPackageAtomic(
       sourceOrder: number;
     };
   } = {}
-): Promise<ReadingImportResult> {
+): Promise<ReadingAtomicImportResult> {
   const packageData = validateReadingImportPackage(input);
   validateCanonicalRdlTitles(packageData);
   const rows = buildReadingImportRowsUnchecked(packageData, options.createdBy);
@@ -775,9 +782,18 @@ export async function importReadingPackageAtomic(
   });
   if (error) throw databaseError(error, "import Reading group atomically", logicalItemId);
   const result = (data ?? {}) as Record<string, unknown>;
+  const logicalItemAction = result.logical_item_action;
+  if (logicalItemAction !== "reuse_existing" && logicalItemAction !== "create_new") {
+    throw new Error(
+      "import Reading group atomically: database function did not return the logical item execution action"
+    );
+  }
   return {
     logicalItemId,
+    logicalItemAction,
     occurrenceCount: packageData.occurrences.length,
+    insertedOccurrenceCount: Number(result.inserted_occurrence_count ?? 0),
+    existingOccurrenceCount: Number(result.existing_occurrence_count ?? 0),
     questionCount: packageData.questions.length,
     insertedQuestionCount: Number(result.inserted_question_count ?? 0),
     updatedQuestionCount: Number(result.updated_question_count ?? 0),

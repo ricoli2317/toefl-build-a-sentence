@@ -11,6 +11,9 @@ set search_path = public
 as $$
 declare
   v_logical_item_id text;
+  v_logical_item_existed boolean := false;
+  v_occurrence_count integer := 0;
+  v_existing_occurrence_count integer := 0;
   v_existing_question_count integer := 0;
   v_question_count integer := 0;
 begin
@@ -20,6 +23,25 @@ begin
 
   select logical_item_id into v_logical_item_id
   from jsonb_to_recordset(p_rows->'reading_logical_items') as x(logical_item_id text);
+
+  -- Serialize imports targeting the same canonical logical item so these
+  -- execution counters describe this transaction, including concurrent calls.
+  perform pg_advisory_xact_lock(hashtextextended(v_logical_item_id, 0));
+
+  select exists (
+    select 1 from public.reading_logical_items item
+    where item.logical_item_id = v_logical_item_id
+  ) into v_logical_item_existed;
+
+  select count(*) into v_occurrence_count
+  from jsonb_to_recordset(coalesce(p_rows->'reading_source_occurrences', '[]'::jsonb)) as x(occurrence_id text);
+
+  select count(*) into v_existing_occurrence_count
+  from public.reading_source_occurrences occurrence
+  where occurrence.occurrence_id in (
+    select occurrence_id
+    from jsonb_to_recordset(coalesce(p_rows->'reading_source_occurrences', '[]'::jsonb)) as x(occurrence_id text)
+  );
 
   select count(*) into v_question_count
   from jsonb_to_recordset(coalesce(p_rows->'reading_questions', '[]'::jsonb)) as x(question_id text);
@@ -223,6 +245,12 @@ begin
 
   return jsonb_build_object(
     'logical_item_id', v_logical_item_id,
+    'logical_item_action', case
+      when v_logical_item_existed then 'reuse_existing'
+      else 'create_new'
+    end,
+    'inserted_occurrence_count', v_occurrence_count - v_existing_occurrence_count,
+    'existing_occurrence_count', v_existing_occurrence_count,
     'inserted_question_count', v_question_count - v_existing_question_count,
     'updated_question_count', v_existing_question_count
   );
