@@ -4,6 +4,10 @@ import type {
   ReadingDuplicateResolutionItem
 } from "@/lib/reading/duplicateResolutionModel";
 import type { ReadingImportFailureCategory } from "@/lib/reading/importSummary";
+import type {
+  ReadingContentConflictItem,
+  ReadingContentConflictResolution
+} from "@/lib/reading/contentReconciliation";
 
 export type ImportSupabase = ReturnType<typeof createServiceSupabase>;
 
@@ -61,6 +65,8 @@ export type ImportResult = {
   rdlMaterialWarningCount?: number;
   hasPendingDuplicates?: boolean;
   pendingResolutionItems?: ReadingDuplicateResolutionItem[];
+  contentConflictCount?: number;
+  contentConflictItems?: ReadingContentConflictItem[];
   failedCount: number;
   failedRows: FailedRow[];
   warnings: ImportWarning[];
@@ -81,6 +87,7 @@ export type ImporterContext = {
   fileName?: string;
   dryRun?: boolean;
   readingDuplicateResolutions?: ReadingDuplicateResolutionInput[];
+  readingContentConflictResolutions?: ReadingContentConflictResolution[];
 };
 
 export type SupabaseLikeError = {

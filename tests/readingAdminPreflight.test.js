@@ -86,8 +86,9 @@ test("preflight response separates duplicates, material warnings, rejections, co
   assert.doesNotMatch(readingImporter, /action=preserve as new/);
   assert.match(readingImporter, /unresolvedReviews\.length > 0[\s\S]*不能正式导入/);
   assert.doesNotMatch(readingImporter, /if \(possibleDuplicateWarnings\.length > 0\)/);
-  assert.match(readingImporter, /prepared\.dataQualityWarning/);
-  assert.match(readingImporter, /action=keep canonical questions and answers/);
+  assert.match(readingImporter, /contentConflictCount: dryRun \? contentConflictItems\.length : 0/);
+  assert.match(readingImporter, /READING_CONTENT_CONFLICT_REQUIRED/);
+  assert.doesNotMatch(readingImporter, /已保留题库题目与答案/);
   assert.match(readingImporter, /已稳定复用最早题目/);
 });
 

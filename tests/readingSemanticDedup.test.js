@@ -367,8 +367,9 @@ test("CTW answer, slot mapping, and lexical content differences remain non-equiv
   });
   assert.notEqual(readingSemanticFingerprint(answerVariant), readingSemanticFingerprint(historical));
   const answerMatch = await historicalMatch(historical, answerVariant);
-  assert.equal(answerMatch.prepared.reuseKind, "new");
-  assert.deepEqual(answerMatch.prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.equal(answerMatch.prepared.reuseKind, "semantic");
+  assert.equal(answerMatch.prepared.contentReconciliations.length, 1);
+  assert.deepEqual(answerMatch.prepared.possibleDuplicateLogicalItemIds, []);
 
   const lexicalVariant = incomingVariant(historical, (candidate) => {
     const question = candidate.questions[0];
@@ -403,16 +404,18 @@ test("CTW slot-count changes remain possible duplicates instead of automatic reu
 
 test("CTW answer, prefix, blank-position, and substantive text changes never silently merge", async () => {
   const historical = packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv");
-  for (const mutate of [
+  const variants = [
     (question) => { question.payload.slots[0].answer = "scientists"; },
     (question) => { question.payload.slots[0].prefix = "science"; },
     (question) => { question.payload.paragraphs[0].segments.reverse(); },
     (question) => { question.payload.paragraphs[0].segments[0].text = "Substantive change "; }
-  ]) {
+  ];
+  for (const [index, mutate] of variants.entries()) {
     const incoming = incomingVariant(historical, (candidate) => mutate(candidate.questions[0]));
     assert.notEqual(readingSemanticFingerprint(historical), readingSemanticFingerprint(incoming));
     const { prepared } = await historicalMatch(historical, incoming);
-    assert.equal(prepared.reuseKind, "new");
+    assert.equal(prepared.reuseKind, index === 0 ? "semantic" : "new");
+    assert.equal(prepared.contentReconciliations.length, index === 0 ? 1 : 0);
   }
   const answerVariant = incomingVariant(historical, (candidate) => {
     candidate.questions[0].payload.slots[0].answer = "scientists";
@@ -422,7 +425,8 @@ test("CTW answer, prefix, blank-position, and substantive text changes never sil
     readingPossibleDuplicateFingerprint(answerVariant)
   );
   const { prepared } = await historicalMatch(historical, answerVariant);
-  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+  assert.equal(prepared.contentReconciliations.length, 1);
 });
 
 test("Dorm Printer RDL option-order-only and correct-letter-only changes reuse the historical logical item", async () => {
@@ -521,7 +525,7 @@ test("RDL same material reuses canonical questions despite substantive source di
     prepared.packageData.questions[0].payload.correctOptionId,
     historical.questions[0].payload.correctOptionId
   );
-  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(prepared.contentReconciliations.length, 1);
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
@@ -649,7 +653,7 @@ test("RAP internal IDs and source-question differences do not split one passage"
   assert.equal(prepared.reuseKind, "semantic");
   assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
   assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
-  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(prepared.contentReconciliations.length, 1);
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
@@ -679,7 +683,7 @@ test("same RAP occurrence with changed source questions keeps canonical content"
   assert.equal(prepared.occurrenceConflict, null);
   assert.equal(prepared.addedOccurrenceCount, 0);
   assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
-  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(prepared.contentReconciliations.length, 1);
 });
 
 test("same-material variants in one CSV coalesce and preserve the earliest canonical questions", async () => {
@@ -710,7 +714,7 @@ test("same-material variants in one CSV coalesce and preserve the earliest canon
   assert.equal(preparedDifference.length, 1);
   assert.equal(preparedDifference[0].reuseKind, "new");
   assert.equal(preparedDifference[0].packageData.questions[0].stem, first.questions[0].stem);
-  assert.match(preparedDifference[0].dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(preparedDifference[0].contentReconciliations.length, 1);
   assert.equal(preparedDifference[0].occurrenceConflict, null);
 });
 
@@ -974,7 +978,7 @@ test("Quantum Computing 5.3B, 6.2, and 6.6A reuse one logical without overwritin
     (anchor) => anchor.anchorId === retainedInsertion.payload.correctAnchorId
   );
   assert.equal(retainedCorrect.boundaryIndex, 3);
-  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(prepared.contentReconciliations.length, 1);
   assert.equal(prepared.addedOccurrenceCount, 1);
 });
 
@@ -1066,7 +1070,7 @@ test("multiple same-passage candidates choose the stable survivor despite questi
   assert.equal(prepared.existingItem.logicalItemId, expected.item.logicalItemId);
   assert.equal(prepared.packageData.item.logicalItemId, expected.item.logicalItemId);
   assert.equal(prepared.historicalDuplicateLogicalItemIds.length, 1);
-  assert.match(prepared.dataQualityWarning, /已保留题库题目与答案/);
+  assert.equal(prepared.contentReconciliations.length, 1);
 });
 
 function occurrenceAwareFrom(originalFrom, occurrences) {

@@ -15,7 +15,7 @@ import type {
 import { validateReadingImportPackage } from "./validation.ts";
 import type { ReadingCsvType } from "./csvSchemas.ts";
 import { isRdlMaterialType } from "./materialTypes.ts";
-import { assertCanonicalRdlTitle } from "./rdlTitles.ts";
+import { reconcileIncomingRdlTitle } from "./rdlTitles.ts";
 
 export type ReadingCsvFailure = {
   rowNumber: number;
@@ -195,14 +195,15 @@ function buildCandidate(
     if (material.materialType !== materialType) {
       throw new Error(`material_type does not match canonical material ${materialId}`);
     }
-    const title = assertCanonicalRdlTitle(required(first, "title"), `RDL title for ${materialId}`);
-    if ((material.title ?? "").trim() !== title) {
-      throw new Error(`title does not match canonical material ${materialId}`);
-    }
+    const title = reconcileIncomingRdlTitle(
+      optional(first, "title"),
+      material.title,
+      `RDL title for ${materialId}`
+    );
     const questions: ReadingSourceQuestion[] = orderedRows.map((row, index) => {
       if (required(row, "material_id") !== materialId
         || required(row, "material_type") !== materialType
-        || required(row, "title") !== title) {
+        || reconcileIncomingRdlTitle(optional(row, "title"), material.title, `RDL title for ${materialId}`) !== title) {
         throw new Error(`material_id/material_type/title conflicts within source group ${sourceGroupId}`);
       }
       const sourceNumber = positiveInteger(required(row, "source_question_number"), "source_question_number");
@@ -221,7 +222,7 @@ function buildCandidate(
         }
       };
     });
-    return baseCandidate("rdl", title, [material], [], questions, sourceStart, sourceEnd);
+    return baseCandidate("rdl", title, [{ ...material, title }], [], questions, sourceStart, sourceEnd);
   }
 
   const passageId = required(first, "passage_id");

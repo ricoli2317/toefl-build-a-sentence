@@ -87,12 +87,32 @@ export function areReadingPackagesHistoricalSemanticEquivalents(
   left: ReadingImportPackage,
   right: ReadingImportPackage
 ) {
-  if (left.item.module !== right.item.module || left.item.module === "ctw") return false;
+  if (left.item.module !== right.item.module) return false;
+  if (left.item.module === "ctw") return historicalCtwStructuresEquivalent(left, right);
   if (left.item.module === "rdl") {
     const leftMaterialId = left.materials[0]?.materialId;
     return Boolean(leftMaterialId && leftMaterialId === right.materials[0]?.materialId);
   }
   return historicalRapPassagesEquivalent(left, right);
+}
+
+function historicalCtwStructuresEquivalent(left: ReadingImportPackage, right: ReadingImportPackage) {
+  const structure = (packageData: ReadingImportPackage) => {
+    const question = packageData.questions[0];
+    if (packageData.questions.length !== 1 || question?.questionType !== "ctw") return null;
+    const paragraphOrder = new Map(
+      question.payload.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder])
+    );
+    return {
+      paragraphs: ctwParagraphIdentity(question),
+      blanks: ordered(question.payload.slots, (slot) => slot.slotOrder).map((slot) => ({
+        slotOrder: slot.slotOrder,
+        paragraphOrder: requiredMap(paragraphOrder, slot.paragraphId),
+        prefix: normalizeCtwSemanticText(slot.prefix)
+      }))
+    };
+  };
+  return stableStringify(structure(left)) === stableStringify(structure(right));
 }
 
 export function haveSameReadingCanonicalQuestions(

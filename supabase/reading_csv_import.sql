@@ -1,5 +1,7 @@
--- Batch 1C: one transaction boundary for one normalized ReadingImportPackage.
--- This adds no tables or columns and does not change existing Reading records.
+-- One transaction boundary for one normalized ReadingImportPackage.
+-- No new tables/columns are required. Existing canonical content changes only
+-- when the caller sends an explicitly confirmed replace_canonical_content flag;
+-- RDL display-title normalization remains safe on ordinary reuse.
 
 create or replace function public.import_reading_package_atomic(
   p_rows jsonb,
@@ -16,6 +18,7 @@ declare
   v_existing_occurrence_count integer := 0;
   v_existing_question_count integer := 0;
   v_question_count integer := 0;
+  v_replace_canonical_content boolean := false;
 begin
   if jsonb_array_length(coalesce(p_rows->'reading_logical_items', '[]'::jsonb)) <> 1 then
     raise exception 'Reading atomic import requires exactly one logical item';
@@ -23,6 +26,8 @@ begin
 
   select logical_item_id into v_logical_item_id
   from jsonb_to_recordset(p_rows->'reading_logical_items') as x(logical_item_id text);
+
+  v_replace_canonical_content := coalesce((p_rows->>'replace_canonical_content')::boolean, false);
 
   -- Serialize imports targeting the same canonical logical item so these
   -- execution counters describe this transaction, including concurrent calls.
@@ -63,7 +68,10 @@ begin
     material_id text, title text, material_type text, source text, source_date date, year_month text,
     binding_status text, image_asset_path text, hitbox_data_path text
   )
-  on conflict (material_id) do nothing;
+  on conflict (material_id) do update set
+    -- Display-title canonicalization is safe and does not alter material
+    -- identity or any frozen R2 asset binding.
+    title = excluded.title;
 
   insert into public.reading_logical_items (
     logical_item_id, module, title, first_seen_date, first_seen_source_label,
@@ -164,6 +172,8 @@ begin
   )
   on conflict (question_id) do update set
     question_order = excluded.question_order,
+    module = case when v_replace_canonical_content then excluded.module else reading_questions.module end,
+    question_type = case when v_replace_canonical_content then excluded.question_type else reading_questions.question_type end,
     stem = excluded.stem,
     raw_display_text = excluded.raw_display_text,
     passage_highlight_ranges = excluded.passage_highlight_ranges,
@@ -242,6 +252,76 @@ begin
   on conflict (occurrence_id, question_id) do update set
     source_question_start = excluded.source_question_start,
     source_question_end = excluded.source_question_end;
+
+  -- A confirmed source correction replaces subtype/structure rows that no
+  -- longer exist in the incoming canonical package. Ordinary reuse never
+  -- deletes canonical content.
+  if v_replace_canonical_content then
+    delete from public.reading_question_options existing
+    where existing.question_id in (
+      select question_id from public.reading_questions where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_question_options', '[]'::jsonb)) as x(question_id text, option_id text)
+      where x.question_id = existing.question_id and x.option_id = existing.option_id
+    );
+
+    delete from public.reading_rap_insertion_anchors existing
+    where existing.question_id in (
+      select question_id from public.reading_questions where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_rap_insertion_anchors', '[]'::jsonb)) as x(question_id text, anchor_id text)
+      where x.question_id = existing.question_id and x.anchor_id = existing.anchor_id
+    );
+
+    delete from public.reading_ctw_segments existing
+    where existing.question_id in (
+      select question_id from public.reading_questions where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_ctw_segments', '[]'::jsonb)) as x(question_id text, paragraph_id text, segment_order integer)
+      where x.question_id = existing.question_id
+        and x.paragraph_id = existing.paragraph_id
+        and x.segment_order = existing.segment_order
+    );
+
+    delete from public.reading_ctw_slots existing
+    where existing.question_id in (
+      select question_id from public.reading_questions where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_ctw_slots', '[]'::jsonb)) as x(question_id text, slot_id text)
+      where x.question_id = existing.question_id and x.slot_id = existing.slot_id
+    );
+
+    delete from public.reading_ctw_paragraphs existing
+    where existing.question_id in (
+      select question_id from public.reading_questions where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_ctw_paragraphs', '[]'::jsonb)) as x(question_id text, paragraph_id text)
+      where x.question_id = existing.question_id and x.paragraph_id = existing.paragraph_id
+    );
+
+    delete from public.reading_passage_sentences existing
+    where existing.passage_id in (
+      select passage_id from public.reading_passages where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_passage_sentences', '[]'::jsonb)) as x(passage_id text, sentence_id text)
+      where x.passage_id = existing.passage_id and x.sentence_id = existing.sentence_id
+    );
+
+    delete from public.reading_passage_paragraphs existing
+    where existing.passage_id in (
+      select passage_id from public.reading_passages where logical_item_id = v_logical_item_id
+    ) and not exists (
+      select 1
+      from jsonb_to_recordset(coalesce(p_rows->'reading_passage_paragraphs', '[]'::jsonb)) as x(passage_id text, paragraph_id text)
+      where x.passage_id = existing.passage_id and x.paragraph_id = existing.paragraph_id
+    );
+  end if;
 
   return jsonb_build_object(
     'logical_item_id', v_logical_item_id,

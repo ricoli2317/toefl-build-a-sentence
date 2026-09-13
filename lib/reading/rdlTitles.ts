@@ -30,6 +30,39 @@ export function canonicalizeRdlTitleCapitalization(title: string): string {
   );
 }
 
+/** Normalize an incoming CSV display title against the registered canonical
+ * material title. Display-only case/spacing noise must never affect material
+ * identity or turn a production-ready RDL occurrence into a validation error. */
+export function reconcileIncomingRdlTitle(
+  incomingTitle: string | null | undefined,
+  canonicalMaterialTitle: string | null | undefined,
+  context = "RDL title"
+): string {
+  const canonical = assertCanonicalRdlTitle(
+    canonicalizeRdlTitleCapitalization(
+      (canonicalMaterialTitle ?? "").normalize("NFC").trim().replace(/\s+/g, " ")
+    ),
+    `${context} canonical material`
+  );
+  const normalizedIncoming = canonicalizeRdlTitleCapitalization(
+    (incomingTitle ?? "")
+      .normalize("NFC")
+      .trim()
+      .replace(/\s+/g, " ")
+      .replace(/\s+([,.;:!?])/g, "$1")
+      .replace(/([([{])\s+/g, "$1")
+  );
+  if (!normalizedIncoming) return canonical;
+
+  const incomingWords = englishWords(normalizedIncoming);
+  const canonicalWords = englishWords(canonical);
+  if (incomingWords.length > RDL_TITLE_MAX_ENGLISH_WORDS) return canonical;
+  if (!sameWords(incomingWords, canonicalWords)) {
+    throw new Error(`${context} does not match canonical material title ${canonical}`);
+  }
+  return canonical;
+}
+
 export function assertCanonicalRdlTitle(title: string, context = "RDL title"): string {
   const normalized = title.trim();
   if (!normalized) throw new Error(`${context} must not be empty`);

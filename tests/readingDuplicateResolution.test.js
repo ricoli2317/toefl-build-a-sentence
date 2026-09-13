@@ -107,7 +107,7 @@ function prepared(packageData, candidates = []) {
     batchSemanticReuseCount: 0,
     possibleDuplicateLogicalItemIds: candidates.map((candidate) => candidate.item.logicalItemId),
     possibleDuplicateCandidates: candidates,
-    dataQualityWarning: null,
+    contentReconciliations: [],
     historicalDuplicateLogicalItemIds: [],
     materialMatchKind: "not_applicable",
     addedOccurrenceCount: packageData.occurrences.length,

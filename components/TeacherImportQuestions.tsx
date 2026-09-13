@@ -26,6 +26,11 @@ import {
   assertReadingPendingResolutionInvariant,
   type ReadingDuplicateResolutionItem
 } from "@/lib/reading/duplicateResolutionModel";
+import {
+  ReadingContentConflictList,
+  type ReadingContentResolutionDraft
+} from "@/components/import/ReadingContentConflictList";
+import type { ReadingContentConflictItem } from "@/lib/reading/contentReconciliation";
 
 type ImportResult = {
   success?: boolean;
@@ -58,6 +63,8 @@ type ImportResult = {
   rdlMaterialWarningCount?: number;
   hasPendingDuplicates?: boolean;
   pendingResolutionItems?: ReadingDuplicateResolutionItem[];
+  contentConflictCount?: number;
+  contentConflictItems?: ReadingContentConflictItem[];
   failedCount: number;
   warnings?: Array<{
     message: string;
@@ -105,6 +112,7 @@ export function TeacherImportQuestions() {
   const [checkingRole, setCheckingRole] = useState(true);
   const [result, setResult] = useState<ImportResult | null>(null);
   const [readingResolutionDrafts, setReadingResolutionDrafts] = useState<Record<string, ReadingResolutionDraft>>({});
+  const [readingContentDrafts, setReadingContentDrafts] = useState<Record<string, ReadingContentResolutionDraft>>({});
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -164,6 +172,12 @@ export function TeacherImportQuestions() {
     (item) => !readingResolutionDrafts[item.resolutionId]?.action
   ).length;
   const readingHasUnresolvedDuplicates = readingPreflightComplete && unresolvedReadingDuplicateCount > 0;
+  const contentConflictItems = result?.contentConflictItems ?? [];
+  const unresolvedReadingContentConflictCount = contentConflictItems.filter(
+    (item) => !readingContentDrafts[item.resolutionId]?.action
+  ).length;
+  const readingHasUnresolvedContentConflicts = readingPreflightComplete
+    && unresolvedReadingContentConflictCount > 0;
   const manuallyReusedReadingCount = pendingResolutionItems.filter(
     (item) => readingResolutionDrafts[item.resolutionId]?.action === "reuse_existing"
   ).length;
@@ -205,6 +219,7 @@ export function TeacherImportQuestions() {
   async function readFile(file: File) {
     setResult(null);
     setReadingResolutionDrafts({});
+    setReadingContentDrafts({});
     setError("");
     setRows([]);
     setHeaders([]);
@@ -271,6 +286,11 @@ export function TeacherImportQuestions() {
       setLoading(false);
       return;
     }
+    if (readingHasUnresolvedContentConflicts) {
+      setError(`仍有 ${unresolvedReadingContentConflictCount} 项题目内容冲突未处理，请先逐项选择处理方式。`);
+      setLoading(false);
+      return;
+    }
 
     try {
       const supabase = createBrowserSupabase();
@@ -304,6 +324,12 @@ export function TeacherImportQuestions() {
                     ? { logicalItemId: draft.logicalItemId }
                     : {})
                 }] : [];
+              }),
+          readingContentConflictResolutions: readingDryRun
+            ? undefined
+            : contentConflictItems.flatMap((item) => {
+                const draft = readingContentDrafts[item.resolutionId];
+                return draft?.action ? [draft] : [];
               })
         })
       });
@@ -352,8 +378,15 @@ export function TeacherImportQuestions() {
               }
             ])
           ));
+          setReadingContentDrafts((current) => Object.fromEntries(
+            (resultPayload.contentConflictItems ?? []).map((item) => [
+              item.resolutionId,
+              current[item.resolutionId] ?? { action: null }
+            ])
+          ));
         } else {
           setReadingResolutionDrafts({});
+          setReadingContentDrafts({});
         }
         if (resultPayload.logicalNeedsReviewCount > 0) {
           window.dispatchEvent(new Event("tps:import-reviews-updated"));
@@ -455,7 +488,7 @@ export function TeacherImportQuestions() {
             {!readingPreflightBlocked ? (
               <button
                 className="teacher-button-primary min-w-52"
-                disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown" || readingHasUnresolvedDuplicates}
+                disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown" || readingHasUnresolvedDuplicates || readingHasUnresolvedContentConflicts}
                 onClick={importRows}
                 type="button"
               >
@@ -465,7 +498,9 @@ export function TeacherImportQuestions() {
                       ? (readingPreflightComplete
                           ? (readingHasUnresolvedDuplicates
                               ? `请先处理 ${unresolvedReadingDuplicateCount} 项相似题`
-                              : "确认导入")
+                              : readingHasUnresolvedContentConflicts
+                                ? `请先处理 ${unresolvedReadingContentConflictCount} 项内容冲突`
+                                : "确认导入")
                           : "开始预检")
                       : "开始导入")}
               </button>
@@ -500,6 +535,9 @@ export function TeacherImportQuestions() {
                 {unresolvedReadingDuplicateCount > 0 ? (
                   <ResultMetric label="需确认的相似题" tone="warning" value={unresolvedReadingDuplicateCount} />
                 ) : null}
+                {unresolvedReadingContentConflictCount > 0 ? (
+                  <ResultMetric label="题目内容冲突" tone="warning" value={unresolvedReadingContentConflictCount} />
+                ) : null}
                 {(result.occurrenceConflictCount ?? 0) > 0 ? (
                   <ResultMetric label="来源冲突" tone="error" value={result.occurrenceConflictCount ?? 0} />
                 ) : null}
@@ -533,6 +571,10 @@ export function TeacherImportQuestions() {
             <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
               还有 {unresolvedReadingDuplicateCount} 项相似题待确认。完成全部选择前不会写入 Reading 正式题库。
             </p>
+          ) : isReadingQuestionType(questionType) && unresolvedReadingContentConflictCount > 0 ? (
+            <p className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm font-semibold text-student-text">
+              还有 {unresolvedReadingContentConflictCount} 项题目内容冲突待确认。它们不是 identity duplicate，也不计入“无法导入”。
+            </p>
           ) : !isReadingQuestionType(questionType) && result.logicalNeedsReviewCount > 0 ? (
             <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
               待确认题目已导入原始题库，但暂未进入学生练习列表。请在下方“重复题待确认”中选择归入已有题或确认为新逻辑题。
@@ -543,6 +585,16 @@ export function TeacherImportQuestions() {
               drafts={readingResolutionDrafts}
               items={pendingResolutionItems}
               onChange={(resolutionId, draft) => setReadingResolutionDrafts((current) => ({
+                ...current,
+                [resolutionId]: draft
+              }))}
+            />
+          ) : null}
+          {contentConflictItems.length > 0 ? (
+            <ReadingContentConflictList
+              drafts={readingContentDrafts}
+              items={contentConflictItems}
+              onChange={(resolutionId, draft) => setReadingContentDrafts((current) => ({
                 ...current,
                 [resolutionId]: draft
               }))}
@@ -784,6 +836,7 @@ function localizeImportOperation(operation?: string) {
     "upsert academic discussion questions": "写入 Academic Discussion 题目",
     "validate Reading group": "校验 Reading 题组",
     "check Reading possible duplicates": "检查 Reading 可能重复内容",
+    "resolve Reading content conflicts": "处理 Reading 题目内容冲突",
     "check RDL canonical material": "检查 RDL canonical material",
     "preflight Reading group": "只读预检 Reading 题组",
     "import Reading group atomically": "完整写入 Reading 题组",

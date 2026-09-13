@@ -36,13 +36,26 @@ import type {
   ImporterContext,
   ImportResult
 } from "./types";
+import {
+  indexReadingContentConflictResolutions,
+  type ReadingContentConflictResolution
+} from "@/lib/reading/contentReconciliation";
+import { buildReadingCanonicalContentUpdate } from "@/lib/reading/contentCorrection";
 
 export function readingCsvImporter(type: ReadingCsvType) {
   return (context: ImporterContext) => importReadingCsv(context, type);
 }
 
 async function importReadingCsv(
-  { rows, supabase, userId, fileName, dryRun, readingDuplicateResolutions }: ImporterContext,
+  {
+    rows,
+    supabase,
+    userId,
+    fileName,
+    dryRun,
+    readingDuplicateResolutions,
+    readingContentConflictResolutions
+  }: ImporterContext,
   type: ReadingCsvType
 ): Promise<ImportResult> {
   const materialCatalog = type === "read_in_daily_life"
@@ -78,6 +91,13 @@ async function importReadingCsv(
     reviewPlans,
     readingDuplicateResolutions ?? []
   );
+  const contentConflictItems = preparedPackages.flatMap((prepared) =>
+    prepared.contentReconciliations.map((reconciliation) => reconciliation.item)
+  );
+  const contentResolutionById = indexReadingContentConflictResolutions(
+    contentConflictItems,
+    readingContentConflictResolutions ?? []
+  );
   const duplicateWarnings = reviewPlans.map((review) => ({
     message: review.questionType === "rdl"
       ? "RDL 素材可能相同，但 canonical identity 证据不足，需确认后才能导入。"
@@ -87,15 +107,8 @@ async function importReadingCsv(
     operation: "check Reading possible duplicates",
     details: `resolution=${review.resolutionId}; module=${review.questionType}; scope=${review.identityScope}; existing=${review.candidates.map((candidate) => candidate.item.logicalItemId).join(",")}; action=block pending review`
   }));
-  const dataQualityWarnings = preparedPackages.flatMap((prepared) => {
+  const historicalDuplicateWarnings = preparedPackages.flatMap((prepared) => {
     const warnings = [];
-    if (prepared.dataQualityWarning) {
-      warnings.push({
-        message: prepared.dataQualityWarning,
-        operation: "check Reading source content",
-        details: `module=${prepared.packageData.item.module}; action=keep canonical questions and answers`
-      });
-    }
     if (prepared.historicalDuplicateLogicalItemIds.length > 0) {
       warnings.push({
         message: "同一素材或文章存在历史重复，已稳定复用最早题目，等待后续清理。",
@@ -107,7 +120,7 @@ async function importReadingCsv(
   });
   const warnings = [
     ...(dryRun ? duplicateWarnings : []),
-    ...dataQualityWarnings
+    ...historicalDuplicateWarnings
   ];
   const failedRows: FailedRow[] = adapted.failures.map((failure) => ({
     rowNumber: failure.rowNumber,
@@ -124,12 +137,24 @@ async function importReadingCsv(
   let successCount = 0;
 
   const unresolvedReviews = reviewPlans.filter((review) => !resolutionById.has(review.resolutionId));
+  const unresolvedContentConflicts = contentConflictItems.filter((item) =>
+    !contentResolutionById.has(item.resolutionId)
+  );
   if (!dryRun && unresolvedReviews.length > 0) {
     throw Object.assign(
       new Error(`仍有 ${unresolvedReviews.length} 项相似题未处理，不能正式导入。`),
       {
         code: "READING_DUPLICATE_RESOLUTION_REQUIRED",
         operation: "resolve Reading possible duplicates"
+      }
+    );
+  }
+  if (!dryRun && unresolvedContentConflicts.length > 0) {
+    throw Object.assign(
+      new Error(`仍有 ${unresolvedContentConflicts.length} 项题目内容冲突未处理，不能正式导入。`),
+      {
+        code: "READING_CONTENT_CONFLICT_REQUIRED",
+        operation: "resolve Reading content conflicts"
       }
     );
   }
@@ -152,7 +177,14 @@ async function importReadingCsv(
   }
 
   for (const resolved of resolvedImports) {
-    const { packageData, existingItem, members } = resolved;
+    let { packageData } = resolved;
+    const { existingItem, members } = resolved;
+    const contentResolution = resolveContentForImport(
+      packageData,
+      members,
+      contentResolutionById
+    );
+    packageData = contentResolution.packageData;
     const addedOccurrenceCount = members.reduce((count, member) => count + member.addedOccurrenceCount, 0);
     try {
       if (dryRun) assertResolvedImportCanProceed(resolved);
@@ -172,7 +204,11 @@ async function importReadingCsv(
       });
       let execution: ReadingImportExecution;
       if (!dryRun) {
-        const imported = await importReadingPackageAtomic(supabase, packageData, { createdBy: userId, firstSeen });
+        const imported = await importReadingPackageAtomic(supabase, packageData, {
+          createdBy: userId,
+          firstSeen,
+          replaceCanonicalContent: contentResolution.replaceCanonicalContent
+        });
         execution = {
           logicalItemAction: imported.logicalItemAction,
           logicalReuseKind: imported.logicalItemAction === "reuse_existing"
@@ -242,6 +278,8 @@ async function importReadingCsv(
     possibleDuplicateCount: dryRun ? pendingResolutionItems.length : 0,
     hasPendingDuplicates: dryRun ? hasPendingDuplicates : false,
     pendingResolutionItems: dryRun ? pendingResolutionItems : [],
+    contentConflictCount: dryRun ? contentConflictItems.length : 0,
+    contentConflictItems: dryRun ? contentConflictItems : [],
     occurrenceInsertedCount: executionSummary.occurrenceInsertedCount,
     exactFingerprintReuseCount: executionSummary.exactFingerprintReuseCount,
     semanticReuseCount: executionSummary.semanticReuseCount,
@@ -258,6 +296,45 @@ async function importReadingCsv(
     failedCount: issueSummary.unableToImportCount,
     failedRows,
     warnings
+  };
+}
+
+function resolveContentForImport(
+  packageData: PreparedReadingImportPackage["packageData"],
+  members: PreparedReadingImportPackage[],
+  resolutions: Map<string, ReadingContentConflictResolution>
+) {
+  const reconciliations = members.flatMap((member) => member.contentReconciliations);
+  const updates = reconciliations.filter((reconciliation) =>
+    resolutions.get(reconciliation.item.resolutionId)?.action === "update_from_source"
+  );
+  if (updates.length > 1) {
+    throw Object.assign(
+      new Error("同一 logical item 选择了多个不同来源版本，无法确定 canonical correction。"),
+      {
+        code: "READING_CONTENT_CONFLICT_REQUIRED",
+        operation: "resolve Reading content conflicts"
+      }
+    );
+  }
+  const update = updates[0];
+  if (!update) return { packageData, replaceCanonicalContent: false };
+  const corrected = buildReadingCanonicalContentUpdate(
+    update.existingPackage,
+    update.incomingPackage
+  );
+  return {
+    packageData: {
+      ...corrected,
+      item: {
+        ...corrected.item,
+        firstSeenDate: packageData.item.firstSeenDate,
+        firstSeenSourceLabel: packageData.item.firstSeenSourceLabel,
+        firstSeenSourceOrder: packageData.item.firstSeenSourceOrder
+      },
+      occurrences: packageData.occurrences
+    },
+    replaceCanonicalContent: true
   };
 }
 

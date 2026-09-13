@@ -112,24 +112,48 @@ test("RDL CSV requires the canonical material_type and rejects a mismatch", () =
   assert.match(adapt("read_in_daily_life", mismatch).failures[0].reason, /does not match canonical material/);
 });
 
-test("RDL CSV accepts only a saved canonical title of at most five English words", () => {
+test("RDL CSV replaces an overlong incoming display title with the saved canonical title", () => {
   const longTitle = "Extended Library Hours for Final Exams";
   const document = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   document.rows.forEach((row) => { row.title = longTitle; });
-  const longMaterial = { ...material, title: longTitle };
-  const result = adapt("read_in_daily_life", document, new Map([[longMaterial.materialId, longMaterial]]));
-  assert.equal(result.candidates.length, 0);
-  assert.match(result.failures[0].reason, /1-5 English words/);
+  const result = adapt("read_in_daily_life", document);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.candidates[0].title, material.title);
 });
 
-test("RDL CSV rejects noncanonical capitalization even when the title is short", () => {
-  const title = "Gym membership";
+test("RDL CSV canonicalizes capitalization and harmless whitespace without changing material identity", () => {
+  for (const title of [
+    "university robotics club workshop",
+    "UNIVERSITY ROBOTICS CLUB WORKSHOP",
+    "  University   Robotics Club Workshop  ",
+    "University Robotics Club Workshop"
+  ]) {
+    const document = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
+    document.rows.forEach((row) => { row.title = title; });
+    const result = adapt("read_in_daily_life", document);
+    assert.deepEqual(result.failures, []);
+    assert.equal(result.candidates[0].title, material.title);
+    assert.equal(result.candidates[0].materials[0].materialId, material.materialId);
+  }
+});
+
+test("RDL-087 Study Abroad title capitalization is a nonblocking display normalization", () => {
   const document = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
-  document.rows.forEach((row) => { row.title = title; });
-  const wrongCaseMaterial = { ...material, title };
-  const result = adapt("read_in_daily_life", document, new Map([[wrongCaseMaterial.materialId, wrongCaseMaterial]]));
-  assert.equal(result.candidates.length, 0);
-  assert.match(result.failures[0].reason, /capitalize every English word/);
+  document.rows.forEach((row) => {
+    row.material_id = "RDL-087";
+    row.title = "Study abroad in Valencia";
+  });
+  const registered = {
+    ...material,
+    materialId: "RDL-087",
+    title: "Study Abroad in Valencia",
+    imageAssetPath: "reading/rdl/RDL-087/material_final.png",
+    hitboxDataPath: "reading/rdl/RDL-087/selection_map.json"
+  };
+  const result = adapt("read_in_daily_life", document, new Map([[registered.materialId, registered]]));
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.candidates[0].title, "Study Abroad In Valencia");
+  assert.equal(result.candidates[0].materials[0].materialId, "RDL-087");
 });
 
 test("same RDL material with a different question group remains a possible duplicate", () => {

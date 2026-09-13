@@ -16,6 +16,7 @@ import type { ImporterContext, ImportResult } from "./importers/types";
 import { revalidatePracticeCatalog } from "@/lib/practiceCatalogCache.server";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 import type { ReadingDuplicateResolutionInput } from "@/lib/reading/duplicateResolutionModel";
+import type { ReadingContentConflictResolution } from "@/lib/reading/contentReconciliation";
 
 export const dynamic = "force-dynamic";
 
@@ -123,6 +124,7 @@ export async function POST(request: Request) {
       fileName?: unknown;
       dryRun?: unknown;
       readingDuplicateResolutions?: unknown;
+      readingContentConflictResolutions?: unknown;
     };
     if (!Array.isArray(body.rows) || !body.rows.every((row) => row && typeof row === "object")) {
       return json(
@@ -177,6 +179,16 @@ export async function POST(request: Request) {
               return [{ resolutionId, questionType, action, logicalItemId }];
             }
             return [{ resolutionId, questionType, action }];
+          })
+        : undefined,
+      readingContentConflictResolutions: Array.isArray(body.readingContentConflictResolutions)
+        ? body.readingContentConflictResolutions.flatMap<ReadingContentConflictResolution>((value) => {
+            if (!value || typeof value !== "object") return [];
+            const candidate = value as Record<string, unknown>;
+            const resolutionId = String(candidate.resolutionId ?? "").trim();
+            const action = candidate.action;
+            if (!resolutionId || (action !== "keep_existing" && action !== "update_from_source")) return [];
+            return [{ resolutionId, action }];
           })
         : undefined
     });

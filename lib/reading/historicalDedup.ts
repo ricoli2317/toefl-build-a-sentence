@@ -126,14 +126,29 @@ export function attachIncomingOccurrencesToHistoricalPackage(
       }
     }
   }
+  const materials = historical.item.module === "rdl"
+    ? historical.materials.map((material) => {
+        const incomingMaterial = incoming.materials.find((candidate) =>
+          candidate.materialId === material.materialId
+        );
+        return incomingMaterial
+          ? { ...material, title: incomingMaterial.title }
+          : material;
+      })
+    : historical.materials;
   return {
     ...historical,
     item: {
       ...historical.item,
+      // RDL display-title normalization is presentation reconciliation, not a
+      // canonical-content choice. Keep the historical identity/content while
+      // allowing the normalized registered material title to be persisted.
+      title: historical.item.module === "rdl" ? incoming.item.title : historical.item.title,
       firstSeenDate: incoming.item.firstSeenDate,
       firstSeenSourceLabel: incoming.item.firstSeenSourceLabel,
       firstSeenSourceOrder: incoming.item.firstSeenSourceOrder
     },
+    materials,
     occurrences: incoming.occurrences.map((occurrence) => ({
       ...occurrence,
       logicalItemId: historical.item.logicalItemId,
