@@ -8,6 +8,7 @@ import type {
 } from "./types.ts";
 
 export const READING_SEMANTIC_VERSION = "reading-semantic-v1";
+export const CTW_SEMANTIC_VERSION = "ctw-semantic-v2";
 
 export function normalizeReadingSemanticText(value: string) {
   return value
@@ -15,6 +16,22 @@ export function normalizeReadingSemanticText(value: string) {
     .replace(/\r\n?/g, "\n")
     .replace(/[\u2018\u2019\u02bc\uff07]/g, "'")
     .replace(/[\u201c\u201d\uff02]/g, '"')
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** CTW-only normalization. It deliberately removes underscore rendering noise
+ * while retaining words, paragraph order, blank positions, and answer order. */
+export function normalizeCtwSemanticText(value: string) {
+  return value
+    .normalize("NFKC")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[\u2018\u2019\u02bc\uff07]/g, "'")
+    .replace(/[\u201c\u201d\uff02]/g, '"')
+    .replace(/[\u2010-\u2015\u2212\ufe58\ufe63\uff0d]/g, "-")
+    .replace(/\u2026/g, "...")
+    .replace(/_+/g, " ")
+    .replace(/\s*-\s*/g, "-")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -32,8 +49,7 @@ export function readingPossibleDuplicateFingerprint(packageData: ReadingImportPa
     return hash(stableStringify({
       module: "ctw",
       passage: question?.questionType === "ctw"
-        ? ordered(question.payload.paragraphs, (item) => item.paragraphOrder)
-            .map((paragraph) => looseReviewText(paragraph.rawText.replace(/(?:_\s*){2,}/g, " <blank> ")))
+        ? ctwParagraphIdentity(question)
         : []
     }));
   }
@@ -130,11 +146,17 @@ function readingSemanticIdentity(packageData: ReadingImportPackage) {
 }
 
 function semanticQuestion(question: ReadingQuestion, passageById: Map<string, ReadingPassage>) {
+  if (question.questionType === "ctw") {
+    return {
+      type: question.questionType,
+      stem: normalizeCtwSemanticText(question.stem),
+      ...ctwIdentity(question)
+    };
+  }
   const common = {
     type: question.questionType,
     stem: normalizeReadingSemanticText(question.stem)
   };
-  if (question.questionType === "ctw") return { ...common, ...ctwIdentity(question) };
   if (question.questionType === "rdl" || question.questionType === "rap_multiple_choice") {
     const correct = question.payload.options.find(
       (option) => option.optionId === question.payload.correctOptionId
@@ -187,24 +209,34 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
 }
 
 function ctwIdentity(question: CtwQuestion) {
-  const slotById = new Map(question.payload.slots.map((slot) => [slot.slotId, slot]));
   const paragraphOrder = new Map(
     question.payload.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder])
   );
   return {
-    paragraphs: ordered(question.payload.paragraphs, (paragraph) => paragraph.paragraphOrder).map((paragraph) => ({
-      segments: paragraph.segments.map((segment) => segment.kind === "text"
-        ? { kind: "text", text: normalizeReadingSemanticText(segment.text) }
-        : { kind: "blank", slotOrder: requiredMap(slotById, segment.slotId).slotOrder })
-    })),
+    version: CTW_SEMANTIC_VERSION,
+    paragraphs: ctwParagraphIdentity(question),
     slots: ordered(question.payload.slots, (slot) => slot.slotOrder).map((slot) => ({
       paragraphOrder: requiredMap(paragraphOrder, slot.paragraphId),
       slotOrder: slot.slotOrder,
-      prefix: normalizeReadingSemanticText(slot.prefix),
-      missingText: normalizeReadingSemanticText(slot.missingText),
-      answer: normalizeReadingSemanticText(slot.answer)
+      prefix: normalizeCtwSemanticText(slot.prefix),
+      answer: normalizeCtwSemanticText(slot.answer)
     }))
   };
+}
+
+function ctwParagraphIdentity(question: CtwQuestion) {
+  const slotById = new Map(question.payload.slots.map((slot) => [slot.slotId, slot]));
+  return ordered(question.payload.paragraphs, (paragraph) => paragraph.paragraphOrder).map((paragraph) => ({
+    paragraphOrder: paragraph.paragraphOrder,
+    content: paragraph.segments
+      .map((segment) => segment.kind === "text"
+        ? normalizeCtwSemanticText(segment.text)
+        : `<blank:${requiredMap(slotById, segment.slotId).slotOrder}>`)
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim()
+  }));
 }
 
 function rapPassageIdentity(passage: ReadingPassage | undefined, loose: boolean) {
@@ -330,7 +362,7 @@ function reviewPassageText(packageData: ReadingImportPackage) {
   }
   const question = packageData.questions[0];
   return question?.questionType === "ctw"
-    ? looseReviewText(question.payload.paragraphs.map((paragraph) => paragraph.rawText).join(" "))
+    ? looseReviewText(ctwParagraphIdentity(question).map((paragraph) => paragraph.content).join(" "))
     : "";
 }
 

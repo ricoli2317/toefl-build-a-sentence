@@ -13,6 +13,7 @@ const {
 } = require("../lib/reading/importer.ts");
 const {
   areReadingPackagesHistoricalSemanticEquivalents,
+  normalizeCtwSemanticText,
   normalizeReadingSemanticText,
   readingPossibleDuplicateFingerprint,
   readingSemanticFingerprint
@@ -147,6 +148,85 @@ async function historicalMatch(historical, incoming) {
   return { prepared, database };
 }
 
+function rebuildCtwRawText(question) {
+  const slotById = new Map(question.payload.slots.map((slot) => [slot.slotId, slot]));
+  for (const paragraph of question.payload.paragraphs) {
+    paragraph.rawText = paragraph.segments.map((segment) =>
+      segment.kind === "text" ? segment.text : slotById.get(segment.slotId).displayText
+    ).join("");
+  }
+}
+
+function ctwPresentationBase() {
+  return contentVariant(
+    packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv"),
+    (candidate) => {
+      const question = candidate.questions[0];
+      const text = question.payload.paragraphs[0].segments.find((segment) =>
+        segment.kind === "text" && segment.text.includes("studies nature")
+      );
+      text.text += " This function—utility and beauty—marks craftsmanship.";
+      rebuildCtwRawText(question);
+    }
+  );
+}
+
+function screenshotCtwPackage() {
+  const answers = ["for", "food", "water", "clay", "eventually", "decorative", "such", "carefully", "patterns", "painted"];
+  const prefixes = ["f", "fo", "wa", "cl", "event", "decor", "su", "care", "patt", "pai"];
+  const text = [
+    "During the Neolithic period, craftspeople began producing pottery that served both practical and aesthetic purposes. Initially created ",
+    " storing ", " and ", ", these ", " vessels ", " featured ", " elements ", " as ",
+    " incised ", " and ",
+    " designs. This dual function—utility and beauty—marks one of the earliest examples of craftsmanship evolving into artistic expression. The refinement of pottery techniques, including firing and glazing, reflected growing technical skill and cultural values."
+  ];
+  const packageData = contentVariant(
+    packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv"),
+    (candidate) => {
+      const question = candidate.questions[0];
+      const slots = answers.map((answer, index) => {
+        const prefix = prefixes[index];
+        const missingText = answer.slice(prefix.length);
+        return {
+          slotId: `screen-slot-${index + 1}`,
+          slotOrder: index + 1,
+          paragraphId: "screen-paragraph",
+          answer,
+          prefix,
+          displayText: `${prefix}${"_".repeat(Array.from(missingText).length)}`,
+          missingText,
+          missingLength: Array.from(missingText).length
+        };
+      });
+      const segments = [];
+      for (let index = 0; index < slots.length; index += 1) {
+        segments.push({ kind: "text", text: text[index] });
+        segments.push({ kind: "blank", slotId: slots[index].slotId });
+      }
+      segments.push({ kind: "text", text: text[text.length - 1] });
+      question.payload = {
+        paragraphs: [{
+          paragraphId: "screen-paragraph",
+          paragraphOrder: 1,
+          rawText: "",
+          segments
+        }],
+        slots
+      };
+      question.sourceQuestionStart = 1;
+      question.sourceQuestionEnd = 10;
+      candidate.source.sourceQuestionStart = 1;
+      candidate.source.sourceQuestionEnd = 10;
+      rebuildCtwRawText(question);
+    }
+  );
+  const logicalItemId = "reading-ctw-d7d655821c880844faa64ae6";
+  packageData.item.logicalItemId = logicalItemId;
+  packageData.questions.forEach((question) => { question.logicalItemId = logicalItemId; });
+  packageData.occurrences.forEach((occurrence) => { occurrence.logicalItemId = logicalItemId; });
+  return packageData;
+}
+
 test("shared semantic text normalization is cautious about punctuation", () => {
   assert.equal(
     normalizeReadingSemanticText("  Students\u2019  \r\n work \u201chere\u201d "),
@@ -177,6 +257,148 @@ test("CTW blank display serialization and smart quotes reuse historical canonica
   assert.equal(prepared.packageData.questions[0].questionId, historical.questions[0].questionId);
   assert.equal(prepared.addedOccurrenceCount, 1);
   assert.equal(buildReadingImportRows(prepared.packageData).reading_logical_items[0].dedup_fingerprint, historical.item.dedupFingerprint);
+});
+
+test("CTW-only normalization canonicalizes Unicode dashes, whitespace, and blank noise", () => {
+  for (const variant of ["—", "–", "‐", "‑", "‒", "−", "﹘", "﹣", "－"]) {
+    assert.equal(normalizeCtwSemanticText(` function ${variant} utility `), "function-utility");
+  }
+  assert.equal(normalizeCtwSemanticText("care_____ _\n\t incised"), "care incised");
+  assert.equal(normalizeCtwSemanticText("  multiple\n\t spaces  "), "multiple spaces");
+});
+
+test("CTW dash presentation variants reuse while the shared Reading normalizer remains unchanged", async () => {
+  const historical = ctwPresentationBase();
+  for (const dash of ["-", "–", "‐", "‑", "‒", "−", "﹘", "﹣", "－"]) {
+    const incoming = incomingVariant(historical, (candidate) => {
+      const question = candidate.questions[0];
+      question.payload.paragraphs[0].segments.forEach((segment) => {
+        if (segment.kind === "text") segment.text = segment.text.replaceAll("—", dash);
+      });
+      rebuildCtwRawText(question);
+    });
+    assert.equal(readingSemanticFingerprint(incoming), readingSemanticFingerprint(historical));
+    const { prepared } = await historicalMatch(historical, incoming);
+    assert.equal(prepared.reuseKind, "semantic");
+    assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+  }
+});
+
+test("CTW multiple spaces, newlines, and tabs are presentation-only", async () => {
+  const historical = ctwPresentationBase();
+  const incoming = incomingVariant(historical, (candidate) => {
+    const question = candidate.questions[0];
+    const text = question.payload.paragraphs[0].segments.find((segment) =>
+      segment.kind === "text" && segment.text.includes("function—utility")
+    );
+    text.text = text.text.replace("function—utility and beauty—marks", "function —\n utility   and\tbeauty — marks");
+    rebuildCtwRawText(question);
+  });
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+});
+
+test("CTW underscore count and underscore spacing do not change semantic identity", async () => {
+  const historical = ctwPresentationBase();
+  for (const display of ["scien__", "scien______", "scien_ _ _ _ _"]) {
+    const incoming = incomingVariant(historical, (candidate) => {
+      const question = candidate.questions[0];
+      question.payload.slots[0].displayText = display;
+      rebuildCtwRawText(question);
+    });
+    const { prepared } = await historicalMatch(historical, incoming);
+    assert.equal(prepared.reuseKind, "semantic");
+    assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+  }
+});
+
+test("CTW standalone OCR underscores in adjacent text do not trigger review", async () => {
+  const historical = ctwPresentationBase();
+  const incoming = incomingVariant(historical, (candidate) => {
+    const question = candidate.questions[0];
+    const trailingText = question.payload.paragraphs[0].segments.find((segment) =>
+      segment.kind === "text" && segment.text.includes("studies nature")
+    );
+    trailingText.text = ` _  ${trailingText.text}`;
+    rebuildCtwRawText(question);
+  });
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+});
+
+test("Neolithic 10-answer regression reuses the known historical logical item", async () => {
+  const historical = screenshotCtwPackage();
+  const incoming = incomingVariant(historical, (candidate) => {
+    const question = candidate.questions[0];
+    question.payload.paragraphs[0].segments.forEach((segment) => {
+      if (segment.kind !== "text") return;
+      segment.text = segment.text
+        .replaceAll("—", "-")
+        .replace(" incised ", " _  incised\n")
+        .replace(" designs. This", "   designs.\nThis");
+    });
+    question.payload.slots.forEach((slot, index) => {
+      slot.displayText = `${slot.prefix}${index === 7 ? "_____ _" : "_".repeat(slot.missingLength + 2)}`;
+    });
+    rebuildCtwRawText(question);
+  });
+  assert.deepEqual(
+    incoming.questions[0].payload.slots.map((slot) => slot.answer),
+    ["for", "food", "water", "clay", "eventually", "decorative", "such", "carefully", "patterns", "painted"]
+  );
+  assert.equal(readingSemanticFingerprint(incoming), readingSemanticFingerprint(historical));
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.packageData.item.logicalItemId, "reading-ctw-d7d655821c880844faa64ae6");
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+});
+
+test("CTW answer, slot mapping, and lexical content differences remain non-equivalent", async () => {
+  const historical = ctwPresentationBase();
+  const answerVariant = incomingVariant(historical, (candidate) => {
+    const slot = candidate.questions[0].payload.slots[0];
+    slot.answer = "scientists";
+    slot.missingText = "tists";
+    slot.missingLength = 5;
+    slot.displayText = "scien_____";
+    rebuildCtwRawText(candidate.questions[0]);
+  });
+  assert.notEqual(readingSemanticFingerprint(answerVariant), readingSemanticFingerprint(historical));
+  const answerMatch = await historicalMatch(historical, answerVariant);
+  assert.equal(answerMatch.prepared.reuseKind, "new");
+  assert.deepEqual(answerMatch.prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+
+  const lexicalVariant = incomingVariant(historical, (candidate) => {
+    const question = candidate.questions[0];
+    const text = question.payload.paragraphs[0].segments.find((segment) =>
+      segment.kind === "text" && segment.text.includes("studies nature")
+    );
+    text.text += " An entirely new sentence was added.";
+    rebuildCtwRawText(question);
+  });
+  assert.notEqual(readingSemanticFingerprint(lexicalVariant), readingSemanticFingerprint(historical));
+  const lexicalMatch = await historicalMatch(historical, lexicalVariant);
+  assert.notEqual(lexicalMatch.prepared.reuseKind, "semantic");
+});
+
+test("CTW slot-count changes remain possible duplicates instead of automatic reuse", async () => {
+  const historical = screenshotCtwPackage();
+  const incoming = incomingVariant(historical, (candidate) => {
+    const question = candidate.questions[0];
+    const removed = question.payload.slots.pop();
+    question.payload.paragraphs[0].segments = question.payload.paragraphs[0].segments.filter(
+      (segment) => segment.kind !== "blank" || segment.slotId !== removed.slotId
+    );
+    question.sourceQuestionEnd = 9;
+    candidate.source.sourceQuestionEnd = 9;
+    rebuildCtwRawText(question);
+  });
+  assert.notEqual(readingSemanticFingerprint(incoming), readingSemanticFingerprint(historical));
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "new");
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
 });
 
 test("CTW answer, prefix, blank-position, and substantive text changes never silently merge", async () => {
