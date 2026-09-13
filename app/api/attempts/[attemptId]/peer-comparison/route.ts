@@ -4,6 +4,7 @@ import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { loadResultPeerComparison } from "@/lib/resultPeerComparison.server";
 import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,7 @@ export async function GET(
       auth: { persistSession: false },
       global: {
         headers: serviceRoleKey ? {} : { Authorization: request.headers.get("authorization") ?? "" },
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
+        fetch: createSupabaseFetch()
       }
     });
 

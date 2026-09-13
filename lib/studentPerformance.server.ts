@@ -72,6 +72,7 @@ export function createStudentPerformanceTrace(route: string): StudentPerformance
       const headers = new Headers(initialHeaders);
       if (finished) return headers;
       finished = true;
+      headers.set("Cache-Control", "no-store");
 
       const totalMs = roundDuration(performance.now() - startedAt);
       const timingValues = [

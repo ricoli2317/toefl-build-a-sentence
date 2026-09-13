@@ -12,18 +12,17 @@ import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractic
 import {
   buildReadingWrongbookInitialAnswers,
   isReadingFullSetWrongbookAttemptSummary,
-  isReadingFullSetWrongbookQueuePayload,
   readingWrongbookEditableSlotIds,
   selectReadingWrongbookPractice,
   selectReadingWrongbookSubmissionAnswers,
   type ReadingFullSetWrongbookAttemptSummary,
-  type ReadingFullSetWrongbookQueuePayload,
   type ReadingWrongbookPreservedAnswer,
   type ReadingWrongbookScope
 } from "@/lib/reading/wrongbook";
 import {
   buildReadingFullSetWrongbookProgress,
   readingFullSetWrongbookProgressLabel,
+  type ReadingFullSetWrongbookQueueItem,
   type ReadingFullSetWrongbookTarget
 } from "@/lib/wrongQuestions";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -76,29 +75,7 @@ export function ReadingFullSetWrongbookPractice({
       try {
         const { data: { session } } = await createBrowserSupabase().auth.getSession();
         if (!session) throw new Error("请先登录后再开始错题订正。");
-        const query = new URLSearchParams({
-          scope,
-          sourceAttemptId,
-          taskType: "full_set",
-          todayEnd: todayRange.end,
-          todayStart: todayRange.start
-        });
         const headers = { Authorization: `Bearer ${session.access_token}` };
-        const queueResponse = await fetch(`/api/reading/wrongbook-attempts?${query}`, { cache: "no-store", headers });
-        const queuePayload = await queueResponse.json().catch(() => ({})) as ReadingFullSetWrongbookQueuePayload & { error?: string };
-        if (!queueResponse.ok || queuePayload.error || !isReadingFullSetWrongbookQueuePayload(queuePayload)) {
-          throw new Error(queuePayload.error ?? "错题订正加载失败，请稍后重试。");
-        }
-        const item = queuePayload.items[0];
-        if (!item || item.sourceAttemptId !== sourceAttemptId) throw new Error("这套错题已经订正完成。");
-
-        const uniqueOccurrences = Array.from(new Map(item.targets.map((target) => [target.occurrenceId, target])).values());
-        const practiceResults = await Promise.all(uniqueOccurrences.map(async (occurrence) => {
-          const response = await fetch(`/api/reading/practice/${encodeURIComponent(occurrence.logicalItemId)}`, { cache: "no-store", headers });
-          const payload = await response.json().catch(() => ({})) as { error?: string; practice?: StudentReadingPracticePayload };
-          if (!response.ok || !payload.practice) throw new Error(payload.error ?? "阅读错题内容加载失败，请稍后重试。");
-          return payload.practice;
-        }));
         const attemptResponse = await fetch("/api/reading/wrongbook-attempts", {
           method: "POST",
           cache: "no-store",
@@ -114,16 +91,40 @@ export function ReadingFullSetWrongbookPractice({
         const attemptPayload = await attemptResponse.json().catch(() => ({})) as {
           attempt?: unknown;
           error?: string;
+          item?: ReadingFullSetWrongbookQueueItem;
           preservedAnswersByOccurrence?: Record<string, ReadingWrongbookPreservedAnswer[]>;
         };
         if (!attemptResponse.ok || !isReadingFullSetWrongbookAttemptSummary(attemptPayload.attempt)) {
           throw new Error(attemptPayload.error ?? "错题订正记录加载失败，请稍后重试。");
         }
         if (attemptPayload.attempt.sourceAttemptId !== sourceAttemptId) throw new Error("错题订正记录与当前套题不一致。");
+        const item = attemptPayload.item;
+        if (!item || item.sourceAttemptId !== sourceAttemptId) throw new Error("这套错题已经订正完成。");
 
-        const loaded = uniqueOccurrences.map((occurrence, index) => {
+        const uniqueOccurrences = Array.from(new Map(item.targets.map((target) => [target.occurrenceId, target])).values());
+        const itemIds = Array.from(new Set(uniqueOccurrences.map((occurrence) => occurrence.logicalItemId)));
+        const practiceQuery = new URLSearchParams({ itemIds: itemIds.join(",") });
+        const practiceResponse = await fetch(`/api/reading/practices?${practiceQuery}`, {
+          cache: "no-store",
+          headers
+        });
+        const practicePayload = await practiceResponse.json().catch(() => ({})) as {
+          error?: string;
+          practices?: StudentReadingPracticePayload[];
+        };
+        if (!practiceResponse.ok || practicePayload.error || !practicePayload.practices) {
+          throw new Error(practicePayload.error ?? "阅读错题内容加载失败，请稍后重试。");
+        }
+        const practiceByItem = new Map(practicePayload.practices.map((practice) => [
+          practice.item.itemId,
+          practice
+        ]));
+
+        const loaded = uniqueOccurrences.map((occurrence) => {
           const targets = item.targets.filter((target) => target.occurrenceId === occurrence.occurrenceId);
-          const practice = selectReadingWrongbookPractice(practiceResults[index], targets);
+          const sourcePractice = practiceByItem.get(occurrence.logicalItemId);
+          if (!sourcePractice) throw new Error("阅读错题内容返回不完整，请稍后重试。");
+          const practice = selectReadingWrongbookPractice(sourcePractice, targets);
           return {
             answers: buildReadingWrongbookInitialAnswers(
               practice,

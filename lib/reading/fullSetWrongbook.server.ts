@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { mapWithConcurrency } from "../mapWithConcurrency.ts";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
   buildReadingFullSetWrongbookQueue,
@@ -7,7 +8,6 @@ import {
   type ReadingFullSetWrongbookCorrectionAttempt,
   type ReadingFullSetWrongbookQueueItem
 } from "@/lib/wrongQuestions";
-import { loadReadingFullSets } from "./fullSets.server";
 import type { ReadingWrongbookPreservedAnswer } from "./wrongbook";
 
 type AttemptRow = {
@@ -33,6 +33,17 @@ type AnswerRow = {
   source_occurrence_id?: string | null;
 };
 
+type OccurrenceRow = {
+  occurrence_id: string;
+  source_question_start: number;
+};
+
+type QuestionOrderRow = {
+  module: "ctw" | "rdl" | "rap";
+  question_id: string;
+  question_order: number;
+};
+
 type CorrectionAttemptRow = {
   attempt_id: string;
   source_attempt_id: string;
@@ -48,23 +59,27 @@ export type ReadingFullSetWrongbookData = {
 
 export async function loadReadingFullSetWrongbookData(
   db: SupabaseClient,
-  studentId: string
+  studentId: string,
+  sourceAttemptId?: string | null
 ): Promise<ReadingFullSetWrongbookData> {
-  const [attemptResult, correctionAttemptResult, fullSets] = await Promise.all([
-    readAllSupabaseRows<AttemptRow>((from, to) => db.from("reading_full_set_attempts")
-      .select("attempt_id,full_set_id,completed_at")
-      .eq("student_id", studentId)
-      .eq("status", "completed")
-      .order("attempt_id", { ascending: true })
-      .range(from, to)),
-    readAllSupabaseRows<CorrectionAttemptRow>((from, to) => db.from("reading_wrongbook_attempts")
-      .select("attempt_id,source_attempt_id,submitted_at")
-      .eq("student_id", studentId)
-      .eq("task_type", "full_set")
-      .eq("status", "submitted")
-      .order("attempt_id", { ascending: true })
-      .range(from, to)),
-    loadReadingFullSets(db)
+  const [attemptResult, correctionAttemptResult] = await Promise.all([
+    readAllSupabaseRows<AttemptRow>((from, to) => {
+      let query = db.from("reading_full_set_attempts")
+        .select("attempt_id,full_set_id,completed_at")
+        .eq("student_id", studentId)
+        .eq("status", "completed");
+      if (sourceAttemptId) query = query.eq("attempt_id", sourceAttemptId);
+      return query.order("attempt_id", { ascending: true }).range(from, to);
+    }),
+    readAllSupabaseRows<CorrectionAttemptRow>((from, to) => {
+      let query = db.from("reading_wrongbook_attempts")
+        .select("attempt_id,source_attempt_id,submitted_at")
+        .eq("student_id", studentId)
+        .eq("task_type", "full_set")
+        .eq("status", "submitted");
+      if (sourceAttemptId) query = query.eq("source_attempt_id", sourceAttemptId);
+      return query.order("attempt_id", { ascending: true }).range(from, to);
+    })
   ]);
   const initialError = attemptResult.error ?? correctionAttemptResult.error;
   if (initialError) throw new Error(initialError.message);
@@ -100,33 +115,36 @@ export async function loadReadingFullSetWrongbookData(
     ...answers.map((answer) => answer.question_id),
     ...(correctionAnswerResult.data ?? []).map((answer) => answer.question_id)
   ]));
-  const [questionResult, slotResult] = await Promise.all([
-    readByIds<{ question_id: string; question_order: number }>(
-      db, "reading_questions", "question_id,question_order", "question_id", questionIds
+  const occurrenceIds = Array.from(new Set(answers
+    .map((answer) => answer.occurrence_id)
+    .filter((value): value is string => Boolean(value))));
+  const [questionResult, slotResult, occurrenceResult] = await Promise.all([
+    readByIds<QuestionOrderRow>(
+      db, "reading_questions", "question_id,question_order,module", "question_id", questionIds
     ),
     readByIds<{ question_id: string; slot_id: string; slot_order: number }>(
       db, "reading_ctw_slots", "question_id,slot_id,slot_order", "question_id", questionIds
+    ),
+    readByIds<OccurrenceRow>(
+      db, "reading_source_occurrences", "occurrence_id,source_question_start", "occurrence_id", occurrenceIds
     )
   ]);
-  const orderError = questionResult.error ?? slotResult.error;
+  const orderError = questionResult.error ?? slotResult.error ?? occurrenceResult.error;
   if (orderError) throw new Error(orderError.message);
 
-  const occurrenceById = new Map(fullSets.flatMap((fullSet) => [
-    ...fullSet.module1.occurrences.map((occurrence) => ({ ...occurrence, fullSetId: fullSet.fullSetId, moduleNumber: 1 as const })),
-    ...fullSet.module2.occurrences.map((occurrence) => ({ ...occurrence, fullSetId: fullSet.fullSetId, moduleNumber: 2 as const }))
-  ]).map((occurrence) => [occurrence.occurrenceId, occurrence]));
-  const fullSetById = new Map(fullSets.flatMap((fullSet) =>
-    fullSet.fullSetId ? [[fullSet.fullSetId, fullSet] as const] : []
-  ));
+  const occurrenceById = new Map((occurrenceResult.data ?? [])
+    .map((occurrence) => [occurrence.occurrence_id, occurrence]));
   const moduleById = new Map(modules.map((moduleAttempt) => [moduleAttempt.module_attempt_id, moduleAttempt]));
   const questionOrder = new Map((questionResult.data ?? []).map((question) => [question.question_id, question.question_order]));
+  const questionModule = new Map((questionResult.data ?? []).map((question) => [question.question_id, question.module]));
   const slotOrder = new Map((slotResult.data ?? []).map((slot) => [`${slot.question_id}:${slot.slot_id}`, slot.slot_order]));
   const sourceAnswerByKey = new Map<string, ReadingFullSetWrongQuestionAnswer>();
 
   const fullSetAnswers = answers.flatMap((answer): ReadingFullSetWrongQuestionAnswer[] => {
     const moduleAttempt = answer.module_attempt_id ? moduleById.get(answer.module_attempt_id) : undefined;
     const occurrence = answer.occurrence_id ? occurrenceById.get(answer.occurrence_id) : undefined;
-    if (!moduleAttempt || !occurrence || (moduleAttempt.module_number !== 1 && moduleAttempt.module_number !== 2)) return [];
+    const taskType = questionModule.get(answer.question_id);
+    if (!moduleAttempt || !occurrence || !taskType || (moduleAttempt.module_number !== 1 && moduleAttempt.module_number !== 2)) return [];
     const localOrder = answer.slot_id
       ? slotOrder.get(`${answer.question_id}:${answer.slot_id}`)
       : questionOrder.get(answer.question_id);
@@ -136,11 +154,11 @@ export async function loadReadingFullSetWrongbookData(
       isCorrect: Boolean(answer.is_correct),
       logicalItemId: answer.logical_item_id,
       moduleNumber: moduleAttempt.module_number,
-      occurrenceId: occurrence.occurrenceId,
-      order: occurrence.sourceQuestionStart + localOrder - 1,
+      occurrenceId: answer.occurrence_id!,
+      order: occurrence.source_question_start + localOrder - 1,
       questionId: answer.question_id,
       slotId: answer.slot_id,
-      taskType: occurrence.taskType
+      taskType
     } satisfies ReadingFullSetWrongQuestionAnswer;
     sourceAnswerByKey.set(sourceKey(moduleAttempt.attempt_id, normalized), normalized);
     return [normalized];
@@ -162,15 +180,12 @@ export async function loadReadingFullSetWrongbookData(
 
   return {
     fullSetAnswers,
-    fullSetAttempts: attemptRows.flatMap((attempt): ReadingFullSetWrongQuestionAttempt[] => {
-      const fullSet = fullSetById.get(attempt.full_set_id);
-      return fullSet ? [{
+    fullSetAttempts: attemptRows.map((attempt): ReadingFullSetWrongQuestionAttempt => ({
         attemptId: attempt.attempt_id,
         completedAt: attempt.completed_at,
         fullSetId: attempt.full_set_id,
-        title: fullSet.title ?? attempt.full_set_id
-      }] : [];
-    }),
+        title: attempt.full_set_id
+      })),
     fullSetCorrectionAnswers,
     fullSetCorrectionAttempts: correctionRows.map((attempt) => ({
       attemptId: attempt.attempt_id,
@@ -189,7 +204,7 @@ export async function loadReadingFullSetWrongbookQueue(input: {
   todayStart: number;
 }): Promise<ReadingFullSetWrongbookQueueItem[]> {
   return buildReadingFullSetWrongbookQueue({
-    ...(await loadReadingFullSetWrongbookData(input.db, input.studentId)),
+    ...(await loadReadingFullSetWrongbookData(input.db, input.studentId, input.sourceAttemptId)),
     scope: input.scope,
     sourceAttemptId: input.sourceAttemptId,
     todayEnd: input.todayEnd,
@@ -270,10 +285,10 @@ async function readByIds<T>(
   ids: string[]
 ) {
   if (!ids.length) return { data: [] as T[], error: null };
-  const results = await Promise.all(chunk(ids).map((values) => readAllSupabaseRows<T>(async (from, to) => {
+  const results = await mapWithConcurrency(chunk(ids), 4, (values) => readAllSupabaseRows<T>(async (from, to) => {
     const page = await db.from(table).select(select).in(column, values).range(from, to);
     return { data: page.data as T[] | null, error: page.error };
-  })));
+  }));
   return {
     data: results.flatMap((result) => result.data ?? []),
     error: results.find((result) => result.error)?.error ?? null

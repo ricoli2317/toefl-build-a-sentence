@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         targets: item.targets
       });
       return readingAttemptJson(
-        { attempt: data, preservedAnswersByOccurrence },
+        { attempt: data, item, preservedAnswersByOccurrence },
         { status: data.created ? 201 : 200 }
       );
     }
@@ -142,7 +142,10 @@ export async function POST(request: Request) {
           targets: data.targets
         }))
       : [];
-    return readingAttemptJson({ attempt: data, preservedAnswers }, { status: data.created ? 201 : 200 });
+    return readingAttemptJson(
+      { attempt: data, item, preservedAnswers },
+      { status: data.created ? 201 : 200 }
+    );
   } catch (error) {
     console.error("Reading wrongbook attempt creation failed", {
       message: error instanceof Error ? error.message : String(error)

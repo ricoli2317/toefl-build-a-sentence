@@ -98,6 +98,9 @@ test("Reading duplicate cards collect every resolution and send it only with fin
   assert.match(resolutionComponent, /系统找到的候选内容/);
   assert.match(resolutionComponent, /归入该已有题/);
   assert.match(resolutionComponent, /确认为新逻辑题/);
+  assert.match(resolutionComponent, /检测到以下可能的转录差异/);
+  assert.match(resolutionComponent, /difference\.incoming/);
+  assert.match(resolutionComponent, /difference\.candidate/);
   assert.match(component, /readingDuplicateResolutions: readingDryRun[\s\S]*resolutionId:[\s\S]*questionType:[\s\S]*logicalItemId/);
   assert.match(component, /readingHasUnresolvedDuplicates[\s\S]*disabled=/);
   assert.match(component, /仍有.*项相似题未处理/);
@@ -107,6 +110,7 @@ test("Reading possible duplicates are pending decisions, not failed groups", () 
   assert.match(readingImporter, /filter\(\(prepared\) => !reviewPlans\.some/);
   assert.match(readingImporter, /pendingResolutionItems: dryRun \? pendingResolutionItems : \[\]/);
   assert.match(readingImporter, /failedCount: issueSummary\.unableToImportCount/);
+  assert.match(readingImporter, /assertReadingUnableToImportDetailInvariant/);
   assert.doesNotMatch(readingImporter, /throw new Error\("发现需确认的相似题；明确处理前不能导入为新题。"\)/);
 });
 

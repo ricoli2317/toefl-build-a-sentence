@@ -19,6 +19,7 @@ import {
   buildReadingContentConflict,
   type ReadingContentConflictItem
 } from "./contentReconciliation.ts";
+import { buildCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -86,8 +87,8 @@ export class ReadingImportError extends Error {
   }
 }
 
-/** Resolve logical IDs and strict fingerprints first, then batch-match the
- * historical canonical library with versioned semantic identities. */
+/** Legacy IDs/fingerprints are compatibility lookups only. Current CTW
+ * identity is resolved against the historical library by the shared helper. */
 export async function prepareReadingPackagesForImport(
   supabase: SupabaseClient,
   packages: ReadingImportPackage[],
@@ -103,7 +104,8 @@ export async function prepareReadingPackagesForImport(
   const exactMatches = await loadExistingReadingLogicalItems(
     supabase,
     packages,
-    options.enableCtwFingerprintFallback === true || enableSemantic
+    options.enableCtwFingerprintFallback === true || enableSemantic,
+    enableSemantic
   );
   const modules = Array.from(new Set(packages.map((item) => item.item.module)));
   const historicalPackages = enableSemantic
@@ -111,6 +113,7 @@ export async function prepareReadingPackagesForImport(
     : [];
   const historicalById = new Map(historicalPackages.map((item) => [item.item.logicalItemId, item]));
   const historicalBySemantic = groupBy(historicalPackages, readingSemanticFingerprint);
+  assertHistoricalCtwIdentityClusters(historicalPackages);
   const historicalByPossible = groupBy(historicalPackages, readingPossibleDuplicateFingerprint);
 
   const prepared = await Promise.all(packages.map(async (incomingPackage) => {
@@ -168,7 +171,7 @@ export async function prepareReadingPackagesForImport(
       }
     }
 
-    if (existingItem && existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
+    if (existingItem) {
       const historical = historicalById.get(existingItem.logicalItemId);
       if (historical) {
         try {
@@ -177,13 +180,14 @@ export async function prepareReadingPackagesForImport(
           preparationConflict =
             `题目内容存在异常，需要核对：${error instanceof Error ? error.message : String(error)}`;
         }
-      } else if (incomingPackage.item.module === "ctw") {
+      } else if (incomingPackage.item.module === "ctw"
+        && existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
         packageData = await remapCtwPackageToExistingCanonical(
           supabase,
           incomingPackage,
           existingItem.logicalItemId
         );
-      } else {
+      } else if (existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
         throw new Error(`Historical Reading canonical content is missing for ${existingItem.logicalItemId}`);
       }
     }
@@ -322,7 +326,8 @@ export function assertPreparedReadingPackageCanImport(prepared: {
 async function loadExistingReadingLogicalItems(
   supabase: SupabaseClient,
   packages: ReadingImportPackage[],
-  enableCtwFingerprintFallback: boolean
+  enableCtwFingerprintFallback: boolean,
+  deferCtwIdentityToHistorical: boolean
 ) {
   const result = new Map<string, ExistingReadingLogicalItem>();
   if (packages.length === 0) return result;
@@ -339,7 +344,11 @@ async function loadExistingReadingLogicalItems(
     const packageData = packageById.get(logicalItemId);
     if (!packageData) continue;
     const dedupFingerprint = String(row.dedup_fingerprint);
-    if (String(row.module) !== packageData.item.module || dedupFingerprint !== packageData.item.dedupFingerprint) {
+    if (String(row.module) !== packageData.item.module) {
+      throw new Error(`Reading logical ID ${logicalItemId} exists with different canonical content`);
+    }
+    if (dedupFingerprint !== packageData.item.dedupFingerprint) {
+      if (packageData.item.module === "ctw" && deferCtwIdentityToHistorical) continue;
       throw new Error(`Reading logical ID ${logicalItemId} exists with different canonical content`);
     }
     result.set(logicalItemId, existingLogicalItem(row));
@@ -414,6 +423,29 @@ function isOneSemanticEquivalenceClass(packages: ReadingImportPackage[]) {
     }
   }
   return true;
+}
+
+function assertHistoricalCtwIdentityClusters(packages: ReadingImportPackage[]) {
+  const owners = new Map<string, ReadingImportPackage>();
+  for (const packageData of packages) {
+    if (packageData.item.module !== "ctw") continue;
+    const identity = buildCtwPackageLogicalIdentity(packageData).key;
+    const owner = owners.get(identity);
+    if (owner && owner.item.logicalItemId !== packageData.item.logicalItemId) {
+      throw Object.assign(
+        new Error(
+          `CTW historical identity ${identity} has multiple logical items: ` +
+          `${owner.item.logicalItemId} (${owner.item.firstSeenSourceLabel}) and ` +
+          `${packageData.item.logicalItemId} (${packageData.item.firstSeenSourceLabel})`
+        ),
+        {
+          code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT",
+          operation: "cluster historical Reading CTW logical identities"
+        }
+      );
+    }
+    owners.set(identity, packageData);
+  }
 }
 
 function stableHistoricalSurvivor(packages: ReadingImportPackage[]) {

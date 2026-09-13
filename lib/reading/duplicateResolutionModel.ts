@@ -38,6 +38,20 @@ export type ReadingCtwDuplicatePreview = ReadingDuplicatePreviewBase & {
   };
 };
 
+export type ReadingCtwDuplicateDifference = {
+  kind:
+    | "passage_lexical"
+    | "answer"
+    | "answer_order"
+    | "prefix"
+    | "punctuation"
+    | "whitespace"
+    | "display";
+  location: string;
+  incoming: string;
+  candidate: string;
+};
+
 export type ReadingRdlDuplicatePreview = ReadingDuplicatePreviewBase & {
   questionType: "rdl";
   detail: {
@@ -71,6 +85,7 @@ export type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
   firstSeenDate: string;
   firstSeenSourceLabel: string;
   sourceOccurrences: ReadingDuplicateSourceOccurrencePreview[];
+  detectedDifferences?: ReadingCtwDuplicateDifference[];
 };
 
 export type ReadingDuplicateResolutionItem = {

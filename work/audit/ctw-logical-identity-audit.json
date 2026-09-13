@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "identityVersion": "ctw-logical-identity-v1",
+  "generatedAt": "2026-09-13T09:56:48.436Z",
+  "totalLogicalItems": 166,
+  "totalOccurrencesAudited": 304,
+  "uniqueIdentityCount": 166,
+  "uniqueLogicalItemCount": 166,
+  "duplicateClusterCount": 0,
+  "duplicateLogicalItemCount": 0,
+  "theoreticalLogicalItemReduction": 0,
+  "prefixConflictClusterCount": 0,
+  "punctuationOnlyClusterCount": 0,
+  "duplicateOccurrenceMappingCount": 0,
+  "duplicateOccurrenceMappingRecordCount": 0,
+  "otherManualReviewClusterCount": 0,
+  "knownAccessCaseVerification": {
+    "status": "single_database_version",
+    "matchingLogicalItemCount": 1,
+    "acPrefixVersionPresent": true,
+    "accPrefixVersionPresent": false,
+    "resourcesSuchVersionPresent": true,
+    "resourcesCommaSuchVersionPresent": false,
+    "logicalItems": [
+      {
+        "logicalItemId": "reading-ctw-e12835c96f7207294b51eadd",
+        "identityKey": "190b0db5c545be892562b7140fd0b5bf5747256a706ab17c4094001295ef0065",
+        "accessPrefix": "ac",
+        "accessDisplayText": "ac_ _ _ _",
+        "resourcesPrefix": "reso",
+        "resourcesDisplayText": "reso_ _ _ _ _",
+        "hasCommaBetweenResourcesAndSuch": false,
+        "passageExcerpt": "dictate access to resources such as food, mates, and shelter, thereby influencing survival and repro",
+        "occurrences": [
+          {
+            "occurrenceId": "reading-source-6-21a-m2-ctw-18",
+            "sourceKind": "docx",
+            "sourceLabel": "6.21A",
+            "occurrenceDate": "2026-06-21",
+            "sourceModule": "m2",
+            "sourceOrder": 18,
+            "sourceQuestionStart": 1,
+            "sourceQuestionEnd": 10
+          }
+        ]
+      }
+    ]
+  },
+  "relatedTablesForFutureMerge": [
+    {
+      "table": "reading_logical_items",
+      "referenceFields": [
+        "logical_item_id"
+      ],
+      "role": "logical item root"
+    },
+    {
+      "table": "reading_source_occurrences",
+      "referenceFields": [
+        "logical_item_id",
+        "occurrence_id"
+      ],
+      "role": "source provenance"
+    },
+    {
+      "table": "reading_questions",
+      "referenceFields": [
+        "logical_item_id",
+        "question_id"
+      ],
+      "role": "canonical CTW question"
+    },
+    {
+      "table": "reading_question_occurrences",
+      "referenceFields": [
+        "logical_item_id",
+        "occurrence_id",
+        "question_id"
+      ],
+      "role": "source-to-question mapping"
+    },
+    {
+      "table": "reading_ctw_paragraphs",
+      "referenceFields": [
+        "question_id",
+        "paragraph_id"
+      ],
+      "role": "canonical paragraph content"
+    },
+    {
+      "table": "reading_ctw_segments",
+      "referenceFields": [
+        "question_id",
+        "paragraph_id",
+        "slot_id"
+      ],
+      "role": "canonical segment structure"
+    },
+    {
+      "table": "reading_ctw_slots",
+      "referenceFields": [
+        "question_id",
+        "slot_id"
+      ],
+      "role": "canonical answers and blank presentation"
+    },
+    {
+      "table": "reading_attempts",
+      "referenceFields": [
+        "logical_item_id"
+      ],
+      "role": "ordinary student attempts"
+    },
+    {
+      "table": "reading_attempt_answers",
+      "referenceFields": [
+        "logical_item_id",
+        "question_id",
+        "slot_id"
+      ],
+      "role": "ordinary attempt answers/statistics source"
+    },
+    {
+      "table": "reading_full_set_answers",
+      "referenceFields": [
+        "occurrence_id",
+        "logical_item_id",
+        "question_id",
+        "slot_id"
+      ],
+      "role": "full-set answers/statistics source"
+    },
+    {
+      "table": "reading_full_set_load_pauses",
+      "referenceFields": [
+        "occurrence_id"
+      ],
+      "role": "full-set occurrence load tracking"
+    },
+    {
+      "table": "reading_wrongbook_attempts",
+      "referenceFields": [
+        "logical_item_id",
+        "targets"
+      ],
+      "role": "ordinary and full-set correction attempts"
+    },
+    {
+      "table": "reading_wrongbook_attempt_answers",
+      "referenceFields": [
+        "logical_item_id",
+        "question_id",
+        "slot_id",
+        "source_occurrence_id"
+      ],
+      "role": "wrongbook answers and source occurrence references"
+    }
+  ],
+  "clusters": []
+}

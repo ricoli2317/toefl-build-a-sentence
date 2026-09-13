@@ -4,6 +4,7 @@ import { bearerToken } from "@/lib/auth";
 import { buildLatestOfficialAttemptMap } from "@/lib/studentSetStatus";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 type QuestionSetRow = {
   question_id: string;
@@ -141,6 +142,7 @@ export async function GET(request: Request) {
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
+        fetch: createSupabaseFetch(),
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       }
     });
@@ -174,7 +176,7 @@ export async function GET(request: Request) {
     const readClient = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
+        fetch: createSupabaseFetch(),
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });

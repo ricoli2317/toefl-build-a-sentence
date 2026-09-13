@@ -14,6 +14,7 @@ import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import type { ReadingAttemptSummary } from "@/lib/reading/attempts";
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import type { ReadingModule } from "@/lib/reading/types";
+import type { ReadingWrongbookQueueItem } from "@/lib/wrongQuestions";
 import {
   buildReadingWrongbookInitialAnswers,
   isReadingWrongbookAttemptSummary,
@@ -28,6 +29,7 @@ type PracticeResponse = { error?: string; practice?: StudentReadingPracticePaylo
 type AttemptResponse = {
   attempt?: ReadingAttemptSummary;
   error?: string;
+  item?: ReadingWrongbookQueueItem;
   preservedAnswers?: ReadingWrongbookPreservedAnswer[];
 };
 
@@ -57,18 +59,20 @@ export function ReadingWrongbookPractice({
   const queue = useStudentCachedData<ReadingWrongbookQueuePayload>(
     queueKey,
     (session) => loadQueue(query, session),
-    { refreshOnMount: true }
+    { enabled: !itemId, refreshOnMount: true }
   );
   const [index] = useState(0);
   const [practice, setPractice] = useState<StudentReadingPracticePayload | null>(null);
   const [attempt, setAttempt] = useState<ReadingAttemptSummary | null>(null);
   const [initialAnswers, setInitialAnswers] = useState(() => ({}));
   const [loadError, setLoadError] = useState("");
-  const current = queue.data?.items[index] ?? null;
+  const [currentItem, setCurrentItem] = useState<ReadingWrongbookQueueItem | null>(null);
+  const queuedItem = queue.data?.items[index] ?? null;
+  const current = currentItem ?? queuedItem;
 
   useEffect(() => {
-    if (!current) return;
-    const queueItem = current;
+    if (!itemId && !queuedItem) return;
+    const logicalItemId = itemId ?? queuedItem!.logicalItemId;
     let cancelled = false;
     setPractice(null);
     setAttempt(null);
@@ -82,38 +86,46 @@ export function ReadingWrongbookPractice({
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json"
         };
-        const practiceResponse = await fetch(
-          `/api/reading/practice/${encodeURIComponent(queueItem.logicalItemId)}`,
-          { cache: "no-store", headers }
-        );
+        const [practiceResponse, attemptResponse] = await Promise.all([
+          fetch(
+            `/api/reading/practice/${encodeURIComponent(logicalItemId)}`,
+            { cache: "no-store", headers }
+          ),
+          fetch("/api/reading/wrongbook-attempts", {
+            method: "POST",
+            cache: "no-store",
+            headers,
+            body: JSON.stringify({
+              itemId: logicalItemId,
+              scope,
+              taskType,
+              todayEnd: todayRange.end,
+              todayStart: todayRange.start
+            })
+          })
+        ]);
         const practicePayload = await practiceResponse.json().catch(() => ({})) as PracticeResponse;
         if (!practiceResponse.ok || !practicePayload.practice) {
           throw new Error(practicePayload.error ?? "阅读错题内容加载失败，请稍后重试。");
         }
-        const attemptResponse = await fetch("/api/reading/wrongbook-attempts", {
-          method: "POST",
-          cache: "no-store",
-          headers,
-          body: JSON.stringify({
-            itemId: queueItem.logicalItemId,
-            scope,
-            taskType,
-            todayEnd: todayRange.end,
-            todayStart: todayRange.start
-          })
-        });
         const attemptPayload = await attemptResponse.json().catch(() => ({})) as AttemptResponse;
         if (!attemptResponse.ok || !isReadingWrongbookAttemptSummary(attemptPayload.attempt)) {
           throw new Error(attemptPayload.error ?? "错题订正记录加载失败，请稍后重试。");
         }
         if (
-          attemptPayload.attempt.logicalItemId !== queueItem.logicalItemId
+          attemptPayload.attempt.logicalItemId !== logicalItemId
           || attemptPayload.attempt.taskType !== taskType
         ) throw new Error("错题订正记录与当前题目不一致。");
         if (!cancelled) {
-          const selectedPractice = selectReadingWrongbookPractice(practicePayload.practice, queueItem.targets);
+          const resolvedItem = attemptPayload.item ?? queuedItem;
+          if (!resolvedItem) throw new Error("错题订正记录返回了无效数据。");
+          const selectedPractice = selectReadingWrongbookPractice(
+            practicePayload.practice,
+            resolvedItem.targets
+          );
           setPractice(selectedPractice);
           setAttempt(attemptPayload.attempt);
+          setCurrentItem(resolvedItem);
           setInitialAnswers(buildReadingWrongbookInitialAnswers(
             selectedPractice,
             attemptPayload.preservedAnswers ?? []
@@ -127,9 +139,9 @@ export function ReadingWrongbookPractice({
     }
     void load();
     return () => { cancelled = true; };
-  }, [current, scope, taskType, todayRange.end, todayRange.start]);
+  }, [itemId, queuedItem, scope, taskType, todayRange.end, todayRange.start]);
 
-  if (queue.loading || (current && (!practice || !attempt) && !loadError)) {
+  if (queue.loading || ((itemId || current) && (!practice || !attempt) && !loadError)) {
     return <WrongbookMessage description="正在加载错题和原题练习界面..." title="正在准备错题订正" />;
   }
   if (queue.error || loadError) {
@@ -160,7 +172,7 @@ export function ReadingWrongbookPractice({
       onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
       onExit={() => router.push(STUDENT_ROUTES.wrongQuestions)}
       practice={practice}
-      reviewTitle={`错题订正 · ${current.title} · ${index + 1}/${queue.data!.items.length}`}
+      reviewTitle={`错题订正 · ${current.title} · ${index + 1}/${queue.data?.items.length ?? 1}`}
       wrongbook={{
         targets: current.targets,
         onSubmitted: (submittedAttempt) => {

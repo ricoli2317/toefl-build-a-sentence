@@ -10,6 +10,7 @@ import type {
   ReadingSourceOccurrenceCandidate,
   ReadingSourceQuestion
 } from "./types.ts";
+import { buildCtwLogicalIdentity } from "./ctwLogicalIdentity.ts";
 
 type DedupReport = {
   schemaVersion: 1;
@@ -48,19 +49,21 @@ export function groupReadingSourceOccurrences(
   for (const candidate of candidates) {
     assertSourceCandidate(candidate);
     const fingerprint = fingerprintReadingSourceOccurrence(candidate);
-    const exactKey = `${candidate.module}:${fingerprint}`;
+    const logicalIdentity = logicalIdentityReadingSourceOccurrence(candidate, fingerprint);
+    const exactKey = `${candidate.module}:${logicalIdentity}`;
     exactGroups.set(exactKey, [...(exactGroups.get(exactKey) ?? []), candidate]);
     const possibleKey = possibleDuplicateKey(candidate);
     possibleGroups.set(possibleKey, [
       ...(possibleGroups.get(possibleKey) ?? []),
-      { fingerprint, candidate }
+      { fingerprint: logicalIdentity, candidate }
     ]);
   }
 
   const packages = Array.from(exactGroups.entries()).map(([exactKey, grouped]) => {
-    const fingerprint = exactKey.slice(exactKey.indexOf(":") + 1);
+    const logicalIdentity = exactKey.slice(exactKey.indexOf(":") + 1);
     const ordered = [...grouped].sort(compareSourceCandidates);
-    return buildLogicalPackage(ordered, fingerprint);
+    const legacyFingerprint = fingerprintReadingSourceOccurrence(ordered[0]);
+    return buildLogicalPackage(ordered, legacyFingerprint, logicalIdentity);
   }).sort((left, right) => compareLogicalItems(left.item, right.item));
 
   const exactDuplicateGroups = packages
@@ -120,10 +123,11 @@ export function compareLogicalItems(left: ReadingLogicalItem, right: ReadingLogi
 
 function buildLogicalPackage(
   candidates: ReadingSourceOccurrenceCandidate[],
-  fingerprint: string
+  fingerprint: string,
+  logicalIdentity: string
 ): ReadingImportPackage {
   const canonical = candidates[0];
-  const logicalItemId = `reading-${canonical.module}-${fingerprint.slice(0, 24)}`;
+  const logicalItemId = `reading-${canonical.module}-${logicalIdentity.slice(0, 24)}`;
   const remapped = remapCanonicalContent(canonical, logicalItemId);
   const occurrences = candidates.map((candidate) => buildOccurrence(candidate, logicalItemId, remapped.questions));
   const scoredItemCount = remapped.questions.reduce(
@@ -331,6 +335,18 @@ function remapOptions(
 
 export function fingerprintReadingSourceOccurrence(candidate: ReadingSourceOccurrenceCandidate) {
   return sha256(stableStringify(exactIdentity(candidate)));
+}
+
+/** The strict fingerprint remains the stored legacy compatibility value. CTW
+ * grouping and logical IDs are authoritative only on the shared identity. */
+export function logicalIdentityReadingSourceOccurrence(
+  candidate: ReadingSourceOccurrenceCandidate,
+  legacyFingerprint = fingerprintReadingSourceOccurrence(candidate)
+) {
+  const question = candidate.questions[0];
+  return candidate.module === "ctw" && question?.questionType === "ctw"
+    ? buildCtwLogicalIdentity(question).key
+    : legacyFingerprint;
 }
 
 function exactIdentity(candidate: ReadingSourceOccurrenceCandidate) {

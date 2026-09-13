@@ -240,7 +240,8 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       if (existing?.status === "success") return existing.data as T;
       if (existing?.status === "loading") return existing.promise as Promise<T>;
       if (existing?.status === "refreshing") return existing.promise as Promise<T>;
-      if (existing?.status === "error") return undefined;
+      // An error is renderable state, not cached data. A later navigation or
+      // explicit refresh must be able to issue a healthy request.
 
       const generation = generations.current.get(keyWithStudent) ?? 0;
       const promise = loader(session);
@@ -443,6 +444,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
   useEffect(() => {
     let mounted = true;
+    let authEventSeen = false;
     const supabase = createBrowserSupabase();
 
     function applySession(
@@ -465,10 +467,15 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       setSessionReady(true);
     }
 
-    void supabase.auth.getSession().then(({ data }) => applySession(data.session));
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!authEventSeen) applySession(data.session);
+    });
     const {
       data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, session) => applySession(session));
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      authEventSeen = true;
+      applySession(session);
+    });
 
     return () => {
       mounted = false;
@@ -588,7 +595,10 @@ export function useStudentCachedData<T>(
     if (!enabled || !cache.sessionReady || !cache.studentId) return;
     const requestIdentity = `${cache.studentId}:${key}`;
     const entry = cache.getEntry(key);
-    if (!entry) {
+    if (!entry || (
+      entry.status === "error"
+      && mountedRequestRef.current !== requestIdentity
+    )) {
       mountedRequestRef.current = requestIdentity;
       void cache.load(key, (session) => loaderRef.current(session));
       return;

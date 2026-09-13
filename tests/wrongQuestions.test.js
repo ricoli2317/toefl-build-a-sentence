@@ -189,9 +189,10 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.doesNotMatch(ui, /待复习|近7天|复习完成/);
   assert.match(route, /\.from\("attempts"\)/);
   assert.match(route, /\.from\("attempt_answers"\)/);
-  assert.match(route, /\.from\("reading_attempts"\)/);
-  assert.match(route, /"reading_attempt_answers"/);
-  assert.match(route, /"reading_logical_items"/);
+  assert.match(route, /loadReadingWrongbookData\(db, studentId\)/);
+  assert.match(route, /loadReadingFullSetWrongbookData\(db, studentId\)/);
+  assert.match(route, /\.eq\("is_correct", false\)/);
+  assert.match(route, /"question_id,set_id,question_order,final_sentence,grammar_tags_text"/);
   assert.doesNotMatch(route, /searchParams\.get\("questionId"\)/);
   assert.doesNotMatch(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
 });
@@ -442,6 +443,8 @@ test("Reading Full Set correction reuses Reading workspaces, submit route, resul
   assert.match(runtime, /readingWrongbookEditableSlotIds/);
   assert.match(runtime, /buildReadingWrongbookInitialAnswers/);
   assert.match(runtime, /selectReadingWrongbookSubmissionAnswers/);
+  assert.match(runtime, /\/api\/reading\/practices/);
+  assert.doesNotMatch(runtime, /Promise\.all\(uniqueOccurrences\.map/);
   assert.match(queueRoute, /loadReadingFullSetWrongbookQueue/);
   assert.match(submitRoute, /submit_reading_full_set_wrongbook_attempt/);
   assert.match(result, /ReadingCorrectionAnswerValue/);
@@ -449,6 +452,21 @@ test("Reading Full Set correction reuses Reading workspaces, submit route, resul
   assert.match(review, /reviewPresentation=\{disclosure\}/);
   assert.match(migration, /source_attempt_id uuid references public\.reading_full_set_attempts/);
   assert.match(migration, /source_occurrence_id text references public\.reading_source_occurrences/);
+});
+
+test("wrongbook detail queries are scoped before answers are loaded and Full Set skips the global catalog scan", () => {
+  const reading = fs.readFileSync(path.join(projectRoot, "lib/reading/wrongbook.server.ts"), "utf8");
+  const fullSet = fs.readFileSync(path.join(projectRoot, "lib/reading/fullSetWrongbook.server.ts"), "utf8");
+  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
+
+  assert.match(reading, /if \(filters\.itemId\) query = query\.eq\("logical_item_id", filters\.itemId\)/);
+  assert.match(reading, /if \(filters\.taskType\) query = query\.eq\("task_type", filters\.taskType\)/);
+  assert.match(fullSet, /if \(sourceAttemptId\) query = query\.eq\("attempt_id", sourceAttemptId\)/);
+  assert.match(fullSet, /if \(sourceAttemptId\) query = query\.eq\("source_attempt_id", sourceAttemptId\)/);
+  assert.match(fullSet, /reading_source_occurrences/);
+  assert.doesNotMatch(fullSet, /loadReadingFullSets/);
+  assert.match(runtime, /enabled: !itemId/);
+  assert.match(runtime, /attemptPayload\.item/);
 });
 
 test("Reading correction routes reuse the three existing renderers and persist isolated wrongbook attempts", () => {
@@ -724,7 +742,7 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
 
   assert.match(home, /group\.correctionHref/);
   assert.match(runtime, /if \(itemId\) params\.set\("itemId", itemId\)/);
-  assert.match(runtime, /body: JSON\.stringify\(\{[\s\S]*itemId: queueItem\.logicalItemId,[\s\S]*scope,[\s\S]*taskType/);
+  assert.match(runtime, /body: JSON\.stringify\(\{[\s\S]*itemId: logicalItemId,[\s\S]*scope,[\s\S]*taskType/);
   assert.match(runtime, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
   assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);

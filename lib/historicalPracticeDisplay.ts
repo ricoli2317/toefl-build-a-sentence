@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
+import { mapWithConcurrency } from "./mapWithConcurrency.ts";
 
 export type HistoricalPracticeItemRow = {
   item_id: string;
@@ -377,10 +378,10 @@ async function readRowsInBatches<T>(
   table: string
 ): Promise<T[]> {
   if (values.length === 0) return [];
-  const results = await Promise.all(
-    chunkValues(values).map((batch) =>
-      readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
-    )
+  const results = await mapWithConcurrency(
+    chunkValues(values),
+    4,
+    (batch) => readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
   );
   const error = results.find((result) => result.error)?.error;
   if (error) {

@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import type {
+  ReadingCtwDuplicateDifference,
   ReadingDuplicateCandidate,
   ReadingDuplicatePreview,
   ReadingDuplicateResolutionChoice,
@@ -99,6 +100,10 @@ export function ReadingDuplicateResolutionList({
                 </div>
               </div>
 
+              {selectedCandidate?.questionType === "ctw" ? (
+                <CtwDetectedDifferences differences={selectedCandidate.detectedDifferences ?? []} />
+              ) : null}
+
               <div className="mt-5 flex flex-wrap gap-3">
                 <button
                   className="teacher-button-primary"
@@ -125,6 +130,54 @@ export function ReadingDuplicateResolutionList({
       </div>
     </section>
   );
+}
+
+function CtwDetectedDifferences({
+  differences
+}: {
+  differences: ReadingCtwDuplicateDifference[];
+}) {
+  return (
+    <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+      <h3 className="text-sm font-bold text-amber-900">检测到以下可能的转录差异</h3>
+      {differences.length === 0 ? (
+        <p className="mt-2 text-sm text-amber-900">未检测到可展示的逐项差异，请人工核对完整内容。</p>
+      ) : (
+        <ul className="mt-3 grid gap-3">
+          {differences.map((difference, index) => (
+            <li
+              className="rounded-lg border border-amber-200 bg-white p-3 text-sm"
+              key={`${difference.kind}-${difference.location}-${index}`}
+            >
+              <div className="font-bold text-student-text">
+                {ctwDifferenceLabel(difference.kind)} · {difference.location}
+              </div>
+              <div className="mt-1 grid gap-1 text-student-text sm:grid-cols-2">
+                <div>
+                  <span className="font-semibold text-student-muted">Incoming：</span>
+                  <code className="whitespace-pre-wrap break-words font-mono">{difference.incoming}</code>
+                </div>
+                <div>
+                  <span className="font-semibold text-student-muted">候选：</span>
+                  <code className="whitespace-pre-wrap break-words font-mono">{difference.candidate}</code>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function ctwDifferenceLabel(kind: ReadingCtwDuplicateDifference["kind"]) {
+  if (kind === "passage_lexical") return "正文词汇";
+  if (kind === "answer") return "完整答案";
+  if (kind === "answer_order") return "答案顺序";
+  if (kind === "prefix") return "已给前缀";
+  if (kind === "punctuation") return "标点";
+  if (kind === "whitespace") return "空白字符";
+  return "填空显示";
 }
 
 function ReadingDuplicateDetail({

@@ -15,6 +15,7 @@ import {
   loadWritingHistoricalPracticeDisplayResolver
 } from "@/lib/historicalPracticeDisplay";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { mapWithConcurrency } from "@/lib/mapWithConcurrency";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import { requireWritingStudent, writingJson } from "@/lib/writingServer";
@@ -376,14 +377,14 @@ async function readRowsInBatches<T>(
   ids: string[]
 ): Promise<T[]> {
   if (ids.length === 0) return [];
-  const results = await Promise.all(chunk(ids).map((batch) =>
+  const results = await mapWithConcurrency(chunk(ids), 4, (batch) =>
     readAllSupabaseRows<T>((from, to) =>
       db.from(table).select(fields).in(idField, batch).range(from, to) as unknown as PromiseLike<{
         data: T[] | null;
         error: { message: string } | null;
       }>
     )
-  ));
+  );
   const error = results.find((result) => result.error)?.error;
   if (error) throw new Error(error.message);
   return results.flatMap((result) => result.data ?? []);

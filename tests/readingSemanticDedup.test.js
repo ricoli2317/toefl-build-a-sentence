@@ -355,7 +355,7 @@ test("Neolithic 10-answer regression reuses the known historical logical item", 
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
-test("CTW answer, slot mapping, and lexical content differences remain non-equivalent", async () => {
+test("CTW answer and lexical content differences remain distinct identities", async () => {
   const historical = ctwPresentationBase();
   const answerVariant = incomingVariant(historical, (candidate) => {
     const slot = candidate.questions[0].payload.slots[0];
@@ -367,9 +367,9 @@ test("CTW answer, slot mapping, and lexical content differences remain non-equiv
   });
   assert.notEqual(readingSemanticFingerprint(answerVariant), readingSemanticFingerprint(historical));
   const answerMatch = await historicalMatch(historical, answerVariant);
-  assert.equal(answerMatch.prepared.reuseKind, "semantic");
-  assert.equal(answerMatch.prepared.contentReconciliations.length, 1);
-  assert.deepEqual(answerMatch.prepared.possibleDuplicateLogicalItemIds, []);
+  assert.equal(answerMatch.prepared.reuseKind, "new");
+  assert.equal(answerMatch.prepared.contentReconciliations.length, 0);
+  assert.deepEqual(answerMatch.prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
 
   const lexicalVariant = incomingVariant(historical, (candidate) => {
     const question = candidate.questions[0];
@@ -384,7 +384,7 @@ test("CTW answer, slot mapping, and lexical content differences remain non-equiv
   assert.notEqual(lexicalMatch.prepared.reuseKind, "semantic");
 });
 
-test("CTW slot-count changes remain possible duplicates instead of automatic reuse", async () => {
+test("CTW slot-count changes remain distinct without fuzzy identity fallback", async () => {
   const historical = screenshotCtwPackage();
   const incoming = incomingVariant(historical, (candidate) => {
     const question = candidate.questions[0];
@@ -399,10 +399,10 @@ test("CTW slot-count changes remain possible duplicates instead of automatic reu
   assert.notEqual(readingSemanticFingerprint(incoming), readingSemanticFingerprint(historical));
   const { prepared } = await historicalMatch(historical, incoming);
   assert.equal(prepared.reuseKind, "new");
-  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
-test("CTW answer, prefix, blank-position, and substantive text changes never silently merge", async () => {
+test("CTW shared identity alone separates answer/content changes and reuses prefix variants", async () => {
   const historical = packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv");
   const variants = [
     (question) => { question.payload.slots[0].answer = "scientists"; },
@@ -412,10 +412,11 @@ test("CTW answer, prefix, blank-position, and substantive text changes never sil
   ];
   for (const [index, mutate] of variants.entries()) {
     const incoming = incomingVariant(historical, (candidate) => mutate(candidate.questions[0]));
-    assert.notEqual(readingSemanticFingerprint(historical), readingSemanticFingerprint(incoming));
+    if (index === 1) assert.equal(readingSemanticFingerprint(historical), readingSemanticFingerprint(incoming));
+    else assert.notEqual(readingSemanticFingerprint(historical), readingSemanticFingerprint(incoming));
     const { prepared } = await historicalMatch(historical, incoming);
-    assert.equal(prepared.reuseKind, index === 0 ? "semantic" : "new");
-    assert.equal(prepared.contentReconciliations.length, index === 0 ? 1 : 0);
+    assert.equal(prepared.reuseKind, index === 1 ? "semantic" : "new");
+    assert.equal(prepared.contentReconciliations.length, index === 1 ? 1 : 0);
   }
   const answerVariant = incomingVariant(historical, (candidate) => {
     candidate.questions[0].payload.slots[0].answer = "scientists";
@@ -425,8 +426,8 @@ test("CTW answer, prefix, blank-position, and substantive text changes never sil
     readingPossibleDuplicateFingerprint(answerVariant)
   );
   const { prepared } = await historicalMatch(historical, answerVariant);
-  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
-  assert.equal(prepared.contentReconciliations.length, 1);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.equal(prepared.contentReconciliations.length, 0);
 });
 
 test("Dorm Printer RDL option-order-only and correct-letter-only changes reuse the historical logical item", async () => {

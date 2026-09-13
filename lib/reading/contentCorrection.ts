@@ -1,5 +1,6 @@
 import { validateReadingImportPackage } from "./validation.ts";
 import { fingerprintReadingSourceOccurrence } from "./grouping.ts";
+import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 import type {
   CtwQuestion,
   ReadingImportPackage,
@@ -17,6 +18,15 @@ export function buildReadingCanonicalContentUpdate(
 ): ReadingImportPackage {
   if (existing.item.module !== incoming.item.module) {
     throw new Error("Reading canonical correction cannot change module");
+  }
+  if (
+    existing.item.module === "ctw"
+    && !compareCtwPackageLogicalIdentity(existing, incoming).sameLogicalItem
+  ) {
+    throw Object.assign(
+      new Error("CTW canonical correction cannot cross logical identities"),
+      { code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT" }
+    );
   }
   const existingQuestions = ordered(existing.questions, (question) => question.questionOrder);
   const incomingQuestions = ordered(incoming.questions, (question) => question.questionOrder);
@@ -67,6 +77,8 @@ export function buildReadingCanonicalContentUpdate(
     questions,
     occurrences
   };
+  // Maintain the database's legacy strict compatibility value for the chosen
+  // canonical representation; it is not used to decide CTW logical identity.
   draft.item.dedupFingerprint = fingerprintReadingSourceOccurrence({
     sourceOccurrenceId: "canonical-correction",
     module: draft.item.module,

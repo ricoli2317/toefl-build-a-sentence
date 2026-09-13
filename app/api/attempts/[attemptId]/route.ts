@@ -5,6 +5,7 @@ import {
   loadHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +74,7 @@ export async function GET(
       auth: { persistSession: false },
       global: {
         headers: { Authorization: `Bearer ${token}` },
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
+        fetch: createSupabaseFetch()
       }
     });
 
@@ -101,7 +102,7 @@ export async function GET(
       auth: { persistSession: false },
       global: {
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` },
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
+        fetch: createSupabaseFetch()
       }
     });
 

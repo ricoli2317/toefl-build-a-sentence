@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
+import { mapWithConcurrency } from "./mapWithConcurrency.ts";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 import {
@@ -849,10 +850,10 @@ async function readRowsInBatches<T>(
   table: string
 ): Promise<T[]> {
   if (values.length === 0) return [];
-  const results = await Promise.all(
-    chunkValues(distinct(values)).map((batch) =>
-      readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
-    )
+  const results = await mapWithConcurrency(
+    chunkValues(distinct(values)),
+    4,
+    (batch) => readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
   );
   const error = results.find((result) => result.error)?.error;
   if (error) {

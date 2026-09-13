@@ -14,6 +14,7 @@ import {
   cacheDomainsForEvent,
   subscribeToCacheInvalidation
 } from "@/lib/cacheInvalidation";
+import { createBrowserSupabase } from "@/lib/supabase/client";
 
 export const TEACHER_STATS_CACHE_SCHEMA_VERSION = 2;
 export const TEACHER_STATS_CACHE_KEY =
@@ -54,6 +55,7 @@ const TeacherDataCacheContext = createContext<TeacherDataCacheValue | null>(null
 export function TeacherDataCacheProvider({ children }: { children: ReactNode }) {
   const entries = useRef(new Map<string, CacheEntry>());
   const generations = useRef(new Map<string, number>());
+  const activeUserId = useRef<string | null>(null);
   const [version, setVersion] = useState(0);
 
   const notify = useCallback(() => setVersion((value) => value + 1), []);
@@ -96,7 +98,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
       if (existing?.status === "success") return existing.data as T;
       if (existing?.status === "loading") return existing.promise as Promise<T>;
       if (existing?.status === "refreshing") return existing.promise as Promise<T>;
-      if (existing?.status === "error") return undefined;
+      // Keep the error visible, but never make it a terminal cache hit.
 
       const generation = generations.current.get(key) ?? 0;
       const promise = loader();
@@ -174,6 +176,28 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
     [load, notify]
   );
 
+  useEffect(() => {
+    let mounted = true;
+    let authEventSeen = false;
+    const supabase = createBrowserSupabase();
+    const applyUser = (userId: string | null) => {
+      if (!mounted) return;
+      if (activeUserId.current && activeUserId.current !== userId) clear();
+      activeUserId.current = userId;
+    };
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!authEventSeen) applyUser(data.session?.user.id ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      authEventSeen = true;
+      applyUser(session?.user.id ?? null);
+    });
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [clear]);
+
   useEffect(
     () =>
       subscribeToCacheInvalidation((event) => {
@@ -229,7 +253,7 @@ export function useTeacherCachedData<T>(
 
   useEffect(() => {
     const entry = cache.getEntry(key);
-    if (!entry) {
+    if (!entry || (entry.status === "error" && mountedRequestRef.current !== key)) {
       mountedRequestRef.current = key;
       void cache.load(key, () => loaderRef.current());
       return;

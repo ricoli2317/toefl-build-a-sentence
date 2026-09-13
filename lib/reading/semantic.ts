@@ -6,6 +6,11 @@ import type {
   ReadingPassage,
   ReadingQuestion
 } from "./types.ts";
+import {
+  buildCtwLogicalIdentity,
+  buildCtwPackageLogicalIdentity,
+  compareCtwPackageLogicalIdentity
+} from "./ctwLogicalIdentity.ts";
 
 export const READING_SEMANTIC_VERSION = "reading-semantic-v1";
 export const CTW_SEMANTIC_VERSION = "ctw-semantic-v2";
@@ -37,6 +42,9 @@ export function normalizeCtwSemanticText(value: string) {
 }
 
 export function readingSemanticFingerprint(packageData: ReadingImportPackage) {
+  if (packageData.item.module === "ctw") {
+    return buildCtwPackageLogicalIdentity(packageData).key;
+  }
   return hash(stableStringify({
     version: READING_SEMANTIC_VERSION,
     identity: readingSemanticIdentity(packageData)
@@ -70,6 +78,10 @@ export function arePossibleReadingDuplicates(
   right: ReadingImportPackage
 ) {
   if (left.item.module !== right.item.module) return false;
+  if (left.item.module === "ctw") {
+    if (compareCtwPackageLogicalIdentity(left, right).sameLogicalItem) return false;
+    return readingPossibleDuplicateFingerprint(left) === readingPossibleDuplicateFingerprint(right);
+  }
   if (left.item.module === "rdl") {
     const leftSemantic = stableStringify(readingMaterialSemanticIdentity(left.materials[0]));
     const rightSemantic = stableStringify(readingMaterialSemanticIdentity(right.materials[0]));
@@ -88,31 +100,14 @@ export function areReadingPackagesHistoricalSemanticEquivalents(
   right: ReadingImportPackage
 ) {
   if (left.item.module !== right.item.module) return false;
-  if (left.item.module === "ctw") return historicalCtwStructuresEquivalent(left, right);
+  if (left.item.module === "ctw") {
+    return compareCtwPackageLogicalIdentity(left, right).sameLogicalItem;
+  }
   if (left.item.module === "rdl") {
     const leftMaterialId = left.materials[0]?.materialId;
     return Boolean(leftMaterialId && leftMaterialId === right.materials[0]?.materialId);
   }
   return historicalRapPassagesEquivalent(left, right);
-}
-
-function historicalCtwStructuresEquivalent(left: ReadingImportPackage, right: ReadingImportPackage) {
-  const structure = (packageData: ReadingImportPackage) => {
-    const question = packageData.questions[0];
-    if (packageData.questions.length !== 1 || question?.questionType !== "ctw") return null;
-    const paragraphOrder = new Map(
-      question.payload.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder])
-    );
-    return {
-      paragraphs: ctwParagraphIdentity(question),
-      blanks: ordered(question.payload.slots, (slot) => slot.slotOrder).map((slot) => ({
-        slotOrder: slot.slotOrder,
-        paragraphOrder: requiredMap(paragraphOrder, slot.paragraphId),
-        prefix: normalizeCtwSemanticText(slot.prefix)
-      }))
-    };
-  };
-  return stableStringify(structure(left)) === stableStringify(structure(right));
 }
 
 export function haveSameReadingCanonicalQuestions(
@@ -229,18 +224,9 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
 }
 
 function ctwIdentity(question: CtwQuestion) {
-  const paragraphOrder = new Map(
-    question.payload.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder])
-  );
   return {
     version: CTW_SEMANTIC_VERSION,
-    paragraphs: ctwParagraphIdentity(question),
-    slots: ordered(question.payload.slots, (slot) => slot.slotOrder).map((slot) => ({
-      paragraphOrder: requiredMap(paragraphOrder, slot.paragraphId),
-      slotOrder: slot.slotOrder,
-      prefix: normalizeCtwSemanticText(slot.prefix),
-      answer: normalizeCtwSemanticText(slot.answer)
-    }))
+    logicalIdentity: buildCtwLogicalIdentity(question)
   };
 }
 

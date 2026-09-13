@@ -9,6 +9,7 @@ import {
   type GrammarQuestionRow
 } from "@/lib/grammarPractice";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
 
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
-      global: { headers: { Authorization: `Bearer ${token}` } }
+      global: { fetch: createSupabaseFetch(), headers: { Authorization: `Bearer ${token}` } }
     });
     const {
       data: { user },
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
+        fetch: createSupabaseFetch(),
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });

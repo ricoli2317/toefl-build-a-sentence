@@ -6,6 +6,8 @@ import type {
   ReadingDuplicateSourceOccurrencePreview
 } from "./duplicateResolutionModel.ts";
 import type { ReadingImportPackage, ReadingQuestion } from "./types.ts";
+import { buildCtwDuplicateDifferences } from "./ctwDuplicateDifferences.ts";
+import { ctwQuestionFromPackage } from "./ctwLogicalIdentity.ts";
 
 export function buildReadingDuplicateResolutionItem(
   review: ReadingDuplicateReviewPlan,
@@ -27,7 +29,13 @@ export function buildReadingDuplicateResolutionItem(
       firstSeenSourceLabel: candidate.item.firstSeenSourceLabel,
       sourceOccurrences: candidate.occurrences.length > 0
         ? candidate.occurrences.map(readingSourceOccurrencePreview)
-        : historicalOccurrences.get(candidate.item.logicalItemId) ?? []
+        : historicalOccurrences.get(candidate.item.logicalItemId) ?? [],
+      detectedDifferences: review.questionType === "ctw"
+        ? buildCtwDuplicateDifferences(
+            ctwQuestionFromPackage(review.incoming.packageData),
+            ctwQuestionFromPackage(candidate)
+          )
+        : undefined
     })),
     resolution: null
   };

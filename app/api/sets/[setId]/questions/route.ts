@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken } from "@/lib/auth";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
+
+export const dynamic = "force-dynamic";
 
 function json(
   data: unknown,
@@ -39,6 +42,7 @@ export async function GET(
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
+        fetch: createSupabaseFetch(),
         headers: { Authorization: `Bearer ${token}` }
       }
     });
@@ -68,6 +72,7 @@ export async function GET(
     const readClient = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
+        fetch: createSupabaseFetch(),
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });

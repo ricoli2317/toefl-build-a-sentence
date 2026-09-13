@@ -10,6 +10,10 @@ import {
 } from "./duplicateResolutionModel.ts";
 import { arePossibleReadingDuplicates } from "./semantic.ts";
 import type { ReadingImportPackage } from "./types.ts";
+import {
+  buildCtwPackageLogicalIdentity,
+  compareCtwPackageLogicalIdentity
+} from "./ctwLogicalIdentity.ts";
 
 export type ReadingDuplicateReviewPlan = {
   resolutionId: string;
@@ -54,15 +58,22 @@ export function indexReadingDuplicateResolutions(
 export function buildReadingDuplicateReviewPlans(
   prepared: PreparedReadingImportPackage[]
 ): ReadingDuplicateReviewPlan[] {
+  assertCtwPreparedIdentityClusters(prepared);
   const reviews = prepared.flatMap((incoming) => {
     const batchCandidates = prepared
       .filter((candidate) => candidate !== incoming)
       .filter((candidate) => arePossibleReadingDuplicates(incoming.packageData, candidate.packageData))
       .map((candidate) => candidate.packageData);
-    const candidates = uniquePackages([
+    const candidatePool = uniquePackages([
       ...incoming.possibleDuplicateCandidates,
       ...batchCandidates
-    ]).filter((candidate) => candidate.item.logicalItemId !== incoming.packageData.item.logicalItemId);
+    ]);
+    if (incoming.packageData.item.module === "ctw") {
+      assertCtwCandidateIdentityClusters(incoming.packageData, candidatePool);
+    }
+    const candidates = candidatePool.filter(
+      (candidate) => candidate.item.logicalItemId !== incoming.packageData.item.logicalItemId
+    );
     if (candidates.length === 0) return [];
     const questionType = incoming.packageData.item.module;
     return [{
@@ -88,6 +99,52 @@ export function buildReadingDuplicateReviewPlans(
   }
 
   return reviews;
+}
+
+function assertCtwPreparedIdentityClusters(prepared: PreparedReadingImportPackage[]) {
+  const owners = new Map<string, string>();
+  for (const item of prepared) {
+    if (item.packageData.item.module !== "ctw") continue;
+    const identity = buildCtwPackageLogicalIdentity(item.packageData).key;
+    const owner = owners.get(identity);
+    if (owner && owner !== item.packageData.item.logicalItemId) {
+      throw ctwIdentityClusterError(
+        `CTW identity ${identity} escaped incoming clustering as ${owner} and ${item.packageData.item.logicalItemId}`
+      );
+    }
+    owners.set(identity, item.packageData.item.logicalItemId);
+  }
+}
+
+function assertCtwCandidateIdentityClusters(
+  incoming: ReadingImportPackage,
+  candidates: ReadingImportPackage[]
+) {
+  const identities = new Map<string, string>();
+  for (const candidate of candidates) {
+    if (candidate.item.module !== "ctw") continue;
+    const comparison = compareCtwPackageLogicalIdentity(incoming, candidate);
+    if (comparison.sameLogicalItem) {
+      throw ctwIdentityClusterError(
+        `CTW ${incoming.item.logicalItemId} and candidate ${candidate.item.logicalItemId} are the same logical item`
+      );
+    }
+    const identity = comparison.rightIdentity.key;
+    const owner = identities.get(identity);
+    if (owner && owner !== candidate.item.logicalItemId) {
+      throw ctwIdentityClusterError(
+        `CTW candidate identity ${identity} appears as both ${owner} and ${candidate.item.logicalItemId}`
+      );
+    }
+    identities.set(identity, candidate.item.logicalItemId);
+  }
+}
+
+function ctwIdentityClusterError(message: string) {
+  return Object.assign(new Error(message), {
+    code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT",
+    operation: "cluster Reading CTW logical identities"
+  });
 }
 
 export function resolveReadingDuplicateImports(

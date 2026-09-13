@@ -12,6 +12,7 @@ import {
 } from "./types.ts";
 import { fingerprintReadingSourceOccurrence } from "./grouping.ts";
 import { isRdlMaterialType } from "./materialTypes.ts";
+import { buildCtwLogicalIdentity } from "./ctwLogicalIdentity.ts";
 
 type RecordValue = Record<string, unknown>;
 
@@ -138,6 +139,17 @@ export function validateReadingImportPackage(input: unknown): ReadingImportPacka
   }
 
   validateItemShape(item.module, materials.length, passages.length, questions as ReadingQuestion[], context);
+  if (item.module === "ctw") {
+    try {
+      buildCtwLogicalIdentity((questions as ReadingQuestion[])[0] as Extract<ReadingQuestion, { questionType: "ctw" }>);
+    } catch (error) {
+      fail(
+        `invalid shared CTW logical identity: ${error instanceof Error ? error.message : String(error)}`,
+        "$.questions[0]",
+        context
+      );
+    }
+  }
   validateOccurrences(
     root.occurrences,
     logicalItemId,
@@ -145,7 +157,9 @@ export function validateReadingImportPackage(input: unknown): ReadingImportPacka
     item,
     context
   );
-  const computedFingerprint = fingerprintReadingSourceOccurrence({
+  // The persisted field is the legacy strict compatibility fingerprint. CTW
+  // logical identity has already been validated above by the shared helper.
+  const computedLegacyFingerprint = fingerprintReadingSourceOccurrence({
     sourceOccurrenceId: "validation",
     module: item.module as "ctw" | "rdl" | "rap",
     title: item.title as string | null,
@@ -169,8 +183,8 @@ export function validateReadingImportPackage(input: unknown): ReadingImportPacka
       sourceQuestionEnd: question.questionType === "ctw" ? question.payload.slots.length : 1
     }))
   });
-  if (computedFingerprint !== item.dedupFingerprint) {
-    fail("dedupFingerprint does not match logical item content", "$.item.dedupFingerprint", context);
+  if (computedLegacyFingerprint !== item.dedupFingerprint) {
+    fail("legacy dedupFingerprint does not match canonical content", "$.item.dedupFingerprint", context);
   }
 
   return input as ReadingImportPackage;

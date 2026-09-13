@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { mapWithConcurrency } from "../mapWithConcurrency.ts";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
   buildReadingWrongbookQueue,
@@ -60,33 +61,31 @@ export type ReadingWrongbookData = {
 
 export async function loadReadingWrongbookData(
   db: SupabaseClient,
-  studentId: string
+  studentId: string,
+  filters: { itemId?: string | null; taskType?: ReadingModule } = {}
 ): Promise<ReadingWrongbookData> {
-  const [attemptResult, correctionAttemptResult, itemResult] = await Promise.all([
-    readAllSupabaseRows<ReadingAttemptRow>((from, to) =>
-      db.from("reading_attempts")
+  const [attemptResult, correctionAttemptResult] = await Promise.all([
+    readAllSupabaseRows<ReadingAttemptRow>((from, to) => {
+      let query = db.from("reading_attempts")
         .select("attempt_id,logical_item_id,task_type,submitted_at")
         .eq("student_id", studentId)
-        .eq("status", "submitted")
-        .order("attempt_id", { ascending: true })
-        .range(from, to)
-    ),
-    readAllSupabaseRows<ReadingCorrectionAttemptRow>((from, to) =>
-      db.from("reading_wrongbook_attempts")
+        .eq("status", "submitted");
+      if (filters.itemId) query = query.eq("logical_item_id", filters.itemId);
+      if (filters.taskType) query = query.eq("task_type", filters.taskType);
+      return query.order("attempt_id", { ascending: true }).range(from, to);
+    }),
+    readAllSupabaseRows<ReadingCorrectionAttemptRow>((from, to) => {
+      let query = db.from("reading_wrongbook_attempts")
         .select("attempt_id,logical_item_id,task_type,scope,submitted_at")
         .eq("student_id", studentId)
         .eq("status", "submitted")
-        .order("attempt_id", { ascending: true })
-        .range(from, to)
-    ),
-    readAllSupabaseRows<ReadingItemRow>((from, to) =>
-      db.from("reading_logical_items")
-        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
-        .order("logical_item_id", { ascending: true })
-        .range(from, to)
-    )
+        .neq("task_type", "full_set");
+      if (filters.itemId) query = query.eq("logical_item_id", filters.itemId);
+      if (filters.taskType) query = query.eq("task_type", filters.taskType);
+      return query.order("attempt_id", { ascending: true }).range(from, to);
+    })
   ]);
-  const firstError = attemptResult.error ?? correctionAttemptResult.error ?? itemResult.error;
+  const firstError = attemptResult.error ?? correctionAttemptResult.error;
   if (firstError) throw new Error(firstError.message);
 
   const readingAttempts = (attemptResult.data ?? []).map(normalizeAttempt);
@@ -94,15 +93,20 @@ export async function loadReadingWrongbookData(
     ...normalizeAttempt(attempt),
     scope: attempt.scope
   }));
-  const [answerResult, correctionAnswerResult] = await Promise.all([
+  const logicalItemIds = Array.from(new Set([
+    ...readingAttempts.map((attempt) => attempt.logicalItemId),
+    ...readingCorrectionAttempts.map((attempt) => attempt.logicalItemId)
+  ]));
+  const [answerResult, correctionAnswerResult, itemResult] = await Promise.all([
     readAnswers(db, "reading_attempt_answers", readingAttempts.map((attempt) => attempt.attemptId)),
     readAnswers(
       db,
       "reading_wrongbook_attempt_answers",
       readingCorrectionAttempts.map((attempt) => attempt.attemptId)
-    )
+    ),
+    readItems(db, logicalItemIds)
   ]);
-  const answerError = answerResult.error ?? correctionAnswerResult.error;
+  const answerError = answerResult.error ?? correctionAnswerResult.error ?? itemResult.error;
   if (answerError) throw new Error(answerError.message);
 
   return {
@@ -123,7 +127,10 @@ export async function loadReadingWrongbookQueue(input: {
   todayEnd: number;
   todayStart: number;
 }): Promise<ReadingWrongbookQueueItem[]> {
-  const data = await loadReadingWrongbookData(input.db, input.studentId);
+  const data = await loadReadingWrongbookData(input.db, input.studentId, {
+    itemId: input.itemId,
+    taskType: input.taskType
+  });
   const queue = buildReadingWrongbookQueue({
     ...data,
     scope: input.scope,
@@ -250,7 +257,7 @@ async function readAnswers(
   attemptIds: string[]
 ) {
   if (attemptIds.length === 0) return { data: [] as ReadingAnswerRow[], error: null };
-  const results = await Promise.all(chunk(attemptIds).map((ids) =>
+  const results = await mapWithConcurrency(chunk(attemptIds), 4, (ids) =>
     readAllSupabaseRows<ReadingAnswerRow>((from, to) =>
       db.from(table)
         .select("attempt_id,question_id,slot_id,is_correct")
@@ -260,7 +267,7 @@ async function readAnswers(
         .order("slot_id", { ascending: true })
         .range(from, to)
     )
-  ));
+  );
   return {
     data: results.flatMap((result) => result.data ?? []),
     error: results.find((result) => result.error)?.error ?? null
@@ -273,15 +280,42 @@ async function readPreservedAnswerRows(
   attemptIds: string[]
 ) {
   if (attemptIds.length === 0) return [] as PreservedAnswerRow[];
-  const results = await Promise.all(chunk(attemptIds).map((ids) =>
+  const results = await mapWithConcurrency(chunk(attemptIds), 4, (ids) =>
     readAllSupabaseRows<PreservedAnswerRow>((from, to) => db.from(table)
       .select("attempt_answer_id,attempt_id,question_id,slot_id,answer_kind,student_answer,is_correct,question_time_seconds")
       .in("attempt_id", ids)
       .range(from, to))
-  ));
+  );
   const error = results.find((result) => result.error)?.error;
   if (error) throw new Error(error.message);
   return results.flatMap((result) => result.data ?? []);
+}
+
+async function readItems(db: SupabaseClient, itemIds: string[]) {
+  if (itemIds.length === 0) return { data: [] as ReadingItemRow[], error: null };
+  const results = await mapWithConcurrency(chunk(itemIds), 4, (ids) =>
+    readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
+      .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
+      .in("logical_item_id", ids)
+      .order("logical_item_id", { ascending: true })
+      .range(from, to))
+  );
+  const firstError = results.find((result) => result.error)?.error ?? null;
+  if (firstError) return { data: null, error: firstError };
+  const selected = results.flatMap((result) => result.data ?? []);
+  const ctwItems = selected.some((item) => item.module === "ctw")
+    ? await readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
+        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
+        .eq("module", "ctw")
+        .order("logical_item_id", { ascending: true })
+        .range(from, to))
+    : { data: [] as ReadingItemRow[], error: null };
+  return {
+    data: ctwItems.error
+      ? null
+      : [...selected.filter((item) => item.module !== "ctw"), ...(ctwItems.data ?? [])],
+    error: ctwItems.error
+  };
 }
 
 function buildReadingTitles(items: ReadingItemRow[]) {

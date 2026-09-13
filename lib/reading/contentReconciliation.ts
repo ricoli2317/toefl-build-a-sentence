@@ -6,6 +6,7 @@ import type {
   ReadingPassage,
   ReadingQuestion
 } from "./types.ts";
+import { compareCtwLogicalIdentity } from "./ctwLogicalIdentity.ts";
 
 export type ReadingContentDifferenceKind =
   | "question_type"
@@ -14,7 +15,7 @@ export type ReadingContentDifferenceKind =
   | "option_order"
   | "correct_answer"
   | "ctw_passage"
-  | "ctw_blanks"
+  | "ctw_prefix"
   | "insert_sentence"
   | "insertion_anchors"
   | "correct_insertion_location"
@@ -100,7 +101,7 @@ const DIFFERENCE_LABELS: Record<ReadingContentDifferenceKind, string> = {
   option_order: "Option order different",
   correct_answer: "Correct answer different",
   ctw_passage: "Passage different",
-  ctw_blanks: "Ordered blanks different",
+  ctw_prefix: "CTW prefix different",
   insert_sentence: "Insert sentence different",
   insertion_anchors: "Insert anchors different",
   correct_insertion_location: "Correct insertion location different",
@@ -206,8 +207,17 @@ function compareQuestion(
     return differences(kinds);
   }
   if (existing.questionType === "ctw" && incoming.questionType === "ctw") {
+    const identity = compareCtwLogicalIdentity(existing, incoming);
+    if (!identity.sameLogicalItem) {
+      throw Object.assign(
+        new Error("CTW content reconciliation cannot cross logical identities"),
+        { code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT" }
+      );
+    }
     if (!sameArray(ctwPassageIdentity(existing), ctwPassageIdentity(incoming))) kinds.push("ctw_passage");
-    if (!sameArray(ctwBlankIdentity(existing), ctwBlankIdentity(incoming))) kinds.push("ctw_blanks");
+    if (identity.nonIdentityConflicts.some((conflict) => conflict.kind === "prefix_conflict")) {
+      kinds.push("ctw_prefix");
+    }
     if (!sameArray(ctwAnswerIdentity(existing), ctwAnswerIdentity(incoming))) kinds.push("correct_answer");
     return differences(kinds);
   }
@@ -316,12 +326,6 @@ function ctwPassageIdentity(question: CtwQuestion) {
       ? normalizeReadingReconciliationText(segment.text)
       : `<blank:${slotOrder.get(segment.slotId) ?? "missing"}>`
     ).join(""));
-}
-
-function ctwBlankIdentity(question: CtwQuestion) {
-  return [...question.payload.slots]
-    .sort((left, right) => left.slotOrder - right.slotOrder)
-    .map((slot) => [slot.slotOrder, normalizeReadingReconciliationText(slot.prefix)].join(":"));
 }
 
 function ctwAnswerIdentity(question: CtwQuestion) {

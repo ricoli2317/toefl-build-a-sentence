@@ -170,8 +170,21 @@ test("dynamic BAS result, submission, and teacher stats APIs disable route and f
     const source = read(file);
     assert.match(source, /export const dynamic = "force-dynamic"/);
     assert.match(source, /Cache-Control[\s\S]{0,30}"no-store"/);
-    assert.match(source, /cache: "no-store"/);
+    assert.match(source, /createSupabaseFetch/);
   }
+  assert.match(read("lib/supabase/fetch.ts"), /cache: "no-store"/);
+});
+
+test("failed student and teacher loads remain retryable instead of becoming terminal cache hits", () => {
+  assert.doesNotMatch(studentCache, /existing\?\.status === "error"\) return undefined/);
+  assert.doesNotMatch(teacherCache, /existing\?\.status === "error"\) return undefined/);
+  assert.match(studentCache, /entry\.status === "error"[\s\S]*mountedRequestRef\.current !== requestIdentity/);
+  assert.match(teacherCache, /entry\.status === "error"[\s\S]*mountedRequestRef\.current !== key/);
+});
+
+test("auth initialization cannot overwrite a newer session event and teacher cache clears across users", () => {
+  assert.match(studentCache, /authEventSeen[\s\S]*if \(!authEventSeen\) applySession/);
+  assert.match(teacherCache, /authEventSeen[\s\S]*activeUserId\.current !== userId[\s\S]*clear\(\)/);
 });
 
 test("teacher stats uses an explicit schema version instead of another ad-hoc key bump", () => {

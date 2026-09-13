@@ -28,6 +28,7 @@ import {
   type ReadingLogicalReuseKind
 } from "@/lib/reading/importExecution";
 import {
+  assertReadingUnableToImportDetailInvariant,
   summarizeReadingImportIssues,
   type ReadingImportFailureCategory
 } from "@/lib/reading/importSummary";
@@ -256,6 +257,10 @@ async function importReadingCsv(
   ].join("\u001f"))).length;
   const executionSummary = summarizeReadingImportExecutions(executions);
   const issueSummary = summarizeReadingImportIssues(pendingResolutionItems.length, failedRows);
+  assertReadingUnableToImportDetailInvariant({
+    unableToImportCount: issueSummary.unableToImportCount,
+    failedRows
+  });
   const rdlGroupDecisions = type === "read_in_daily_life"
     ? preparedPackages.map(buildRdlImportGroupDecision)
     : [];

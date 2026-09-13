@@ -12,6 +12,8 @@ import {
   loadBuildSentenceHistoricalPracticeDisplayResolver
 } from "@/lib/historicalPracticeDisplay";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
+import { mapWithConcurrency } from "@/lib/mapWithConcurrency";
 
 type AttemptRow = {
   attempt_id: string;
@@ -83,7 +85,7 @@ export async function GET(request: Request) {
 
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
-      global: { headers: { Authorization: `Bearer ${token}` } }
+      global: { fetch: createSupabaseFetch(), headers: { Authorization: `Bearer ${token}` } }
     });
     const {
       data: { user },
@@ -108,7 +110,7 @@ export async function GET(request: Request) {
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
+        fetch: createSupabaseFetch(),
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });
@@ -315,10 +317,10 @@ async function readRowsInBatches<T>(
   if (values.length === 0) {
     return { data: [] as T[], error: null };
   }
-  const results = await Promise.all(
-    chunkValues(values).map((batch) =>
-      readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
-    )
+  const results = await mapWithConcurrency(
+    chunkValues(values),
+    4,
+    (batch) => readAllSupabaseRows<T>((from, to) => readPage(batch, from, to))
   );
   const error = results.find((result) => result.error)?.error ?? null;
   return {

@@ -18,6 +18,7 @@ import {
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
 import { listVisibleStudentIds } from "@/lib/accountAccess";
+import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 export const dynamic = "force-dynamic";
 
@@ -198,7 +199,7 @@ export async function GET(request: Request) {
       auth: { persistSession: false },
       global: {
         headers: { Authorization: `Bearer ${token}` },
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
+        fetch: createSupabaseFetch()
       }
     });
 
@@ -219,7 +220,7 @@ export async function GET(request: Request) {
       auth: { persistSession: false },
       global: {
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` },
-        fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
+        fetch: createSupabaseFetch()
       }
     });
     const scopedStudentIds = await listVisibleStudentIds(db, {

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { createSupabaseFetch } from "./fetch.ts";
 
 export function createServiceSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,7 +17,7 @@ export function createServiceSupabase() {
       persistSession: false
     },
     global: {
-      fetch: (input, init) => fetch(input, { ...init, cache: "no-store" })
+      fetch: createSupabaseFetch()
     }
   });
 }
@@ -36,12 +37,11 @@ export function createAnonSupabase(accessToken?: string | null) {
     auth: {
       persistSession: false
     },
-    global: accessToken
-      ? {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      : undefined
+    global: {
+      fetch: createSupabaseFetch(),
+      ...(accessToken
+        ? { headers: { Authorization: `Bearer ${accessToken}` } }
+        : {})
+    }
   });
 }
