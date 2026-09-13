@@ -31,6 +31,7 @@ import {
   type ReadingContentResolutionDraft
 } from "@/components/import/ReadingContentConflictList";
 import type { ReadingContentConflictItem } from "@/lib/reading/contentReconciliation";
+import type { RdlImportGroupDecision } from "@/lib/reading/rdlImportDecision";
 
 type ImportResult = {
   success?: boolean;
@@ -65,6 +66,7 @@ type ImportResult = {
   pendingResolutionItems?: ReadingDuplicateResolutionItem[];
   contentConflictCount?: number;
   contentConflictItems?: ReadingContentConflictItem[];
+  rdlGroupDecisions?: RdlImportGroupDecision[];
   failedCount: number;
   warnings?: Array<{
     message: string;
@@ -600,6 +602,9 @@ export function TeacherImportQuestions() {
               }))}
             />
           ) : null}
+          {result.preview && questionType === "read_in_daily_life" && (result.rdlGroupDecisions?.length ?? 0) > 0 ? (
+            <RdlImportDecisionTable items={result.rdlGroupDecisions ?? []} />
+          ) : null}
           {visibleWarnings.length > 0 ? (
             <div className="mt-5 grid gap-3">
               {visibleWarnings.map((warning, index) => (
@@ -680,6 +685,60 @@ export function TeacherImportQuestions() {
       ) : null}
     </div>
   );
+}
+
+function RdlImportDecisionTable({ items }: { items: RdlImportGroupDecision[] }) {
+  return (
+    <section className="mt-6 overflow-hidden rounded-2xl border border-student-border bg-white">
+      <div className="border-b border-student-border px-5 py-4">
+        <h2 className="text-lg font-bold text-student-text">RDL 素材与题组明细</h2>
+        <p className="mt-1 text-sm text-student-muted">
+          已注册素材可以被复用，同时首次创建该素材对应的 logical question set。
+        </p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[920px] border-collapse text-left text-sm">
+          <thead>
+            <tr className="border-b border-student-border bg-student-primary-soft/45 text-student-muted">
+              <th className="px-4 py-3">来源</th>
+              <th className="px-4 py-3">原题</th>
+              <th className="px-4 py-3">Material</th>
+              <th className="px-4 py-3">素材判定</th>
+              <th className="px-4 py-3">题组判定</th>
+              <th className="px-4 py-3">匹配 Logical Item</th>
+              <th className="px-4 py-3">原因</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr className="border-b border-student-border last:border-b-0" key={`${item.sourceLabel}-${item.sourceModule}-${item.sourceOrder}`}>
+                <td className="px-4 py-3">{item.sourceLabel} · {item.sourceModule.toUpperCase()} · 顺序 {item.sourceOrder}</td>
+                <td className="px-4 py-3">{readingQuestionRange(item.sourceQuestionStart, item.sourceQuestionEnd)}</td>
+                <td className="px-4 py-3 font-mono text-xs">{item.materialId}</td>
+                <td className="px-4 py-3">
+                  {readingImportDecisionLabel(item.materialAction)}
+                  {item.matchedMaterialId ? `（${item.matchedMaterialId}）` : ""}
+                </td>
+                <td className="px-4 py-3">{readingImportDecisionLabel(item.logicalItemAction)}</td>
+                <td className="px-4 py-3 font-mono text-xs">{item.matchedLogicalItemId ?? "—"}</td>
+                <td className="px-4 py-3">{item.reason}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function readingImportDecisionLabel(action: RdlImportGroupDecision["logicalItemAction"]) {
+  if (action === "reuse_existing") return "复用";
+  if (action === "create_new") return "新增";
+  return "待确认";
+}
+
+function readingQuestionRange(start: number, end: number) {
+  return start === end ? String(start) : `${start}–${end}`;
 }
 
 function getPreviewColumns(questionType: QuestionType) {

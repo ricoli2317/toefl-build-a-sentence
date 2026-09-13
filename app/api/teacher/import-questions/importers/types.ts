@@ -8,6 +8,7 @@ import type {
   ReadingContentConflictItem,
   ReadingContentConflictResolution
 } from "@/lib/reading/contentReconciliation";
+import type { RdlImportGroupDecision } from "@/lib/reading/rdlImportDecision";
 
 export type ImportSupabase = ReturnType<typeof createServiceSupabase>;
 
@@ -67,6 +68,7 @@ export type ImportResult = {
   pendingResolutionItems?: ReadingDuplicateResolutionItem[];
   contentConflictCount?: number;
   contentConflictItems?: ReadingContentConflictItem[];
+  rdlGroupDecisions?: RdlImportGroupDecision[];
   failedCount: number;
   failedRows: FailedRow[];
   warnings: ImportWarning[];

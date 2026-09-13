@@ -41,6 +41,7 @@ import {
   type ReadingContentConflictResolution
 } from "@/lib/reading/contentReconciliation";
 import { buildReadingCanonicalContentUpdate } from "@/lib/reading/contentCorrection";
+import { buildRdlImportGroupDecision } from "@/lib/reading/rdlImportDecision";
 
 export function readingCsvImporter(type: ReadingCsvType) {
   return (context: ImporterContext) => importReadingCsv(context, type);
@@ -255,6 +256,9 @@ async function importReadingCsv(
   ].join("\u001f"))).length;
   const executionSummary = summarizeReadingImportExecutions(executions);
   const issueSummary = summarizeReadingImportIssues(pendingResolutionItems.length, failedRows);
+  const rdlGroupDecisions = type === "read_in_daily_life"
+    ? preparedPackages.map(buildRdlImportGroupDecision)
+    : [];
 
   return {
     success: true,
@@ -280,6 +284,7 @@ async function importReadingCsv(
     pendingResolutionItems: dryRun ? pendingResolutionItems : [],
     contentConflictCount: dryRun ? contentConflictItems.length : 0,
     contentConflictItems: dryRun ? contentConflictItems : [],
+    rdlGroupDecisions: dryRun ? rdlGroupDecisions : [],
     occurrenceInsertedCount: executionSummary.occurrenceInsertedCount,
     exactFingerprintReuseCount: executionSummary.exactFingerprintReuseCount,
     semanticReuseCount: executionSummary.semanticReuseCount,

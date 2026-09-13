@@ -127,3 +127,13 @@ test("shared confirmation shell delegates only the detail body by Reading type",
   assert.equal((resolutionComponent.match(/归入该已有题/g) ?? []).length, 1);
   assert.equal((resolutionComponent.match(/确认为新逻辑题/g) ?? []).length, 2);
 });
+
+test("RDL preflight explains registered-material reuse with a first logical question set", () => {
+  assert.match(readingImporter, /rdlGroupDecisions/);
+  assert.match(component, /RDL 素材与题组明细/);
+  assert.match(component, /素材判定/);
+  assert.match(component, /题组判定/);
+  assert.match(component, /matchedMaterialId/);
+  assert.match(component, /matchedLogicalItemId/);
+  assert.match(component, /item\.reason/);
+});
