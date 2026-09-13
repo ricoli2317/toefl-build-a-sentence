@@ -1,0 +1,1745 @@
+{
+  "schema_version": "rdl-material-index-travel-patch-v1",
+  "base_schema_version": "rdl-material-index-production-v1",
+  "base_sha256": "62eb814ce250c4f5b94640697e76e73a954a7076457cf92183557b8aa7c50c3b",
+  "add_count": 46,
+  "materials": [
+    {
+      "asset_id": "RDL-087",
+      "first_seen": "7.1A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.1A-M1-RDL-01",
+          "set": "7.1A",
+          "source_set": "20260701A",
+          "source_date": "2026-07-01",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a webpage.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.1B-M1-RDL-01",
+          "set": "7.1B",
+          "source_set": "20260701B",
+          "source_date": "2026-07-01",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a webpage.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "8.2A-M1-RDL-01",
+          "set": "8.2A",
+          "source_set": "20260802A",
+          "source_date": "2026-08-02",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260802A__Q21-22"
+        }
+      ],
+      "occurrence_count": 3,
+      "material_identifying_text": "Study Abroad in Valencia",
+      "material_final": "production/rdl/RDL-087/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-087/selection_map.json",
+      "metadata": "production/rdl/RDL-087/asset.json",
+      "material_final_sha256": "44e06686f1ad67325fff06410bd8cd223bfdc3a405463e313191f5322b63b7c1",
+      "material_final_width": 1701,
+      "material_final_height": 925,
+      "canonical_source": {
+        "set": "7.1A",
+        "file": "7月/题目/M1_20260701A_ R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-088",
+      "first_seen": "7.1A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.1A-M1-RDL-03",
+          "set": "7.1A",
+          "source_set": "20260701A",
+          "source_date": "2026-07-01",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read a course description.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.1B-M1-RDL-03",
+          "set": "7.1B",
+          "source_set": "20260701B",
+          "source_date": "2026-07-01",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read a course description.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "8.2A-M1-RDL-03",
+          "set": "8.2A",
+          "source_set": "20260802A",
+          "source_date": "2026-08-02",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260802A__Q25-27"
+        }
+      ],
+      "occurrence_count": 3,
+      "material_identifying_text": "Winter Creative Writing Seminar",
+      "material_final": "production/rdl/RDL-088/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-088/selection_map.json",
+      "metadata": "production/rdl/RDL-088/asset.json",
+      "material_final_sha256": "d365b479faf01f5a66f5dc7d36174b4951863ce4563498b954d23eb64de9a977",
+      "material_final_width": 1323,
+      "material_final_height": 1189,
+      "canonical_source": {
+        "set": "7.1A",
+        "file": "7月/题目/M1_20260701A_ R_01-35_PDF.pdf",
+        "page": 7,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-089",
+      "first_seen": "7.1C",
+      "occurrences": [
+        {
+          "occurrence_id": "7.1C-M1-RDL-01",
+          "set": "7.1C",
+          "source_set": "20260701C",
+          "source_date": "2026-07-01",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a poster.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Join the Mechanicsburg Clean-Up Day!",
+      "material_final": "production/rdl/RDL-089/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-089/selection_map.json",
+      "metadata": "production/rdl/RDL-089/asset.json",
+      "material_final_sha256": "7a91321ef9cd0ec072808a30fd8df655271da6f36753f27ba0a3e82cb73e5e35",
+      "material_final_width": 1644,
+      "material_final_height": 957,
+      "canonical_source": {
+        "set": "7.1C",
+        "file": "7月/题目/M1_20260701C_R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-090",
+      "first_seen": "7.15B",
+      "occurrences": [
+        {
+          "occurrence_id": "7.1C-M1-RDL-02",
+          "set": "7.1C",
+          "source_set": "20260701C",
+          "source_date": "2026-07-01",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.15B-M1-RDL-03",
+          "set": "7.15B",
+          "source_set": "20260715B",
+          "source_date": "2026-07-15",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.15C-M1-RDL-03",
+          "set": "7.15C",
+          "source_set": "20260715C",
+          "source_date": "2026-07-15",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 3,
+      "material_identifying_text": "Campus Iyengar Yoga Classes",
+      "material_final": "production/rdl/RDL-090/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-090/selection_map.json",
+      "metadata": "production/rdl/RDL-090/asset.json",
+      "material_final_sha256": "39b7376951cd80000314eaa1f45a64cbd15dd21429ea9e0ef419ab249480027e",
+      "material_final_width": 1278,
+      "material_final_height": 1231,
+      "canonical_source": {
+        "set": "7.1C",
+        "file": "7月/题目/M1_20260701C_R_01-35_PDF.pdf",
+        "page": 5,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-091",
+      "first_seen": "7.5A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.5A-M1-RDL-01",
+          "set": "7.5A",
+          "source_set": "20260705A",
+          "source_date": "2026-07-05",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a poster.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.5B-M1-RDL-01",
+          "set": "7.5B",
+          "source_set": "20260705B",
+          "source_date": "2026-07-05",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a poster.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Join the Campus Historical Society!",
+      "material_final": "production/rdl/RDL-091/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-091/selection_map.json",
+      "metadata": "production/rdl/RDL-091/asset.json",
+      "material_final_sha256": "18149fd374bb6ef8d7ef6e772790eb754e647540bb8aaf33bab84684882edd9f",
+      "material_final_width": 1359,
+      "material_final_height": 1157,
+      "canonical_source": {
+        "set": "7.5A",
+        "file": "7月/题目/M1_20260705A_R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-092",
+      "first_seen": "7.5C",
+      "occurrences": [
+        {
+          "occurrence_id": "7.5C-M1-RDL-02",
+          "set": "7.5C",
+          "source_set": "20260705C",
+          "source_date": "2026-07-05",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "rdl_type": "Read a poster.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Fairmount University Ceramics Workshop",
+      "material_final": "production/rdl/RDL-092/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-092/selection_map.json",
+      "metadata": "production/rdl/RDL-092/asset.json",
+      "material_final_sha256": "f53e916bc48363f3577563f4fb07413881faa373a67b90302d4d27b9ccb7699c",
+      "material_final_width": 1611,
+      "material_final_height": 976,
+      "canonical_source": {
+        "set": "7.5C",
+        "file": "7月/题目/M1_20260705C_ R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-093",
+      "first_seen": "7.5C",
+      "occurrences": [
+        {
+          "occurrence_id": "7.5C-M1-RDL-04",
+          "set": "7.5C",
+          "source_set": "20260705C",
+          "source_date": "2026-07-05",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Residence-Hall Vegan Menu Expansion",
+      "material_final": "production/rdl/RDL-093/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-093/selection_map.json",
+      "metadata": "production/rdl/RDL-093/asset.json",
+      "material_final_sha256": "b4a53d561b75c2ebe8455c70af15b066d02e9dd5b8f36e8300f0d3afb585e130",
+      "material_final_width": 1230,
+      "material_final_height": 1278,
+      "canonical_source": {
+        "set": "7.5C",
+        "file": "7月/题目/M1_20260705C_ R_01-35_PDF.pdf",
+        "page": 5,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-094",
+      "first_seen": "7.6A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.6A-M1-RDL-02",
+          "set": "7.6A",
+          "source_set": "20260706A",
+          "source_date": "2026-07-06",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "rdl_type": "Read a course description.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Foundations of Graphic Design",
+      "material_final": "production/rdl/RDL-094/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-094/selection_map.json",
+      "metadata": "production/rdl/RDL-094/asset.json",
+      "material_final_sha256": "7f0a7f05e0641443150219409750ac1f79cd6398e52e36a4927ebc3a9ea84297",
+      "material_final_width": 1706,
+      "material_final_height": 967
+    },
+    {
+      "asset_id": "RDL-095",
+      "first_seen": "7.7A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.7A-M1-RDL-02",
+          "set": "7.7A",
+          "source_set": "20260707A",
+          "source_date": "2026-07-07",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "rdl_type": "Read a course description.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "8.9B-M1-RDL-01",
+          "set": "8.9B",
+          "source_set": "20260809B",
+          "source_date": "2026-08-09",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260809B__Q21-22"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Physics for Engineers I",
+      "material_final": "production/rdl/RDL-095/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-095/selection_map.json",
+      "metadata": "production/rdl/RDL-095/asset.json",
+      "material_final_sha256": "01b3f2ed2ce3371b88685adb34523a34d4180f84f1b8190bcf6cc678b43156d3",
+      "material_final_width": 1793,
+      "material_final_height": 877,
+      "canonical_source": {
+        "set": "7.7A",
+        "file": "7月/题目/M1_20260707A_ R_01-35_PDF.pdf",
+        "page": 4,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-096",
+      "first_seen": "7.7A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.7A-M1-RDL-04",
+          "set": "7.7A",
+          "source_set": "20260707A",
+          "source_date": "2026-07-07",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "rdl_type": "Read a poster.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Innovation Hub: Student Showcase",
+      "material_final": "production/rdl/RDL-096/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-096/selection_map.json",
+      "metadata": "production/rdl/RDL-096/asset.json",
+      "material_final_sha256": "03185d114f0dbc5a0773b8e5431138030a2278b0cb45662e019181035c4633c7",
+      "material_final_width": 1275,
+      "material_final_height": 1233,
+      "canonical_source": {
+        "set": "7.7A",
+        "file": "7月/题目/M1_20260707A_ R_01-35_PDF.pdf",
+        "page": 7,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-097",
+      "first_seen": "7.8A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.8A-M1-RDL-01",
+          "set": "7.8A",
+          "source_set": "20260708A",
+          "source_date": "2026-07-08",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a notice.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.8B-M1-RDL-01",
+          "set": "7.8B",
+          "source_set": "20260708B",
+          "source_date": "2026-07-08",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a notice.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "8.12A-M1-RDL-02",
+          "set": "8.12A",
+          "source_set": "20260812A",
+          "source_date": "2026-08-12",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260812A__Q23-24"
+        }
+      ],
+      "occurrence_count": 3,
+      "material_identifying_text": "Campus Dining: Healthy Meal Options",
+      "material_final": "production/rdl/RDL-097/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-097/selection_map.json",
+      "metadata": "production/rdl/RDL-097/asset.json",
+      "material_final_sha256": "c243b93f239c1dc44706175f44528c8bb05f344c807ec30c331ba066f81a62ba",
+      "material_final_width": 1345,
+      "material_final_height": 1169,
+      "canonical_source": {
+        "set": "7.8A",
+        "file": "7月/题目/M1_20260708A_ R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-098",
+      "first_seen": "7.14A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.14A-M1-RDL-01",
+          "set": "7.14A",
+          "source_set": "20260714A",
+          "source_date": "2026-07-14",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a notice.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Breakfast Service Changes",
+      "material_final": "production/rdl/RDL-098/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-098/selection_map.json",
+      "metadata": "production/rdl/RDL-098/asset.json",
+      "material_final_sha256": "71f53b6550035e7935afc109b58689ba04069900fb712d6484c2c3f82e3e12b7",
+      "material_final_width": 1746,
+      "material_final_height": 901,
+      "canonical_source": {
+        "set": "7.14A",
+        "file": "7月/题目/M1_20260714A_ R_01-35_PDF.pdf",
+        "page": 2,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-099",
+      "first_seen": "7.14A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.14A-M1-RDL-03",
+          "set": "7.14A",
+          "source_set": "20260714A",
+          "source_date": "2026-07-14",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read a poster.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Prague Summer Study Program",
+      "material_final": "production/rdl/RDL-099/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-099/selection_map.json",
+      "metadata": "production/rdl/RDL-099/asset.json",
+      "material_final_sha256": "8c919308b12703218ba9154b36ec55203f918ae235d1a73559c5d521cfa0b132",
+      "material_final_width": 1210,
+      "material_final_height": 1300,
+      "canonical_source": {
+        "set": "7.14A",
+        "file": "7月/题目/M1_20260714A_ R_01-35_PDF.pdf",
+        "page": 4,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-100",
+      "first_seen": "7.15B",
+      "occurrences": [
+        {
+          "occurrence_id": "7.15B-M1-RDL-01",
+          "set": "7.15B",
+          "source_set": "20260715B",
+          "source_date": "2026-07-15",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read an email.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.15C-M1-RDL-01",
+          "set": "7.15C",
+          "source_set": "20260715C",
+          "source_date": "2026-07-15",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read an email.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Rescheduled Architecture Lecture",
+      "material_final": "production/rdl/RDL-100/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-100/selection_map.json",
+      "metadata": "production/rdl/RDL-100/asset.json",
+      "material_final_sha256": "42eed951978a856b41c1f861158f4f85f8d59d0288adb130c98d4e6b3934eac9",
+      "material_final_width": 1713,
+      "material_final_height": 918,
+      "canonical_source": {
+        "set": "7.15B",
+        "file": "7月/题目/M1_20260715B_R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 200,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-101",
+      "first_seen": "7.20A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.20A-M1-RDL-01",
+          "set": "7.20A",
+          "source_set": "20260720A",
+          "source_date": "2026-07-20",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a review.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.20B-M1-RDL-01",
+          "set": "7.20B",
+          "source_set": "20260720B",
+          "source_date": "2026-07-20",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a review.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "The Review of Whispering Woods",
+      "material_final": "production/rdl/RDL-101/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-101/selection_map.json",
+      "metadata": "production/rdl/RDL-101/asset.json",
+      "material_final_sha256": "dd6bbf482e78c0a823193b00e38ea4766fd9b97c5b2e13465d5e7172584e3aa9",
+      "material_final_width": 1602,
+      "material_final_height": 982,
+      "canonical_source": {
+        "set": "7.20A",
+        "file": "7月/题目/M1_20260720A_ R_01-35_PDF.pdf",
+        "page": 3,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-102",
+      "first_seen": "7.20A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.20A-M1-RDL-03",
+          "set": "7.20A",
+          "source_set": "20260720A",
+          "source_date": "2026-07-20",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.20B-M1-RDL-03",
+          "set": "7.20B",
+          "source_set": "20260720B",
+          "source_date": "2026-07-20",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Harrison University Bike Sharing",
+      "material_final": "production/rdl/RDL-102/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-102/selection_map.json",
+      "metadata": "production/rdl/RDL-102/asset.json",
+      "material_final_sha256": "c5f9010e6d8fcd41c9e4a1002a5a0569d7f933d83d2291b8e4f7046513c48c45",
+      "material_final_width": 1286,
+      "material_final_height": 1223,
+      "canonical_source": {
+        "set": "7.20A",
+        "file": "7月/题目/M1_20260720A_ R_01-35_PDF.pdf",
+        "page": 7,
+        "render_dpi": 300,
+        "crop_method": "manual_safe_crop_reviewed"
+      }
+    },
+    {
+      "asset_id": "RDL-103",
+      "first_seen": "7.21A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.21A-M1-RDL-01",
+          "set": "7.21A",
+          "source_set": "20260721A",
+          "source_date": "2026-07-21",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read an advertisement.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "ALL-DAY CRAFT FAIR",
+      "material_final": "production/rdl/RDL-103/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-103/selection_map.json",
+      "metadata": "production/rdl/RDL-103/asset.json",
+      "material_final_sha256": "5285f1e03c4dfed05c8901777649a55135849fcff0cde52fe6e78a42be39d90a",
+      "material_final_width": 1415,
+      "material_final_height": 1483
+    },
+    {
+      "asset_id": "RDL-104",
+      "first_seen": "7.21A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.21A-M1-RDL-02",
+          "set": "7.21A",
+          "source_set": "20260721A",
+          "source_date": "2026-07-21",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "rdl_type": "Read an online discussion.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Hamartia Discussion",
+      "material_final": "production/rdl/RDL-104/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-104/selection_map.json",
+      "metadata": "production/rdl/RDL-104/asset.json",
+      "material_final_sha256": "a92d257d254a3d0502794a7e5462917700a81577a4b5f447310abc771ec3b430",
+      "material_final_width": 1302,
+      "material_final_height": 1462
+    },
+    {
+      "asset_id": "RDL-106",
+      "first_seen": "7.21B",
+      "occurrences": [
+        {
+          "occurrence_id": "7.21B-M1-RDL-01",
+          "set": "7.21B",
+          "source_set": "20260721B",
+          "source_date": "2026-07-21",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a notice.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "World Cultures Club",
+      "material_final": "production/rdl/RDL-106/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-106/selection_map.json",
+      "metadata": "production/rdl/RDL-106/asset.json",
+      "material_final_sha256": "f5d2a2954abbb8b91944d8c36ede5fe129c7fa509c9faf31ffee83db27982154",
+      "material_final_width": 1519,
+      "material_final_height": 1059
+    },
+    {
+      "asset_id": "RDL-107",
+      "first_seen": "7.22A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.22A-M1-RDL-01",
+          "set": "7.22A",
+          "source_set": "20260722A",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260722A__Q21-22"
+        },
+        {
+          "occurrence_id": "7.22C-M1-RDL-01",
+          "set": "7.22C",
+          "source_set": "20260722C",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "rdl_type": "Read a course description.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.22D-M1-RDL-01",
+          "set": "7.22D",
+          "source_set": "20260722D",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260722D__Q21-22"
+        }
+      ],
+      "occurrence_count": 3,
+      "material_identifying_text": "Contemporary Art History",
+      "material_final": "production/rdl/RDL-107/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-107/selection_map.json",
+      "metadata": "production/rdl/RDL-107/asset.json",
+      "material_final_sha256": "b7eea5bc6a263e5617033e6eb71500a459acd5bb8c3c7d35b07b91b39c93b886",
+      "material_final_width": 1626,
+      "material_final_height": 1122
+    },
+    {
+      "asset_id": "RDL-108",
+      "first_seen": "7.22A",
+      "occurrences": [
+        {
+          "occurrence_id": "7.22A-M1-RDL-02",
+          "set": "7.22A",
+          "source_set": "20260722A",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260722A__Q23-25"
+        },
+        {
+          "occurrence_id": "7.22C-M1-RDL-02",
+          "set": "7.22C",
+          "source_set": "20260722C",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "rdl_type": "Read an article.",
+          "mapping_basis": "locked source manifest / finalized Work asset"
+        },
+        {
+          "occurrence_id": "7.22D-M1-RDL-02",
+          "set": "7.22D",
+          "source_set": "20260722D",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:REUSE_EXISTING_CONTENT_ID",
+          "source_occurrence_key": "20260722D__Q23-25"
+        }
+      ],
+      "occurrence_count": 3,
+      "material_identifying_text": "Student Engagement Initiatives",
+      "material_final": "production/rdl/RDL-108/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-108/selection_map.json",
+      "metadata": "production/rdl/RDL-108/asset.json",
+      "material_final_sha256": "8e52a7f1f322e552ed87dd04048d8129d4eaff7336e3c6bfd7e3800d36dbe40c",
+      "material_final_width": 1320,
+      "material_final_height": 1313
+    },
+    {
+      "asset_id": "RDL-110",
+      "first_seen": "7.22B",
+      "occurrences": [
+        {
+          "occurrence_id": "7.22B-M1-RDL-01",
+          "set": "7.22B",
+          "source_set": "20260722B",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260722B__Q21-22"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Herb Garden at Newton University",
+      "material_final": "production/rdl/RDL-110/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-110/selection_map.json",
+      "metadata": "production/rdl/RDL-110/asset.json",
+      "material_final_sha256": "164cb8fe24e8aebb2feef765e6fe30b38344ec3ce4b006c98639ec96462cbb4d",
+      "material_final_width": 1531,
+      "material_final_height": 1027
+    },
+    {
+      "asset_id": "RDL-111",
+      "first_seen": "7.22B",
+      "occurrences": [
+        {
+          "occurrence_id": "7.22B-M1-RDL-02",
+          "set": "7.22B",
+          "source_set": "20260722B",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260722B__Q23-24"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Library Café Early Closure",
+      "material_final": "production/rdl/RDL-111/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-111/selection_map.json",
+      "metadata": "production/rdl/RDL-111/asset.json",
+      "material_final_sha256": "4007b74a30f2d852ca223001b7d8569f87a5d0ddac5f519c073799cb0142641d",
+      "material_final_width": 1854,
+      "material_final_height": 848
+    },
+    {
+      "asset_id": "RDL-112",
+      "first_seen": "7.22B",
+      "occurrences": [
+        {
+          "occurrence_id": "7.22B-M1-RDL-04",
+          "set": "7.22B",
+          "source_set": "20260722B",
+          "source_date": "2026-07-22",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260722B__Q28-30"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Baker Rugby Championship",
+      "material_final": "production/rdl/RDL-112/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-112/selection_map.json",
+      "metadata": "production/rdl/RDL-112/asset.json",
+      "material_final_sha256": "9941ae85a84b9bf89c4c20f5059232d5c30745604b9f3e2dc03240cc3622fdb6",
+      "material_final_width": 1403,
+      "material_final_height": 1121
+    },
+    {
+      "asset_id": "RDL-113",
+      "first_seen": "8.4A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.4A-M1-RDL-01",
+          "set": "8.4A",
+          "source_set": "20260804A",
+          "source_date": "2026-08-04",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260804A__Q21-22"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Free Health Screening Event",
+      "material_final": "production/rdl/RDL-113/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-113/selection_map.json",
+      "metadata": "production/rdl/RDL-113/asset.json",
+      "material_final_sha256": "95f127e7192167d5c432ff39db9eb70c46d1e2222f9030979ff8d1bc9df73be1",
+      "material_final_width": 1571,
+      "material_final_height": 1020
+    },
+    {
+      "asset_id": "RDL-114",
+      "first_seen": "8.4A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.4A-M1-RDL-02",
+          "set": "8.4A",
+          "source_set": "20260804A",
+          "source_date": "2026-08-04",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260804A__Q23-25"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Survey of Literary Theory",
+      "material_final": "production/rdl/RDL-114/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-114/selection_map.json",
+      "metadata": "production/rdl/RDL-114/asset.json",
+      "material_final_sha256": "a7b8bbe8122a87a793697fe36677a2a8d9a1c59f7a62cb8d8d925f2add5b231b",
+      "material_final_width": 1372,
+      "material_final_height": 1171
+    },
+    {
+      "asset_id": "RDL-115",
+      "first_seen": "8.5A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.5A-M1-RDL-01",
+          "set": "8.5A",
+          "source_set": "20260805A",
+          "source_date": "2026-08-05",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260805A__Q21-22"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "The Silent Echo",
+      "material_final": "production/rdl/RDL-115/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-115/selection_map.json",
+      "metadata": "production/rdl/RDL-115/asset.json",
+      "material_final_sha256": "54aa0c6e14bfe135527e2d176f0836eae2fd79adfad5663975162af0d5d952ea",
+      "material_final_width": 1654,
+      "material_final_height": 988
+    },
+    {
+      "asset_id": "RDL-116",
+      "first_seen": "8.5A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.5A-M1-RDL-02",
+          "set": "8.5A",
+          "source_set": "20260805A",
+          "source_date": "2026-08-05",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260805A__Q23-24"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Math Tutoring Program",
+      "material_final": "production/rdl/RDL-116/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-116/selection_map.json",
+      "metadata": "production/rdl/RDL-116/asset.json",
+      "material_final_sha256": "6aa186c9ff2436f540393dc2b61528b17f57a0fe856acd5e9dc0a226a9d52e61",
+      "material_final_width": 1254,
+      "material_final_height": 1347
+    },
+    {
+      "asset_id": "RDL-117",
+      "first_seen": "8.5A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.5A-M1-RDL-04",
+          "set": "8.5A",
+          "source_set": "20260805A",
+          "source_date": "2026-08-05",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260805A__Q28-30"
+        },
+        {
+          "occurrence_id": "8.9B-M1-RDL-02",
+          "set": "8.9B",
+          "source_set": "20260809B",
+          "source_date": "2026-08-09",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260809B__Q23-25"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "History 302 Research Assignment",
+      "material_final": "production/rdl/RDL-117/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-117/selection_map.json",
+      "metadata": "production/rdl/RDL-117/asset.json",
+      "material_final_sha256": "abc9c524f4db717dfeeea50fd1cc99bce847ebd2ff48ba894e69b6ed0d7a127b",
+      "material_final_width": 1465,
+      "material_final_height": 1099
+    },
+    {
+      "asset_id": "RDL-118",
+      "first_seen": "8.8A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.8A-M1-RDL-01",
+          "set": "8.8A",
+          "source_set": "20260808A",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808A__Q21-22"
+        },
+        {
+          "occurrence_id": "8.8B-M1-RDL-01",
+          "set": "8.8B",
+          "source_set": "20260808B",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808B__Q21-22"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Echoes of Tomorrow",
+      "material_final": "production/rdl/RDL-118/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-118/selection_map.json",
+      "metadata": "production/rdl/RDL-118/asset.json",
+      "material_final_sha256": "dd42d561da616d9371636e17044af5e7110a89628ef05c7ea66df7699264b9aa",
+      "material_final_width": 1875,
+      "material_final_height": 925
+    },
+    {
+      "asset_id": "RDL-119",
+      "first_seen": "8.8A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.8A-M1-RDL-04",
+          "set": "8.8A",
+          "source_set": "20260808A",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808A__Q28-30"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Application for Research Assistant Position",
+      "material_final": "production/rdl/RDL-119/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-119/selection_map.json",
+      "metadata": "production/rdl/RDL-119/asset.json",
+      "material_final_sha256": "a8b6dce4655db112898e74f665ea17d2923227a4e6fa452a16f5284f73bc5b0c",
+      "material_final_width": 1254,
+      "material_final_height": 1364
+    },
+    {
+      "asset_id": "RDL-120",
+      "first_seen": "8.8B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.8B-M1-RDL-02",
+          "set": "8.8B",
+          "source_set": "20260808B",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808B__Q23-24"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Gardener’s Delight Soil Mix",
+      "material_final": "production/rdl/RDL-120/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-120/selection_map.json",
+      "metadata": "production/rdl/RDL-120/asset.json",
+      "material_final_sha256": "4d5c14f14052c5b6be14e2ca78198ce0a064036f0790589d89dd9e462b3a5887",
+      "material_final_width": 1749,
+      "material_final_height": 937
+    },
+    {
+      "asset_id": "RDL-121",
+      "first_seen": "8.8C",
+      "occurrences": [
+        {
+          "occurrence_id": "8.8C-M1-RDL-01",
+          "set": "8.8C",
+          "source_set": "20260808C",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808C__Q21-22"
+        },
+        {
+          "occurrence_id": "8.8D-M1-RDL-01",
+          "set": "8.8D",
+          "source_set": "20260808D",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808D__Q21-22"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Science Research Proposal Workshop",
+      "material_final": "production/rdl/RDL-121/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-121/selection_map.json",
+      "metadata": "production/rdl/RDL-121/asset.json",
+      "material_final_sha256": "347d0004d290e6932cfee36b374595f1169223ac46b39c6e6b094b9ce23b826c",
+      "material_final_width": 1538,
+      "material_final_height": 1147
+    },
+    {
+      "asset_id": "RDL-122",
+      "first_seen": "8.9A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.9A-M1-RDL-02",
+          "set": "8.9A",
+          "source_set": "20260809A",
+          "source_date": "2026-08-09",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260809A__Q23-24"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Mindfulness Workshop",
+      "material_final": "production/rdl/RDL-122/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-122/selection_map.json",
+      "metadata": "production/rdl/RDL-122/asset.json",
+      "material_final_sha256": "544479799fb8f211b5eb6b4c78b50af274254add18b1909ef7f3e1e95de39206",
+      "material_final_width": 1586,
+      "material_final_height": 1027
+    },
+    {
+      "asset_id": "RDL-123",
+      "first_seen": "8.9A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.9A-M1-RDL-04",
+          "set": "8.9A",
+          "source_set": "20260809A",
+          "source_date": "2026-08-09",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260809A__Q28-30"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Renewable Energy Research Paper",
+      "material_final": "production/rdl/RDL-123/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-123/selection_map.json",
+      "metadata": "production/rdl/RDL-123/asset.json",
+      "material_final_sha256": "b7ee31249b3f9251f55f46a2a2cb956f0f552e59e385c9fa6682ce859af6204d",
+      "material_final_width": 1278,
+      "material_final_height": 1274
+    },
+    {
+      "asset_id": "RDL-124",
+      "first_seen": "8.12A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.12A-M1-RDL-01",
+          "set": "8.12A",
+          "source_set": "20260812A",
+          "source_date": "2026-08-12",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260812A__Q21-22"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Eastwood Campus Dining Options",
+      "material_final": "production/rdl/RDL-124/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-124/selection_map.json",
+      "metadata": "production/rdl/RDL-124/asset.json",
+      "material_final_sha256": "e66f63cbe4c4c4f9a190e9fce949597aa16a21c3a30e7952417fabf4d5e89bd2",
+      "material_final_width": 1829,
+      "material_final_height": 894
+    },
+    {
+      "asset_id": "RDL-125",
+      "first_seen": "8.12A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.12A-M1-RDL-03",
+          "set": "8.12A",
+          "source_set": "20260812A",
+          "source_date": "2026-08-12",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260812A__Q25-27"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Mediation Options",
+      "material_final": "production/rdl/RDL-125/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-125/selection_map.json",
+      "metadata": "production/rdl/RDL-125/asset.json",
+      "material_final_sha256": "fe0e6008df959328fe520a5d207d3616b8c01a122c4c125691c4aea59640dbbe",
+      "material_final_width": 1344,
+      "material_final_height": 1287
+    },
+    {
+      "asset_id": "RDL-126",
+      "first_seen": "8.12A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.12A-M1-RDL-04",
+          "set": "8.12A",
+          "source_set": "20260812A",
+          "source_date": "2026-08-12",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260812A__Q28-30"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Summer House and Pet Sitting",
+      "material_final": "production/rdl/RDL-126/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-126/selection_map.json",
+      "metadata": "production/rdl/RDL-126/asset.json",
+      "material_final_sha256": "89c9230432695feecfc8ae0ed86e67ce8c164d84290c1cf67e910deaf22da257",
+      "material_final_width": 1254,
+      "material_final_height": 1348
+    },
+    {
+      "asset_id": "RDL-127",
+      "first_seen": "8.12B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.12B-M1-RDL-01",
+          "set": "8.12B",
+          "source_set": "20260812B",
+          "source_date": "2026-08-12",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260812B__Q21-22"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Physics for Engineers I",
+      "material_final": "production/rdl/RDL-127/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-127/selection_map.json",
+      "metadata": "production/rdl/RDL-127/asset.json",
+      "material_final_sha256": "9597c40ecc2b257b66d48fabdb36fef0ec32da082c15ec615e6ae6c2fd57759f",
+      "material_final_width": 1881,
+      "material_final_height": 884
+    },
+    {
+      "asset_id": "RDL-128",
+      "first_seen": "8.12B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.12B-M1-RDL-02",
+          "set": "8.12B",
+          "source_set": "20260812B",
+          "source_date": "2026-08-12",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260812B__Q23-25"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "EX-5000 3D Printer Instructions",
+      "material_final": "production/rdl/RDL-128/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-128/selection_map.json",
+      "metadata": "production/rdl/RDL-128/asset.json",
+      "material_final_sha256": "b90951c3baaafe62afdfe46c40d257b0e13be5ac4c8bd80b575579d719dd301f",
+      "material_final_width": 1254,
+      "material_final_height": 1326
+    },
+    {
+      "asset_id": "RDL-129",
+      "first_seen": "8.18A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.18A-M1-RDL-01",
+          "set": "8.18A",
+          "source_set": "20260818A",
+          "source_date": "2026-08-18",
+          "question_range": {
+            "start": 21,
+            "end": 22
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260818A__Q21-22"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Exploring Cultural Artifacts",
+      "material_final": "production/rdl/RDL-129/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-129/selection_map.json",
+      "metadata": "production/rdl/RDL-129/asset.json",
+      "material_final_sha256": "03639f7ac883d67d6e703519f011924dd48f32f075bb58f519e4232de7dacfdc",
+      "material_final_width": 1804,
+      "material_final_height": 903
+    },
+    {
+      "asset_id": "RDL-130",
+      "first_seen": "8.18A",
+      "occurrences": [
+        {
+          "occurrence_id": "8.18A-M1-RDL-02",
+          "set": "8.18A",
+          "source_set": "20260818A",
+          "source_date": "2026-08-18",
+          "question_range": {
+            "start": 23,
+            "end": 25
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260818A__Q23-25"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "AI Robot Baristas",
+      "material_final": "production/rdl/RDL-130/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-130/selection_map.json",
+      "metadata": "production/rdl/RDL-130/asset.json",
+      "material_final_sha256": "201e025b78fc76bfd1db5429e3582af3a18b7bf3732c612d68f5d4a12381e97a",
+      "material_final_width": 1299,
+      "material_final_height": 1254
+    },
+    {
+      "asset_id": "RDL-131",
+      "first_seen": "8.18B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.18B-M1-RDL-03",
+          "set": "8.18B",
+          "source_set": "20260818B",
+          "source_date": "2026-08-18",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260818B__Q25-27"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Student Council Meeting Plans",
+      "material_final": "production/rdl/RDL-131/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-131/selection_map.json",
+      "metadata": "production/rdl/RDL-131/asset.json",
+      "material_final_sha256": "954f3914d3f0a89b5b2120ac0cd2305e05cdef326ed94ed2d08f0992b01b87eb",
+      "material_final_width": 1234,
+      "material_final_height": 1275
+    },
+    {
+      "asset_id": "RDL-132",
+      "first_seen": "8.19B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.19B-M1-RDL-02",
+          "set": "8.19B",
+          "source_set": "20260819B",
+          "source_date": "2026-08-19",
+          "question_range": {
+            "start": 23,
+            "end": 24
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260819B__Q23-24"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "TrailBlayzer Hiking Boots",
+      "material_final": "production/rdl/RDL-132/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-132/selection_map.json",
+      "metadata": "production/rdl/RDL-132/asset.json",
+      "material_final_sha256": "e0f3109e41e2972e50ed5dd84a74ef64c756096404911d80c6405df6b9629094",
+      "material_final_width": 1534,
+      "material_final_height": 1025
+    },
+    {
+      "asset_id": "RDL-133",
+      "first_seen": "8.19B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.19B-M1-RDL-03",
+          "set": "8.19B",
+          "source_set": "20260819B",
+          "source_date": "2026-08-19",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260819B__Q25-27"
+        }
+      ],
+      "occurrence_count": 1,
+      "material_identifying_text": "Remote Learning Assignment Discussion",
+      "material_final": "production/rdl/RDL-133/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-133/selection_map.json",
+      "metadata": "production/rdl/RDL-133/asset.json",
+      "material_final_sha256": "0251ea9a42e197d864424cee21a3439946e343351658cc6c2cdb708322a44a9a",
+      "material_final_width": 1052,
+      "material_final_height": 1494
+    },
+    {
+      "asset_id": "RDL-134",
+      "first_seen": "8.19B",
+      "occurrences": [
+        {
+          "occurrence_id": "8.8B-M1-RDL-03",
+          "set": "8.8B",
+          "source_set": "20260808B",
+          "source_date": "2026-08-08",
+          "question_range": {
+            "start": 25,
+            "end": 27
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260808B__Q25-27"
+        },
+        {
+          "occurrence_id": "8.19B-M1-RDL-04",
+          "set": "8.19B",
+          "source_set": "20260819B",
+          "source_date": "2026-08-19",
+          "question_range": {
+            "start": 28,
+            "end": 30
+          },
+          "mapping_basis": "RDL_DEDUP_AB_RESULT:NEW_UNIQUE_RELEASE",
+          "source_occurrence_key": "20260819B__Q28-30"
+        }
+      ],
+      "occurrence_count": 2,
+      "material_identifying_text": "Question About Group Project Guidelines",
+      "material_final": "production/rdl/RDL-134/material_final.png",
+      "hd_status": "passed",
+      "final_status": "passed",
+      "provenance": "travel_work_final_release",
+      "selection_status": "passed",
+      "selection_map": "production/rdl/RDL-134/selection_map.json",
+      "metadata": "production/rdl/RDL-134/asset.json",
+      "material_final_sha256": "d26887ce680fc76504725487ec707598079f9c1bf719e63b64b0d7a728a8bbaa",
+      "material_final_width": 1254,
+      "material_final_height": 1297
+    }
+  ]
+}

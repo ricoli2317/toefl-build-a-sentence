@@ -1,0 +1,568 @@
+{
+  "schema_version": "travel-rdl-r2-remote-audit-v1",
+  "status": "PASS",
+  "method": "Cloudflare R2 S3 HeadObject only",
+  "credentials_available": true,
+  "uploads_performed": 0,
+  "deletes_performed": 0,
+  "counts": {
+    "REMOTE_MISSING": 92,
+    "REMOTE_IDENTICAL": 0,
+    "REMOTE_DIFFERENT": 0,
+    "REMOTE_UNVERIFIABLE": 0
+  },
+  "objects": [
+    {
+      "material_id": "RDL-087",
+      "object_key": "reading/rdl/RDL-087/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-087",
+      "object_key": "reading/rdl/RDL-087/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-088",
+      "object_key": "reading/rdl/RDL-088/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-088",
+      "object_key": "reading/rdl/RDL-088/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-089",
+      "object_key": "reading/rdl/RDL-089/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-089",
+      "object_key": "reading/rdl/RDL-089/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-090",
+      "object_key": "reading/rdl/RDL-090/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-090",
+      "object_key": "reading/rdl/RDL-090/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-091",
+      "object_key": "reading/rdl/RDL-091/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-091",
+      "object_key": "reading/rdl/RDL-091/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-092",
+      "object_key": "reading/rdl/RDL-092/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-092",
+      "object_key": "reading/rdl/RDL-092/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-093",
+      "object_key": "reading/rdl/RDL-093/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-093",
+      "object_key": "reading/rdl/RDL-093/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-094",
+      "object_key": "reading/rdl/RDL-094/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-094",
+      "object_key": "reading/rdl/RDL-094/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-095",
+      "object_key": "reading/rdl/RDL-095/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-095",
+      "object_key": "reading/rdl/RDL-095/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-096",
+      "object_key": "reading/rdl/RDL-096/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-096",
+      "object_key": "reading/rdl/RDL-096/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-097",
+      "object_key": "reading/rdl/RDL-097/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-097",
+      "object_key": "reading/rdl/RDL-097/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-098",
+      "object_key": "reading/rdl/RDL-098/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-098",
+      "object_key": "reading/rdl/RDL-098/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-099",
+      "object_key": "reading/rdl/RDL-099/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-099",
+      "object_key": "reading/rdl/RDL-099/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-100",
+      "object_key": "reading/rdl/RDL-100/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-100",
+      "object_key": "reading/rdl/RDL-100/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-101",
+      "object_key": "reading/rdl/RDL-101/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-101",
+      "object_key": "reading/rdl/RDL-101/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-102",
+      "object_key": "reading/rdl/RDL-102/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-102",
+      "object_key": "reading/rdl/RDL-102/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-103",
+      "object_key": "reading/rdl/RDL-103/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-103",
+      "object_key": "reading/rdl/RDL-103/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-104",
+      "object_key": "reading/rdl/RDL-104/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-104",
+      "object_key": "reading/rdl/RDL-104/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-106",
+      "object_key": "reading/rdl/RDL-106/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-106",
+      "object_key": "reading/rdl/RDL-106/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-107",
+      "object_key": "reading/rdl/RDL-107/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-107",
+      "object_key": "reading/rdl/RDL-107/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-108",
+      "object_key": "reading/rdl/RDL-108/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-108",
+      "object_key": "reading/rdl/RDL-108/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-110",
+      "object_key": "reading/rdl/RDL-110/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-110",
+      "object_key": "reading/rdl/RDL-110/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-111",
+      "object_key": "reading/rdl/RDL-111/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-111",
+      "object_key": "reading/rdl/RDL-111/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-112",
+      "object_key": "reading/rdl/RDL-112/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-112",
+      "object_key": "reading/rdl/RDL-112/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-113",
+      "object_key": "reading/rdl/RDL-113/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-113",
+      "object_key": "reading/rdl/RDL-113/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-114",
+      "object_key": "reading/rdl/RDL-114/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-114",
+      "object_key": "reading/rdl/RDL-114/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-115",
+      "object_key": "reading/rdl/RDL-115/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-115",
+      "object_key": "reading/rdl/RDL-115/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-116",
+      "object_key": "reading/rdl/RDL-116/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-116",
+      "object_key": "reading/rdl/RDL-116/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-117",
+      "object_key": "reading/rdl/RDL-117/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-117",
+      "object_key": "reading/rdl/RDL-117/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-118",
+      "object_key": "reading/rdl/RDL-118/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-118",
+      "object_key": "reading/rdl/RDL-118/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-119",
+      "object_key": "reading/rdl/RDL-119/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-119",
+      "object_key": "reading/rdl/RDL-119/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-120",
+      "object_key": "reading/rdl/RDL-120/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-120",
+      "object_key": "reading/rdl/RDL-120/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-121",
+      "object_key": "reading/rdl/RDL-121/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-121",
+      "object_key": "reading/rdl/RDL-121/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-122",
+      "object_key": "reading/rdl/RDL-122/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-122",
+      "object_key": "reading/rdl/RDL-122/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-123",
+      "object_key": "reading/rdl/RDL-123/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-123",
+      "object_key": "reading/rdl/RDL-123/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-124",
+      "object_key": "reading/rdl/RDL-124/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-124",
+      "object_key": "reading/rdl/RDL-124/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-125",
+      "object_key": "reading/rdl/RDL-125/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-125",
+      "object_key": "reading/rdl/RDL-125/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-126",
+      "object_key": "reading/rdl/RDL-126/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-126",
+      "object_key": "reading/rdl/RDL-126/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-127",
+      "object_key": "reading/rdl/RDL-127/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-127",
+      "object_key": "reading/rdl/RDL-127/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-128",
+      "object_key": "reading/rdl/RDL-128/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-128",
+      "object_key": "reading/rdl/RDL-128/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-129",
+      "object_key": "reading/rdl/RDL-129/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-129",
+      "object_key": "reading/rdl/RDL-129/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-130",
+      "object_key": "reading/rdl/RDL-130/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-130",
+      "object_key": "reading/rdl/RDL-130/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-131",
+      "object_key": "reading/rdl/RDL-131/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-131",
+      "object_key": "reading/rdl/RDL-131/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-132",
+      "object_key": "reading/rdl/RDL-132/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-132",
+      "object_key": "reading/rdl/RDL-132/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-133",
+      "object_key": "reading/rdl/RDL-133/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-133",
+      "object_key": "reading/rdl/RDL-133/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-134",
+      "object_key": "reading/rdl/RDL-134/material_final.png",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    },
+    {
+      "material_id": "RDL-134",
+      "object_key": "reading/rdl/RDL-134/selection_map.json",
+      "status": "REMOTE_MISSING",
+      "reason": "HeadObject returned not found"
+    }
+  ]
+}

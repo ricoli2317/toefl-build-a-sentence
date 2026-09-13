@@ -1,0 +1,1209 @@
+{
+  "schema_version": "travel-rdl-r2-publish-dry-run-v1",
+  "status": "PASS",
+  "output_root": "/Users/rico/Desktop/真题/阅读/_work/recovery/travel-rdl-r2-publish",
+  "local_canonical_modified": false,
+  "r2_uploads_performed": 0,
+  "database_writes_performed": 0,
+  "sql_executed": false,
+  "work_created_materials": 46,
+  "retired_ids_in_scope": 0,
+  "inventory": {
+    "objects": 92,
+    "images": 46,
+    "selection_maps": 46,
+    "historical_objects": 0,
+    "unique_object_keys": 92
+  },
+  "remote": {
+    "REMOTE_MISSING": 92,
+    "REMOTE_IDENTICAL": 0,
+    "REMOTE_DIFFERENT": 0,
+    "REMOTE_UNVERIFIABLE": 0
+  },
+  "database": {
+    "access": "READ_ONLY_PASS",
+    "table_total": 86,
+    "table_bound": 86,
+    "historical_versioned": 10,
+    "historical_stable": 76,
+    "target_total": 46,
+    "counts": {
+      "DB_MISSING": 46,
+      "DB_EXISTS_SAME": 0,
+      "DB_EXISTS_DIFFERENT": 0
+    },
+    "records": [
+      {
+        "material_id": "RDL-087",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-088",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-089",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-090",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-091",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-092",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-093",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-094",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-095",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-096",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-097",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-098",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-099",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-100",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-101",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-102",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-103",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-104",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-106",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-107",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-108",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-110",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-111",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-112",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-113",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-114",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-115",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-116",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-117",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-118",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-119",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-120",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-121",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-122",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-123",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-124",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-125",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-126",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-127",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-128",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-129",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-130",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-131",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-132",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-133",
+        "status": "DB_MISSING"
+      },
+      {
+        "material_id": "RDL-134",
+        "status": "DB_MISSING"
+      }
+    ]
+  },
+  "sql": {
+    "generated": true,
+    "target_ids": 46,
+    "historical_ids_targeted": 0,
+    "retired_ids_targeted": 0,
+    "expected_rows": [
+      {
+        "material_id": "RDL-087",
+        "title": "Study Abroad in Valencia",
+        "material_type": "webpage",
+        "source": "material-index.json#RDL-087",
+        "source_date": "2026-07-01",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-087/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-087/selection_map.json"
+      },
+      {
+        "material_id": "RDL-088",
+        "title": "Winter Creative Writing Seminar",
+        "material_type": "course_description",
+        "source": "material-index.json#RDL-088",
+        "source_date": "2026-07-01",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-088/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-088/selection_map.json"
+      },
+      {
+        "material_id": "RDL-089",
+        "title": "Join the Mechanicsburg Clean-Up Day!",
+        "material_type": "poster",
+        "source": "material-index.json#RDL-089",
+        "source_date": "2026-07-01",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-089/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-089/selection_map.json"
+      },
+      {
+        "material_id": "RDL-090",
+        "title": "Campus Iyengar Yoga Classes",
+        "material_type": "article",
+        "source": "material-index.json#RDL-090",
+        "source_date": "2026-07-15",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-090/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-090/selection_map.json"
+      },
+      {
+        "material_id": "RDL-091",
+        "title": "Join the Campus Historical Society!",
+        "material_type": "poster",
+        "source": "material-index.json#RDL-091",
+        "source_date": "2026-07-05",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-091/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-091/selection_map.json"
+      },
+      {
+        "material_id": "RDL-092",
+        "title": "Fairmount University Ceramics Workshop",
+        "material_type": "poster",
+        "source": "material-index.json#RDL-092",
+        "source_date": "2026-07-05",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-092/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-092/selection_map.json"
+      },
+      {
+        "material_id": "RDL-093",
+        "title": "Residence-Hall Vegan Menu Expansion",
+        "material_type": "article",
+        "source": "material-index.json#RDL-093",
+        "source_date": "2026-07-05",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-093/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-093/selection_map.json"
+      },
+      {
+        "material_id": "RDL-094",
+        "title": "Foundations of Graphic Design",
+        "material_type": "course_description",
+        "source": "material-index.json#RDL-094",
+        "source_date": "2026-07-06",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-094/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-094/selection_map.json"
+      },
+      {
+        "material_id": "RDL-095",
+        "title": "Physics for Engineers I",
+        "material_type": "course_description",
+        "source": "material-index.json#RDL-095",
+        "source_date": "2026-07-07",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-095/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-095/selection_map.json"
+      },
+      {
+        "material_id": "RDL-096",
+        "title": "Innovation Hub: Student Showcase",
+        "material_type": "poster",
+        "source": "material-index.json#RDL-096",
+        "source_date": "2026-07-07",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-096/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-096/selection_map.json"
+      },
+      {
+        "material_id": "RDL-097",
+        "title": "Campus Dining: Healthy Meal Options",
+        "material_type": "notice",
+        "source": "material-index.json#RDL-097",
+        "source_date": "2026-07-08",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-097/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-097/selection_map.json"
+      },
+      {
+        "material_id": "RDL-098",
+        "title": "Breakfast Service Changes",
+        "material_type": "notice",
+        "source": "material-index.json#RDL-098",
+        "source_date": "2026-07-14",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-098/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-098/selection_map.json"
+      },
+      {
+        "material_id": "RDL-099",
+        "title": "Prague Summer Study Program",
+        "material_type": "poster",
+        "source": "material-index.json#RDL-099",
+        "source_date": "2026-07-14",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-099/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-099/selection_map.json"
+      },
+      {
+        "material_id": "RDL-100",
+        "title": "Rescheduled Architecture Lecture",
+        "material_type": "email",
+        "source": "material-index.json#RDL-100",
+        "source_date": "2026-07-15",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-100/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-100/selection_map.json"
+      },
+      {
+        "material_id": "RDL-101",
+        "title": "The Review of Whispering Woods",
+        "material_type": "review",
+        "source": "material-index.json#RDL-101",
+        "source_date": "2026-07-20",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-101/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-101/selection_map.json"
+      },
+      {
+        "material_id": "RDL-102",
+        "title": "Harrison University Bike Sharing",
+        "material_type": "article",
+        "source": "material-index.json#RDL-102",
+        "source_date": "2026-07-20",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-102/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-102/selection_map.json"
+      },
+      {
+        "material_id": "RDL-103",
+        "title": "ALL-DAY CRAFT FAIR",
+        "material_type": "advertisement",
+        "source": "material-index.json#RDL-103",
+        "source_date": "2026-07-21",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-103/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-103/selection_map.json"
+      },
+      {
+        "material_id": "RDL-104",
+        "title": "Hamartia Discussion",
+        "material_type": "online_discussion",
+        "source": "material-index.json#RDL-104",
+        "source_date": "2026-07-21",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-104/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-104/selection_map.json"
+      },
+      {
+        "material_id": "RDL-106",
+        "title": "World Cultures Club",
+        "material_type": "notice",
+        "source": "material-index.json#RDL-106",
+        "source_date": "2026-07-21",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-106/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-106/selection_map.json"
+      },
+      {
+        "material_id": "RDL-107",
+        "title": "Contemporary Art History",
+        "material_type": "course_description",
+        "source": "material-index.json#RDL-107",
+        "source_date": "2026-07-22",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-107/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-107/selection_map.json"
+      },
+      {
+        "material_id": "RDL-108",
+        "title": "Student Engagement Initiatives",
+        "material_type": "article",
+        "source": "material-index.json#RDL-108",
+        "source_date": "2026-07-22",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-108/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-108/selection_map.json"
+      },
+      {
+        "material_id": "RDL-110",
+        "title": "Herb Garden at Newton University",
+        "material_type": "article",
+        "source": "material-index.json#RDL-110",
+        "source_date": "2026-07-22",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-110/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-110/selection_map.json"
+      },
+      {
+        "material_id": "RDL-111",
+        "title": "Library Café Early Closure",
+        "material_type": "email",
+        "source": "material-index.json#RDL-111",
+        "source_date": "2026-07-22",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-111/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-111/selection_map.json"
+      },
+      {
+        "material_id": "RDL-112",
+        "title": "Baker Rugby Championship",
+        "material_type": "article",
+        "source": "material-index.json#RDL-112",
+        "source_date": "2026-07-22",
+        "year_month": "2026-07",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-112/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-112/selection_map.json"
+      },
+      {
+        "material_id": "RDL-113",
+        "title": "Free Health Screening Event",
+        "material_type": "poster",
+        "source": "material-index.json#RDL-113",
+        "source_date": "2026-08-04",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-113/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-113/selection_map.json"
+      },
+      {
+        "material_id": "RDL-114",
+        "title": "Survey of Literary Theory",
+        "material_type": "course_syllabus",
+        "source": "material-index.json#RDL-114",
+        "source_date": "2026-08-04",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-114/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-114/selection_map.json"
+      },
+      {
+        "material_id": "RDL-115",
+        "title": "The Silent Echo",
+        "material_type": "review",
+        "source": "material-index.json#RDL-115",
+        "source_date": "2026-08-05",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-115/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-115/selection_map.json"
+      },
+      {
+        "material_id": "RDL-116",
+        "title": "Math Tutoring Program",
+        "material_type": "advertisement",
+        "source": "material-index.json#RDL-116",
+        "source_date": "2026-08-05",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-116/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-116/selection_map.json"
+      },
+      {
+        "material_id": "RDL-117",
+        "title": "History 302 Research Assignment",
+        "material_type": "email",
+        "source": "material-index.json#RDL-117",
+        "source_date": "2026-08-05",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-117/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-117/selection_map.json"
+      },
+      {
+        "material_id": "RDL-118",
+        "title": "Echoes of Tomorrow",
+        "material_type": "review",
+        "source": "material-index.json#RDL-118",
+        "source_date": "2026-08-08",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-118/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-118/selection_map.json"
+      },
+      {
+        "material_id": "RDL-119",
+        "title": "Application for Research Assistant Position",
+        "material_type": "email",
+        "source": "material-index.json#RDL-119",
+        "source_date": "2026-08-08",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-119/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-119/selection_map.json"
+      },
+      {
+        "material_id": "RDL-120",
+        "title": "Gardener’s Delight Soil Mix",
+        "material_type": "review",
+        "source": "material-index.json#RDL-120",
+        "source_date": "2026-08-08",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-120/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-120/selection_map.json"
+      },
+      {
+        "material_id": "RDL-121",
+        "title": "Science Research Proposal Workshop",
+        "material_type": "schedule",
+        "source": "material-index.json#RDL-121",
+        "source_date": "2026-08-08",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-121/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-121/selection_map.json"
+      },
+      {
+        "material_id": "RDL-122",
+        "title": "Mindfulness Workshop",
+        "material_type": "announcement",
+        "source": "material-index.json#RDL-122",
+        "source_date": "2026-08-09",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-122/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-122/selection_map.json"
+      },
+      {
+        "material_id": "RDL-123",
+        "title": "Renewable Energy Research Paper",
+        "material_type": "email",
+        "source": "material-index.json#RDL-123",
+        "source_date": "2026-08-09",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-123/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-123/selection_map.json"
+      },
+      {
+        "material_id": "RDL-124",
+        "title": "Eastwood Campus Dining Options",
+        "material_type": "blog_post",
+        "source": "material-index.json#RDL-124",
+        "source_date": "2026-08-12",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-124/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-124/selection_map.json"
+      },
+      {
+        "material_id": "RDL-125",
+        "title": "Mediation Options",
+        "material_type": "email",
+        "source": "material-index.json#RDL-125",
+        "source_date": "2026-08-12",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-125/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-125/selection_map.json"
+      },
+      {
+        "material_id": "RDL-126",
+        "title": "Summer House and Pet Sitting",
+        "material_type": "advertisement",
+        "source": "material-index.json#RDL-126",
+        "source_date": "2026-08-12",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-126/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-126/selection_map.json"
+      },
+      {
+        "material_id": "RDL-127",
+        "title": "Physics for Engineers I",
+        "material_type": "course_description",
+        "source": "material-index.json#RDL-127",
+        "source_date": "2026-08-12",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-127/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-127/selection_map.json"
+      },
+      {
+        "material_id": "RDL-128",
+        "title": "EX-5000 3D Printer Instructions",
+        "material_type": "instructions",
+        "source": "material-index.json#RDL-128",
+        "source_date": "2026-08-12",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-128/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-128/selection_map.json"
+      },
+      {
+        "material_id": "RDL-129",
+        "title": "Exploring Cultural Artifacts",
+        "material_type": "course_description",
+        "source": "material-index.json#RDL-129",
+        "source_date": "2026-08-18",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-129/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-129/selection_map.json"
+      },
+      {
+        "material_id": "RDL-130",
+        "title": "AI Robot Baristas",
+        "material_type": "article",
+        "source": "material-index.json#RDL-130",
+        "source_date": "2026-08-18",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-130/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-130/selection_map.json"
+      },
+      {
+        "material_id": "RDL-131",
+        "title": "Student Council Meeting Plans",
+        "material_type": "text_message_chain",
+        "source": "material-index.json#RDL-131",
+        "source_date": "2026-08-18",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-131/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-131/selection_map.json"
+      },
+      {
+        "material_id": "RDL-132",
+        "title": "TrailBlayzer Hiking Boots",
+        "material_type": "review",
+        "source": "material-index.json#RDL-132",
+        "source_date": "2026-08-19",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-132/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-132/selection_map.json"
+      },
+      {
+        "material_id": "RDL-133",
+        "title": "Remote Learning Assignment Discussion",
+        "material_type": "text_message_chain",
+        "source": "material-index.json#RDL-133",
+        "source_date": "2026-08-19",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-133/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-133/selection_map.json"
+      },
+      {
+        "material_id": "RDL-134",
+        "title": "Question About Group Project Guidelines",
+        "material_type": "email",
+        "source": "material-index.json#RDL-134",
+        "source_date": "2026-08-19",
+        "year_month": "2026-08",
+        "binding_status": "bound",
+        "image_asset_path": "reading/rdl/RDL-134/material_final.png",
+        "hitbox_data_path": "reading/rdl/RDL-134/selection_map.json"
+      }
+    ],
+    "material_type_evidence": [
+      {
+        "material_id": "RDL-087",
+        "occurrence": "7.1A-M1-RDL-01",
+        "instruction": "Read a webpage.",
+        "material_type": "webpage",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-087",
+        "occurrence": "7.1B-M1-RDL-01",
+        "instruction": "Read a webpage.",
+        "material_type": "webpage",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-087",
+        "occurrence": "8.2A-M1-RDL-01",
+        "instruction": "Read a webpage.",
+        "material_type": "webpage",
+        "source": "TOEFL_Reading_8.2A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-088",
+        "occurrence": "7.1A-M1-RDL-03",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-088",
+        "occurrence": "7.1B-M1-RDL-03",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-088",
+        "occurrence": "8.2A-M1-RDL-03",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "TOEFL_Reading_8.2A.docx#RDL-03"
+      },
+      {
+        "material_id": "RDL-089",
+        "occurrence": "7.1C-M1-RDL-01",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-090",
+        "occurrence": "7.1C-M1-RDL-02",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-090",
+        "occurrence": "7.15B-M1-RDL-03",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-090",
+        "occurrence": "7.15C-M1-RDL-03",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-091",
+        "occurrence": "7.5A-M1-RDL-01",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-091",
+        "occurrence": "7.5B-M1-RDL-01",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-092",
+        "occurrence": "7.5C-M1-RDL-02",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-093",
+        "occurrence": "7.5C-M1-RDL-04",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-094",
+        "occurrence": "7.6A-M1-RDL-02",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-095",
+        "occurrence": "7.7A-M1-RDL-02",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-095",
+        "occurrence": "8.9B-M1-RDL-01",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "TOEFL_Reading_8.9B.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-096",
+        "occurrence": "7.7A-M1-RDL-04",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-097",
+        "occurrence": "7.8A-M1-RDL-01",
+        "instruction": "Read a notice.",
+        "material_type": "notice",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-097",
+        "occurrence": "7.8B-M1-RDL-01",
+        "instruction": "Read a notice.",
+        "material_type": "notice",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-097",
+        "occurrence": "8.12A-M1-RDL-02",
+        "instruction": "Read a notice.",
+        "material_type": "notice",
+        "source": "TOEFL_Reading_8.12A.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-098",
+        "occurrence": "7.14A-M1-RDL-01",
+        "instruction": "Read a notice.",
+        "material_type": "notice",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-099",
+        "occurrence": "7.14A-M1-RDL-03",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-100",
+        "occurrence": "7.15B-M1-RDL-01",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-100",
+        "occurrence": "7.15C-M1-RDL-01",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-101",
+        "occurrence": "7.20A-M1-RDL-01",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-101",
+        "occurrence": "7.20B-M1-RDL-01",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-102",
+        "occurrence": "7.20A-M1-RDL-03",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-102",
+        "occurrence": "7.20B-M1-RDL-03",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-103",
+        "occurrence": "7.21A-M1-RDL-01",
+        "instruction": "Read an advertisement.",
+        "material_type": "advertisement",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-104",
+        "occurrence": "7.21A-M1-RDL-02",
+        "instruction": "Read an online discussion.",
+        "material_type": "online_discussion",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-106",
+        "occurrence": "7.21B-M1-RDL-01",
+        "instruction": "Read a notice.",
+        "material_type": "notice",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-107",
+        "occurrence": "7.22A-M1-RDL-01",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "TOEFL_Reading_7.22A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-107",
+        "occurrence": "7.22C-M1-RDL-01",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-107",
+        "occurrence": "7.22D-M1-RDL-01",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "TOEFL_Reading_7.22D.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-108",
+        "occurrence": "7.22A-M1-RDL-02",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "TOEFL_Reading_7.22A.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-108",
+        "occurrence": "7.22C-M1-RDL-02",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "RDL_FINAL_RELEASE_MAP.travel-local.json"
+      },
+      {
+        "material_id": "RDL-108",
+        "occurrence": "7.22D-M1-RDL-02",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "TOEFL_Reading_7.22D.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-110",
+        "occurrence": "7.22B-M1-RDL-01",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "TOEFL_Reading_7.22B.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-111",
+        "occurrence": "7.22B-M1-RDL-02",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_7.22B.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-112",
+        "occurrence": "7.22B-M1-RDL-04",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "TOEFL_Reading_7.22B.docx#RDL-04"
+      },
+      {
+        "material_id": "RDL-113",
+        "occurrence": "8.4A-M1-RDL-01",
+        "instruction": "Read a poster.",
+        "material_type": "poster",
+        "source": "TOEFL_Reading_8.4A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-114",
+        "occurrence": "8.4A-M1-RDL-02",
+        "instruction": "Read a course syllabus.",
+        "material_type": "course_syllabus",
+        "source": "TOEFL_Reading_8.4A.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-115",
+        "occurrence": "8.5A-M1-RDL-01",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "TOEFL_Reading_8.5A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-116",
+        "occurrence": "8.5A-M1-RDL-02",
+        "instruction": "Read an advertisement.",
+        "material_type": "advertisement",
+        "source": "TOEFL_Reading_8.5A.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-117",
+        "occurrence": "8.5A-M1-RDL-04",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.5A.docx#RDL-04"
+      },
+      {
+        "material_id": "RDL-117",
+        "occurrence": "8.9B-M1-RDL-02",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.9B.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-118",
+        "occurrence": "8.8A-M1-RDL-01",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "TOEFL_Reading_8.8A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-118",
+        "occurrence": "8.8B-M1-RDL-01",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "TOEFL_Reading_8.8B.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-119",
+        "occurrence": "8.8A-M1-RDL-04",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.8A.docx#RDL-04"
+      },
+      {
+        "material_id": "RDL-120",
+        "occurrence": "8.8B-M1-RDL-02",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "TOEFL_Reading_8.8B.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-121",
+        "occurrence": "8.8C-M1-RDL-01",
+        "instruction": "Read a schedule.",
+        "material_type": "schedule",
+        "source": "TOEFL_Reading_8.8C.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-121",
+        "occurrence": "8.8D-M1-RDL-01",
+        "instruction": "Read a schedule.",
+        "material_type": "schedule",
+        "source": "TOEFL_Reading_8.8D.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-122",
+        "occurrence": "8.9A-M1-RDL-02",
+        "instruction": "Read an announcement.",
+        "material_type": "announcement",
+        "source": "TOEFL_Reading_8.9A.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-123",
+        "occurrence": "8.9A-M1-RDL-04",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.9A.docx#RDL-04"
+      },
+      {
+        "material_id": "RDL-124",
+        "occurrence": "8.12A-M1-RDL-01",
+        "instruction": "Read a blog post.",
+        "material_type": "blog_post",
+        "source": "TOEFL_Reading_8.12A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-125",
+        "occurrence": "8.12A-M1-RDL-03",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.12A.docx#RDL-03"
+      },
+      {
+        "material_id": "RDL-126",
+        "occurrence": "8.12A-M1-RDL-04",
+        "instruction": "Read an advertisement.",
+        "material_type": "advertisement",
+        "source": "TOEFL_Reading_8.12A.docx#RDL-04"
+      },
+      {
+        "material_id": "RDL-127",
+        "occurrence": "8.12B-M1-RDL-01",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "TOEFL_Reading_8.12B.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-128",
+        "occurrence": "8.12B-M1-RDL-02",
+        "instruction": "Read the instructions.",
+        "material_type": "instructions",
+        "source": "TOEFL_Reading_8.12B.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-129",
+        "occurrence": "8.18A-M1-RDL-01",
+        "instruction": "Read a course description.",
+        "material_type": "course_description",
+        "source": "TOEFL_Reading_8.18A.docx#RDL-01"
+      },
+      {
+        "material_id": "RDL-130",
+        "occurrence": "8.18A-M1-RDL-02",
+        "instruction": "Read an article.",
+        "material_type": "article",
+        "source": "TOEFL_Reading_8.18A.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-131",
+        "occurrence": "8.18B-M1-RDL-03",
+        "instruction": "Read a text-message chain.",
+        "material_type": "text_message_chain",
+        "source": "TOEFL_Reading_8.18B.docx#RDL-03"
+      },
+      {
+        "material_id": "RDL-132",
+        "occurrence": "8.19B-M1-RDL-02",
+        "instruction": "Read a review.",
+        "material_type": "review",
+        "source": "TOEFL_Reading_8.19B.docx#RDL-02"
+      },
+      {
+        "material_id": "RDL-133",
+        "occurrence": "8.19B-M1-RDL-03",
+        "instruction": "Read a text-message chain.",
+        "material_type": "text_message_chain",
+        "source": "TOEFL_Reading_8.19B.docx#RDL-03"
+      },
+      {
+        "material_id": "RDL-134",
+        "occurrence": "8.8B-M1-RDL-03",
+        "instruction": "Read the email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.8B.docx#RDL-03"
+      },
+      {
+        "material_id": "RDL-134",
+        "occurrence": "8.19B-M1-RDL-04",
+        "instruction": "Read an email.",
+        "material_type": "email",
+        "source": "TOEFL_Reading_8.19B.docx#RDL-04"
+      }
+    ]
+  },
+  "blockers": []
+}

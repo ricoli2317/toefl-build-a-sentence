@@ -1,0 +1,846 @@
+{
+  "schema_version": "travel-rdl-r2-upload-inventory-v1",
+  "status": "DRY_RUN_ONLY",
+  "object_key_contract": "reading/rdl/<RDL-ID>/{material_final.png,selection_map.json}",
+  "material_count": 46,
+  "image_count": 46,
+  "selection_map_count": 46,
+  "object_count": 92,
+  "historical_object_count": 0,
+  "excluded": [
+    "asset.json",
+    "metadata.json",
+    "preview.jpg",
+    "source_original.png"
+  ],
+  "objects": [
+    {
+      "material_id": "RDL-087",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-087/material_final.png",
+      "object_key": "reading/rdl/RDL-087/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "44e06686f1ad67325fff06410bd8cd223bfdc3a405463e313191f5322b63b7c1",
+      "size": 1123872,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-087",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-087/selection_map.json",
+      "object_key": "reading/rdl/RDL-087/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "186bb4d226df3e493feea7aef1b5541b8709bfdac56271dc2f8c89a0c3e21844",
+      "size": 151357,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-088",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-088/material_final.png",
+      "object_key": "reading/rdl/RDL-088/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "d365b479faf01f5a66f5dc7d36174b4951863ce4563498b954d23eb64de9a977",
+      "size": 1381840,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-088",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-088/selection_map.json",
+      "object_key": "reading/rdl/RDL-088/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "51103314ee7a2cdb9e052822fcad5b6eeade2b177d9d9e9eba2dbe9cf85614a7",
+      "size": 364036,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-089",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-089/material_final.png",
+      "object_key": "reading/rdl/RDL-089/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "7a91321ef9cd0ec072808a30fd8df655271da6f36753f27ba0a3e82cb73e5e35",
+      "size": 1100193,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-089",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-089/selection_map.json",
+      "object_key": "reading/rdl/RDL-089/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "12a914f7980371b15dfee2166a808114f5b49abc46507b2082f379563eafc5b8",
+      "size": 129120,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-090",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-090/material_final.png",
+      "object_key": "reading/rdl/RDL-090/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "39b7376951cd80000314eaa1f45a64cbd15dd21429ea9e0ef419ab249480027e",
+      "size": 1417254,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-090",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-090/selection_map.json",
+      "object_key": "reading/rdl/RDL-090/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "d23175ce54895f4433e3e5a15d3a25f2398d44d6b32cd1373c205bfd44759cc7",
+      "size": 424948,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-091",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-091/material_final.png",
+      "object_key": "reading/rdl/RDL-091/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "18149fd374bb6ef8d7ef6e772790eb754e647540bb8aaf33bab84684882edd9f",
+      "size": 1230890,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-091",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-091/selection_map.json",
+      "object_key": "reading/rdl/RDL-091/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "9130cb84922d43b2bee5611a743f9d4df3d80db861d77a227aaaa8453cbca31f",
+      "size": 118345,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-092",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-092/material_final.png",
+      "object_key": "reading/rdl/RDL-092/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "f53e916bc48363f3577563f4fb07413881faa373a67b90302d4d27b9ccb7699c",
+      "size": 1245411,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-092",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-092/selection_map.json",
+      "object_key": "reading/rdl/RDL-092/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "2f33f72af7752b4f7bc509b111844c173a6acd6ac2d58207050af1894ad185b0",
+      "size": 107146,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-093",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-093/material_final.png",
+      "object_key": "reading/rdl/RDL-093/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "b4a53d561b75c2ebe8455c70af15b066d02e9dd5b8f36e8300f0d3afb585e130",
+      "size": 1854944,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-093",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-093/selection_map.json",
+      "object_key": "reading/rdl/RDL-093/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "961013bd2d73ed301be39ce71b37df6dde644e577d56caa0e24236b3a003be7f",
+      "size": 378873,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-094",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-094/material_final.png",
+      "object_key": "reading/rdl/RDL-094/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "7f0a7f05e0641443150219409750ac1f79cd6398e52e36a4927ebc3a9ea84297",
+      "size": 1022224,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-094",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-094/selection_map.json",
+      "object_key": "reading/rdl/RDL-094/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "e8c529334afaa33122f53440db5201443f54393852e71402e1559aa9654b9673",
+      "size": 126588,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-095",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-095/material_final.png",
+      "object_key": "reading/rdl/RDL-095/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "01b3f2ed2ce3371b88685adb34523a34d4180f84f1b8190bcf6cc678b43156d3",
+      "size": 1165617,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-095",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-095/selection_map.json",
+      "object_key": "reading/rdl/RDL-095/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "a7b6fc4ad503e7c6652be92996b57ec77fa198c8a14423d7700789e59363503e",
+      "size": 145054,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-096",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-096/material_final.png",
+      "object_key": "reading/rdl/RDL-096/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "03185d114f0dbc5a0773b8e5431138030a2278b0cb45662e019181035c4633c7",
+      "size": 1561683,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-096",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-096/selection_map.json",
+      "object_key": "reading/rdl/RDL-096/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "9af822d09d6a0698a9e4939fa2aa8b38da52fe5bbb11f8f16d25e1204301f44f",
+      "size": 378468,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-097",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-097/material_final.png",
+      "object_key": "reading/rdl/RDL-097/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "c243b93f239c1dc44706175f44528c8bb05f344c807ec30c331ba066f81a62ba",
+      "size": 1074141,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-097",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-097/selection_map.json",
+      "object_key": "reading/rdl/RDL-097/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "fdf547dc257f979769eb66ee62ae19aa0c1232ec14902f590f293e39de8c0de9",
+      "size": 128806,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-098",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-098/material_final.png",
+      "object_key": "reading/rdl/RDL-098/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "71f53b6550035e7935afc109b58689ba04069900fb712d6484c2c3f82e3e12b7",
+      "size": 982089,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-098",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-098/selection_map.json",
+      "object_key": "reading/rdl/RDL-098/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "2119062e9e4cd8b6cf79d4e6c968f980d78154be1f01e7e21f78ee61bc5a541c",
+      "size": 134192,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-099",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-099/material_final.png",
+      "object_key": "reading/rdl/RDL-099/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "8c919308b12703218ba9154b36ec55203f918ae235d1a73559c5d521cfa0b132",
+      "size": 1490402,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-099",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-099/selection_map.json",
+      "object_key": "reading/rdl/RDL-099/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "37af7e25753b209140c8b6621ea8fdb52bfab1ee66c73c11def7533d07c1e52c",
+      "size": 406506,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-100",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-100/material_final.png",
+      "object_key": "reading/rdl/RDL-100/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "42eed951978a856b41c1f861158f4f85f8d59d0288adb130c98d4e6b3934eac9",
+      "size": 1104257,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-100",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-100/selection_map.json",
+      "object_key": "reading/rdl/RDL-100/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "a37f565f4cfd81e5143a24619bbed59a80401f4d54e04cc4cc6fd69af02b1501",
+      "size": 128344,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-101",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-101/material_final.png",
+      "object_key": "reading/rdl/RDL-101/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "dd6bbf482e78c0a823193b00e38ea4766fd9b97c5b2e13465d5e7172584e3aa9",
+      "size": 1159758,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-101",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-101/selection_map.json",
+      "object_key": "reading/rdl/RDL-101/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "53f0aadfafba4de606f414cf9401c5130bc480cb6dcb56931ba60fe8b4fd7905",
+      "size": 144311,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-102",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-102/material_final.png",
+      "object_key": "reading/rdl/RDL-102/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "c5f9010e6d8fcd41c9e4a1002a5a0569d7f933d83d2291b8e4f7046513c48c45",
+      "size": 1411893,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-102",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-102/selection_map.json",
+      "object_key": "reading/rdl/RDL-102/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "911bb7c8e60c5227afda85b826f24a6bb7673755d2ab5bdd7c13c40eb6360e20",
+      "size": 393917,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-103",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-103/material_final.png",
+      "object_key": "reading/rdl/RDL-103/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "5285f1e03c4dfed05c8901777649a55135849fcff0cde52fe6e78a42be39d90a",
+      "size": 1542087,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-103",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-103/selection_map.json",
+      "object_key": "reading/rdl/RDL-103/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "92a93923a497798ffbe1952ac44372c8ed5122b11c1834693723ff25d52b12bb",
+      "size": 135159,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-104",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-104/material_final.png",
+      "object_key": "reading/rdl/RDL-104/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "a92d257d254a3d0502794a7e5462917700a81577a4b5f447310abc771ec3b430",
+      "size": 1488559,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-104",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-104/selection_map.json",
+      "object_key": "reading/rdl/RDL-104/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "7d2b608f263eddff0c9990d7f2dabb63c2a4946be0ede4dd4c70aa1ba66baa9b",
+      "size": 406386,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-106",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-106/material_final.png",
+      "object_key": "reading/rdl/RDL-106/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "f5d2a2954abbb8b91944d8c36ede5fe129c7fa509c9faf31ffee83db27982154",
+      "size": 1082188,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-106",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-106/selection_map.json",
+      "object_key": "reading/rdl/RDL-106/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "87efe99e9ff5ebc28caa6db091bcea0e47753887d872e7981647402a93efbf7d",
+      "size": 118037,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-107",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-107/material_final.png",
+      "object_key": "reading/rdl/RDL-107/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "b7eea5bc6a263e5617033e6eb71500a459acd5bb8c3c7d35b07b91b39c93b886",
+      "size": 1144067,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-107",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-107/selection_map.json",
+      "object_key": "reading/rdl/RDL-107/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "25af0cdf5333d98c6919b7384809bcad4f68b867a2e601eaab1cf65644ed0523",
+      "size": 145897,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-108",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-108/material_final.png",
+      "object_key": "reading/rdl/RDL-108/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "8e52a7f1f322e552ed87dd04048d8129d4eaff7336e3c6bfd7e3800d36dbe40c",
+      "size": 1560119,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-108",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-108/selection_map.json",
+      "object_key": "reading/rdl/RDL-108/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "93c59ad5836a317e1a87357ad45c07b9afa290134f311f5bf7668fbbb3c2e243",
+      "size": 441906,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-110",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-110/material_final.png",
+      "object_key": "reading/rdl/RDL-110/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "164cb8fe24e8aebb2feef765e6fe30b38344ec3ce4b006c98639ec96462cbb4d",
+      "size": 1189828,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-110",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-110/selection_map.json",
+      "object_key": "reading/rdl/RDL-110/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "1b80a1ba23a70784f58469a95579c59550555228ce8d3d844d2f68901409110d",
+      "size": 135628,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-111",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-111/material_final.png",
+      "object_key": "reading/rdl/RDL-111/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "4007b74a30f2d852ca223001b7d8569f87a5d0ddac5f519c073799cb0142641d",
+      "size": 1054670,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-111",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-111/selection_map.json",
+      "object_key": "reading/rdl/RDL-111/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "d116e5ea4490d6324b4d9ee9ea74f5e9a0dd595b5938925502d36d83cb637d59",
+      "size": 123856,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-112",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-112/material_final.png",
+      "object_key": "reading/rdl/RDL-112/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "9941ae85a84b9bf89c4c20f5059232d5c30745604b9f3e2dc03240cc3622fdb6",
+      "size": 1451324,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-112",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-112/selection_map.json",
+      "object_key": "reading/rdl/RDL-112/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "7e794de709f1487c7b9add096fc66df5ec14daf4024b4d8f203bd7f13a5cb8e6",
+      "size": 367741,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-113",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-113/material_final.png",
+      "object_key": "reading/rdl/RDL-113/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "95f127e7192167d5c432ff39db9eb70c46d1e2222f9030979ff8d1bc9df73be1",
+      "size": 979449,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-113",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-113/selection_map.json",
+      "object_key": "reading/rdl/RDL-113/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "be3cce4034804541c97ebc65b6ddd4c46c0b881c7180a6237e3ca00264ace8ad",
+      "size": 110996,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-114",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-114/material_final.png",
+      "object_key": "reading/rdl/RDL-114/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "a7b8bbe8122a87a793697fe36677a2a8d9a1c59f7a62cb8d8d925f2add5b231b",
+      "size": 1619903,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-114",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-114/selection_map.json",
+      "object_key": "reading/rdl/RDL-114/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "81f49bb3501bb27a1e3b56a5021cf2fcae3747c0c29aca01fa598c71a989bbbb",
+      "size": 436268,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-115",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-115/material_final.png",
+      "object_key": "reading/rdl/RDL-115/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "54aa0c6e14bfe135527e2d176f0836eae2fd79adfad5663975162af0d5d952ea",
+      "size": 1133905,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-115",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-115/selection_map.json",
+      "object_key": "reading/rdl/RDL-115/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "6ef76dc4167e4f59ea757513a3fc124a97c27116a7c0edab10f4a9afd5a173ed",
+      "size": 128443,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-116",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-116/material_final.png",
+      "object_key": "reading/rdl/RDL-116/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "6aa186c9ff2436f540393dc2b61528b17f57a0fe856acd5e9dc0a226a9d52e61",
+      "size": 1143902,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-116",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-116/selection_map.json",
+      "object_key": "reading/rdl/RDL-116/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "c1fe1b2537caa84dcacfdb7c7ade1bc8ba356db649ed52c8d3a010e83e4f1e21",
+      "size": 110741,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-117",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-117/material_final.png",
+      "object_key": "reading/rdl/RDL-117/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "abc9c524f4db717dfeeea50fd1cc99bce847ebd2ff48ba894e69b6ed0d7a127b",
+      "size": 1433875,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-117",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-117/selection_map.json",
+      "object_key": "reading/rdl/RDL-117/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "9f1deb3804ee6460bac4184659d54f0e17366cd842e455606b32c28af7d4fce2",
+      "size": 396160,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-118",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-118/material_final.png",
+      "object_key": "reading/rdl/RDL-118/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "dd42d561da616d9371636e17044af5e7110a89628ef05c7ea66df7699264b9aa",
+      "size": 1250362,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-118",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-118/selection_map.json",
+      "object_key": "reading/rdl/RDL-118/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "65adb9baac0f2b7d9b6a8a3135125836e0c21c23137666f3945dd98ec585b0e4",
+      "size": 131889,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-119",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-119/material_final.png",
+      "object_key": "reading/rdl/RDL-119/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "a8b6dce4655db112898e74f665ea17d2923227a4e6fa452a16f5284f73bc5b0c",
+      "size": 1320052,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-119",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-119/selection_map.json",
+      "object_key": "reading/rdl/RDL-119/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "78e1baf4955324ba45acaf994223fbd162cea11fb80d5292b3240d6137c86de8",
+      "size": 287579,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-120",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-120/material_final.png",
+      "object_key": "reading/rdl/RDL-120/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "4d5c14f14052c5b6be14e2ca78198ce0a064036f0790589d89dd9e462b3a5887",
+      "size": 1086142,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-120",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-120/selection_map.json",
+      "object_key": "reading/rdl/RDL-120/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "b10631a593cb430acfb322a3b12b6bf2137e8af9a1775a151f38b4a3eb5f58cf",
+      "size": 135213,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-121",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-121/material_final.png",
+      "object_key": "reading/rdl/RDL-121/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "347d0004d290e6932cfee36b374595f1169223ac46b39c6e6b094b9ce23b826c",
+      "size": 1125867,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-121",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-121/selection_map.json",
+      "object_key": "reading/rdl/RDL-121/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "024de36e6740f413c155282c8e0613ccc0dcfc32144d20daf43389671a1eb55d",
+      "size": 124262,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-122",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-122/material_final.png",
+      "object_key": "reading/rdl/RDL-122/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "544479799fb8f211b5eb6b4c78b50af274254add18b1909ef7f3e1e95de39206",
+      "size": 1381904,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-122",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-122/selection_map.json",
+      "object_key": "reading/rdl/RDL-122/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "1347a2d75b76306c49056d082ef91d7467aae5e7d4c7e7a1dbf834ff1f610827",
+      "size": 154906,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-123",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-123/material_final.png",
+      "object_key": "reading/rdl/RDL-123/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "b7ee31249b3f9251f55f46a2a2cb956f0f552e59e385c9fa6682ce859af6204d",
+      "size": 1318225,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-123",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-123/selection_map.json",
+      "object_key": "reading/rdl/RDL-123/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "947f1d8b76e3f54c6a3b481dd9b2463894c3ec65b9b103d7f3a7f78fe11018a1",
+      "size": 357506,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-124",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-124/material_final.png",
+      "object_key": "reading/rdl/RDL-124/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "e66f63cbe4c4c4f9a190e9fce949597aa16a21c3a30e7952417fabf4d5e89bd2",
+      "size": 1120038,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-124",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-124/selection_map.json",
+      "object_key": "reading/rdl/RDL-124/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "72b5590934037a57cb9383395f3131124cc4d8ffc6e9a84139d5bd1ae4e1af14",
+      "size": 117198,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-125",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-125/material_final.png",
+      "object_key": "reading/rdl/RDL-125/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "fe0e6008df959328fe520a5d207d3616b8c01a122c4c125691c4aea59640dbbe",
+      "size": 1393385,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-125",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-125/selection_map.json",
+      "object_key": "reading/rdl/RDL-125/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "c2c9e48d39425c0d9beadfcc1d96895138c0ce5cb4822ae72caa53dbdcfabd67",
+      "size": 339393,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-126",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-126/material_final.png",
+      "object_key": "reading/rdl/RDL-126/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "89c9230432695feecfc8ae0ed86e67ce8c164d84290c1cf67e910deaf22da257",
+      "size": 1521522,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-126",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-126/selection_map.json",
+      "object_key": "reading/rdl/RDL-126/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "e550677e3865b1a01a6b1b2495c1696569e65ac2689b4b5519fc6ccb3ab9f560",
+      "size": 309338,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-127",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-127/material_final.png",
+      "object_key": "reading/rdl/RDL-127/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "9597c40ecc2b257b66d48fabdb36fef0ec32da082c15ec615e6ae6c2fd57759f",
+      "size": 1137218,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-127",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-127/selection_map.json",
+      "object_key": "reading/rdl/RDL-127/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "223290fe650c0f075a0bbce481b840c26b1f516bfce0e1f5b6de5df59849d47e",
+      "size": 145380,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-128",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-128/material_final.png",
+      "object_key": "reading/rdl/RDL-128/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "b90951c3baaafe62afdfe46c40d257b0e13be5ac4c8bd80b575579d719dd301f",
+      "size": 1346749,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-128",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-128/selection_map.json",
+      "object_key": "reading/rdl/RDL-128/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "10fd1c1d7a00d4710460554d21160a50afc16a56842b92224afd5ce84945e673",
+      "size": 366594,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-129",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-129/material_final.png",
+      "object_key": "reading/rdl/RDL-129/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "03639f7ac883d67d6e703519f011924dd48f32f075bb58f519e4232de7dacfdc",
+      "size": 1106153,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-129",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-129/selection_map.json",
+      "object_key": "reading/rdl/RDL-129/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "890beac2fb2426a45ba0069d754237d35c01f9ef0bf1ba38ed2d634a80e23baf",
+      "size": 143371,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-130",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-130/material_final.png",
+      "object_key": "reading/rdl/RDL-130/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "201e025b78fc76bfd1db5429e3582af3a18b7bf3732c612d68f5d4a12381e97a",
+      "size": 1361168,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-130",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-130/selection_map.json",
+      "object_key": "reading/rdl/RDL-130/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "d8407d1d92b2213c21c0a48704763cb62f2e23fd68013cfcac1b9a6916bd5b9d",
+      "size": 359989,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-131",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-131/material_final.png",
+      "object_key": "reading/rdl/RDL-131/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "954f3914d3f0a89b5b2120ac0cd2305e05cdef326ed94ed2d08f0992b01b87eb",
+      "size": 1580691,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-131",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-131/selection_map.json",
+      "object_key": "reading/rdl/RDL-131/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "d432356f8d98d1d34d7a80e14bc1efc840bf6882ed09537840cdd9f3485aa9e9",
+      "size": 407365,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-132",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-132/material_final.png",
+      "object_key": "reading/rdl/RDL-132/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "e0f3109e41e2972e50ed5dd84a74ef64c756096404911d80c6405df6b9629094",
+      "size": 1216400,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-132",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-132/selection_map.json",
+      "object_key": "reading/rdl/RDL-132/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "6923832805150caa9a1c073cfbe914cca9820e1949f737b5e8b278e35246c518",
+      "size": 128842,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-133",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-133/material_final.png",
+      "object_key": "reading/rdl/RDL-133/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "0251ea9a42e197d864424cee21a3439946e343351658cc6c2cdb708322a44a9a",
+      "size": 1643511,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-133",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-133/selection_map.json",
+      "object_key": "reading/rdl/RDL-133/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "e54594d49b72ec8fb53412027dc5b9207ad2be32b319c387252d87f7c4facfb1",
+      "size": 334382,
+      "mime_type": "application/json"
+    },
+    {
+      "material_id": "RDL-134",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-134/material_final.png",
+      "object_key": "reading/rdl/RDL-134/material_final.png",
+      "file_type": "material_image",
+      "local_sha256": "d26887ce680fc76504725487ec707598079f9c1bf719e63b64b0d7a728a8bbaa",
+      "size": 1378857,
+      "mime_type": "image/png"
+    },
+    {
+      "material_id": "RDL-134",
+      "local_source_path": "/Users/rico/Desktop/真题/阅读/production/rdl/RDL-134/selection_map.json",
+      "object_key": "reading/rdl/RDL-134/selection_map.json",
+      "file_type": "selection_map",
+      "local_sha256": "b884242e0a27655e612c3d2737e482e0e7f66030a5d707083a3d012109705c34",
+      "size": 320542,
+      "mime_type": "application/json"
+    }
+  ]
+}

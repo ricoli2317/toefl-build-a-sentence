@@ -1,0 +1,468 @@
+{
+  "schema_version": "rdl-selection-catalog-travel-patch-v1",
+  "base_schema_version": "rdl-selection-catalog-production-v1",
+  "base_sha256": "4582484d4225f0c2d9bda09777364a5767ad6c0f84063289c135eec83d8bb736",
+  "add_count": 46,
+  "assets": [
+    {
+      "asset_id": "RDL-087",
+      "set_id": "7.1A",
+      "final_image": "production/rdl/RDL-087/material_final.png",
+      "width": 1701,
+      "height": 925,
+      "sha256": "44e06686f1ad67325fff06410bd8cd223bfdc3a405463e313191f5322b63b7c1",
+      "selection_map": "production/rdl/RDL-087/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-088",
+      "set_id": "7.1A",
+      "final_image": "production/rdl/RDL-088/material_final.png",
+      "width": 1323,
+      "height": 1189,
+      "sha256": "d365b479faf01f5a66f5dc7d36174b4951863ce4563498b954d23eb64de9a977",
+      "selection_map": "production/rdl/RDL-088/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-089",
+      "set_id": "7.1C",
+      "final_image": "production/rdl/RDL-089/material_final.png",
+      "width": 1644,
+      "height": 957,
+      "sha256": "7a91321ef9cd0ec072808a30fd8df655271da6f36753f27ba0a3e82cb73e5e35",
+      "selection_map": "production/rdl/RDL-089/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-090",
+      "set_id": "7.15B",
+      "final_image": "production/rdl/RDL-090/material_final.png",
+      "width": 1278,
+      "height": 1231,
+      "sha256": "39b7376951cd80000314eaa1f45a64cbd15dd21429ea9e0ef419ab249480027e",
+      "selection_map": "production/rdl/RDL-090/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-091",
+      "set_id": "7.5A",
+      "final_image": "production/rdl/RDL-091/material_final.png",
+      "width": 1359,
+      "height": 1157,
+      "sha256": "18149fd374bb6ef8d7ef6e772790eb754e647540bb8aaf33bab84684882edd9f",
+      "selection_map": "production/rdl/RDL-091/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-092",
+      "set_id": "7.5C",
+      "final_image": "production/rdl/RDL-092/material_final.png",
+      "width": 1611,
+      "height": 976,
+      "sha256": "f53e916bc48363f3577563f4fb07413881faa373a67b90302d4d27b9ccb7699c",
+      "selection_map": "production/rdl/RDL-092/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-093",
+      "set_id": "7.5C",
+      "final_image": "production/rdl/RDL-093/material_final.png",
+      "width": 1230,
+      "height": 1278,
+      "sha256": "b4a53d561b75c2ebe8455c70af15b066d02e9dd5b8f36e8300f0d3afb585e130",
+      "selection_map": "production/rdl/RDL-093/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-094",
+      "set_id": "7.6A",
+      "final_image": "production/rdl/RDL-094/material_final.png",
+      "width": 1706,
+      "height": 967,
+      "sha256": "7f0a7f05e0641443150219409750ac1f79cd6398e52e36a4927ebc3a9ea84297",
+      "selection_map": "production/rdl/RDL-094/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-095",
+      "set_id": "7.7A",
+      "final_image": "production/rdl/RDL-095/material_final.png",
+      "width": 1793,
+      "height": 877,
+      "sha256": "01b3f2ed2ce3371b88685adb34523a34d4180f84f1b8190bcf6cc678b43156d3",
+      "selection_map": "production/rdl/RDL-095/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-096",
+      "set_id": "7.7A",
+      "final_image": "production/rdl/RDL-096/material_final.png",
+      "width": 1275,
+      "height": 1233,
+      "sha256": "03185d114f0dbc5a0773b8e5431138030a2278b0cb45662e019181035c4633c7",
+      "selection_map": "production/rdl/RDL-096/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-097",
+      "set_id": "7.8A",
+      "final_image": "production/rdl/RDL-097/material_final.png",
+      "width": 1345,
+      "height": 1169,
+      "sha256": "c243b93f239c1dc44706175f44528c8bb05f344c807ec30c331ba066f81a62ba",
+      "selection_map": "production/rdl/RDL-097/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-098",
+      "set_id": "7.14A",
+      "final_image": "production/rdl/RDL-098/material_final.png",
+      "width": 1746,
+      "height": 901,
+      "sha256": "71f53b6550035e7935afc109b58689ba04069900fb712d6484c2c3f82e3e12b7",
+      "selection_map": "production/rdl/RDL-098/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-099",
+      "set_id": "7.14A",
+      "final_image": "production/rdl/RDL-099/material_final.png",
+      "width": 1210,
+      "height": 1300,
+      "sha256": "8c919308b12703218ba9154b36ec55203f918ae235d1a73559c5d521cfa0b132",
+      "selection_map": "production/rdl/RDL-099/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-100",
+      "set_id": "7.15B",
+      "final_image": "production/rdl/RDL-100/material_final.png",
+      "width": 1713,
+      "height": 918,
+      "sha256": "42eed951978a856b41c1f861158f4f85f8d59d0288adb130c98d4e6b3934eac9",
+      "selection_map": "production/rdl/RDL-100/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-101",
+      "set_id": "7.20A",
+      "final_image": "production/rdl/RDL-101/material_final.png",
+      "width": 1602,
+      "height": 982,
+      "sha256": "dd6bbf482e78c0a823193b00e38ea4766fd9b97c5b2e13465d5e7172584e3aa9",
+      "selection_map": "production/rdl/RDL-101/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-102",
+      "set_id": "7.20A",
+      "final_image": "production/rdl/RDL-102/material_final.png",
+      "width": 1286,
+      "height": 1223,
+      "sha256": "c5f9010e6d8fcd41c9e4a1002a5a0569d7f933d83d2291b8e4f7046513c48c45",
+      "selection_map": "production/rdl/RDL-102/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-103",
+      "set_id": "7.21A",
+      "final_image": "production/rdl/RDL-103/material_final.png",
+      "width": 1415,
+      "height": 1483,
+      "sha256": "5285f1e03c4dfed05c8901777649a55135849fcff0cde52fe6e78a42be39d90a",
+      "selection_map": "production/rdl/RDL-103/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-104",
+      "set_id": "7.21A",
+      "final_image": "production/rdl/RDL-104/material_final.png",
+      "width": 1302,
+      "height": 1462,
+      "sha256": "a92d257d254a3d0502794a7e5462917700a81577a4b5f447310abc771ec3b430",
+      "selection_map": "production/rdl/RDL-104/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-106",
+      "set_id": "7.21B",
+      "final_image": "production/rdl/RDL-106/material_final.png",
+      "width": 1519,
+      "height": 1059,
+      "sha256": "f5d2a2954abbb8b91944d8c36ede5fe129c7fa509c9faf31ffee83db27982154",
+      "selection_map": "production/rdl/RDL-106/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-107",
+      "set_id": "7.22A",
+      "final_image": "production/rdl/RDL-107/material_final.png",
+      "width": 1626,
+      "height": 1122,
+      "sha256": "b7eea5bc6a263e5617033e6eb71500a459acd5bb8c3c7d35b07b91b39c93b886",
+      "selection_map": "production/rdl/RDL-107/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-108",
+      "set_id": "7.22A",
+      "final_image": "production/rdl/RDL-108/material_final.png",
+      "width": 1320,
+      "height": 1313,
+      "sha256": "8e52a7f1f322e552ed87dd04048d8129d4eaff7336e3c6bfd7e3800d36dbe40c",
+      "selection_map": "production/rdl/RDL-108/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-110",
+      "set_id": "7.22B",
+      "final_image": "production/rdl/RDL-110/material_final.png",
+      "width": 1531,
+      "height": 1027,
+      "sha256": "164cb8fe24e8aebb2feef765e6fe30b38344ec3ce4b006c98639ec96462cbb4d",
+      "selection_map": "production/rdl/RDL-110/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-111",
+      "set_id": "7.22B",
+      "final_image": "production/rdl/RDL-111/material_final.png",
+      "width": 1854,
+      "height": 848,
+      "sha256": "4007b74a30f2d852ca223001b7d8569f87a5d0ddac5f519c073799cb0142641d",
+      "selection_map": "production/rdl/RDL-111/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-112",
+      "set_id": "7.22B",
+      "final_image": "production/rdl/RDL-112/material_final.png",
+      "width": 1403,
+      "height": 1121,
+      "sha256": "9941ae85a84b9bf89c4c20f5059232d5c30745604b9f3e2dc03240cc3622fdb6",
+      "selection_map": "production/rdl/RDL-112/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-113",
+      "set_id": "8.4A",
+      "final_image": "production/rdl/RDL-113/material_final.png",
+      "width": 1571,
+      "height": 1020,
+      "sha256": "95f127e7192167d5c432ff39db9eb70c46d1e2222f9030979ff8d1bc9df73be1",
+      "selection_map": "production/rdl/RDL-113/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-114",
+      "set_id": "8.4A",
+      "final_image": "production/rdl/RDL-114/material_final.png",
+      "width": 1372,
+      "height": 1171,
+      "sha256": "a7b8bbe8122a87a793697fe36677a2a8d9a1c59f7a62cb8d8d925f2add5b231b",
+      "selection_map": "production/rdl/RDL-114/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-115",
+      "set_id": "8.5A",
+      "final_image": "production/rdl/RDL-115/material_final.png",
+      "width": 1654,
+      "height": 988,
+      "sha256": "54aa0c6e14bfe135527e2d176f0836eae2fd79adfad5663975162af0d5d952ea",
+      "selection_map": "production/rdl/RDL-115/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-116",
+      "set_id": "8.5A",
+      "final_image": "production/rdl/RDL-116/material_final.png",
+      "width": 1254,
+      "height": 1347,
+      "sha256": "6aa186c9ff2436f540393dc2b61528b17f57a0fe856acd5e9dc0a226a9d52e61",
+      "selection_map": "production/rdl/RDL-116/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-117",
+      "set_id": "8.5A",
+      "final_image": "production/rdl/RDL-117/material_final.png",
+      "width": 1465,
+      "height": 1099,
+      "sha256": "abc9c524f4db717dfeeea50fd1cc99bce847ebd2ff48ba894e69b6ed0d7a127b",
+      "selection_map": "production/rdl/RDL-117/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-118",
+      "set_id": "8.8A",
+      "final_image": "production/rdl/RDL-118/material_final.png",
+      "width": 1875,
+      "height": 925,
+      "sha256": "dd42d561da616d9371636e17044af5e7110a89628ef05c7ea66df7699264b9aa",
+      "selection_map": "production/rdl/RDL-118/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-119",
+      "set_id": "8.8A",
+      "final_image": "production/rdl/RDL-119/material_final.png",
+      "width": 1254,
+      "height": 1364,
+      "sha256": "a8b6dce4655db112898e74f665ea17d2923227a4e6fa452a16f5284f73bc5b0c",
+      "selection_map": "production/rdl/RDL-119/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-120",
+      "set_id": "8.8B",
+      "final_image": "production/rdl/RDL-120/material_final.png",
+      "width": 1749,
+      "height": 937,
+      "sha256": "4d5c14f14052c5b6be14e2ca78198ce0a064036f0790589d89dd9e462b3a5887",
+      "selection_map": "production/rdl/RDL-120/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-121",
+      "set_id": "8.8C",
+      "final_image": "production/rdl/RDL-121/material_final.png",
+      "width": 1538,
+      "height": 1147,
+      "sha256": "347d0004d290e6932cfee36b374595f1169223ac46b39c6e6b094b9ce23b826c",
+      "selection_map": "production/rdl/RDL-121/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-122",
+      "set_id": "8.9A",
+      "final_image": "production/rdl/RDL-122/material_final.png",
+      "width": 1586,
+      "height": 1027,
+      "sha256": "544479799fb8f211b5eb6b4c78b50af274254add18b1909ef7f3e1e95de39206",
+      "selection_map": "production/rdl/RDL-122/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-123",
+      "set_id": "8.9A",
+      "final_image": "production/rdl/RDL-123/material_final.png",
+      "width": 1278,
+      "height": 1274,
+      "sha256": "b7ee31249b3f9251f55f46a2a2cb956f0f552e59e385c9fa6682ce859af6204d",
+      "selection_map": "production/rdl/RDL-123/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-124",
+      "set_id": "8.12A",
+      "final_image": "production/rdl/RDL-124/material_final.png",
+      "width": 1829,
+      "height": 894,
+      "sha256": "e66f63cbe4c4c4f9a190e9fce949597aa16a21c3a30e7952417fabf4d5e89bd2",
+      "selection_map": "production/rdl/RDL-124/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-125",
+      "set_id": "8.12A",
+      "final_image": "production/rdl/RDL-125/material_final.png",
+      "width": 1344,
+      "height": 1287,
+      "sha256": "fe0e6008df959328fe520a5d207d3616b8c01a122c4c125691c4aea59640dbbe",
+      "selection_map": "production/rdl/RDL-125/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-126",
+      "set_id": "8.12A",
+      "final_image": "production/rdl/RDL-126/material_final.png",
+      "width": 1254,
+      "height": 1348,
+      "sha256": "89c9230432695feecfc8ae0ed86e67ce8c164d84290c1cf67e910deaf22da257",
+      "selection_map": "production/rdl/RDL-126/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-127",
+      "set_id": "8.12B",
+      "final_image": "production/rdl/RDL-127/material_final.png",
+      "width": 1881,
+      "height": 884,
+      "sha256": "9597c40ecc2b257b66d48fabdb36fef0ec32da082c15ec615e6ae6c2fd57759f",
+      "selection_map": "production/rdl/RDL-127/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-128",
+      "set_id": "8.12B",
+      "final_image": "production/rdl/RDL-128/material_final.png",
+      "width": 1254,
+      "height": 1326,
+      "sha256": "b90951c3baaafe62afdfe46c40d257b0e13be5ac4c8bd80b575579d719dd301f",
+      "selection_map": "production/rdl/RDL-128/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-129",
+      "set_id": "8.18A",
+      "final_image": "production/rdl/RDL-129/material_final.png",
+      "width": 1804,
+      "height": 903,
+      "sha256": "03639f7ac883d67d6e703519f011924dd48f32f075bb58f519e4232de7dacfdc",
+      "selection_map": "production/rdl/RDL-129/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-130",
+      "set_id": "8.18A",
+      "final_image": "production/rdl/RDL-130/material_final.png",
+      "width": 1299,
+      "height": 1254,
+      "sha256": "201e025b78fc76bfd1db5429e3582af3a18b7bf3732c612d68f5d4a12381e97a",
+      "selection_map": "production/rdl/RDL-130/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-131",
+      "set_id": "8.18B",
+      "final_image": "production/rdl/RDL-131/material_final.png",
+      "width": 1234,
+      "height": 1275,
+      "sha256": "954f3914d3f0a89b5b2120ac0cd2305e05cdef326ed94ed2d08f0992b01b87eb",
+      "selection_map": "production/rdl/RDL-131/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-132",
+      "set_id": "8.19B",
+      "final_image": "production/rdl/RDL-132/material_final.png",
+      "width": 1534,
+      "height": 1025,
+      "sha256": "e0f3109e41e2972e50ed5dd84a74ef64c756096404911d80c6405df6b9629094",
+      "selection_map": "production/rdl/RDL-132/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-133",
+      "set_id": "8.19B",
+      "final_image": "production/rdl/RDL-133/material_final.png",
+      "width": 1052,
+      "height": 1494,
+      "sha256": "0251ea9a42e197d864424cee21a3439946e343351658cc6c2cdb708322a44a9a",
+      "selection_map": "production/rdl/RDL-133/selection_map.json",
+      "selection_status": "passed"
+    },
+    {
+      "asset_id": "RDL-134",
+      "set_id": "8.19B",
+      "final_image": "production/rdl/RDL-134/material_final.png",
+      "width": 1254,
+      "height": 1297,
+      "sha256": "d26887ce680fc76504725487ec707598079f9c1bf719e63b64b0d7a728a8bbaa",
+      "selection_map": "production/rdl/RDL-134/selection_map.json",
+      "selection_status": "passed"
+    }
+  ]
+}
