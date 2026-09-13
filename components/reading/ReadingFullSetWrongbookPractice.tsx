@@ -161,6 +161,14 @@ export function ReadingFullSetWrongbookPractice({
   const currentQuestion = current?.practice.questions.find((question) => question.questionId === step?.questionId);
   const currentOccurrenceId = current?.occurrenceId ?? "";
   const currentQuestionId = currentQuestion?.questionId ?? "";
+  const currentModule = current?.practice.item.module;
+  const currentTargets = current?.targets;
+  const editableSlotIds = useMemo(
+    () => currentModule === "ctw" && currentTargets
+      ? readingWrongbookEditableSlotIds(currentTargets)
+      : undefined,
+    [currentModule, currentTargets]
+  );
 
   useEffect(() => {
     activeQuestionKeyRef.current = currentOccurrenceId && currentQuestionId
@@ -238,9 +246,6 @@ export function ReadingFullSetWrongbookPractice({
 
   if (error && !current) return <Message description={error} onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)} />;
   if (!attempt || !current || !currentQuestion) return <Message description="正在加载错题和原题练习界面..." />;
-  const editableSlotIds = current.practice.item.module === "ctw"
-    ? readingWrongbookEditableSlotIds(current.targets)
-    : undefined;
   return (
     <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
       <header className="grid h-[76px] grid-cols-[1fr_auto_1fr] items-center border-b border-student-border bg-white px-5">

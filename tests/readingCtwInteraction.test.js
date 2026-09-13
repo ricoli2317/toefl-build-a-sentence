@@ -77,6 +77,47 @@ test("position state preserves a middle hole and later entered characters", () =
   assert.deepEqual(result.slots["slot-b"], ["d", ""]);
 });
 
+test("Full Set wrongbook editable slots accumulate input and skip locked original slots", () => {
+  const originalSlots = [
+    { slotId: "slot-1", slotOrder: 1, missingLength: 2 },
+    { slotId: "slot-2", slotOrder: 2, missingLength: 3 },
+    { slotId: "slot-3", slotOrder: 3, missingLength: 2 },
+    { slotId: "slot-4", slotOrder: 4, missingLength: 2 },
+    { slotId: "slot-5", slotOrder: 5, missingLength: 2 },
+    { slotId: "slot-6", slotOrder: 6, missingLength: 2 }
+  ];
+  const editableIds = new Set(["slot-2", "slot-4", "slot-5"]);
+  const editableSlots = originalSlots.filter((slot) => editableIds.has(slot.slotId));
+  let answers = createCtwSlotAnswers(originalSlots);
+  let focus = position("slot-2", 0);
+  for (const letter of ["a", "b", "c"]) {
+    const result = enterCtwLetter(editableSlots, answers, focus, letter);
+    answers = result.slots;
+    focus = result.focus;
+  }
+  assert.deepEqual(answers["slot-2"], ["a", "b", "c"]);
+  assert.deepEqual(focus, position("slot-4", 0));
+  assert.deepEqual(editableSlots.map((slot) => slot.slotId), ["slot-2", "slot-4", "slot-5"]);
+});
+
+test("Full Set wrongbook clicked editable position stays authoritative and can revisit earlier slots", () => {
+  const editableSlots = [
+    { slotId: "slot-2", slotOrder: 2, missingLength: 3 },
+    { slotId: "slot-4", slotOrder: 4, missingLength: 2 },
+    { slotId: "slot-5", slotOrder: 5, missingLength: 2 }
+  ];
+  let answers = createCtwSlotAnswers(editableSlots);
+  const clickedLater = enterCtwLetter(editableSlots, answers, position("slot-5", 0), "x");
+  answers = clickedLater.slots;
+  assert.deepEqual(clickedLater.focus, position("slot-5", 1));
+  assert.deepEqual(answers["slot-5"], ["x", ""]);
+
+  const clickedEarlier = enterCtwLetter(editableSlots, answers, position("slot-2", 1), "y");
+  assert.deepEqual(clickedEarlier.focus, position("slot-2", 2));
+  assert.deepEqual(clickedEarlier.slots["slot-2"], ["", "y", ""]);
+  assert.deepEqual(clickedEarlier.slots["slot-5"], ["x", ""]);
+});
+
 test("Backspace clears the current character without moving", () => {
   const answers = { ...emptyAnswers(), "slot-a": ["a", "b", ""] };
   const result = backspaceCtwLetter(slotModels, answers, position("slot-a", 1));
@@ -178,6 +219,22 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.match(source, /focusPosition\(firstCtwPosition/);
   assert.match(source, /if \(module === "ctw" && !readOnly\)/);
   assert.doesNotMatch(source, /rawText\.(match|replace)|querySelector|setTimeout/);
+});
+
+test("Full Set wrongbook memoizes editable slot identity so CTW focus initialization does not rerun after answer state updates", () => {
+  const fullSetWrongbookSource = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingFullSetWrongbookPractice.tsx"),
+    "utf8"
+  );
+  const ordinaryWrongbookSource = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
+    "utf8"
+  );
+  assert.match(fullSetWrongbookSource, /const currentTargets = current\?\.targets/);
+  assert.match(fullSetWrongbookSource, /const editableSlotIds = useMemo\([\s\S]*readingWrongbookEditableSlotIds\(currentTargets\)[\s\S]*\[currentModule, currentTargets\]/);
+  assert.equal((fullSetWrongbookSource.match(/readingWrongbookEditableSlotIds\(currentTargets\)/g) ?? []).length, 1);
+  assert.match(ordinaryWrongbookSource, /const editableSlotIds = useMemo\([\s\S]*readingWrongbookEditableSlotIds\(wrongbookTargets\)[\s\S]*\[wrongbookTargets\]/);
+  assert.match(ordinaryWrongbookSource, /focusPosition\(firstCtwPosition\(interactionSlots\)\)[\s\S]*\[focusPosition, interactionSlots, question\.questionId, readOnly\]/);
 });
 
 test("active CTW position renders one non-layout blinking caret before its letter or underline", () => {
