@@ -64,6 +64,8 @@ async function run() {
     duplicateLogicalItemCount: manifest.duplicateLogicalItemCount,
     theoreticalLogicalItemReduction: manifest.theoreticalLogicalItemReduction,
     prefixConflictClusterCount: manifest.prefixConflictClusterCount,
+    answerConflictClusterCount: manifest.answerConflictClusterCount,
+    prefixAndAnswerConflictClusterCount: manifest.prefixAndAnswerConflictClusterCount,
     punctuationOnlyClusterCount: manifest.punctuationOnlyClusterCount,
     duplicateOccurrenceMappingCount: manifest.duplicateOccurrenceMappingCount,
     otherManualReviewClusterCount: manifest.otherManualReviewClusterCount,

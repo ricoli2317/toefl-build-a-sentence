@@ -143,7 +143,11 @@ test("real access boundary reuses historical identity and becomes a prefix conte
   assert.equal(result.contentReconciliations.length, 1);
   assert.deepEqual(
     result.contentReconciliations[0].item.questionConflicts[0].differences.map((item) => item.kind),
-    ["ctw_prefix"]
+    ["ctw_slot_content"]
+  );
+  assert.deepEqual(
+    result.contentReconciliations[0].item.questionConflicts[0].ctwSlotConflicts.map((item) => item.slotOrder),
+    [1]
   );
 
   const corrected = buildReadingCanonicalContentUpdate(historical, incoming);
@@ -182,7 +186,7 @@ test("prefix plus punctuation reports only the prefix conflict", async () => {
   const result = await prepareAgainstHistorical(incoming, historical);
   assert.deepEqual(
     result.contentReconciliations[0].item.questionConflicts[0].differences.map((item) => item.kind),
-    ["ctw_prefix"]
+    ["ctw_slot_content"]
   );
 });
 
@@ -212,7 +216,7 @@ test("current-batch prefix and punctuation variants coalesce before provisional 
   assert.equal(grouped.report.possibleDuplicates.length, 0);
 });
 
-test("lexical, answer, and ordered-answer changes produce different CTW identities", () => {
+test("lexical text changes identity while answer and slot-array serialization do not", () => {
   const historical = historicalAccessPackage();
   const base = packageToCandidate(historical, { label: "base", date: "2026-07-05" });
   const variants = [
@@ -235,12 +239,12 @@ test("lexical, answer, and ordered-answer changes produce different CTW identiti
     })
   ];
   const baseIdentity = buildCtwPackageLogicalIdentity(groupReadingSourceOccurrences([base]).packages[0]).key;
-  for (const candidate of variants) {
-    assert.notEqual(
-      buildCtwPackageLogicalIdentity(groupReadingSourceOccurrences([candidate]).packages[0]).key,
-      baseIdentity
-    );
-  }
+  const keys = variants.map((candidate) =>
+    buildCtwPackageLogicalIdentity(groupReadingSourceOccurrences([candidate]).packages[0]).key
+  );
+  assert.notEqual(keys[0], baseIdentity);
+  assert.equal(keys[1], baseIdentity);
+  assert.equal(keys[2], baseIdentity);
 });
 
 test("same-identity candidates cannot reach duplicate review as separate logical targets", () => {

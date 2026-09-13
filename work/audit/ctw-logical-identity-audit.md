@@ -1,6 +1,6 @@
 # CTW Logical Identity Full-Database Audit
 
-Generated: 2026-09-13T09:56:48.436Z
+Generated: 2026-09-13T13:30:39.288Z
 
 This is a read-only factual manifest. It does not choose a canonical survivor or canonical prefix.
 
@@ -13,6 +13,8 @@ This is a read-only factual manifest. It does not choose a canonical survivor or
 - Logical items in duplicate clusters: 0
 - Theoretical logical-item reduction: 0
 - Prefix-conflict clusters: 0
+- Answer-conflict clusters: 0
+- Prefix+answer-conflict clusters: 0
 - Punctuation/rendering-only clusters: 0
 - Clusters with duplicate occurrence mappings: 0
 - Clusters with other manual-review differences: 0

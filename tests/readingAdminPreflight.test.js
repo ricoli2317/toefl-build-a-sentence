@@ -94,13 +94,16 @@ test("preflight response separates duplicates, material warnings, rejections, co
 
 test("Reading duplicate cards collect every resolution and send it only with final import", () => {
   assert.match(resolutionComponent, /function ReadingDuplicateResolutionList/);
-  assert.match(resolutionComponent, /当前准备导入的 Reading 内容/);
-  assert.match(resolutionComponent, /系统找到的候选内容/);
-  assert.match(resolutionComponent, /归入该已有题/);
-  assert.match(resolutionComponent, /确认为新逻辑题/);
-  assert.match(resolutionComponent, /检测到以下可能的转录差异/);
+  assert.match(resolutionComponent, /需要判断的实际差异/);
+  assert.match(resolutionComponent, /这是同一道题，归入题库版本/);
+  assert.match(resolutionComponent, /不是同一道题，保留为新题/);
+  assert.match(resolutionComponent, /题库版本/);
+  assert.match(resolutionComponent, /来源 CSV/);
   assert.match(resolutionComponent, /difference\.incoming/);
-  assert.match(resolutionComponent, /difference\.candidate/);
+  assert.match(resolutionComponent, /difference\.existing/);
+  assert.match(resolutionComponent, /展开完整内容/);
+  assert.match(resolutionComponent, /重新查看/);
+  assert.match(resolutionComponent, /已选择：/);
   assert.match(component, /readingDuplicateResolutions: readingDryRun[\s\S]*resolutionId:[\s\S]*questionType:[\s\S]*logicalItemId/);
   assert.match(component, /readingHasUnresolvedDuplicates[\s\S]*disabled=/);
   assert.match(component, /仍有.*项相似题未处理/);
@@ -122,14 +125,12 @@ test("one pending list controls rendering and enforces the flag/list invariant",
   assert.match(resolutionModel, /hasPendingDuplicates && input\.pendingResolutionItems\.length === 0/);
 });
 
-test("shared confirmation shell delegates only the detail body by Reading type", () => {
+test("shared confirmation shell keeps full Reading content folded behind one detail component", () => {
+  assert.match(resolutionComponent, /function ReadingDuplicateDetail/);
   assert.match(resolutionComponent, /preview\.questionType === "ctw"/);
   assert.match(resolutionComponent, /preview\.questionType === "rdl"/);
-  assert.match(resolutionComponent, /CtwDuplicateDetail/);
-  assert.match(resolutionComponent, /RdlDuplicateDetail/);
-  assert.match(resolutionComponent, /RapDuplicateDetail/);
-  assert.equal((resolutionComponent.match(/归入该已有题/g) ?? []).length, 1);
-  assert.equal((resolutionComponent.match(/确认为新逻辑题/g) ?? []).length, 2);
+  assert.match(resolutionComponent, /FullDuplicateComparison/);
+  assert.match(resolutionComponent, /expanded\.has\(item\.resolutionId\)/);
 });
 
 test("RDL preflight explains registered-material reuse with a first logical question set", () => {

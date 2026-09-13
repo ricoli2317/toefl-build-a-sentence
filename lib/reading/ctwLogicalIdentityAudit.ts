@@ -1,8 +1,11 @@
 import {
   CTW_LOGICAL_IDENTITY_VERSION,
+  buildCtwMaskedFramework,
   buildCtwLogicalIdentity,
   compareCtwLogicalIdentity,
+  ctwSlotReviewText,
   normalizeCtwAnswer,
+  normalizeCtwIdentityPassage,
   reconstructCompletedCtwPassage
 } from "./ctwLogicalIdentity.ts";
 import type { CtwQuestion } from "./types.ts";
@@ -44,6 +47,18 @@ export type CtwAuditPrefixConflict = {
       sourceModule: string;
       sourceOrder: number;
     }>;
+  }>;
+};
+
+export type CtwAuditSlotContentConflict = {
+  kind: "prefix_conflict" | "answer_conflict" | "prefix_and_answer_conflict";
+  slotOrder: number;
+  versions: Array<{
+    logicalItemId: string;
+    prefix: string;
+    answer: string;
+    reviewText: string;
+    sources: CtwAuditOccurrence[];
   }>;
 };
 
@@ -117,14 +132,15 @@ export type CtwAuditClusterMember = {
 export type CtwAuditDuplicateCluster = {
   clusterId: string;
   identityKey: string;
-  normalizedCompletedPassage: string;
-  orderedFullAnswers: string[];
+  normalizedMaskedParagraphs: string[];
+  orderedBlankSequence: number[];
   logicalItemCount: number;
   logicalItemIds: string[];
   theoreticalOccurrenceCount: number;
   distinctOccurrenceIdCount: number;
   members: CtwAuditClusterMember[];
   prefixConflicts: CtwAuditPrefixConflict[];
+  slotContentConflicts: CtwAuditSlotContentConflict[];
   representationDifferences: CtwAuditRepresentationDifference[];
   duplicateOccurrenceMappings: CtwAuditDuplicateOccurrenceMapping[];
   conflictKinds: string[];
@@ -144,6 +160,8 @@ export type CtwLogicalIdentityAuditManifest = {
   duplicateLogicalItemCount: number;
   theoreticalLogicalItemReduction: number;
   prefixConflictClusterCount: number;
+  answerConflictClusterCount: number;
+  prefixAndAnswerConflictClusterCount: number;
   punctuationOnlyClusterCount: number;
   duplicateOccurrenceMappingCount: number;
   duplicateOccurrenceMappingRecordCount: number;
@@ -232,6 +250,12 @@ export function auditCtwLogicalIdentities(
     duplicateLogicalItemCount,
     theoreticalLogicalItemReduction: duplicateLogicalItemCount - clusters.length,
     prefixConflictClusterCount: clusters.filter((cluster) => cluster.prefixConflicts.length > 0).length,
+    answerConflictClusterCount: clusters.filter((cluster) =>
+      cluster.slotContentConflicts.some((conflict) => conflict.kind === "answer_conflict")
+    ).length,
+    prefixAndAnswerConflictClusterCount: clusters.filter((cluster) =>
+      cluster.slotContentConflicts.some((conflict) => conflict.kind === "prefix_and_answer_conflict")
+    ).length,
     punctuationOnlyClusterCount: clusters.filter((cluster) => cluster.punctuationOrRenderingOnly).length,
     duplicateOccurrenceMappingCount: clusters.filter(
       (cluster) => cluster.duplicateOccurrenceMappings.length > 0
@@ -256,13 +280,13 @@ export function auditCtwLogicalIdentities(
 function verifyKnownAccessCase(items: CtwAuditLogicalItemInput[]) {
   const matching = items.flatMap((item) => {
     const identity = buildCtwLogicalIdentity(item.question);
-    if (!identity.normalizedCompletedPassage.includes("dictate access to resources such")) return [];
+    const completedPassage = reconstructCompletedCtwPassage(item.question);
+    if (!normalizeCtwIdentityPassage(completedPassage).includes("dictate access to resources such")) return [];
     const slots = [...item.question.payload.slots].sort(
       (left, right) => left.slotOrder - right.slotOrder
     );
     const access = slots.find((slot) => normalizeCtwAnswer(slot.answer) === "access") ?? null;
     const resources = slots.find((slot) => normalizeCtwAnswer(slot.answer) === "resources") ?? null;
-    const completedPassage = reconstructCompletedCtwPassage(item.question);
     const matchIndex = completedPassage.toLocaleLowerCase("en-US").indexOf("dictate");
     return [{
       logicalItemId: item.logicalItemId,
@@ -313,7 +337,19 @@ function buildDuplicateCluster(
   );
   assertOneSharedIdentity(orderedItems);
   const members = orderedItems.map(buildMember);
-  const prefixConflicts = buildPrefixConflicts(orderedItems, identity.orderedNormalizedAnswers);
+  const slotContentConflicts = buildSlotContentConflicts(orderedItems);
+  const prefixConflicts = slotContentConflicts
+    .filter((conflict) => conflict.kind === "prefix_conflict")
+    .map((conflict) => ({
+      kind: "prefix_conflict" as const,
+      slotOrder: conflict.slotOrder,
+      answer: conflict.versions[0]?.answer ?? "",
+      versions: conflict.versions.map((version) => ({
+        logicalItemId: version.logicalItemId,
+        prefix: version.prefix,
+        sources: version.sources
+      }))
+    }));
   const representationDifferences = buildRepresentationDifferences(orderedItems, members);
   const duplicateOccurrenceMappings = findDuplicateOccurrenceMappings(orderedItems);
   const requiresOtherManualReview = representationDifferences.some(
@@ -327,13 +363,13 @@ function buildDuplicateCluster(
     "answer_normalization_difference"
   ]);
   const punctuationOrRenderingOnly =
-    prefixConflicts.length === 0
+    slotContentConflicts.length === 0
     && duplicateOccurrenceMappings.length === 0
     && !requiresOtherManualReview
     && representationDifferences.length > 0
     && representationDifferences.every((difference) => presentationDifferenceKinds.has(difference.kind));
   const conflictKinds = Array.from(new Set([
-    ...prefixConflicts.map((conflict) => conflict.kind),
+    ...slotContentConflicts.map((conflict) => conflict.kind),
     ...representationDifferences.map((difference) => difference.kind),
     ...duplicateOccurrenceMappings.map((mapping) => mapping.kind)
   ]));
@@ -341,8 +377,8 @@ function buildDuplicateCluster(
   return {
     clusterId,
     identityKey: identity.key,
-    normalizedCompletedPassage: identity.normalizedCompletedPassage,
-    orderedFullAnswers: identity.orderedNormalizedAnswers,
+    normalizedMaskedParagraphs: identity.normalizedMaskedParagraphs,
+    orderedBlankSequence: identity.orderedBlankSequence,
     logicalItemCount: members.length,
     logicalItemIds: members.map((member) => member.logicalItemId),
     theoreticalOccurrenceCount: members.reduce((total, member) => total + member.occurrenceCount, 0),
@@ -351,6 +387,7 @@ function buildDuplicateCluster(
     ).size,
     members,
     prefixConflicts,
+    slotContentConflicts,
     representationDifferences,
     duplicateOccurrenceMappings,
     conflictKinds,
@@ -425,49 +462,43 @@ function canonicalRepresentation(question: CtwQuestion): CtwAuditCanonicalRepres
   };
 }
 
-function buildPrefixConflicts(
-  items: CtwAuditLogicalItemInput[],
-  orderedAnswers: string[]
-): CtwAuditPrefixConflict[] {
-  if (!hasSharedPrefixConflict(items)) return [];
-  return orderedAnswers.flatMap((answer, index) => {
-    const slotOrder = index + 1;
+function buildSlotContentConflicts(
+  items: CtwAuditLogicalItemInput[]
+): CtwAuditSlotContentConflict[] {
+  const slotOrders = Array.from(new Set(items.flatMap((item) =>
+    item.question.payload.slots.map((slot) => slot.slotOrder)
+  ))).sort((left, right) => left - right);
+  return slotOrders.flatMap((slotOrder) => {
     const versions = items.map((item) => {
       const slot = item.question.payload.slots.find((candidate) => candidate.slotOrder === slotOrder);
       if (!slot) throw new Error(`CTW audit cannot resolve slot order ${slotOrder}`);
       return {
         logicalItemId: item.logicalItemId,
         prefix: slot.prefix,
+        answer: slot.answer,
+        reviewText: ctwSlotReviewText(slot),
         normalizedPrefix: normalizeCtwAnswer(slot.prefix),
-        sources: item.occurrences.map((occurrence) => ({
-          occurrenceId: occurrence.occurrenceId,
-          sourceLabel: occurrence.sourceLabel,
-          occurrenceDate: occurrence.occurrenceDate,
-          sourceModule: occurrence.sourceModule,
-          sourceOrder: occurrence.sourceOrder
-        }))
+        normalizedAnswer: normalizeCtwAnswer(slot.answer),
+        sources: [...item.occurrences].sort(compareOccurrences)
       };
     });
-    if (new Set(versions.map((version) => version.normalizedPrefix)).size < 2) return [];
+    const prefixDiffers = new Set(versions.map((version) => version.normalizedPrefix)).size > 1;
+    const answerDiffers = new Set(versions.map((version) => version.normalizedAnswer)).size > 1;
+    if (!prefixDiffers && !answerDiffers) return [];
     return [{
-      kind: "prefix_conflict" as const,
+      kind: prefixDiffers && answerDiffers
+        ? "prefix_and_answer_conflict" as const
+        : prefixDiffers
+          ? "prefix_conflict" as const
+          : "answer_conflict" as const,
       slotOrder,
-      answer,
-      versions: versions.map(({ normalizedPrefix: _normalizedPrefix, ...version }) => version)
+      versions: versions.map(({
+        normalizedPrefix: _normalizedPrefix,
+        normalizedAnswer: _normalizedAnswer,
+        ...version
+      }) => version)
     }];
   });
-}
-
-function hasSharedPrefixConflict(items: CtwAuditLogicalItemInput[]) {
-  for (let leftIndex = 0; leftIndex < items.length; leftIndex += 1) {
-    for (let rightIndex = leftIndex + 1; rightIndex < items.length; rightIndex += 1) {
-      if (compareCtwLogicalIdentity(
-        items[leftIndex].question,
-        items[rightIndex].question
-      ).nonIdentityConflicts.some((conflict) => conflict.kind === "prefix_conflict")) return true;
-    }
-  }
-  return false;
 }
 
 function buildRepresentationDifferences(
@@ -475,19 +506,19 @@ function buildRepresentationDifferences(
   members: CtwAuditClusterMember[]
 ): CtwAuditRepresentationDifference[] {
   const differences: CtwAuditRepresentationDifference[] = [];
-  const completedPassages = members.map((member) => member.canonicalRepresentation.completedPassage);
-  const normalizedCaseWhitespace = completedPassages.map(normalizeCaseWhitespace);
+  const maskedFrameworks = items.map((item) => buildCtwMaskedFramework(item.question).join("\n"));
+  const normalizedCaseWhitespace = maskedFrameworks.map(normalizeCaseWhitespace);
   if (new Set(normalizedCaseWhitespace).size > 1) {
     differences.push({
       kind: "punctuation_difference",
       requiresManualReview: false,
-      description: "Completed passages differ before punctuation removal but share the same CTW identity text."
+      description: "Masked frameworks differ before punctuation removal but share the same CTW identity text."
     });
-  } else if (new Set(completedPassages).size > 1) {
+  } else if (new Set(maskedFrameworks).size > 1) {
     differences.push({
       kind: "whitespace_or_case_difference",
       requiresManualReview: false,
-      description: "Completed passages differ only in whitespace and/or letter case."
+      description: "Masked frameworks differ only in whitespace and/or letter case."
     });
   }
 
@@ -518,19 +549,6 @@ function buildRepresentationDifferences(
       kind: "raw_serialization_difference",
       requiresManualReview: false,
       description: "Raw display/paragraph serialization differs; structured completed identity remains equal."
-    });
-  }
-
-  const answerSignatures = items.map((item) => stableStringify(
-    [...item.question.payload.slots]
-      .sort((left, right) => left.slotOrder - right.slotOrder)
-      .map((slot) => slot.answer)
-  ));
-  if (new Set(answerSignatures).size > 1) {
-    differences.push({
-      kind: "answer_normalization_difference",
-      requiresManualReview: false,
-      description: "Raw answer spelling differs only by the approved answer normalization."
     });
   }
 
@@ -615,6 +633,8 @@ export function renderCtwLogicalIdentityAuditMarkdown(
     `- Logical items in duplicate clusters: ${manifest.duplicateLogicalItemCount}`,
     `- Theoretical logical-item reduction: ${manifest.theoreticalLogicalItemReduction}`,
     `- Prefix-conflict clusters: ${manifest.prefixConflictClusterCount}`,
+    `- Answer-conflict clusters: ${manifest.answerConflictClusterCount}`,
+    `- Prefix+answer-conflict clusters: ${manifest.prefixAndAnswerConflictClusterCount}`,
     `- Punctuation/rendering-only clusters: ${manifest.punctuationOnlyClusterCount}`,
     `- Clusters with duplicate occurrence mappings: ${manifest.duplicateOccurrenceMappingCount}`,
     `- Clusters with other manual-review differences: ${manifest.otherManualReviewClusterCount}`,
@@ -642,7 +662,8 @@ export function renderCtwLogicalIdentityAuditMarkdown(
       `- Identity key: \`${cluster.identityKey}\``,
       `- Logical items: ${cluster.logicalItemCount}`,
       `- IDs: ${cluster.logicalItemIds.map((id) => `\`${id}\``).join(", ")}`,
-      `- Ordered answers: ${cluster.orderedFullAnswers.join(", ")}`,
+      `- Masked framework: ${cluster.normalizedMaskedParagraphs.join(" / ")}`,
+      `- Blank sequence: ${cluster.orderedBlankSequence.join(", ")}`,
       `- Occurrences after theoretical union: ${cluster.theoreticalOccurrenceCount}`,
       `- Conflicts/differences: ${cluster.conflictKinds.join(", ") || "none"}`,
       "",
@@ -657,13 +678,13 @@ export function renderCtwLogicalIdentityAuditMarkdown(
       );
     }
     lines.push("");
-    if (cluster.prefixConflicts.length > 0) {
-      lines.push("### Prefix conflicts", "");
-      for (const conflict of cluster.prefixConflicts) {
-        lines.push(`- Slot ${conflict.slotOrder}, answer \`${conflict.answer}\``);
+    if (cluster.slotContentConflicts.length > 0) {
+      lines.push("### Slot content conflicts", "");
+      for (const conflict of cluster.slotContentConflicts) {
+        lines.push(`- Slot ${conflict.slotOrder}: ${conflict.kind}`);
         for (const version of conflict.versions) {
           lines.push(
-            `  - \`${version.logicalItemId}\`: prefix \`${version.prefix}\`; sources ${version.sources.map((source) => source.sourceLabel).join(", ") || "none"}`
+            `  - \`${version.logicalItemId}\`: \`${version.reviewText}\`; sources ${version.sources.map((source) => source.sourceLabel).join(", ") || "none"}`
           );
         }
       }

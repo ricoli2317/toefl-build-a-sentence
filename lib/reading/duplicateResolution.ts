@@ -274,7 +274,7 @@ function uniquePackages(packages: ReadingImportPackage[]) {
 }
 
 function possibleDuplicateReason(module: ReadingImportPackage["item"]["module"]) {
-  if (module === "ctw") return "文章框架相似，但正文或填空答案存在实质差异。";
+  if (module === "ctw") return "文章结构相似，但系统无法确认是否为同一道题。";
   if (module === "rdl") return "素材可能相同，但题目转录或答案信息存在差异。";
   return "文章可能相同，但题组内容存在差异。";
 }

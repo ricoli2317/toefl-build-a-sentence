@@ -5,8 +5,10 @@ const test = require("node:test");
 
 const {
   buildCtwLogicalIdentity,
+  buildCtwMaskedFramework,
   compareCtwLogicalIdentity,
   normalizeCtwIdentityPassage,
+  normalizeCtwMaskedFramework,
   normalizeCtwOrderedAnswers,
   reconstructCompletedCtwPassage
 } = require("../lib/reading/ctwLogicalIdentity.ts");
@@ -82,13 +84,19 @@ function assertDifferent(left, right) {
   return result;
 }
 
-test("CTW identity reconstructs the completed passage and orders full answers", () => {
+test("CTW identity masks structured blanks while completed answers remain debug-only", () => {
   const question = ctwQuestion();
   assert.equal(
     reconstructCompletedCtwPassage(question),
     "Scientists dictate access to resources such policies matter."
   );
   assert.deepEqual(normalizeCtwOrderedAnswers(question), ["access", "resources"]);
+  assert.deepEqual(buildCtwMaskedFramework(question), [
+    "Scientists dictate  <BLANK_1>  to  <BLANK_2>  such policies matter."
+  ]);
+  assert.deepEqual(normalizeCtwMaskedFramework(buildCtwMaskedFramework(question)), [
+    "scientists dictate <BLANK_1> to <BLANK_2> such policies matter"
+  ]);
   assertSame(question, structuredClone(question));
 });
 
@@ -96,10 +104,18 @@ test("CTW identity ignores prefix and blank-boundary differences but reports pre
   const left = ctwQuestion({ prefixes: ["ac", "reso"], displays: ["ac____", "reso_____"] });
   const right = ctwQuestion({ prefixes: ["acc", "reso"], displays: ["acc___", "reso_____"] });
   const result = assertSame(left, right);
-  assert.deepEqual(result.nonIdentityConflicts, [{
-    kind: "prefix_conflict",
-    slots: [{ slotOrder: 1, leftPrefix: "ac", rightPrefix: "acc" }]
-  }]);
+  assert.equal(result.nonIdentityConflicts.length, 1);
+  assert.equal(result.nonIdentityConflicts[0].kind, "prefix_conflict");
+  assert.deepEqual(result.nonIdentityConflicts[0].slots[0], {
+    slotOrder: 1,
+    differenceKinds: ["prefix"],
+    leftPrefix: "ac",
+    rightPrefix: "acc",
+    leftAnswer: "access",
+    rightAnswer: "access",
+    leftReviewText: "ac____ → access",
+    rightReviewText: "acc___ → access"
+  });
 });
 
 test("CTW identity ignores underscore count, spacing, and standalone underscore noise", () => {
@@ -151,11 +167,31 @@ test("CTW identity differs for a lexical passage change", () => {
   );
 });
 
-test("CTW identity differs for an answer word change", () => {
-  assertDifferent(
+test("CTW identity ignores answer spelling and reports an answer conflict", () => {
+  const result = assertSame(
     ctwQuestion({ answers: ["access", "resources"] }),
     ctwQuestion({ answers: ["accept", "resources"] })
   );
+  assert.equal(result.nonIdentityConflicts[0].kind, "answer_conflict");
+  assert.deepEqual(result.nonIdentityConflicts[0].slots[0].differenceKinds, ["answer"]);
+});
+
+test("color and colour share a framework but require answer reconciliation", () => {
+  const result = assertSame(
+    ctwQuestion({ answers: ["color", "resources"], prefixes: ["col", "reso"] }),
+    ctwQuestion({ answers: ["colour", "resources"], prefixes: ["col", "reso"] })
+  );
+  assert.equal(result.nonIdentityConflicts[0].kind, "answer_conflict");
+});
+
+test("prefix plus answer changes become one slot-level content conflict", () => {
+  const result = assertSame(
+    ctwQuestion({ answers: ["the", "resources"], prefixes: ["t", "reso"] }),
+    ctwQuestion({ answers: ["their", "resources"], prefixes: ["th", "reso"] })
+  );
+  assert.equal(result.nonIdentityConflicts.length, 1);
+  assert.equal(result.nonIdentityConflicts[0].kind, "prefix_and_answer_conflict");
+  assert.deepEqual(result.nonIdentityConflicts[0].slots[0].differenceKinds, ["prefix", "answer"]);
 });
 
 test("CTW identity differs when answer count changes", () => {
@@ -171,6 +207,12 @@ test("CTW identity differs when the same answers are in a different order", () =
   right.payload.slots[0].slotOrder = 2;
   right.payload.slots[1].slotOrder = 1;
   assert.equal(reconstructCompletedCtwPassage(left), reconstructCompletedCtwPassage(right));
+  assertDifferent(left, right);
+});
+
+test("CTW identity differs when one blank moves to another text position", () => {
+  const left = ctwQuestion({ textBefore: "The ", between: " fox jumped over the ", textAfter: " dog." });
+  const right = ctwQuestion({ textBefore: "The fox ", between: " jumped over the ", textAfter: " dog." });
   assertDifferent(left, right);
 });
 
@@ -220,7 +262,7 @@ test("historical resources punctuation regression: reso_____ such and reso_____,
   assert.deepEqual(comparison(historical, punctuationVariant).nonIdentityConflicts, []);
 });
 
-test("CTW key is exactly derived from completed passage and ordered full answers", () => {
+test("CTW key is exactly derived from normalized masked paragraphs and blank sequence", () => {
   const question = ctwQuestion();
   const presentationVariant = structuredClone(question);
   presentationVariant.stem = "Different stem";
@@ -232,6 +274,9 @@ test("CTW key is exactly derived from completed passage and ordered full answers
     slot.missingLength = 999;
   });
   assert.deepEqual(buildCtwLogicalIdentity(question), buildCtwLogicalIdentity(presentationVariant));
+  assert.deepEqual(Object.keys(buildCtwLogicalIdentity(question)).sort(), [
+    "blankCount", "key", "normalizedMaskedParagraphs", "orderedBlankSequence", "version"
+  ]);
 });
 
 test("CTW passage normalization removes all Unicode punctuation without mutating source", () => {

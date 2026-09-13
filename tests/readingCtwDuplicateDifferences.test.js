@@ -3,7 +3,7 @@ const test = require("node:test");
 
 const { compareCtwPackageLogicalIdentity } = require("../lib/reading/ctwLogicalIdentity.ts");
 const { buildReadingDuplicateReviewPlans } = require("../lib/reading/duplicateResolution.ts");
-const { buildReadingDuplicateResolutionItem } = require("../lib/reading/duplicateResolutionView.ts");
+const { buildReadingContentConflict } = require("../lib/reading/contentReconciliation.ts");
 
 const INCOMING_COMPLETED = "Deserts, often characterized by aridity and extreme temperatures, have long been dismissed as barren wastelands. However, this perception overlooks the critical ecological significance and the remarkable adaptations of the organisms they host. These severe environments require resilience and innovation, with plants and animals developing unique survival strategies. Moreover, deserts play a vital role in global carbon cycles, and their vast landscapes offer unparalleled opportunities for research into climate change impacts. Thus, recognizing the intrinsic value of deserts is essential for fostering a deeper appreciation and commitment to desert conservation.";
 const CANDIDATE_COMPLETED = INCOMING_COMPLETED.replace("overlooks the critical", "overlooks their critical");
@@ -92,15 +92,15 @@ function ctwPackage({ logicalItemId, sourceLabel, date, completed, answers, spac
   };
 }
 
-function prepared(packageData, candidate) {
+function prepared(packageData, candidate, conflict) {
   return {
     packageData,
-    existingItem: null,
-    reuseKind: "new",
+    existingItem: candidate.item,
+    reuseKind: "semantic",
     batchSemanticReuseCount: 0,
-    possibleDuplicateLogicalItemIds: [candidate.item.logicalItemId],
-    possibleDuplicateCandidates: [candidate],
-    contentReconciliations: [],
+    possibleDuplicateLogicalItemIds: [],
+    possibleDuplicateCandidates: [],
+    contentReconciliations: [{ item: conflict, existingPackage: candidate, incomingPackage: packageData }],
     historicalDuplicateLogicalItemIds: [],
     materialMatchKind: "not_applicable",
     addedOccurrenceCount: 1,
@@ -108,7 +108,7 @@ function prepared(packageData, candidate) {
   };
 }
 
-test("7.6A the/their boundary remains pending and exposes only its exact content differences", () => {
+test("7.6A the/their boundary reuses one identity and becomes one answer conflict", () => {
   const incoming = ctwPackage({
     logicalItemId: "reading-ctw-b5ff85d5562f2bae74332728",
     sourceLabel: "7.6A",
@@ -127,29 +127,21 @@ test("7.6A the/their boundary remains pending and exposes only its exact content
   });
 
   const comparison = compareCtwPackageLogicalIdentity(incoming, candidate);
-  assert.equal(comparison.sameLogicalItem, false);
-  assert.equal(comparison.leftIdentity.key, "b5ff85d5562f2bae74332728fd92a35ae935e6ae3a683681c0e8c178ef63708e");
-  assert.equal(comparison.rightIdentity.key, "8fada11aa112e9fe1147f0344c7e88ca4c643bb81a3d36d17dc997a40ecb6c93");
+  assert.equal(comparison.sameLogicalItem, true);
+  assert.equal(comparison.leftIdentity.key, comparison.rightIdentity.key);
+  assert.equal(comparison.nonIdentityConflicts.length, 1);
+  assert.equal(comparison.nonIdentityConflicts[0].kind, "answer_conflict");
 
-  const reviews = buildReadingDuplicateReviewPlans([prepared(incoming, candidate)]);
-  assert.equal(reviews.length, 1);
-  assert.equal(reviews[0].resolutionId, "reading-duplicate:ctw:reading-ctw-b5ff85d5562f2bae74332728");
-  const item = buildReadingDuplicateResolutionItem(reviews[0], new Map());
-  assert.equal(item.resolution, null);
-  const differences = item.candidates[0].detectedDifferences;
-  assert.deepEqual(
-    differences.filter((difference) => difference.kind === "passage_lexical")
-      .map(({ incoming: left, candidate: right }) => [left, right]),
-    [["the", "their"]]
-  );
-  assert.deepEqual(
-    differences.filter((difference) => difference.kind === "answer")
-      .map(({ location, incoming: left, candidate: right }) => [location, left, right]),
-    [["第 2 空答案", "the", "their"]]
-  );
-  assert.equal(differences.some((difference) => difference.kind === "answer_order"), false);
-  assert.equal(differences.some((difference) => difference.kind === "prefix"), false);
-  assert.equal(differences.some((difference) => difference.kind === "punctuation"), false);
-  assert.equal(differences.some((difference) => difference.kind === "whitespace"), false);
-  assert.equal(differences.some((difference) => difference.kind === "display"), true);
+  const conflict = buildReadingContentConflict(candidate, incoming);
+  assert.ok(conflict);
+  assert.deepEqual(conflict.questionConflicts[0].differences.map((item) => item.kind), ["ctw_slot_content"]);
+  assert.deepEqual(conflict.questionConflicts[0].ctwSlotConflicts, [{
+    slotOrder: 2,
+    differenceKinds: ["answer"],
+    existing: "th___ → their",
+    incoming: "th_ → the",
+    existingAnswer: "their",
+    incomingAnswer: "the"
+  }]);
+  assert.equal(buildReadingDuplicateReviewPlans([prepared(incoming, candidate, conflict)]).length, 0);
 });

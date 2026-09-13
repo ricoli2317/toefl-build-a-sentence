@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "identityVersion": "ctw-logical-identity-v1",
-  "generatedAt": "2026-09-13T09:56:48.436Z",
+  "identityVersion": "ctw-masked-framework-v2",
+  "generatedAt": "2026-09-13T13:30:39.288Z",
   "totalLogicalItems": 166,
   "totalOccurrencesAudited": 304,
   "uniqueIdentityCount": 166,
@@ -10,6 +10,8 @@
   "duplicateLogicalItemCount": 0,
   "theoreticalLogicalItemReduction": 0,
   "prefixConflictClusterCount": 0,
+  "answerConflictClusterCount": 0,
+  "prefixAndAnswerConflictClusterCount": 0,
   "punctuationOnlyClusterCount": 0,
   "duplicateOccurrenceMappingCount": 0,
   "duplicateOccurrenceMappingRecordCount": 0,
@@ -24,7 +26,7 @@
     "logicalItems": [
       {
         "logicalItemId": "reading-ctw-e12835c96f7207294b51eadd",
-        "identityKey": "190b0db5c545be892562b7140fd0b5bf5747256a706ab17c4094001295ef0065",
+        "identityKey": "99f95f0285218067cb9ec014c44eeae086a94be17ff9482315f0157f75dd52f3",
         "accessPrefix": "ac",
         "accessDisplayText": "ac_ _ _ _",
         "resourcesPrefix": "reso",

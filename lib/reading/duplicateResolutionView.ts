@@ -23,22 +23,83 @@ export function buildReadingDuplicateResolutionItem(
     existingOccurrenceCount:
       review.incoming.packageData.occurrences.length - review.incoming.addedOccurrenceCount,
     incoming: readingDuplicatePreview(review.incoming.packageData),
-    candidates: review.candidates.map((candidate) => ({
-      ...readingDuplicatePreview(candidate),
-      firstSeenDate: candidate.item.firstSeenDate,
-      firstSeenSourceLabel: candidate.item.firstSeenSourceLabel,
-      sourceOccurrences: candidate.occurrences.length > 0
-        ? candidate.occurrences.map(readingSourceOccurrencePreview)
-        : historicalOccurrences.get(candidate.item.logicalItemId) ?? [],
-      detectedDifferences: review.questionType === "ctw"
+    candidates: review.candidates.map((candidate) => {
+      const incomingPreview = readingDuplicatePreview(review.incoming.packageData);
+      const candidatePreview = readingDuplicatePreview(candidate);
+      const detectedDifferences = review.questionType === "ctw"
         ? buildCtwDuplicateDifferences(
             ctwQuestionFromPackage(review.incoming.packageData),
             ctwQuestionFromPackage(candidate)
           )
-        : undefined
-    })),
+        : undefined;
+      return {
+        ...candidatePreview,
+        firstSeenDate: candidate.item.firstSeenDate,
+        firstSeenSourceLabel: candidate.item.firstSeenSourceLabel,
+        sourceOccurrences: candidate.occurrences.length > 0
+          ? candidate.occurrences.map(readingSourceOccurrencePreview)
+          : historicalOccurrences.get(candidate.item.logicalItemId) ?? [],
+        detectedDifferences,
+        reviewDifferences: duplicateReviewDifferences(
+          candidatePreview,
+          incomingPreview,
+          detectedDifferences
+        )
+      };
+    }),
     resolution: null
   };
+}
+
+function duplicateReviewDifferences(
+  existing: ReadingDuplicatePreview,
+  incoming: ReadingDuplicatePreview,
+  ctwDifferences?: NonNullable<ReadingDuplicateCandidate["detectedDifferences"]>
+): ReadingDuplicateCandidate["reviewDifferences"] {
+  if (existing.questionType !== incoming.questionType) {
+    return [{ label: "题型", existing: existing.questionType, incoming: incoming.questionType }];
+  }
+  if (existing.questionType === "ctw" && incoming.questionType === "ctw") {
+    const answerPairs = new Set((ctwDifferences ?? [])
+      .filter((difference) => difference.kind === "answer")
+      .map((difference) => `${difference.incoming}\u001f${difference.candidate}`));
+    return (ctwDifferences ?? []).flatMap((difference) => {
+      if (difference.kind === "display" || difference.kind === "prefix"
+        || difference.kind === "punctuation" || difference.kind === "whitespace") return [];
+      if (difference.kind === "passage_lexical"
+        && answerPairs.has(`${difference.incoming}\u001f${difference.candidate}`)) return [];
+      return [{
+        label: difference.location,
+        existing: difference.candidate,
+        incoming: difference.incoming
+      }];
+    });
+  }
+  if (existing.questionType === "rdl" && incoming.questionType === "rdl") {
+    return changedFields([
+      ["素材编号", existing.detail.materialId, incoming.detail.materialId],
+      ["素材类型", existing.detail.materialType ?? "未提供", incoming.detail.materialType ?? "未提供"],
+      ["素材标题", existing.detail.materialTitle ?? "无标题", incoming.detail.materialTitle ?? "无标题"],
+      ["题目", existing.detail.questions.join("\n\n"), incoming.detail.questions.join("\n\n")]
+    ]);
+  }
+  if (existing.questionType === "rap" && incoming.questionType === "rap") {
+    return changedFields([
+      ["文章标题", existing.detail.passageTitle, incoming.detail.passageTitle],
+      ["文章", existing.detail.passage, incoming.detail.passage],
+      ["题型", existing.detail.questionTypes.join(", "), incoming.detail.questionTypes.join(", ")],
+      ["题目", existing.detail.questions.join("\n\n"), incoming.detail.questions.join("\n\n")]
+    ]);
+  }
+  return [];
+}
+
+function changedFields(
+  values: Array<[string, string, string]>
+): ReadingDuplicateCandidate["reviewDifferences"] {
+  return values.flatMap(([label, existing, incoming]) => existing === incoming
+    ? []
+    : [{ label, existing, incoming }]);
 }
 
 export function readingDuplicatePreview(packageData: ReadingImportPackage): ReadingDuplicatePreview {

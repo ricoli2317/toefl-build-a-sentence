@@ -1,26 +1,31 @@
 import { createHash } from "node:crypto";
 import type { CtwQuestion, CtwSlot, ReadingImportPackage } from "./types.ts";
 
-export const CTW_LOGICAL_IDENTITY_VERSION = "ctw-logical-identity-v1";
+export const CTW_LOGICAL_IDENTITY_VERSION = "ctw-masked-framework-v2";
 type CtwLogicalIdentityQuestion = Pick<CtwQuestion, "questionId" | "payload">;
 
-// RegExp construction keeps Unicode property escapes available at runtime
-// while this project's TypeScript output target remains ES5.
 const UNICODE_PUNCTUATION = new RegExp("\\p{P}+", "gu");
+const BLANK_PLACEHOLDER = /<BLANK_(\d+)>/g;
 
 export type CtwLogicalIdentity = {
   version: typeof CTW_LOGICAL_IDENTITY_VERSION;
-  normalizedCompletedPassage: string;
-  orderedNormalizedAnswers: string[];
+  normalizedMaskedParagraphs: string[];
+  orderedBlankSequence: number[];
+  blankCount: number;
   key: string;
 };
 
-export type CtwPrefixConflict = {
-  kind: "prefix_conflict";
+export type CtwSlotContentConflict = {
+  kind: "prefix_conflict" | "answer_conflict" | "prefix_and_answer_conflict";
   slots: Array<{
     slotOrder: number;
+    differenceKinds: Array<"prefix" | "answer">;
     leftPrefix: string;
     rightPrefix: string;
+    leftAnswer: string;
+    rightAnswer: string;
+    leftReviewText: string;
+    rightReviewText: string;
   }>;
 };
 
@@ -28,15 +33,11 @@ export type CtwLogicalIdentityComparison = {
   sameLogicalItem: boolean;
   leftIdentity: CtwLogicalIdentity;
   rightIdentity: CtwLogicalIdentity;
-  /** Presentation/content-review signals. These never change logical identity. */
-  nonIdentityConflicts: CtwPrefixConflict[];
+  /** Canonical-content review signals. These never change logical identity. */
+  nonIdentityConflicts: CtwSlotContentConflict[];
 };
 
-/**
- * Replaces every CTW blank with its complete correct answer and returns the
- * natural passage in paragraph/segment order. Raw display text, prefixes,
- * underscore counts, and missing-text serialization are intentionally unused.
- */
+/** Debug/content helper only. Completed answers never participate in identity. */
 export function reconstructCompletedCtwPassage(question: CtwLogicalIdentityQuestion): string {
   const slotById = uniqueSlotsById(question.payload.slots);
   return ordered(question.payload.paragraphs, (paragraph) => paragraph.paragraphOrder)
@@ -45,7 +46,7 @@ export function reconstructCompletedCtwPassage(question: CtwLogicalIdentityQuest
       const slot = slotById.get(segment.slotId);
       if (!slot) {
         throw new Error(
-          `CTW logical identity cannot resolve slot ${segment.slotId} in question ${question.questionId}`
+          `CTW content reconstruction cannot resolve slot ${segment.slotId} in question ${question.questionId}`
         );
       }
       return slot.answer;
@@ -53,19 +54,51 @@ export function reconstructCompletedCtwPassage(question: CtwLogicalIdentityQuest
     .join("\n");
 }
 
-/**
- * Canonical comparison text for a completed CTW passage. Unicode punctuation
- * (including underscores, dashes, quotes, apostrophes, and brackets) is
- * treated only as a word boundary and cannot participate in identity.
- */
+/** Builds identity text only from structured paragraph/segment/slot topology. */
+export function buildCtwMaskedFramework(question: CtwLogicalIdentityQuestion): string[] {
+  const slotById = uniqueSlotsById(question.payload.slots);
+  const encountered = new Set<string>();
+  const paragraphs = ordered(question.payload.paragraphs, (paragraph) => paragraph.paragraphOrder)
+    .map((paragraph) => paragraph.segments.map((segment) => {
+      if (segment.kind === "text") return segment.text;
+      const slot = slotById.get(segment.slotId);
+      if (!slot) {
+        throw new Error(
+          `CTW masked framework cannot resolve slot ${segment.slotId} in question ${question.questionId}`
+        );
+      }
+      if (encountered.has(segment.slotId)) {
+        throw new Error(`CTW masked framework found repeated slot ${segment.slotId}`);
+      }
+      encountered.add(segment.slotId);
+      return ` <BLANK_${slot.slotOrder}> `;
+    }).join(""));
+  if (encountered.size !== slotById.size) {
+    const missing = Array.from(slotById.keys()).filter((slotId) => !encountered.has(slotId));
+    throw new Error(`CTW masked framework has unplaced slots: ${missing.join(", ")}`);
+  }
+  return paragraphs;
+}
+
+export function normalizeCtwMaskedFramework(paragraphs: string[]): string[] {
+  return paragraphs.map((paragraph) => {
+    const pieces: string[] = [];
+    let cursor = 0;
+    for (const match of Array.from(paragraph.matchAll(BLANK_PLACEHOLDER))) {
+      const text = normalizeCtwIdentityText(paragraph.slice(cursor, match.index));
+      if (text) pieces.push(text);
+      pieces.push(`<BLANK_${match[1]}>`);
+      cursor = (match.index ?? 0) + match[0].length;
+    }
+    const tail = normalizeCtwIdentityText(paragraph.slice(cursor));
+    if (tail) pieces.push(tail);
+    return pieces.join(" ").replace(/\s+/g, " ").trim();
+  });
+}
+
+/** Public normalization primitive retained for audit/debug callers. */
 export function normalizeCtwIdentityPassage(value: string): string {
-  return value
-    .normalize("NFKC")
-    .toLocaleLowerCase("en-US")
-    .replace(/[\u2010-\u2015\u2212\ufe58\ufe63\uff0d]/g, "-")
-    .replace(UNICODE_PUNCTUATION, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  return normalizeCtwIdentityText(value);
 }
 
 export function normalizeCtwAnswer(value: string): string {
@@ -76,28 +109,28 @@ export function normalizeCtwAnswer(value: string): string {
     .trim();
 }
 
+/** Debug/content helper only. Ordered answers are explicitly outside identity. */
 export function normalizeCtwOrderedAnswers(question: CtwLogicalIdentityQuestion): string[] {
   return orderedSlots(question.payload.slots).map((slot) => normalizeCtwAnswer(slot.answer));
 }
 
-/**
- * The only CTW logical identity value: normalized completed passage plus the
- * ordered normalized complete answers. The hash contains no presentation or
- * blank-boundary fields.
- */
 export function buildCtwLogicalIdentity(question: CtwLogicalIdentityQuestion): CtwLogicalIdentity {
-  const normalizedCompletedPassage = normalizeCtwIdentityPassage(
-    reconstructCompletedCtwPassage(question)
+  const normalizedMaskedParagraphs = normalizeCtwMaskedFramework(
+    buildCtwMaskedFramework(question)
   );
-  const orderedNormalizedAnswers = normalizeCtwOrderedAnswers(question);
+  const orderedBlankSequence = normalizedMaskedParagraphs.flatMap((paragraph) =>
+    Array.from(paragraph.matchAll(BLANK_PLACEHOLDER), (match) => Number(match[1]))
+  );
   const canonicalValue = JSON.stringify([
-    normalizedCompletedPassage,
-    orderedNormalizedAnswers
+    CTW_LOGICAL_IDENTITY_VERSION,
+    normalizedMaskedParagraphs,
+    orderedBlankSequence
   ]);
   return {
     version: CTW_LOGICAL_IDENTITY_VERSION,
-    normalizedCompletedPassage,
-    orderedNormalizedAnswers,
+    normalizedMaskedParagraphs,
+    orderedBlankSequence,
+    blankCount: orderedBlankSequence.length,
     key: createHash("sha256").update(canonicalValue).digest("hex")
   };
 }
@@ -138,36 +171,67 @@ export function compareCtwLogicalIdentity(
 ): CtwLogicalIdentityComparison {
   const leftIdentity = buildCtwLogicalIdentity(left);
   const rightIdentity = buildCtwLogicalIdentity(right);
-  const sameLogicalItem =
-    leftIdentity.normalizedCompletedPassage === rightIdentity.normalizedCompletedPassage
-    && arraysEqual(
-      leftIdentity.orderedNormalizedAnswers,
-      rightIdentity.orderedNormalizedAnswers
-    );
-
+  const sameLogicalItem = leftIdentity.key === rightIdentity.key;
   return {
     sameLogicalItem,
     leftIdentity,
     rightIdentity,
     nonIdentityConflicts: sameLogicalItem
-      ? prefixConflicts(left.payload.slots, right.payload.slots)
+      ? slotContentConflicts(left.payload.slots, right.payload.slots)
       : []
   };
 }
 
-function prefixConflicts(left: CtwSlot[], right: CtwSlot[]): CtwPrefixConflict[] {
+export function ctwSlotReviewText(slot: Pick<CtwSlot, "answer" | "prefix">) {
+  const prefixLength = Array.from(slot.prefix).length;
+  const answerLength = Array.from(slot.answer).length;
+  const missingLength = Math.max(0, answerLength - prefixLength);
+  return `${slot.prefix}${"_".repeat(missingLength)} → ${slot.answer}`;
+}
+
+function slotContentConflicts(left: CtwSlot[], right: CtwSlot[]): CtwSlotContentConflict[] {
   const leftSlots = orderedSlots(left);
   const rightSlots = orderedSlots(right);
   if (leftSlots.length !== rightSlots.length) return [];
   const slots = leftSlots.flatMap((leftSlot, index) => {
     const rightSlot = rightSlots[index];
-    const leftPrefix = normalizeCtwAnswer(leftSlot.prefix);
-    const rightPrefix = normalizeCtwAnswer(rightSlot.prefix);
-    return leftPrefix === rightPrefix
-      ? []
-      : [{ slotOrder: leftSlot.slotOrder, leftPrefix, rightPrefix }];
+    if (!rightSlot || leftSlot.slotOrder !== rightSlot.slotOrder) return [];
+    const prefixDiffers = normalizeCtwAnswer(leftSlot.prefix) !== normalizeCtwAnswer(rightSlot.prefix);
+    const answerDiffers = normalizeCtwAnswer(leftSlot.answer) !== normalizeCtwAnswer(rightSlot.answer);
+    if (!prefixDiffers && !answerDiffers) return [];
+    const differenceKinds: Array<"prefix" | "answer"> = [
+      ...(prefixDiffers ? ["prefix" as const] : []),
+      ...(answerDiffers ? ["answer" as const] : [])
+    ];
+    return [{
+      slotOrder: leftSlot.slotOrder,
+      differenceKinds,
+      leftPrefix: leftSlot.prefix,
+      rightPrefix: rightSlot.prefix,
+      leftAnswer: leftSlot.answer,
+      rightAnswer: rightSlot.answer,
+      leftReviewText: ctwSlotReviewText(leftSlot),
+      rightReviewText: ctwSlotReviewText(rightSlot)
+    }];
   });
-  return slots.length > 0 ? [{ kind: "prefix_conflict", slots }] : [];
+  return slots.map((slot) => ({
+    kind: slot.differenceKinds.length === 2
+      ? "prefix_and_answer_conflict" as const
+      : slot.differenceKinds[0] === "prefix"
+        ? "prefix_conflict" as const
+        : "answer_conflict" as const,
+    slots: [slot]
+  }));
+}
+
+function normalizeCtwIdentityText(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLocaleLowerCase("en-US")
+    .replace(/[\u2010-\u2015\u2212\ufe58\ufe63\uff0d]/g, "-")
+    .replace(UNICODE_PUNCTUATION, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function uniqueSlotsById(slots: CtwSlot[]) {
@@ -193,8 +257,4 @@ function orderedSlots(slots: CtwSlot[]) {
 
 function ordered<T>(values: T[], order: (value: T) => number) {
   return [...values].sort((left, right) => order(left) - order(right));
-}
-
-function arraysEqual(left: string[], right: string[]) {
-  return left.length === right.length && left.every((value, index) => value === right[index]);
 }

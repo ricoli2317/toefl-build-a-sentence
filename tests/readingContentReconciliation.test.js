@@ -51,6 +51,10 @@ function rap() {
   return packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
 }
 
+function ctw() {
+  return packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv");
+}
+
 function choice(packageData) {
   return packageData.questions.find((question) =>
     question.questionType === "rdl" || question.questionType === "rap_multiple_choice"
@@ -201,6 +205,33 @@ test("identity reuse and content conflict remain separate concepts", () => {
   assert.ok(buildReadingContentConflict(existing, incoming));
 });
 
+test("CTW prefix, answer, and combined changes each produce one slot-level conflict", () => {
+  for (const variant of ["prefix", "answer", "both"]) {
+    const existing = ctw();
+    const incoming = structuredClone(existing);
+    const slot = incoming.questions[0].payload.slots[0];
+    if (variant !== "answer") slot.prefix = `${slot.prefix}c`;
+    if (variant !== "prefix") slot.answer = `${slot.answer}s`;
+    slot.displayText = `${slot.prefix}_ _ _ _`;
+    const conflict = buildReadingContentConflict(existing, incoming);
+    assert.deepEqual(conflict.questionConflicts[0].differences.map((item) => item.kind), ["ctw_slot_content"]);
+    assert.equal(conflict.questionConflicts[0].ctwSlotConflicts.length, 1);
+    assert.equal(conflict.questionConflicts[0].ctwSlotConflicts[0].slotOrder, 1);
+    assert.deepEqual(
+      conflict.questionConflicts[0].ctwSlotConflicts[0].differenceKinds,
+      variant === "prefix" ? ["prefix"] : variant === "answer" ? ["answer"] : ["prefix", "answer"]
+    );
+  }
+});
+
+test("CTW punctuation and display serialization differences never produce content review", () => {
+  const existing = ctw();
+  const incoming = structuredClone(existing);
+  incoming.questions[0].payload.slots.forEach((slot) => { slot.displayText = `${slot.prefix}_ _ _`; });
+  incoming.questions[0].payload.paragraphs[0].segments.find((segment) => segment.kind === "text").text += ",";
+  assert.equal(buildReadingContentConflict(existing, incoming), null);
+});
+
 test("unresolved content conflict is blocked and resolutions are explicit", () => {
   const existing = rdl();
   const incoming = structuredClone(existing);
@@ -256,16 +287,21 @@ test("atomic correction payload explicitly requests canonical replacement", asyn
   assert.match(sql, /on conflict \(material_id\) do update set[\s\S]*title = excluded\.title/);
 });
 
-test("content conflict UI renders question-level versions and both decisions", () => {
+test("content conflict UI defaults to compact fixed-direction review with local feedback", () => {
   const source = fs.readFileSync(path.join(
     projectRoot,
     "components/import/ReadingContentConflictList.tsx"
   ), "utf8");
-  assert.match(source, /题目内容冲突待确认/);
-  assert.match(source, /Question \{conflict\.sourceQuestionNumber/);
-  assert.match(source, /题库版本/);
-  assert.match(source, /来源 CSV/);
-  assert.match(source, /Correct semantic answer/);
+  assert.match(source, /同题内容差异待确认/);
+  assert.match(source, /系统已确认这是同一道题/);
+  assert.match(source, /第 \{slot\.slotOrder\} 空内容不同/);
+  assert.match(source, /<VersionValue title="题库版本" value=\{slot\.existing\}/);
+  assert.match(source, /<VersionValue title="来源 CSV" value=\{slot\.incoming\}/);
   assert.match(source, /保留题库版本/);
   assert.match(source, /使用来源版本更新题库/);
+  assert.match(source, /已选择：/);
+  assert.match(source, /修改选择/);
+  assert.match(source, /重新查看/);
+  assert.match(source, /展开完整内容/);
+  assert.match(source, /收起完整内容/);
 });

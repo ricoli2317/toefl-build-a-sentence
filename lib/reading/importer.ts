@@ -19,7 +19,6 @@ import {
   buildReadingContentConflict,
   type ReadingContentConflictItem
 } from "./contentReconciliation.ts";
-import { buildCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -113,7 +112,6 @@ export async function prepareReadingPackagesForImport(
     : [];
   const historicalById = new Map(historicalPackages.map((item) => [item.item.logicalItemId, item]));
   const historicalBySemantic = groupBy(historicalPackages, readingSemanticFingerprint);
-  assertHistoricalCtwIdentityClusters(historicalPackages);
   const historicalByPossible = groupBy(historicalPackages, readingPossibleDuplicateFingerprint);
 
   const prepared = await Promise.all(packages.map(async (incomingPackage) => {
@@ -423,29 +421,6 @@ function isOneSemanticEquivalenceClass(packages: ReadingImportPackage[]) {
     }
   }
   return true;
-}
-
-function assertHistoricalCtwIdentityClusters(packages: ReadingImportPackage[]) {
-  const owners = new Map<string, ReadingImportPackage>();
-  for (const packageData of packages) {
-    if (packageData.item.module !== "ctw") continue;
-    const identity = buildCtwPackageLogicalIdentity(packageData).key;
-    const owner = owners.get(identity);
-    if (owner && owner.item.logicalItemId !== packageData.item.logicalItemId) {
-      throw Object.assign(
-        new Error(
-          `CTW historical identity ${identity} has multiple logical items: ` +
-          `${owner.item.logicalItemId} (${owner.item.firstSeenSourceLabel}) and ` +
-          `${packageData.item.logicalItemId} (${packageData.item.firstSeenSourceLabel})`
-        ),
-        {
-          code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT",
-          operation: "cluster historical Reading CTW logical identities"
-        }
-      );
-    }
-    owners.set(identity, packageData);
-  }
 }
 
 function stableHistoricalSurvivor(packages: ReadingImportPackage[]) {

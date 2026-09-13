@@ -145,13 +145,15 @@ test("punctuation-only completed passage differences stay in one cluster", () =>
   assert.ok(manifest.clusters[0].conflictKinds.includes("punctuation_difference"));
 });
 
-test("different full answer creates a different identity", () => {
+test("different full answer shares identity and is audited as an answer conflict", () => {
   const manifest = auditCtwLogicalIdentities([
     item("item-a", question({ answers: ["access", "resources"] })),
     item("item-b", question({ answers: ["accept", "resources"] }))
   ], generatedAt);
-  assert.equal(manifest.uniqueIdentityCount, 2);
-  assert.equal(manifest.duplicateClusterCount, 0);
+  assert.equal(manifest.uniqueIdentityCount, 1);
+  assert.equal(manifest.duplicateClusterCount, 1);
+  assert.equal(manifest.answerConflictClusterCount, 1);
+  assert.equal(manifest.clusters[0].slotContentConflicts[0].kind, "answer_conflict");
 });
 
 test("same answers in a different order create a different identity", () => {
@@ -206,5 +208,6 @@ test("known access boundary regression clusters ac____ and acc___ and exposes so
     })),
     [{ prefix: "ac", source: "6.21A" }, { prefix: "acc", source: "7.21A" }]
   );
-  assert.match(renderCtwLogicalIdentityAuditMarkdown(manifest), /Slot 1, answer `access`/);
+  assert.match(renderCtwLogicalIdentityAuditMarkdown(manifest), /Slot 1: prefix_conflict/);
+  assert.match(renderCtwLogicalIdentityAuditMarkdown(manifest), /ac____ → access/);
 });

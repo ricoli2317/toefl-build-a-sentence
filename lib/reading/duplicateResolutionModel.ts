@@ -86,6 +86,11 @@ export type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
   firstSeenSourceLabel: string;
   sourceOccurrences: ReadingDuplicateSourceOccurrencePreview[];
   detectedDifferences?: ReadingCtwDuplicateDifference[];
+  reviewDifferences: Array<{
+    label: string;
+    existing: string;
+    incoming: string;
+  }>;
 };
 
 export type ReadingDuplicateResolutionItem = {

@@ -14,8 +14,7 @@ export type ReadingContentDifferenceKind =
   | "options"
   | "option_order"
   | "correct_answer"
-  | "ctw_passage"
-  | "ctw_prefix"
+  | "ctw_slot_content"
   | "insert_sentence"
   | "insertion_anchors"
   | "correct_insertion_location"
@@ -48,11 +47,21 @@ export type ReadingContentQuestionVersion = {
   selectedSentence?: string;
 };
 
+export type ReadingCtwSlotConflictPreview = {
+  slotOrder: number;
+  differenceKinds: Array<"prefix" | "answer">;
+  existing: string;
+  incoming: string;
+  existingAnswer: string;
+  incomingAnswer: string;
+};
+
 export type ReadingQuestionContentConflict = {
   questionOrder: number;
   sourceQuestionNumber: number | null;
   differences: ReadingContentDifference[];
   correctAnswerSemanticallyDifferent: boolean;
+  ctwSlotConflicts?: ReadingCtwSlotConflictPreview[];
   existing: ReadingContentQuestionVersion;
   incoming: ReadingContentQuestionVersion;
 };
@@ -100,8 +109,7 @@ const DIFFERENCE_LABELS: Record<ReadingContentDifferenceKind, string> = {
   options: "Options different",
   option_order: "Option order different",
   correct_answer: "Correct answer different",
-  ctw_passage: "Passage different",
-  ctw_prefix: "CTW prefix different",
+  ctw_slot_content: "CTW blank content different",
   insert_sentence: "Insert sentence different",
   insertion_anchors: "Insert anchors different",
   correct_insertion_location: "Correct insertion location different",
@@ -145,6 +153,10 @@ export function buildReadingContentConflict(
     if (!existingQuestion || !incomingQuestion) return [];
     const differences = compareQuestion(existingQuestion, incomingQuestion, existing, incoming);
     if (!differences.some((difference) => difference.substantive)) return [];
+    const ctwSlotConflicts = existingQuestion.questionType === "ctw"
+      && incomingQuestion.questionType === "ctw"
+      ? buildCtwSlotConflictPreviews(existingQuestion, incomingQuestion)
+      : undefined;
     return [{
       questionOrder,
       sourceQuestionNumber: sourceQuestionNumber(incoming, incomingQuestion.questionId),
@@ -153,7 +165,8 @@ export function buildReadingContentConflict(
         difference.kind === "correct_answer"
         || difference.kind === "correct_insertion_location"
         || difference.kind === "selected_sentence"
-      ),
+      ) || Boolean(ctwSlotConflicts?.some((conflict) => conflict.differenceKinds.includes("answer"))),
+      ctwSlotConflicts,
       existing: questionVersion(existingQuestion, existing),
       incoming: questionVersion(incomingQuestion, incoming)
     }];
@@ -214,11 +227,7 @@ function compareQuestion(
         { code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT" }
       );
     }
-    if (!sameArray(ctwPassageIdentity(existing), ctwPassageIdentity(incoming))) kinds.push("ctw_passage");
-    if (identity.nonIdentityConflicts.some((conflict) => conflict.kind === "prefix_conflict")) {
-      kinds.push("ctw_prefix");
-    }
-    if (!sameArray(ctwAnswerIdentity(existing), ctwAnswerIdentity(incoming))) kinds.push("correct_answer");
+    if (identity.nonIdentityConflicts.length > 0) kinds.push("ctw_slot_content");
     return differences(kinds);
   }
   if (existing.questionType === "rap_sentence_insertion" && incoming.questionType === "rap_sentence_insertion") {
@@ -249,6 +258,22 @@ function compareQuestion(
     }
   }
   return differences(kinds);
+}
+
+function buildCtwSlotConflictPreviews(
+  existing: CtwQuestion,
+  incoming: CtwQuestion
+): ReadingCtwSlotConflictPreview[] {
+  return compareCtwLogicalIdentity(existing, incoming).nonIdentityConflicts.flatMap((conflict) =>
+    conflict.slots.map((slot) => ({
+      slotOrder: slot.slotOrder,
+      differenceKinds: slot.differenceKinds,
+      existing: slot.leftReviewText,
+      incoming: slot.rightReviewText,
+      existingAnswer: slot.leftAnswer,
+      incomingAnswer: slot.rightAnswer
+    }))
+  );
 }
 
 function questionVersion(question: ReadingQuestion, packageData: ReadingImportPackage): ReadingContentQuestionVersion {
@@ -316,22 +341,6 @@ function optionTexts(options: ReadingOption[]) {
 
 function correctOptionText(question: Extract<ReadingQuestion, { questionType: "rdl" | "rap_multiple_choice" }>) {
   return question.payload.options.find((option) => option.optionId === question.payload.correctOptionId)?.text ?? "";
-}
-
-function ctwPassageIdentity(question: CtwQuestion) {
-  const slotOrder = new Map(question.payload.slots.map((slot) => [slot.slotId, slot.slotOrder]));
-  return [...question.payload.paragraphs]
-    .sort((left, right) => left.paragraphOrder - right.paragraphOrder)
-    .map((paragraph) => paragraph.segments.map((segment) => segment.kind === "text"
-      ? normalizeReadingReconciliationText(segment.text)
-      : `<blank:${slotOrder.get(segment.slotId) ?? "missing"}>`
-    ).join(""));
-}
-
-function ctwAnswerIdentity(question: CtwQuestion) {
-  return [...question.payload.slots]
-    .sort((left, right) => left.slotOrder - right.slotOrder)
-    .map((slot) => normalizeReadingReconciliationText(slot.answer));
 }
 
 function orderedSentences(sentences: Array<{ sentenceOrder: number; text: string }>) {

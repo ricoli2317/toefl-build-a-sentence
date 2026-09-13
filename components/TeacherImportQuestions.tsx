@@ -180,6 +180,12 @@ export function TeacherImportQuestions() {
   ).length;
   const readingHasUnresolvedContentConflicts = readingPreflightComplete
     && unresolvedReadingContentConflictCount > 0;
+  const readingReviewTotalCount = pendingResolutionItems.length + contentConflictItems.length;
+  const readingReviewHandledCount = pendingResolutionItems.filter(
+    (item) => Boolean(readingResolutionDrafts[item.resolutionId]?.action)
+  ).length + contentConflictItems.filter(
+    (item) => Boolean(readingContentDrafts[item.resolutionId]?.action)
+  ).length;
   const manuallyReusedReadingCount = pendingResolutionItems.filter(
     (item) => readingResolutionDrafts[item.resolutionId]?.action === "reuse_existing"
   ).length;
@@ -562,7 +568,7 @@ export function TeacherImportQuestions() {
                 <ResultMetric label="原始记录新增" value={result.insertedCount} />
                 <ResultMetric label="原始记录更新" value={result.updatedCount} />
                 <ResultMetric label="失败" tone="error" value={result.failedCount} />
-                <ResultMetric label="新逻辑题" value={result.logicalNewItemCount ?? 0} />
+                <ResultMetric label="新增题目" value={result.logicalNewItemCount ?? 0} />
                 <ResultMetric label="重复归组" value={result.logicalAutoMergeCount ?? 0} />
                 <ResultMetric label="待确认" tone={result.logicalNeedsReviewCount > 0 ? "error" : undefined} value={result.logicalNeedsReviewCount ?? 0} />
                 <ResultMetric label="新增日期记录" value={result.occurrenceInsertedCount ?? 0} />
@@ -575,12 +581,24 @@ export function TeacherImportQuestions() {
             </p>
           ) : isReadingQuestionType(questionType) && unresolvedReadingContentConflictCount > 0 ? (
             <p className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm font-semibold text-student-text">
-              还有 {unresolvedReadingContentConflictCount} 项题目内容冲突待确认。它们不是 identity duplicate，也不计入“无法导入”。
+              还有 {unresolvedReadingContentConflictCount} 项同题内容差异待确认；它们不计入“无法导入”。
             </p>
           ) : !isReadingQuestionType(questionType) && result.logicalNeedsReviewCount > 0 ? (
             <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
               待确认题目已导入原始题库，但暂未进入学生练习列表。请在下方“重复题待确认”中选择归入已有题或确认为新逻辑题。
             </p>
+          ) : null}
+          {readingReviewTotalCount > 0 ? (
+            <div className="mt-6 flex flex-wrap items-end justify-between gap-2 rounded-2xl border border-amber-300 bg-amber-50/40 p-5">
+              <div>
+                <h2 className="text-xl font-bold text-student-text">Reading 内容确认</h2>
+                <p className="mt-1 text-sm text-student-muted">逐项处理实际内容差异，完成全部选择后才能正式导入。</p>
+              </div>
+              <div className="text-right text-sm">
+                <div className="font-bold text-amber-800">待确认 {readingReviewTotalCount - readingReviewHandledCount} 项</div>
+                <div className="text-student-muted">已处理 {readingReviewHandledCount} / {readingReviewTotalCount}</div>
+              </div>
+            </div>
           ) : null}
           {pendingResolutionItems.length > 0 ? (
             <ReadingDuplicateResolutionList
@@ -884,7 +902,7 @@ function localizeImportOperation(operation?: string) {
     "detect question type": "识别 CSV 题型",
     "validate CSV headers": "校验 CSV 表头",
     "validate row": "校验数据行",
-    "validate logical title": "校验逻辑题小标题",
+    "validate logical title": "校验题目小标题",
     "validate set_id uniqueness": "校验 set_id 唯一性",
     "read existing question IDs": "读取现有题目 ID",
     "read existing writing question IDs": "读取现有写作题目 ID",
@@ -896,7 +914,7 @@ function localizeImportOperation(operation?: string) {
     "validate Reading group": "校验 Reading 题组",
     "check Reading possible duplicates": "检查 Reading 可能重复内容",
     "resolve Reading content conflicts": "处理 Reading 题目内容冲突",
-    "check RDL canonical material": "检查 RDL canonical material",
+    "check RDL canonical material": "检查 RDL 题库素材",
     "preflight Reading group": "只读预检 Reading 题组",
     "import Reading group atomically": "完整写入 Reading 题组",
     "import CSV questions": "导入 CSV 题目"

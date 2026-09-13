@@ -221,10 +221,14 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
       case "ctw": {
         const ctwParagraphIds = new Map<string, string>();
         const slotIds = new Map<string, string>();
-        sourceQuestion.payload.slots.forEach((slot, index) => {
+        const orderedSlots = [...sourceQuestion.payload.slots]
+          .sort((left, right) => left.slotOrder - right.slotOrder);
+        orderedSlots.forEach((slot, index) => {
           slotIds.set(slot.slotId, `${questionId}-slot-${String(index + 1).padStart(2, "0")}`);
         });
-        const paragraphs = sourceQuestion.payload.paragraphs.map((paragraph, index) => {
+        const orderedParagraphs = [...sourceQuestion.payload.paragraphs]
+          .sort((left, right) => left.paragraphOrder - right.paragraphOrder);
+        const paragraphs = orderedParagraphs.map((paragraph, index) => {
           const paragraphId = `${questionId}-p${String(index + 1).padStart(2, "0")}`;
           ctwParagraphIds.set(paragraph.paragraphId, paragraphId);
           return {
@@ -236,9 +240,9 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
               : { kind: "blank" as const, slotId: requiredMap(slotIds, segment.slotId) })
           };
         });
-        const slots = sourceQuestion.payload.slots.map((slot, index) => ({
+        const slots = orderedSlots.map((slot) => ({
           slotId: requiredMap(slotIds, slot.slotId),
-          slotOrder: index + 1,
+          slotOrder: slot.slotOrder,
           paragraphId: requiredMap(ctwParagraphIds, slot.paragraphId),
           answer: slot.answer,
           prefix: slot.prefix,
