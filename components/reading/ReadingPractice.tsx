@@ -12,6 +12,7 @@ import {
   useState,
   type ClipboardEvent,
   type CSSProperties,
+  type FormEvent,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode
@@ -1058,10 +1059,27 @@ function CtwPracticeWorkspace({
     [question.slots]
   );
   const positionRefs = useRef(new Map<string, HTMLSpanElement>());
+  const keyboardInputRef = useRef<HTMLInputElement | null>(null);
+  const activePositionRef = useRef<CtwPosition | null>(null);
+  const [activePositionKey, setActivePositionKey] = useState<string | null>(null);
+  const [keyboardInputFocused, setKeyboardInputFocused] = useState(false);
+  const setActivePosition = useCallback((position: CtwPosition) => {
+    activePositionRef.current = position;
+    setActivePositionKey(ctwPositionKey(position));
+  }, []);
   const focusPosition = useCallback((position: CtwPosition | null) => {
     if (!position) return;
+    setActivePosition(position);
+    if (document.activeElement === keyboardInputRef.current) return;
     positionRefs.current.get(ctwPositionKey(position))?.focus();
-  }, []);
+  }, [setActivePosition]);
+  const focusKeyboardInput = useCallback((position: CtwPosition) => {
+    setActivePosition(position);
+    // This must stay directly inside the slot's click handler. iOS only opens
+    // its software keyboard when an editable native control is focused during
+    // the original user gesture.
+    keyboardInputRef.current?.focus();
+  }, [setActivePosition]);
 
   useEffect(() => {
     if (readOnly) return;
@@ -1075,7 +1093,19 @@ function CtwPracticeWorkspace({
     focusPosition(result.focus);
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>, position: CtwPosition) => {
+  const applyBackspace = (position: CtwPosition) => {
+    const result = backspaceCtwLetter(interactionSlots, slotAnswers, position);
+    onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
+    focusPosition(result.focus);
+  };
+
+  const applyDelete = (position: CtwPosition) => {
+    const result = deleteCtwLetter(interactionSlots, slotAnswers, position);
+    onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
+    focusPosition(result.focus);
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>, position: CtwPosition) => {
     if (event.nativeEvent.isComposing || event.key === "Process" || event.ctrlKey || event.metaKey || event.altKey) return;
     if (/^[A-Za-z]$/.test(event.key)) {
       event.preventDefault();
@@ -1084,25 +1114,30 @@ function CtwPracticeWorkspace({
     }
     if (event.key === "Backspace") {
       event.preventDefault();
-      const result = backspaceCtwLetter(interactionSlots, slotAnswers, position);
-      onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
-      focusPosition(result.focus);
+      applyBackspace(position);
       return;
     }
     if (event.key === "Delete") {
       event.preventDefault();
-      const result = deleteCtwLetter(interactionSlots, slotAnswers, position);
-      onAnswerChange(question.questionId, { kind: "ctw", slots: result.slots });
-      focusPosition(result.focus);
+      applyDelete(position);
       return;
     }
     if (event.key.length === 1) event.preventDefault();
   };
 
-  const handlePaste = (event: ClipboardEvent<HTMLSpanElement>, position: CtwPosition) => {
+  const handlePaste = (event: ClipboardEvent<HTMLElement>, position: CtwPosition) => {
     event.preventDefault();
     const pastedText = event.clipboardData.getData("text");
     if (/^[A-Za-z]$/.test(pastedText)) applyLetter(position, pastedText);
+  };
+
+  const handleKeyboardInput = (event: FormEvent<HTMLInputElement>) => {
+    const position = activePositionRef.current;
+    const input = event.currentTarget.value;
+    event.currentTarget.value = "";
+    if (position && !(event.nativeEvent as InputEvent).isComposing && /^[A-Za-z]$/.test(input)) {
+      applyLetter(position, input);
+    }
   };
 
   return (
@@ -1111,6 +1146,41 @@ function CtwPracticeWorkspace({
       className={`mx-auto max-w-4xl py-2 sm:py-5 ${lookupEnabled ? "" : "select-none"}`}
       data-lookup-enabled={lookupEnabled ? "true" : "false"}
     >
+      {!readOnly ? (
+        <input
+          aria-label="Complete the Words letter input"
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect="off"
+          className="fixed bottom-0 left-0 h-px w-px border-0 p-0 text-base opacity-0"
+          data-ctw-keyboard-input="true"
+          inputMode="text"
+          maxLength={1}
+          onBlur={() => setKeyboardInputFocused(false)}
+          onBeforeInput={(event) => {
+            const position = activePositionRef.current;
+            const inputType = (event.nativeEvent as InputEvent).inputType;
+            if (!position || (inputType !== "deleteContentBackward" && inputType !== "deleteContentForward")) return;
+            event.preventDefault();
+            if (inputType === "deleteContentBackward") applyBackspace(position);
+            else applyDelete(position);
+          }}
+          onFocus={() => setKeyboardInputFocused(true)}
+          onInput={handleKeyboardInput}
+          onKeyDown={(event) => {
+            const position = activePositionRef.current;
+            if (position) handleKeyDown(event, position);
+          }}
+          onPaste={(event) => {
+            const position = activePositionRef.current;
+            if (position) handlePaste(event, position);
+          }}
+          ref={keyboardInputRef}
+          spellCheck={false}
+          tabIndex={-1}
+          type="text"
+        />
+      ) : null}
       <h1 className="text-center text-xl font-bold leading-8 text-student-text sm:text-2xl">Fill in the missing letters in the paragraph.</h1>
       <article className="mt-8 text-[18px] leading-[2.05] text-student-text sm:text-[20px]" data-testid="ctw-passage">
         {[...question.paragraphs]
@@ -1127,7 +1197,9 @@ function CtwPracticeWorkspace({
                 return (
                   <CtwBlankWord
                     characters={slotAnswers[slot.slotId] ?? emptySlots[slot.slotId]}
+                    activePositionKey={keyboardInputFocused ? activePositionKey : null}
                     key={`${paragraph.paragraphId}:blank:${slot.slotId}`}
+                    onActivatePosition={focusKeyboardInput}
                     onFocusPosition={focusPosition}
                     onKeyDown={handleKeyDown}
                     onPaste={handlePaste}
@@ -1150,7 +1222,9 @@ function CtwPracticeWorkspace({
 }
 
 function CtwBlankWord({
+  activePositionKey,
   characters,
+  onActivatePosition,
   onFocusPosition,
   onKeyDown,
   onPaste,
@@ -1162,10 +1236,12 @@ function CtwBlankWord({
   slotId,
   slotOrder
 }: {
+  activePositionKey: string | null;
   characters: string[];
+  onActivatePosition: (position: CtwPosition) => void;
   onFocusPosition: (position: CtwPosition) => void;
-  onKeyDown: (event: KeyboardEvent<HTMLSpanElement>, position: CtwPosition) => void;
-  onPaste: (event: ClipboardEvent<HTMLSpanElement>, position: CtwPosition) => void;
+  onKeyDown: (event: KeyboardEvent<HTMLElement>, position: CtwPosition) => void;
+  onPaste: (event: ClipboardEvent<HTMLElement>, position: CtwPosition) => void;
   positionRefs: { current: Map<string, HTMLSpanElement> };
   prefix: string;
   readOnly: boolean;
@@ -1174,10 +1250,6 @@ function CtwBlankWord({
   slotId: string;
   slotOrder: number;
 }) {
-  const activeCaretClass = readOnly
-    ? ""
-    : "relative focus:after:pointer-events-none focus:after:absolute focus:after:right-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-ctw-caret-blink focus:after:bg-student-text focus:after:content-['']";
-
   return (
     <span
       className={`inline whitespace-nowrap rounded-[0.2em] ${selected ? "bg-amber-100 ring-2 ring-amber-400 ring-offset-1" : ""}`}
@@ -1197,17 +1269,22 @@ function CtwBlankWord({
         {characters.map((character, characterIndex) => {
         const position = { slotId, characterIndex };
         const key = ctwPositionKey(position);
+        const keyboardActive = activePositionKey === key;
+        const activeCaretClass = readOnly
+          ? ""
+          : `relative focus:after:pointer-events-none focus:after:absolute focus:after:right-full focus:after:top-1/2 focus:after:block focus:after:h-[1em] focus:after:w-[1.5px] focus:after:translate-x-[0.05em] focus:after:-translate-y-1/2 focus:after:animate-ctw-caret-blink focus:after:bg-student-text focus:after:content-[''] ${keyboardActive ? "after:pointer-events-none after:absolute after:right-full after:top-1/2 after:block after:h-[1em] after:w-[1.5px] after:translate-x-[0.05em] after:-translate-y-1/2 after:animate-ctw-caret-blink after:bg-student-text after:content-['']" : ""}`;
         return (
           <span
             aria-label={`Blank ${slotOrder}, letter ${characterIndex + 1} of ${characters.length}`}
             className={`${character
-              ? `inline leading-[inherit] outline-none ${readOnly ? "cursor-default" : "cursor-text focus:rounded-[2px] focus:bg-amber-100 focus:shadow-[inset_0_-2px_0_#9a6b20]"}`
-              : `mx-[0.07em] inline-block h-[0.72em] w-[0.52em] border-b-[1.5px] border-student-muted align-baseline leading-none text-transparent outline-none ${readOnly ? "cursor-default" : "cursor-text focus:rounded-[2px] focus:border-student-primary focus:bg-student-primary-soft focus:shadow-[inset_0_-1px_0_currentColor]"}`} ${activeCaretClass}`}
+              ? `inline leading-[inherit] outline-none ${readOnly ? "cursor-default" : `cursor-text focus:rounded-[2px] focus:bg-amber-100 focus:shadow-[inset_0_-2px_0_#9a6b20] ${keyboardActive ? "rounded-[2px] bg-amber-100 shadow-[inset_0_-2px_0_#9a6b20]" : ""}`}`
+              : `mx-[0.07em] inline-block h-[0.72em] w-[0.52em] border-b-[1.5px] border-student-muted align-baseline leading-none text-transparent outline-none ${readOnly ? "cursor-default" : `cursor-text focus:rounded-[2px] focus:border-student-primary focus:bg-student-primary-soft focus:shadow-[inset_0_-1px_0_currentColor] ${keyboardActive ? "rounded-[2px] border-student-primary bg-student-primary-soft shadow-[inset_0_-1px_0_currentColor]" : ""}`}`} ${activeCaretClass}`}
             data-character-index={characterIndex}
             data-ctw-position={key}
             data-filled={character ? "true" : "false"}
             key={key}
-            onClick={readOnly ? undefined : () => onFocusPosition(position)}
+            onClick={readOnly ? undefined : () => onActivatePosition(position)}
+            onFocus={readOnly ? undefined : () => onFocusPosition(position)}
             onKeyDown={readOnly ? undefined : (event) => onKeyDown(event, position)}
             onPaste={readOnly ? undefined : (event) => onPaste(event, position)}
             ref={(element) => {

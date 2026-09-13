@@ -206,7 +206,7 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.match(source, /leading-none/);
   assert.match(source, /\{character \|\| null\}/);
   assert.match(source, /\? `inline leading-\[inherit\] outline-none/);
-  assert.match(source, /readOnly \? "cursor-default" : "cursor-text/);
+  assert.match(source, /readOnly \? "cursor-default" : `cursor-text/);
   const blankWordSource = source.slice(source.indexOf("function CtwBlankWord"), source.indexOf("function ctwPositionKey"));
   assert.ok(blankWordSource.indexOf("data-ctw-fill-region") < blankWordSource.indexOf("characters.map"));
   assert.equal((blankWordSource.match(/bg-\[#f1f2f5\]/g) ?? []).length, 1);
@@ -237,6 +237,43 @@ test("Full Set wrongbook memoizes editable slot identity so CTW focus initializa
   assert.match(ordinaryWrongbookSource, /focusPosition\(firstCtwPosition\(interactionSlots\)\)[\s\S]*\[focusPosition, interactionSlots, question\.questionId, readOnly\]/);
 });
 
+test("all editable CTW entry points share one iOS-compatible native keyboard input", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
+    "utf8"
+  );
+  const fullSetSource = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingFullSetRunner.tsx"),
+    "utf8"
+  );
+  const fullSetWrongbookSource = fs.readFileSync(
+    path.join(__dirname, "../components/reading/ReadingFullSetWrongbookPractice.tsx"),
+    "utf8"
+  );
+  const workspaceSource = source.slice(source.indexOf("function CtwPracticeWorkspace"), source.indexOf("function CtwBlankWord"));
+  const activateSource = workspaceSource.slice(
+    workspaceSource.indexOf("const focusKeyboardInput"),
+    workspaceSource.indexOf("useEffect", workspaceSource.indexOf("const focusKeyboardInput"))
+  );
+  const keyboardInputSource = workspaceSource.slice(
+    workspaceSource.indexOf("<input"),
+    workspaceSource.indexOf("/>", workspaceSource.indexOf("<input"))
+  );
+
+  assert.match(workspaceSource, /!readOnly \? \([\s\S]*<input/);
+  assert.match(keyboardInputSource, /data-ctw-keyboard-input="true"/);
+  assert.match(keyboardInputSource, /inputMode="text"/);
+  assert.match(keyboardInputSource, /tabIndex=\{-1\}/);
+  assert.match(keyboardInputSource, /type="text"/);
+  assert.doesNotMatch(keyboardInputSource, /disabled|readOnly|inputMode="none"|display-none|visibility-hidden|pointer-events-none/);
+  assert.match(activateSource, /keyboardInputRef\.current\?\.focus\(\)/);
+  assert.doesNotMatch(activateSource, /setTimeout|requestAnimationFrame|Promise|async/);
+  assert.match(source, /onClick=\{readOnly \? undefined : \(\) => onActivatePosition\(position\)\}/);
+  assert.match(source, /export function ReadingPracticeShell[\s\S]*<ReadingWorkspaceRouter[\s\S]*readOnly=\{readOnly\}/);
+  assert.match(fullSetSource, /<ReadingWorkspaceRouter[\s\S]*readOnly=\{false\}/);
+  assert.match(fullSetWrongbookSource, /<ReadingWorkspaceRouter[\s\S]*editableSlotIds=\{editableSlotIds\}[\s\S]*readOnly=\{false\}/);
+});
+
 test("active CTW position renders one non-layout blinking caret before its letter or underline", () => {
   const source = fs.readFileSync(
     path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
@@ -247,9 +284,10 @@ test("active CTW position renders one non-layout blinking caret before its lette
     "utf8"
   );
   const blankWordSource = source.slice(source.indexOf("function CtwBlankWord"), source.indexOf("function ctwPositionKey"));
+  const caretClassStart = blankWordSource.indexOf("const activeCaretClass");
   const caretClassSource = blankWordSource.slice(
-    blankWordSource.indexOf("const activeCaretClass"),
-    blankWordSource.indexOf("return (")
+    caretClassStart,
+    blankWordSource.indexOf("return (", caretClassStart)
   );
 
   assert.match(caretClassSource, /readOnly\s*\? ""/);
