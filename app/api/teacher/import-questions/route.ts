@@ -121,6 +121,7 @@ export async function POST(request: Request) {
       rows?: unknown;
       fileName?: unknown;
       dryRun?: unknown;
+      readingDuplicateResolutions?: unknown;
     };
     if (!Array.isArray(body.rows) || !body.rows.every((row) => row && typeof row === "object")) {
       return json(
@@ -156,7 +157,22 @@ export async function POST(request: Request) {
       supabase: createServiceSupabase(),
       userId: auth.userId,
       fileName: typeof body.fileName === "string" ? body.fileName : undefined,
-      dryRun: readingQuestionTypes.has(questionType) && body.dryRun === true
+      dryRun: readingQuestionTypes.has(questionType) && body.dryRun === true,
+      readingDuplicateResolutions: Array.isArray(body.readingDuplicateResolutions)
+        ? body.readingDuplicateResolutions.flatMap((value) => {
+            if (!value || typeof value !== "object") return [];
+            const candidate = value as Record<string, unknown>;
+            const action = candidate.action;
+            if (action !== "reuse_existing" && action !== "create_new") return [];
+            return [{
+              pendingId: String(candidate.pendingId ?? ""),
+              action,
+              candidateLogicalItemId: typeof candidate.candidateLogicalItemId === "string"
+                ? candidate.candidateLogicalItemId
+                : undefined
+            }];
+          })
+        : undefined
     });
 
     const importedTaskType = importedTaskTypes[questionType];

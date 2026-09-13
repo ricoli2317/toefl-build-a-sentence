@@ -39,6 +39,7 @@ export type PreparedReadingImportPackage = {
   reuseKind: "new" | "exact_fingerprint" | "semantic";
   batchSemanticReuseCount: number;
   possibleDuplicateLogicalItemIds: string[];
+  possibleDuplicateCandidates: ReadingImportPackage[];
   dataQualityWarning: string | null;
   historicalDuplicateLogicalItemIds: string[];
   materialMatchKind: "not_applicable" | "exact_material" | "semantic_material" | "possible_material_duplicate";
@@ -180,6 +181,10 @@ export async function prepareReadingPackagesForImport(
       reuseKind,
       batchSemanticReuseCount: incoming.reuseCounts.get(incomingPackage.item.logicalItemId) ?? 0,
       possibleDuplicateLogicalItemIds,
+      possibleDuplicateCandidates: possibleDuplicateLogicalItemIds.flatMap((logicalItemId) => {
+        const candidate = historicalById.get(logicalItemId);
+        return candidate ? [candidate] : [];
+      }),
       dataQualityWarning,
       historicalDuplicateLogicalItemIds,
       preparationConflict,

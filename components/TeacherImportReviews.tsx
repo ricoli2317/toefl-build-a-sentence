@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Check, RefreshCw } from "lucide-react";
 import { broadcastQuestionBankUpdated } from "@/lib/questionBankCacheEvents";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import { DuplicateComparisonCard } from "@/components/import/DuplicateComparisonCard";
 
 type QuestionPreview = {
   questionId: string;
@@ -163,8 +164,8 @@ export function TeacherImportReviews() {
                 </div>
 
                 <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                  <QuestionCard title="待确认来源" preview={review.incoming} />
-                  <QuestionCard title="已有逻辑题的标准来源" preview={selectedCandidate?.canonical ?? null} />
+                  <DuplicateComparisonCard title="待确认来源" preview={review.incoming} />
+                  <DuplicateComparisonCard title="已有逻辑题的标准来源" preview={selectedCandidate?.canonical ?? null} />
                 </div>
 
                 {review.candidates.length > 1 ? (
@@ -232,26 +233,6 @@ export function TeacherImportReviews() {
       [reviewId]: { ...current[reviewId], ...patch }
     }));
   }
-}
-
-function QuestionCard({ preview, title }: { preview: QuestionPreview | null; title: string }) {
-  return (
-    <div className="rounded-xl border border-student-border bg-student-primary-soft/20 p-4">
-      <h3 className="text-sm font-bold text-student-primary">{title}</h3>
-      {!preview ? (
-        <p className="mt-3 text-sm text-student-muted">题目详情不可用。</p>
-      ) : (
-        <div className="mt-3 grid gap-3 text-sm">
-          {preview.fields.map((field) => (
-            <div key={field.label}>
-              <div className="font-bold text-student-muted">{field.label}</div>
-              <div className="mt-0.5 whitespace-pre-wrap text-student-text">{field.value}</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 }
 
 function taskLabel(taskType: ImportReview["taskType"]) {

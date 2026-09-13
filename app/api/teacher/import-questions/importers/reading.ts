@@ -4,18 +4,29 @@ import { groupReadingSourceOccurrences } from "@/lib/reading/grouping";
 import {
   assertPreparedReadingPackageCanImport,
   importReadingPackageAtomic,
-  prepareReadingPackagesForImport
+  prepareReadingPackagesForImport,
+  type PreparedReadingImportPackage
 } from "@/lib/reading/importer";
-import type { ReadingMaterial } from "@/lib/reading/types";
+import {
+  buildReadingDuplicateReviewPlans,
+  resolveReadingDuplicateImports,
+  type ReadingDuplicateReviewPlan
+} from "@/lib/reading/duplicateResolution";
+import type { ReadingImportPackage, ReadingMaterial, ReadingQuestion } from "@/lib/reading/types";
 import { isRdlMaterialType } from "@/lib/reading/materialTypes";
-import type { ImporterContext, ImportResult } from "./types";
+import type {
+  ImporterContext,
+  ImportResult,
+  ReadingDuplicateCandidate,
+  ReadingDuplicateReview
+} from "./types";
 
 export function readingCsvImporter(type: ReadingCsvType) {
   return (context: ImporterContext) => importReadingCsv(context, type);
 }
 
 async function importReadingCsv(
-  { rows, supabase, userId, fileName, dryRun }: ImporterContext,
+  { rows, supabase, userId, fileName, dryRun, readingDuplicateResolutions }: ImporterContext,
   type: ReadingCsvType
 ): Promise<ImportResult> {
   const materialCatalog = type === "read_in_daily_life"
@@ -34,19 +45,22 @@ async function importReadingCsv(
     enableHistoricalSemanticFallback: true,
     rdlMaterialCatalog: materialCatalog ? Array.from(materialCatalog.values()) : undefined
   });
-  const preparedSourceSets = preparedPackages.map((prepared) =>
-    new Set(prepared.packageData.occurrences.map((occurrence) => occurrence.sourceLabel))
+  const reviewPlans = buildReadingDuplicateReviewPlans(preparedPackages, grouped.report.possibleDuplicates);
+  const historicalCandidateIds = Array.from(new Set(reviewPlans.flatMap((review) =>
+    review.candidates
+      .filter((candidate) => !preparedPackages.some((item) => item.packageData.item.logicalItemId === candidate.item.logicalItemId))
+      .map((candidate) => candidate.item.logicalItemId)
+  )));
+  const candidateOccurrences = await loadCandidateOccurrences(supabase, historicalCandidateIds);
+  const pendingDuplicates = reviewPlans.map((review) => duplicateReview(review, candidateOccurrences));
+  const resolutionByPendingId = new Map(
+    (readingDuplicateResolutions ?? []).map((resolution) => [resolution.pendingId, resolution])
   );
-  const logicalWarnings = preparedPackages.flatMap((prepared) => {
-    const warnings = prepared.possibleDuplicateLogicalItemIds.length > 0
-      ? [{
-          message: "可能重复的 Reading 内容存在实质差异，需确认后才能导入。",
-          operation: "check Reading possible duplicates",
-          details: `module=${prepared.packageData.item.module}; existing=${prepared.possibleDuplicateLogicalItemIds.join(",")}; action=block pending review`
-        }]
-      : [];
-    return warnings;
-  });
+  const logicalWarnings = reviewPlans.map((review) => ({
+    message: "可能重复的 Reading 内容存在实质差异，需确认后才能导入。",
+    operation: "check Reading possible duplicates",
+    details: `module=${review.incoming.packageData.item.module}; existing=${review.candidates.map((candidate) => candidate.item.logicalItemId).join(",")}; action=block pending review`
+  }));
   const materialWarnings = preparedPackages.flatMap((prepared) =>
     prepared.materialMatchKind === "possible_material_duplicate"
       ? [{
@@ -74,20 +88,10 @@ async function importReadingCsv(
     }
     return warnings;
   });
-  const groupedPossibleDuplicateWarnings = grouped.report.possibleDuplicates.filter((duplicate) =>
-      !preparedSourceSets.some((sources) => duplicate.sourceOccurrences.every((source) => sources.has(source)))
-    ).map((duplicate) => ({
-      message: "可能重复的 Reading 内容需确认后才能导入。",
-      operation: "check Reading possible duplicates",
-      details: `${duplicate.reason}; sources=${duplicate.sourceOccurrences.join(", ")}; action=block pending review`
-    }));
-  const possibleDuplicateWarnings = [
-    ...groupedPossibleDuplicateWarnings,
-    ...logicalWarnings
-  ];
+  const possibleDuplicateWarnings = logicalWarnings;
   const warnings = [
-    ...possibleDuplicateWarnings,
-    ...materialWarnings,
+    ...(dryRun ? possibleDuplicateWarnings : []),
+    ...(dryRun ? materialWarnings : []),
     ...dataQualityWarnings
   ];
   const failedRows = adapted.failures.map((failure) => ({
@@ -103,43 +107,80 @@ async function importReadingCsv(
   let existingOccurrenceCount = 0;
   let exactFingerprintReuseCount = 0;
   let semanticReuseCount = 0;
+  let manualReuseCount = 0;
   let occurrenceConflictCount = 0;
   let updatedCount = 0;
   let successCount = 0;
 
-  for (const prepared of preparedPackages) {
-    const { packageData, existingItem, addedOccurrenceCount } = prepared;
+  const unresolvedReviews = reviewPlans.filter((review) => !resolutionByPendingId.has(review.pendingId));
+  if (!dryRun && unresolvedReviews.length > 0) {
+    throw Object.assign(
+      new Error(`仍有 ${unresolvedReviews.length} 项相似题未处理，不能正式导入。`),
+      { operation: "resolve Reading possible duplicates" }
+    );
+  }
+
+  const resolvedImports = dryRun
+    ? preparedPackages
+        .filter((prepared) => !reviewPlans.some((review) => review.incoming === prepared))
+        .map((prepared) => ({
+          packageData: prepared.packageData,
+          existingItem: prepared.existingItem,
+          members: [prepared],
+          manuallyResolved: false
+        }))
+    : resolveReadingDuplicateImports(preparedPackages, reviewPlans, resolutionByPendingId);
+
+  if (!dryRun) {
+    // Validate every resolved group before the first database write. This keeps
+    // a stale or forged resolution from producing a partially imported batch.
+    for (const resolved of resolvedImports) assertResolvedImportCanProceed(resolved);
+  }
+
+  for (const resolved of resolvedImports) {
+    const { packageData, existingItem, members } = resolved;
+    const addedOccurrenceCount = members.reduce((count, member) => count + member.addedOccurrenceCount, 0);
     try {
-      if (possibleDuplicateWarnings.length > 0) {
-        throw new Error("发现需确认的相似题；明确处理前不能导入为新题。");
-      }
-      assertPreparedReadingPackageCanImport(prepared);
+      if (dryRun) assertResolvedImportCanProceed(resolved);
       const existed = Boolean(existingItem);
-      const incomingFirst = {
-        date: packageData.item.firstSeenDate,
-        sourceLabel: packageData.item.firstSeenSourceLabel,
-        sourceOrder: packageData.item.firstSeenSourceOrder
-      };
-      const firstSeen = existingItem && compareFirstSeen(existingItem, incomingFirst) < 0
-        ? existingItem
-        : incomingFirst;
+      const firstSeen = [
+        ...(existingItem ? [existingItem] : []),
+        ...members.map((member) => ({
+          date: member.packageData.item.firstSeenDate,
+          sourceLabel: member.packageData.item.firstSeenSourceLabel,
+          sourceOrder: member.packageData.item.firstSeenSourceOrder
+        }))
+      ].sort(compareFirstSeen)[0];
       if (!dryRun) {
         await importReadingPackageAtomic(supabase, packageData, { createdBy: userId, firstSeen });
       }
-      successCount += 1;
+      successCount += members.length;
       occurrenceInsertedCount += addedOccurrenceCount;
-      existingOccurrenceCount += packageData.occurrences.length - addedOccurrenceCount;
-      semanticReuseCount += prepared.batchSemanticReuseCount;
+      existingOccurrenceCount += members.reduce(
+        (count, member) => count + member.packageData.occurrences.length - member.addedOccurrenceCount,
+        0
+      );
+      semanticReuseCount += members.reduce((count, member) => count + member.batchSemanticReuseCount, 0);
+      const manualActions = members.flatMap((member) => {
+        const review = reviewPlans.find((candidate) => candidate.incoming === member);
+        const resolution = review ? resolutionByPendingId.get(review.pendingId) : undefined;
+        return resolution ? [resolution.action] : [];
+      });
+      manualReuseCount += manualActions.filter((action) => action === "reuse_existing").length;
+      createdCount += manualActions.filter((action) => action === "create_new").length;
       if (existed) {
-        reusedCount += 1;
-        if (prepared.reuseKind === "semantic") semanticReuseCount += 1;
-        else exactFingerprintReuseCount += 1;
+        reusedCount += members.filter((member) => !reviewPlans.some((review) => review.incoming === member)).length;
+        for (const member of members) {
+          if (reviewPlans.some((review) => review.incoming === member)) continue;
+          if (member.reuseKind === "semantic") semanticReuseCount += 1;
+          else exactFingerprintReuseCount += 1;
+        }
         updatedCount += addedOccurrenceCount > 0 ? 1 : 0;
-      } else {
+      } else if (manualActions.length === 0) {
         createdCount += 1;
       }
     } catch (error) {
-      if (prepared.occurrenceConflict) occurrenceConflictCount += 1;
+      if (members.some((member) => member.occurrenceConflict)) occurrenceConflictCount += 1;
       failedRows.push({
         rowNumber: sourceRowNumber(rows, packageData.occurrences[0]?.sourceLabel),
         questionId: packageData.occurrences[0]?.occurrenceId ?? packageData.item.logicalItemId,
@@ -170,28 +211,179 @@ async function importReadingCsv(
     insertedCount: createdCount,
     updatedCount,
     logicalNewItemCount: createdCount,
-    logicalAutoMergeCount: reusedCount + preparedPackages.reduce(
+    logicalAutoMergeCount: reusedCount + manualReuseCount + preparedPackages.reduce(
       (count, item) => count + item.batchSemanticReuseCount,
       0
     ),
-    logicalNeedsReviewCount: possibleDuplicateWarnings.length,
-    possibleDuplicateCount: possibleDuplicateWarnings.length,
+    logicalNeedsReviewCount: dryRun ? pendingDuplicates.length : 0,
+    possibleDuplicateCount: dryRun ? pendingDuplicates.length : 0,
+    pendingDuplicates: dryRun ? pendingDuplicates : [],
     occurrenceInsertedCount,
     exactFingerprintReuseCount,
     semanticReuseCount,
+    manualReuseCount,
     existingOccurrenceCount,
     occurrenceConflictCount,
     rdlMaterialReuseCount: preparedPackages.filter((item) =>
       item.materialMatchKind === "exact_material" || item.materialMatchKind === "semantic_material"
     ).length,
     rdlNewMaterialCount: 0,
-    rdlMaterialWarningCount: preparedPackages.filter(
+    rdlMaterialWarningCount: dryRun ? preparedPackages.filter(
       (item) => item.materialMatchKind === "possible_material_duplicate"
-    ).length,
+    ).length : 0,
     failedCount: failedRows.length,
     failedRows,
     warnings
   };
+}
+
+type CandidateOccurrence = ReadingDuplicateCandidate["sourceOccurrences"][number];
+
+function assertResolvedImportCanProceed(resolved: {
+  members: PreparedReadingImportPackage[];
+  manuallyResolved: boolean;
+}) {
+  assertPreparedReadingPackageCanImport({
+    occurrenceConflict: resolved.members.find((member) => member.occurrenceConflict)?.occurrenceConflict ?? null,
+    possibleDuplicateLogicalItemIds: resolved.manuallyResolved
+      ? []
+      : resolved.members.flatMap((member) => member.possibleDuplicateLogicalItemIds),
+    materialMatchKind: resolved.manuallyResolved
+      ? "not_applicable"
+      : resolved.members.find((member) => member.materialMatchKind === "possible_material_duplicate")?.materialMatchKind
+  });
+}
+
+function duplicateReview(
+  review: ReadingDuplicateReviewPlan,
+  historicalOccurrences: Map<string, CandidateOccurrence[]>
+): ReadingDuplicateReview {
+  return {
+    pendingId: review.pendingId,
+    reason: review.reason,
+    addedOccurrenceCount: review.incoming.addedOccurrenceCount,
+    existingOccurrenceCount:
+      review.incoming.packageData.occurrences.length - review.incoming.addedOccurrenceCount,
+    resolvesMaterialWarning: review.incoming.materialMatchKind === "possible_material_duplicate",
+    incoming: readingPreview(review.incoming.packageData),
+    candidates: review.candidates.map((candidate) => ({
+      ...readingPreview(candidate),
+      firstSeenDate: candidate.item.firstSeenDate,
+      firstSeenSourceLabel: candidate.item.firstSeenSourceLabel,
+      sourceOccurrences: candidate.occurrences.length > 0
+        ? candidate.occurrences.map(sourceOccurrencePreview)
+        : historicalOccurrences.get(candidate.item.logicalItemId) ?? []
+    }))
+  };
+}
+
+function readingPreview(packageData: ReadingImportPackage) {
+  const occurrence = packageData.occurrences[0];
+  return {
+    logicalItemId: packageData.item.logicalItemId,
+    module: packageData.item.module,
+    title: packageData.item.title,
+    sourceLabel: occurrence?.sourceLabel ?? packageData.item.firstSeenSourceLabel,
+    occurrenceDate: occurrence?.occurrenceDate ?? packageData.item.firstSeenDate,
+    sourceModule: occurrence?.sourceModule ?? "",
+    sourceOrder: occurrence?.sourceOrder ?? packageData.item.firstSeenSourceOrder,
+    sourceQuestionRange: occurrence
+      ? questionRange(occurrence.sourceQuestionStart, occurrence.sourceQuestionEnd)
+      : "",
+    fields: readingPreviewFields(packageData)
+  };
+}
+
+function readingPreviewFields(packageData: ReadingImportPackage) {
+  const fields: Array<{ label: string; value: string }> = [];
+  const material = packageData.materials[0];
+  const passage = packageData.passages[0];
+  if (material) {
+    fields.push({ label: "Material", value: [material.title, material.source].filter(Boolean).join(" · ") });
+  }
+  if (passage) {
+    fields.push({
+      label: "Passage",
+      value: `${passage.title}\n${passage.paragraphs.map((paragraph) => paragraph.text).join("\n\n")}`
+    });
+  }
+  if (packageData.item.module === "ctw") {
+    const question = packageData.questions[0];
+    if (question?.questionType === "ctw") {
+      fields.push({
+        label: "Content",
+        value: question.payload.paragraphs.map((paragraph) => paragraph.rawText).join("\n\n")
+      });
+      fields.push({
+        label: "Blanks",
+        value: question.payload.slots.map((slot) => `${slot.slotOrder}. ${slot.displayText} → ${slot.answer}`).join("\n")
+      });
+    }
+  } else {
+    fields.push({
+      label: "Questions",
+      value: packageData.questions.map(questionPreviewText).join("\n\n")
+    });
+  }
+  return fields;
+}
+
+function questionPreviewText(question: ReadingQuestion) {
+  const heading = `${question.questionOrder}. ${question.stem}`;
+  if (question.questionType === "rdl" || question.questionType === "rap_multiple_choice") {
+    return [
+      heading,
+      ...question.payload.options.map((option) =>
+        `${option.optionOrder}. ${option.text}${option.optionId === question.payload.correctOptionId ? " ✓" : ""}`
+      )
+    ].join("\n");
+  }
+  if (question.questionType === "rap_sentence_insertion") {
+    return `${heading}\nInsert: ${question.payload.insertSentence}`;
+  }
+  if (question.questionType === "rap_sentence_selection") {
+    return `${heading}\nCorrect sentence: ${question.payload.correctSentenceId}`;
+  }
+  return heading;
+}
+
+async function loadCandidateOccurrences(
+  supabase: ImporterContext["supabase"],
+  logicalItemIds: string[]
+) {
+  const result = new Map<string, CandidateOccurrence[]>();
+  if (logicalItemIds.length === 0) return result;
+  const { data, error } = await supabase
+    .from("reading_source_occurrences")
+    .select("logical_item_id,source_label,occurrence_date,source_module,source_order,source_question_start,source_question_end")
+    .in("logical_item_id", logicalItemIds);
+  if (error) throw new Error(`read Reading candidate occurrences: ${error.message}`);
+  for (const row of data ?? []) {
+    const logicalItemId = String(row.logical_item_id);
+    const occurrence = {
+      sourceLabel: String(row.source_label),
+      occurrenceDate: String(row.occurrence_date),
+      sourceModule: String(row.source_module),
+      sourceOrder: Number(row.source_order),
+      sourceQuestionRange: questionRange(Number(row.source_question_start), Number(row.source_question_end))
+    };
+    result.set(logicalItemId, [...(result.get(logicalItemId) ?? []), occurrence]);
+  }
+  return result;
+}
+
+function sourceOccurrencePreview(occurrence: ReadingImportPackage["occurrences"][number]) {
+  return {
+    sourceLabel: occurrence.sourceLabel,
+    occurrenceDate: occurrence.occurrenceDate,
+    sourceModule: occurrence.sourceModule,
+    sourceOrder: occurrence.sourceOrder,
+    sourceQuestionRange: questionRange(occurrence.sourceQuestionStart, occurrence.sourceQuestionEnd)
+  };
+}
+
+function questionRange(start: number, end: number) {
+  return start === end ? String(start) : `${start}–${end}`;
 }
 
 async function loadMaterials(

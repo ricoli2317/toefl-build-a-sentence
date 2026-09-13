@@ -24,6 +24,46 @@ export type ImportWarning = {
   operation?: string;
 };
 
+export type ReadingDuplicateResolution = {
+  pendingId: string;
+  action: "reuse_existing" | "create_new";
+  candidateLogicalItemId?: string;
+};
+
+export type ReadingDuplicatePreview = {
+  logicalItemId: string;
+  module: "ctw" | "rdl" | "rap";
+  title: string | null;
+  sourceLabel: string;
+  occurrenceDate: string;
+  sourceModule: string;
+  sourceOrder: number;
+  sourceQuestionRange: string;
+  fields: Array<{ label: string; value: string }>;
+};
+
+export type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
+  firstSeenDate: string;
+  firstSeenSourceLabel: string;
+  sourceOccurrences: Array<{
+    sourceLabel: string;
+    occurrenceDate: string;
+    sourceModule: string;
+    sourceOrder: number;
+    sourceQuestionRange: string;
+  }>;
+};
+
+export type ReadingDuplicateReview = {
+  pendingId: string;
+  reason: string;
+  addedOccurrenceCount: number;
+  existingOccurrenceCount: number;
+  resolvesMaterialWarning: boolean;
+  incoming: ReadingDuplicatePreview;
+  candidates: ReadingDuplicateCandidate[];
+};
+
 export type ImportResult = {
   success: true;
   preview?: boolean;
@@ -42,11 +82,13 @@ export type ImportResult = {
   occurrenceInsertedCount: number;
   exactFingerprintReuseCount?: number;
   semanticReuseCount?: number;
+  manualReuseCount?: number;
   existingOccurrenceCount?: number;
   occurrenceConflictCount?: number;
   rdlMaterialReuseCount?: number;
   rdlNewMaterialCount?: number;
   rdlMaterialWarningCount?: number;
+  pendingDuplicates?: ReadingDuplicateReview[];
   failedCount: number;
   failedRows: FailedRow[];
   warnings: ImportWarning[];
@@ -66,6 +108,7 @@ export type ImporterContext = {
   userId: string;
   fileName?: string;
   dryRun?: boolean;
+  readingDuplicateResolutions?: ReadingDuplicateResolution[];
 };
 
 export type SupabaseLikeError = {

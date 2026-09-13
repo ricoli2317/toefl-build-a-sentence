@@ -2,7 +2,7 @@
 
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ClipboardCheck, FileSearch, TableProperties, Upload } from "lucide-react";
+import { Check, ClipboardCheck, FileSearch, TableProperties, Upload } from "lucide-react";
 import { parseCsvDocument, type CsvRecord } from "@/lib/csv";
 import {
   QUESTION_TYPE_LABELS,
@@ -18,6 +18,46 @@ import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
+import { DuplicateComparisonCard } from "@/components/import/DuplicateComparisonCard";
+
+type ReadingDuplicatePreview = {
+  logicalItemId: string;
+  module: "ctw" | "rdl" | "rap";
+  title: string | null;
+  sourceLabel: string;
+  occurrenceDate: string;
+  sourceModule: string;
+  sourceOrder: number;
+  sourceQuestionRange: string;
+  fields: Array<{ label: string; value: string }>;
+};
+
+type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
+  firstSeenDate: string;
+  firstSeenSourceLabel: string;
+  sourceOccurrences: Array<{
+    sourceLabel: string;
+    occurrenceDate: string;
+    sourceModule: string;
+    sourceOrder: number;
+    sourceQuestionRange: string;
+  }>;
+};
+
+type ReadingDuplicateReview = {
+  pendingId: string;
+  reason: string;
+  addedOccurrenceCount: number;
+  existingOccurrenceCount: number;
+  resolvesMaterialWarning: boolean;
+  incoming: ReadingDuplicatePreview;
+  candidates: ReadingDuplicateCandidate[];
+};
+
+type ReadingResolutionDraft = {
+  action: "reuse_existing" | "create_new" | null;
+  candidateLogicalItemId: string;
+};
 
 type ImportResult = {
   success?: boolean;
@@ -37,11 +77,13 @@ type ImportResult = {
   occurrenceInsertedCount: number;
   exactFingerprintReuseCount?: number;
   semanticReuseCount?: number;
+  manualReuseCount?: number;
   existingOccurrenceCount?: number;
   occurrenceConflictCount?: number;
   rdlMaterialReuseCount?: number;
   rdlNewMaterialCount?: number;
   rdlMaterialWarningCount?: number;
+  pendingDuplicates?: ReadingDuplicateReview[];
   failedCount: number;
   warnings?: Array<{
     message: string;
@@ -87,6 +129,7 @@ export function TeacherImportQuestions() {
   const [loading, setLoading] = useState(false);
   const [checkingRole, setCheckingRole] = useState(true);
   const [result, setResult] = useState<ImportResult | null>(null);
+  const [readingResolutionDrafts, setReadingResolutionDrafts] = useState<Record<string, ReadingResolutionDraft>>({});
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -137,8 +180,44 @@ export function TeacherImportQuestions() {
     || (result.occurrenceConflictCount ?? 0) > 0
     || (result.blockerCount ?? result.failedCount) > 0
   );
+  const pendingReadingDuplicates = result?.pendingDuplicates ?? [];
+  const unresolvedReadingDuplicateCount = pendingReadingDuplicates.filter(
+    (review) => !readingResolutionDrafts[review.pendingId]?.action
+  ).length;
+  const readingHasUnresolvedDuplicates = readingPreflightComplete && unresolvedReadingDuplicateCount > 0;
+  const manuallyReusedReadingCount = pendingReadingDuplicates.filter(
+    (review) => readingResolutionDrafts[review.pendingId]?.action === "reuse_existing"
+  ).length;
+  const manuallyCreatedReadingCount = pendingReadingDuplicates.filter(
+    (review) => readingResolutionDrafts[review.pendingId]?.action === "create_new"
+  ).length;
   const reusedReadingQuestionCount = (result?.exactFingerprintReuseCount ?? 0)
-    + (result?.semanticReuseCount ?? 0);
+    + (result?.semanticReuseCount ?? 0)
+    + (result?.manualReuseCount ?? 0)
+    + manuallyReusedReadingCount;
+  const newReadingQuestionCount = (result?.logicalNewItemCount ?? 0) + manuallyCreatedReadingCount;
+  const resolvedPendingReviews = pendingReadingDuplicates.filter(
+    (review) => Boolean(readingResolutionDrafts[review.pendingId]?.action)
+  );
+  const readingOccurrenceInsertedCount = (result?.occurrenceInsertedCount ?? 0)
+    + resolvedPendingReviews.reduce((count, review) => count + review.addedOccurrenceCount, 0);
+  const readingExistingOccurrenceCount = (result?.existingOccurrenceCount ?? 0)
+    + resolvedPendingReviews.reduce((count, review) => count + review.existingOccurrenceCount, 0);
+  const unresolvedRdlMaterialWarningCount = Math.max(
+    0,
+    (result?.rdlMaterialWarningCount ?? 0)
+      - resolvedPendingReviews.filter((review) => review.resolvesMaterialWarning).length
+  );
+  const visibleWarnings = (result?.warnings ?? []).filter((warning) => {
+    if (!readingType) return true;
+    if (warning.operation === "check Reading possible duplicates") {
+      return unresolvedReadingDuplicateCount > 0;
+    }
+    if (warning.operation === "check RDL canonical material") {
+      return unresolvedRdlMaterialWarningCount > 0;
+    }
+    return true;
+  });
 
   async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -147,6 +226,7 @@ export function TeacherImportQuestions() {
 
   async function readFile(file: File) {
     setResult(null);
+    setReadingResolutionDrafts({});
     setError("");
     setRows([]);
     setHeaders([]);
@@ -208,6 +288,12 @@ export function TeacherImportQuestions() {
       return;
     }
 
+    if (readingHasUnresolvedDuplicates) {
+      setError(`仍有 ${unresolvedReadingDuplicateCount} 项相似题未处理，请先逐项选择处理方式。`);
+      setLoading(false);
+      return;
+    }
+
     try {
       const supabase = createBrowserSupabase();
       const {
@@ -223,7 +309,24 @@ export function TeacherImportQuestions() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token ?? ""}`
         },
-        body: JSON.stringify({ fileName, headers, rows, dryRun: readingDryRun })
+        body: JSON.stringify({
+          fileName,
+          headers,
+          rows,
+          dryRun: readingDryRun,
+          readingDuplicateResolutions: readingDryRun
+            ? undefined
+            : pendingReadingDuplicates.flatMap((review) => {
+                const draft = readingResolutionDrafts[review.pendingId];
+                return draft?.action ? [{
+                  pendingId: review.pendingId,
+                  action: draft.action,
+                  candidateLogicalItemId: draft.action === "reuse_existing"
+                    ? draft.candidateLogicalItemId
+                    : undefined
+                }] : [];
+              })
+        })
       });
 
       const responseText = await response.text();
@@ -260,6 +363,19 @@ export function TeacherImportQuestions() {
           }
         }
         setResult(resultPayload);
+        if (resultPayload.preview) {
+          setReadingResolutionDrafts((current) => Object.fromEntries(
+            (resultPayload.pendingDuplicates ?? []).map((review) => [
+              review.pendingId,
+              current[review.pendingId] ?? {
+                action: null,
+                candidateLogicalItemId: review.candidates[0]?.logicalItemId ?? ""
+              }
+            ])
+          ));
+        } else {
+          setReadingResolutionDrafts({});
+        }
         if (resultPayload.logicalNeedsReviewCount > 0) {
           window.dispatchEvent(new Event("tps:import-reviews-updated"));
         }
@@ -360,14 +476,18 @@ export function TeacherImportQuestions() {
             {!readingPreflightBlocked ? (
               <button
                 className="teacher-button-primary min-w-52"
-                disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown"}
+                disabled={checkingRole || loading || rows.length === 0 || questionType === "unknown" || readingHasUnresolvedDuplicates}
                 onClick={importRows}
                 type="button"
               >
                 {loading
                   ? (readingType && !readingPreflightComplete ? "正在预检..." : "正在导入...")
                   : (readingType
-                      ? (readingPreflightComplete ? "确认导入" : "开始预检")
+                      ? (readingPreflightComplete
+                          ? (readingHasUnresolvedDuplicates
+                              ? `请先处理 ${unresolvedReadingDuplicateCount} 项相似题`
+                              : "确认导入")
+                          : "开始预检")
                       : "开始导入")}
               </button>
             ) : null}
@@ -393,13 +513,13 @@ export function TeacherImportQuestions() {
               <>
                 <ResultMetric label="本次题组" value={result.occurrenceCount ?? result.successCount} />
                 <ResultMetric label="复用已有题目" value={reusedReadingQuestionCount} />
-                <ResultMetric label="新增题目" value={result.logicalNewItemCount ?? 0} />
-                <ResultMetric label="新增来源" value={result.occurrenceInsertedCount ?? 0} />
-                {(result.existingOccurrenceCount ?? 0) > 0 ? (
-                  <ResultMetric label="已存在来源" value={result.existingOccurrenceCount ?? 0} />
+                <ResultMetric label="新增题目" value={newReadingQuestionCount} />
+                <ResultMetric label="新增来源" value={readingOccurrenceInsertedCount} />
+                {readingExistingOccurrenceCount > 0 ? (
+                  <ResultMetric label="已存在来源" value={readingExistingOccurrenceCount} />
                 ) : null}
-                {(result.possibleDuplicateCount ?? 0) > 0 ? (
-                  <ResultMetric label="需确认的相似题" tone="warning" value={result.possibleDuplicateCount ?? 0} />
+                {unresolvedReadingDuplicateCount > 0 ? (
+                  <ResultMetric label="需确认的相似题" tone="warning" value={unresolvedReadingDuplicateCount} />
                 ) : null}
                 {(result.occurrenceConflictCount ?? 0) > 0 ? (
                   <ResultMetric label="来源冲突" tone="error" value={result.occurrenceConflictCount ?? 0} />
@@ -411,8 +531,8 @@ export function TeacherImportQuestions() {
                   <>
                     <ResultMetric label="复用已有素材" value={result.rdlMaterialReuseCount ?? 0} />
                     <ResultMetric label="新增素材" value={result.rdlNewMaterialCount ?? 0} />
-                    {(result.rdlMaterialWarningCount ?? 0) > 0 ? (
-                      <ResultMetric label="需确认的相似素材" tone="warning" value={result.rdlMaterialWarningCount ?? 0} />
+                    {unresolvedRdlMaterialWarningCount > 0 ? (
+                      <ResultMetric label="需确认的相似素材" tone="warning" value={unresolvedRdlMaterialWarningCount} />
                     ) : null}
                   </>
                 ) : null}
@@ -430,14 +550,31 @@ export function TeacherImportQuestions() {
               </>
             )}
           </div>
-          {result.logicalNeedsReviewCount > 0 ? (
+          {isReadingQuestionType(questionType) && unresolvedReadingDuplicateCount > 0 ? (
+            <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
+              还有 {unresolvedReadingDuplicateCount} 项相似题待确认。完成全部选择前不会写入 Reading 正式题库。
+            </p>
+          ) : !isReadingQuestionType(questionType) && result.logicalNeedsReviewCount > 0 ? (
             <p className="mt-5 rounded-xl border border-student-error-border bg-student-error-soft p-4 text-sm font-semibold text-student-text">
               待确认题目已导入原始题库，但暂未进入学生练习列表。请在下方“重复题待确认”中选择归入已有题或确认为新逻辑题。
             </p>
           ) : null}
-          {result.warnings && result.warnings.length > 0 ? (
+          {isReadingQuestionType(questionType) && pendingReadingDuplicates.length > 0 ? (
+            <ReadingDuplicateResolutionList
+              drafts={readingResolutionDrafts}
+              onChange={(pendingId, patch) => setReadingResolutionDrafts((current) => ({
+                ...current,
+                [pendingId]: {
+                  ...(current[pendingId] ?? { action: null, candidateLogicalItemId: "" }),
+                  ...patch
+                }
+              }))}
+              reviews={pendingReadingDuplicates}
+            />
+          ) : null}
+          {visibleWarnings.length > 0 ? (
             <div className="mt-5 grid gap-3">
-              {result.warnings.map((warning, index) => (
+              {visibleWarnings.map((warning, index) => (
                 <pre
                   className={isReadingQuestionType(questionType)
                     ? "whitespace-pre-wrap rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800"
@@ -514,6 +651,145 @@ export function TeacherImportQuestions() {
       ) : null}
     </div>
   );
+}
+
+function ReadingDuplicateResolutionList({
+  drafts,
+  onChange,
+  reviews
+}: {
+  drafts: Record<string, ReadingResolutionDraft>;
+  onChange: (pendingId: string, patch: Partial<ReadingResolutionDraft>) => void;
+  reviews: ReadingDuplicateReview[];
+}) {
+  return (
+    <section className="mt-6 rounded-2xl border border-student-primary-border bg-white p-5">
+      <h2 className="text-xl font-bold text-student-text">重复题待确认</h2>
+      <p className="mt-1 text-sm text-student-muted">
+        逐项确认归入候选逻辑题，或明确保留为新的逻辑题。这里只记录本次导入选择，确认导入前不会写库。
+      </p>
+      <div className="mt-5 grid gap-5">
+        {reviews.map((review) => {
+          const draft = drafts[review.pendingId] ?? {
+            action: null,
+            candidateLogicalItemId: review.candidates[0]?.logicalItemId ?? ""
+          };
+          const selectedCandidate = review.candidates.find(
+            (candidate) => candidate.logicalItemId === draft.candidateLogicalItemId
+          ) ?? review.candidates[0];
+          return (
+            <article className="rounded-2xl border border-student-border p-5" key={review.pendingId}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-bold text-student-text">
+                    {readingModuleLabel(review.incoming.module)} · {review.incoming.title ?? "无标题"}
+                  </p>
+                  <p className="mt-1 text-sm text-student-muted">
+                    当前来源：{readingSourceLabel(review.incoming)}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-amber-800">{review.reason}</p>
+                </div>
+                {draft.action ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-student-primary-soft px-3 py-1 text-sm font-bold text-student-primary">
+                    <Check aria-hidden="true" size={14} />
+                    {draft.action === "reuse_existing" ? "已选择归入候选题" : "已确认为新逻辑题"}
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">待处理</span>
+                )}
+              </div>
+
+              {review.candidates.length > 1 ? (
+                <label className="mt-4 grid gap-1 text-sm font-bold text-student-text">
+                  归入候选逻辑题
+                  <select
+                    className="rounded-xl border border-student-border bg-white px-3 py-2 font-normal"
+                    onChange={(event) => onChange(review.pendingId, {
+                      action: null,
+                      candidateLogicalItemId: event.target.value
+                    })}
+                    value={draft.candidateLogicalItemId}
+                  >
+                    {review.candidates.map((candidate) => (
+                      <option key={candidate.logicalItemId} value={candidate.logicalItemId}>
+                        {candidate.title ?? readingModuleLabel(candidate.module)} · {candidate.logicalItemId}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div>
+                  <div className="mb-2 text-xs font-semibold text-student-muted">
+                    {readingSourceLabel(review.incoming)}
+                  </div>
+                  <DuplicateComparisonCard preview={review.incoming} title="当前准备导入的 Reading 内容" />
+                </div>
+                <div>
+                  <div className="mb-2 text-xs font-semibold text-student-muted">
+                    {selectedCandidate
+                      ? `Logical item: ${selectedCandidate.logicalItemId} · First seen: ${selectedCandidate.firstSeenDate} / ${selectedCandidate.firstSeenSourceLabel}`
+                      : "候选详情不可用"}
+                  </div>
+                  <DuplicateComparisonCard preview={selectedCandidate ?? null} title="系统找到的候选内容" />
+                  {selectedCandidate?.sourceOccurrences.length ? (
+                    <div className="mt-3 rounded-xl border border-student-border bg-student-primary-soft/20 p-3 text-xs text-student-muted">
+                      <div className="font-bold text-student-text">已有来源记录</div>
+                      <ul className="mt-1 grid gap-1">
+                        {selectedCandidate.sourceOccurrences.map((occurrence, index) => (
+                          <li key={`${occurrence.sourceLabel}-${occurrence.sourceModule}-${occurrence.sourceOrder}-${index}`}>
+                            {occurrence.sourceLabel} · {occurrence.occurrenceDate} · {occurrence.sourceModule.toUpperCase()} · 顺序 {occurrence.sourceOrder} · 原题 {occurrence.sourceQuestionRange}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  className="teacher-button-primary"
+                  disabled={!selectedCandidate}
+                  onClick={() => onChange(review.pendingId, {
+                    action: "reuse_existing",
+                    candidateLogicalItemId: selectedCandidate?.logicalItemId ?? ""
+                  })}
+                  type="button"
+                >
+                  归入该候选题
+                </button>
+                <button
+                  className="teacher-button-secondary"
+                  onClick={() => onChange(review.pendingId, { action: "create_new" })}
+                  type="button"
+                >
+                  确认为新逻辑题
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function readingModuleLabel(module: ReadingDuplicatePreview["module"]) {
+  if (module === "ctw") return "CTW";
+  if (module === "rdl") return "RDL";
+  return "RAP";
+}
+
+function readingSourceLabel(source: ReadingDuplicatePreview) {
+  return [
+    source.sourceLabel,
+    source.occurrenceDate,
+    source.sourceModule ? source.sourceModule.toUpperCase() : null,
+    `顺序 ${source.sourceOrder}`,
+    source.sourceQuestionRange ? `原题 ${source.sourceQuestionRange}` : null
+  ].filter(Boolean).join(" · ");
 }
 
 function getPreviewColumns(questionType: QuestionType) {

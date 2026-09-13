@@ -13,7 +13,7 @@ const readingImporter = read("app/api/teacher/import-questions/importers/reading
 test("Reading upload starts with readonly preflight and resets it for a new file", () => {
   assert.match(component, /setResult\(null\)[\s\S]*file\.text\(\)/);
   assert.match(component, /dryRun: readingDryRun/);
-  assert.match(component, /readingPreflightComplete \? "确认导入" : "开始预检"/);
+  assert.match(component, /readingPreflightComplete[\s\S]*"确认导入"[\s\S]*"开始预检"/);
 });
 
 test("Reading confirm import is hidden when preflight reports a blocker", () => {
@@ -49,10 +49,10 @@ test("Reading preflight exposes only product-facing summary metrics", () => {
 });
 
 test("Reading warnings and errors only render when their count is positive", () => {
-  assert.match(component, /existingOccurrenceCount \?\? 0\) > 0[\s\S]*已存在来源/);
-  assert.match(component, /possibleDuplicateCount \?\? 0\) > 0[\s\S]*需确认的相似题/);
+  assert.match(component, /readingExistingOccurrenceCount > 0[\s\S]*已存在来源/);
+  assert.match(component, /unresolvedReadingDuplicateCount > 0[\s\S]*需确认的相似题/);
   assert.match(component, /occurrenceConflictCount \?\? 0\) > 0[\s\S]*来源冲突/);
-  assert.match(component, /rdlMaterialWarningCount \?\? 0\) > 0[\s\S]*需确认的相似素材/);
+  assert.match(component, /unresolvedRdlMaterialWarningCount > 0[\s\S]*需确认的相似素材/);
   assert.match(component, /tone="warning"/);
 });
 
@@ -73,15 +73,33 @@ test("Reading dry-run never calls the atomic write path or cache revalidation", 
 });
 
 test("preflight response separates duplicates, material warnings, rejections, conflicts, and blockers", () => {
-  assert.match(readingImporter, /possibleDuplicateCount: possibleDuplicateWarnings\.length/);
+  assert.match(readingImporter, /possibleDuplicateCount: dryRun \? pendingDuplicates\.length : 0/);
   assert.match(readingImporter, /rdlMaterialWarningCount:/);
   assert.match(readingImporter, /rejectedRowCount,/);
   assert.match(readingImporter, /occurrenceConflictCount,/);
   assert.match(readingImporter, /blockerCount: failedRows\.length/);
   assert.match(readingImporter, /action=block pending review/);
   assert.doesNotMatch(readingImporter, /action=preserve as new/);
-  assert.match(readingImporter, /possibleDuplicateWarnings\.length > 0[\s\S]*明确处理前不能导入为新题/);
+  assert.match(readingImporter, /unresolvedReviews\.length > 0[\s\S]*不能正式导入/);
+  assert.doesNotMatch(readingImporter, /if \(possibleDuplicateWarnings\.length > 0\)/);
   assert.match(readingImporter, /prepared\.dataQualityWarning/);
   assert.match(readingImporter, /action=keep canonical questions and answers/);
   assert.match(readingImporter, /已稳定复用最早题目/);
+});
+
+test("Reading duplicate cards collect every resolution and send it only with final import", () => {
+  assert.match(component, /function ReadingDuplicateResolutionList/);
+  assert.match(component, /当前准备导入的 Reading 内容/);
+  assert.match(component, /系统找到的候选内容/);
+  assert.match(component, /归入该候选题/);
+  assert.match(component, /确认为新逻辑题/);
+  assert.match(component, /readingDuplicateResolutions: readingDryRun[\s\S]*pendingId:[\s\S]*candidateLogicalItemId/);
+  assert.match(component, /readingHasUnresolvedDuplicates[\s\S]*disabled=/);
+  assert.match(component, /仍有.*项相似题未处理/);
+});
+
+test("Reading possible duplicates are pending decisions, not failed groups", () => {
+  assert.match(readingImporter, /filter\(\(prepared\) => !reviewPlans\.some/);
+  assert.match(readingImporter, /blockerCount: failedRows\.length/);
+  assert.doesNotMatch(readingImporter, /throw new Error\("发现需确认的相似题；明确处理前不能导入为新题。"\)/);
 });
