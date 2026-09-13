@@ -3,16 +3,19 @@ import type {
   ExistingReadingLogicalItem,
   PreparedReadingImportPackage
 } from "./importer.ts";
+import {
+  readingDuplicateIdentityScope,
+  readingDuplicateReasonCode,
+  type ReadingDuplicateResolutionInput
+} from "./duplicateResolutionModel.ts";
+import { arePossibleReadingDuplicates } from "./semantic.ts";
 import type { ReadingImportPackage } from "./types.ts";
 
-export type ReadingDuplicateResolutionInput = {
-  pendingId: string;
-  action: "reuse_existing" | "create_new";
-  candidateLogicalItemId?: string;
-};
-
 export type ReadingDuplicateReviewPlan = {
-  pendingId: string;
+  resolutionId: string;
+  questionType: ReadingImportPackage["item"]["module"];
+  identityScope: ReturnType<typeof readingDuplicateIdentityScope>;
+  reasonCode: ReturnType<typeof readingDuplicateReasonCode>;
   reason: string;
   incoming: PreparedReadingImportPackage;
   candidates: ReadingImportPackage[];
@@ -25,43 +28,66 @@ export type ResolvedReadingImport = {
   manuallyResolved: boolean;
 };
 
-export function buildReadingDuplicateReviewPlans(
-  prepared: PreparedReadingImportPackage[],
-  groupedDuplicates: Array<{ reason: string; sourceOccurrences: string[] }>
-): ReadingDuplicateReviewPlan[] {
-  const batchCandidates = new Map<PreparedReadingImportPackage, ReadingImportPackage[]>();
-  const batchReasons = new Map<PreparedReadingImportPackage, string>();
-
-  for (const duplicate of groupedDuplicates) {
-    const sourceLabels = new Set(duplicate.sourceOccurrences);
-    const matches = prepared.filter((item) =>
-      item.packageData.occurrences.some((occurrence) => sourceLabels.has(occurrence.sourceLabel))
-    );
-    // Exact/semantic coalescing may already have safely put all occurrences in
-    // one package. Only distinct packages need a manual decision.
-    if (matches.length < 2) continue;
-    for (const incoming of matches) {
-      const peers = matches
-        .filter((candidate) => candidate !== incoming)
-        .map((candidate) => candidate.packageData);
-      batchCandidates.set(incoming, [...(batchCandidates.get(incoming) ?? []), ...peers]);
-      batchReasons.set(incoming, duplicate.reason);
+export function indexReadingDuplicateResolutions(
+  reviews: ReadingDuplicateReviewPlan[],
+  inputs: ReadingDuplicateResolutionInput[]
+) {
+  const reviewById = new Map(reviews.map((review) => [review.resolutionId, review]));
+  const resolutions = new Map<string, ReadingDuplicateResolutionInput>();
+  for (const input of inputs) {
+    const review = reviewById.get(input.resolutionId);
+    if (!review) throw resolutionError(`待确认项 ${input.resolutionId} 不存在或已经失效。`);
+    if (resolutions.has(input.resolutionId)) throw resolutionError(`待确认项 ${input.resolutionId} 重复提交。`);
+    if (input.questionType !== review.questionType) {
+      throw resolutionError(`待确认项 ${input.resolutionId} 的题型无效。`);
     }
+    if (input.action === "reuse_existing" && !review.candidates.some(
+      (candidate) => candidate.item.logicalItemId === input.logicalItemId
+    )) {
+      throw resolutionError(`待确认项 ${input.resolutionId} 选择了无效的候选题。`);
+    }
+    resolutions.set(input.resolutionId, input);
   }
+  return resolutions;
+}
 
-  return prepared.flatMap((incoming) => {
+export function buildReadingDuplicateReviewPlans(
+  prepared: PreparedReadingImportPackage[]
+): ReadingDuplicateReviewPlan[] {
+  const reviews = prepared.flatMap((incoming) => {
+    const batchCandidates = prepared
+      .filter((candidate) => candidate !== incoming)
+      .filter((candidate) => arePossibleReadingDuplicates(incoming.packageData, candidate.packageData))
+      .map((candidate) => candidate.packageData);
     const candidates = uniquePackages([
       ...incoming.possibleDuplicateCandidates,
-      ...(batchCandidates.get(incoming) ?? [])
+      ...batchCandidates
     ]).filter((candidate) => candidate.item.logicalItemId !== incoming.packageData.item.logicalItemId);
     if (candidates.length === 0) return [];
+    const questionType = incoming.packageData.item.module;
     return [{
-      pendingId: `reading-duplicate:${incoming.packageData.item.logicalItemId}`,
-      reason: batchReasons.get(incoming) ?? possibleDuplicateReason(incoming.packageData.item.module),
+      resolutionId: `reading-duplicate:${questionType}:${incoming.packageData.item.logicalItemId}`,
+      questionType,
+      identityScope: readingDuplicateIdentityScope(questionType),
+      reasonCode: readingDuplicateReasonCode(questionType),
+      reason: possibleDuplicateReason(questionType),
       incoming,
       candidates
     }];
   });
+
+  const reviewByIncoming = new Set(reviews.map((review) => review.incoming));
+  const orphanMaterialPending = prepared.find((incoming) =>
+    incoming.materialMatchKind === "possible_material_duplicate" && !reviewByIncoming.has(incoming)
+  );
+  if (orphanMaterialPending) {
+    throw resolutionError(
+      `RDL 素材 ${orphanMaterialPending.packageData.materials[0]?.materialId ?? "unknown"} ` +
+      "需要确认，但系统没有生成可操作候选。"
+    );
+  }
+
+  return reviews;
 }
 
 export function resolveReadingDuplicateImports(
@@ -92,15 +118,18 @@ export function resolveReadingDuplicateImports(
     }
     const review = reviewByIncomingId.get(logicalItemId);
     if (!review) return logicalItemId;
-    const resolution = resolutions.get(review.pendingId);
-    if (!resolution) throw resolutionError(`待确认项 ${review.pendingId} 尚未处理。`);
+    const resolution = resolutions.get(review.resolutionId);
+    if (!resolution) throw resolutionError(`待确认项 ${review.resolutionId} 尚未处理。`);
+    if (resolution.questionType !== review.questionType) {
+      throw resolutionError(`待确认项 ${review.resolutionId} 的题型无效。`);
+    }
     if (resolution.action === "create_new") {
       rootCache.set(logicalItemId, logicalItemId);
       return logicalItemId;
     }
-    const candidateId = resolution.candidateLogicalItemId?.trim() ?? "";
+    const candidateId = resolution.logicalItemId.trim();
     if (!review.candidates.some((candidate) => candidate.item.logicalItemId === candidateId)) {
-      throw resolutionError(`待确认项 ${review.pendingId} 选择了无效的候选题。`);
+      throw resolutionError(`待确认项 ${review.resolutionId} 选择了无效的候选题。`);
     }
     const root = preparedById.has(candidateId)
       ? rootFor(candidateId, [...path, logicalItemId])
@@ -167,7 +196,10 @@ function compareOccurrences(
 }
 
 function resolutionError(message: string) {
-  return Object.assign(new Error(message), { operation: "resolve Reading possible duplicates" });
+  return Object.assign(new Error(message), {
+    code: "READING_DUPLICATE_RESOLUTION_REQUIRED",
+    operation: "resolve Reading possible duplicates"
+  });
 }
 
 function existingLogicalItemFromPackage(packageData: ReadingImportPackage): ExistingReadingLogicalItem {

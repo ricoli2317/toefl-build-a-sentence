@@ -2,7 +2,7 @@
 
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ClipboardCheck, FileSearch, TableProperties, Upload } from "lucide-react";
+import { ClipboardCheck, FileSearch, TableProperties, Upload } from "lucide-react";
 import { parseCsvDocument, type CsvRecord } from "@/lib/csv";
 import {
   QUESTION_TYPE_LABELS,
@@ -18,46 +18,14 @@ import {
   TEACHER_STATS_CACHE_KEY,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
-import { DuplicateComparisonCard } from "@/components/import/DuplicateComparisonCard";
-
-type ReadingDuplicatePreview = {
-  logicalItemId: string;
-  module: "ctw" | "rdl" | "rap";
-  title: string | null;
-  sourceLabel: string;
-  occurrenceDate: string;
-  sourceModule: string;
-  sourceOrder: number;
-  sourceQuestionRange: string;
-  fields: Array<{ label: string; value: string }>;
-};
-
-type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
-  firstSeenDate: string;
-  firstSeenSourceLabel: string;
-  sourceOccurrences: Array<{
-    sourceLabel: string;
-    occurrenceDate: string;
-    sourceModule: string;
-    sourceOrder: number;
-    sourceQuestionRange: string;
-  }>;
-};
-
-type ReadingDuplicateReview = {
-  pendingId: string;
-  reason: string;
-  addedOccurrenceCount: number;
-  existingOccurrenceCount: number;
-  resolvesMaterialWarning: boolean;
-  incoming: ReadingDuplicatePreview;
-  candidates: ReadingDuplicateCandidate[];
-};
-
-type ReadingResolutionDraft = {
-  action: "reuse_existing" | "create_new" | null;
-  candidateLogicalItemId: string;
-};
+import {
+  ReadingDuplicateResolutionList,
+  type ReadingResolutionDraft
+} from "@/components/import/ReadingDuplicateResolutionList";
+import {
+  assertReadingPendingResolutionInvariant,
+  type ReadingDuplicateResolutionItem
+} from "@/lib/reading/duplicateResolutionModel";
 
 type ImportResult = {
   success?: boolean;
@@ -67,6 +35,10 @@ type ImportResult = {
   rejectedRowCount?: number;
   occurrenceCount?: number;
   blockerCount?: number;
+  unableToImportCount?: number;
+  validationErrorCount?: number;
+  sourceConflictCount?: number;
+  actualImportErrorCount?: number;
   successCount: number;
   insertedCount: number;
   updatedCount: number;
@@ -84,7 +56,8 @@ type ImportResult = {
   rdlMaterialReuseCount?: number;
   rdlNewMaterialCount?: number;
   rdlMaterialWarningCount?: number;
-  pendingDuplicates?: ReadingDuplicateReview[];
+  hasPendingDuplicates?: boolean;
+  pendingResolutionItems?: ReadingDuplicateResolutionItem[];
   failedCount: number;
   warnings?: Array<{
     message: string;
@@ -102,6 +75,7 @@ type ImportResult = {
     details?: string | null;
     hint?: string | null;
     operation?: string;
+    category?: "validation_error" | "source_conflict" | "actual_import_error";
   }>;
 };
 
@@ -179,18 +153,22 @@ export function TeacherImportQuestions() {
   const readingPreflightBlocked = readingPreflightComplete && (
     (result.rejectedRowCount ?? result.failedCount) > 0
     || (result.occurrenceConflictCount ?? 0) > 0
-    || (result.blockerCount ?? result.failedCount) > 0
+    || (result.unableToImportCount ?? result.blockerCount ?? result.failedCount) > 0
   );
-  const pendingReadingDuplicates = result?.pendingDuplicates ?? [];
-  const unresolvedReadingDuplicateCount = pendingReadingDuplicates.filter(
-    (review) => !readingResolutionDrafts[review.pendingId]?.action
+  const pendingResolutionItems = result?.pendingResolutionItems ?? [];
+  const hasPendingDuplicates = result?.hasPendingDuplicates ?? pendingResolutionItems.length > 0;
+  if (result?.preview && process.env.NODE_ENV !== "production") {
+    assertReadingPendingResolutionInvariant({ hasPendingDuplicates, pendingResolutionItems });
+  }
+  const unresolvedReadingDuplicateCount = pendingResolutionItems.filter(
+    (item) => !readingResolutionDrafts[item.resolutionId]?.action
   ).length;
   const readingHasUnresolvedDuplicates = readingPreflightComplete && unresolvedReadingDuplicateCount > 0;
-  const manuallyReusedReadingCount = pendingReadingDuplicates.filter(
-    (review) => readingResolutionDrafts[review.pendingId]?.action === "reuse_existing"
+  const manuallyReusedReadingCount = pendingResolutionItems.filter(
+    (item) => readingResolutionDrafts[item.resolutionId]?.action === "reuse_existing"
   ).length;
-  const manuallyCreatedReadingCount = pendingReadingDuplicates.filter(
-    (review) => readingResolutionDrafts[review.pendingId]?.action === "create_new"
+  const manuallyCreatedReadingCount = pendingResolutionItems.filter(
+    (item) => readingResolutionDrafts[item.resolutionId]?.action === "create_new"
   ).length;
   const reusedReadingQuestionCount = (result?.logicalReusedItemCount
     ?? ((result?.exactFingerprintReuseCount ?? 0)
@@ -198,8 +176,8 @@ export function TeacherImportQuestions() {
       + (result?.manualReuseCount ?? 0)))
     + manuallyReusedReadingCount;
   const newReadingQuestionCount = (result?.logicalNewItemCount ?? 0) + manuallyCreatedReadingCount;
-  const resolvedPendingReviews = pendingReadingDuplicates.filter(
-    (review) => Boolean(readingResolutionDrafts[review.pendingId]?.action)
+  const resolvedPendingReviews = pendingResolutionItems.filter(
+    (item) => Boolean(readingResolutionDrafts[item.resolutionId]?.action)
   );
   const readingOccurrenceInsertedCount = (result?.occurrenceInsertedCount ?? 0)
     + resolvedPendingReviews.reduce((count, review) => count + review.addedOccurrenceCount, 0);
@@ -207,16 +185,14 @@ export function TeacherImportQuestions() {
     + resolvedPendingReviews.reduce((count, review) => count + review.existingOccurrenceCount, 0);
   const unresolvedRdlMaterialWarningCount = Math.max(
     0,
-    (result?.rdlMaterialWarningCount ?? 0)
-      - resolvedPendingReviews.filter((review) => review.resolvesMaterialWarning).length
+    pendingResolutionItems.filter((item) =>
+      item.identityScope === "material" && !readingResolutionDrafts[item.resolutionId]?.action
+    ).length
   );
   const visibleWarnings = (result?.warnings ?? []).filter((warning) => {
     if (!readingType) return true;
     if (warning.operation === "check Reading possible duplicates") {
       return unresolvedReadingDuplicateCount > 0;
-    }
-    if (warning.operation === "check RDL canonical material") {
-      return unresolvedRdlMaterialWarningCount > 0;
     }
     return true;
   });
@@ -318,14 +294,15 @@ export function TeacherImportQuestions() {
           dryRun: readingDryRun,
           readingDuplicateResolutions: readingDryRun
             ? undefined
-            : pendingReadingDuplicates.flatMap((review) => {
-                const draft = readingResolutionDrafts[review.pendingId];
+            : pendingResolutionItems.flatMap((item) => {
+                const draft = readingResolutionDrafts[item.resolutionId];
                 return draft?.action ? [{
-                  pendingId: review.pendingId,
+                  resolutionId: item.resolutionId,
+                  questionType: item.questionType,
                   action: draft.action,
-                  candidateLogicalItemId: draft.action === "reuse_existing"
-                    ? draft.candidateLogicalItemId
-                    : undefined
+                  ...(draft.action === "reuse_existing"
+                    ? { logicalItemId: draft.logicalItemId }
+                    : {})
                 }] : [];
               })
         })
@@ -367,11 +344,11 @@ export function TeacherImportQuestions() {
         setResult(resultPayload);
         if (resultPayload.preview) {
           setReadingResolutionDrafts((current) => Object.fromEntries(
-            (resultPayload.pendingDuplicates ?? []).map((review) => [
-              review.pendingId,
-              current[review.pendingId] ?? {
+            (resultPayload.pendingResolutionItems ?? []).map((item) => [
+              item.resolutionId,
+              current[item.resolutionId] ?? {
                 action: null,
-                candidateLogicalItemId: review.candidates[0]?.logicalItemId ?? ""
+                logicalItemId: item.candidates[0]?.logicalItemId ?? ""
               }
             ])
           ));
@@ -526,8 +503,8 @@ export function TeacherImportQuestions() {
                 {(result.occurrenceConflictCount ?? 0) > 0 ? (
                   <ResultMetric label="来源冲突" tone="error" value={result.occurrenceConflictCount ?? 0} />
                 ) : null}
-                {(result.blockerCount ?? result.failedCount) > 0 ? (
-                  <ResultMetric label="无法导入" tone="error" value={result.blockerCount ?? result.failedCount} />
+                {(result.unableToImportCount ?? result.blockerCount ?? result.failedCount) > 0 ? (
+                  <ResultMetric label="无法导入" tone="error" value={result.unableToImportCount ?? result.blockerCount ?? result.failedCount} />
                 ) : null}
                 {questionType === "read_in_daily_life" ? (
                   <>
@@ -561,17 +538,14 @@ export function TeacherImportQuestions() {
               待确认题目已导入原始题库，但暂未进入学生练习列表。请在下方“重复题待确认”中选择归入已有题或确认为新逻辑题。
             </p>
           ) : null}
-          {isReadingQuestionType(questionType) && pendingReadingDuplicates.length > 0 ? (
+          {pendingResolutionItems.length > 0 ? (
             <ReadingDuplicateResolutionList
               drafts={readingResolutionDrafts}
-              onChange={(pendingId, patch) => setReadingResolutionDrafts((current) => ({
+              items={pendingResolutionItems}
+              onChange={(resolutionId, draft) => setReadingResolutionDrafts((current) => ({
                 ...current,
-                [pendingId]: {
-                  ...(current[pendingId] ?? { action: null, candidateLogicalItemId: "" }),
-                  ...patch
-                }
+                [resolutionId]: draft
               }))}
-              reviews={pendingReadingDuplicates}
             />
           ) : null}
           {visibleWarnings.length > 0 ? (
@@ -610,7 +584,8 @@ export function TeacherImportQuestions() {
                       <td className="px-4 py-3">{row.setId || "无"}</td>
                       <td className="px-4 py-3">{localizeImportOperation(row.operation) ?? "无"}</td>
                       <td className="px-4 py-3">
-                        <div>{localizeImportMessage(row.reason)}</div>
+                        <div>{isReadingQuestionType(questionType) ? row.reason : localizeImportMessage(row.reason)}</div>
+                        {row.category ? <div className="text-student-muted">错误类型：{readingFailureCategoryLabel(row.category)}</div> : null}
                         {row.code ? <div className="text-student-muted">错误代码：{row.code}</div> : null}
                         {row.details ? <div className="text-student-muted">详细信息：{localizeImportDetails(row.details)}</div> : null}
                         {row.hint ? <div className="text-student-muted">建议：{localizeImportHint(row.hint)}</div> : null}
@@ -653,145 +628,6 @@ export function TeacherImportQuestions() {
       ) : null}
     </div>
   );
-}
-
-function ReadingDuplicateResolutionList({
-  drafts,
-  onChange,
-  reviews
-}: {
-  drafts: Record<string, ReadingResolutionDraft>;
-  onChange: (pendingId: string, patch: Partial<ReadingResolutionDraft>) => void;
-  reviews: ReadingDuplicateReview[];
-}) {
-  return (
-    <section className="mt-6 rounded-2xl border border-student-primary-border bg-white p-5">
-      <h2 className="text-xl font-bold text-student-text">重复题待确认</h2>
-      <p className="mt-1 text-sm text-student-muted">
-        逐项确认归入候选逻辑题，或明确保留为新的逻辑题。这里只记录本次导入选择，确认导入前不会写库。
-      </p>
-      <div className="mt-5 grid gap-5">
-        {reviews.map((review) => {
-          const draft = drafts[review.pendingId] ?? {
-            action: null,
-            candidateLogicalItemId: review.candidates[0]?.logicalItemId ?? ""
-          };
-          const selectedCandidate = review.candidates.find(
-            (candidate) => candidate.logicalItemId === draft.candidateLogicalItemId
-          ) ?? review.candidates[0];
-          return (
-            <article className="rounded-2xl border border-student-border p-5" key={review.pendingId}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-bold text-student-text">
-                    {readingModuleLabel(review.incoming.module)} · {review.incoming.title ?? "无标题"}
-                  </p>
-                  <p className="mt-1 text-sm text-student-muted">
-                    当前来源：{readingSourceLabel(review.incoming)}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-amber-800">{review.reason}</p>
-                </div>
-                {draft.action ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-student-primary-soft px-3 py-1 text-sm font-bold text-student-primary">
-                    <Check aria-hidden="true" size={14} />
-                    {draft.action === "reuse_existing" ? "已选择归入候选题" : "已确认为新逻辑题"}
-                  </span>
-                ) : (
-                  <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">待处理</span>
-                )}
-              </div>
-
-              {review.candidates.length > 1 ? (
-                <label className="mt-4 grid gap-1 text-sm font-bold text-student-text">
-                  归入候选逻辑题
-                  <select
-                    className="rounded-xl border border-student-border bg-white px-3 py-2 font-normal"
-                    onChange={(event) => onChange(review.pendingId, {
-                      action: null,
-                      candidateLogicalItemId: event.target.value
-                    })}
-                    value={draft.candidateLogicalItemId}
-                  >
-                    {review.candidates.map((candidate) => (
-                      <option key={candidate.logicalItemId} value={candidate.logicalItemId}>
-                        {candidate.title ?? readingModuleLabel(candidate.module)} · {candidate.logicalItemId}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ) : null}
-
-              <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                <div>
-                  <div className="mb-2 text-xs font-semibold text-student-muted">
-                    {readingSourceLabel(review.incoming)}
-                  </div>
-                  <DuplicateComparisonCard preview={review.incoming} title="当前准备导入的 Reading 内容" />
-                </div>
-                <div>
-                  <div className="mb-2 text-xs font-semibold text-student-muted">
-                    {selectedCandidate
-                      ? `Logical item: ${selectedCandidate.logicalItemId} · First seen: ${selectedCandidate.firstSeenDate} / ${selectedCandidate.firstSeenSourceLabel}`
-                      : "候选详情不可用"}
-                  </div>
-                  <DuplicateComparisonCard preview={selectedCandidate ?? null} title="系统找到的候选内容" />
-                  {selectedCandidate?.sourceOccurrences.length ? (
-                    <div className="mt-3 rounded-xl border border-student-border bg-student-primary-soft/20 p-3 text-xs text-student-muted">
-                      <div className="font-bold text-student-text">已有来源记录</div>
-                      <ul className="mt-1 grid gap-1">
-                        {selectedCandidate.sourceOccurrences.map((occurrence, index) => (
-                          <li key={`${occurrence.sourceLabel}-${occurrence.sourceModule}-${occurrence.sourceOrder}-${index}`}>
-                            {occurrence.sourceLabel} · {occurrence.occurrenceDate} · {occurrence.sourceModule.toUpperCase()} · 顺序 {occurrence.sourceOrder} · 原题 {occurrence.sourceQuestionRange}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className="mt-5 flex flex-wrap gap-3">
-                <button
-                  className="teacher-button-primary"
-                  disabled={!selectedCandidate}
-                  onClick={() => onChange(review.pendingId, {
-                    action: "reuse_existing",
-                    candidateLogicalItemId: selectedCandidate?.logicalItemId ?? ""
-                  })}
-                  type="button"
-                >
-                  归入该候选题
-                </button>
-                <button
-                  className="teacher-button-secondary"
-                  onClick={() => onChange(review.pendingId, { action: "create_new" })}
-                  type="button"
-                >
-                  确认为新逻辑题
-                </button>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function readingModuleLabel(module: ReadingDuplicatePreview["module"]) {
-  if (module === "ctw") return "CTW";
-  if (module === "rdl") return "RDL";
-  return "RAP";
-}
-
-function readingSourceLabel(source: ReadingDuplicatePreview) {
-  return [
-    source.sourceLabel,
-    source.occurrenceDate,
-    source.sourceModule ? source.sourceModule.toUpperCase() : null,
-    `顺序 ${source.sourceOrder}`,
-    source.sourceQuestionRange ? `原题 ${source.sourceQuestionRange}` : null
-  ].filter(Boolean).join(" · ");
 }
 
 function getPreviewColumns(questionType: QuestionType) {
@@ -884,9 +720,18 @@ function formatImportWarning(warning: NonNullable<ImportResult["warnings"]>[numb
 }
 
 function formatReadingWarning(warning: NonNullable<ImportResult["warnings"]>[number]) {
-  return warning.operation === "check RDL canonical material"
-    ? "发现需确认的相似素材。"
-    : "发现需确认的相似题。";
+  if (warning.operation === "check Reading possible duplicates") {
+    return /RDL 素材/.test(warning.message)
+      ? "发现需确认的相似素材。"
+      : "发现需确认的相似题。";
+  }
+  return warning.message;
+}
+
+function readingFailureCategoryLabel(category: "validation_error" | "source_conflict" | "actual_import_error") {
+  if (category === "validation_error") return "数据校验错误";
+  if (category === "source_conflict") return "来源冲突";
+  return "实际导入错误";
 }
 
 function formatCsvFormatError(missingFields: string[], unexpectedFields: string[]) {

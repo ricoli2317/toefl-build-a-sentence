@@ -1,4 +1,9 @@
 import type { createServiceSupabase } from "@/lib/supabase/server";
+import type {
+  ReadingDuplicateResolutionInput,
+  ReadingDuplicateResolutionItem
+} from "@/lib/reading/duplicateResolutionModel";
+import type { ReadingImportFailureCategory } from "@/lib/reading/importSummary";
 
 export type ImportSupabase = ReturnType<typeof createServiceSupabase>;
 
@@ -14,6 +19,7 @@ export type FailedRow = {
   details?: string | null;
   hint?: string | null;
   operation?: string;
+  category?: ReadingImportFailureCategory;
 };
 
 export type ImportWarning = {
@@ -24,46 +30,6 @@ export type ImportWarning = {
   operation?: string;
 };
 
-export type ReadingDuplicateResolution = {
-  pendingId: string;
-  action: "reuse_existing" | "create_new";
-  candidateLogicalItemId?: string;
-};
-
-export type ReadingDuplicatePreview = {
-  logicalItemId: string;
-  module: "ctw" | "rdl" | "rap";
-  title: string | null;
-  sourceLabel: string;
-  occurrenceDate: string;
-  sourceModule: string;
-  sourceOrder: number;
-  sourceQuestionRange: string;
-  fields: Array<{ label: string; value: string }>;
-};
-
-export type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
-  firstSeenDate: string;
-  firstSeenSourceLabel: string;
-  sourceOccurrences: Array<{
-    sourceLabel: string;
-    occurrenceDate: string;
-    sourceModule: string;
-    sourceOrder: number;
-    sourceQuestionRange: string;
-  }>;
-};
-
-export type ReadingDuplicateReview = {
-  pendingId: string;
-  reason: string;
-  addedOccurrenceCount: number;
-  existingOccurrenceCount: number;
-  resolvesMaterialWarning: boolean;
-  incoming: ReadingDuplicatePreview;
-  candidates: ReadingDuplicateCandidate[];
-};
-
 export type ImportResult = {
   success: true;
   preview?: boolean;
@@ -72,6 +38,10 @@ export type ImportResult = {
   rejectedRowCount?: number;
   occurrenceCount?: number;
   blockerCount?: number;
+  unableToImportCount?: number;
+  validationErrorCount?: number;
+  sourceConflictCount?: number;
+  actualImportErrorCount?: number;
   successCount: number;
   insertedCount: number;
   updatedCount: number;
@@ -89,7 +59,8 @@ export type ImportResult = {
   rdlMaterialReuseCount?: number;
   rdlNewMaterialCount?: number;
   rdlMaterialWarningCount?: number;
-  pendingDuplicates?: ReadingDuplicateReview[];
+  hasPendingDuplicates?: boolean;
+  pendingResolutionItems?: ReadingDuplicateResolutionItem[];
   failedCount: number;
   failedRows: FailedRow[];
   warnings: ImportWarning[];
@@ -109,7 +80,7 @@ export type ImporterContext = {
   userId: string;
   fileName?: string;
   dryRun?: boolean;
-  readingDuplicateResolutions?: ReadingDuplicateResolution[];
+  readingDuplicateResolutions?: ReadingDuplicateResolutionInput[];
 };
 
 export type SupabaseLikeError = {

@@ -434,10 +434,13 @@ function materialMatchKind(
     && JSON.stringify(readingMaterialStorageIdentity(material)) === storageKey
   )) return "semantic_material";
   const review = JSON.stringify(readingMaterialReviewIdentity(incomingMaterial));
-  const possibleMaterials = [
-    ...historicalPackages.filter((item) => item.item.module === "rdl").map((item) => item.materials[0]),
-    ...materialCatalog
-  ];
+  // A manual "reuse existing" decision needs an existing logical
+  // material/question set to target. A merely registered, unused material is
+  // not actionable duplicate evidence and must not create an orphan pending
+  // flag with no confirmation candidate.
+  const possibleMaterials = historicalPackages
+    .filter((item) => item.item.module === "rdl")
+    .map((item) => item.materials[0]);
   const possible = possibleMaterials.some((material) =>
     material?.materialId !== incomingMaterial?.materialId
     && JSON.stringify(readingMaterialReviewIdentity(material)) === review

@@ -15,6 +15,7 @@ import { readingCsvImporter } from "./importers/reading";
 import type { ImporterContext, ImportResult } from "./importers/types";
 import { revalidatePracticeCatalog } from "@/lib/practiceCatalogCache.server";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
+import type { ReadingDuplicateResolutionInput } from "@/lib/reading/duplicateResolutionModel";
 
 export const dynamic = "force-dynamic";
 
@@ -159,18 +160,23 @@ export async function POST(request: Request) {
       fileName: typeof body.fileName === "string" ? body.fileName : undefined,
       dryRun: readingQuestionTypes.has(questionType) && body.dryRun === true,
       readingDuplicateResolutions: Array.isArray(body.readingDuplicateResolutions)
-        ? body.readingDuplicateResolutions.flatMap((value) => {
+        ? body.readingDuplicateResolutions.flatMap<ReadingDuplicateResolutionInput>((value) => {
             if (!value || typeof value !== "object") return [];
             const candidate = value as Record<string, unknown>;
             const action = candidate.action;
             if (action !== "reuse_existing" && action !== "create_new") return [];
-            return [{
-              pendingId: String(candidate.pendingId ?? ""),
-              action,
-              candidateLogicalItemId: typeof candidate.candidateLogicalItemId === "string"
-                ? candidate.candidateLogicalItemId
-                : undefined
-            }];
+            const questionType = candidate.questionType;
+            if (questionType !== "ctw" && questionType !== "rdl" && questionType !== "rap") return [];
+            const resolutionId = String(candidate.resolutionId ?? "").trim();
+            if (!resolutionId) return [];
+            const logicalItemId = typeof candidate.logicalItemId === "string"
+              ? candidate.logicalItemId.trim()
+              : "";
+            if (action === "reuse_existing" && !logicalItemId) return [];
+            if (action === "reuse_existing") {
+              return [{ resolutionId, questionType, action, logicalItemId }];
+            }
+            return [{ resolutionId, questionType, action }];
           })
         : undefined
     });

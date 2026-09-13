@@ -9,21 +9,32 @@ import {
 } from "@/lib/reading/importer";
 import {
   buildReadingDuplicateReviewPlans,
-  resolveReadingDuplicateImports,
-  type ReadingDuplicateReviewPlan
+  indexReadingDuplicateResolutions,
+  resolveReadingDuplicateImports
 } from "@/lib/reading/duplicateResolution";
-import type { ReadingImportPackage, ReadingMaterial, ReadingQuestion } from "@/lib/reading/types";
+import {
+  assertReadingPendingResolutionInvariant,
+  type ReadingDuplicateSourceOccurrencePreview
+} from "@/lib/reading/duplicateResolutionModel";
+import {
+  buildReadingDuplicateResolutionItem,
+  readingQuestionRange
+} from "@/lib/reading/duplicateResolutionView";
+import type { ReadingMaterial } from "@/lib/reading/types";
 import { isRdlMaterialType } from "@/lib/reading/materialTypes";
 import {
   summarizeReadingImportExecutions,
   type ReadingImportExecution,
   type ReadingLogicalReuseKind
 } from "@/lib/reading/importExecution";
+import {
+  summarizeReadingImportIssues,
+  type ReadingImportFailureCategory
+} from "@/lib/reading/importSummary";
 import type {
+  FailedRow,
   ImporterContext,
-  ImportResult,
-  ReadingDuplicateCandidate,
-  ReadingDuplicateReview
+  ImportResult
 } from "./types";
 
 export function readingCsvImporter(type: ReadingCsvType) {
@@ -50,31 +61,32 @@ async function importReadingCsv(
     enableHistoricalSemanticFallback: true,
     rdlMaterialCatalog: materialCatalog ? Array.from(materialCatalog.values()) : undefined
   });
-  const reviewPlans = buildReadingDuplicateReviewPlans(preparedPackages, grouped.report.possibleDuplicates);
+  const reviewPlans = buildReadingDuplicateReviewPlans(preparedPackages);
   const historicalCandidateIds = Array.from(new Set(reviewPlans.flatMap((review) =>
     review.candidates
       .filter((candidate) => !preparedPackages.some((item) => item.packageData.item.logicalItemId === candidate.item.logicalItemId))
       .map((candidate) => candidate.item.logicalItemId)
   )));
   const candidateOccurrences = await loadCandidateOccurrences(supabase, historicalCandidateIds);
-  const pendingDuplicates = reviewPlans.map((review) => duplicateReview(review, candidateOccurrences));
-  const resolutionByPendingId = new Map(
-    (readingDuplicateResolutions ?? []).map((resolution) => [resolution.pendingId, resolution])
+  const pendingResolutionItems = reviewPlans.map((review) =>
+    buildReadingDuplicateResolutionItem(review, candidateOccurrences)
   );
-  const logicalWarnings = reviewPlans.map((review) => ({
-    message: "可能重复的 Reading 内容存在实质差异，需确认后才能导入。",
+  const hasPendingDuplicates = reviewPlans.length > 0
+    || preparedPackages.some((prepared) => prepared.materialMatchKind === "possible_material_duplicate");
+  assertReadingPendingResolutionInvariant({ hasPendingDuplicates, pendingResolutionItems });
+  const resolutionById = indexReadingDuplicateResolutions(
+    reviewPlans,
+    readingDuplicateResolutions ?? []
+  );
+  const duplicateWarnings = reviewPlans.map((review) => ({
+    message: review.questionType === "rdl"
+      ? "RDL 素材可能相同，但 canonical identity 证据不足，需确认后才能导入。"
+      : review.questionType === "rap"
+        ? "RAP 文章可能相同，但 passage identity 证据不足，需确认后才能导入。"
+        : "CTW 内容相似但存在实质差异，需确认后才能导入。",
     operation: "check Reading possible duplicates",
-    details: `module=${review.incoming.packageData.item.module}; existing=${review.candidates.map((candidate) => candidate.item.logicalItemId).join(",")}; action=block pending review`
+    details: `resolution=${review.resolutionId}; module=${review.questionType}; scope=${review.identityScope}; existing=${review.candidates.map((candidate) => candidate.item.logicalItemId).join(",")}; action=block pending review`
   }));
-  const materialWarnings = preparedPackages.flatMap((prepared) =>
-    prepared.materialMatchKind === "possible_material_duplicate"
-      ? [{
-          message: "RDL material 文字元数据相似，但 visual equivalence 证据不足；未覆盖或改绑现有资产。",
-          operation: "check RDL canonical material",
-          details: `material=${prepared.packageData.materials[0]?.materialId ?? "unknown"}; action=review existing canonical assets`
-        }]
-      : []
-  );
   const dataQualityWarnings = preparedPackages.flatMap((prepared) => {
     const warnings = [];
     if (prepared.dataQualityWarning) {
@@ -93,17 +105,17 @@ async function importReadingCsv(
     }
     return warnings;
   });
-  const possibleDuplicateWarnings = logicalWarnings;
   const warnings = [
-    ...(dryRun ? possibleDuplicateWarnings : []),
-    ...(dryRun ? materialWarnings : []),
+    ...(dryRun ? duplicateWarnings : []),
     ...dataQualityWarnings
   ];
-  const failedRows = adapted.failures.map((failure) => ({
+  const failedRows: FailedRow[] = adapted.failures.map((failure) => ({
     rowNumber: failure.rowNumber,
     questionId: failure.sourceGroupId,
     setId: failure.sourceLabel,
     reason: failure.reason,
+    code: "READING_VALIDATION_ERROR",
+    category: "validation_error" as const,
     operation: "validate Reading group"
   }));
   const executions: ReadingImportExecution[] = [];
@@ -111,11 +123,14 @@ async function importReadingCsv(
   let updatedCount = 0;
   let successCount = 0;
 
-  const unresolvedReviews = reviewPlans.filter((review) => !resolutionByPendingId.has(review.pendingId));
+  const unresolvedReviews = reviewPlans.filter((review) => !resolutionById.has(review.resolutionId));
   if (!dryRun && unresolvedReviews.length > 0) {
     throw Object.assign(
       new Error(`仍有 ${unresolvedReviews.length} 项相似题未处理，不能正式导入。`),
-      { operation: "resolve Reading possible duplicates" }
+      {
+        code: "READING_DUPLICATE_RESOLUTION_REQUIRED",
+        operation: "resolve Reading possible duplicates"
+      }
     );
   }
 
@@ -128,7 +143,7 @@ async function importReadingCsv(
           members: [prepared],
           manuallyResolved: false
         }))
-    : resolveReadingDuplicateImports(preparedPackages, reviewPlans, resolutionByPendingId);
+    : resolveReadingDuplicateImports(preparedPackages, reviewPlans, resolutionById);
 
   if (!dryRun) {
     // Validate every resolved group before the first database write. This keeps
@@ -152,7 +167,7 @@ async function importReadingCsv(
       ].sort(compareFirstSeen)[0];
       const manualActions = members.flatMap((member) => {
         const review = reviewPlans.find((candidate) => candidate.incoming === member);
-        const resolution = review ? resolutionByPendingId.get(review.pendingId) : undefined;
+        const resolution = review ? resolutionById.get(review.resolutionId) : undefined;
         return resolution ? [resolution.action] : [];
       });
       let execution: ReadingImportExecution;
@@ -180,12 +195,16 @@ async function importReadingCsv(
         updatedCount += 1;
       }
     } catch (error) {
-      if (members.some((member) => member.occurrenceConflict)) occurrenceConflictCount += 1;
+      const hasSourceConflict = members.some((member) => member.occurrenceConflict);
+      if (hasSourceConflict) occurrenceConflictCount += 1;
+      const failure = readingFailure(error, dryRun === true, hasSourceConflict);
       failedRows.push({
         rowNumber: sourceRowNumber(rows, packageData.occurrences[0]?.sourceLabel),
         questionId: packageData.occurrences[0]?.occurrenceId ?? packageData.item.logicalItemId,
         setId: packageData.occurrences[0]?.sourceLabel,
-        reason: error instanceof Error ? error.message : String(error),
+        reason: failure.reason,
+        code: failure.code,
+        category: failure.category,
         operation: dryRun ? "preflight Reading group" : "import Reading group atomically"
       });
     }
@@ -199,6 +218,7 @@ async function importReadingCsv(
     row.source_group_id?.trim() ?? ""
   ].join("\u001f"))).length;
   const executionSummary = summarizeReadingImportExecutions(executions);
+  const issueSummary = summarizeReadingImportIssues(pendingResolutionItems.length, failedRows);
 
   return {
     success: true,
@@ -207,16 +227,21 @@ async function importReadingCsv(
     acceptedRowCount: rows.length - rejectedRowCount,
     rejectedRowCount,
     occurrenceCount: adapted.candidates.length,
-    blockerCount: failedRows.length,
+    blockerCount: issueSummary.unableToImportCount,
+    unableToImportCount: issueSummary.unableToImportCount,
+    validationErrorCount: issueSummary.validationErrorCount,
+    sourceConflictCount: issueSummary.sourceConflictCount,
+    actualImportErrorCount: issueSummary.actualImportErrorCount,
     successCount,
     insertedCount: executionSummary.logicalNewItemCount,
     updatedCount,
     logicalNewItemCount: executionSummary.logicalNewItemCount,
     logicalReusedItemCount: executionSummary.logicalReusedItemCount,
     logicalAutoMergeCount: executionSummary.logicalReusedItemCount,
-    logicalNeedsReviewCount: dryRun ? pendingDuplicates.length : 0,
-    possibleDuplicateCount: dryRun ? pendingDuplicates.length : 0,
-    pendingDuplicates: dryRun ? pendingDuplicates : [],
+    logicalNeedsReviewCount: dryRun ? pendingResolutionItems.length : 0,
+    possibleDuplicateCount: dryRun ? pendingResolutionItems.length : 0,
+    hasPendingDuplicates: dryRun ? hasPendingDuplicates : false,
+    pendingResolutionItems: dryRun ? pendingResolutionItems : [],
     occurrenceInsertedCount: executionSummary.occurrenceInsertedCount,
     exactFingerprintReuseCount: executionSummary.exactFingerprintReuseCount,
     semanticReuseCount: executionSummary.semanticReuseCount,
@@ -227,10 +252,10 @@ async function importReadingCsv(
       item.materialMatchKind === "exact_material" || item.materialMatchKind === "semantic_material"
     ).length,
     rdlNewMaterialCount: 0,
-    rdlMaterialWarningCount: dryRun ? preparedPackages.filter(
-      (item) => item.materialMatchKind === "possible_material_duplicate"
+    rdlMaterialWarningCount: dryRun ? pendingResolutionItems.filter(
+      (item) => item.identityScope === "material"
     ).length : 0,
-    failedCount: failedRows.length,
+    failedCount: issueSummary.unableToImportCount,
     failedRows,
     warnings
   };
@@ -245,8 +270,6 @@ function logicalReuseKind(
   if (members.some((member) => member.existingItem)) return "exact_fingerprint";
   return null;
 }
-
-type CandidateOccurrence = ReadingDuplicateCandidate["sourceOccurrences"][number];
 
 function assertResolvedImportCanProceed(resolved: {
   members: PreparedReadingImportPackage[];
@@ -263,104 +286,11 @@ function assertResolvedImportCanProceed(resolved: {
   });
 }
 
-function duplicateReview(
-  review: ReadingDuplicateReviewPlan,
-  historicalOccurrences: Map<string, CandidateOccurrence[]>
-): ReadingDuplicateReview {
-  return {
-    pendingId: review.pendingId,
-    reason: review.reason,
-    addedOccurrenceCount: review.incoming.addedOccurrenceCount,
-    existingOccurrenceCount:
-      review.incoming.packageData.occurrences.length - review.incoming.addedOccurrenceCount,
-    resolvesMaterialWarning: review.incoming.materialMatchKind === "possible_material_duplicate",
-    incoming: readingPreview(review.incoming.packageData),
-    candidates: review.candidates.map((candidate) => ({
-      ...readingPreview(candidate),
-      firstSeenDate: candidate.item.firstSeenDate,
-      firstSeenSourceLabel: candidate.item.firstSeenSourceLabel,
-      sourceOccurrences: candidate.occurrences.length > 0
-        ? candidate.occurrences.map(sourceOccurrencePreview)
-        : historicalOccurrences.get(candidate.item.logicalItemId) ?? []
-    }))
-  };
-}
-
-function readingPreview(packageData: ReadingImportPackage) {
-  const occurrence = packageData.occurrences[0];
-  return {
-    logicalItemId: packageData.item.logicalItemId,
-    module: packageData.item.module,
-    title: packageData.item.title,
-    sourceLabel: occurrence?.sourceLabel ?? packageData.item.firstSeenSourceLabel,
-    occurrenceDate: occurrence?.occurrenceDate ?? packageData.item.firstSeenDate,
-    sourceModule: occurrence?.sourceModule ?? "",
-    sourceOrder: occurrence?.sourceOrder ?? packageData.item.firstSeenSourceOrder,
-    sourceQuestionRange: occurrence
-      ? questionRange(occurrence.sourceQuestionStart, occurrence.sourceQuestionEnd)
-      : "",
-    fields: readingPreviewFields(packageData)
-  };
-}
-
-function readingPreviewFields(packageData: ReadingImportPackage) {
-  const fields: Array<{ label: string; value: string }> = [];
-  const material = packageData.materials[0];
-  const passage = packageData.passages[0];
-  if (material) {
-    fields.push({ label: "Material", value: [material.title, material.source].filter(Boolean).join(" · ") });
-  }
-  if (passage) {
-    fields.push({
-      label: "Passage",
-      value: `${passage.title}\n${passage.paragraphs.map((paragraph) => paragraph.text).join("\n\n")}`
-    });
-  }
-  if (packageData.item.module === "ctw") {
-    const question = packageData.questions[0];
-    if (question?.questionType === "ctw") {
-      fields.push({
-        label: "Content",
-        value: question.payload.paragraphs.map((paragraph) => paragraph.rawText).join("\n\n")
-      });
-      fields.push({
-        label: "Blanks",
-        value: question.payload.slots.map((slot) => `${slot.slotOrder}. ${slot.displayText} → ${slot.answer}`).join("\n")
-      });
-    }
-  } else {
-    fields.push({
-      label: "Questions",
-      value: packageData.questions.map(questionPreviewText).join("\n\n")
-    });
-  }
-  return fields;
-}
-
-function questionPreviewText(question: ReadingQuestion) {
-  const heading = `${question.questionOrder}. ${question.stem}`;
-  if (question.questionType === "rdl" || question.questionType === "rap_multiple_choice") {
-    return [
-      heading,
-      ...question.payload.options.map((option) =>
-        `${option.optionOrder}. ${option.text}${option.optionId === question.payload.correctOptionId ? " ✓" : ""}`
-      )
-    ].join("\n");
-  }
-  if (question.questionType === "rap_sentence_insertion") {
-    return `${heading}\nInsert: ${question.payload.insertSentence}`;
-  }
-  if (question.questionType === "rap_sentence_selection") {
-    return `${heading}\nCorrect sentence: ${question.payload.correctSentenceId}`;
-  }
-  return heading;
-}
-
 async function loadCandidateOccurrences(
   supabase: ImporterContext["supabase"],
   logicalItemIds: string[]
 ) {
-  const result = new Map<string, CandidateOccurrence[]>();
+  const result = new Map<string, ReadingDuplicateSourceOccurrencePreview[]>();
   if (logicalItemIds.length === 0) return result;
   const { data, error } = await supabase
     .from("reading_source_occurrences")
@@ -374,25 +304,35 @@ async function loadCandidateOccurrences(
       occurrenceDate: String(row.occurrence_date),
       sourceModule: String(row.source_module),
       sourceOrder: Number(row.source_order),
-      sourceQuestionRange: questionRange(Number(row.source_question_start), Number(row.source_question_end))
+      sourceQuestionRange: readingQuestionRange(Number(row.source_question_start), Number(row.source_question_end))
     };
     result.set(logicalItemId, [...(result.get(logicalItemId) ?? []), occurrence]);
   }
   return result;
 }
 
-function sourceOccurrencePreview(occurrence: ReadingImportPackage["occurrences"][number]) {
+function readingFailure(
+  error: unknown,
+  dryRun: boolean,
+  sourceConflict: boolean
+): { reason: string; code: string; category: ReadingImportFailureCategory } {
+  const candidate = error as { message?: unknown; code?: unknown };
+  const reason = typeof candidate?.message === "string" ? candidate.message : String(error);
+  if (sourceConflict) {
+    return { reason, code: "READING_SOURCE_CONFLICT", category: "source_conflict" };
+  }
+  if (dryRun) {
+    return {
+      reason,
+      code: typeof candidate?.code === "string" ? candidate.code : "READING_VALIDATION_ERROR",
+      category: "validation_error"
+    };
+  }
   return {
-    sourceLabel: occurrence.sourceLabel,
-    occurrenceDate: occurrence.occurrenceDate,
-    sourceModule: occurrence.sourceModule,
-    sourceOrder: occurrence.sourceOrder,
-    sourceQuestionRange: questionRange(occurrence.sourceQuestionStart, occurrence.sourceQuestionEnd)
+    reason,
+    code: typeof candidate?.code === "string" ? candidate.code : "READING_IMPORT_ERROR",
+    category: "actual_import_error"
   };
-}
-
-function questionRange(start: number, end: number) {
-  return start === end ? String(start) : `${start}–${end}`;
 }
 
 async function loadMaterials(
