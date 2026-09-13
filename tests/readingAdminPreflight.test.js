@@ -26,9 +26,10 @@ test("Reading confirm import is hidden when preflight reports a blocker", () => 
 
 test("Reading preflight exposes only product-facing summary metrics", () => {
   for (const label of [
-    "本次题组",
-    "复用已有题目",
-    "新增题目",
+    "本次来源题组",
+    "去重后题组",
+    "复用已有题组",
+    "新增题组",
     "新增来源",
     "已存在来源",
     "需确认的相似题",
@@ -48,10 +49,13 @@ test("Reading preflight exposes only product-facing summary metrics", () => {
     "Blockers"
   ]) assert.doesNotMatch(component, new RegExp(`label="${internalLabel}`));
   assert.match(component, /exactFingerprintReuseCount[\s\S]*semanticReuseCount/);
+  assert.match(component, /deduplicatedReadingGroupCount = reusedReadingQuestionCount[\s\S]*\+ newReadingQuestionCount[\s\S]*\+ unresolvedReadingDuplicateCount/);
+  assert.doesNotMatch(component, /deduplicatedReadingGroupCount =[\s\S]{0,180}contentConflict/);
+  assert.match(component, /readingExistingOccurrenceCount = readingSourceGroupCount - readingOccurrenceInsertedCount/);
 });
 
 test("Reading warnings and errors only render when their count is positive", () => {
-  assert.match(component, /readingExistingOccurrenceCount > 0[\s\S]*已存在来源/);
+  assert.match(component, /label="已存在来源" value=\{readingExistingOccurrenceCount\}/);
   assert.match(component, /unresolvedReadingDuplicateCount > 0[\s\S]*需确认的相似题/);
   assert.match(component, /occurrenceConflictCount \?\? 0\) > 0[\s\S]*来源冲突/);
   assert.match(component, /unresolvedRdlMaterialWarningCount > 0[\s\S]*需确认的相似素材/);
@@ -130,7 +134,7 @@ test("shared confirmation shell keeps full Reading content folded behind one det
   assert.match(resolutionComponent, /preview\.questionType === "ctw"/);
   assert.match(resolutionComponent, /preview\.questionType === "rdl"/);
   assert.match(resolutionComponent, /FullDuplicateComparison/);
-  assert.match(resolutionComponent, /expanded\.has\(item\.resolutionId\)/);
+  assert.match(resolutionComponent, /expandedDetails\.has\(item\.resolutionId\)/);
 });
 
 test("RDL preflight explains registered-material reuse with a first logical question set", () => {

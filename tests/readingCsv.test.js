@@ -282,6 +282,7 @@ test("atomic importer sends one complete package to one RPC", async () => {
       assert.equal(name, "import_reading_package_atomic");
       assert.equal(args.p_rows.reading_logical_items.length, 1);
       assert.equal(args.p_rows.reading_ctw_slots.length, 2);
+      assert.equal(args.p_rows.expected_logical_item_action, "create_new");
       return {
         data: {
           logical_item_action: "create_new",
@@ -294,7 +295,10 @@ test("atomic importer sends one complete package to one RPC", async () => {
       };
     }
   };
-  const result = await importReadingPackageAtomic(supabase, packageData, { createdBy: "teacher" });
+  const result = await importReadingPackageAtomic(supabase, packageData, {
+    createdBy: "teacher",
+    expectedLogicalItemAction: "create_new"
+  });
   assert.equal(calls, 1);
   assert.equal(result.logicalItemAction, "create_new");
   assert.equal(result.insertedOccurrenceCount, 1);
@@ -490,6 +494,9 @@ test("atomic migration is idempotent and preserves the earlier first-seen tuple"
   assert.match(sql, /inserted_occurrence_count/);
   assert.match(sql, /existing_occurrence_count/);
   assert.match(sql, /on conflict \(logical_item_id\) do update/);
+  assert.match(sql, /reading-dedup:/);
+  assert.match(sql, /READING_DEDUP_FINGERPRINT_IDENTITY_INCONSISTENCY/);
+  assert.match(sql, /expected_logical_item_action/);
   assert.match(sql, /first_seen_date = excluded\.first_seen_date/);
   assert.match(sql, /numeric source-label/);
   assert.match(sql, /on conflict \(occurrence_id\) do update/);

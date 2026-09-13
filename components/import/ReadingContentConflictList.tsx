@@ -16,8 +16,15 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
   items: ReadingContentConflictItem[];
   onChange: (resolutionId: string, draft: ReadingContentResolutionDraft) => void;
 }) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [reopened, setReopened] = useState<Set<string>>(new Set());
+  const [expandedReviewItems, setExpandedReviewItems] = useState<Set<string>>(new Set());
+  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
+  const collapseReviewItem = (resolutionId: string) => {
+    setExpandedReviewItems((current) => removeFromSet(current, resolutionId));
+  };
+  const confirmResolution = (resolutionId: string, draft: ReadingContentResolutionDraft) => {
+    onChange(resolutionId, draft);
+    collapseReviewItem(resolutionId);
+  };
   return (
     <section className="mt-6 rounded-2xl border border-amber-300 bg-amber-50/40 p-5">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -30,8 +37,9 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
         {items.map((item) => {
           const draft = drafts[item.resolutionId] ?? { action: null };
           const resolved = Boolean(draft.action);
-          if (resolved && !reopened.has(item.resolutionId)) {
-            return <ResolvedContentSummary draft={draft} item={item} key={item.resolutionId} onReopen={() => setReopened(addToSet(reopened, item.resolutionId))} />;
+          const reviewExpanded = expandedReviewItems.has(item.resolutionId);
+          if (resolved && !reviewExpanded) {
+            return <ResolvedContentSummary draft={draft} item={item} key={item.resolutionId} onReopen={() => setExpandedReviewItems((current) => addToSet(current, item.resolutionId))} />;
           }
           return (
             <article className="rounded-2xl border border-amber-200 bg-white p-5" key={item.resolutionId}>
@@ -40,7 +48,11 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
                   <p className="font-bold text-student-text">{item.questionType.toUpperCase()} · {item.passageTitle ?? item.materialId ?? "未命名题目"}</p>
                   <p className="mt-1 text-sm text-student-muted">{compactSourceLabel(item)}</p>
                 </div>
-                <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">{resolved ? "正在修改选择" : "待处理"}</span>
+                {resolved ? (
+                  <button className="teacher-button-secondary" onClick={() => collapseReviewItem(item.resolutionId)} type="button">收起</button>
+                ) : (
+                  <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">待处理</span>
+                )}
               </div>
 
               <div className="mt-4 grid gap-3">
@@ -50,14 +62,14 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
               <div className="mt-3 flex flex-wrap gap-3">
                 <button
                   className={draft.action === "keep_existing" ? "teacher-button-primary ring-2 ring-student-primary" : "teacher-button-secondary"}
-                  onClick={() => onChange(item.resolutionId, { resolutionId: item.resolutionId, action: "keep_existing" })}
+                  onClick={() => confirmResolution(item.resolutionId, { resolutionId: item.resolutionId, action: "keep_existing" })}
                   type="button"
                 >
                   保留题库版本
                 </button>
                 <button
                   className={draft.action === "update_from_source" ? "teacher-button-primary ring-2 ring-student-primary" : "teacher-button-secondary"}
-                  onClick={() => onChange(item.resolutionId, { resolutionId: item.resolutionId, action: "update_from_source" })}
+                  onClick={() => confirmResolution(item.resolutionId, { resolutionId: item.resolutionId, action: "update_from_source" })}
                   type="button"
                 >
                   使用来源版本更新题库
@@ -70,10 +82,10 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
                 </div>
               ) : null}
 
-              <button className="mt-4 text-sm font-bold text-student-primary underline" onClick={() => setExpanded(toggleSet(expanded, item.resolutionId))} type="button">
-                {expanded.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
+              <button className="mt-4 text-sm font-bold text-student-primary underline" onClick={() => setExpandedDetails((current) => toggleSet(current, item.resolutionId))} type="button">
+                {expandedDetails.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
               </button>
-              {expanded.has(item.resolutionId) ? <FullContentComparison item={item} /> : null}
+              {expandedDetails.has(item.resolutionId) ? <FullContentComparison item={item} /> : null}
             </article>
           );
         })}
@@ -174,4 +186,5 @@ function contentActionLabel(action: ReadingContentResolutionDraft["action"]) { r
 function sourceLabel(item: ReadingContentConflictItem) { return [item.sourceLabel, item.occurrenceDate, item.sourceModule.toUpperCase(), `顺序 ${item.sourceOrder}`, item.sourceQuestionRange ? `原题 ${item.sourceQuestionRange}` : null].filter(Boolean).join(" · "); }
 function compactSourceLabel(item: ReadingContentConflictItem) { return [item.sourceLabel, item.sourceModule.toUpperCase(), item.sourceQuestionRange ? `Q${item.sourceQuestionRange}` : null].filter(Boolean).join(" · "); }
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
+function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }
 function toggleSet(values: Set<string>, value: string) { const next = new Set(values); if (next.has(value)) next.delete(value); else next.add(value); return next; }

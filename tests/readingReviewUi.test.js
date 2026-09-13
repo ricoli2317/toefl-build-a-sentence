@@ -38,11 +38,16 @@ test("review actions immediately follow compact differences and expose local sel
   }
 });
 
-test("resolved reviews collapse, can reopen, and full context stays folded by default", () => {
+test("resolved reviews toggle independently, reconfirm collapses, and full context stays folded by default", () => {
   for (const source of [content, duplicate]) {
-    assert.match(source, /resolved && !reopened\.has\(item\.resolutionId\)/);
+    assert.match(source, /const resolved = Boolean\(draft\.action\)/);
+    assert.match(source, /const reviewExpanded = expandedReviewItems\.has\(item\.resolutionId\)/);
+    assert.match(source, /resolved && !reviewExpanded/);
     assert.match(source, /重新查看/);
-    assert.match(source, /expanded\.has\(item\.resolutionId\)/);
+    assert.match(source, />收起<\/button>/);
+    assert.match(source, /confirmResolution[\s\S]*collapseReviewItem\(resolutionId\)/);
+    assert.match(source, /setExpandedReviewItems\(\(current\) => removeFromSet\(current, resolutionId\)\)/);
+    assert.match(source, /expandedDetails\.has\(item\.resolutionId\)/);
     assert.match(source, /展开完整内容/);
     assert.match(source, /收起完整内容/);
   }

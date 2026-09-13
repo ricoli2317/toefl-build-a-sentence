@@ -8,7 +8,10 @@ import {
   readingDuplicateReasonCode,
   type ReadingDuplicateResolutionInput
 } from "./duplicateResolutionModel.ts";
-import { arePossibleReadingDuplicates } from "./semantic.ts";
+import {
+  arePossibleReadingDuplicates,
+  areReadingPackagesHistoricalSemanticEquivalents
+} from "./semantic.ts";
 import type { ReadingImportPackage } from "./types.ts";
 import {
   buildCtwPackageLogicalIdentity,
@@ -31,6 +34,59 @@ export type ResolvedReadingImport = {
   members: PreparedReadingImportPackage[];
   manuallyResolved: boolean;
 };
+
+/** Final-plan invariant: one strict fingerprint can execute only once. This is
+ * deliberately shared by preview and commit planning so a same-batch duplicate
+ * cannot become a second INSERT after the database snapshot used by preflight. */
+export function coalesceResolvedReadingImportsByFingerprint(
+  resolved: ResolvedReadingImport[]
+): ResolvedReadingImport[] {
+  const groups = new Map<string, ResolvedReadingImport[]>();
+  for (const item of resolved) {
+    const fingerprint = item.packageData.item.dedupFingerprint;
+    groups.set(fingerprint, [...(groups.get(fingerprint) ?? []), item]);
+  }
+
+  return Array.from(groups.entries()).map(([fingerprint, group]) => {
+    if (group.length === 1) return group[0];
+    const existing = group.filter((item) => item.existingItem);
+    const canonical = [...(existing.length > 0 ? existing : group)].sort(compareResolvedImports)[0];
+    for (const item of group) {
+      if (!areReadingPackagesHistoricalSemanticEquivalents(canonical.packageData, item.packageData)) {
+        throw dedupFingerprintIdentityError(
+          fingerprint,
+          canonical.packageData.item.logicalItemId,
+          item.packageData.item.logicalItemId
+        );
+      }
+    }
+
+    const occurrences = new Map<string, ReadingImportPackage["occurrences"][number]>();
+    for (const item of group) {
+      const mapped = item.packageData.item.logicalItemId === canonical.packageData.item.logicalItemId
+        ? item.packageData
+        : attachIncomingOccurrencesToHistoricalPackage(canonical.packageData, item.packageData);
+      for (const occurrence of mapped.occurrences) occurrences.set(occurrence.occurrenceId, occurrence);
+    }
+    const orderedOccurrences = Array.from(occurrences.values()).sort(compareOccurrences);
+    const firstOccurrence = orderedOccurrences[0];
+    return {
+      packageData: {
+        ...canonical.packageData,
+        item: {
+          ...canonical.packageData.item,
+          firstSeenDate: firstOccurrence.occurrenceDate,
+          firstSeenSourceLabel: firstOccurrence.sourceLabel,
+          firstSeenSourceOrder: firstOccurrence.sourceOrder
+        },
+        occurrences: orderedOccurrences
+      },
+      existingItem: canonical.existingItem,
+      members: group.flatMap((item) => item.members),
+      manuallyResolved: group.some((item) => item.manuallyResolved)
+    };
+  });
+}
 
 export function indexReadingDuplicateResolutions(
   reviews: ReadingDuplicateReviewPlan[],
@@ -250,6 +306,33 @@ function compareOccurrences(
   return left.occurrenceDate.localeCompare(right.occurrenceDate)
     || sourceLabelCollator.compare(left.sourceLabel, right.sourceLabel)
     || left.sourceOrder - right.sourceOrder;
+}
+
+function compareResolvedImports(left: ResolvedReadingImport, right: ResolvedReadingImport) {
+  return left.packageData.item.firstSeenDate.localeCompare(right.packageData.item.firstSeenDate)
+    || sourceLabelCollator.compare(
+      left.packageData.item.firstSeenSourceLabel,
+      right.packageData.item.firstSeenSourceLabel
+    )
+    || left.packageData.item.firstSeenSourceOrder - right.packageData.item.firstSeenSourceOrder
+    || left.packageData.item.logicalItemId.localeCompare(right.packageData.item.logicalItemId);
+}
+
+function dedupFingerprintIdentityError(
+  fingerprint: string,
+  existingLogicalItemId: string,
+  attemptedLogicalItemId: string
+) {
+  return Object.assign(
+    new Error(
+      `Reading dedup fingerprint ${fingerprint} maps to inconsistent logical identities: ` +
+      `${existingLogicalItemId} and ${attemptedLogicalItemId}`
+    ),
+    {
+      code: "READING_DEDUP_FINGERPRINT_IDENTITY_INCONSISTENCY",
+      operation: "finalize Reading import fingerprint owners"
+    }
+  );
 }
 
 function resolutionError(message: string) {

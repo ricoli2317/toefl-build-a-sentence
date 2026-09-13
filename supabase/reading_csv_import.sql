@@ -13,6 +13,12 @@ set search_path = public
 as $$
 declare
   v_logical_item_id text;
+  v_module text;
+  v_dedup_fingerprint text;
+  v_fingerprint_owner_id text;
+  v_fingerprint_owner_module text;
+  v_id_owner_fingerprint text;
+  v_expected_logical_item_action text;
   v_logical_item_existed boolean := false;
   v_occurrence_count integer := 0;
   v_existing_occurrence_count integer := 0;
@@ -24,19 +30,71 @@ begin
     raise exception 'Reading atomic import requires exactly one logical item';
   end if;
 
-  select logical_item_id into v_logical_item_id
-  from jsonb_to_recordset(p_rows->'reading_logical_items') as x(logical_item_id text);
+  select logical_item_id, module, dedup_fingerprint
+  into v_logical_item_id, v_module, v_dedup_fingerprint
+  from jsonb_to_recordset(p_rows->'reading_logical_items') as x(
+    logical_item_id text, module text, dedup_fingerprint text
+  );
 
   v_replace_canonical_content := coalesce((p_rows->>'replace_canonical_content')::boolean, false);
+  v_expected_logical_item_action := nullif(p_rows->>'expected_logical_item_action', '');
+  if v_expected_logical_item_action is not null
+    and v_expected_logical_item_action not in ('reuse_existing', 'create_new') then
+    raise exception 'Invalid expected Reading logical item action: %', v_expected_logical_item_action;
+  end if;
 
-  -- Serialize imports targeting the same canonical logical item so these
-  -- execution counters describe this transaction, including concurrent calls.
+  -- Fingerprint locking closes the gap between a batch preflight snapshot and
+  -- later per-item execution. The unique key remains the final database guard.
+  perform pg_advisory_xact_lock(hashtextextended('reading-dedup:' || v_dedup_fingerprint, 0));
   perform pg_advisory_xact_lock(hashtextextended(v_logical_item_id, 0));
+
+  select item.logical_item_id, item.module
+  into v_fingerprint_owner_id, v_fingerprint_owner_module
+  from public.reading_logical_items item
+  where item.dedup_fingerprint = v_dedup_fingerprint;
+
+  if v_fingerprint_owner_id is not null and (
+    v_fingerprint_owner_id <> v_logical_item_id
+    or v_fingerprint_owner_module <> v_module
+  ) then
+    raise exception using
+      errcode = 'P0001',
+      message = format(
+        'READING_DEDUP_FINGERPRINT_IDENTITY_INCONSISTENCY fingerprint=%s existing=%s attempted=%s',
+        v_dedup_fingerprint, v_fingerprint_owner_id, v_logical_item_id
+      ),
+      detail = format('existing_module=%s attempted_module=%s', v_fingerprint_owner_module, v_module),
+      hint = 'Re-run Reading preflight and remap the occurrence to the fingerprint owner; do not retry the INSERT unchanged.';
+  end if;
+
+  select item.dedup_fingerprint into v_id_owner_fingerprint
+  from public.reading_logical_items item
+  where item.logical_item_id = v_logical_item_id;
+
+  if v_id_owner_fingerprint is not null and v_id_owner_fingerprint <> v_dedup_fingerprint then
+    raise exception using
+      errcode = 'P0001',
+      message = format(
+        'READING_DEDUP_FINGERPRINT_IDENTITY_INCONSISTENCY logical_item_id=%s existing_fingerprint=%s attempted_fingerprint=%s',
+        v_logical_item_id, v_id_owner_fingerprint, v_dedup_fingerprint
+      ),
+      hint = 'Re-run Reading preflight; a logical item cannot change its strict dedup fingerprint during atomic import.';
+  end if;
 
   select exists (
     select 1 from public.reading_logical_items item
     where item.logical_item_id = v_logical_item_id
   ) into v_logical_item_existed;
+
+  if v_expected_logical_item_action = 'reuse_existing' and not v_logical_item_existed then
+    raise exception using
+      errcode = 'P0001',
+      message = format(
+        'READING_IMPORT_PLAN_STALE expected=reuse_existing missing_logical_item_id=%s',
+        v_logical_item_id
+      ),
+      hint = 'Re-run Reading preflight before executing this plan.';
+  end if;
 
   select count(*) into v_occurrence_count
   from jsonb_to_recordset(coalesce(p_rows->'reading_source_occurrences', '[]'::jsonb)) as x(occurrence_id text);

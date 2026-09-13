@@ -198,13 +198,13 @@ export function TeacherImportQuestions() {
       + (result?.manualReuseCount ?? 0)))
     + manuallyReusedReadingCount;
   const newReadingQuestionCount = (result?.logicalNewItemCount ?? 0) + manuallyCreatedReadingCount;
-  const resolvedPendingReviews = pendingResolutionItems.filter(
-    (item) => Boolean(readingResolutionDrafts[item.resolutionId]?.action)
-  );
+  const deduplicatedReadingGroupCount = reusedReadingQuestionCount
+    + newReadingQuestionCount
+    + unresolvedReadingDuplicateCount;
+  const readingSourceGroupCount = result?.occurrenceCount ?? result?.successCount ?? 0;
   const readingOccurrenceInsertedCount = (result?.occurrenceInsertedCount ?? 0)
-    + resolvedPendingReviews.reduce((count, review) => count + review.addedOccurrenceCount, 0);
-  const readingExistingOccurrenceCount = (result?.existingOccurrenceCount ?? 0)
-    + resolvedPendingReviews.reduce((count, review) => count + review.existingOccurrenceCount, 0);
+    + pendingResolutionItems.reduce((count, review) => count + review.addedOccurrenceCount, 0);
+  const readingExistingOccurrenceCount = readingSourceGroupCount - readingOccurrenceInsertedCount;
   const unresolvedRdlMaterialWarningCount = Math.max(
     0,
     pendingResolutionItems.filter((item) =>
@@ -533,13 +533,12 @@ export function TeacherImportQuestions() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {isReadingQuestionType(questionType) ? (
               <>
-                <ResultMetric label="本次题组" value={result.occurrenceCount ?? result.successCount} />
-                <ResultMetric label="复用已有题目" value={reusedReadingQuestionCount} />
-                <ResultMetric label="新增题目" value={newReadingQuestionCount} />
+                <ResultMetric label="本次来源题组" value={readingSourceGroupCount} />
+                <ResultMetric label="去重后题组" value={deduplicatedReadingGroupCount} />
+                <ResultMetric label="复用已有题组" value={reusedReadingQuestionCount} />
+                <ResultMetric label="新增题组" value={newReadingQuestionCount} />
                 <ResultMetric label="新增来源" value={readingOccurrenceInsertedCount} />
-                {readingExistingOccurrenceCount > 0 ? (
-                  <ResultMetric label="已存在来源" value={readingExistingOccurrenceCount} />
-                ) : null}
+                <ResultMetric label="已存在来源" value={readingExistingOccurrenceCount} />
                 {unresolvedReadingDuplicateCount > 0 ? (
                   <ResultMetric label="需确认的相似题" tone="warning" value={unresolvedReadingDuplicateCount} />
                 ) : null}

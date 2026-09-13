@@ -18,8 +18,15 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
   items: ReadingDuplicateResolutionItem[];
   onChange: (resolutionId: string, draft: ReadingResolutionDraft) => void;
 }) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [reopened, setReopened] = useState<Set<string>>(new Set());
+  const [expandedReviewItems, setExpandedReviewItems] = useState<Set<string>>(new Set());
+  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
+  const collapseReviewItem = (resolutionId: string) => {
+    setExpandedReviewItems((current) => removeFromSet(current, resolutionId));
+  };
+  const confirmResolution = (resolutionId: string, draft: ReadingResolutionDraft) => {
+    onChange(resolutionId, draft);
+    collapseReviewItem(resolutionId);
+  };
   return (
     <section className="mt-6 rounded-2xl border border-student-primary-border bg-white p-5">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -41,13 +48,14 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
             candidate.logicalItemId === selectedId
           ) ?? item.candidates[0];
           const resolved = Boolean(draft.action);
-          if (resolved && !reopened.has(item.resolutionId)) {
+          const reviewExpanded = expandedReviewItems.has(item.resolutionId);
+          if (resolved && !reviewExpanded) {
             return (
               <ResolvedDuplicateSummary
                 draft={draft}
                 item={item}
                 key={item.resolutionId}
-                onReopen={() => setReopened(addToSet(reopened, item.resolutionId))}
+                onReopen={() => setExpandedReviewItems((current) => addToSet(current, item.resolutionId))}
                 selectedCandidate={selectedCandidate}
               />
             );
@@ -62,9 +70,11 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
                   <p className="mt-1 text-sm text-student-muted">{compactReadingSourceLabel(item.incoming)}</p>
                   <p className="mt-1 text-sm font-semibold text-amber-800">{item.reason}</p>
                 </div>
-                <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">
-                  {resolved ? "正在修改选择" : "待处理"}
-                </span>
+                {resolved ? (
+                  <button className="teacher-button-secondary" onClick={() => collapseReviewItem(item.resolutionId)} type="button">收起</button>
+                ) : (
+                  <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">待处理</span>
+                )}
               </div>
 
               {item.candidates.length > 1 ? (
@@ -90,7 +100,7 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
                 <button
                   className={draft.action === "reuse_existing" ? "teacher-button-primary ring-2 ring-student-primary" : "teacher-button-secondary"}
                   disabled={!selectedCandidate}
-                  onClick={() => selectedCandidate && onChange(item.resolutionId, {
+                  onClick={() => selectedCandidate && confirmResolution(item.resolutionId, {
                     action: "reuse_existing",
                     logicalItemId: selectedCandidate.logicalItemId
                   })}
@@ -100,7 +110,7 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
                 </button>
                 <button
                   className={draft.action === "create_new" ? "teacher-button-primary ring-2 ring-student-primary" : "teacher-button-secondary"}
-                  onClick={() => onChange(item.resolutionId, { action: "create_new" })}
+                  onClick={() => confirmResolution(item.resolutionId, { action: "create_new" })}
                   type="button"
                 >
                   不是同一道题，保留为新题
@@ -115,12 +125,12 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
 
               <button
                 className="mt-4 text-sm font-bold text-student-primary underline"
-                onClick={() => setExpanded(toggleSet(expanded, item.resolutionId))}
+                onClick={() => setExpandedDetails((current) => toggleSet(current, item.resolutionId))}
                 type="button"
               >
-                {expanded.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
+                {expandedDetails.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
               </button>
-              {expanded.has(item.resolutionId) ? (
+              {expandedDetails.has(item.resolutionId) ? (
                 <FullDuplicateComparison candidate={selectedCandidate ?? null} incoming={item.incoming} />
               ) : null}
             </article>
@@ -221,4 +231,5 @@ function compactReadingSourceLabel(source: Pick<ReadingDuplicatePreview, "source
   return [source.sourceLabel, source.sourceModule ? source.sourceModule.toUpperCase() : null, source.sourceQuestionRange ? `Q${source.sourceQuestionRange}` : null].filter(Boolean).join(" · ");
 }
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
+function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }
 function toggleSet(values: Set<string>, value: string) { const next = new Set(values); if (next.has(value)) next.delete(value); else next.add(value); return next; }

@@ -9,6 +9,7 @@ import {
 } from "@/lib/reading/importer";
 import {
   buildReadingDuplicateReviewPlans,
+  coalesceResolvedReadingImportsByFingerprint,
   indexReadingDuplicateResolutions,
   resolveReadingDuplicateImports
 } from "@/lib/reading/duplicateResolution";
@@ -161,7 +162,7 @@ async function importReadingCsv(
     );
   }
 
-  const resolvedImports = dryRun
+  const resolvedImports = coalesceResolvedReadingImportsByFingerprint(dryRun
     ? preparedPackages
         .filter((prepared) => !reviewPlans.some((review) => review.incoming === prepared))
         .map((prepared) => ({
@@ -170,7 +171,7 @@ async function importReadingCsv(
           members: [prepared],
           manuallyResolved: false
         }))
-    : resolveReadingDuplicateImports(preparedPackages, reviewPlans, resolutionById);
+    : resolveReadingDuplicateImports(preparedPackages, reviewPlans, resolutionById));
 
   if (!dryRun) {
     // Validate every resolved group before the first database write. This keeps
@@ -209,7 +210,8 @@ async function importReadingCsv(
         const imported = await importReadingPackageAtomic(supabase, packageData, {
           createdBy: userId,
           firstSeen,
-          replaceCanonicalContent: contentResolution.replaceCanonicalContent
+          replaceCanonicalContent: contentResolution.replaceCanonicalContent,
+          expectedLogicalItemAction: existed ? "reuse_existing" : "create_new"
         });
         execution = {
           logicalItemAction: imported.logicalItemAction,

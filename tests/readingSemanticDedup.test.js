@@ -121,6 +121,7 @@ function historicalDatabase(...packages) {
   }
   const queryCalls = [];
   return {
+    tables,
     queryCalls,
     from(table) {
       return {
@@ -257,6 +258,35 @@ test("CTW blank display serialization and smart quotes reuse historical canonica
   assert.equal(prepared.packageData.questions[0].questionId, historical.questions[0].questionId);
   assert.equal(prepared.addedOccurrenceCount, 1);
   assert.equal(buildReadingImportRows(prepared.packageData).reading_logical_items[0].dedup_fingerprint, historical.item.dedupFingerprint);
+});
+
+test("CTW exact fingerprint owner survives later canonical text drift", async () => {
+  const original = packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv");
+  const incoming = incomingVariant(original, () => {});
+  const historical = contentVariant(original, (candidate) => {
+    const historicalText = candidate.questions[0].payload.paragraphs[0].segments.find(
+      (segment) => segment.kind === "text" && segment.text.includes("studies nature")
+    );
+    historicalText.text += " Canonical wording corrected after the legacy identity was assigned.";
+    rebuildCtwRawText(candidate.questions[0]);
+  });
+  const legacyId = historical.item.logicalItemId;
+  const database = historicalDatabase(historical);
+  database.tables.reading_logical_items[0].dedup_fingerprint = incoming.item.dedupFingerprint;
+
+  assert.notEqual(historical.item.dedupFingerprint, incoming.item.dedupFingerprint);
+  assert.notEqual(readingSemanticFingerprint(historical), readingSemanticFingerprint(incoming));
+  const [prepared] = await prepareReadingPackagesForImport(database, [incoming], {
+    enableHistoricalSemanticFallback: true
+  });
+  assert.equal(prepared.reuseKind, "exact_fingerprint");
+  assert.equal(prepared.existingItem.logicalItemId, legacyId);
+  assert.equal(prepared.packageData.item.logicalItemId, legacyId);
+  assert.match(
+    prepared.packageData.questions[0].payload.paragraphs[0].rawText,
+    /Canonical wording corrected/
+  );
+  assert.equal(prepared.addedOccurrenceCount, 1);
 });
 
 test("CTW-only normalization canonicalizes Unicode dashes, whitespace, and blank noise", () => {

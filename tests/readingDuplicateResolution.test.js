@@ -7,6 +7,7 @@ const { parseCsvDocument } = require("../lib/csv.ts");
 const { adaptReadingCsv } = require("../lib/reading/csvAdapter.ts");
 const {
   buildReadingDuplicateReviewPlans,
+  coalesceResolvedReadingImportsByFingerprint,
   indexReadingDuplicateResolutions,
   resolveReadingDuplicateImports
 } = require("../lib/reading/duplicateResolution.ts");
@@ -441,6 +442,51 @@ test("cross-type pending decisions stay independent and require complete valid p
         action: "create_new"
       }));
   assert.equal(resolveReadingDuplicateImports(preparedItems, reviews, complete).length, 3);
+});
+
+test("final plan executes one create for same-batch fingerprint equivalents", () => {
+  const base = basePackage();
+  const first = relabeledIncoming(base, 27);
+  const second = relabeledIncoming(base, 28);
+  const plans = [first, second].map((packageData) => ({
+    packageData,
+    existingItem: null,
+    members: [prepared(packageData)],
+    manuallyResolved: false
+  }));
+
+  const finalized = coalesceResolvedReadingImportsByFingerprint(plans);
+  assert.equal(finalized.length, 1);
+  assert.equal(finalized[0].existingItem, null);
+  assert.equal(finalized[0].members.length, 2);
+  assert.deepEqual(
+    finalized[0].packageData.occurrences.map((occurrence) => occurrence.sourceLabel),
+    ["9.27A", "9.28A"]
+  );
+  assert.ok(finalized[0].packageData.occurrences.every((occurrence) =>
+    occurrence.logicalItemId === finalized[0].packageData.item.logicalItemId
+  ));
+});
+
+test("final plan exposes a same-fingerprint identity inconsistency before execution", () => {
+  const base = basePackage();
+  const first = relabeledIncoming(base, 29);
+  const inconsistent = relabeledIncoming(base, 30);
+  const question = inconsistent.questions[0];
+  const text = question.payload.paragraphs[0].segments.find((segment) => segment.kind === "text");
+  text.text = `Identity-changing text. ${text.text}`;
+  question.payload.paragraphs[0].rawText = `Identity-changing text. ${question.payload.paragraphs[0].rawText}`;
+  const plans = [first, inconsistent].map((packageData) => ({
+    packageData,
+    existingItem: null,
+    members: [prepared(packageData)],
+    manuallyResolved: false
+  }));
+
+  assert.throws(
+    () => coalesceResolvedReadingImportsByFingerprint(plans),
+    (error) => error.code === "READING_DEDUP_FINGERPRINT_IDENTITY_INCONSISTENCY"
+  );
 });
 
 test("pending flag and actionable list invariant is enforced for every Reading type", () => {

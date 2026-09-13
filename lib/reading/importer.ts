@@ -124,7 +124,13 @@ export async function prepareReadingPackagesForImport(
     ) ?? [])];
     let historicalDuplicateLogicalItemIds: string[] = [];
     let preparationConflict: string | null = incoming.preparationConflicts.get(incomingPackage.item.logicalItemId) ?? null;
-    const shouldResolveIdentity = enableSemantic;
+    // A strict CTW fingerprint match is a stable compatibility owner. Its
+    // canonical text may have been corrected later without rewriting the
+    // original identity fingerprint, so semantic fallback is only for CTW
+    // packages that did not already resolve by ID/fingerprint.
+    const shouldResolveIdentity = enableSemantic && (
+      !existingItem || incomingPackage.item.module === "rdl" || incomingPackage.item.module === "rap"
+    );
 
     if (shouldResolveIdentity) {
       existingItem = null;
@@ -787,6 +793,7 @@ export async function importReadingPackageAtomic(
   options: {
     createdBy?: string;
     replaceCanonicalContent?: boolean;
+    expectedLogicalItemAction?: ReadingLogicalItemAction;
     firstSeen?: {
       date: string;
       sourceLabel: string;
@@ -806,7 +813,8 @@ export async function importReadingPackageAtomic(
   const { data, error } = await supabase.rpc("import_reading_package_atomic", {
     p_rows: {
       ...rows,
-      replace_canonical_content: options.replaceCanonicalContent === true
+      replace_canonical_content: options.replaceCanonicalContent === true,
+      expected_logical_item_action: options.expectedLogicalItemAction ?? null
     },
     p_created_by: options.createdBy ?? null
   });
