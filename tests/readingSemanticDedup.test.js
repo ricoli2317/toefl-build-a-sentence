@@ -418,6 +418,48 @@ test("CTW answer differences reconcile within one identity while lexical content
   assert.notEqual(lexicalMatch.prepared.reuseKind, "semantic");
 });
 
+test("existing CTW occurrence suppresses an already handled answer conflict", async () => {
+  const historical = ctwPresentationBase();
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.sourceOccurrenceId = historical.occurrences[0].occurrenceId;
+    const slot = candidate.questions[0].payload.slots[0];
+    slot.answer = `${slot.answer}s`;
+    slot.missingText = `${slot.missingText}s`;
+    slot.missingLength += 1;
+    slot.displayText = `${slot.prefix}${"_".repeat(slot.missingLength)}`;
+    rebuildCtwRawText(candidate.questions[0]);
+  });
+  const database = historicalDatabase(historical);
+  database.from = occurrenceAwareFrom(database.from, historical.occurrences);
+  const [prepared] = await prepareReadingPackagesForImport(database, [incoming], {
+    enableHistoricalSemanticFallback: true
+  });
+
+  assert.equal(prepared.existingItem.logicalItemId, historical.item.logicalItemId);
+  assert.equal(prepared.addedOccurrenceCount, 0);
+  assert.equal(prepared.occurrenceConflict, null);
+  assert.equal(prepared.contentReconciliations.length, 0);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+});
+
+test("existing CTW occurrence bound to another logical item remains a source conflict", async () => {
+  const historical = ctwPresentationBase();
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.sourceOccurrenceId = historical.occurrences[0].occurrenceId;
+  });
+  const database = historicalDatabase(historical);
+  database.from = occurrenceAwareFrom(database.from, [{
+    ...historical.occurrences[0],
+    logicalItemId: "reading-ctw-wrong-owner"
+  }]);
+  const [prepared] = await prepareReadingPackagesForImport(database, [incoming], {
+    enableHistoricalSemanticFallback: true
+  });
+
+  assert.equal(prepared.addedOccurrenceCount, 0);
+  assert.match(prepared.occurrenceConflict, /already belongs to logical item reading-ctw-wrong-owner/);
+});
+
 test("CTW slot-count changes remain distinct without fuzzy identity fallback", async () => {
   const historical = screenshotCtwPackage();
   const incoming = incomingVariant(historical, (candidate) => {
@@ -704,7 +746,7 @@ test("RAP identity ignores title when the actual passage is unchanged", async ()
   assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
 });
 
-test("same RAP occurrence with changed source questions keeps canonical content", async () => {
+test("same RAP occurrence with changed source questions is an idempotent replay without review", async () => {
   const historical = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
   const incoming = incomingVariant(historical, (candidate) => {
     candidate.sourceOccurrenceId = historical.occurrences[0].occurrenceId;
@@ -718,7 +760,8 @@ test("same RAP occurrence with changed source questions keeps canonical content"
   assert.equal(prepared.occurrenceConflict, null);
   assert.equal(prepared.addedOccurrenceCount, 0);
   assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
-  assert.equal(prepared.contentReconciliations.length, 1);
+  assert.equal(prepared.contentReconciliations.length, 0);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
 test("same-material variants in one CSV coalesce and preserve the earliest canonical questions", async () => {

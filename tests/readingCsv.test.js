@@ -330,8 +330,9 @@ test("legacy CTW logical ID with the same fingerprint reuses all canonical ident
   });
   assert.equal(prepared.existingItem.logicalItemId, legacyId);
   assert.deepEqual(
-    database.queryCalls.slice(0, 2).map(({ table, operation, column }) => [table, operation, column]),
+    database.queryCalls.slice(0, 3).map(({ table, operation, column }) => [table, operation, column]),
     [
+      ["reading_source_occurrences", "in", "occurrence_id"],
       ["reading_logical_items", "in", "logical_item_id"],
       ["reading_logical_items", "in", "dedup_fingerprint"]
     ]

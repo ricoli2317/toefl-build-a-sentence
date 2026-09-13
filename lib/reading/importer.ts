@@ -99,6 +99,13 @@ export async function prepareReadingPackagesForImport(
 ): Promise<PreparedReadingImportPackage[]> {
   const incoming = coalesceIncomingSemanticPackages(packages);
   packages = incoming.packages;
+  // Source binding is the first preflight fact: an occurrence already bound
+  // to the resolved logical item is an idempotent replay, not new evidence
+  // that should reopen duplicate/content review.
+  const occurrenceIds = packages.flatMap((packageData) =>
+    packageData.occurrences.map((occurrence) => occurrence.occurrenceId)
+  );
+  const existingOccurrences = await loadExistingOccurrenceBindings(supabase, occurrenceIds);
   const enableSemantic = options.enableHistoricalSemanticFallback === true;
   const exactMatches = await loadExistingReadingLogicalItems(
     supabase,
@@ -217,10 +224,6 @@ export async function prepareReadingPackagesForImport(
       )
     };
   }));
-  const occurrenceIds = prepared.flatMap(({ packageData }) =>
-    packageData.occurrences.map((occurrence) => occurrence.occurrenceId)
-  );
-  const existingOccurrences = await loadExistingOccurrenceBindings(supabase, occurrenceIds);
   const incomingOccurrenceOwners = new Map<string, Set<string>>();
   for (const { packageData } of prepared) {
     for (const occurrence of packageData.occurrences) {
@@ -253,7 +256,20 @@ export async function prepareReadingPackagesForImport(
           `${existingLogicalItemId}; refusing to rebind it to ${packageData.item.logicalItemId}`;
       }
     }
-    return { ...item, addedOccurrenceCount, occurrenceConflict };
+    const idempotentReimport = packageData.occurrences.length > 0
+      && addedOccurrenceCount === 0
+      && occurrenceConflict === null;
+    return {
+      ...item,
+      possibleDuplicateLogicalItemIds: idempotentReimport ? [] : item.possibleDuplicateLogicalItemIds,
+      possibleDuplicateCandidates: idempotentReimport ? [] : item.possibleDuplicateCandidates,
+      contentReconciliations: idempotentReimport ? [] : item.contentReconciliations,
+      materialMatchKind: idempotentReimport && item.materialMatchKind === "possible_material_duplicate"
+        ? "exact_material"
+        : item.materialMatchKind,
+      addedOccurrenceCount,
+      occurrenceConflict
+    };
   });
 }
 

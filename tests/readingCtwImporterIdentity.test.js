@@ -25,12 +25,16 @@ function packageToCandidate(packageData, { label, date, sourceOrder = 8, mutate 
     module: "ctw",
     title: null,
     source: {
-      ...occurrence,
+      sourceKind: occurrence.sourceKind,
       sourceLabel: label,
       occurrenceDate: date,
       yearMonth: date.slice(0, 7),
+      sourceQuestionFile: occurrence.sourceQuestionFile,
+      sourceAnswerFile: occurrence.sourceAnswerFile,
       sourceModule: "m2",
-      sourceOrder
+      sourceOrder,
+      sourceQuestionStart: occurrence.sourceQuestionStart,
+      sourceQuestionEnd: occurrence.sourceQuestionEnd
     },
     materials: [],
     passages: [],
