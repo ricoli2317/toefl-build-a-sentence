@@ -828,7 +828,7 @@ test("same RAP occurrence with changed source questions is an idempotent replay 
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
 });
 
-test("same-material variants in one CSV coalesce and preserve the earliest canonical questions", async () => {
+test("same-material variants in one CSV coalesce without creating a database content review", async () => {
   const first = packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   const optionOrderVariant = incomingVariant(first, (candidate) => {
     for (const question of candidate.questions) {
@@ -856,9 +856,75 @@ test("same-material variants in one CSV coalesce and preserve the earliest canon
   assert.equal(preparedDifference.length, 1);
   assert.equal(preparedDifference[0].reuseKind, "new");
   assert.equal(preparedDifference[0].packageData.questions[0].stem, first.questions[0].stem);
-  assert.equal(preparedDifference[0].contentReconciliations.length, 1);
+  assert.equal(preparedDifference[0].contentReconciliations.length, 0);
   assert.equal(preparedDifference[0].occurrenceConflict, null);
 });
+
+test("University Photography Club compares every batch occurrence only with the DB canonical", async () => {
+  const historical = historicalPackage("rdl", "reading-rdl-93162d8f9d1db0491ad81016");
+  const alternate = rdlSourceVariant(historical, "8.9A", "2026-08-09", (candidate) => {
+    candidate.questions[1].payload.options[1].text = "A sale of used photography equipment";
+  });
+  const canonicalMatch = rdlSourceVariant(historical, "8.18B", "2026-08-18", () => {});
+  const [prepared] = await prepareReadingPackagesForImport(
+    historicalDatabase(historical),
+    [alternate, canonicalMatch],
+    { enableHistoricalSemanticFallback: true }
+  );
+
+  assert.equal(prepared.existingItem.logicalItemId, historical.item.logicalItemId);
+  assert.equal(prepared.packageData.item.logicalItemId, historical.item.logicalItemId);
+  assert.deepEqual(
+    prepared.packageData.occurrences.map((occurrence) => occurrence.sourceLabel),
+    ["8.9A", "8.18B"]
+  );
+  assert.equal(prepared.contentReconciliations.length, 1);
+  const reconciliation = prepared.contentReconciliations[0];
+  assert.deepEqual(reconciliation.item.sources.map((source) => source.sourceLabel), ["8.9A"]);
+  const optionDifference = reconciliation.item.questionConflicts[0].differences.find(
+    (difference) => difference.kind === "options"
+  );
+  assert.equal(optionDifference.existing, "A sale of used photo equipment");
+  assert.equal(optionDifference.incoming, "A sale of used photography equipment");
+  assert.ok(!prepared.contentReconciliations.some((candidate) =>
+    candidate.item.questionConflicts.some((question) => question.differences.some((difference) =>
+      difference.existing === "A sale of used photography equipment"
+      && difference.incoming === "A sale of used photo equipment"
+    ))
+  ));
+});
+
+test("identical RDL source variants aggregate their source labels against one DB canonical field", async () => {
+  const historical = historicalPackage("rdl", "reading-rdl-93162d8f9d1db0491ad81016");
+  const variants = [
+    ["8.9A", "2026-08-09"],
+    ["8.20B", "2026-08-20"]
+  ].map(([label, date]) => rdlSourceVariant(historical, label, date, (candidate) => {
+    candidate.questions[1].payload.options[1].text = "A sale of used photography equipment";
+  }));
+  const [prepared] = await prepareReadingPackagesForImport(
+    historicalDatabase(historical),
+    variants,
+    { enableHistoricalSemanticFallback: true }
+  );
+
+  assert.equal(prepared.contentReconciliations.length, 1);
+  assert.deepEqual(
+    prepared.contentReconciliations[0].item.sources.map((source) => source.sourceLabel),
+    ["8.9A", "8.20B"]
+  );
+});
+
+function rdlSourceVariant(historical, sourceLabel, occurrenceDate, mutate) {
+  const candidate = packageToSourceCandidate(historical);
+  candidate.sourceOccurrenceId = `reading-source-${sourceLabel.toLowerCase().replaceAll(".", "-")}-m1-rdl-01`;
+  candidate.source.sourceLabel = sourceLabel;
+  candidate.source.occurrenceDate = occurrenceDate;
+  candidate.source.yearMonth = occurrenceDate.slice(0, 7);
+  candidate.source.sourceOrder = 1;
+  mutate(candidate);
+  return groupReadingSourceOccurrences([candidate]).packages[0];
+}
 
 const historicalRdlClusters = [
   ["Mini Fridge Repair Chat", [

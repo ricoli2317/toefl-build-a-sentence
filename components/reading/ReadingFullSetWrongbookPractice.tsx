@@ -26,7 +26,12 @@ import {
   type ReadingFullSetWrongbookTarget
 } from "@/lib/wrongQuestions";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
-import { useStudentDataCache, STUDENT_WRONG_QUESTIONS_CACHE_PREFIX } from "@/components/StudentDataCache";
+import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
+import {
+  studentWrongQuestionsCacheKey,
+  useStudentCachedData,
+  type StudentCacheSession
+} from "@/components/StudentDataCache";
 import { ReadingWorkspaceRouter, readingTwoColumnScaleStyle } from "./ReadingPractice";
 
 type LoadedOccurrence = {
@@ -36,9 +41,7 @@ type LoadedOccurrence = {
   targets: ReadingFullSetWrongbookTarget[];
 };
 
-type Step = ReturnType<typeof buildReadingFullSetWrongbookProgress>["screens"][number] & {
-  occurrenceIndex: number;
-};
+type Step = ReturnType<typeof buildReadingFullSetWrongbookProgress>["screens"][number];
 
 export function ReadingFullSetWrongbookPractice({
   scope,
@@ -48,11 +51,23 @@ export function ReadingFullSetWrongbookPractice({
   sourceAttemptId: string;
 }) {
   const router = useRouter();
-  const cache = useStudentDataCache();
   const [todayRange] = useState(localDayRange);
-  const [attempt, setAttempt] = useState<ReadingFullSetWrongbookAttemptSummary | null>(null);
-  const [title, setTitle] = useState("");
-  const [occurrences, setOccurrences] = useState<LoadedOccurrence[]>([]);
+  const bootstrapKey = studentWrongQuestionsCacheKey(
+    `full-set-correction:${scope}:${sourceAttemptId}:${todayRange.start}`
+  );
+  const bootstrap = useStudentCachedData<Awaited<ReturnType<typeof loadFullSetCorrection>>>(
+    bootstrapKey,
+    (session) => loadFullSetCorrection({
+      scope,
+      session,
+      sourceAttemptId,
+      todayEnd: todayRange.end,
+      todayStart: todayRange.start
+    })
+  );
+  const attempt = bootstrap.data?.attempt ?? null;
+  const item = bootstrap.data?.item ?? null;
+  const [occurrences, setOccurrences] = useState<Record<string, LoadedOccurrence>>({});
   const [stepIndex, setStepIndex] = useState(0);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [error, setError] = useState("");
@@ -69,96 +84,50 @@ export function ReadingFullSetWrongbookPractice({
     return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const { data: { session } } = await createBrowserSupabase().auth.getSession();
-        if (!session) throw new Error("请先登录后再开始错题订正。");
-        const headers = { Authorization: `Bearer ${session.access_token}` };
-        const attemptResponse = await fetch("/api/reading/wrongbook-attempts", {
-          method: "POST",
-          cache: "no-store",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            scope,
-            sourceAttemptId,
-            taskType: "full_set",
-            todayEnd: todayRange.end,
-            todayStart: todayRange.start
-          })
-        });
-        const attemptPayload = await attemptResponse.json().catch(() => ({})) as {
-          attempt?: unknown;
-          error?: string;
-          item?: ReadingFullSetWrongbookQueueItem;
-          preservedAnswersByOccurrence?: Record<string, ReadingWrongbookPreservedAnswer[]>;
-        };
-        if (!attemptResponse.ok || !isReadingFullSetWrongbookAttemptSummary(attemptPayload.attempt)) {
-          throw new Error(attemptPayload.error ?? "错题订正记录加载失败，请稍后重试。");
-        }
-        if (attemptPayload.attempt.sourceAttemptId !== sourceAttemptId) throw new Error("错题订正记录与当前套题不一致。");
-        const item = attemptPayload.item;
-        if (!item || item.sourceAttemptId !== sourceAttemptId) throw new Error("这套错题已经订正完成。");
-
-        const uniqueOccurrences = Array.from(new Map(item.targets.map((target) => [target.occurrenceId, target])).values());
-        const itemIds = Array.from(new Set(uniqueOccurrences.map((occurrence) => occurrence.logicalItemId)));
-        const practiceQuery = new URLSearchParams({ itemIds: itemIds.join(",") });
-        const practiceResponse = await fetch(`/api/reading/practices?${practiceQuery}`, {
-          cache: "no-store",
-          headers
-        });
-        const practicePayload = await practiceResponse.json().catch(() => ({})) as {
-          error?: string;
-          practices?: StudentReadingPracticePayload[];
-        };
-        if (!practiceResponse.ok || practicePayload.error || !practicePayload.practices) {
-          throw new Error(practicePayload.error ?? "阅读错题内容加载失败，请稍后重试。");
-        }
-        const practiceByItem = new Map(practicePayload.practices.map((practice) => [
-          practice.item.itemId,
-          practice
-        ]));
-
-        const loaded = uniqueOccurrences.map((occurrence) => {
-          const targets = item.targets.filter((target) => target.occurrenceId === occurrence.occurrenceId);
-          const sourcePractice = practiceByItem.get(occurrence.logicalItemId);
-          if (!sourcePractice) throw new Error("阅读错题内容返回不完整，请稍后重试。");
-          const practice = selectReadingWrongbookPractice(sourcePractice, targets);
-          return {
-            answers: buildReadingWrongbookInitialAnswers(
-              practice,
-              attemptPayload.preservedAnswersByOccurrence?.[occurrence.occurrenceId] ?? []
-            ),
-            occurrenceId: occurrence.occurrenceId,
-            practice,
-            targets
-          };
-        });
-        if (!cancelled) {
-          setAttempt(attemptPayload.attempt);
-          setTitle(item.title);
-          setOccurrences(loaded);
-          startedAtRef.current = Date.now();
-        }
-      } catch (failure) {
-        if (!cancelled) setError(failure instanceof Error ? failure.message : "错题订正加载失败，请稍后重试。");
-      }
-    }
-    void load();
-    return () => { cancelled = true; };
-  }, [scope, sourceAttemptId, todayRange.end, todayRange.start]);
-
   const progress = useMemo(
     () => buildReadingFullSetWrongbookProgress(attempt?.targets ?? []),
     [attempt?.targets]
   );
-  const steps = useMemo(() => progress.screens.flatMap((screen): Step[] => {
-    const occurrenceIndex = occurrences.findIndex((occurrence) => occurrence.occurrenceId === screen.occurrenceId);
-    return occurrenceIndex >= 0 ? [{ ...screen, occurrenceIndex }] : [];
-  }), [occurrences, progress.screens]);
+  const steps: Step[] = progress.screens;
   const step = steps[stepIndex];
-  const current = step ? occurrences[step.occurrenceIndex] : null;
+  const stepTarget = step
+    ? item?.targets.find((target) =>
+        target.occurrenceId === step.occurrenceId && target.questionId === step.questionId
+      )
+    : undefined;
+  const practiceKey = studentWrongQuestionsCacheKey(
+    `full-set-correction-practice:${stepTarget?.logicalItemId ?? "pending"}`
+  );
+  const sourcePractice = useStudentCachedData<StudentReadingPracticePayload>(
+    practiceKey,
+    (session) => loadReadingPractice(stepTarget!.logicalItemId, session),
+    { enabled: Boolean(stepTarget) }
+  );
+
+  useEffect(() => {
+    if (!step || !item || !sourcePractice.data || occurrences[step.occurrenceId]) return;
+    const targets = item.targets.filter((target) => target.occurrenceId === step.occurrenceId);
+    const practice = selectReadingWrongbookPractice(sourcePractice.data, targets);
+    setOccurrences((current) => ({
+      ...current,
+      [step.occurrenceId]: {
+        answers: buildReadingWrongbookInitialAnswers(
+          practice,
+          bootstrap.data?.preservedAnswersByOccurrence?.[step.occurrenceId] ?? []
+        ),
+        occurrenceId: step.occurrenceId,
+        practice,
+        targets
+      }
+    }));
+  }, [bootstrap.data?.preservedAnswersByOccurrence, item, occurrences, sourcePractice.data, step]);
+
+  useEffect(() => {
+    if (!bootstrap.data) return;
+    startedAtRef.current = Date.now();
+  }, [bootstrap.data]);
+
+  const current = step ? occurrences[step.occurrenceId] ?? null : null;
   const currentQuestion = current?.practice.questions.find((question) => question.questionId === step?.questionId);
   const currentOccurrenceId = current?.occurrenceId ?? "";
   const currentQuestionId = currentQuestion?.questionId ?? "";
@@ -192,9 +161,13 @@ export function ReadingFullSetWrongbookPractice({
 
   function updateAnswer(questionId: string, answer: ReadingAnswer) {
     if (!current) return;
-    setOccurrences((values) => values.map((occurrence) => occurrence.occurrenceId === current.occurrenceId
-      ? { ...occurrence, answers: setReadingAnswer(occurrence.answers, questionId, answer) }
-      : occurrence));
+    setOccurrences((values) => ({
+      ...values,
+      [current.occurrenceId]: {
+        ...current,
+        answers: setReadingAnswer(current.answers, questionId, answer)
+      }
+    }));
   }
 
   async function submit() {
@@ -205,7 +178,7 @@ export function ReadingFullSetWrongbookPractice({
     try {
       const { data: { session } } = await createBrowserSupabase().auth.getSession();
       if (!session) throw new Error("请先登录后再提交错题订正。");
-      const answers = occurrences.flatMap((occurrence) => selectReadingWrongbookSubmissionAnswers(
+      const answers = Object.values(occurrences).flatMap((occurrence) => selectReadingWrongbookSubmissionAnswers(
         buildReadingSubmissionAnswers(
           occurrence.practice,
           occurrence.answers,
@@ -236,7 +209,7 @@ export function ReadingFullSetWrongbookPractice({
       if (!response.ok || !isReadingFullSetWrongbookAttemptSummary(payload.attempt)) {
         throw new Error(payload.error ?? "错题订正提交失败，请稍后重试。");
       }
-      cache.invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+      invalidateStudentWrongbook(session.user.id);
       router.replace(`/student/reading/wrongbook-results/${encodeURIComponent(attempt.attemptId)}`);
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "错题订正提交失败，请稍后重试。");
@@ -245,7 +218,10 @@ export function ReadingFullSetWrongbookPractice({
     }
   }
 
-  if (error && !current) return <Message description={error} onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)} />;
+  const loadError = bootstrap.error || sourcePractice.error;
+  if ((error || loadError) && !current) {
+    return <Message description={error || loadError} onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)} />;
+  }
   if (!attempt || !current || !currentQuestion) return <Message description="正在加载错题和原题练习界面..." />;
   return (
     <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
@@ -253,7 +229,7 @@ export function ReadingFullSetWrongbookPractice({
         <button className="writing-header-back justify-self-start" onClick={() => router.push(STUDENT_ROUTES.wrongQuestions)} type="button">
           <ArrowLeft aria-hidden="true" size={20} /> Back
         </button>
-        <p className="max-w-[50vw] truncate text-sm font-bold text-student-primary">错题订正 · {title}</p>
+        <p className="max-w-[50vw] truncate text-sm font-bold text-student-primary">错题订正 · {item?.title}</p>
         <div className="flex items-center gap-2 justify-self-end font-mono text-sm font-bold"><Clock3 size={18} />{formatWritingTimer(elapsedSeconds)}</div>
       </header>
       <main className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
@@ -283,6 +259,65 @@ export function ReadingFullSetWrongbookPractice({
       </main>
     </div>
   );
+}
+
+async function loadFullSetCorrection(input: {
+  scope: ReadingWrongbookScope;
+  session: StudentCacheSession;
+  sourceAttemptId: string;
+  todayEnd: string;
+  todayStart: string;
+}) {
+  const response = await fetch("/api/reading/wrongbook-attempts", {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${input.session.accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      scope: input.scope,
+      sourceAttemptId: input.sourceAttemptId,
+      taskType: "full_set",
+      todayEnd: input.todayEnd,
+      todayStart: input.todayStart
+    })
+  });
+  const payload = await response.json().catch(() => ({})) as {
+    attempt?: unknown;
+    error?: string;
+    item?: ReadingFullSetWrongbookQueueItem;
+    preservedAnswersByOccurrence?: Record<string, ReadingWrongbookPreservedAnswer[]>;
+  };
+  if (!response.ok || !isReadingFullSetWrongbookAttemptSummary(payload.attempt)) {
+    throw new Error(payload.error ?? "错题订正记录加载失败，请稍后重试。");
+  }
+  if (payload.attempt.sourceAttemptId !== input.sourceAttemptId) {
+    throw new Error("错题订正记录与当前套题不一致。");
+  }
+  if (!payload.item || payload.item.sourceAttemptId !== input.sourceAttemptId) {
+    throw new Error("这套错题已经订正完成。");
+  }
+  return {
+    attempt: payload.attempt,
+    item: payload.item,
+    preservedAnswersByOccurrence: payload.preservedAnswersByOccurrence ?? {}
+  };
+}
+
+async function loadReadingPractice(itemId: string, session: StudentCacheSession) {
+  const response = await fetch(`/api/reading/practice/${encodeURIComponent(itemId)}`, {
+    cache: "no-store",
+    headers: { Authorization: `Bearer ${session.accessToken}` }
+  });
+  const payload = await response.json().catch(() => ({})) as {
+    error?: string;
+    practice?: StudentReadingPracticePayload;
+  };
+  if (!response.ok || !payload.practice) {
+    throw new Error(payload.error ?? "阅读错题内容加载失败，请稍后重试。");
+  }
+  return payload.practice;
 }
 
 function Message({ description, onBack }: { description: string; onBack?: () => void }) {

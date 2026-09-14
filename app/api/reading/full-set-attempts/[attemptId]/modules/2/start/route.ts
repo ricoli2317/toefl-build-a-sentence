@@ -18,7 +18,7 @@ export async function POST(
   if (!isUuid(params.attemptId)) {
     return readingFullSetAttemptJson({ error: "无效的套题练习请求。" }, { status: 400 });
   }
-  const { data, error } = await auth.client.rpc("start_reading_full_set_module_2", {
+  const { data, error } = await auth.client.rpc("prepare_reading_full_set_module_2", {
     p_attempt_id: params.attemptId
   });
   if (error) return readingFullSetAttemptError(error, "暂时无法开始 Module 2，请稍后重试。");

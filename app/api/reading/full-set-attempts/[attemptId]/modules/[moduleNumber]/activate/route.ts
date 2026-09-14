@@ -16,21 +16,17 @@ export async function POST(
   const auth = await requireReadingFullSetStudent(request);
   if (auth.error) return auth.error;
   if (!auth.client) return readingFullSetAttemptJson({ error: "请先登录。" }, { status: 401 });
-  const moduleNo = moduleNumber(params.moduleNumber);
-  if (!isUuid(params.attemptId) || !moduleNo) {
-    return readingFullSetAttemptJson({ error: "无效的 Module 提交请求。" }, { status: 400 });
+  const parsedModuleNumber = moduleNumber(params.moduleNumber);
+  if (!isUuid(params.attemptId) || !parsedModuleNumber) {
+    return readingFullSetAttemptJson({ error: "无效的 Module 激活请求。" }, { status: 400 });
   }
-  const body = await request.json().catch(() => ({})) as { timeoutOnly?: unknown };
-  const rpcName = body.timeoutOnly === true
-    ? "timeout_reading_full_set_module"
-    : "submit_reading_full_set_module";
-  const { data, error } = await auth.client.rpc(rpcName, {
+  const { data, error } = await auth.client.rpc("activate_reading_full_set_module", {
     p_attempt_id: params.attemptId,
-    p_module_number: moduleNo
+    p_module_number: parsedModuleNumber
   });
-  if (error) return readingFullSetAttemptError(error, "Module 提交失败，请稍后重试。");
+  if (error) return readingFullSetAttemptError(error, "Module 计时启动失败，请重试。");
   if (!isReadingFullSetAttemptSummary(data)) {
-    return readingFullSetAttemptJson({ error: "Module 提交状态返回了无效数据。" }, { status: 500 });
+    return readingFullSetAttemptJson({ error: "Module 计时状态返回了无效数据。" }, { status: 500 });
   }
   return readingFullSetAttemptJson({ attempt: data });
 }

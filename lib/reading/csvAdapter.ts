@@ -262,14 +262,6 @@ function buildCandidate(
       };
     }
     if (questionType === "rap_sentence_insertion") {
-      const normalizedAnchors = canonicalizeInsertionAnchors(
-        parseJson<ReadingInsertionAnchor[]>(
-          required(row, "insertion_anchors_json"),
-          "insertion_anchors_json"
-        ),
-        passageJson,
-        required(row, "correct_anchor_id")
-      );
       return {
         ...common,
         questionType,
@@ -277,8 +269,11 @@ function buildCandidate(
           passageId,
           highlightRanges,
           insertSentence: required(row, "insert_sentence"),
-          anchors: normalizedAnchors.anchors,
-          correctAnchorId: normalizedAnchors.correctAnchorId
+          anchors: parseJson<ReadingInsertionAnchor[]>(
+            required(row, "insertion_anchors_json"),
+            "insertion_anchors_json"
+          ),
+          correctAnchorId: required(row, "correct_anchor_id")
         }
       };
     }
@@ -339,47 +334,6 @@ function buildCandidate(
       questions
     };
   }
-}
-
-/** CSV is the normalization boundary for parser-produced RAP anchors. The
- * sentence reference determines the stable boundary; exact repeated markers
- * collapse here while genuinely different markers remain validator errors. */
-export function canonicalizeInsertionAnchors(
-  anchors: ReadingInsertionAnchor[],
-  passage: ReadingPassageParagraph[],
-  correctAnchorId: string
-) {
-  const retained: ReadingInsertionAnchor[] = [];
-  const retainedByExactMarker = new Map<string, ReadingInsertionAnchor>();
-  const canonicalIdBySourceId = new Map<string, string>();
-  for (const anchor of [...anchors].sort((left, right) => left.anchorOrder - right.anchorOrder)) {
-    const paragraph = passage.find((candidate) => candidate.paragraphId === anchor.paragraphId);
-    const sentenceIndex = anchor.afterSentenceId === null
-      ? -1
-      : paragraph?.sentences.findIndex((sentence) => sentence.sentenceId === anchor.afterSentenceId) ?? -2;
-    const boundaryIndex = anchor.afterSentenceId === null
-      ? 0
-      : sentenceIndex >= 0 ? sentenceIndex + 1 : anchor.boundaryIndex;
-    const normalized = { ...anchor, boundaryIndex };
-    const boundaryKey = `${normalized.paragraphId}:${normalized.boundaryIndex}`;
-    const exactMarkerKey = `${boundaryKey}:${normalized.afterSentenceId ?? "<start>"}`;
-    const existingMarker = retainedByExactMarker.get(exactMarkerKey);
-    if (existingMarker) {
-      canonicalIdBySourceId.set(anchor.anchorId, existingMarker.anchorId);
-      continue;
-    }
-    retained.push(normalized);
-    retainedByExactMarker.set(exactMarkerKey, normalized);
-    canonicalIdBySourceId.set(anchor.anchorId, normalized.anchorId);
-  }
-  const normalizedAnchors = retained.map((anchor, index) => ({
-    ...anchor,
-    anchorOrder: index + 1
-  }));
-  return {
-    anchors: normalizedAnchors,
-    correctAnchorId: canonicalIdBySourceId.get(correctAnchorId) ?? correctAnchorId
-  };
 }
 
 function validateProductionMaterial(

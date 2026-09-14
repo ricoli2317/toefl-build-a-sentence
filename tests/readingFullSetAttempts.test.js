@@ -5,6 +5,7 @@ const test = require("node:test");
 
 const {
   moveReadingFullSetPosition,
+  isReadingFullSetAttemptSummary,
   readingFullSetActiveModuleAttempt,
   readingFullSetAttemptPhase,
   readingFullSetDisplayRange,
@@ -18,6 +19,7 @@ const root = path.join(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const migration = read("supabase/reading_full_set_attempts.sql");
 const loadingPauseHotfix = read("supabase/reading_full_set_loading_pause_hotfix_20260911.sql");
+const lifecycleMigration = read("supabase/reading_full_set_preparing_load_lease_20260914.sql");
 const retakeHotfix = read("supabase/reading_full_set_retake_hotfix.sql");
 const attemptRoute = read("app/api/reading/full-set-attempts/route.ts");
 const runnerRoute = read("app/api/reading/full-set-attempts/[attemptId]/route.ts");
@@ -27,6 +29,7 @@ const runnerUi = read("components/reading/ReadingFullSetRunner.tsx");
 const detailUi = read("components/reading/ReadingFullSetDetail.tsx");
 const loadPauseRoute = read("app/api/reading/full-set-attempts/[attemptId]/loads/route.ts");
 const loadPauseFinishRoute = read("app/api/reading/full-set-attempts/[attemptId]/loads/[loadId]/route.ts");
+const activateRoute = read("app/api/reading/full-set-attempts/[attemptId]/modules/[moduleNumber]/activate/route.ts");
 const existingRuntime = read("components/reading/ReadingPractice.tsx");
 
 function moduleAttempt(moduleNumber, status = "active") {
@@ -35,8 +38,8 @@ function moduleAttempt(moduleNumber, status = "active") {
     moduleNumber,
     status,
     timeLimitSeconds: moduleNumber === 1 ? 1230 : 540,
-    startedAt: "2026-08-30T00:00:00.000Z",
-    deadlineAt: "2026-08-30T00:20:30.000Z",
+    startedAt: status === "preparing" ? null : "2026-08-30T00:00:00.000Z",
+    deadlineAt: status === "preparing" ? null : "2026-08-30T00:20:30.000Z",
     submittedAt: status === "submitted" ? "2026-08-30T00:10:00.000Z" : null,
     submissionReason: status === "submitted" ? "manual" : null,
     answerRevision: 0,
@@ -63,11 +66,17 @@ function attempt(overrides = {}) {
 test("Prep state maps active and transition states without exposing internal status labels", () => {
   assert.deepEqual(readingFullSetPrepAction(null), { label: "开始 Module 1", action: "start_module_1" });
   assert.equal(readingFullSetPrepAction(attempt()).label, "继续 Module 1");
+  const preparingM1 = attempt({ module1: moduleAttempt(1, "preparing") });
+  assert.equal(readingFullSetAttemptPhase(preparingM1), "module_1_preparing");
+  assert.equal(readingFullSetPrepAction(preparingM1).label, "继续 Module 1");
+  assert.equal(isReadingFullSetAttemptSummary(preparingM1), true);
   const m2Ready = attempt({ currentModule: 2, module1: moduleAttempt(1, "submitted") });
   assert.equal(readingFullSetAttemptPhase(m2Ready), "module_2_ready");
   assert.equal(readingFullSetPrepAction(m2Ready).label, "开始 Module 2");
   const m2Active = attempt({ currentModule: 2, module1: moduleAttempt(1, "submitted"), module2: moduleAttempt(2) });
   assert.equal(readingFullSetPrepAction(m2Active).label, "继续 Module 2");
+  const m2Preparing = attempt({ currentModule: 2, module1: moduleAttempt(1, "submitted"), module2: moduleAttempt(2, "preparing") });
+  assert.equal(readingFullSetAttemptPhase(m2Preparing), "module_2_preparing");
   const recoverableM2 = { ...m2Active, currentModule: 1 };
   assert.equal(readingFullSetAttemptPhase(recoverableM2), "module_2_active");
   assert.equal(readingFullSetActiveModuleAttempt(recoverableM2).moduleNumber, 2);
@@ -128,20 +137,22 @@ test("CTW, RDL, and RAP submissions preserve canonical scoring identities", () =
   ]);
 });
 
-test("migration makes Start idempotent and assigns authoritative Module deadlines", () => {
-  assert.match(migration, /create unique index if not exists reading_full_set_one_active_attempt[\s\S]*where status = 'in_progress'/);
-  assert.match(migration, /on conflict \(student_id, full_set_id\) where status = 'in_progress' do nothing/);
-  assert.match(migration, /where student_id = v_user_id[\s\S]*full_set_id = p_full_set_id[\s\S]*status = 'in_progress'[\s\S]*if v_attempt_id is null then/);
+test("M1 and M2 bootstrap stay preparing until server activation grants the full limit", () => {
+  assert.match(lifecycleMigration, /status in \('preparing', 'active', 'submitted'\)/);
+  assert.match(lifecycleMigration, /v_attempt_id, 1, 'preparing', v_time_limit, null, null/);
+  assert.match(lifecycleMigration, /p_attempt_id, 2, 'preparing', v_time_limit, null, null/);
+  assert.match(lifecycleMigration, /v_activated_at := clock_timestamp\(\);[\s\S]*deadline_at = v_activated_at \+ make_interval\(secs => time_limit_seconds\)/);
+  const activationFunction = lifecycleMigration.slice(
+    lifecycleMigration.indexOf("create or replace function public.activate_reading_full_set_module"),
+    lifecycleMigration.indexOf("create or replace function public.get_or_create_reading_full_set_attempt")
+  );
+  assert.doesNotMatch(activationFunction, /v_now timestamptz := clock_timestamp\(\)/);
   assert.match(migration, /return 1230/);
   assert.match(migration, /return 1110/);
   assert.match(migration, /return 540/);
-  assert.match(migration, /deadline_at >= started_at \+ make_interval\(secs => time_limit_seconds\)/);
-  assert.match(migration, /v_now \+ make_interval\(secs => v_time_limit\)/);
-  assert.match(migration, /reading_full_set_module_time_limit\(p_full_set_id, 1::smallint\)/);
-  assert.match(migration, /reading_full_set_module_time_limit\(p_full_set_id, 2::smallint\)/);
-  assert.match(migration, /reading_full_set_module_time_limit\(v_attempt\.full_set_id, 2::smallint\)/);
-  assert.match(retakeHotfix, /and status = 'in_progress'[\s\S]*if v_attempt_id is null then/);
-  assert.match(retakeHotfix, /on conflict \(student_id, full_set_id\) where status = 'in_progress' do nothing/);
+  assert.equal(readingFullSetRemainingSeconds({ deadlineAt: "2026-09-14T00:23:30Z", serverNow: "2026-09-14T00:03:00Z", clientNowAtSyncMs: 0, clientNowMs: 0 }), 1230);
+  assert.equal(readingFullSetRemainingSeconds({ deadlineAt: "2026-09-14T00:12:00Z", serverNow: "2026-09-14T00:03:00Z", clientNowAtSyncMs: 0, clientNowMs: 0 }), 540);
+  assert.match(activateRoute, /activate_reading_full_set_module/);
 });
 
 test("M1 lock, timeout reconciliation, manual submit, and M2 completion are server rules", () => {
@@ -151,21 +162,21 @@ test("M1 lock, timeout reconciliation, manual submit, and M2 completion are serv
   assert.match(migration, /alreadySubmitted/);
   assert.match(migration, /v_module_1_status <> 'submitted'/);
   assert.match(migration, /set status = 'completed', current_module = 2, completed_at/);
-  const m1Creation = migration.slice(
-    migration.indexOf("create or replace function public.get_or_create_reading_full_set_attempt"),
-    migration.indexOf("create or replace function public.get_reading_full_set_attempt(")
+  const m1Creation = lifecycleMigration.slice(
+    lifecycleMigration.indexOf("create or replace function public.get_or_create_reading_full_set_attempt"),
+    lifecycleMigration.indexOf("create or replace function public.prepare_reading_full_set_module_2")
   );
   assert.match(m1Creation, /module_number, status, time_limit_seconds/);
-  assert.match(m1Creation, /v_attempt_id, 1, 'active'/);
+  assert.match(m1Creation, /v_attempt_id, 1, 'preparing'/);
   assert.doesNotMatch(m1Creation, /v_attempt_id, 2, 'active'/);
-  const startM2 = migration.slice(
-    migration.indexOf("create or replace function public.start_reading_full_set_module_2"),
-    migration.indexOf("create or replace function public.save_reading_full_set_occurrence_answers")
+  const startM2 = lifecycleMigration.slice(
+    lifecycleMigration.indexOf("create or replace function public.prepare_reading_full_set_module_2"),
+    lifecycleMigration.indexOf("create or replace function public.start_reading_full_set_module_2")
   );
-  assert.match(startM2, /insert into public\.reading_full_set_module_attempts[\s\S]*module_number[\s\S]*2, 'active'/);
-  assert.match(startM2, /returning module_attempt_id into v_module_2_attempt_id[\s\S]*insert into public\.reading_full_set_load_pauses/);
+  assert.match(startM2, /insert into public\.reading_full_set_module_attempts[\s\S]*2, 'preparing'/);
+  assert.doesNotMatch(startM2, /insert into public\.reading_full_set_load_pauses/);
   assert.match(startM2, /update public\.reading_full_set_attempts[\s\S]*set current_module = 2/);
-  assert.match(m1Creation, /returning module_attempt_id into v_module_attempt_id[\s\S]*insert into public\.reading_full_set_load_pauses/);
+  assert.match(lifecycleMigration, /if v_module\.status <> 'active' or v_module\.deadline_at is null then[\s\S]*FULL_SET_MODULE_NOT_ACTIVE/);
 });
 
 test("answer mutation uses ownership, active lock, deadline, occurrence identity, and revision checks", () => {
@@ -189,7 +200,7 @@ test("student APIs enforce ownership and do not expose answer keys or the next M
   assert.match(occurrenceRoute, /select\("question_id,slot_id,answer_kind,student_answer,question_time_seconds"\)/);
   assert.doesNotMatch(occurrenceRoute, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text/);
   assert.match(runnerRoute, /buildReadingFullSetRunnerPayload/);
-  assert.match(read("lib/reading/fullSetAttemptServer.ts"), /readingFullSetActiveModuleAttempt\(attempt\)[\s\S]*activeModule\?\.moduleNumber === 2[\s\S]*fullSet\.module2\.occurrences/);
+  assert.match(read("lib/reading/fullSetAttemptServer.ts"), /readingFullSetCurrentModuleAttempt\(attempt\)[\s\S]*currentModule\?\.moduleNumber === 2[\s\S]*fullSet\.module2\.occurrences/);
 });
 
 test("Full Set runner reuses the existing three-type workspace and implements autosave and server submit", () => {
@@ -220,7 +231,7 @@ test("same-route M2 transition invalidates M1 state and reloads the server runne
   assert.match(runnerUi, /if \(submittingRef\.current\) return/);
   assert.match(runnerUi, /runnerGenerationRef\.current \+= 1/);
   assert.match(runnerUi, /occurrenceRequestRef\.current \+= 1/);
-  assert.match(runnerUi, /applyAttempt\(result\.attempt\)[\s\S]*beginLoadPause\(accessToken, null\)[\s\S]*loadRunner\(accessToken\)/);
+  assert.match(runnerUi, /module_2_preparing[\s\S]*applyAttempt\(result\.attempt\)[\s\S]*loadRunner\(accessToken\)/);
 });
 
 test("occurrence loading has loaded/error convergence and Retry refreshes server truth", () => {
@@ -231,23 +242,66 @@ test("occurrence loading has loaded/error convergence and Retry refreshes server
   assert.match(runnerUi, /requestId !== occurrenceRequestRef\.current \|\| generation !== runnerGenerationRef\.current/);
 });
 
-test("authoritative load pause is bounded, idempotent, and extends the server deadline once", () => {
-  for (const source of [migration, loadingPauseHotfix]) {
-    assert.match(source, /reading_full_set_load_pauses/);
-    assert.match(source, /reading_full_set_one_open_load_pause/);
-    assert.match(source, /interval '45 seconds'/);
-    assert.match(source, /300000 - v_already_compensated/);
-    assert.match(source, /deadline_at = deadline_at \+ make_interval/);
-    assert.match(source, /if v_pause\.finished_at is not null then return; end if/);
-    assert.match(source, /v_open_pause\.expires_at > v_now then return/);
-    assert.match(source, /if v_module\.deadline_at <= v_now then/);
-    assert.doesNotMatch(source, /if found and v_module\.deadline_at <= v_now/);
-  }
+test("a 90-second active occurrence load is fully covered by renewable server leases", () => {
+  assert.match(lifecycleMigration, /create or replace function public\.renew_reading_full_set_load_pause/);
+  assert.match(lifecycleMigration, /v_new_expires_at := v_now \+ interval '45 seconds'/);
+  assert.match(lifecycleMigration, /least\(greatest\(p_finished_at, v_pause\.started_at\), v_pause\.expires_at\) - v_pause\.started_at/);
+  assert.match(lifecycleMigration, /deadline_at = deadline_at \+ make_interval/);
+  assert.match(lifecycleMigration, /credited_milliseconds[\s\S]*v_deadline_delta := v_compensated - v_pause\.credited_milliseconds/);
+  assert.match(lifecycleMigration, /set deadline_at = deadline_at \+ interval '45 seconds'/);
+  assert.doesNotMatch(lifecycleMigration, /300000 - v_already_compensated|least\(v_compensated, 45000\)|pause_limit/);
+  assert.match(runnerUi, /window\.setInterval\(\(\) => void renew\(\), 15_000\)/);
+  assert.match(loadPauseFinishRoute, /export async function PATCH[\s\S]*renew_reading_full_set_load_pause/);
+});
+
+test("heartbeat loss expires protection after the 45-second stale lease TTL", () => {
+  assert.match(lifecycleMigration, /expires_at <= last_renewed_at \+ interval '45 seconds'/);
+  assert.match(lifecycleMigration, /if v_pause\.expires_at <= v_now then[\s\S]*settle_reading_full_set_load_pause\(p_load_id, v_pause\.expires_at\)/);
+  assert.match(lifecycleMigration, /if v_open_pause\.expires_at > v_now then return; end if/);
+  assert.match(runnerUi, /server-issued 45-second TTL ends the protected interval/);
+});
+
+test("duplicate begin, heartbeat, and finish calls cannot compensate twice", () => {
+  assert.match(lifecycleMigration, /where load_id = p_load_id;[\s\S]*if found then[\s\S]*already_finished/);
+  assert.match(lifecycleMigration, /last_renewed_at > v_now - interval '5 seconds'/);
+  assert.match(lifecycleMigration, /if v_pause\.finished_at is not null then return; end if/);
+  assert.match(lifecycleMigration, /if v_pause\.finished_at is not null then[\s\S]*'renewed', false/);
   assert.match(loadPauseRoute, /begin_reading_full_set_load_pause/);
   assert.match(loadPauseFinishRoute, /finish_reading_full_set_load_pause/);
-  assert.match(loadingPauseHotfix, /create or replace function public\.get_or_create_reading_full_set_attempt[\s\S]*insert into public\.reading_full_set_load_pauses/);
-  assert.match(runnerUi, /if \(timerPausedForLoad\) return/);
-  assert.match(runnerUi, /finishLoadPause\(accessToken, pause\.loadId\)/);
+  assert.match(lifecycleMigration, /last_renewed_at <= v_now - interval '5 seconds'[\s\S]*renewal_count = renewal_count \+ 1/);
+});
+
+test("multiple tabs share the one open module lease instead of creating parallel leases", () => {
+  assert.match(migration, /create unique index if not exists reading_full_set_one_open_load_pause[\s\S]*where finished_at is null/);
+  assert.match(lifecycleMigration, /where module_attempt_id = v_module\.module_attempt_id and finished_at is null[\s\S]*'loadId', v_existing\.load_id/);
+  assert.match(lifecycleMigration, /create or replace function public\.timeout_reading_full_set_module[\s\S]*perform public\.reconcile_reading_full_set_attempt/);
+  assert.match(submitRoute, /timeoutOnly[\s\S]*timeout_reading_full_set_module/);
+  assert.match(runnerUi, /timeoutRetryAfterRef/);
+  assert.match(runnerUi, /if \(result\.attempt\) applyAttempt\(result\.attempt\)/);
+});
+
+test("preparing refresh preserves the module attempt and activation is one-way/idempotent", () => {
+  assert.match(lifecycleMigration, /on conflict \(student_id, full_set_id\) where status = 'in_progress' do nothing/);
+  assert.match(lifecycleMigration, /on conflict \(attempt_id, module_number\) do nothing/);
+  assert.match(lifecycleMigration, /if v_module\.status = 'active' then[\s\S]*return public\.reading_full_set_attempt_json/);
+  assert.match(lifecycleMigration, /where module_attempt_id = v_module\.module_attempt_id and status = 'preparing'/);
+});
+
+test("RDL load lease finishes only after image decode and interactive selection geometry", () => {
+  assert.match(existingRuntime, /typeof image\.decode === "function"[\s\S]*await image\.decode\(\)/);
+  assert.match(existingRuntime, /assetStatus === "ready" && bindingValid && selectionRect\?\.width && selectionRect\.height[\s\S]*onReady\?\.\(\)/);
+  assert.match(runnerUi, /onReady=\{handleWorkspaceReady\}/);
+  const payloadAssignment = runnerUi.indexOf("setOccurrencePayloads");
+  const readyFinish = runnerUi.indexOf("const handleWorkspaceReady");
+  assert.ok(payloadAssignment >= 0 && readyFinish > payloadAssignment);
+  assert.match(runnerUi, /workspaceInteractive = currentModuleAttempt\?\.status === "active"[\s\S]*readOnly=\{!workspaceInteractive\}/);
+});
+
+test("submitted modules cannot activate, submit twice for points, or create leases", () => {
+  assert.match(lifecycleMigration, /if v_module\.status <> 'preparing' then[\s\S]*FULL_SET_MODULE_NOT_PREPARING/);
+  assert.match(lifecycleMigration, /where attempt_id = p_attempt_id and status = 'active'/);
+  assert.match(lifecycleMigration, /if v_module\.status = 'submitted' then[\s\S]*alreadySubmitted/);
+  assert.match(lifecycleMigration, /if v_module\.status <> 'active' or v_module\.deadline_at is null then/);
 });
 
 test("Prep refreshes authoritative attempt state so active M2 is never labeled as M1", () => {

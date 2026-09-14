@@ -5,6 +5,12 @@ import {
   StudentReadingLoadError
 } from "@/lib/reading/studentPractice";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  appendSupabaseDebugMetrics,
+  instrumentSupabaseClient,
+  wantsSupabaseDebugMetrics,
+  type SupabaseQueryMetric
+} from "@/lib/supabase/debugMetrics.server";
 
 export const dynamic = "force-dynamic";
 
@@ -25,11 +31,15 @@ export async function GET(
   }
 
   try {
+    const debugMetrics: SupabaseQueryMetric[] = [];
+    const debugEnabled = wantsSupabaseDebugMetrics(request);
+    const service = createServiceSupabase();
     const practice = await loadStudentReadingPractice(
-      createServiceSupabase(),
+      debugEnabled ? instrumentSupabaseClient(service, debugMetrics) : service,
       params.itemId
     );
-    return json({ practice });
+    const response = json({ practice });
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   } catch (error) {
     if (error instanceof StudentReadingLoadError) {
       console.error("Student Reading practice load failed", {

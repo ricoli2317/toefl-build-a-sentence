@@ -8,6 +8,27 @@ import { isReadingFullSetAttemptSummary } from "@/lib/reading/fullSetAttempts";
 
 export const dynamic = "force-dynamic";
 
+export async function PATCH(
+  request: Request,
+  { params }: { params: { attemptId: string; loadId: string } }
+) {
+  const auth = await requireReadingFullSetStudent(request);
+  if (auth.error) return auth.error;
+  if (!auth.client) return readingFullSetAttemptJson({ error: "请先登录。" }, { status: 401 });
+  if (!isUuid(params.attemptId) || !isUuid(params.loadId)) {
+    return readingFullSetAttemptJson({ error: "无效的题目加载请求。" }, { status: 400 });
+  }
+  const { data, error } = await auth.client.rpc("renew_reading_full_set_load_pause", {
+    p_attempt_id: params.attemptId,
+    p_load_id: params.loadId
+  });
+  if (error) return readingFullSetAttemptError(error, "题目加载计时心跳同步失败。");
+  if (!isRenewResult(data)) {
+    return readingFullSetAttemptJson({ error: "题目加载计时心跳返回了无效数据。" }, { status: 500 });
+  }
+  return readingFullSetAttemptJson(data);
+}
+
 export async function PUT(
   request: Request,
   { params }: { params: { attemptId: string; loadId: string } }
@@ -36,4 +57,17 @@ function isFinishResult(value: unknown): value is {
   if (!value || typeof value !== "object") return false;
   const result = value as Record<string, unknown>;
   return typeof result.finished === "boolean" && isReadingFullSetAttemptSummary(result.attempt);
+}
+
+function isRenewResult(value: unknown): value is {
+  attempt: import("@/lib/reading/fullSetAttempts").ReadingFullSetAttemptSummary;
+  expiresAt?: string;
+  loadId?: string;
+  renewed: boolean;
+} {
+  if (!value || typeof value !== "object") return false;
+  const result = value as Record<string, unknown>;
+  return typeof result.renewed === "boolean"
+    && isReadingFullSetAttemptSummary(result.attempt)
+    && (!result.renewed || (typeof result.loadId === "string" && typeof result.expiresAt === "string"));
 }

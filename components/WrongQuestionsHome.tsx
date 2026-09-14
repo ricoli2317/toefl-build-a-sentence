@@ -55,8 +55,7 @@ export function WrongQuestionsHome() {
   }).toString(), [todayRange.end, todayRange.start]);
   const state = useStudentCachedData<WrongQuestionsOverviewPayload>(
     studentWrongQuestionsCacheKey(overviewQuery),
-    (session) => loadWrongQuestionsOverview(overviewQuery, session),
-    { refreshOnMount: true }
+    (session) => loadWrongQuestionsOverview(overviewQuery, session)
   );
   const groups = state.data?.groups.filter((group) =>
     activeTab === "all" || group.taskType === activeTab

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
@@ -59,96 +58,49 @@ export function ReadingWrongbookPractice({
   const queue = useStudentCachedData<ReadingWrongbookQueuePayload>(
     queueKey,
     (session) => loadQueue(query, session),
-    { enabled: !itemId, refreshOnMount: true }
+    { enabled: !itemId }
   );
   const [index] = useState(0);
   const [practice, setPractice] = useState<StudentReadingPracticePayload | null>(null);
   const [attempt, setAttempt] = useState<ReadingAttemptSummary | null>(null);
   const [initialAnswers, setInitialAnswers] = useState(() => ({}));
-  const [loadError, setLoadError] = useState("");
   const [currentItem, setCurrentItem] = useState<ReadingWrongbookQueueItem | null>(null);
   const queuedItem = queue.data?.items[index] ?? null;
   const current = currentItem ?? queuedItem;
+  const logicalItemId = itemId ?? queuedItem?.logicalItemId ?? "";
+  const detailKey = studentWrongQuestionsCacheKey(
+    `reading-correction-detail:${scope}:${taskType}:${logicalItemId}:${todayRange.start}`
+  );
+  const detail = useStudentCachedData<Awaited<ReturnType<typeof loadCorrectionDetail>>>(
+    detailKey,
+    (session) => loadCorrectionDetail({
+      logicalItemId,
+      queuedItem,
+      scope,
+      session,
+      taskType,
+      todayEnd: todayRange.end,
+      todayStart: todayRange.start
+    }),
+    { enabled: Boolean(logicalItemId) }
+  );
 
   useEffect(() => {
-    if (!itemId && !queuedItem) return;
-    const logicalItemId = itemId ?? queuedItem!.logicalItemId;
-    let cancelled = false;
-    setPractice(null);
-    setAttempt(null);
-    setInitialAnswers({});
-    setLoadError("");
-    async function load() {
-      try {
-        const { data: { session } } = await createBrowserSupabase().auth.getSession();
-        if (!session) throw new Error("请先登录后再开始错题订正。");
-        const headers = {
-          Authorization: `Bearer ${session.access_token}`,
-          "Content-Type": "application/json"
-        };
-        const [practiceResponse, attemptResponse] = await Promise.all([
-          fetch(
-            `/api/reading/practice/${encodeURIComponent(logicalItemId)}`,
-            { cache: "no-store", headers }
-          ),
-          fetch("/api/reading/wrongbook-attempts", {
-            method: "POST",
-            cache: "no-store",
-            headers,
-            body: JSON.stringify({
-              itemId: logicalItemId,
-              scope,
-              taskType,
-              todayEnd: todayRange.end,
-              todayStart: todayRange.start
-            })
-          })
-        ]);
-        const practicePayload = await practiceResponse.json().catch(() => ({})) as PracticeResponse;
-        if (!practiceResponse.ok || !practicePayload.practice) {
-          throw new Error(practicePayload.error ?? "阅读错题内容加载失败，请稍后重试。");
-        }
-        const attemptPayload = await attemptResponse.json().catch(() => ({})) as AttemptResponse;
-        if (!attemptResponse.ok || !isReadingWrongbookAttemptSummary(attemptPayload.attempt)) {
-          throw new Error(attemptPayload.error ?? "错题订正记录加载失败，请稍后重试。");
-        }
-        if (
-          attemptPayload.attempt.logicalItemId !== logicalItemId
-          || attemptPayload.attempt.taskType !== taskType
-        ) throw new Error("错题订正记录与当前题目不一致。");
-        if (!cancelled) {
-          const resolvedItem = attemptPayload.item ?? queuedItem;
-          if (!resolvedItem) throw new Error("错题订正记录返回了无效数据。");
-          const selectedPractice = selectReadingWrongbookPractice(
-            practicePayload.practice,
-            resolvedItem.targets
-          );
-          setPractice(selectedPractice);
-          setAttempt(attemptPayload.attempt);
-          setCurrentItem(resolvedItem);
-          setInitialAnswers(buildReadingWrongbookInitialAnswers(
-            selectedPractice,
-            attemptPayload.preservedAnswers ?? []
-          ));
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setLoadError(error instanceof Error ? error.message : "错题订正加载失败，请稍后重试。");
-        }
-      }
-    }
-    void load();
-    return () => { cancelled = true; };
-  }, [itemId, queuedItem, scope, taskType, todayRange.end, todayRange.start]);
+    if (!detail.data) return;
+    setPractice(detail.data.practice);
+    setAttempt(detail.data.attempt);
+    setCurrentItem(detail.data.item);
+    setInitialAnswers(detail.data.initialAnswers);
+  }, [detail.data]);
 
-  if (queue.loading || ((itemId || current) && (!practice || !attempt) && !loadError)) {
+  if (queue.loading || detail.loading || ((itemId || current) && (!practice || !attempt) && !detail.error)) {
     return <WrongbookMessage description="正在加载错题和原题练习界面..." title="正在准备错题订正" />;
   }
-  if (queue.error || loadError) {
+  if (queue.error || detail.error) {
     return (
       <WrongbookMessage
         actionLabel="返回错题集"
-        description={loadError || queue.error || "错题订正加载失败，请稍后重试。"}
+        description={detail.error || queue.error || "错题订正加载失败，请稍后重试。"}
         onAction={() => router.push(STUDENT_ROUTES.wrongQuestions)}
         title="无法进入错题订正"
       />
@@ -194,6 +146,63 @@ async function loadQueue(query: string, session: StudentCacheSession) {
     throw new Error(payload.error ?? "错题订正加载失败，请稍后重试。");
   }
   return payload;
+}
+
+async function loadCorrectionDetail(input: {
+  logicalItemId: string;
+  queuedItem: ReadingWrongbookQueueItem | null;
+  scope: ReadingWrongbookScope;
+  session: StudentCacheSession;
+  taskType: ReadingModule;
+  todayEnd: string;
+  todayStart: string;
+}) {
+  const headers = {
+    Authorization: `Bearer ${input.session.accessToken}`,
+    "Content-Type": "application/json"
+  };
+  const [practiceResponse, attemptResponse] = await Promise.all([
+    fetch(`/api/reading/practice/${encodeURIComponent(input.logicalItemId)}`, {
+      cache: "no-store",
+      headers
+    }),
+    fetch("/api/reading/wrongbook-attempts", {
+      method: "POST",
+      cache: "no-store",
+      headers,
+      body: JSON.stringify({
+        itemId: input.logicalItemId,
+        scope: input.scope,
+        taskType: input.taskType,
+        todayEnd: input.todayEnd,
+        todayStart: input.todayStart
+      })
+    })
+  ]);
+  const practicePayload = await practiceResponse.json().catch(() => ({})) as PracticeResponse;
+  if (!practiceResponse.ok || !practicePayload.practice) {
+    throw new Error(practicePayload.error ?? "阅读错题内容加载失败，请稍后重试。");
+  }
+  const attemptPayload = await attemptResponse.json().catch(() => ({})) as AttemptResponse;
+  if (!attemptResponse.ok || !isReadingWrongbookAttemptSummary(attemptPayload.attempt)) {
+    throw new Error(attemptPayload.error ?? "错题订正记录加载失败，请稍后重试。");
+  }
+  if (
+    attemptPayload.attempt.logicalItemId !== input.logicalItemId
+    || attemptPayload.attempt.taskType !== input.taskType
+  ) throw new Error("错题订正记录与当前题目不一致。");
+  const item = attemptPayload.item ?? input.queuedItem;
+  if (!item) throw new Error("错题订正记录返回了无效数据。");
+  const practice = selectReadingWrongbookPractice(practicePayload.practice, item.targets);
+  return {
+    attempt: attemptPayload.attempt,
+    initialAnswers: buildReadingWrongbookInitialAnswers(
+      practice,
+      attemptPayload.preservedAnswers ?? []
+    ),
+    item,
+    practice
+  };
 }
 
 function WrongbookMessage({

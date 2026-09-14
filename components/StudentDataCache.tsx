@@ -96,6 +96,7 @@ export type StudentCacheSession = {
 type CacheEntry =
   | { status: "loading"; promise: Promise<unknown>; generation: number }
   | { status: "refreshing"; data: unknown; promise: Promise<unknown>; generation: number }
+  | { status: "stale"; data: unknown }
   | { status: "success"; data: unknown }
   | { status: "error"; error: string };
 
@@ -115,6 +116,7 @@ type StudentDataCacheValue = {
   clear: () => void;
   getEntry: (key: string) => CacheEntry | undefined;
   invalidate: (keyPrefix: string) => void;
+  markStale: (keyPrefix: string) => void;
   load: <T>(
     key: string,
     loader: (session: StudentCacheSession) => Promise<T>
@@ -185,6 +187,27 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
           generations.current.set(key, (generations.current.get(key) ?? 0) + 1);
           changed = true;
         }
+      });
+      if (changed) notify();
+    },
+    [notify, scopedKey]
+  );
+
+  const markStale = useCallback(
+    (keyPrefix: string) => {
+      const prefixWithStudent = scopedKey(keyPrefix);
+      if (!prefixWithStudent) return;
+      let changed = false;
+      entries.current.forEach((entry, key) => {
+        if (key !== prefixWithStudent && !key.startsWith(`${prefixWithStudent}:`)) return;
+        const nextGeneration = (generations.current.get(key) ?? 0) + 1;
+        generations.current.set(key, nextGeneration);
+        if (entry.status === "success" || entry.status === "refreshing" || entry.status === "stale") {
+          entries.current.set(key, { status: "stale", data: entry.data });
+        } else {
+          entries.current.delete(key);
+        }
+        changed = true;
       });
       if (changed) notify();
     },
@@ -310,7 +333,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       if (existing?.status === "loading" || existing?.status === "refreshing") {
         return existing.promise as Promise<T>;
       }
-      if (existing?.status !== "success") {
+      if (existing?.status !== "success" && existing?.status !== "stale") {
         return load(key, loader);
       }
 
@@ -511,7 +534,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(STUDENT_ATTEMPT_CACHE_PREFIX);
               break;
             case "studentWrongQuestions":
-              invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+              markStale(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
               break;
             case "studentWritingCatalog":
               invalidate(STUDENT_WRITING_CATALOG_CACHE_PREFIX);
@@ -536,7 +559,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
           }
         }
       }),
-    [invalidate, recordOfficialAttempt, updateLogicalCatalogCompletion]
+    [invalidate, markStale, recordOfficialAttempt, updateLogicalCatalogCompletion]
   );
 
   const value = useMemo(
@@ -544,6 +567,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       clear,
       getEntry,
       invalidate,
+      markStale,
       load,
       refresh,
       sessionReady,
@@ -557,6 +581,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       clear,
       getEntry,
       invalidate,
+      markStale,
       load,
       refresh,
       sessionReady,
@@ -603,6 +628,11 @@ export function useStudentCachedData<T>(
       void cache.load(key, (session) => loaderRef.current(session));
       return;
     }
+    if (entry.status === "stale") {
+      mountedRequestRef.current = requestIdentity;
+      void cache.refresh(key, (session) => loaderRef.current(session));
+      return;
+    }
     if (
       options?.refreshOnMount &&
       mountedRequestRef.current !== requestIdentity
@@ -616,7 +646,7 @@ export function useStudentCachedData<T>(
 
   return {
     data:
-      entry?.status === "success" || entry?.status === "refreshing"
+      entry?.status === "success" || entry?.status === "refreshing" || entry?.status === "stale"
         ? (entry.data as T)
         : null,
     error:

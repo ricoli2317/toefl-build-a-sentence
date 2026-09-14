@@ -4,10 +4,7 @@ const path = require("node:path");
 const test = require("node:test");
 
 const { parseCsvDocument } = require("../lib/csv.ts");
-const {
-  adaptReadingCsv,
-  canonicalizeInsertionAnchors
-} = require("../lib/reading/csvAdapter.ts");
+const { adaptReadingCsv } = require("../lib/reading/csvAdapter.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
 const {
   buildReadingContentConflict,
@@ -145,6 +142,38 @@ test("RAP insertion anchor IDs do not matter but semantic insertion location doe
   const conflict = buildReadingContentConflict(existing, locationVariant);
   assert.ok(conflict.questionConflicts[0].differences.some(
     (difference) => difference.kind === "correct_insertion_location"
+  ));
+});
+
+for (const [name, straight, curly] of [
+  ["apostrophes", "The brain's memory system guides recall.", "The brain’s memory system guides recall."],
+  ["double quotes", 'The "data management" system guides memory.', "The “data management” system guides memory."]
+]) {
+  test(`RAP insertion anchor context treats straight and curly ${name} as presentation-only`, () => {
+    const existing = rap();
+    const incoming = structuredClone(existing);
+    const existingParagraph = existing.passages[0].paragraphs[0];
+    const incomingParagraph = incoming.passages[0].paragraphs[0];
+    existingParagraph.sentences[0].text = straight;
+    incomingParagraph.sentences[0].text = curly;
+    existingParagraph.text = existingParagraph.text.replace("Ocean tides rise and fall.", straight);
+    incomingParagraph.text = incomingParagraph.text.replace("Ocean tides rise and fall.", curly);
+
+    assert.equal(buildReadingContentConflict(existing, incoming), null);
+  });
+}
+
+test("RAP insertion anchor context preserves true content differences", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const existingParagraph = existing.passages[0].paragraphs[0];
+  const incomingParagraph = incoming.passages[0].paragraphs[0];
+  existingParagraph.sentences[0].text = `The brain's "data management" system guides memory.`;
+  incomingParagraph.sentences[0].text = `The mind’s “data management” system guides memory.`;
+
+  const conflict = buildReadingContentConflict(existing, incoming);
+  assert.ok(conflict.questionConflicts.some((question) =>
+    question.differences.some((difference) => difference.kind === "insertion_anchors")
   ));
 });
 
@@ -302,6 +331,7 @@ test("content conflict UI defaults to compact fixed-direction review with local 
   assert.match(source, /<InlineVersionValue title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
   assert.match(source, /保留题库版本/);
   assert.match(source, /使用来源版本更新题库/);
+  assert.doesNotMatch(source, /当前版本|另一来源版本|existingVersionOrigin/);
   assert.match(source, /已选择：/);
   assert.match(source, /修改选择/);
   assert.match(source, /重新查看/);
@@ -367,34 +397,104 @@ test("unchanged RAP passage and four unchanged questions stay out of one-questio
   assert.deepEqual(conflict.questionConflicts.map((question) => question.questionOrder), [3]);
 });
 
-test("RAP CSV canonicalizes parser anchor boundaries and one exact repeated marker", () => {
-  const file = "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv";
-  const document = parseCsvDocument(fs.readFileSync(path.join(templateDir, file), "utf8"), {
-    trimValues: false
-  });
-  const insertion = document.rows.find((row) => row.question_type === "rap_sentence_insertion");
-  const anchors = JSON.parse(insertion.insertion_anchors_json);
-  anchors[2].boundaryIndex = anchors[1].boundaryIndex;
-  anchors.push({ ...anchors[1], anchorId: "duplicate-marker", anchorOrder: 5 });
-  insertion.insertion_anchors_json = JSON.stringify(anchors);
+test("real 7.11A Q35 malformed source remains a duplicate-boundary error instead of being folded to three", () => {
   const adapted = adaptReadingCsv({
     type: "read_an_academic_passage",
-    rows: document.rows,
-    sourceFile: file
+    rows: real711aInsertionRows(false),
+    sourceFile: "TOEFL_Reading_2026_07_RAP.csv"
+  });
+  assert.equal(adapted.failures.length, 1);
+  assert.match(adapted.failures[0].reason, /duplicate insertion boundary/);
+  assert.doesNotMatch(adapted.failures[0].reason, /exactly four legal anchors/);
+});
+
+test("real 7.11A Q35 marker-aware segmentation produces four legal unique anchors", () => {
+  const adapted = adaptReadingCsv({
+    type: "read_an_academic_passage",
+    rows: real711aInsertionRows(true),
+    sourceFile: "TOEFL_Reading_2026_07_RAP.csv"
   });
   assert.deepEqual(adapted.failures, []);
   const packageData = groupReadingSourceOccurrences(adapted.candidates).packages[0];
-  const normalized = packageData.questions.find((question) => question.questionType === "rap_sentence_insertion");
-  assert.equal(normalized.payload.anchors.length, 4);
-  assert.deepEqual(normalized.payload.anchors.map((anchor) => anchor.boundaryIndex), [0, 1, 2, 3]);
+  const insertion = packageData.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  assert.equal(insertion.payload.anchors.length, 4);
+  assert.equal(new Set(insertion.payload.anchors.map((anchor) =>
+    `${anchor.paragraphId}:${anchor.boundaryIndex}`)).size, 4);
+  assert.deepEqual(insertion.payload.anchors.map((anchor) => anchor.boundaryIndex), [0, 1, 2, 3]);
+  const targetSentences = packageData.passages[0].paragraphs[0].sentences;
+  assert.deepEqual(insertion.payload.anchors.map((anchor) => anchor.afterSentenceId), [
+    null,
+    targetSentences[0].sentenceId,
+    targetSentences[1].sentenceId,
+    targetSentences[2].sentenceId
+  ]);
+  assert.equal(insertion.payload.correctAnchorId, insertion.payload.anchors[0].anchorId);
 });
 
-test("RAP anchor canonicalization does not hide conflicting markers at one boundary", () => {
+function real711aInsertionRows(markerAware) {
+  const file = "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv";
+  const template = parseCsvDocument(fs.readFileSync(path.join(templateDir, file), "utf8"), {
+    trimValues: false
+  }).rows;
+  const multipleChoice = template.find((row) => row.question_type === "rap_multiple_choice");
+  const insertionTemplate = template.find((row) => row.question_type === "rap_sentence_insertion");
+  const paragraphId = "reading-2026-07-11-a-m1-rap-p02-p04";
+  const passageId = "reading-2026-07-11-a-m1-rap-p02";
+  const fragments = markerAware
+    ? [
+        "Computational predictions must be validated experimentally,",
+        "as computer models can sometimes produce false positives.",
+        "Accurately simulating the human body's complex environment remains a formidable task."
+      ]
+    : [
+        "Computational predictions must be validated experimentally, as computer models can sometimes produce false positives.",
+        "Accurately simulating the human body's complex environment remains a formidable task."
+      ];
+  const passage = [{
+    paragraphId,
+    paragraphOrder: 1,
+    text: fragments.join(" "),
+    rawText: fragments.join(" "),
+    sentences: fragments.map((text, index) => ({
+      sentenceId: `${paragraphId}-s${String(index + 1).padStart(2, "0")}`,
+      sentenceOrder: index + 1,
+      text
+    }))
+  }];
   const anchors = [
-    { anchorId: "a", anchorOrder: 1, paragraphId: "p", boundaryIndex: 1, afterSentenceId: "missing-a" },
-    { anchorId: "b", anchorOrder: 2, paragraphId: "p", boundaryIndex: 1, afterSentenceId: "missing-b" }
+    { anchorId: `${paragraphId}-q35-a01`, anchorOrder: 1, paragraphId, boundaryIndex: 0, afterSentenceId: null },
+    { anchorId: `${paragraphId}-q35-a02`, anchorOrder: 2, paragraphId, boundaryIndex: 1, afterSentenceId: `${paragraphId}-s01` },
+    markerAware
+      ? { anchorId: `${paragraphId}-q35-a03`, anchorOrder: 3, paragraphId, boundaryIndex: 2, afterSentenceId: `${paragraphId}-s02` }
+      : { anchorId: `${paragraphId}-q35-a03`, anchorOrder: 3, paragraphId, boundaryIndex: 1, afterSentenceId: `${paragraphId}-s01` },
+    { anchorId: `${paragraphId}-q35-a04`, anchorOrder: 4, paragraphId, boundaryIndex: markerAware ? 3 : 2, afterSentenceId: `${paragraphId}-s${markerAware ? "03" : "02"}` }
   ];
-  const normalized = canonicalizeInsertionAnchors(anchors, [], "a");
-  assert.equal(normalized.anchors.length, 2);
-  assert.deepEqual(normalized.anchors.map((anchor) => anchor.boundaryIndex), [1, 1]);
-});
+  const rows = [1, 2, 3, 4].map((order) => ({
+    ...multipleChoice,
+    question_order: String(order),
+    source_question_number: String(30 + order)
+  }));
+  rows.push({
+    ...insertionTemplate,
+    question_order: "5",
+    source_question_number: "35",
+    question_stem: "There are four locations ■ in the passage that indicate where the following sentence could be added.",
+    raw_display_text: "35. There are four locations ■ in the passage that indicate where the following sentence could be added.",
+    insert_sentence: "Despite these advancements, challenges remain.",
+    insertion_anchors_json: JSON.stringify(anchors),
+    correct_anchor_id: anchors[0].anchorId
+  });
+  return rows.map((row) => ({
+    ...row,
+    source_label: "7.11A",
+    occurrence_date: "2026-07-11",
+    year_month: "2026-07",
+    source_module: "m1",
+    source_order: "6",
+    source_group_id: "7.11A-m1-rap-q31-35",
+    passage_id: passageId,
+    passage_title: "Computational Chemistry in Drug Discovery",
+    passage_json: JSON.stringify(passage),
+    passage_highlights_json: "[]"
+  }));
+}

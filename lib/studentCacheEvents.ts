@@ -18,6 +18,13 @@ export function broadcastStudentPracticeCompleted(event: StudentPracticeComplete
   });
 }
 
+export function invalidateStudentWrongbook(studentId: string) {
+  publishCacheInvalidation({
+    type: "WRONGBOOK_CHANGED",
+    studentId
+  });
+}
+
 export function subscribeToStudentPracticeCompleted(
   callback: (event: StudentPracticeCompletedEvent) => void
 ) {

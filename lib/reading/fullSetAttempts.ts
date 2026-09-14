@@ -2,7 +2,7 @@ import type { ReadingAnswerState } from "./practiceState.ts";
 import type { ReadingModule } from "./types.ts";
 
 export type ReadingFullSetAttemptStatus = "in_progress" | "completed";
-export type ReadingFullSetModuleStatus = "active" | "submitted";
+export type ReadingFullSetModuleStatus = "preparing" | "active" | "submitted";
 export type ReadingFullSetSubmissionReason = "manual" | "timeout" | null;
 
 export type ReadingFullSetModuleAttemptSummary = {
@@ -10,8 +10,8 @@ export type ReadingFullSetModuleAttemptSummary = {
   moduleNumber: 1 | 2;
   status: ReadingFullSetModuleStatus;
   timeLimitSeconds: number;
-  startedAt: string;
-  deadlineAt: string;
+  startedAt: string | null;
+  deadlineAt: string | null;
   submittedAt: string | null;
   submissionReason: ReadingFullSetSubmissionReason;
   answerRevision: number;
@@ -31,8 +31,10 @@ export type ReadingFullSetAttemptSummary = {
 };
 
 export type ReadingFullSetAttemptPhase =
+  | "module_1_preparing"
   | "module_1_active"
   | "module_2_ready"
+  | "module_2_preparing"
   | "module_2_active"
   | "completed";
 
@@ -67,33 +69,43 @@ export function readingFullSetAttemptPhase(
   attempt: ReadingFullSetAttemptSummary
 ): ReadingFullSetAttemptPhase {
   if (attempt.status === "completed") return "completed";
+  if (attempt.module2?.status === "preparing") return "module_2_preparing";
   if (attempt.module2?.status === "active") return "module_2_active";
   if (attempt.module1.status === "submitted") return "module_2_ready";
-  return "module_1_active";
+  return attempt.module1.status === "preparing" ? "module_1_preparing" : "module_1_active";
 }
 
 export function readingFullSetActiveModuleAttempt(
   attempt: ReadingFullSetAttemptSummary
 ): ReadingFullSetModuleAttemptSummary | null {
+  const moduleAttempt = readingFullSetCurrentModuleAttempt(attempt);
+  return moduleAttempt?.status === "active" ? moduleAttempt : null;
+}
+
+export function readingFullSetCurrentModuleAttempt(
+  attempt: ReadingFullSetAttemptSummary
+): ReadingFullSetModuleAttemptSummary | null {
   const phase = readingFullSetAttemptPhase(attempt);
-  if (phase === "module_1_active") return attempt.module1;
-  if (phase === "module_2_active") return attempt.module2;
+  if (phase === "module_1_preparing" || phase === "module_1_active") return attempt.module1;
+  if (phase === "module_2_preparing" || phase === "module_2_active") return attempt.module2;
   return null;
 }
 
 export function readingFullSetRunnerModuleKey(
   attempt: ReadingFullSetAttemptSummary
 ) {
-  return readingFullSetActiveModuleAttempt(attempt)?.moduleAttemptId ?? null;
+  return readingFullSetCurrentModuleAttempt(attempt)?.moduleAttemptId ?? null;
 }
 
 export function readingFullSetPrepAction(attempt: ReadingFullSetAttemptSummary | null) {
   if (!attempt) return { label: "开始 Module 1", action: "start_module_1" as const };
   switch (readingFullSetAttemptPhase(attempt)) {
+    case "module_1_preparing":
     case "module_1_active":
       return { label: "继续 Module 1", action: "continue_module_1" as const };
     case "module_2_ready":
       return { label: "开始 Module 2", action: "start_module_2" as const };
+    case "module_2_preparing":
     case "module_2_active":
       return { label: "继续 Module 2", action: "continue_module_2" as const };
     case "completed":
@@ -184,9 +196,11 @@ function isReadingFullSetModuleAttemptSummary(
   const moduleAttempt = value as Partial<ReadingFullSetModuleAttemptSummary>;
   return typeof moduleAttempt.moduleAttemptId === "string"
     && (moduleAttempt.moduleNumber === 1 || moduleAttempt.moduleNumber === 2)
-    && (moduleAttempt.status === "active" || moduleAttempt.status === "submitted")
+    && (moduleAttempt.status === "preparing" || moduleAttempt.status === "active" || moduleAttempt.status === "submitted")
     && Number.isInteger(moduleAttempt.timeLimitSeconds)
-    && typeof moduleAttempt.startedAt === "string"
-    && typeof moduleAttempt.deadlineAt === "string"
+    && (moduleAttempt.startedAt === null || typeof moduleAttempt.startedAt === "string")
+    && (moduleAttempt.deadlineAt === null || typeof moduleAttempt.deadlineAt === "string")
+    && (moduleAttempt.status !== "preparing" || (moduleAttempt.startedAt === null && moduleAttempt.deadlineAt === null))
+    && (moduleAttempt.status === "preparing" || (typeof moduleAttempt.startedAt === "string" && typeof moduleAttempt.deadlineAt === "string"))
     && Number.isInteger(moduleAttempt.answerRevision);
 }

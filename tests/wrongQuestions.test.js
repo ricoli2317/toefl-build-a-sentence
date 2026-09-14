@@ -190,7 +190,7 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(route, /\.from\("attempts"\)/);
   assert.match(route, /\.from\("attempt_answers"\)/);
   assert.match(route, /loadReadingWrongbookData\(db, studentId\)/);
-  assert.match(route, /loadReadingFullSetWrongbookData\(db, studentId\)/);
+  assert.match(route, /loadReadingFullSetWrongbookOverviewData\(db, studentId\)/);
   assert.match(route, /\.eq\("is_correct", false\)/);
   assert.match(route, /"question_id,set_id,question_order,final_sentence,grammar_tags_text"/);
   assert.doesNotMatch(route, /searchParams\.get\("questionId"\)/);
@@ -443,7 +443,9 @@ test("Reading Full Set correction reuses Reading workspaces, submit route, resul
   assert.match(runtime, /readingWrongbookEditableSlotIds/);
   assert.match(runtime, /buildReadingWrongbookInitialAnswers/);
   assert.match(runtime, /selectReadingWrongbookSubmissionAnswers/);
-  assert.match(runtime, /\/api\/reading\/practices/);
+  assert.match(runtime, /\/api\/reading\/practice\/\$\{encodeURIComponent\(itemId\)\}/);
+  assert.match(runtime, /full-set-correction-practice:/);
+  assert.doesNotMatch(runtime, /itemIds: itemIds\.join/);
   assert.doesNotMatch(runtime, /Promise\.all\(uniqueOccurrences\.map/);
   assert.match(queueRoute, /loadReadingFullSetWrongbookQueue/);
   assert.match(submitRoute, /submit_reading_full_set_wrongbook_attempt/);
@@ -454,13 +456,16 @@ test("Reading Full Set correction reuses Reading workspaces, submit route, resul
   assert.match(migration, /source_occurrence_id text references public\.reading_source_occurrences/);
 });
 
-test("wrongbook detail queries are scoped before answers are loaded and Full Set skips the global catalog scan", () => {
+test("wrongbook detail queries are scoped before answers and overview title lookup skips global catalog scans", () => {
   const reading = fs.readFileSync(path.join(projectRoot, "lib/reading/wrongbook.server.ts"), "utf8");
   const fullSet = fs.readFileSync(path.join(projectRoot, "lib/reading/fullSetWrongbook.server.ts"), "utf8");
   const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
 
   assert.match(reading, /if \(filters\.itemId\) query = query\.eq\("logical_item_id", filters\.itemId\)/);
   assert.match(reading, /if \(filters\.taskType\) query = query\.eq\("task_type", filters\.taskType\)/);
+  assert.match(reading, /\.lt\("first_seen_date", date\)/);
+  assert.match(reading, /\.in\("first_seen_date", ctwDates\)/);
+  assert.doesNotMatch(reading, /\.eq\("module", "ctw"\)\s*\.order\("logical_item_id"/);
   assert.match(fullSet, /if \(sourceAttemptId\) query = query\.eq\("attempt_id", sourceAttemptId\)/);
   assert.match(fullSet, /if \(sourceAttemptId\) query = query\.eq\("source_attempt_id", sourceAttemptId\)/);
   assert.match(fullSet, /reading_source_occurrences/);
@@ -485,7 +490,7 @@ test("Reading correction routes reuse the three existing renderers and persist i
   assert.match(renderer, /practice\.item\.module === "ctw"[\s\S]*<CtwPracticeWorkspace/);
   assert.match(renderer, /practice\.item\.module === "rdl"[\s\S]*<RdlPracticeWorkspace/);
   assert.match(renderer, /practice\.item\.module === "rap"[\s\S]*<RapPracticeWorkspace/);
-  assert.match(renderer, /STUDENT_WRONG_QUESTIONS_CACHE_PREFIX/);
+  assert.match(renderer, /invalidateStudentWrongbook/);
   assert.match(renderer, /selectReadingWrongbookSubmissionAnswers/);
   assert.match(queueRoute, /loadReadingWrongbookQueue/);
   assert.match(submitRoute, /submit_reading_wrongbook_attempt/);
@@ -742,7 +747,7 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
 
   assert.match(home, /group\.correctionHref/);
   assert.match(runtime, /if \(itemId\) params\.set\("itemId", itemId\)/);
-  assert.match(runtime, /body: JSON\.stringify\(\{[\s\S]*itemId: logicalItemId,[\s\S]*scope,[\s\S]*taskType/);
+  assert.match(runtime, /body: JSON\.stringify\(\{[\s\S]*itemId: input\.logicalItemId,[\s\S]*scope: input\.scope,[\s\S]*taskType: input\.taskType/);
   assert.match(runtime, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
   assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);

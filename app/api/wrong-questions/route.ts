@@ -7,12 +7,25 @@ import {
   wrongAnswerDedupeKey,
   type PracticeHistoryAnswer
 } from "@/lib/practiceHistory";
-import { loadReadingFullSetWrongbookData } from "@/lib/reading/fullSetWrongbook.server";
+import {
+  loadReadingFullSetWrongbookData,
+  loadReadingFullSetWrongbookOverviewData
+} from "@/lib/reading/fullSetWrongbook.server";
 import { loadReadingWrongbookData } from "@/lib/reading/wrongbook.server";
 import { loadBuildSentenceHistoricalPracticeDisplayResolver } from "@/lib/historicalPracticeDisplay";
 import { mapWithConcurrency } from "@/lib/mapWithConcurrency";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { createSupabaseFetch } from "@/lib/supabase/fetch";
+import {
+  appendSupabaseDebugMetrics,
+  instrumentSupabaseClient,
+  wantsSupabaseDebugMetrics,
+  type SupabaseQueryMetric
+} from "@/lib/supabase/debugMetrics.server";
+import {
+  createStudentPerformanceTrace,
+  type StudentPerformanceTrace
+} from "@/lib/studentPerformance.server";
 import {
   buildBasWrongbookEntryQuestionIds,
   buildBasWrongbookPracticeQuestionIds,
@@ -180,17 +193,23 @@ export async function GET(request: Request) {
     }
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
+    const baseDb = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
       auth: { persistSession: false },
       global: {
         fetch: createSupabaseFetch(),
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });
+    const debugMetrics: SupabaseQueryMetric[] = [];
+    const debugEnabled = wantsSupabaseDebugMetrics(request);
+    const db = debugEnabled
+      ? instrumentSupabaseClient(baseDb, debugMetrics)
+      : baseDb;
 
     const { searchParams } = new URL(request.url);
     if (searchParams.get("view") === "overview") {
-      return loadWrongQuestionsOverview(db, user.id, searchParams);
+      const response = await loadWrongQuestionsOverview(db, user.id, searchParams);
+      return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
     }
     const scope = searchParams.get("scope");
     if (scope !== "entry" && scope !== "today" && scope !== "history") {
@@ -203,6 +222,17 @@ export async function GET(request: Request) {
     const randomLimit = Number(searchParams.get("randomLimit") ?? 0);
     const todayStart = searchParams.get("todayStart");
     const todayEnd = searchParams.get("todayEnd");
+
+    if (scope === "entry") {
+      const response = await loadBasWrongbookEntryPractice({
+        db,
+        groupId,
+        studentId: user.id,
+        todayEnd,
+        todayStart
+      });
+      return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
+    }
 
     const [attemptResult, answerResult] = await Promise.all([
       readAllSupabaseRows<AttemptRow>((from, to) => db
@@ -270,19 +300,7 @@ export async function GET(request: Request) {
       }
     }
     let selectedIds = wrongIds;
-    let prefetchedQuestions: QuestionRow[] | null = null;
-    if (scope === "entry") {
-      const entrySelection = await loadBasWrongbookEntrySelection({
-        answerRows,
-        attemptRows,
-        db,
-        groupId,
-        todayEnd,
-        todayStart
-      });
-      selectedIds = entrySelection.questionIds;
-      prefetchedQuestions = entrySelection.questions;
-    } else if (scope === "today") {
+    if (scope === "today") {
       selectedIds = buildBasWrongbookPracticeQuestionIds({
         answers: practiceAnswers,
         attempts: practiceAttempts,
@@ -340,26 +358,18 @@ export async function GET(request: Request) {
       );
     }
 
-    let questionRows: QuestionRow[];
-    if (prefetchedQuestions) {
-      const selectedIdSet = new Set(selectedIds);
-      questionRows = prefetchedQuestions.filter((question) =>
-        selectedIdSet.has(String(question.question_id))
-      );
-    } else {
-      const questionsResult = await readRowsInBatches<QuestionRow>(
-        db,
-        "questions",
-        "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text",
-        "question_id",
-        selectedIds,
-        ["question_id"]
-      );
-      if (questionsResult.error) {
-        return jsonError(`Failed to load questions: ${questionsResult.error.message}`);
-      }
-      questionRows = questionsResult.data ?? [];
+    const questionsResult = await readRowsInBatches<QuestionRow>(
+      db,
+      "questions",
+      "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text",
+      "question_id",
+      selectedIds,
+      ["question_id"]
+    );
+    if (questionsResult.error) {
+      return jsonError(`Failed to load questions: ${questionsResult.error.message}`);
     }
+    const questionRows = questionsResult.data ?? [];
 
     const orderById = new Map(selectedIds.map((questionId, index) => [questionId, index]));
     const normalizedQuestions = dedupeQuestionsByContent(
@@ -390,46 +400,99 @@ export async function GET(request: Request) {
   }
 }
 
-async function loadBasWrongbookEntrySelection(input: {
-  answerRows: AnswerRow[];
-  attemptRows: AttemptRow[];
+async function loadBasWrongbookEntryPractice(input: {
   db: SupabaseClient;
   groupId: string;
+  studentId: string;
   todayEnd: string | null;
   todayStart: string | null;
 }) {
-  const allQuestionIds = uniqueQuestionIds(
-    input.answerRows.map((answer) => answer.question_id)
-  );
-  const questionResult = await readRowsInBatches<QuestionRow>(
+  const sourceResult = await readAllSupabaseRows<{
+    source_set_id: string | null;
+  }>((from, to) => input.db
+    .from("practice_item_sources")
+    .select("source_set_id")
+    .eq("item_id", input.groupId)
+    .eq("task_type", "build_sentence")
+    .order("source_set_id", { ascending: true })
+    .range(from, to));
+  if (sourceResult.error) {
+    return jsonError(`Failed to resolve BAS wrong-question group: ${sourceResult.error.message}`);
+  }
+  const sourceSetIds = uniqueQuestionIds((sourceResult.data ?? [])
+    .map((row) => row.source_set_id?.trim() ?? ""));
+  if (sourceSetIds.length === 0) sourceSetIds.push(input.groupId);
+
+  const officialAttemptResult = await readAllSupabaseRows<AttemptRow>((from, to) => input.db
+    .from("attempts")
+    .select("attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at")
+    .eq("student_id", input.studentId)
+    .in("set_id", sourceSetIds)
+    .order("attempt_id", { ascending: true })
+    .range(from, to));
+  if (officialAttemptResult.error) {
+    return jsonError(`Failed to load BAS attempts: ${officialAttemptResult.error.message}`);
+  }
+  const officialAttempts = (officialAttemptResult.data ?? []).map(normalizeAttemptRow);
+  const officialAnswerResult = await readAnswerRowsByAttemptIds(
     input.db,
-    "questions",
-    "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text",
-    "question_id",
-    allQuestionIds
+    officialAttempts.map((attempt) => attempt.attempt_id)
   );
-  if (questionResult.error) {
-    throw new Error(`Failed to load BAS wrong questions: ${questionResult.error.message}`);
+  if (officialAnswerResult.error) {
+    return jsonError(`Failed to load BAS group answers: ${officialAnswerResult.error.message}`);
+  }
+  const officialAnswers = (officialAnswerResult.data ?? []).map(normalizeAnswerRow);
+  const allQuestionIds = uniqueQuestionIds(officialAnswers.map((answer) => answer.question_id));
+  const officialAttemptIds = new Set(officialAttempts.map((attempt) => attempt.attempt_id));
+  const [questionResult, candidateAnswerResult] = await Promise.all([
+    readRowsInBatches<QuestionRow>(
+      input.db,
+      "questions",
+      "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,correct_order_text,distractors_text,final_sentence,grammar_tags_text",
+      "question_id",
+      allQuestionIds
+    ),
+    readAllSupabaseRows<AnswerRow>((from, to) => input.db
+      .from("attempt_answers")
+      .select("attempt_answer_id,attempt_id,question_id,is_correct,answered_at,created_at")
+      .eq("student_id", input.studentId)
+      .in("question_id", allQuestionIds)
+      .order("attempt_answer_id", { ascending: true })
+      .range(from, to))
+  ]);
+  const detailError = questionResult.error ?? candidateAnswerResult.error;
+  if (detailError) {
+    throw new Error(`Failed to load BAS wrong questions: ${detailError.message}`);
   }
 
   const questions = questionResult.data ?? [];
   const questionById = new Map(
     questions.map((question) => [String(question.question_id), question])
   );
-  const realSetIds = new Set(questions.map((question) => String(question.set_id)));
-  const officialAttempts = input.attemptRows.filter((attempt) =>
-    isOfficialPracticeSetId(attempt.set_id, realSetIds)
+  const candidateAnswers = (candidateAnswerResult.data ?? []).map(normalizeAnswerRow);
+  const candidateAttemptResult = await readRowsInBatches<AttemptRow>(
+    input.db,
+    "attempts",
+    "attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at",
+    "attempt_id",
+    uniqueQuestionIds(candidateAnswers
+      .map((answer) => answer.attempt_id)
+      .filter((attemptId) => !officialAttemptIds.has(attemptId)))
   );
-  const officialAttemptIds = new Set(
-    officialAttempts.map((attempt) => attempt.attempt_id)
+  if (candidateAttemptResult.error) {
+    return jsonError(`Failed to load BAS correction attempts: ${candidateAttemptResult.error.message}`);
+  }
+  const correctionAttempts = (candidateAttemptResult.data ?? [])
+    .map(normalizeAttemptRow)
+    .filter(isWrongBookAttempt);
+  const correctionAttemptIds = new Set(correctionAttempts.map((attempt) => attempt.attempt_id));
+  const correctionAnswers = candidateAnswers.filter((answer) =>
+    correctionAttemptIds.has(answer.attempt_id)
   );
-  const correctionAttemptIds = new Set(
-    input.attemptRows
-      .filter((attempt) => isWrongBookAttempt(attempt))
-      .map((attempt) => attempt.attempt_id)
-  );
+  const allAttempts = [...officialAttempts, ...correctionAttempts];
+  const allAnswers = [...officialAnswers, ...correctionAnswers];
   const attemptById = new Map(
-    input.attemptRows.map((attempt) => [attempt.attempt_id, attempt])
+    allAttempts.map((attempt) => [attempt.attempt_id, attempt])
   );
   const normalizeAnswer = (answer: AnswerRow): PracticeHistoryAnswer => {
     const question = questionById.get(answer.question_id);
@@ -450,22 +513,10 @@ async function loadBasWrongbookEntrySelection(input: {
       submittedOrderText: ""
     };
   };
-  const basSetIds = Array.from(new Set(officialAttempts.map((attempt) => attempt.set_id)));
-  const displayResolver = await loadBuildSentenceHistoricalPracticeDisplayResolver(
-    input.db,
-    basSetIds
-  );
-  const basGroupsBySet = new Map(basSetIds.map((setId) => {
-    const attempt = officialAttempts.find((candidate) => candidate.set_id === setId);
-    const display = displayResolver.resolveBuildSentence({
-      fallbackDisplayName: attempt?.set_title?.trim() || setId,
-      rawSetId: setId
-    });
-    return [setId, {
-      groupId: display.itemId ?? setId,
-      title: display.displayName
-    }];
-  }));
+  const basGroupsBySet = new Map(sourceSetIds.map((setId) => [setId, {
+    groupId: input.groupId,
+    title: officialAttempts.find((attempt) => attempt.set_id === setId)?.set_title?.trim() || setId
+  }]));
   const fallbackStart = startOfLocalDay().getTime();
   const requestedStart = Date.parse(input.todayStart ?? "");
   const requestedEnd = Date.parse(input.todayEnd ?? "");
@@ -474,9 +525,7 @@ async function loadBasWrongbookEntrySelection(input: {
     ? requestedEnd
     : fallbackStart + 24 * 60 * 60 * 1000;
   const questionIds = buildBasWrongbookEntryQuestionIds({
-    basAnswers: input.answerRows
-      .filter((answer) => officialAttemptIds.has(answer.attempt_id))
-      .map(normalizeAnswer),
+    basAnswers: officialAnswers.map(normalizeAnswer),
     basAttempts: officialAttempts.map((attempt) => ({
       attemptId: attempt.attempt_id,
       correctCount: attempt.correct_count ?? 0,
@@ -486,16 +535,98 @@ async function loadBasWrongbookEntrySelection(input: {
       timeSpentSeconds: attempt.time_spent_seconds ?? 0,
       totalQuestions: attempt.total_questions ?? 0
     })),
-    basCorrectionAnswers: input.answerRows
-      .filter((answer) => correctionAttemptIds.has(answer.attempt_id) && Boolean(answer.is_correct))
+    basCorrectionAnswers: correctionAnswers
+      .filter((answer) => Boolean(answer.is_correct))
       .map(normalizeAnswer),
     basGroupsBySet,
     groupId: input.groupId,
     todayEnd,
     todayStart
   });
+  const selectedSet = new Set(questionIds);
+  const orderById = new Map(questionIds.map((questionId, index) => [questionId, index]));
+  const selectedQuestions = questions.filter((question) => selectedSet.has(question.question_id));
+  const relevantWrongAnswers = allAnswers.filter((answer) =>
+    !answer.is_correct && selectedSet.has(answer.question_id)
+  );
+  const latestWrongTime = relevantWrongAnswers.reduce(
+    (latest, answer) => Math.max(latest, answerEventTime(answer, attemptById)),
+    0
+  );
+  const latestByQuestion = new Map<string, AnswerRow>();
+  for (const answer of allAnswers) {
+    const existing = latestByQuestion.get(answer.question_id);
+    if (!existing || questionTime(answer, attemptById) > questionTime(existing, attemptById)) {
+      latestByQuestion.set(answer.question_id, answer);
+    }
+  }
+  const normalizedQuestions = dedupeQuestionsByContent(
+    selectedQuestions
+      .map(normalizeQuestion)
+      .sort((left, right) => {
+        const orderCompare =
+          (orderById.get(left.question_id) ?? 0) - (orderById.get(right.question_id) ?? 0);
+        return orderCompare || left.question_order - right.question_order;
+      }),
+    orderById
+  );
+  const masteredQuestionCount = questionIds.filter(
+    (questionId) => latestByQuestion.get(questionId)?.is_correct === true
+  ).length;
+  return NextResponse.json({
+    count: normalizedQuestions.length,
+    questions: normalizedQuestions,
+    stats: {
+      knowledgePointCount: new Set(normalizedQuestions.flatMap((question) =>
+        parseGrammarTags(question.grammar_tags_text)
+      )).size,
+      latestWrongAt: latestWrongTime > 0 ? new Date(latestWrongTime).toISOString() : null,
+      masteredQuestionCount,
+      masteryRate: questionIds.length > 0
+        ? Math.round((masteredQuestionCount / questionIds.length) * 100)
+        : null,
+      totalWrongOccurrences: relevantWrongAnswers.length
+    }
+  }, { headers: { "Cache-Control": "no-store" } });
+}
 
-  return { questionIds, questions };
+function normalizeAttemptRow(attempt: AttemptRow): AttemptRow {
+  return {
+    ...attempt,
+    attempt_id: String(attempt.attempt_id),
+    set_id: String(attempt.set_id)
+  };
+}
+
+function normalizeAnswerRow(answer: AnswerRow): AnswerRow {
+  return {
+    ...answer,
+    attempt_answer_id: String(answer.attempt_answer_id),
+    attempt_id: String(answer.attempt_id),
+    question_id: String(answer.question_id)
+  };
+}
+
+async function readAnswerRowsByAttemptIds(
+  db: SupabaseClient,
+  attemptIds: string[],
+  questionIds?: string[]
+) {
+  if (attemptIds.length === 0 || questionIds?.length === 0) {
+    return { data: [] as AnswerRow[], error: null };
+  }
+  const results = await mapWithConcurrency(chunkValues(attemptIds), 4, (ids) =>
+    readAllSupabaseRows<AnswerRow>((from, to) => {
+      let query = db
+        .from("attempt_answers")
+        .select("attempt_answer_id,attempt_id,question_id,is_correct,answered_at,created_at")
+        .in("attempt_id", ids);
+      if (questionIds) query = query.in("question_id", questionIds);
+      return query.order("attempt_answer_id", { ascending: true }).range(from, to);
+    })
+  );
+  const error = results.find((result) => result.error)?.error ?? null;
+  return { data: error ? null : results.flatMap((result) => result.data ?? []), error };
 }
 
 function startOfLocalDay() {
@@ -523,42 +654,105 @@ async function loadWrongQuestionsOverview(
   studentId: string,
   searchParams: URLSearchParams
 ) {
-  const [basAttemptResult, readingWrongbook, fullSetWrongbook] = await Promise.all([
-    readAllSupabaseRows<OverviewBasAttemptRow>((from, to) =>
-      db
-        .from("attempts")
-        .select("attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at")
-        .eq("student_id", studentId)
-        .order("attempt_id", { ascending: true })
-        .range(from, to)
-    ),
-    loadReadingWrongbookData(db, studentId),
-    loadReadingFullSetWrongbookData(db, studentId)
+  const timing = createStudentPerformanceTrace("/api/wrong-questions?view=overview");
+  const [basWrongbook, readingWrongbook, fullSetWrongbook] = await Promise.all([
+    loadBasWrongbookOverviewData(db, studentId, timing),
+    timing.measure("database", "wrongbook_overview_reading", () => loadReadingWrongbookData(db, studentId)),
+    timing.measure("database", "wrongbook_overview_full_set", () => loadReadingFullSetWrongbookOverviewData(db, studentId))
   ]);
-  const initialError = basAttemptResult.error;
-  if (initialError) return jsonError(`Failed to load wrong-question overview: ${initialError.message}`);
 
-  const allBasAttempts = (basAttemptResult.data ?? []).map((attempt) => ({
+  const requestedStart = Date.parse(searchParams.get("todayStart") ?? "");
+  const requestedEnd = Date.parse(searchParams.get("todayEnd") ?? "");
+  const fallbackStart = startOfLocalDay().getTime();
+  const todayStart = Number.isFinite(requestedStart) ? requestedStart : fallbackStart;
+  const todayEnd = Number.isFinite(requestedEnd)
+    ? requestedEnd
+    : fallbackStart + 24 * 60 * 60 * 1000;
+  const payload = timing.measureSync("processing", "wrongbook_overview_build_payload", () => buildWrongQuestionsOverview({
+    ...basWrongbook.data,
+    ...readingWrongbook,
+    ...fullSetWrongbook,
+    todayEnd,
+    todayStart
+  }));
+  console.info("[wrongbook-perf]", JSON.stringify({
+    bas: {
+      ...basWrongbook.rows
+    },
+    fullSet: {
+      answers: fullSetWrongbook.fullSetAnswers.length,
+      attempts: fullSetWrongbook.fullSetAttempts.length,
+      correctionAnswers: fullSetWrongbook.fullSetCorrectionAnswers.length,
+      correctionAttempts: fullSetWrongbook.fullSetCorrectionAttempts.length
+    },
+    output: {
+      groups: payload.groups.length,
+      payloadBytes: Buffer.byteLength(JSON.stringify(payload)),
+      wrongQuestions: payload.stats.total
+    },
+    reading: {
+      answers: readingWrongbook.readingAnswers.length,
+      attempts: readingWrongbook.readingAttempts.length,
+      correctionAnswers: readingWrongbook.readingCorrectionAnswers.length,
+      correctionAttempts: readingWrongbook.readingCorrectionAttempts.length,
+      titles: readingWrongbook.readingTitles.size
+    }
+  }));
+  return NextResponse.json(payload, { headers: timing.finishHeaders() });
+}
+
+async function loadBasWrongbookOverviewData(
+  db: SupabaseClient,
+  studentId: string,
+  timing: StudentPerformanceTrace
+) {
+  const attemptResult = await timing.measure(
+    "database",
+    "wrongbook_overview_bas_attempts",
+    () => readAllSupabaseRows<OverviewBasAttemptRow>((from, to) => db
+      .from("attempts")
+      .select("attempt_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at")
+      .eq("student_id", studentId)
+      .order("attempt_id", { ascending: true })
+      .range(from, to))
+  );
+  if (attemptResult.error) {
+    throw new Error(`Failed to load wrong-question overview: ${attemptResult.error.message}`);
+  }
+
+  const allAttempts = (attemptResult.data ?? []).map((attempt) => ({
     ...attempt,
     attempt_id: String(attempt.attempt_id),
     set_id: String(attempt.set_id).trim()
   }));
-  const correctionAttemptIds = allBasAttempts
+  const correctionAttemptIds = allAttempts
     .filter((attempt) => attempt.set_id.startsWith("wrongbook-"))
     .map((attempt) => attempt.attempt_id);
-  const [wrongAnswerResult, correctionAnswerResult] = await Promise.all([
-    readAllSupabaseRows<OverviewBasAnswerRow>((from, to) => db
-      .from("attempt_answers")
-      .select("attempt_answer_id,attempt_id,question_id,is_correct,answered_at,created_at")
-      .eq("student_id", studentId)
-      .eq("is_correct", false)
-      .order("attempt_answer_id", { ascending: true })
-      .range(from, to)),
-    readBasCorrectionAnswers(db, correctionAttemptIds)
+  const candidateSetIds = Array.from(new Set(allAttempts
+    .filter((attempt) => !attempt.set_id.startsWith("wrongbook-"))
+    .map((attempt) => attempt.set_id)));
+
+  const [wrongAnswerResult, correctionAnswerResult, displayResolver] = await Promise.all([
+    timing.measure("database", "wrongbook_overview_bas_wrong_answers", () =>
+      readAllSupabaseRows<OverviewBasAnswerRow>((from, to) => db
+        .from("attempt_answers")
+        .select("attempt_answer_id,attempt_id,question_id,is_correct,answered_at,created_at")
+        .eq("student_id", studentId)
+        .eq("is_correct", false)
+        .order("attempt_answer_id", { ascending: true })
+        .range(from, to))
+    ),
+    timing.measure("database", "wrongbook_overview_bas_correction_answers", () =>
+      readBasCorrectionAnswers(db, correctionAttemptIds)
+    ),
+    timing.measure("database", "wrongbook_overview_bas_display", () =>
+      loadBuildSentenceHistoricalPracticeDisplayResolver(db, candidateSetIds)
+    )
   ]);
-  const basAnswerError = wrongAnswerResult.error ?? correctionAnswerResult.error;
-  if (basAnswerError) return jsonError(`Failed to load BAS wrong answers: ${basAnswerError.message}`);
-  const allBasAnswers = [
+  const answerError = wrongAnswerResult.error ?? correctionAnswerResult.error;
+  if (answerError) throw new Error(`Failed to load BAS wrong answers: ${answerError.message}`);
+
+  const allAnswers = [
     ...(wrongAnswerResult.data ?? []),
     ...(correctionAnswerResult.data ?? [])
   ].map((answer) => ({
@@ -567,26 +761,33 @@ async function loadWrongQuestionsOverview(
     attempt_id: String(answer.attempt_id),
     question_id: String(answer.question_id)
   }));
-  const questionIds = uniqueQuestionIds(allBasAnswers.map((answer) => answer.question_id));
-  const questionResult = await readRowsInBatches<OverviewQuestionRow>(
-    db,
-    "questions",
-    "question_id,set_id,question_order,final_sentence,grammar_tags_text",
-    "question_id",
-    questionIds
+  const questionResult = await timing.measure(
+    "database",
+    "wrongbook_overview_bas_questions",
+    () => readRowsInBatches<OverviewQuestionRow>(
+      db,
+      "questions",
+      "question_id,set_id,question_order,final_sentence,grammar_tags_text",
+      "question_id",
+      uniqueQuestionIds(allAnswers.map((answer) => answer.question_id))
+    )
   );
-  if (questionResult.error) return jsonError(`Failed to load BAS wrong questions: ${questionResult.error.message}`);
+  if (questionResult.error) {
+    throw new Error(`Failed to load BAS wrong questions: ${questionResult.error.message}`);
+  }
 
-  const questionRows = questionResult.data ?? [];
-  const questionById = new Map(questionRows.map((question) => [String(question.question_id), question]));
-  const realSetIds = new Set(questionRows.map((question) => String(question.set_id)));
-  const officialAttempts = allBasAttempts.filter((attempt) =>
+  const questions = questionResult.data ?? [];
+  const questionById = new Map(
+    questions.map((question) => [String(question.question_id), question])
+  );
+  const realSetIds = new Set(questions.map((question) => String(question.set_id)));
+  const officialAttempts = allAttempts.filter((attempt) =>
     isOfficialPracticeSetId(attempt.set_id, realSetIds)
   );
   const officialAttemptIds = new Set(officialAttempts.map((attempt) => attempt.attempt_id));
   const correctionAttemptIdSet = new Set(correctionAttemptIds);
-  const attemptById = new Map(allBasAttempts.map((attempt) => [attempt.attempt_id, attempt]));
-  const normalizeBasAnswer = (answer: OverviewBasAnswerRow): PracticeHistoryAnswer => {
+  const attemptById = new Map(allAttempts.map((attempt) => [attempt.attempt_id, attempt]));
+  const normalizeAnswer = (answer: OverviewBasAnswerRow): PracticeHistoryAnswer => {
     const question = questionById.get(answer.question_id);
     const attempt = attemptById.get(answer.attempt_id);
     return {
@@ -605,53 +806,43 @@ async function loadWrongQuestionsOverview(
       submittedOrderText: ""
     };
   };
-  const basAnswers = allBasAnswers
-    .filter((answer) => officialAttemptIds.has(answer.attempt_id))
-    .map(normalizeBasAnswer);
-  const basCorrectionAnswers = allBasAnswers
-    .filter((answer) => correctionAttemptIdSet.has(answer.attempt_id) && Boolean(answer.is_correct))
-    .map(normalizeBasAnswer);
-  const basAttempts = officialAttempts.map((attempt) => ({
-    attemptId: attempt.attempt_id,
-    correctCount: attempt.correct_count ?? 0,
-    setId: attempt.set_id,
-    setTitle: attempt.set_title?.trim() || attempt.set_id,
-    submittedAt: attempt.submitted_at ?? attempt.created_at ?? null,
-    timeSpentSeconds: attempt.time_spent_seconds ?? 0,
-    totalQuestions: attempt.total_questions ?? 0
-  }));
   const basSetIds = Array.from(new Set(officialAttempts.map((attempt) => attempt.set_id)));
-  const displayResolver = await loadBuildSentenceHistoricalPracticeDisplayResolver(db, basSetIds);
-  const basGroupsBySet = new Map(basSetIds.map((setId) => {
-    const attempt = officialAttempts.find((candidate) => candidate.set_id === setId);
-    const display = displayResolver.resolveBuildSentence({
-      fallbackDisplayName: attempt?.set_title?.trim() || setId,
-      rawSetId: setId
-    });
-    return [setId, {
-      groupId: display.itemId ?? setId,
-      title: display.displayName
-    }];
-  }));
-
-  const requestedStart = Date.parse(searchParams.get("todayStart") ?? "");
-  const requestedEnd = Date.parse(searchParams.get("todayEnd") ?? "");
-  const fallbackStart = startOfLocalDay().getTime();
-  const todayStart = Number.isFinite(requestedStart) ? requestedStart : fallbackStart;
-  const todayEnd = Number.isFinite(requestedEnd)
-    ? requestedEnd
-    : fallbackStart + 24 * 60 * 60 * 1000;
-  const payload = buildWrongQuestionsOverview({
-    basAnswers,
-    basAttempts,
-    basCorrectionAnswers,
-    basGroupsBySet,
-    ...readingWrongbook,
-    ...fullSetWrongbook,
-    todayEnd,
-    todayStart
-  });
-  return NextResponse.json(payload, { headers: { "Cache-Control": "no-store" } });
+  return {
+    data: {
+      basAnswers: allAnswers
+        .filter((answer) => officialAttemptIds.has(answer.attempt_id))
+        .map(normalizeAnswer),
+      basAttempts: officialAttempts.map((attempt) => ({
+        attemptId: attempt.attempt_id,
+        correctCount: attempt.correct_count ?? 0,
+        setId: attempt.set_id,
+        setTitle: attempt.set_title?.trim() || attempt.set_id,
+        submittedAt: attempt.submitted_at ?? attempt.created_at ?? null,
+        timeSpentSeconds: attempt.time_spent_seconds ?? 0,
+        totalQuestions: attempt.total_questions ?? 0
+      })),
+      basCorrectionAnswers: allAnswers
+        .filter((answer) => correctionAttemptIdSet.has(answer.attempt_id) && Boolean(answer.is_correct))
+        .map(normalizeAnswer),
+      basGroupsBySet: new Map(basSetIds.map((setId) => {
+        const attempt = officialAttempts.find((candidate) => candidate.set_id === setId);
+        const display = displayResolver.resolveBuildSentence({
+          fallbackDisplayName: attempt?.set_title?.trim() || setId,
+          rawSetId: setId
+        });
+        return [setId, {
+          groupId: display.itemId ?? setId,
+          title: display.displayName
+        }];
+      }))
+    },
+    rows: {
+      attempts: allAttempts.length,
+      correctionAnswers: correctionAnswerResult.data?.length ?? 0,
+      questions: questions.length,
+      wrongAnswers: wrongAnswerResult.data?.length ?? 0
+    }
+  };
 }
 
 async function readBasCorrectionAnswers(db: SupabaseClient, attemptIds: string[]) {

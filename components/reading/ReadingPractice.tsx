@@ -24,7 +24,6 @@ import { ReadingFullSetQuestionNavigator } from "@/components/reading/ReadingFul
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
-  STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
   studentReadingCatalogCacheKey,
   useStudentCachedData,
   useStudentDataCache
@@ -106,6 +105,7 @@ import {
   selectReadingWrongbookSubmissionAnswers
 } from "@/lib/reading/wrongbook";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
+import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
 type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
@@ -707,13 +707,14 @@ export function ReadingPracticeShell({
         throw new Error(result.error ?? "阅读答案提交失败，请稍后重试。");
       }
       if (wrongbook) {
-        invalidate(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX);
+        invalidateStudentWrongbook(session.user.id);
         wrongbook.onSubmitted(result.attempt);
       } else {
         storeReadingQuestionTimes(result.attempt.attemptId, questionTimes);
         invalidate(STUDENT_READING_HISTORY_CACHE_PREFIX);
         invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
         invalidate(studentReadingCatalogCacheKey(result.attempt.taskType));
+        invalidateStudentWrongbook(session.user.id);
         router.replace(`/student/reading/results/${encodeURIComponent(result.attempt.attemptId)}`);
       }
     } catch (submitFailure) {
@@ -862,6 +863,7 @@ export function ReadingWorkspaceRouter({
   lookupEnabled,
   layoutMode = "bounded",
   onAnswerChange,
+  onReady,
   practice,
   readOnly,
   reviewPresentation,
@@ -874,6 +876,7 @@ export function ReadingWorkspaceRouter({
   lookupEnabled: boolean;
   layoutMode?: "bounded" | "natural";
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
+  onReady?: () => void;
   practice: StudentReadingPracticePayload;
   readOnly: boolean;
   reviewPresentation?: ReadingCorrectionAnswerPresentation;
@@ -887,6 +890,7 @@ export function ReadingWorkspaceRouter({
         editableSlotIds={editableSlotIds}
         lookupEnabled={lookupEnabled}
         onAnswerChange={onAnswerChange}
+        onReady={onReady}
         question={currentQuestion}
         readOnly={readOnly}
         reviewItems={reviewItems}
@@ -902,6 +906,7 @@ export function ReadingWorkspaceRouter({
         naturalFlow={layoutMode === "natural"}
         material={practice.material}
         onAnswerChange={onAnswerChange}
+        onReady={onReady}
         question={currentQuestion}
         readOnly={readOnly}
         reviewPresentation={reviewPresentation}
@@ -915,6 +920,7 @@ export function ReadingWorkspaceRouter({
         lookupEnabled={lookupEnabled}
         naturalFlow={layoutMode === "natural"}
         onAnswerChange={onAnswerChange}
+        onReady={onReady}
         passage={practice.passage}
         question={currentQuestion as StudentRapQuestion}
         readOnly={readOnly}
@@ -1032,6 +1038,7 @@ function CtwPracticeWorkspace({
   editableSlotIds,
   lookupEnabled,
   onAnswerChange,
+  onReady,
   question,
   readOnly,
   reviewItems,
@@ -1041,6 +1048,7 @@ function CtwPracticeWorkspace({
   editableSlotIds?: ReadonlySet<string>;
   lookupEnabled: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
+  onReady?: () => void;
   question: StudentCtwQuestion;
   readOnly: boolean;
   reviewItems: SubmittedReadingReviewItem[];
@@ -1085,6 +1093,15 @@ function CtwPracticeWorkspace({
     if (readOnly) return;
     focusPosition(firstCtwPosition(interactionSlots));
   }, [focusPosition, interactionSlots, question.questionId, readOnly]);
+
+  useLayoutEffect(() => {
+    if (readOnly) {
+      onReady?.();
+      return;
+    }
+    const firstPosition = firstCtwPosition(interactionSlots);
+    if (firstPosition && positionRefs.current.has(ctwPositionKey(firstPosition))) onReady?.();
+  }, [interactionSlots, onReady, question.questionId, readOnly]);
 
   const applyLetter = (position: CtwPosition, input: string) => {
     const result = enterCtwLetter(interactionSlots, slotAnswers, position, input);
@@ -1454,6 +1471,7 @@ function RdlPracticeWorkspace({
   naturalFlow,
   material,
   onAnswerChange,
+  onReady,
   question,
   readOnly,
   reviewPresentation
@@ -1463,6 +1481,7 @@ function RdlPracticeWorkspace({
   naturalFlow: boolean;
   material: NonNullable<StudentReadingPracticePayload["material"]>;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
+  onReady?: () => void;
   question: StudentRdlQuestion;
   readOnly: boolean;
   reviewPresentation?: ReadingCorrectionAnswerPresentation;
@@ -1488,15 +1507,25 @@ function RdlPracticeWorkspace({
   } | null>(null);
   const selectedOptionId = answer?.kind === "choice" ? answer.optionId : null;
 
+  const finishImageLoad = useCallback(async (image: HTMLImageElement) => {
+    try {
+      if (typeof image.decode === "function") await image.decode();
+      if (imageRef.current !== image || !image.naturalWidth || !image.naturalHeight) return;
+      setImageDimensions({ width: image.naturalWidth, height: image.naturalHeight });
+      setAssetStatus("ready");
+    } catch {
+      if (imageRef.current === image) setAssetStatus("error");
+    }
+  }, []);
+
   useLayoutEffect(() => {
     setAssetStatus("loading");
     setImageDimensions({ width: 0, height: 0 });
     const image = imageRef.current;
     if (image?.complete && image.naturalWidth && image.naturalHeight) {
-      setImageDimensions({ width: image.naturalWidth, height: image.naturalHeight });
-      setAssetStatus("ready");
+      void finishImageLoad(image);
     }
-  }, [material.imageUrl]);
+  }, [finishImageLoad, material.imageUrl]);
 
   useEffect(() => {
     setSelectionMap(null);
@@ -1581,6 +1610,12 @@ function RdlPracticeWorkspace({
       window.removeEventListener("resize", recalculateSelectionRect);
     };
   }, [recalculateSelectionRect]);
+
+  useLayoutEffect(() => {
+    if (assetStatus === "ready" && bindingValid && selectionRect?.width && selectionRect.height) {
+      onReady?.();
+    }
+  }, [assetStatus, bindingValid, onReady, question.questionId, selectionRect]);
 
   const selectedCharacters = useMemo(
     () => selectionMap ? rdlSelectedCharacters(selectionMap, selectionRange) : [],
@@ -1695,11 +1730,7 @@ function RdlPracticeWorkspace({
               className={`${naturalFlow ? "h-auto" : "h-full"} w-full object-contain ${assetStatus === "ready" ? "opacity-100" : "opacity-0"}`}
               onError={() => setAssetStatus("error")}
               onLoad={(event) => {
-                setImageDimensions({
-                  width: event.currentTarget.naturalWidth,
-                  height: event.currentTarget.naturalHeight
-                });
-                setAssetStatus("ready");
+                void finishImageLoad(event.currentTarget);
               }}
               ref={imageRef}
               src={material.imageUrl}
@@ -1821,6 +1852,7 @@ function RapPracticeWorkspace({
   lookupEnabled,
   naturalFlow,
   onAnswerChange,
+  onReady,
   passage,
   question,
   readOnly,
@@ -1830,6 +1862,7 @@ function RapPracticeWorkspace({
   lookupEnabled: boolean;
   naturalFlow: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
+  onReady?: () => void;
   passage: NonNullable<StudentReadingPracticePayload["passage"]>;
   question: StudentRapQuestion;
   readOnly: boolean;
@@ -1885,6 +1918,10 @@ function RapPracticeWorkspace({
     readOnly,
     question.highlightRanges
   );
+
+  useLayoutEffect(() => {
+    onReady?.();
+  }, [onReady, passage.passageId, question.questionId]);
 
   const insertionBoundary = (paragraphId: string, boundaryIndex: number) => {
     if (question.questionType !== "rap_sentence_insertion" || !insertionValidation) return null;

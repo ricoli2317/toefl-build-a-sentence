@@ -153,6 +153,10 @@ function ResolvedContentSummary({ draft, item, onReopen }: {
 
 function InlineVersionValue({ title, segments }: { title: "题库版本" | "来源 CSV"; segments: ReadingInlineDiff["existing"] }) { return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{segments.map((segment, index) => segment.changed ? <mark className="rounded bg-amber-300 px-0.5 text-inherit" key={index}>{segment.text || "∅"}</mark> : <span key={index}>{segment.text}</span>)}</div></div>; }
 function contentActionLabel(action: ReadingContentResolutionDraft["action"]) { return action === "keep_existing" ? "保留题库版本" : action === "update_from_source" ? "使用来源版本更新题库" : "尚未选择"; }
-function compactSourceLabel(item: ReadingContentConflictItem) { return [item.sourceLabel, item.sourceModule.toUpperCase(), item.sourceQuestionRange ? `Q${item.sourceQuestionRange}` : null].filter(Boolean).join(" · "); }
+function compactSourceLabel(item: ReadingContentConflictItem) {
+  const labels = Array.from(new Set(item.sources.map((source) => source.sourceLabel)));
+  if (labels.length > 1) return `来源：${labels.join("、")}`;
+  return [labels[0] ?? item.sourceLabel, item.sourceModule.toUpperCase(), item.sourceQuestionRange ? `Q${item.sourceQuestionRange}` : null].filter(Boolean).join(" · ");
+}
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
 function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }

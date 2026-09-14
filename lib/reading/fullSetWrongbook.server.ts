@@ -195,6 +195,125 @@ export async function loadReadingFullSetWrongbookData(
   };
 }
 
+/**
+ * The overview only needs stable wrong-item identities and correction state.
+ * Rendering order, module type and slot order are correction-screen concerns,
+ * so the summary path deliberately avoids the three catalog/order lookups used
+ * by loadReadingFullSetWrongbookData.
+ */
+export async function loadReadingFullSetWrongbookOverviewData(
+  db: SupabaseClient,
+  studentId: string
+): Promise<ReadingFullSetWrongbookData> {
+  const [attemptResult, correctionAttemptResult] = await Promise.all([
+    readAllSupabaseRows<AttemptRow>((from, to) => db
+      .from("reading_full_set_attempts")
+      .select("attempt_id,full_set_id,completed_at")
+      .eq("student_id", studentId)
+      .eq("status", "completed")
+      .order("attempt_id", { ascending: true })
+      .range(from, to)),
+    readAllSupabaseRows<CorrectionAttemptRow>((from, to) => db
+      .from("reading_wrongbook_attempts")
+      .select("attempt_id,source_attempt_id,submitted_at")
+      .eq("student_id", studentId)
+      .eq("task_type", "full_set")
+      .eq("status", "submitted")
+      .order("attempt_id", { ascending: true })
+      .range(from, to))
+  ]);
+  const initialError = attemptResult.error ?? correctionAttemptResult.error;
+  if (initialError) throw new Error(initialError.message);
+
+  const attemptRows = attemptResult.data ?? [];
+  const correctionRows = correctionAttemptResult.data ?? [];
+  const [moduleResult, correctionAnswerResult] = await Promise.all([
+    readByIds<ModuleRow>(
+      db,
+      "reading_full_set_module_attempts",
+      "attempt_id,module_attempt_id,module_number",
+      "attempt_id",
+      attemptRows.map((attempt) => attempt.attempt_id)
+    ),
+    readByIds<AnswerRow>(
+      db,
+      "reading_wrongbook_attempt_answers",
+      "attempt_id,logical_item_id,question_id,slot_id,is_correct,source_occurrence_id",
+      "attempt_id",
+      correctionRows.map((attempt) => attempt.attempt_id)
+    )
+  ]);
+  const middleError = moduleResult.error ?? correctionAnswerResult.error;
+  if (middleError) throw new Error(middleError.message);
+
+  const modules = moduleResult.data ?? [];
+  const sourceAnswerResult = await readWrongFullSetAnswers(
+    db,
+    modules.map((module) => module.module_attempt_id)
+  );
+  if (sourceAnswerResult.error) throw new Error(sourceAnswerResult.error.message);
+
+  const moduleById = new Map(modules.map((module) => [module.module_attempt_id, module]));
+  const sourceAnswerByKey = new Map<string, ReadingFullSetWrongQuestionAnswer>();
+  const fullSetAnswers = (sourceAnswerResult.data ?? []).flatMap((answer): ReadingFullSetWrongQuestionAnswer[] => {
+    const moduleAttempt = answer.module_attempt_id
+      ? moduleById.get(answer.module_attempt_id)
+      : undefined;
+    if (!moduleAttempt || !answer.occurrence_id) return [];
+    const normalized = {
+      attemptId: moduleAttempt.attempt_id,
+      isCorrect: false,
+      logicalItemId: answer.logical_item_id,
+      moduleNumber: moduleAttempt.module_number as 1 | 2,
+      occurrenceId: answer.occurrence_id,
+      order: 0,
+      questionId: answer.question_id,
+      slotId: answer.slot_id,
+      taskType: "ctw" as const
+    };
+    sourceAnswerByKey.set(sourceKey(moduleAttempt.attempt_id, normalized), normalized);
+    return [normalized];
+  });
+
+  const correctionAttemptById = new Map(
+    correctionRows.map((attempt) => [attempt.attempt_id, attempt])
+  );
+  const fullSetCorrectionAnswers = (correctionAnswerResult.data ?? []).flatMap(
+    (answer): ReadingFullSetWrongQuestionAnswer[] => {
+      const correction = answer.attempt_id
+        ? correctionAttemptById.get(answer.attempt_id)
+        : undefined;
+      const occurrenceId = answer.source_occurrence_id ?? "";
+      if (!correction || !occurrenceId) return [];
+      const source = sourceAnswerByKey.get(sourceKey(correction.source_attempt_id, {
+        logicalItemId: answer.logical_item_id,
+        occurrenceId,
+        questionId: answer.question_id,
+        slotId: answer.slot_id
+      }));
+      return source
+        ? [{ ...source, attemptId: correction.attempt_id, isCorrect: Boolean(answer.is_correct) }]
+        : [];
+    }
+  );
+
+  return {
+    fullSetAnswers,
+    fullSetAttempts: attemptRows.map((attempt) => ({
+      attemptId: attempt.attempt_id,
+      completedAt: attempt.completed_at,
+      fullSetId: attempt.full_set_id,
+      title: attempt.full_set_id
+    })),
+    fullSetCorrectionAnswers,
+    fullSetCorrectionAttempts: correctionRows.map((attempt) => ({
+      attemptId: attempt.attempt_id,
+      sourceAttemptId: attempt.source_attempt_id,
+      submittedAt: attempt.submitted_at
+    }))
+  };
+}
+
 export async function loadReadingFullSetWrongbookQueue(input: {
   db: SupabaseClient;
   scope: "history" | "today";
@@ -289,6 +408,25 @@ async function readByIds<T>(
     const page = await db.from(table).select(select).in(column, values).range(from, to);
     return { data: page.data as T[] | null, error: page.error };
   }));
+  return {
+    data: results.flatMap((result) => result.data ?? []),
+    error: results.find((result) => result.error)?.error ?? null
+  };
+}
+
+async function readWrongFullSetAnswers(db: SupabaseClient, moduleAttemptIds: string[]) {
+  if (!moduleAttemptIds.length) return { data: [] as AnswerRow[], error: null };
+  const results = await mapWithConcurrency(chunk(moduleAttemptIds), 4, (values) =>
+    readAllSupabaseRows<AnswerRow>(async (from, to) => {
+      const page = await db
+        .from("reading_full_set_answers")
+        .select("module_attempt_id,occurrence_id,logical_item_id,question_id,slot_id,is_correct")
+        .in("module_attempt_id", values)
+        .eq("is_correct", false)
+        .range(from, to);
+      return { data: page.data as AnswerRow[] | null, error: page.error };
+    })
+  );
   return {
     data: results.flatMap((result) => result.data ?? []),
     error: results.find((result) => result.error)?.error ?? null

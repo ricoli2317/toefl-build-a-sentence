@@ -16,8 +16,8 @@ const SENTENCE_SELECTION_INSTRUCTION = /\s*select\s+the\s+sentence\s+to\s+make\s
 export function normalizeReadingReviewText(value: string) {
   return value
     .normalize("NFKC")
-    .replace(/[\u2018\u2019\u02bc\uff07]/g, "'")
-    .replace(/[\u201c\u201d\uff02]/g, '"')
+    .replace(/[\u2018\u2019\u201a\u201b\u2032\u2035\u275b\u275c\u02bc\uff07]/g, "'")
+    .replace(/[\u201c\u201d\u201e\u201f\u2033\u2036\u275d\u275e\u301d-\u301f\uff02]/g, '"')
     .replace(/[\u2010-\u2015\u2212\ufe58\ufe63\uff0d]/g, "-")
     .replace(/\u2026/g, "...")
     .toLocaleLowerCase("en-US")

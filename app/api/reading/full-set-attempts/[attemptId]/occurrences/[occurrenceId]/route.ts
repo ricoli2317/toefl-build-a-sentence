@@ -7,7 +7,7 @@ import {
 } from "@/lib/reading/fullSetAttemptServer";
 import {
   isReadingFullSetAttemptSummary,
-  readingFullSetActiveModuleAttempt,
+  readingFullSetCurrentModuleAttempt,
   type ReadingFullSetAttemptSummary
 } from "@/lib/reading/fullSetAttempts";
 import { findValidReadingFullSet, type ReadingFullSetOccurrence } from "@/lib/reading/fullSets";
@@ -131,7 +131,7 @@ export async function PUT(
 }
 
 function activeModule(attempt: ReadingFullSetAttemptSummary) {
-  return readingFullSetActiveModuleAttempt(attempt);
+  return readingFullSetCurrentModuleAttempt(attempt);
 }
 
 function moduleOccurrences(

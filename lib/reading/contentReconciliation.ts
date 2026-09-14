@@ -55,10 +55,19 @@ export type ReadingQuestionContentConflict = {
   ctwSlotConflicts?: ReadingCtwSlotConflictPreview[];
 };
 
+export type ReadingContentConflictSource = {
+  sourceLabel: string;
+  occurrenceDate: string;
+  sourceModule: string;
+  sourceOrder: number;
+  sourceQuestionRange: string;
+};
+
 export type ReadingContentConflictItem = {
   resolutionId: string;
   questionType: ReadingImportPackage["item"]["module"];
   logicalItemId: string;
+  sources: ReadingContentConflictSource[];
   sourceLabel: string;
   occurrenceDate: string;
   sourceModule: string;
@@ -150,6 +159,13 @@ export function buildReadingContentConflict(
   });
   if (passageConflicts.length === 0 && questionConflicts.length === 0) return null;
   const occurrence = incoming.occurrences[0];
+  const sources = incoming.occurrences.map((candidate) => ({
+    sourceLabel: candidate.sourceLabel,
+    occurrenceDate: candidate.occurrenceDate,
+    sourceModule: candidate.sourceModule,
+    sourceOrder: candidate.sourceOrder,
+    sourceQuestionRange: range(candidate.sourceQuestionStart, candidate.sourceQuestionEnd)
+  }));
   const title = incoming.item.module === "rap"
     ? incoming.passages[0]?.title ?? incoming.item.title
     : incoming.item.title;
@@ -162,6 +178,7 @@ export function buildReadingContentConflict(
     ].join(":"),
     questionType: incoming.item.module,
     logicalItemId: existing.item.logicalItemId,
+    sources,
     sourceLabel: occurrence?.sourceLabel ?? incoming.item.firstSeenSourceLabel,
     occurrenceDate: occurrence?.occurrenceDate ?? incoming.item.firstSeenDate,
     sourceModule: occurrence?.sourceModule ?? "",
@@ -258,7 +275,10 @@ function compareQuestion(
     const incomingPassage = requiredPassage(incomingPackage, incoming.payload.passageId);
     const existingAnchors = existing.payload.anchors.map((anchor) => anchorIdentity(anchor, existingPassage)).sort();
     const incomingAnchors = incoming.payload.anchors.map((anchor) => anchorIdentity(anchor, incomingPassage)).sort();
-    if (!sameArray(existingAnchors, incomingAnchors)) {
+    if (!sameArray(
+      existingAnchors.map(normalizeReadingReviewText).sort(),
+      incomingAnchors.map(normalizeReadingReviewText).sort()
+    )) {
       result.push(difference("insertion_anchors", existingAnchors.join("\n"), incomingAnchors.join("\n")));
     }
     const existingCorrect = correctAnchorDisplay(existing, existingPassage);

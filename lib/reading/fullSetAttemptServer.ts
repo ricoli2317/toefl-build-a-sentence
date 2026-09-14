@@ -4,7 +4,7 @@ import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createAnonSupabase } from "@/lib/supabase/server";
 import {
   isReadingFullSetAttemptSummary,
-  readingFullSetActiveModuleAttempt,
+  readingFullSetCurrentModuleAttempt,
   type ReadingFullSetAttemptSummary,
   type ReadingFullSetRunnerOccurrence,
   type ReadingFullSetRunnerPayload
@@ -55,6 +55,9 @@ export function readingFullSetAttemptError(
   if (message.includes("FULL_SET_MODULE_1_NOT_SUBMITTED")) {
     return readingFullSetAttemptJson({ error: "请先完成 Module 1。" }, { status: 409 });
   }
+  if (message.includes("FULL_SET_MODULE_NOT_PREPARING") || message.includes("FULL_SET_MODULE_NOT_ACTIVE")) {
+    return readingFullSetAttemptJson({ error: "当前 Module 状态不允许执行此操作。" }, { status: 409 });
+  }
   if (message.includes("FULL_SET_INVALID_") || message.includes("FULL_SET_DUPLICATE_") || message.includes("FULL_SET_ANSWER_ID_")) {
     return readingFullSetAttemptJson({ error: "提交的套题答案无效。" }, { status: 400 });
   }
@@ -88,10 +91,10 @@ export function buildReadingFullSetRunnerPayload(
   attempt: ReadingFullSetAttemptSummary,
   fullSet: ReadingFullSet
 ): ReadingFullSetRunnerPayload {
-  const activeModule = readingFullSetActiveModuleAttempt(attempt);
-  const moduleOccurrences = activeModule?.moduleNumber === 1
+  const currentModule = readingFullSetCurrentModuleAttempt(attempt);
+  const moduleOccurrences = currentModule?.moduleNumber === 1
     ? fullSet.module1.occurrences
-    : activeModule?.moduleNumber === 2
+    : currentModule?.moduleNumber === 2
       ? fullSet.module2.occurrences
       : [];
   return {

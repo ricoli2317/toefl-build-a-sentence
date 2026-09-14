@@ -17,6 +17,12 @@ const assignmentForm = read("components/teacher/TeacherWritingAssignmentForm.tsx
 const assignmentList = read("components/teacher/TeacherWritingAssignmentList.tsx");
 const studentReview = read("components/student/StudentWritingReview.tsx");
 const importQuestions = read("components/TeacherImportQuestions.tsx");
+const studentCacheEvents = read("lib/studentCacheEvents.ts");
+const wrongQuestionsHome = read("components/WrongQuestionsHome.tsx");
+const readingPractice = read("components/reading/ReadingPractice.tsx");
+const readingWrongbookPractice = read("components/reading/ReadingWrongbookPractice.tsx");
+const readingFullSetRunner = read("components/reading/ReadingFullSetRunner.tsx");
+const readingFullSetWrongbookPractice = read("components/reading/ReadingFullSetWrongbookPractice.tsx");
 
 test("Import NEW_ITEM publishes practice catalog invalidation after a successful import", () => {
   assert.match(importQuestions, /successCount > 0[\s\S]*broadcastQuestionBankUpdated/);
@@ -51,6 +57,34 @@ test("BAS submit invalidates teacher statistics", () => {
 test("BAS submit invalidates practice history", () => {
   assert.match(matrix, /BAS_ATTEMPT_SUBMITTED:[\s\S]*studentPracticeHistory/);
   assert.match(studentCache, /case "studentPracticeHistory":[\s\S]*STUDENT_PRACTICE_HISTORY_CACHE_PREFIX/);
+});
+
+test("all wrongbook-producing Reading flows publish one shared invalidation event", () => {
+  assert.match(matrix, /WRONGBOOK_CHANGED: \["studentWrongQuestions"\]/);
+  assert.match(studentCacheEvents, /function invalidateStudentWrongbook[\s\S]*type: "WRONGBOOK_CHANGED"/);
+  assert.match(readingPractice, /invalidateStudentWrongbook\(session\.user\.id\)/);
+  assert.match(readingFullSetRunner, /result\.attempt\.status === "completed"[\s\S]*invalidateStudentWrongbook/);
+  assert.match(readingFullSetWrongbookPractice, /invalidateStudentWrongbook\(session\.user\.id\)/);
+});
+
+test("wrongbook invalidation marks cached data stale and revalidates without blanking the page", () => {
+  assert.match(studentCache, /case "studentWrongQuestions":[\s\S]*markStale\(STUDENT_WRONG_QUESTIONS_CACHE_PREFIX\)/);
+  assert.match(studentCache, /entry\.status === "success" \|\| entry\.status === "refreshing" \|\| entry\.status === "stale"[\s\S]*status: "stale", data: entry\.data/);
+  assert.match(studentCache, /if \(entry\.status === "stale"\)[\s\S]*cache\.refresh/);
+  assert.match(studentCache, /entry\?\.status === "stale"[\s\S]*\(entry\.data as T\)/);
+  assert.doesNotMatch(wrongQuestionsHome, /refreshOnMount/);
+});
+
+test("Reading correction bootstrap is cache-deduped and parallelizes its two required requests", () => {
+  assert.match(readingWrongbookPractice, /reading-correction-detail:/);
+  assert.match(readingWrongbookPractice, /useStudentCachedData<Awaited<ReturnType<typeof loadCorrectionDetail>>>/);
+  assert.match(readingWrongbookPractice, /Promise\.all\(\[[\s\S]*\/api\/reading\/practice\/[\s\S]*\/api\/reading\/wrongbook-attempts/);
+});
+
+test("Full Set correction loads only the current logical item instead of an eager bulk practice payload", () => {
+  assert.match(readingFullSetWrongbookPractice, /full-set-correction-practice:/);
+  assert.match(readingFullSetWrongbookPractice, /loadReadingPractice\(stepTarget!\.logicalItemId, session\)/);
+  assert.doesNotMatch(readingFullSetWrongbookPractice, /\/api\/reading\/practices\?itemIds=/);
 });
 
 test("writing draft create and explicit save publish in-progress invalidation", () => {

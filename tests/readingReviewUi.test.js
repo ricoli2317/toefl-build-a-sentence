@@ -8,7 +8,7 @@ const content = fs.readFileSync(path.join(root, "components/import/ReadingConten
 const duplicate = fs.readFileSync(path.join(root, "components/import/ReadingDuplicateResolutionList.tsx"), "utf8");
 const teacher = fs.readFileSync(path.join(root, "components/TeacherImportQuestions.tsx"), "utf8");
 
-test("compact CTW review renders only slot conflicts with database left and CSV right", () => {
+test("compact CTW review renders only DB canonical left and CSV source right", () => {
   const compact = content.slice(
     content.indexOf("function CompactQuestionConflict"),
     content.indexOf("function FullContentComparison")
@@ -17,6 +17,7 @@ test("compact CTW review renders only slot conflicts with database left and CSV 
   assert.match(compact, /第 \{slot\.slotOrder\} 空内容不同/);
   assert.match(compact, /title="题库版本" segments=\{slot\.inlineDiff\.existing\}/);
   assert.match(compact, /title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
+  assert.doesNotMatch(content, /当前版本|另一来源版本|existingVersionOrigin/);
   assert.doesNotMatch(compact, /ctwPassage|ctwBlanks|displayText|missingLength|Ordered blanks|Correct answers/);
 });
 

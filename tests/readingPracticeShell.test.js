@@ -166,7 +166,7 @@ test("student loader selects only public columns and shell keeps 7B integration 
   assert.doesNotMatch(shellSource, /r2\.dev|cloudflare|reading\/rdl\//i);
   assert.match(shellSource, /invalidate\(STUDENT_READING_HISTORY_CACHE_PREFIX\)/);
   assert.doesNotMatch(shellSource, /retake|STUDENT_SETS_CACHE|READING_RESULT_CACHE/i);
-  assert.match(shellSource, /wrongbook[\s\S]*STUDENT_WRONG_QUESTIONS_CACHE_PREFIX/i);
+  assert.match(shellSource, /wrongbook[\s\S]*invalidateStudentWrongbook/i);
 });
 
 test("RDL and RAP share one continuous practice shell with embedded navigation", () => {

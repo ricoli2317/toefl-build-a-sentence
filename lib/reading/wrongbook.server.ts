@@ -8,7 +8,10 @@ import {
   type ReadingWrongbookCorrectionAttempt,
   type ReadingWrongbookQueueItem
 } from "@/lib/wrongQuestions";
-import { readingCatalogDisplayNumber } from "./catalog";
+import {
+  compareReadingCatalogIdentityOrder,
+  readingCatalogDisplayNumber
+} from "./catalog";
 import type { ReadingModule } from "./types";
 import type { ReadingWrongbookPreservedAnswer } from "./wrongbook";
 import { readingWrongbookTargetKey } from "./wrongbook";
@@ -43,6 +46,7 @@ type ReadingCorrectionAttemptRow = ReadingAttemptRow & {
 };
 
 type ReadingItemRow = {
+  display_number?: string | null;
   first_seen_date: string;
   first_seen_source_label: string;
   first_seen_source_order: number;
@@ -303,18 +307,53 @@ async function readItems(db: SupabaseClient, itemIds: string[]) {
   const firstError = results.find((result) => result.error)?.error ?? null;
   if (firstError) return { data: null, error: firstError };
   const selected = results.flatMap((result) => result.data ?? []);
-  const ctwItems = selected.some((item) => item.module === "ctw")
-    ? await readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
+  const ctwDates = Array.from(new Set(selected
+    .filter((item) => item.module === "ctw")
+    .map((item) => item.first_seen_date)));
+  const [beforeResults, sameDayResult] = await Promise.all([
+    mapWithConcurrency(ctwDates, 4, async (date) => {
+      const result = await db.from("reading_logical_items")
+        .select("logical_item_id", { count: "exact", head: true })
+        .eq("module", "ctw")
+        .lt("first_seen_date", date);
+      return { count: result.count ?? 0, date, error: result.error };
+    }),
+    ctwDates.length
+      ? readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
         .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
         .eq("module", "ctw")
+        .in("first_seen_date", ctwDates)
         .order("logical_item_id", { ascending: true })
         .range(from, to))
-    : { data: [] as ReadingItemRow[], error: null };
+      : Promise.resolve({ data: [] as ReadingItemRow[], error: null })
+  ]);
+  const ctwError = beforeResults.find((result) => result.error)?.error
+    ?? sameDayResult.error
+    ?? null;
+  const beforeCountByDate = new Map(beforeResults.map((result) => [result.date, result.count]));
+  const rowsByDate = new Map<string, ReadingItemRow[]>();
+  for (const item of sameDayResult.data ?? []) {
+    rowsByDate.set(item.first_seen_date, [...(rowsByDate.get(item.first_seen_date) ?? []), item]);
+  }
+  const displayNumberById = new Map<string, string>();
+  for (const date of ctwDates) {
+    [...(rowsByDate.get(date) ?? [])]
+      .sort(compareReadingCatalogIdentityOrder)
+      .forEach((item, index) => {
+        displayNumberById.set(
+          item.logical_item_id,
+          String((beforeCountByDate.get(date) ?? 0) + index + 1).padStart(3, "0")
+        );
+      });
+  }
   return {
-    data: ctwItems.error
+    data: ctwError
       ? null
-      : [...selected.filter((item) => item.module !== "ctw"), ...(ctwItems.data ?? [])],
-    error: ctwItems.error
+      : selected.map((item) => ({
+          ...item,
+          display_number: displayNumberById.get(item.logical_item_id) ?? null
+        })),
+    error: ctwError
   };
 }
 
@@ -324,7 +363,8 @@ function buildReadingTitles(items: ReadingItemRow[]) {
     byModule.set(item.module, [...(byModule.get(item.module) ?? []), item]);
   }
   return new Map(items.map((item) => {
-    const number = readingCatalogDisplayNumber(byModule.get(item.module) ?? [], item.logical_item_id);
+    const number = item.display_number
+      ?? readingCatalogDisplayNumber(byModule.get(item.module) ?? [], item.logical_item_id);
     const fallback = `${item.module === "ctw" ? "套题" : "题目"}${number ?? ""}`;
     return [item.logical_item_id, item.module === "ctw" ? fallback : item.title?.trim() || fallback];
   }));

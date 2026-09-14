@@ -124,13 +124,12 @@ export async function prepareReadingPackagesForImport(
   const historicalByPossible = groupBy(historicalPackages, readingPossibleDuplicateFingerprint);
 
   const prepared = await Promise.all(packages.map(async (incomingPackage) => {
+    const batchVariants = incoming.variants.get(incomingPackage.item.logicalItemId) ?? [incomingPackage];
     let packageData = incomingPackage;
     let existingItem = exactMatches.get(incomingPackage.item.logicalItemId) ?? null;
     let reuseKind: PreparedReadingImportPackage["reuseKind"] = existingItem ? "exact_fingerprint" : "new";
     let possibleDuplicateLogicalItemIds: string[] = [];
-    const contentReconciliations = [...(incoming.contentReconciliations.get(
-      incomingPackage.item.logicalItemId
-    ) ?? [])];
+    let contentReconciliations: PreparedReadingImportPackage["contentReconciliations"] = [];
     let historicalDuplicateLogicalItemIds: string[] = [];
     let preparationConflict: string | null = incoming.preparationConflicts.get(incomingPackage.item.logicalItemId) ?? null;
     // A strict CTW fingerprint match is a stable compatibility owner. Its
@@ -166,12 +165,6 @@ export async function prepareReadingPackagesForImport(
           .map((candidate) => candidate.item.logicalItemId)
           .filter((logicalItemId) => logicalItemId !== survivor.item.logicalItemId)
           .sort();
-        const contentConflict = buildReadingContentConflict(survivor, incomingPackage);
-        if (contentConflict) contentReconciliations.push({
-          item: contentConflict,
-          existingPackage: survivor,
-          incomingPackage
-        });
       } else {
         possibleDuplicateLogicalItemIds = uniqueIds([
           ...equivalentCandidates,
@@ -187,6 +180,14 @@ export async function prepareReadingPackagesForImport(
     if (existingItem) {
       const historical = historicalById.get(existingItem.logicalItemId);
       if (historical) {
+        const canCompareCanonicalContent = incomingPackage.item.module !== "ctw"
+          || compareCtwPackageLogicalIdentity(historical, incomingPackage).sameLogicalItem;
+        if (canCompareCanonicalContent) {
+          contentReconciliations = buildDatabaseCanonicalContentReconciliations(
+            historical,
+            batchVariants
+          );
+        }
         try {
           packageData = attachIncomingOccurrencesToHistoricalPackage(historical, incomingPackage);
           if (
@@ -212,7 +213,6 @@ export async function prepareReadingPackagesForImport(
         throw new Error(`Historical Reading canonical content is missing for ${existingItem.logicalItemId}`);
       }
     }
-
     return {
       packageData,
       existingItem,
@@ -297,7 +297,7 @@ function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
   }
   const result: ReadingImportPackage[] = [];
   const reuseCounts = new Map<string, number>();
-  const contentReconciliations = new Map<string, PreparedReadingImportPackage["contentReconciliations"]>();
+  const variants = new Map<string, ReadingImportPackage[]>();
   const preparationConflicts = new Map<string, string>();
   for (const group of identityGroups) {
     const orderedGroup = [...group].sort((left, right) =>
@@ -310,13 +310,6 @@ function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
       canonical.occurrences.map((occurrence) => [occurrence.occurrenceId, occurrence])
     );
     for (const variant of orderedGroup.slice(1)) {
-      const contentConflict = buildReadingContentConflict(canonical, variant);
-      if (contentConflict) {
-        contentReconciliations.set(canonical.item.logicalItemId, [
-          ...(contentReconciliations.get(canonical.item.logicalItemId) ?? []),
-          { item: contentConflict, existingPackage: canonical, incomingPackage: variant }
-        ]);
-      }
       try {
         const remapped = attachIncomingOccurrencesToHistoricalPackage(canonical, variant);
         for (const occurrence of remapped.occurrences) occurrences.set(occurrence.occurrenceId, occurrence);
@@ -329,8 +322,68 @@ function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
     }
     result.push({ ...canonical, occurrences: Array.from(occurrences.values()) });
     reuseCounts.set(canonical.item.logicalItemId, orderedGroup.length - 1);
+    variants.set(canonical.item.logicalItemId, orderedGroup);
   }
-  return { packages: result, reuseCounts, contentReconciliations, preparationConflicts };
+  return { packages: result, reuseCounts, variants, preparationConflicts };
+}
+
+function buildDatabaseCanonicalContentReconciliations(
+  databaseCanonical: ReadingImportPackage,
+  incomingVariants: ReadingImportPackage[]
+): PreparedReadingImportPackage["contentReconciliations"] {
+  const byVariant = new Map<string, PreparedReadingImportPackage["contentReconciliations"][number]>();
+  for (const incomingPackage of incomingVariants) {
+    const item = buildReadingContentConflict(databaseCanonical, incomingPackage);
+    if (!item) continue;
+    const key = contentConflictVariantKey(item);
+    const prior = byVariant.get(key);
+    if (!prior) {
+      byVariant.set(key, { item, existingPackage: databaseCanonical, incomingPackage });
+      continue;
+    }
+    const sources = uniqueContentConflictSources([...prior.item.sources, ...item.sources]);
+    const first = sources[0];
+    prior.item = {
+      ...prior.item,
+      sources,
+      sourceLabel: first?.sourceLabel ?? prior.item.sourceLabel,
+      occurrenceDate: first?.occurrenceDate ?? prior.item.occurrenceDate,
+      sourceModule: first?.sourceModule ?? prior.item.sourceModule,
+      sourceOrder: first?.sourceOrder ?? prior.item.sourceOrder,
+      sourceQuestionRange: first?.sourceQuestionRange ?? prior.item.sourceQuestionRange
+    };
+  }
+  return Array.from(byVariant.values());
+}
+
+function contentConflictVariantKey(item: ReadingContentConflictItem) {
+  return JSON.stringify({
+    passageConflicts: item.passageConflicts.map(({ kind, existing, incoming }) => ({ kind, existing, incoming })),
+    questionConflicts: item.questionConflicts.map((conflict) => ({
+      questionOrder: conflict.questionOrder,
+      differences: conflict.differences.map(({ kind, existing, incoming }) => ({ kind, existing, incoming })),
+      ctwSlotConflicts: conflict.ctwSlotConflicts?.map((slot) => ({
+        slotOrder: slot.slotOrder,
+        differenceKinds: slot.differenceKinds,
+        existing: slot.existing,
+        incoming: slot.incoming,
+        existingAnswer: slot.existingAnswer,
+        incomingAnswer: slot.incomingAnswer
+      }))
+    }))
+  });
+}
+
+function uniqueContentConflictSources(sources: ReadingContentConflictItem["sources"]) {
+  return Array.from(new Map(sources.map((source) => [
+    [source.occurrenceDate, source.sourceLabel, source.sourceModule, source.sourceOrder].join("\u001f"),
+    source
+  ])).values()).sort((left, right) =>
+    left.occurrenceDate.localeCompare(right.occurrenceDate)
+    || left.sourceLabel.localeCompare(right.sourceLabel, "en", { numeric: true, sensitivity: "base" })
+    || left.sourceModule.localeCompare(right.sourceModule)
+    || left.sourceOrder - right.sourceOrder
+  );
 }
 
 export function assertPreparedReadingPackageCanImport(prepared: {

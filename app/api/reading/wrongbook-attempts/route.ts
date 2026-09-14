@@ -19,6 +19,12 @@ import {
   toReadingWrongbookPreservedAnswers
 } from "@/lib/reading/wrongbook.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  appendSupabaseDebugMetrics,
+  instrumentSupabaseClient,
+  wantsSupabaseDebugMetrics,
+  type SupabaseQueryMetric
+} from "@/lib/supabase/debugMetrics.server";
 
 export const dynamic = "force-dynamic";
 
@@ -30,21 +36,28 @@ export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const parsed = parseQueueRequest(params);
   if (!parsed) return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
+  const debugMetrics: SupabaseQueryMetric[] = [];
+  const debugEnabled = wantsSupabaseDebugMetrics(request);
+  const service = () => {
+    const client = createServiceSupabase();
+    return debugEnabled ? instrumentSupabaseClient(client, debugMetrics) : client;
+  };
 
   try {
     if (parsed.taskType === "full_set") {
       const items = await loadReadingFullSetWrongbookQueue({
-        db: createServiceSupabase(),
+        db: service(),
         scope: parsed.scope,
         sourceAttemptId: parsed.sourceAttemptId,
         studentId: auth.userId,
         todayEnd: parsed.todayEnd,
         todayStart: parsed.todayStart
       });
-      return readingAttemptJson({ items, scope: parsed.scope, taskType: "full_set" });
+      const response = readingAttemptJson({ items, scope: parsed.scope, taskType: "full_set" });
+      return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
     }
     const items = await loadReadingWrongbookQueue({
-      db: createServiceSupabase(),
+      db: service(),
       itemId: parsed.itemId,
       scope: parsed.scope,
       studentId: auth.userId,
@@ -52,7 +65,8 @@ export async function GET(request: Request) {
       todayEnd: parsed.todayEnd,
       todayStart: parsed.todayStart
     });
-    return readingAttemptJson({ items, scope: parsed.scope, taskType: parsed.taskType });
+    const response = readingAttemptJson({ items, scope: parsed.scope, taskType: parsed.taskType });
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   } catch (error) {
     console.error("Reading wrongbook queue load failed", {
       message: error instanceof Error ? error.message : String(error)
@@ -76,11 +90,20 @@ export async function POST(request: Request) {
   if (!parsed || (parsed.taskType === "full_set" ? !parsed.sourceAttemptId : !parsed.itemId)) {
     return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
   }
+  const debugMetrics: SupabaseQueryMetric[] = [];
+  const debugEnabled = wantsSupabaseDebugMetrics(request);
+  const service = () => {
+    const client = createServiceSupabase();
+    return debugEnabled ? instrumentSupabaseClient(client, debugMetrics) : client;
+  };
+  const mutationClient = debugEnabled
+    ? instrumentSupabaseClient(auth.client, debugMetrics)
+    : auth.client;
 
   try {
     if (parsed.taskType === "full_set") {
       const [item] = await loadReadingFullSetWrongbookQueue({
-        db: createServiceSupabase(),
+        db: service(),
         scope: parsed.scope,
         sourceAttemptId: parsed.sourceAttemptId,
         studentId: auth.userId,
@@ -88,7 +111,7 @@ export async function POST(request: Request) {
         todayStart: parsed.todayStart
       });
       if (!item) return readingAttemptJson({ error: "这套错题已经订正完成。" }, { status: 409 });
-      const { data, error } = await auth.client.rpc("get_or_create_reading_full_set_wrongbook_attempt", {
+      const { data, error } = await mutationClient.rpc("get_or_create_reading_full_set_wrongbook_attempt", {
         p_full_set_id: item.fullSetId,
         p_scope: parsed.scope,
         p_source_attempt_id: item.sourceAttemptId,
@@ -102,18 +125,19 @@ export async function POST(request: Request) {
       ) return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
       const preservedAnswersByOccurrence = await loadReadingFullSetPreservedAnswers({
         before: data.startedAt,
-        db: createServiceSupabase(),
+        db: service(),
         excludeAttemptId: data.attemptId,
         sourceAttemptId: item.sourceAttemptId,
         targets: item.targets
       });
-      return readingAttemptJson(
+      const response = readingAttemptJson(
         { attempt: data, item, preservedAnswersByOccurrence },
         { status: data.created ? 201 : 200 }
       );
+      return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
     }
     const [item] = await loadReadingWrongbookQueue({
-      db: createServiceSupabase(),
+      db: service(),
       itemId: parsed.itemId,
       scope: parsed.scope,
       studentId: auth.userId,
@@ -124,7 +148,7 @@ export async function POST(request: Request) {
     if (!item) {
       return readingAttemptJson({ error: "这组错题已经订正完成。" }, { status: 409 });
     }
-    const { data, error } = await auth.client.rpc("get_or_create_reading_wrongbook_attempt", {
+    const { data, error } = await mutationClient.rpc("get_or_create_reading_wrongbook_attempt", {
       p_logical_item_id: item.logicalItemId,
       p_scope: parsed.scope,
       p_targets: item.targets
@@ -136,16 +160,17 @@ export async function POST(request: Request) {
     const preservedAnswers = data.taskType === "ctw"
       ? toReadingWrongbookPreservedAnswers(await loadReadingWrongbookPreservedAnswers({
           before: data.startedAt,
-          db: createServiceSupabase(),
+          db: service(),
           logicalItemId: data.logicalItemId,
           studentId: auth.userId,
           targets: data.targets
         }))
       : [];
-    return readingAttemptJson(
+    const response = readingAttemptJson(
       { attempt: data, item, preservedAnswers },
       { status: data.created ? 201 : 200 }
     );
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   } catch (error) {
     console.error("Reading wrongbook attempt creation failed", {
       message: error instanceof Error ? error.message : String(error)

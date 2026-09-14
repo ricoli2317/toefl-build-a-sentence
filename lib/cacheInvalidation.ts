@@ -6,6 +6,7 @@ export const CACHE_INVALIDATION_LOCAL_EVENT = "tps-cache-invalidation";
 export type CacheInvalidationMutation =
   | "PRACTICE_CATALOG_UPDATED"
   | "BAS_ATTEMPT_SUBMITTED"
+  | "WRONGBOOK_CHANGED"
   | "WRITING_DRAFT_UPDATED"
   | "WRITING_ATTEMPT_SUBMITTED"
   | "WRITING_REVIEW_UPDATED"
@@ -64,6 +65,7 @@ const BASE_INVALIDATION_MATRIX: Record<
     "studentWrongQuestions",
     "teacherStats"
   ],
+  WRONGBOOK_CHANGED: ["studentWrongQuestions"],
   WRITING_DRAFT_UPDATED: ["studentWritingOverview"],
   WRITING_ATTEMPT_SUBMITTED: [
     "studentWritingOverview",
