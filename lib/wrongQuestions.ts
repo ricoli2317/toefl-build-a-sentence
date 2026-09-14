@@ -279,6 +279,72 @@ export function buildReadingFullSetWrongbookQueue(input: {
     .sort((left, right) => answerTime(right.latestWrongAt) - answerTime(left.latestWrongAt));
 }
 
+/**
+ * Finds the first unresolved Full Set target without materializing the complete
+ * target queue. The eligibility and ordering rules intentionally mirror
+ * buildReadingFullSetWrongbookQueue; equivalence is covered by regression tests.
+ */
+export function findReadingFullSetFirstWrongbookTarget(input: {
+  fullSetAnswers: ReadingFullSetWrongQuestionAnswer[];
+  fullSetAttempts: ReadingFullSetWrongQuestionAttempt[];
+  fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];
+  scope: "history" | "today";
+  sourceAttemptId: string;
+  todayEnd: number;
+  todayStart: number;
+}): ReadingFullSetWrongbookTarget | null {
+  const attempt = input.fullSetAttempts.find(
+    (candidate) => candidate.attemptId === input.sourceAttemptId
+  );
+  if (
+    !attempt
+    || (input.scope === "today" && (
+      answerTime(attempt.completedAt) < input.todayStart
+      || answerTime(attempt.completedAt) >= input.todayEnd
+    ))
+  ) return null;
+
+  const correctionState = buildReadingFullSetCorrectionState(input)
+    .get(attempt.attemptId);
+  let first: ReadingFullSetWrongbookTarget | null = null;
+  for (const answer of input.fullSetAnswers) {
+    if (
+      answer.attemptId !== attempt.attemptId
+      || answer.isCorrect
+      || (correctionState?.get(readingFullSetAnswerKey(answer)) ?? false)
+    ) continue;
+    const { attemptId: _attemptId, isCorrect: _isCorrect, ...target } = answer;
+    if (!first || compareReadingFullSetTargets(target, first) < 0) first = target;
+  }
+  return first;
+}
+
+export function sameReadingFullSetWrongbookTarget(
+  left: ReadingFullSetWrongbookTarget | null | undefined,
+  right: ReadingFullSetWrongbookTarget | null | undefined
+) {
+  return Boolean(
+    left
+    && right
+    && left.logicalItemId === right.logicalItemId
+    && left.moduleNumber === right.moduleNumber
+    && left.occurrenceId === right.occurrenceId
+    && left.order === right.order
+    && left.questionId === right.questionId
+    && left.slotId === right.slotId
+    && left.taskType === right.taskType
+  );
+}
+
+export function sameReadingFullSetWrongbookTargets(
+  left: ReadingFullSetWrongbookTarget[],
+  right: ReadingFullSetWrongbookTarget[]
+) {
+  return left.length === right.length
+    && left.every((target, index) => sameReadingFullSetWrongbookTarget(target, right[index]));
+}
+
 function buildReadingFullSetCorrectionState(input: {
   fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
   fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];

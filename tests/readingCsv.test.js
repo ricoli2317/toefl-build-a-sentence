@@ -9,7 +9,9 @@ const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
 const {
   assertPreparedReadingPackageCanImport,
   buildReadingImportRows,
+  executePreparedReadingPackageAtomic,
   importReadingPackageAtomic,
+  prepareReadingPackageAtomicImport,
   prepareReadingPackagesForImport
 } = require("../lib/reading/importer.ts");
 const {
@@ -302,6 +304,60 @@ test("atomic importer sends one complete package to one RPC", async () => {
   assert.equal(calls, 1);
   assert.equal(result.logicalItemAction, "create_new");
   assert.equal(result.insertedOccurrenceCount, 1);
+});
+
+test("commit executes the exact validated atomic payload without rebuilding it", async () => {
+  const packageData = groupReadingSourceOccurrences(
+    adapt("read_an_academic_passage", template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv")).candidates
+  ).packages[0];
+  const prepared = prepareReadingPackageAtomicImport(packageData, {
+    createdBy: "teacher",
+    expectedLogicalItemAction: "create_new"
+  });
+  let submittedRows;
+  await executePreparedReadingPackageAtomic({
+    async rpc(_name, args) {
+      submittedRows = args.p_rows;
+      return {
+        data: {
+          logical_item_action: "create_new",
+          inserted_occurrence_count: 1,
+          existing_occurrence_count: 0,
+          inserted_question_count: packageData.questions.length,
+          updated_question_count: 0
+        },
+        error: null
+      };
+    }
+  }, prepared);
+  assert.strictEqual(submittedRows, prepared.rows);
+  assert.deepEqual(submittedRows.reading_logical_items, buildReadingImportRows(packageData).reading_logical_items.map(
+    (row) => ({ ...row, created_by: "teacher" })
+  ));
+});
+
+test("atomic database failures retain nested PostgreSQL diagnostics", async () => {
+  const packageData = groupReadingSourceOccurrences(
+    adapt("read_an_academic_passage", template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv")).candidates
+  ).packages[0];
+  await assert.rejects(
+    () => importReadingPackageAtomic({
+      async rpc() {
+        return {
+          data: null,
+          error: {
+            code: "23503",
+            message: "insert or update violates foreign key constraint",
+            details: "Key (question_id) is not present",
+            hint: "Check question identity"
+          }
+        };
+      }
+    }, packageData),
+    (error) => error.cause.code === "23503"
+      && error.cause.details === "Key (question_id) is not present"
+      && error.cause.hint === "Check question identity"
+  );
 });
 
 test("legacy CTW logical ID with the same fingerprint reuses all canonical identities", async () => {

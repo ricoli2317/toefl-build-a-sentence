@@ -1,7 +1,6 @@
 import type {
   CtwQuestion,
   ReadingImportPackage,
-  ReadingInsertionAnchor,
   ReadingPassage,
   ReadingQuestion
 } from "./types.ts";
@@ -13,6 +12,13 @@ import {
   normalizeReadingReviewText,
   type ReadingInlineDiff
 } from "./reviewDiff.ts";
+import {
+  buildReadingReviewVersion,
+  resolveReadingInsertionPosition,
+  type ReadingInsertionPositionReview,
+  type ReadingReviewMarker,
+  type ReadingReviewVersion
+} from "./reviewPresentation.ts";
 
 export type ReadingContentDifferenceKind =
   | "passage_title"
@@ -35,6 +41,10 @@ export type ReadingContentDifference = {
   existing: string;
   incoming: string;
   inlineDiff: ReadingInlineDiff;
+  insertionPositions?: {
+    existing: ReadingInsertionPositionReview[];
+    incoming: ReadingInsertionPositionReview[];
+  };
 };
 
 export type ReadingCtwSlotConflictPreview = {
@@ -77,12 +87,24 @@ export type ReadingContentConflictItem = {
   materialId: string | null;
   passageConflicts: ReadingContentDifference[];
   questionConflicts: ReadingQuestionContentConflict[];
+  existingVersion: ReadingReviewVersion;
+  incomingVersion: ReadingReviewVersion;
 };
 
 export type ReadingContentConflictResolution = {
   resolutionId: string;
   action: "keep_existing" | "update_from_source";
 };
+
+export function readingContentConflictSummary(
+  item: Pick<ReadingContentConflictItem, "passageConflicts" | "questionConflicts">
+) {
+  const hasPassage = item.passageConflicts.length > 0;
+  const hasQuestions = item.questionConflicts.length > 0;
+  if (hasPassage && hasQuestions) return "已确认是同一题组，但文章和题目内容存在差异。";
+  if (hasPassage) return "已确认是同一篇文章，但文章内容存在差异。";
+  return "已确认是同一题组，但题目内容存在差异。";
+}
 
 export function indexReadingContentConflictResolutions(
   items: ReadingContentConflictItem[],
@@ -169,6 +191,8 @@ export function buildReadingContentConflict(
   const title = incoming.item.module === "rap"
     ? incoming.passages[0]?.title ?? incoming.item.title
     : incoming.item.title;
+  const existingMarkers = insertionMarkers(questionConflicts, "existing");
+  const incomingMarkers = insertionMarkers(questionConflicts, "incoming");
   return {
     resolutionId: [
       "reading-content",
@@ -189,7 +213,9 @@ export function buildReadingContentConflict(
     passageTitle: title,
     materialId: incoming.item.module === "rdl" ? incoming.materials[0]?.materialId ?? null : null,
     passageConflicts,
-    questionConflicts
+    questionConflicts,
+    existingVersion: buildReadingReviewVersion(existing, existingMarkers),
+    incomingVersion: buildReadingReviewVersion(incoming, incomingMarkers)
   };
 }
 
@@ -273,18 +299,31 @@ function compareQuestion(
     }
     const existingPassage = requiredPassage(existingPackage, existing.payload.passageId);
     const incomingPassage = requiredPassage(incomingPackage, incoming.payload.passageId);
-    const existingAnchors = existing.payload.anchors.map((anchor) => anchorIdentity(anchor, existingPassage)).sort();
-    const incomingAnchors = incoming.payload.anchors.map((anchor) => anchorIdentity(anchor, incomingPassage)).sort();
-    if (!sameArray(
-      existingAnchors.map(normalizeReadingReviewText).sort(),
-      incomingAnchors.map(normalizeReadingReviewText).sort()
-    )) {
-      result.push(difference("insertion_anchors", existingAnchors.join("\n"), incomingAnchors.join("\n")));
+    const existingAnchors = existing.payload.anchors.map((anchor) => resolveReadingInsertionPosition(existingPassage, anchor));
+    const incomingAnchors = incoming.payload.anchors.map((anchor) => resolveReadingInsertionPosition(incomingPassage, anchor));
+    const existingKeys = new Set(existingAnchors.map((position) => position.semanticKey));
+    const incomingKeys = new Set(incomingAnchors.map((position) => position.semanticKey));
+    const onlyExisting = existingAnchors.filter((position) => !incomingKeys.has(position.semanticKey));
+    const onlyIncoming = incomingAnchors.filter((position) => !existingKeys.has(position.semanticKey));
+    if (onlyExisting.length > 0 || onlyIncoming.length > 0) {
+      result.push(difference(
+        "insertion_anchors",
+        positionLabels(onlyExisting),
+        positionLabels(onlyIncoming),
+        undefined,
+        { existing: onlyExisting, incoming: onlyIncoming }
+      ));
     }
-    const existingCorrect = correctAnchorDisplay(existing, existingPassage);
-    const incomingCorrect = correctAnchorDisplay(incoming, incomingPassage);
-    if (!sameText(existingCorrect, incomingCorrect)) {
-      result.push(difference("correct_insertion_location", existingCorrect, incomingCorrect));
+    const existingCorrect = correctAnchorPosition(existing, existingPassage);
+    const incomingCorrect = correctAnchorPosition(incoming, incomingPassage);
+    if (existingCorrect.semanticKey !== incomingCorrect.semanticKey) {
+      result.push(difference(
+        "correct_insertion_location",
+        existingCorrect.label,
+        incomingCorrect.label,
+        undefined,
+        { existing: [existingCorrect], incoming: [incomingCorrect] }
+      ));
     }
     return result;
   }
@@ -323,7 +362,8 @@ function difference(
   kind: ReadingContentDifferenceKind,
   existing: string,
   incoming: string,
-  label = DIFFERENCE_LABELS[kind]
+  label = DIFFERENCE_LABELS[kind],
+  insertionPositions?: ReadingContentDifference["insertionPositions"]
 ): ReadingContentDifference {
   return {
     kind,
@@ -331,7 +371,8 @@ function difference(
     substantive: true,
     existing,
     incoming,
-    inlineDiff: buildReadingInlineDiff(existing, incoming)
+    inlineDiff: buildReadingInlineDiff(existing, incoming),
+    ...(insertionPositions ? { insertionPositions } : {})
   };
 }
 
@@ -349,20 +390,33 @@ function displaySentences(sentences: Array<{ sentenceOrder: number; text: string
     .map((sentence) => `${sentence.sentenceOrder}. ${sentence.text}`);
 }
 
-function anchorIdentity(anchor: ReadingInsertionAnchor, passage: ReadingPassage) {
-  const paragraph = targetParagraphInPassage(passage, anchor.paragraphId);
-  const afterSentence = anchor.afterSentenceId
-    ? paragraph?.sentences.find((sentence) => sentence.sentenceId === anchor.afterSentenceId)?.text ?? ""
-    : "段落开头";
-  return `第 ${paragraph?.paragraphOrder ?? "?"} 段 · ${anchor.boundaryIndex === 0 ? "段落开头" : `在“${afterSentence}”之后`}`;
-}
-
-function correctAnchorDisplay(
+function correctAnchorPosition(
   question: Extract<ReadingQuestion, { questionType: "rap_sentence_insertion" }>,
   passage: ReadingPassage
 ) {
   const anchor = question.payload.anchors.find((candidate) => candidate.anchorId === question.payload.correctAnchorId);
-  return anchor ? anchorIdentity(anchor, passage) : "未解析";
+  if (!anchor) throw new Error(`Reading content reconciliation cannot resolve correct anchor ${question.payload.correctAnchorId}`);
+  return resolveReadingInsertionPosition(passage, anchor);
+}
+
+function positionLabels(positions: ReadingInsertionPositionReview[]) {
+  return positions.length > 0 ? positions.map((position) => position.label).join("\n") : "没有额外位置";
+}
+
+function insertionMarkers(
+  conflicts: ReadingQuestionContentConflict[],
+  side: "existing" | "incoming"
+): ReadingReviewMarker[] {
+  const markers = conflicts.flatMap((conflict) => conflict.differences.flatMap((difference) =>
+    (difference.insertionPositions?.[side] ?? []).map((position) => ({
+      ...position,
+      questionNumber: conflict.sourceQuestionNumber ?? conflict.questionOrder
+    }))
+  ));
+  return Array.from(new Map(markers.map((marker) => [
+    `${marker.questionNumber}:${marker.semanticKey}`,
+    marker
+  ])).values());
 }
 
 function selectedSentence(
@@ -383,10 +437,6 @@ function requiredPassage(packageData: ReadingImportPackage, passageId: string) {
 function targetParagraph(packageData: ReadingImportPackage, paragraphId: string) {
   return packageData.passages.flatMap((passage) => passage.paragraphs)
     .find((paragraph) => paragraph.paragraphId === paragraphId);
-}
-
-function targetParagraphInPassage(passage: ReadingPassage, paragraphId: string) {
-  return passage.paragraphs.find((paragraph) => paragraph.paragraphId === paragraphId);
 }
 
 function sameText(left: string, right: string) {

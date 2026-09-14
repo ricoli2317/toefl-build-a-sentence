@@ -8,12 +8,20 @@ const { adaptReadingCsv } = require("../lib/reading/csvAdapter.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
 const {
   buildReadingContentConflict,
-  indexReadingContentConflictResolutions
+  indexReadingContentConflictResolutions,
+  readingContentConflictSummary
 } = require("../lib/reading/contentReconciliation.ts");
 const { buildReadingCanonicalContentUpdate } = require("../lib/reading/contentCorrection.ts");
 const { areReadingPackagesHistoricalSemanticEquivalents } = require("../lib/reading/semantic.ts");
 const { attachIncomingOccurrencesToHistoricalPackage } = require("../lib/reading/historicalDedup.ts");
-const { assertPreparedReadingPackageCanImport } = require("../lib/reading/importer.ts");
+const {
+  buildReadingReviewVersion,
+  resolveReadingInsertionPosition
+} = require("../lib/reading/reviewPresentation.ts");
+const {
+  assertPreparedReadingPackageCanImport,
+  prepareReadingPackageAtomicImport
+} = require("../lib/reading/importer.ts");
 
 const projectRoot = path.join(__dirname, "..");
 const templateDir = path.join(projectRoot, "data/reading/csv-templates");
@@ -65,6 +73,15 @@ test("RDL and RAP identical canonical content has no conflict", () => {
   for (const packageData of [rdl(), rap()]) {
     assert.equal(buildReadingContentConflict(packageData, structuredClone(packageData)), null);
   }
+});
+
+test("content review summary follows passage, question, and combined conflict scope", () => {
+  assert.equal(readingContentConflictSummary({ passageConflicts: [{}], questionConflicts: [] }),
+    "已确认是同一篇文章，但文章内容存在差异。");
+  assert.equal(readingContentConflictSummary({ passageConflicts: [], questionConflicts: [{}] }),
+    "已确认是同一题组，但题目内容存在差异。");
+  assert.equal(readingContentConflictSummary({ passageConflicts: [{}], questionConflicts: [{}] }),
+    "已确认是同一题组，但文章和题目内容存在差异。");
 });
 
 test("RDL historical reuse carries the normalized display title without replacing canonical questions", () => {
@@ -145,6 +162,92 @@ test("RAP insertion anchor IDs do not matter but semantic insertion location doe
   ));
 });
 
+test("The Discovery of Vitamins Q35 fixture keeps paragraph 3 end and paragraph 4 start distinct", () => {
+  const packageData = rap();
+  const passage = packageData.passages[0];
+  const paragraphs = [...passage.paragraphs].sort((left, right) => left.paragraphOrder - right.paragraphOrder);
+  const leftParagraph = paragraphs[0];
+  leftParagraph.paragraphOrder = 3;
+  leftParagraph.sentences = [...leftParagraph.sentences]
+    .sort((left, right) => left.sentenceOrder - right.sentenceOrder)
+    .slice(0, 2);
+  const rightParagraph = {
+    paragraphId: "fixture-paragraph-2",
+    paragraphOrder: 4,
+    text: "A following paragraph begins here.",
+    rawText: "A following paragraph begins here.",
+    sentences: [{ sentenceId: "fixture-paragraph-2-s1", sentenceOrder: 1, text: "A following paragraph begins here." }]
+  };
+  passage.paragraphs.push(rightParagraph);
+  const leftSentences = [...leftParagraph.sentences].sort((left, right) => left.sentenceOrder - right.sentenceOrder);
+  const paragraphEnd = resolveReadingInsertionPosition(passage, {
+    anchorId: "fixture-end",
+    anchorOrder: 1,
+    paragraphId: leftParagraph.paragraphId,
+    boundaryIndex: leftSentences.length,
+    afterSentenceId: leftSentences.at(-1).sentenceId
+  });
+  const nextParagraphStart = resolveReadingInsertionPosition(passage, {
+    anchorId: "fixture-start",
+    anchorOrder: 2,
+    paragraphId: rightParagraph.paragraphId,
+    boundaryIndex: 0,
+    afterSentenceId: null
+  });
+
+  assert.equal(paragraphEnd.label, `第 ${leftParagraph.paragraphOrder} 段末尾`);
+  assert.equal(nextParagraphStart.label, `第 ${rightParagraph.paragraphOrder} 段开头`);
+  assert.notEqual(paragraphEnd.semanticKey, nextParagraphStart.semanticKey);
+  assert.equal(paragraphEnd.nextSentence.text, rightParagraph.sentences[0].text);
+  assert.equal(nextParagraphStart.previousSentence.text, leftSentences.at(-1).text);
+  const afterFirstSentence = resolveReadingInsertionPosition(passage, {
+    anchorId: "fixture-after-first",
+    anchorOrder: 3,
+    paragraphId: leftParagraph.paragraphId,
+    boundaryIndex: 1,
+    afterSentenceId: leftSentences[0].sentenceId
+  });
+  assert.equal(afterFirstSentence.label, "第 3 段第 1 句之后");
+  assert.notEqual(afterFirstSentence.semanticKey, paragraphEnd.semanticKey);
+});
+
+test("RAP insertion conflict exposes only unmatched semantic positions and marker leaves passage text intact", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const existingQuestion = existing.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  const incomingQuestion = incoming.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  const changed = incomingQuestion.payload.anchors[0];
+  const paragraph = incoming.passages[0].paragraphs.find((candidate) => candidate.paragraphId === changed.paragraphId);
+  const nextBoundary = paragraph.sentences.length;
+  changed.boundaryIndex = nextBoundary;
+  changed.afterSentenceId = nextBoundary === 0 ? null : paragraph.sentences[nextBoundary - 1].sentenceId;
+  if (changed.anchorId === incomingQuestion.payload.correctAnchorId) {
+    incomingQuestion.payload.correctAnchorId = incomingQuestion.payload.anchors[1].anchorId;
+  }
+  if (existingQuestion.payload.anchors[0].anchorId === existingQuestion.payload.correctAnchorId) {
+    existingQuestion.payload.correctAnchorId = existingQuestion.payload.anchors[1].anchorId;
+  }
+
+  const conflict = buildReadingContentConflict(existing, incoming);
+  const difference = conflict.questionConflicts.flatMap((question) => question.differences)
+    .find((candidate) => candidate.kind === "insertion_anchors");
+  assert.equal(difference.insertionPositions.existing.length, 1);
+  assert.equal(difference.insertionPositions.incoming.length, 1);
+  assert.notEqual(
+    difference.insertionPositions.existing[0].semanticKey,
+    difference.insertionPositions.incoming[0].semanticKey
+  );
+  const marker = { ...difference.insertionPositions.existing[0], questionNumber: 35 };
+  const version = buildReadingReviewVersion(existing, [marker]);
+  const markedParagraph = version.passage.paragraphs.find((candidate) =>
+    candidate.paragraphOrder === marker.paragraphOrder
+  );
+  assert.equal(markedParagraph.text, existing.passages[0].paragraphs.find((candidate) =>
+    candidate.paragraphOrder === marker.paragraphOrder
+  ).text);
+  assert.deepEqual(markedParagraph.markers.map((candidate) => candidate.boundaryIndex), [marker.boundaryIndex]);
+});
+
 for (const [name, straight, curly] of [
   ["apostrophes", "The brain's memory system guides recall.", "The brain’s memory system guides recall."],
   ["double quotes", 'The "data management" system guides memory.', "The “data management” system guides memory."]
@@ -163,7 +266,7 @@ for (const [name, straight, curly] of [
   });
 }
 
-test("RAP insertion anchor context preserves true content differences", () => {
+test("RAP insertion comparison uses paragraph boundary rather than changing context text", () => {
   const existing = rap();
   const incoming = structuredClone(existing);
   const existingParagraph = existing.passages[0].paragraphs[0];
@@ -172,8 +275,9 @@ test("RAP insertion anchor context preserves true content differences", () => {
   incomingParagraph.sentences[0].text = `The mind’s “data management” system guides memory.`;
 
   const conflict = buildReadingContentConflict(existing, incoming);
-  assert.ok(conflict.questionConflicts.some((question) =>
-    question.differences.some((difference) => difference.kind === "insertion_anchors")
+  assert.ok(conflict);
+  assert.ok(conflict.questionConflicts.every((question) =>
+    question.differences.every((difference) => difference.kind !== "insertion_anchors")
   ));
 });
 
@@ -295,6 +399,50 @@ test("source correction preserves canonical IDs and applies incoming answer cont
   assert.equal(corrected.questions[0].payload.correctOptionId, existing.questions[0].payload.options[1].optionId);
 });
 
+test("RAP question-only correction tolerates harmless historical sentence segmentation drift", () => {
+  const existing = rap();
+  const existingChoice = choice(existing);
+  existing.questions = [existingChoice];
+  existing.item.questionCount = 1;
+  existing.item.scoredItemCount = 1;
+  existing.occurrences.forEach((occurrence) => {
+    occurrence.questionSources = occurrence.questionSources.filter(
+      (source) => source.questionId === existingChoice.questionId
+    );
+    occurrence.sourceQuestionStart = occurrence.questionSources[0].sourceQuestionStart;
+    occurrence.sourceQuestionEnd = occurrence.questionSources[0].sourceQuestionEnd;
+  });
+  const incoming = structuredClone(existing);
+  incoming.item.logicalItemId = "incoming-segmentation-variant";
+  incoming.passages.forEach((passage) => { passage.logicalItemId = incoming.item.logicalItemId; });
+  incoming.questions.forEach((question) => { question.logicalItemId = incoming.item.logicalItemId; });
+  incoming.occurrences.forEach((occurrence) => { occurrence.logicalItemId = incoming.item.logicalItemId; });
+
+  const paragraph = incoming.passages[0].paragraphs.find((candidate) => candidate.sentences.length >= 2);
+  const [first, second, ...remaining] = paragraph.sentences;
+  paragraph.sentences = [
+    { ...first, text: `${first.text} ${second.text}` },
+    ...remaining.map((sentence, index) => ({ ...sentence, sentenceOrder: index + 2 }))
+  ];
+  const changedChoice = choice(incoming);
+  changedChoice.payload.options[0].text += " corrected";
+
+  const conflict = buildReadingContentConflict(existing, incoming);
+  assert.equal(conflict.passageConflicts.length, 0);
+  assert.deepEqual(conflict.questionConflicts.map((question) => question.questionOrder), [changedChoice.questionOrder]);
+  const corrected = buildReadingCanonicalContentUpdate(existing, incoming);
+  assert.deepEqual(
+    corrected.passages[0].paragraphs.map((candidate) => candidate.sentences.length),
+    existing.passages[0].paragraphs.map((candidate) => candidate.sentences.length)
+  );
+  assert.equal(choice(corrected).payload.options[0].text, changedChoice.payload.options[0].text);
+  assert.equal(corrected.questions.length, 1);
+  assert.doesNotThrow(() => prepareReadingPackageAtomicImport(corrected, {
+    replaceCanonicalContent: true,
+    expectedLogicalItemAction: "reuse_existing"
+  }));
+});
+
 test("atomic correction payload explicitly requests canonical replacement", async () => {
   const { importReadingPackageAtomic } = require("../lib/reading/importer.ts");
   const calls = [];
@@ -316,6 +464,7 @@ test("atomic correction payload explicitly requests canonical replacement", asyn
   assert.equal(calls[0].args.p_rows.replace_canonical_content, true);
   const sql = fs.readFileSync(path.join(projectRoot, "supabase/reading_csv_import.sql"), "utf8");
   assert.match(sql, /if v_replace_canonical_content then/);
+  assert.match(sql, /v_id_owner_fingerprint <> v_dedup_fingerprint[\s\S]*and not v_replace_canonical_content then/);
   assert.match(sql, /on conflict \(material_id\) do update set[\s\S]*title = excluded\.title/);
 });
 
@@ -336,7 +485,9 @@ test("content conflict UI defaults to compact fixed-direction review with local 
   assert.match(source, /修改选择/);
   assert.match(source, /重新查看/);
   assert.match(source, /ReadingInlineVersionValue/);
-  assert.doesNotMatch(source, /展开完整内容|QuestionVersion|内部题目编号/);
+  assert.match(source, /展开完整内容/);
+  assert.match(source, /ReadingFullContentComparison/);
+  assert.doesNotMatch(source, /内部题目编号/);
 });
 
 test("sentence-selection fixed instruction is not part of semantic stem identity", () => {
@@ -428,6 +579,17 @@ test("real 7.11A Q35 marker-aware segmentation produces four legal unique anchor
     targetSentences[2].sentenceId
   ]);
   assert.equal(insertion.payload.correctAnchorId, insertion.payload.anchors[0].anchorId);
+  const prepared = prepareReadingPackageAtomicImport(packageData, {
+    expectedLogicalItemAction: "create_new"
+  });
+  const anchorRows = prepared.rows.reading_rap_insertion_anchors.filter(
+    (anchor) => anchor.question_id === insertion.questionId
+  );
+  assert.deepEqual(anchorRows.map((anchor) => anchor.boundary_index), [0, 1, 2, 3]);
+  assert.equal(
+    prepared.rows.reading_questions.find((question) => question.question_id === insertion.questionId).correct_anchor_id,
+    anchorRows[0].anchor_id
+  );
 });
 
 function real711aInsertionRows(markerAware) {

@@ -3,8 +3,10 @@ import type { ReadingCsvType } from "@/lib/reading/csvSchemas";
 import { groupReadingSourceOccurrences } from "@/lib/reading/grouping";
 import {
   assertPreparedReadingPackageCanImport,
-  importReadingPackageAtomic,
+  executePreparedReadingPackageAtomic,
+  prepareReadingPackageAtomicImport,
   prepareReadingPackagesForImport,
+  type PreparedReadingAtomicImport,
   type PreparedReadingImportPackage
 } from "@/lib/reading/importer";
 import {
@@ -44,6 +46,7 @@ import {
 } from "@/lib/reading/contentReconciliation";
 import { buildReadingCanonicalContentUpdate } from "@/lib/reading/contentCorrection";
 import { buildRdlImportGroupDecision } from "@/lib/reading/rdlImportDecision";
+import { logImportError, serializeError } from "./common";
 
 export function readingCsvImporter(type: ReadingCsvType) {
   return (context: ImporterContext) => importReadingCsv(context, type);
@@ -173,24 +176,18 @@ async function importReadingCsv(
         }))
     : resolveReadingDuplicateImports(preparedPackages, reviewPlans, resolutionById));
 
-  if (!dryRun) {
-    // Validate every resolved group before the first database write. This keeps
-    // a stale or forged resolution from producing a partially imported batch.
-    for (const resolved of resolvedImports) assertResolvedImportCanProceed(resolved);
-  }
-
+  const plannedImports: Array<{
+    resolved: (typeof resolvedImports)[number];
+    preparedAtomic: PreparedReadingAtomicImport;
+    existed: boolean;
+    addedOccurrenceCount: number;
+    manualActions: Array<"reuse_existing" | "create_new">;
+  }> = [];
   for (const resolved of resolvedImports) {
     let { packageData } = resolved;
     const { existingItem, members } = resolved;
-    const contentResolution = resolveContentForImport(
-      packageData,
-      members,
-      contentResolutionById
-    );
-    packageData = contentResolution.packageData;
-    const addedOccurrenceCount = members.reduce((count, member) => count + member.addedOccurrenceCount, 0);
     try {
-      if (dryRun) assertResolvedImportCanProceed(resolved);
+      assertResolvedImportCanProceed(resolved);
       const existed = Boolean(existingItem);
       const firstSeen = [
         ...(existingItem ? [existingItem] : []),
@@ -205,14 +202,48 @@ async function importReadingCsv(
         const resolution = review ? resolutionById.get(review.resolutionId) : undefined;
         return resolution ? [resolution.action] : [];
       });
+      const contentResolution = resolveContentForImport(
+        packageData,
+        members,
+        contentResolutionById
+      );
+      packageData = contentResolution.packageData;
+      const addedOccurrenceCount = members.reduce(
+        (count, member) => count + member.addedOccurrenceCount,
+        0
+      );
+      const preparedAtomic = prepareReadingPackageAtomicImport(packageData, {
+        createdBy: userId,
+        firstSeen,
+        replaceCanonicalContent: contentResolution.replaceCanonicalContent,
+        expectedLogicalItemAction: existed ? "reuse_existing" : "create_new"
+      });
+      plannedImports.push({ resolved, preparedAtomic, existed, addedOccurrenceCount, manualActions });
+    } catch (error) {
+      const hasSourceConflict = appendReadingFailure({
+        error,
+        dryRun: dryRun === true,
+        rows,
+        packageData,
+        members,
+        failedRows,
+        operation: "prepare Reading group commit payload"
+      });
+      if (hasSourceConflict) occurrenceConflictCount += 1;
+    }
+  }
+
+  // Finish validation, review application, canonical-ID remapping, and exact
+  // RPC-row construction for every group before the first write.
+  const canExecuteCommit = dryRun || failedRows.length === 0;
+  for (const plan of canExecuteCommit ? plannedImports : []) {
+    const { resolved, preparedAtomic, existed, addedOccurrenceCount, manualActions } = plan;
+    const { members } = resolved;
+    const packageData = preparedAtomic.packageData;
+    try {
       let execution: ReadingImportExecution;
       if (!dryRun) {
-        const imported = await importReadingPackageAtomic(supabase, packageData, {
-          createdBy: userId,
-          firstSeen,
-          replaceCanonicalContent: contentResolution.replaceCanonicalContent,
-          expectedLogicalItemAction: existed ? "reuse_existing" : "create_new"
-        });
+        const imported = await executePreparedReadingPackageAtomic(supabase, preparedAtomic);
         execution = {
           logicalItemAction: imported.logicalItemAction,
           logicalReuseKind: imported.logicalItemAction === "reuse_existing"
@@ -235,18 +266,16 @@ async function importReadingCsv(
         updatedCount += 1;
       }
     } catch (error) {
-      const hasSourceConflict = members.some((member) => member.occurrenceConflict);
-      if (hasSourceConflict) occurrenceConflictCount += 1;
-      const failure = readingFailure(error, dryRun === true, hasSourceConflict);
-      failedRows.push({
-        rowNumber: sourceRowNumber(rows, packageData.occurrences[0]?.sourceLabel),
-        questionId: packageData.occurrences[0]?.occurrenceId ?? packageData.item.logicalItemId,
-        setId: packageData.occurrences[0]?.sourceLabel,
-        reason: failure.reason,
-        code: failure.code,
-        category: failure.category,
+      const hasSourceConflict = appendReadingFailure({
+        error,
+        dryRun: dryRun === true,
+        rows,
+        packageData,
+        members,
+        failedRows,
         operation: dryRun ? "preflight Reading group" : "import Reading group atomically"
       });
+      if (hasSourceConflict) occurrenceConflictCount += 1;
     }
   }
 
@@ -404,24 +433,83 @@ function readingFailure(
   error: unknown,
   dryRun: boolean,
   sourceConflict: boolean
-): { reason: string; code: string; category: ReadingImportFailureCategory } {
-  const candidate = error as { message?: unknown; code?: unknown };
-  const reason = typeof candidate?.message === "string" ? candidate.message : String(error);
+): ReturnType<typeof serializeError> & {
+  reason: string;
+  category: ReadingImportFailureCategory;
+} {
+  const serialized = serializeError(error);
   if (sourceConflict) {
-    return { reason, code: "READING_SOURCE_CONFLICT", category: "source_conflict" };
+    return {
+      ...serialized,
+      reason: serialized.message,
+      code: "READING_SOURCE_CONFLICT",
+      category: "source_conflict"
+    };
   }
   if (dryRun) {
     return {
-      reason,
-      code: typeof candidate?.code === "string" ? candidate.code : "READING_VALIDATION_ERROR",
+      ...serialized,
+      reason: serialized.message,
+      code: serialized.code === "IMPORT_FAILED" ? "READING_VALIDATION_ERROR" : serialized.code,
       category: "validation_error"
     };
   }
   return {
-    reason,
-    code: typeof candidate?.code === "string" ? candidate.code : "READING_IMPORT_ERROR",
+    ...serialized,
+    reason: serialized.message,
     category: "actual_import_error"
   };
+}
+
+function appendReadingFailure({
+  error,
+  dryRun,
+  rows,
+  packageData,
+  members,
+  failedRows,
+  operation
+}: {
+  error: unknown;
+  dryRun: boolean;
+  rows: Array<Record<string, string>>;
+  packageData: PreparedReadingImportPackage["packageData"];
+  members: PreparedReadingImportPackage[];
+  failedRows: FailedRow[];
+  operation: string;
+}) {
+  const hasSourceConflict = members.some((member) => member.occurrenceConflict);
+  const failure = readingFailure(error, dryRun, hasSourceConflict);
+  const occurrence = packageData.occurrences[0];
+  const actualOperation = error && typeof error === "object" && "operation" in error
+    ? String(error.operation)
+    : operation;
+  const rowNumber = sourceRowNumber(rows, occurrence?.sourceLabel);
+  const questionId = error && typeof error === "object" && "questionId" in error
+    && typeof error.questionId === "string"
+    ? error.questionId
+    : occurrence?.occurrenceId ?? packageData.item.logicalItemId;
+  logImportError(error, {
+    operation: actualOperation,
+    questionId,
+    rowNumber,
+    setId: occurrence?.sourceLabel
+  });
+  failedRows.push({
+    rowNumber,
+    questionId,
+    setId: occurrence?.sourceLabel,
+    reason: failure.reason,
+    code: failure.code,
+    table: failure.table,
+    column: failure.column,
+    constraint: failure.constraint,
+    details: failure.details,
+    hint: failure.hint,
+    category: failure.category,
+    operation: actualOperation
+  });
+  return hasSourceConflict;
 }
 
 async function loadMaterials(

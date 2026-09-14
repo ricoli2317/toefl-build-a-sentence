@@ -1,6 +1,8 @@
 import { validateReadingImportPackage } from "./validation.ts";
 import { fingerprintReadingSourceOccurrence } from "./grouping.ts";
 import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
+import { buildReadingContentConflict } from "./contentReconciliation.ts";
+import { normalizeReadingReviewText } from "./reviewDiff.ts";
 import type {
   CtwQuestion,
   ReadingImportPackage,
@@ -31,20 +33,36 @@ export function buildReadingCanonicalContentUpdate(
   const existingQuestions = ordered(existing.questions, (question) => question.questionOrder);
   const incomingQuestions = ordered(incoming.questions, (question) => question.questionOrder);
   requireSameOrders(existingQuestions, incomingQuestions, "question");
+  const conflict = buildReadingContentConflict(existing, incoming);
+  const changedQuestionOrders = new Set(
+    conflict?.questionConflicts.map((question) => question.questionOrder) ?? []
+  );
 
   const passageIds = new Map<string, string>();
   const paragraphIds = new Map<string, string>();
   const sentenceIds = new Map<string, string>();
-  const passages = remapPassages(existing.passages, incoming.passages, passageIds, paragraphIds, sentenceIds);
+  const passages = (conflict?.passageConflicts.length ?? 0) === 0
+    ? preserveCanonicalPassages(
+        existing.passages,
+        incoming.passages,
+        passageIds,
+        paragraphIds,
+        sentenceIds
+      )
+    : remapPassages(existing.passages, incoming.passages, passageIds, paragraphIds, sentenceIds);
   const existingByOrder = new Map(existingQuestions.map((question) => [question.questionOrder, question]));
-  const questions = incomingQuestions.map((question) => remapQuestion(
-    requiredMap(existingByOrder, question.questionOrder, "canonical question"),
-    question,
-    existing.item.logicalItemId,
-    passageIds,
-    paragraphIds,
-    sentenceIds
-  ));
+  const questions = incomingQuestions.map((question) => {
+    const existingQuestion = requiredMap(existingByOrder, question.questionOrder, "canonical question");
+    if (!changedQuestionOrders.has(question.questionOrder)) return existingQuestion;
+    return remapQuestion(
+      existingQuestion,
+      question,
+      existing.item.logicalItemId,
+      passageIds,
+      paragraphIds,
+      sentenceIds
+    );
+  });
   const canonicalQuestionByOrder = new Map(questions.map((question) => [question.questionOrder, question]));
   const occurrences = incoming.occurrences.map((occurrence) => ({
     ...occurrence,
@@ -77,9 +95,9 @@ export function buildReadingCanonicalContentUpdate(
     questions,
     occurrences
   };
-  // CTW keeps the database's original legacy compatibility key even when its
-  // canonical representation is corrected. Other Reading modules retain the
-  // strict canonical fingerprint behavior.
+  // CTW keeps its historical compatibility key. RDL/RAP retain a strict
+  // fingerprint for the corrected canonical representation; the atomic RPC
+  // permits this only for an explicitly reviewed canonical replacement.
   draft.item.dedupFingerprint = draft.item.module === "ctw"
     ? existing.item.dedupFingerprint
     : fingerprintReadingSourceOccurrence({
@@ -112,6 +130,43 @@ export function buildReadingCanonicalContentUpdate(
       })
     });
   return validateReadingImportPackage(draft);
+}
+
+function preserveCanonicalPassages(
+  existingPassages: ReadingPassage[],
+  incomingPassages: ReadingPassage[],
+  passageIds: Map<string, string>,
+  paragraphIds: Map<string, string>,
+  sentenceIds: Map<string, string>
+) {
+  if (existingPassages.length !== incomingPassages.length) {
+    throw new Error("Reading canonical correction cannot safely map a different passage count");
+  }
+  for (let passageIndex = 0; passageIndex < incomingPassages.length; passageIndex += 1) {
+    const incomingPassage = incomingPassages[passageIndex];
+    const existingPassage = existingPassages[passageIndex];
+    passageIds.set(incomingPassage.passageId, existingPassage.passageId);
+    const existingParagraphs = ordered(existingPassage.paragraphs, (paragraph) => paragraph.paragraphOrder);
+    const incomingParagraphs = ordered(incomingPassage.paragraphs, (paragraph) => paragraph.paragraphOrder);
+    requireSameOrders(existingParagraphs, incomingParagraphs, "passage paragraph");
+    for (const incomingParagraph of incomingParagraphs) {
+      const existingParagraph = requiredByOrder(
+        existingParagraphs,
+        incomingParagraph.paragraphOrder,
+        "canonical paragraph"
+      );
+      paragraphIds.set(incomingParagraph.paragraphId, existingParagraph.paragraphId);
+      const existingByText = new Map(existingParagraph.sentences.map((sentence) => [
+        normalizeReadingReviewText(sentence.text),
+        sentence.sentenceId
+      ]));
+      for (const incomingSentence of incomingParagraph.sentences) {
+        const existingSentenceId = existingByText.get(normalizeReadingReviewText(incomingSentence.text));
+        if (existingSentenceId) sentenceIds.set(incomingSentence.sentenceId, existingSentenceId);
+      }
+    }
+  }
+  return existingPassages;
 }
 
 function remapPassages(

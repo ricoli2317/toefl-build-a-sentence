@@ -9,6 +9,7 @@ import type {
   ReadingDuplicateResolutionItem
 } from "@/lib/reading/duplicateResolutionModel";
 import { ReadingInlineVersionValue } from "./ReadingInlineVersionValue";
+import { ReadingFullContentComparison } from "./ReadingFullContentComparison";
 
 export type ReadingResolutionDraft =
   | { action: null; logicalItemId: string }
@@ -20,6 +21,7 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
   onChange: (resolutionId: string, draft: ReadingResolutionDraft) => void;
 }) {
   const [expandedReviewItems, setExpandedReviewItems] = useState<Set<string>>(new Set());
+  const [expandedContentItems, setExpandedContentItems] = useState<Set<string>>(new Set());
   const collapseReviewItem = (resolutionId: string) => {
     setExpandedReviewItems((current) => removeFromSet(current, resolutionId));
   };
@@ -99,6 +101,20 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
                 <RdlMaterialComparison candidate={selectedCandidate} incoming={item.incoming} />
               ) : null}
               <CompactDuplicateDifferences candidate={selectedCandidate ?? null} />
+              <button
+                className="mt-3 text-sm font-bold text-student-primary underline"
+                disabled={!selectedCandidate}
+                onClick={() => setExpandedContentItems((current) => toggleSet(current, item.resolutionId))}
+                type="button"
+              >
+                {expandedContentItems.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
+              </button>
+              {selectedCandidate && expandedContentItems.has(item.resolutionId) ? (
+                <ReadingFullContentComparison
+                  existing={selectedCandidate.reviewVersion}
+                  incoming={item.incoming.reviewVersion}
+                />
+              ) : null}
 
               <div className="mt-3 flex flex-wrap gap-3">
                 <button
@@ -204,3 +220,4 @@ function compactReadingSourceLabel(source: Pick<ReadingDuplicatePreview, "source
 }
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
 function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }
+function toggleSet(values: Set<string>, value: string) { const next = new Set(values); next.has(value) ? next.delete(value) : next.add(value); return next; }

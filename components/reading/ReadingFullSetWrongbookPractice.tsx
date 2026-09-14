@@ -22,11 +22,17 @@ import {
 import {
   buildReadingFullSetWrongbookProgress,
   readingFullSetWrongbookProgressLabel,
+  sameReadingFullSetWrongbookTarget,
+  sameReadingFullSetWrongbookTargets,
   type ReadingFullSetWrongbookQueueItem,
   type ReadingFullSetWrongbookTarget
 } from "@/lib/wrongQuestions";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
+import {
+  measureStudentRequest,
+  useStudentPagePerformance
+} from "@/lib/studentPerformance.client";
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
@@ -95,19 +101,24 @@ export function ReadingFullSetWrongbookPractice({
         target.occurrenceId === step.occurrenceId && target.questionId === step.questionId
       )
     : undefined;
+  const embeddedFirstPractice = bootstrap.data?.firstPractice ?? null;
+  const bootstrapPractice = stepTarget?.logicalItemId === embeddedFirstPractice?.item.itemId
+    ? embeddedFirstPractice
+    : null;
   const practiceKey = studentWrongQuestionsCacheKey(
     `full-set-correction-practice:${stepTarget?.logicalItemId ?? "pending"}`
   );
   const sourcePractice = useStudentCachedData<StudentReadingPracticePayload>(
     practiceKey,
     (session) => loadReadingPractice(stepTarget!.logicalItemId, session),
-    { enabled: Boolean(stepTarget) }
+    { enabled: Boolean(stepTarget && !bootstrapPractice) }
   );
+  const sourcePracticeData = bootstrapPractice ?? sourcePractice.data;
 
   useEffect(() => {
-    if (!step || !item || !sourcePractice.data || occurrences[step.occurrenceId]) return;
+    if (!step || !item || !sourcePracticeData || occurrences[step.occurrenceId]) return;
     const targets = item.targets.filter((target) => target.occurrenceId === step.occurrenceId);
-    const practice = selectReadingWrongbookPractice(sourcePractice.data, targets);
+    const practice = selectReadingWrongbookPractice(sourcePracticeData, targets);
     setOccurrences((current) => ({
       ...current,
       [step.occurrenceId]: {
@@ -120,7 +131,7 @@ export function ReadingFullSetWrongbookPractice({
         targets
       }
     }));
-  }, [bootstrap.data?.preservedAnswersByOccurrence, item, occurrences, sourcePractice.data, step]);
+  }, [bootstrap.data?.preservedAnswersByOccurrence, item, occurrences, sourcePracticeData, step]);
 
   useEffect(() => {
     if (!bootstrap.data) return;
@@ -139,6 +150,15 @@ export function ReadingFullSetWrongbookPractice({
       : undefined,
     [currentModule, currentTargets]
   );
+  const loadError = bootstrap.error || sourcePractice.error;
+  useStudentPagePerformance({
+    errors: [error, loadError],
+    loading: !attempt || !current || !currentQuestion,
+    route: `/student/wrong-questions/${scope}/reading/practice?${new URLSearchParams({
+      sourceAttemptId,
+      taskType: "full_set"
+    }).toString()}`
+  });
 
   useEffect(() => {
     activeQuestionKeyRef.current = currentOccurrenceId && currentQuestionId
@@ -218,7 +238,6 @@ export function ReadingFullSetWrongbookPractice({
     }
   }
 
-  const loadError = bootstrap.error || sourcePractice.error;
   if ((error || loadError) && !current) {
     return <Message description={error || loadError} onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)} />;
   }
@@ -268,56 +287,79 @@ async function loadFullSetCorrection(input: {
   todayEnd: string;
   todayStart: string;
 }) {
-  const response = await fetch("/api/reading/wrongbook-attempts", {
-    method: "POST",
-    cache: "no-store",
-    headers: {
-      Authorization: `Bearer ${input.session.accessToken}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      scope: input.scope,
-      sourceAttemptId: input.sourceAttemptId,
-      taskType: "full_set",
-      todayEnd: input.todayEnd,
-      todayStart: input.todayStart
-    })
+  return measureStudentRequest("POST /api/reading/wrongbook-attempts (Full Set bootstrap)", async (captureResponse) => {
+    const response = await fetch("/api/reading/wrongbook-attempts", {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${input.session.accessToken}`,
+        "Content-Type": "application/json",
+        ...(process.env.NODE_ENV !== "production"
+          ? { "X-TPS-Performance-Debug": "1" }
+          : {})
+      },
+      body: JSON.stringify({
+        scope: input.scope,
+        sourceAttemptId: input.sourceAttemptId,
+        taskType: "full_set",
+        todayEnd: input.todayEnd,
+        todayStart: input.todayStart
+      })
+    });
+    captureResponse(response);
+    const payload = await response.json().catch(() => ({})) as {
+      attempt?: unknown;
+      error?: string;
+      firstPractice?: StudentReadingPracticePayload;
+      firstTarget?: ReadingFullSetWrongbookTarget;
+      item?: ReadingFullSetWrongbookQueueItem;
+      preservedAnswersByOccurrence?: Record<string, ReadingWrongbookPreservedAnswer[]>;
+    };
+    if (!response.ok || !isReadingFullSetWrongbookAttemptSummary(payload.attempt)) {
+      throw new Error(payload.error ?? "错题订正记录加载失败，请稍后重试。");
+    }
+    if (payload.attempt.sourceAttemptId !== input.sourceAttemptId) {
+      throw new Error("错题订正记录与当前套题不一致。");
+    }
+    if (!payload.item || payload.item.sourceAttemptId !== input.sourceAttemptId) {
+      throw new Error("这套错题已经订正完成。");
+    }
+    if (
+      !payload.firstTarget
+      || !payload.firstPractice
+      || payload.firstPractice.item.itemId !== payload.firstTarget.logicalItemId
+      || !sameReadingFullSetWrongbookTarget(payload.firstTarget, payload.item.targets[0])
+      || !sameReadingFullSetWrongbookTargets(payload.attempt.targets, payload.item.targets)
+    ) {
+      throw new Error("首题内容加载失败，请稍后重试。");
+    }
+    return {
+      attempt: payload.attempt,
+      firstPractice: payload.firstPractice,
+      firstTarget: payload.firstTarget,
+      item: payload.item,
+      preservedAnswersByOccurrence: payload.preservedAnswersByOccurrence ?? {}
+    };
   });
-  const payload = await response.json().catch(() => ({})) as {
-    attempt?: unknown;
-    error?: string;
-    item?: ReadingFullSetWrongbookQueueItem;
-    preservedAnswersByOccurrence?: Record<string, ReadingWrongbookPreservedAnswer[]>;
-  };
-  if (!response.ok || !isReadingFullSetWrongbookAttemptSummary(payload.attempt)) {
-    throw new Error(payload.error ?? "错题订正记录加载失败，请稍后重试。");
-  }
-  if (payload.attempt.sourceAttemptId !== input.sourceAttemptId) {
-    throw new Error("错题订正记录与当前套题不一致。");
-  }
-  if (!payload.item || payload.item.sourceAttemptId !== input.sourceAttemptId) {
-    throw new Error("这套错题已经订正完成。");
-  }
-  return {
-    attempt: payload.attempt,
-    item: payload.item,
-    preservedAnswersByOccurrence: payload.preservedAnswersByOccurrence ?? {}
-  };
 }
 
 async function loadReadingPractice(itemId: string, session: StudentCacheSession) {
-  const response = await fetch(`/api/reading/practice/${encodeURIComponent(itemId)}`, {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${session.accessToken}` }
+  const path = `/api/reading/practice/${encodeURIComponent(itemId)}`;
+  return measureStudentRequest(`GET ${path}`, async (captureResponse) => {
+    const response = await fetch(path, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    });
+    captureResponse(response);
+    const payload = await response.json().catch(() => ({})) as {
+      error?: string;
+      practice?: StudentReadingPracticePayload;
+    };
+    if (!response.ok || !payload.practice) {
+      throw new Error(payload.error ?? "阅读错题内容加载失败，请稍后重试。");
+    }
+    return payload.practice;
   });
-  const payload = await response.json().catch(() => ({})) as {
-    error?: string;
-    practice?: StudentReadingPracticePayload;
-  };
-  if (!response.ok || !payload.practice) {
-    throw new Error(payload.error ?? "阅读错题内容加载失败，请稍后重试。");
-  }
-  return payload.practice;
 }
 
 function Message({ description, onBack }: { description: string; onBack?: () => void }) {

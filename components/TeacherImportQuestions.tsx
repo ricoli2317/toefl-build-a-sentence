@@ -890,7 +890,7 @@ function localizeImportMessage(message: string) {
     return message;
   }
   if (/[\u3400-\u9fff]/.test(message)) return message;
-  return "导入过程中发生错误，请根据错误代码排查。";
+  return `导入过程中发生错误：${message}`;
 }
 
 function localizeImportOperation(operation?: string) {
@@ -915,6 +915,7 @@ function localizeImportOperation(operation?: string) {
     "resolve Reading content conflicts": "处理 Reading 题目内容冲突",
     "check RDL canonical material": "检查 RDL 题库素材",
     "preflight Reading group": "只读预检 Reading 题组",
+    "prepare Reading group commit payload": "准备 Reading 题组写入数据",
     "import Reading group atomically": "完整写入 Reading 题组",
     "import CSV questions": "导入 CSV 题目"
   };
@@ -931,7 +932,7 @@ function localizeImportDetails(details: string) {
       .replace(/Closest required header:/i, "最接近的所需表头：")
       .replace(/\bnone\b/gi, "无");
   }
-  return /[\u3400-\u9fff]/.test(details) ? details : "请根据错误代码检查数据库配置或数据内容。";
+  return details;
 }
 
 function localizeImportHint(hint: string) {
@@ -939,7 +940,7 @@ function localizeImportHint(hint: string) {
   if (/Use one of the exact supported CSV headers/i.test(hint)) return "请使用任一受支持题型的完整固定表头，并保持规定的列顺序。";
   if (/Run this Supabase SQL/i.test(hint)) return hint.replace(/Run this Supabase SQL[^:]*:/i, "如需调整字段类型，请执行以下 Supabase SQL：");
   if (/If questions\.set_id is also uuid/i.test(hint)) return "如果 questions.set_id 也是 uuid 类型，请将其改为 text；CSV 中的 set_id 应为文本格式。";
-  return /[\u3400-\u9fff]/.test(hint) ? hint : "请根据错误代码检查数据库配置或数据内容。";
+  return hint;
 }
 
 function localizeImportBatch(batch: string) {

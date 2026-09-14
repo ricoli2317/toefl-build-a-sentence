@@ -15,6 +15,7 @@ import { loadReadingFullSet } from "@/lib/reading/fullSets.server";
 import { StudentReadingLoadError } from "@/lib/reading/studentPractice";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { sameReadingFullSetAnswers } from "@/lib/reading/fullSetSaveIdempotency.server";
 
 export const dynamic = "force-dynamic";
 
@@ -147,6 +148,29 @@ export async function PUT(
   if (error) return respond(readingFullSetAttemptError(error, "套题答案保存失败，请稍后重试。"));
   if (!isSaveResult(data)) {
     return respond(readingFullSetAttemptJson({ error: "套题答案保存状态返回了无效数据。" }, { status: 500 }));
+  }
+  if (!data.accepted && data.reason === "stale_revision") {
+    const moduleAttempt = moduleNo === 1 ? data.attempt.module1 : data.attempt.module2;
+    if (moduleAttempt) {
+      const saved = await timing.measure(
+        "database",
+        "answer_save_idempotency",
+        () => auth.client!
+          .from("reading_full_set_answers")
+          .select("question_id,slot_id,answer_kind,student_answer,question_time_seconds")
+          .eq("module_attempt_id", moduleAttempt.moduleAttemptId)
+          .eq("occurrence_id", params.occurrenceId)
+      );
+      if (!saved.error && sameReadingFullSetAnswers(body.answers, saved.data)) {
+        return respond(timing.measureSync("processing", "serialization", () =>
+          readingFullSetAttemptJson({
+            accepted: true,
+            answerRevision: moduleAttempt.answerRevision,
+            attempt: data.attempt
+          })
+        ));
+      }
+    }
   }
   return respond(timing.measureSync("processing", "serialization", () =>
     readingFullSetAttemptJson(data, { status: data.accepted ? 200 : 409 })

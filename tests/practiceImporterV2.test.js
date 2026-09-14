@@ -325,6 +325,44 @@ test("import diagnostics preserve PostgreSQL table, column, constraint, detail, 
   );
 });
 
+test("import diagnostics unwrap nested database errors and assign a stable generic code", () => {
+  const wrapped = Object.assign(new Error("item=reading-rap-1 import failed"), {
+    operation: "import Reading group atomically",
+    cause: {
+      code: "23503",
+      message: "insert or update violates foreign key constraint",
+      details: "Key (question_id) is not present",
+      hint: "Check the canonical question mapping"
+    }
+  });
+  assert.deepEqual(serializeError(wrapped), {
+    message: "item=reading-rap-1 import failed",
+    code: "23503",
+    table: null,
+    column: null,
+    constraint: null,
+    details: "Key (question_id) is not present",
+    hint: "Check the canonical question mapping"
+  });
+  assert.equal(serializeError(new Error("plain failure")).code, "IMPORT_FAILED");
+  assert.equal(serializeError(new Error("plain failure")).message, "plain failure");
+  assert.deepEqual(serializeError({
+    name: "ReadingValidationError",
+    message: "invalid anchor reference",
+    logicalItemId: "reading-rap-1",
+    questionId: "reading-rap-1-q05",
+    path: "$.questions[4].payload.correctAnchorId"
+  }), {
+    message: "invalid anchor reference",
+    code: "READING_VALIDATION_ERROR",
+    table: null,
+    column: null,
+    constraint: null,
+    details: "logical_item_id=reading-rap-1; question_id=reading-rap-1-q05; path=$.questions[4].payload.correctAnchorId",
+    hint: null
+  });
+});
+
 test("number allocation appends and inserts historical NEW_ITEM suffixes without moving pure numbers", () => {
   const existing = [
     { displayNumber: "058", firstSeenDate: "2026-08-20" },

@@ -73,9 +73,20 @@ test("CSV format errors are concise and never expose the complete required schem
   assert.match(component, /payload\.code === "CSV_HEADER_MISMATCH"\) return "CSV 格式不正确"/);
 });
 
+test("import errors always expose a stable code and preserve safe diagnostics", () => {
+  assert.match(component, /`错误代码：\$\{payload\.code \?\? "无"\}`/);
+  assert.match(component, /return `导入过程中发生错误：\$\{message\}`/);
+  assert.match(component, /function localizeImportDetails[\s\S]*return details/);
+  assert.match(component, /function localizeImportHint[\s\S]*return hint/);
+  assert.match(route, /serializeError\(error\)/);
+  assert.match(route, /logicalItemId: context\.logicalItemId/);
+});
+
 test("Reading dry-run never calls the atomic write path or cache revalidation", () => {
-  assert.match(readingImporter, /if \(!dryRun\) \{[\s\S]*?await importReadingPackageAtomic/);
-  assert.doesNotMatch(readingImporter, /if \(dryRun\)[\s\S]{0,120}importReadingPackageAtomic/);
+  assert.match(readingImporter, /prepareReadingPackageAtomicImport/);
+  assert.match(readingImporter, /if \(!dryRun\) \{[\s\S]*?await executePreparedReadingPackageAtomic/);
+  assert.doesNotMatch(readingImporter, /if \(dryRun\)[\s\S]{0,160}executePreparedReadingPackageAtomic/);
+  assert.match(readingImporter, /const canExecuteCommit = dryRun \|\| failedRows\.length === 0/);
   assert.match(readingImporter, /allowRegisteredMaterialStorageKeys: type === "read_in_daily_life"/);
   assert.match(route, /if \(!result\.preview && result\.successCount > 0 && importedTaskType\)/);
 });
@@ -106,7 +117,8 @@ test("Reading duplicate cards collect every resolution and send it only with fin
   assert.match(resolutionComponent, /来源 CSV/);
   assert.match(resolutionComponent, /difference\.inlineDiff\.incoming/);
   assert.match(resolutionComponent, /difference\.inlineDiff\.existing/);
-  assert.doesNotMatch(resolutionComponent, /展开完整内容/);
+  assert.match(resolutionComponent, /展开完整内容/);
+  assert.match(resolutionComponent, /ReadingFullContentComparison/);
   assert.match(resolutionComponent, /重新查看/);
   assert.match(resolutionComponent, /已选择：/);
   assert.match(component, /readingDuplicateResolutions: readingDryRun[\s\S]*resolutionId:[\s\S]*questionType:[\s\S]*logicalItemId/);

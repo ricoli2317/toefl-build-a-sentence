@@ -1,5 +1,6 @@
 import type { ReadingModule } from "./types.ts";
 import type { ReadingInlineDiff } from "./reviewDiff.ts";
+import type { ReadingReviewVersion } from "./reviewPresentation.ts";
 
 export type ReadingDuplicateIdentityScope = "logical_item" | "material" | "passage";
 
@@ -28,6 +29,7 @@ export type ReadingDuplicateSourceOccurrencePreview = {
 type ReadingDuplicatePreviewBase = ReadingDuplicateSourceOccurrencePreview & {
   logicalItemId: string;
   title: string | null;
+  reviewVersion: ReadingReviewVersion;
 };
 
 export type ReadingCtwDuplicatePreview = ReadingDuplicatePreviewBase & {

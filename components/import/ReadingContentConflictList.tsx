@@ -7,7 +7,12 @@ import type {
   ReadingContentConflictResolution,
   ReadingQuestionContentConflict
 } from "@/lib/reading/contentReconciliation";
+import { readingContentConflictSummary } from "@/lib/reading/contentReconciliation";
 import { ReadingInlineVersionValue } from "./ReadingInlineVersionValue";
+import {
+  ReadingFullContentComparison,
+  ReadingInsertionPosition
+} from "./ReadingFullContentComparison";
 
 export type ReadingContentResolutionDraft = { action: null } | ReadingContentConflictResolution;
 
@@ -17,6 +22,7 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
   onChange: (resolutionId: string, draft: ReadingContentResolutionDraft) => void;
 }) {
   const [expandedReviewItems, setExpandedReviewItems] = useState<Set<string>>(new Set());
+  const [expandedContentItems, setExpandedContentItems] = useState<Set<string>>(new Set());
   const collapseReviewItem = (resolutionId: string) => {
     setExpandedReviewItems((current) => removeFromSet(current, resolutionId));
   };
@@ -46,6 +52,7 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
                 <div>
                   <p className="font-bold text-student-text">{item.questionType.toUpperCase()} · {item.passageTitle ?? item.materialId ?? "未命名题目"}</p>
                   <p className="mt-1 text-sm text-student-muted">{compactSourceLabel(item)}</p>
+                  <p className="mt-1 text-sm font-semibold text-amber-800">{readingContentConflictSummary(item)}</p>
                 </div>
                 {resolved ? (
                   <button className="teacher-button-secondary" onClick={() => collapseReviewItem(item.resolutionId)} type="button">收起</button>
@@ -60,6 +67,17 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
                 ))}
                 {item.questionConflicts.map((conflict) => <CompactQuestionConflict conflict={conflict} key={conflict.questionOrder} />)}
               </div>
+
+              <button
+                className="mt-3 text-sm font-bold text-student-primary underline"
+                onClick={() => setExpandedContentItems((current) => toggleSet(current, item.resolutionId))}
+                type="button"
+              >
+                {expandedContentItems.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
+              </button>
+              {expandedContentItems.has(item.resolutionId) ? (
+                <ReadingFullContentComparison existing={item.existingVersion} incoming={item.incomingVersion} />
+              ) : null}
 
               <div className="mt-3 flex flex-wrap gap-3">
                 <button
@@ -125,11 +143,34 @@ function DifferenceCard({ difference }: {
   return (
     <div className="rounded-lg bg-white p-3">
       <div className="font-bold text-student-text">{difference.label}</div>
-      <div className="mt-2 grid gap-3 sm:grid-cols-2">
-        <ReadingInlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
-        <ReadingInlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
-      </div>
+      {difference.insertionPositions ? (
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <PositionVersion title="题库版本" positions={difference.insertionPositions.existing} />
+          <PositionVersion title="来源 CSV" positions={difference.insertionPositions.incoming} />
+        </div>
+      ) : (
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <ReadingInlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
+          <ReadingInlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
+        </div>
+      )}
     </div>
+  );
+}
+
+function PositionVersion({ positions, title }: {
+  positions: NonNullable<ReadingQuestionContentConflict["differences"][number]["insertionPositions"]>["existing"];
+  title: string;
+}) {
+  return (
+    <section>
+      <h4 className="mb-2 text-sm font-bold text-student-muted">{title}</h4>
+      <div className="grid gap-2">
+        {positions.length > 0
+          ? positions.map((position) => <ReadingInsertionPosition key={position.semanticKey} position={position} />)
+          : <p className="rounded-lg border border-student-border bg-white p-3 text-sm text-student-muted">没有额外位置</p>}
+      </div>
+    </section>
   );
 }
 
@@ -159,3 +200,4 @@ function compactSourceLabel(item: ReadingContentConflictItem) {
 }
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
 function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }
+function toggleSet(values: Set<string>, value: string) { const next = new Set(values); next.has(value) ? next.delete(value) : next.add(value); return next; }

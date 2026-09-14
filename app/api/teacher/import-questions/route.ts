@@ -64,7 +64,14 @@ function jsonImportError({
   status?: number;
 }) {
   const serialized = serializeError(error);
-  console.error("Teacher CSV import failed", { error, operation });
+  const context = error && typeof error === "object" ? error as Record<string, unknown> : {};
+  console.error("Teacher CSV import failed", {
+    operation,
+    logicalItemId: context.logicalItemId ?? null,
+    questionId: context.questionId ?? null,
+    ...serialized,
+    error
+  });
 
   return json(
     {

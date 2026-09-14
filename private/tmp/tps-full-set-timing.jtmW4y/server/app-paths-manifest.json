@@ -1,0 +1,8 @@
+{
+  "/page": "app/page.js",
+  "/api/reading/wrongbook-attempts/route": "app/api/reading/wrongbook-attempts/route.js",
+  "/api/account/me/route": "app/api/account/me/route.js",
+  "/teacher/dashboard/page": "app/teacher/dashboard/page.js",
+  "/student/wrong-questions/page": "app/student/wrong-questions/page.js",
+  "/student/wrong-questions/today/reading/practice/page": "app/student/wrong-questions/today/reading/practice/page.js"
+}

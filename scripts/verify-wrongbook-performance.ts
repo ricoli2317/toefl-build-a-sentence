@@ -145,19 +145,46 @@ if (!fullSet) {
     method: "POST"
   });
   const payload = parseJson(bootstrap.body) as {
+    firstPractice?: unknown;
+    firstTarget?: { logicalItemId?: string };
     item?: { targets?: Array<{ logicalItemId?: string }> };
   };
-  const logicalItemId = payload.item?.targets?.find((target) => target.logicalItemId)?.logicalItemId;
-  const metrics = [bootstrap.metric];
-  if (logicalItemId) {
-    metrics.push((await measuredRequest(
-      `/api/reading/practice/${encodeURIComponent(logicalItemId)}`
-    )).metric);
-  }
+  const logicalItemId = payload.firstTarget?.logicalItemId;
   report.full_set = {
-    ...scenarioReport(metrics, { firstLogicalItemIdFound: Boolean(logicalItemId) }),
-    firstRenderReadyMs: metrics.reduce((sum, metric) => sum + metric.durationMs, 0),
-    requestRelationship: "bootstrap_then_practice_GET"
+    ...scenarioReport([bootstrap.metric], {
+      embeddedFirstPracticeBytes: payload.firstPractice === undefined
+        ? 0
+        : new TextEncoder().encode(JSON.stringify(payload.firstPractice)).length,
+      firstLogicalItemIdFound: Boolean(logicalItemId),
+      firstPracticeEmbedded: Boolean(payload.firstPractice),
+      targetCount: payload.item?.targets?.length ?? null
+    }),
+    firstRenderReadyMs: bootstrap.metric.durationMs,
+    overlap: fullSetOverlapReport(bootstrap.metric.stages),
+    requestRelationship: "single_bootstrap_with_embedded_first_practice"
+  };
+}
+
+function fullSetOverlapReport(stages: StageMetric[]) {
+  const byName = new Map(stages.map((stage) => [stage.stage, stage]));
+  const firstKnown = byName.get("Full Set first target known");
+  const practice = byName.get("Full Set first practice load");
+  const queueFinish = byName.get("Full Set full queue finish");
+  const attempt = byName.get("wrongbook attempt creation/reuse");
+  return {
+    attemptRpcDurationMs: attempt?.durationMs ?? null,
+    firstPracticeFinishMs: practice
+      ? Math.round((practice.startedAtMs + practice.durationMs) * 10) / 10
+      : null,
+    firstPracticeStartMs: practice?.startedAtMs ?? null,
+    firstTargetKnownMs: firstKnown?.startedAtMs ?? null,
+    fullQueueFinishMs: queueFinish?.startedAtMs ?? null,
+    practiceOverlappedAttempt: Boolean(
+      practice
+      && attempt
+      && practice.startedAtMs < attempt.startedAtMs + attempt.durationMs
+      && attempt.startedAtMs < practice.startedAtMs + practice.durationMs
+    )
   };
 }
 

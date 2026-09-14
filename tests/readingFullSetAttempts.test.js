@@ -190,6 +190,7 @@ test("answer mutation uses ownership, active lock, deadline, occurrence identity
   assert.match(saveFunction, /public\.reading_occurrence_full_set_id[\s\S]*= v_attempt\.full_set_id/);
   assert.match(saveFunction, /delete from public\.reading_full_set_answers/);
   assert.match(saveFunction, /set answer_revision = answer_revision \+ 1/);
+  assert.match(occurrenceRoute, /data\.reason === "stale_revision"[\s\S]*sameReadingFullSetAnswers[\s\S]*answerRevision: moduleAttempt\.answerRevision/);
 });
 
 test("student APIs enforce ownership and do not expose answer keys or the next Module payload", () => {
@@ -220,7 +221,8 @@ test("normal Full Set autosave is silent and does not disable navigation", () =>
   assert.doesNotMatch(runnerUi, /正在保存答案|保存中|已保存/);
   assert.doesNotMatch(runnerUi, /disabled=\{[^}]*saving/);
   assert.match(runnerUi, /pendingSaveRef/);
-  assert.match(runnerUi, /saveChainRef/);
+  assert.match(runnerUi, /ReadingFullSetSaveQueue/);
+  assert.match(runnerUi, /keepalive:\s*true/);
   assert.match(runnerUi, /答案保存失败，请检查网络后重试。/);
 });
 
@@ -228,7 +230,7 @@ test("same-route M2 transition invalidates M1 state and applies bootstrap state"
   assert.match(runnerUi, /readingFullSetRunnerModuleKey\(current\.attempt\)[\s\S]*readingFullSetRunnerModuleKey\(attempt\)/);
   assert.match(runnerUi, /occurrences: moduleChanged \? \[\] : current\.occurrences/);
   assert.match(runnerUi, /moduleAttemptId: moduleAttempt\.moduleAttemptId/);
-  assert.match(runnerUi, /readingFullSetRunnerModuleKey\(activeRunner\.attempt\) !== pending\.moduleAttemptId/);
+  assert.match(runnerUi, /readingFullSetRunnerModuleKey\(activeRunner\.attempt\) !== snapshot\.moduleAttemptId/);
   assert.match(runnerUi, /if \(submittingRef\.current\) return/);
   assert.match(runnerUi, /runnerGenerationRef\.current \+= 1/);
   assert.match(runnerUi, /occurrenceRequestRef\.current \+= 1/);

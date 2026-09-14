@@ -1272,6 +1272,22 @@ test("substantively different RAP passage stays distinct even when its title is 
   assert.equal(prepared.existingItem, null);
 });
 
+test("a uniquely matched RAP terminal transcription truncation becomes passage content review", async () => {
+  const historical = historicalPackage("rap", "reading-rap-6522c75a66bfa0f293e67432");
+  const incoming = incomingVariant(historical, (candidate) => {
+    const paragraph = candidate.passages[0].paragraphs.at(-1);
+    paragraph.text = paragraph.text.split(" ").slice(0, -4).join(" ");
+  });
+  assert.equal(areReadingPackagesHistoricalSemanticEquivalents(historical, incoming), false);
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.equal(prepared.reuseKind, "semantic");
+  assert.equal(prepared.existingItem.logicalItemId, historical.item.logicalItemId);
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+  assert.equal(prepared.contentReconciliations.length, 1);
+  assert.ok(prepared.contentReconciliations[0].item.passageConflicts.length > 0);
+  assert.equal(prepared.contentReconciliations[0].item.questionConflicts.length, 0);
+});
+
 test("same RAP passage remains one identity despite answer and semantic-position discrepancies", () => {
   const multipleChoice = historicalPackage("rap", "reading-rap-6522c75a66bfa0f293e67432");
   const differentAnswer = contentVariant(multipleChoice, (candidate) => {

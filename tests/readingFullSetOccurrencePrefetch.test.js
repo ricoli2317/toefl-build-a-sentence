@@ -115,11 +115,11 @@ test("runner performs rolling one-ahead prefetch only after first interactive", 
   assert.match(prefetchEffect, /\.promise\.catch\([\s\S]*PREFETCH_FAILED/);
 });
 
-test("navigation preserves synchronous save then uses hit, wait, or miss cache semantics", () => {
+test("navigation enqueues a save without awaiting the network, then uses hit, wait, or miss cache semantics", () => {
   const move = runner.slice(runner.indexOf("const move = useCallback"), runner.indexOf("const leavePractice"));
-  assert.match(move, /current_save_start[\s\S]*flushPendingSave\(\)[\s\S]*current_save_end/);
+  assert.match(move, /commitActiveQuestionTime\(\)[\s\S]*stageCurrentOccurrenceSave\(trace\)[\s\S]*navigation_after_enqueue[\s\S]*setPosition\(nextPosition\)/);
+  assert.doesNotMatch(move, /await\s+flushPendingSave|await\s+fetch/);
   assert.match(move, /navigation_cache_hit/);
-  assert.doesNotMatch(move, /fire-and-forget|keepalive:\s*true/);
 
   const load = runner.slice(
     runner.indexOf("if \(!accessToken \|\| !currentOccurrence \|\| currentPayload\) return"),
@@ -134,6 +134,32 @@ test("navigation preserves synchronous save then uses hit, wait, or miss cache s
 test("prefetched mutable answers never replace an existing local answer state", () => {
   assert.match(runner, /Object\.prototype\.hasOwnProperty\.call\(current, occurrenceId\)\) return current/);
   assert.match(runner, /revisionRef\.current = Math\.max\(revisionRef\.current, completePayload\.answerRevision\)/);
+});
+
+test("submit, timeout, and pagehide preserve answer durability boundaries", () => {
+  const submit = runner.slice(runner.indexOf("const submitModule = useCallback"), runner.indexOf("useEffect(() => {", runner.indexOf("const submitModule = useCallback")));
+  assert.match(submit, /submittingRef\.current = true[\s\S]*commitActiveQuestionTime\(\)[\s\S]*stageCurrentOccurrenceSave[\s\S]*await flushPendingSave[\s\S]*if \(!saved\) throw[\s\S]*await fetch/);
+  assert.doesNotMatch(submit, /if \(automatic\) \{[\s\S]*pendingSaveRef\.current = null/);
+  assert.match(runner, /remaining === 0[\s\S]*void submitModule\(true\)/);
+
+  const pagehide = runner.slice(runner.indexOf("const saveBeforeLeaving"), runner.indexOf("const move = useCallback"));
+  assert.match(pagehide, /commitActiveQuestionTime\(\)[\s\S]*stageCurrentOccurrenceSave\(\)/);
+  assert.match(runner, /keepalive:\s*true/);
+});
+
+test("question time is committed before navigation snapshots and snapshots are immutable request payloads", () => {
+  const move = runner.slice(runner.indexOf("const move = useCallback"), runner.indexOf("const leavePractice"));
+  assert.ok(move.indexOf("commitActiveQuestionTime()") < move.indexOf("stageCurrentOccurrenceSave(trace)"));
+  assert.match(runner, /buildReadingSubmissionAnswers\([\s\S]*snapshotQuestionTimes\(pending\.occurrenceId\)[\s\S]*saveQueueRef\.current!\.enqueue/);
+  assert.match(runner, /answers: snapshot\.value\.answers/);
+});
+
+test("stale CAS responses refresh server truth but remain a blocking conflict without changing local answers", () => {
+  const persist = runner.slice(runner.indexOf("const persistSave"), runner.indexOf("saveTransportRef.current = persistSave"));
+  assert.match(persist, /if \(result\.attempt\) applyAttempt\(result\.attempt\)/);
+  assert.match(persist, /result\.reason === "stale_revision"[\s\S]*答案状态已在其他页面更新，请刷新后继续/);
+  assert.doesNotMatch(persist, /retryable: result\.reason === "stale_revision"/);
+  assert.doesNotMatch(persist, /setAnswersByOccurrence/);
 });
 
 test("module transitions, submit, retry, and unmount clear runner-local prefetch state", () => {
@@ -158,8 +184,15 @@ test("transition trace includes navigation, cache, save, workspace, and image ph
     "rdl_image_preload_end",
     "next_prefetch_ready",
     "navigation_click",
-    "current_save_start",
-    "current_save_end",
+    "answer_snapshot_created",
+    "background_save_enqueued",
+    "background_save_started",
+    "background_save_success",
+    "background_save_retry",
+    "background_save_error",
+    "navigation_after_enqueue",
+    "durability_flush_start",
+    "durability_flush_end",
     "navigation_cache_hit",
     "navigation_cache_wait",
     "navigation_cache_miss",

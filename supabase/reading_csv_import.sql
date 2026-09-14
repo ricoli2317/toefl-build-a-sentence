@@ -72,6 +72,15 @@ begin
   where item.logical_item_id = v_logical_item_id;
 
   if v_id_owner_fingerprint is not null and v_id_owner_fingerprint <> v_dedup_fingerprint then
+    -- Lock both the former and corrected fingerprint owners. A reviewed
+    -- canonical correction may change strict RDL/RAP content identity, while
+    -- an ordinary reuse/import must never do so.
+    perform pg_advisory_xact_lock(hashtextextended('reading-dedup:' || v_id_owner_fingerprint, 0));
+  end if;
+
+  if v_id_owner_fingerprint is not null
+    and v_id_owner_fingerprint <> v_dedup_fingerprint
+    and not v_replace_canonical_content then
     raise exception using
       errcode = 'P0001',
       message = format(

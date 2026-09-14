@@ -18,6 +18,7 @@ import {
 import type { ReadingLogicalItemAction } from "./importExecution.ts";
 import {
   buildReadingContentConflict,
+  normalizeReadingReconciliationText,
   type ReadingContentConflictItem
 } from "./contentReconciliation.ts";
 import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
@@ -35,6 +36,16 @@ export type ReadingAtomicImportResult = ReadingImportResult & {
   logicalItemAction: ReadingLogicalItemAction;
   insertedOccurrenceCount: number;
   existingOccurrenceCount: number;
+};
+
+export type PreparedReadingAtomicImport = {
+  packageData: ReadingImportPackage;
+  logicalItemId: string;
+  rows: ReturnType<typeof buildReadingImportRowsUnchecked> & {
+    replace_canonical_content: boolean;
+    expected_logical_item_action: ReadingLogicalItemAction | null;
+  };
+  createdBy: string | null;
 };
 
 export type ExistingReadingLogicalItem = {
@@ -180,7 +191,16 @@ export async function prepareReadingPackagesForImport(
             || arePossibleReadingDuplicates(incomingPackage, candidate)
           )
         );
-        possibleDuplicateLogicalItemIds = uniqueIds(possibleCandidates);
+        const passageContentCandidates = possibleCandidates.filter((candidate) =>
+          isConfirmedRapPassageContentMatch(incomingPackage, candidate)
+        );
+        if (passageContentCandidates.length === 1) {
+          const survivor = passageContentCandidates[0];
+          existingItem = existingLogicalItemFromPackage(survivor);
+          reuseKind = "semantic";
+        } else {
+          possibleDuplicateLogicalItemIds = uniqueIds(possibleCandidates);
+        }
       }
     }
 
@@ -288,6 +308,27 @@ export async function prepareReadingPackagesForImport(
       occurrenceConflict
     };
   });
+}
+
+function isConfirmedRapPassageContentMatch(
+  incoming: ReadingImportPackage,
+  historical: ReadingImportPackage
+) {
+  if (incoming.item.module !== "rap" || historical.item.module !== "rap") return false;
+  if (!arePossibleReadingDuplicates(incoming, historical)) return false;
+  const conflict = buildReadingContentConflict(historical, incoming);
+  return Boolean(
+    conflict
+    && conflict.passageConflicts.length > 0
+    && conflict.questionConflicts.length === 0
+    && conflict.passageConflicts.every((difference) => {
+      if (difference.kind !== "passage") return false;
+      const existing = normalizeReadingReconciliationText(difference.existing);
+      const incomingText = normalizeReadingReconciliationText(difference.incoming);
+      return existing !== incomingText
+        && (existing.startsWith(incomingText) || incomingText.startsWith(existing));
+    })
+  );
 }
 
 function coalesceIncomingSemanticPackages(packages: ReadingImportPackage[]) {
@@ -891,6 +932,28 @@ export async function importReadingPackageAtomic(
     };
   } = {}
 ): Promise<ReadingAtomicImportResult> {
+  return executePreparedReadingPackageAtomic(
+    supabase,
+    prepareReadingPackageAtomicImport(input, options)
+  );
+}
+
+/** Builds the exact validated RPC payload without writing. Preflight and the
+ * final importer both use this boundary so commit cannot silently rebuild a
+ * different Reading package after review resolution. */
+export function prepareReadingPackageAtomicImport(
+  input: unknown,
+  options: {
+    createdBy?: string;
+    replaceCanonicalContent?: boolean;
+    expectedLogicalItemAction?: ReadingLogicalItemAction;
+    firstSeen?: {
+      date: string;
+      sourceLabel: string;
+      sourceOrder: number;
+    };
+  } = {}
+): PreparedReadingAtomicImport {
   const packageData = validateReadingImportPackage(input);
   validateCanonicalRdlTitles(packageData);
   const rows = buildReadingImportRowsUnchecked(packageData, options.createdBy);
@@ -900,13 +963,26 @@ export async function importReadingPackageAtomic(
     rows.reading_logical_items[0].first_seen_source_order = options.firstSeen.sourceOrder;
   }
   const logicalItemId = packageData.item.logicalItemId;
-  const { data, error } = await supabase.rpc("import_reading_package_atomic", {
-    p_rows: {
+  return {
+    packageData,
+    logicalItemId,
+    rows: {
       ...rows,
       replace_canonical_content: options.replaceCanonicalContent === true,
       expected_logical_item_action: options.expectedLogicalItemAction ?? null
     },
-    p_created_by: options.createdBy ?? null
+    createdBy: options.createdBy ?? null
+  };
+}
+
+export async function executePreparedReadingPackageAtomic(
+  supabase: SupabaseClient,
+  prepared: PreparedReadingAtomicImport
+): Promise<ReadingAtomicImportResult> {
+  const { packageData, logicalItemId } = prepared;
+  const { data, error } = await supabase.rpc("import_reading_package_atomic", {
+    p_rows: prepared.rows,
+    p_created_by: prepared.createdBy
   });
   if (error) throw databaseError(error, "import Reading group atomically", logicalItemId);
   const result = (data ?? {}) as Record<string, unknown>;
@@ -1170,13 +1246,16 @@ async function upsertRows(
 }
 
 function databaseError(
-  cause: { message?: string },
+  cause: unknown,
   operation: string,
   logicalItemId: string,
   questionId?: string
 ) {
+  const message = cause && typeof cause === "object" && "message" in cause
+    ? String(cause.message)
+    : "Unknown database error";
   return new ReadingImportError({
-    message: cause.message ?? "Unknown database error",
+    message,
     operation,
     logicalItemId,
     questionId,

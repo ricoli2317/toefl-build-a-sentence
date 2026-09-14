@@ -53,6 +53,12 @@ import {
   readingFullSetOccurrenceCacheKey,
   type ReadingFullSetCacheSource
 } from "@/lib/reading/fullSetOccurrenceCache.client";
+import {
+  ReadingFullSetSaveError,
+  ReadingFullSetSaveQueue,
+  type ReadingFullSetSaveQueueEvent,
+  type ReadingFullSetSaveSnapshot
+} from "@/lib/reading/fullSetSaveQueue.client";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
@@ -92,6 +98,13 @@ type PendingSave = {
   moduleNumber: 1 | 2;
   occurrenceId: string;
   practice: ReadingFullSetOccurrencePracticePayload["practice"];
+  taskType: "ctw" | "rap" | "rdl";
+};
+
+type BackgroundSave = {
+  answers: ReadingSubmittedAnswer[];
+  taskType: "ctw" | "rap" | "rdl";
+  trace: ReadingFullSetPerformanceTrace;
 };
 
 type OccurrenceLoadState =
@@ -102,9 +115,8 @@ type OccurrenceLoadState =
 type OccurrenceNavigation = {
   cacheStatus?: ReadingFullSetCacheSource;
   clickedAt: number;
+  navigationAfterEnqueueAt?: number;
   occurrenceId: string;
-  saveCompletedAt?: number;
-  saveDurationMs?: number;
   taskType: "ctw" | "rap" | "rdl";
   trace: ReadingFullSetPerformanceTrace;
   workspaceMounted?: boolean;
@@ -147,8 +159,18 @@ export function ReadingFullSetRunner({
   const movingRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSaveRef = useRef<PendingSave | null>(null);
-  const saveChainRef = useRef<Promise<void>>(Promise.resolve());
-  const saveFailedRef = useRef(false);
+  const saveTransportRef = useRef<(snapshot: ReadingFullSetSaveSnapshot<BackgroundSave>) => Promise<void>>(
+    async () => { throw new ReadingFullSetSaveError("答案保存尚未初始化。"); }
+  );
+  const saveEventRef = useRef<(event: ReadingFullSetSaveQueueEvent<BackgroundSave>) => void>(() => undefined);
+  const saveQueueRef = useRef<ReadingFullSetSaveQueue<BackgroundSave> | null>(null);
+  if (!saveQueueRef.current) {
+    saveQueueRef.current = new ReadingFullSetSaveQueue<BackgroundSave>({
+      maxRetries: 2,
+      onEvent: (event) => saveEventRef.current(event),
+      transport: (snapshot) => saveTransportRef.current(snapshot)
+    });
+  }
   const timeoutSubmitStartedRef = useRef(false);
   const timeoutRetryAfterRef = useRef(0);
   const runnerGenerationRef = useRef(0);
@@ -209,6 +231,7 @@ export function ReadingFullSetRunner({
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       saveTimerRef.current = null;
       pendingSaveRef.current = null;
+      setSaveError("");
       setOccurrencePayloads({});
       setAnswersByOccurrence({});
       answersRef.current = {};
@@ -560,10 +583,11 @@ export function ReadingFullSetRunner({
     navigation.workspaceMounted = true;
     logReadingFullSetPerformancePhase(navigation.trace, "next_workspace_mounted", {
       cacheStatus: navigation.cacheStatus,
-      durationMs: navigation.saveCompletedAt ? performance.now() - navigation.saveCompletedAt : undefined,
+      durationMs: navigation.navigationAfterEnqueueAt
+        ? performance.now() - navigation.navigationAfterEnqueueAt
+        : undefined,
       moduleNumber: moduleAttempt.moduleNumber,
       occurrenceId: currentOccurrence.occurrenceId,
-      saveDurationMs: navigation.saveDurationMs,
       taskType: currentOccurrence.taskType,
       totalDurationMs: performance.now() - navigation.clickedAt
     });
@@ -692,12 +716,11 @@ export function ReadingFullSetRunner({
       mountedNavigation.workspaceMounted = true;
       logReadingFullSetPerformancePhase(mountedNavigation.trace, "next_workspace_mounted", {
         cacheStatus: mountedNavigation.cacheStatus,
-        durationMs: mountedNavigation.saveCompletedAt
-          ? performance.now() - mountedNavigation.saveCompletedAt
+        durationMs: mountedNavigation.navigationAfterEnqueueAt
+          ? performance.now() - mountedNavigation.navigationAfterEnqueueAt
           : undefined,
         moduleNumber: moduleAttempt.moduleNumber,
         occurrenceId: occurrence.occurrenceId,
-        saveDurationMs: mountedNavigation.saveDurationMs,
         taskType: occurrence.taskType,
         totalDurationMs: performance.now() - mountedNavigation.clickedAt
       });
@@ -757,11 +780,10 @@ export function ReadingFullSetRunner({
           });
           logReadingFullSetPerformancePhase(navigation.trace, "next_first_interactive", {
             cacheStatus: navigation.cacheStatus,
-            durationMs: navigation.saveCompletedAt ? performance.now() - navigation.saveCompletedAt : undefined,
+            durationMs: performance.now() - navigation.clickedAt,
             imagePreloadStatus: imagePreloadStatusRef.current.get(key) ?? "not_applicable",
             moduleNumber: moduleAttempt.moduleNumber,
             occurrenceId: occurrence.occurrenceId,
-            saveDurationMs: navigation.saveDurationMs,
             taskType: occurrence.taskType,
             totalDurationMs: performance.now() - navigation.clickedAt
           });
@@ -886,85 +908,156 @@ export function ReadingFullSetRunner({
     };
   }, [commitActiveQuestionTime, currentOccurrence, currentQuestion, occurrenceLoad.status, runner]);
 
-  const persistSave = useCallback((pending: PendingSave) => {
-    saveChainRef.current = saveChainRef.current.then(async () => {
-      const activeRunner = runnerRef.current;
-      if (!accessToken || !activeRunner) return;
-      if (readingFullSetRunnerModuleKey(activeRunner.attempt) !== pending.moduleAttemptId) return;
-      saveFailedRef.current = false;
-      try {
-        const answers: ReadingSubmittedAnswer[] = buildReadingSubmissionAnswers(
-          pending.practice,
-          pending.answers,
-          snapshotQuestionTimes(pending.occurrenceId)
-        );
-        const response = await fetch(
-          `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(pending.occurrenceId)}`,
-          {
-            method: "PUT",
-            cache: "no-store",
-            keepalive: true,
-            headers: {
-              ...readingFullSetTraceHeaders(accessToken, transitionTraceRef.current),
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              answers,
-              expectedRevision: revisionRef.current,
-              moduleNumber: pending.moduleNumber
-            })
-          }
-        );
-        const result = await response.json().catch(() => ({})) as SaveResponse;
-        if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== pending.moduleAttemptId) {
-          return;
+  const persistSave = useCallback(async (snapshot: ReadingFullSetSaveSnapshot<BackgroundSave>) => {
+    const activeRunner = runnerRef.current;
+    if (!accessToken || !activeRunner) {
+      throw new ReadingFullSetSaveError("答案保存尚未准备好。");
+    }
+    if (readingFullSetRunnerModuleKey(activeRunner.attempt) !== snapshot.moduleAttemptId) {
+      throw new ReadingFullSetSaveError("当前 Module 已结束，答案不能再修改。");
+    }
+    let response: Response;
+    try {
+      response = await fetch(
+        `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(snapshot.occurrenceId)}`,
+        {
+          method: "PUT",
+          cache: "no-store",
+          keepalive: true,
+          headers: {
+            ...readingFullSetTraceHeaders(accessToken, snapshot.value.trace),
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            answers: snapshot.value.answers,
+            expectedRevision: revisionRef.current,
+            moduleNumber: snapshot.moduleNumber
+          })
         }
-        if (!response.ok || !result.accepted || !Number.isInteger(result.answerRevision)) {
-          if (result.attempt) applyAttempt(result.attempt);
-          throw new Error(
-            result.reason === "timed_out" || result.reason === "locked"
-              ? "当前 Module 已结束，答案不能再修改。"
-              : result.reason === "stale_revision"
-                ? "答案状态已在其他页面更新，请刷新后继续。"
-                : result.error ?? "答案保存失败，请检查网络后重试。"
-          );
-        }
-        if (result.attempt) applyAttempt(result.attempt);
-        revisionRef.current = Number(result.answerRevision);
-        setSaveError("");
-      } catch (saveError) {
-        if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== pending.moduleAttemptId) {
-          return;
-        }
-        saveFailedRef.current = true;
-        setSaveError(saveError instanceof Error ? saveError.message : "答案保存失败，请检查网络后重试。");
-      }
-    });
-    return saveChainRef.current;
-  }, [accessToken, applyAttempt, attemptId, snapshotQuestionTimes]);
+      );
+    } catch (error) {
+      throw new ReadingFullSetSaveError("答案保存失败，请检查网络后重试。", {
+        cause: error,
+        retryable: true
+      });
+    }
+    const result = await response.json().catch(() => ({})) as SaveResponse;
+    if (result.attempt) applyAttempt(result.attempt);
+    if (!response.ok || !result.accepted || !Number.isInteger(result.answerRevision)) {
+      const message = result.reason === "timed_out" || result.reason === "locked"
+        ? "当前 Module 已结束，答案不能再修改。"
+        : result.reason === "stale_revision"
+          ? "答案状态已在其他页面更新，请刷新后继续。"
+          : result.error ?? "答案保存失败，请检查网络后重试。";
+      throw new ReadingFullSetSaveError(message, {
+        retryable: response.status === 408
+          || response.status === 429
+          || response.status >= 500
+      });
+    }
+    if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== snapshot.moduleAttemptId) {
+      throw new ReadingFullSetSaveError("当前 Module 已结束，答案不能再修改。");
+    }
+    revisionRef.current = Math.max(revisionRef.current, Number(result.answerRevision));
+  }, [accessToken, applyAttempt, attemptId]);
 
-  const flushPendingSave = useCallback(async () => {
+  saveTransportRef.current = persistSave;
+  saveEventRef.current = (event) => {
+    const { snapshot } = event;
+    const phase = event.type === "enqueued"
+      ? "background_save_enqueued"
+      : event.type === "started"
+        ? "background_save_started"
+        : event.type === "success"
+          ? "background_save_success"
+          : event.type === "retry"
+            ? "background_save_retry"
+            : "background_save_error";
+    logReadingFullSetPerformancePhase(snapshot.value.trace, phase, {
+      durationMs: event.durationMs,
+      failure: event.error instanceof Error ? event.error.name : event.error ? "ANSWER_SAVE_FAILED" : null,
+      moduleNumber: snapshot.moduleNumber,
+      occurrenceId: snapshot.occurrenceId,
+      success: event.type !== "error",
+      taskType: snapshot.value.taskType
+    });
+    if (event.type === "error") {
+      setSaveError(event.error instanceof Error
+        ? event.error.message
+        : "答案保存失败，请检查网络后重试。");
+    } else if (event.type === "success" && !saveQueueRef.current?.hasErrors(snapshot.moduleAttemptId)) {
+      setSaveError("");
+    }
+  };
+
+  const enqueuePendingSave = useCallback((pending: PendingSave, trace?: ReadingFullSetPerformanceTrace | null) => {
+    const saveTrace = trace ?? createReadingFullSetPerformanceTrace(attemptId);
+    const answers = buildReadingSubmissionAnswers(
+      pending.practice,
+      pending.answers,
+      snapshotQuestionTimes(pending.occurrenceId)
+    );
+    logReadingFullSetPerformancePhase(saveTrace, "answer_snapshot_created", {
+      moduleNumber: pending.moduleNumber,
+      occurrenceId: pending.occurrenceId,
+      taskType: pending.taskType
+    });
+    return saveQueueRef.current!.enqueue({
+      key: `${attemptId}:${pending.moduleAttemptId}:${pending.occurrenceId}`,
+      moduleAttemptId: pending.moduleAttemptId,
+      moduleNumber: pending.moduleNumber,
+      occurrenceId: pending.occurrenceId,
+      value: { answers, taskType: pending.taskType, trace: saveTrace }
+    });
+  }, [attemptId, snapshotQuestionTimes]);
+
+  const stageCurrentOccurrenceSave = useCallback((trace?: ReadingFullSetPerformanceTrace | null) => {
+    if (!currentOccurrence || !currentPayload || !runner) return null;
+    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
+    if (!moduleAttempt) return null;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = null;
-    const pending = pendingSaveRef.current;
     pendingSaveRef.current = null;
-    if (pending) await persistSave(pending);
-    await saveChainRef.current;
-    return !saveFailedRef.current;
-  }, [persistSave]);
-
-  const stageCurrentOccurrenceSave = useCallback(() => {
-    if (!currentOccurrence || !currentPayload || !runner) return;
-    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
-    if (!moduleAttempt) return;
-    pendingSaveRef.current = {
+    return enqueuePendingSave({
       answers: answersRef.current[currentOccurrence.occurrenceId] ?? {},
       moduleAttemptId: moduleAttempt.moduleAttemptId,
       moduleNumber: moduleAttempt.moduleNumber,
       occurrenceId: currentOccurrence.occurrenceId,
-      practice: currentPayload.practice
-    };
-  }, [currentOccurrence, currentPayload, runner]);
+      practice: currentPayload.practice,
+      taskType: currentOccurrence.taskType
+    }, trace);
+  }, [currentOccurrence, currentPayload, enqueuePendingSave, runner]);
+
+  const flushPendingSave = useCallback(async (
+    moduleAttemptId?: string,
+    moduleNumber?: 1 | 2,
+    trace?: ReadingFullSetPerformanceTrace | null
+  ) => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = null;
+    const pending = pendingSaveRef.current;
+    pendingSaveRef.current = null;
+    if (pending) enqueuePendingSave(pending, trace);
+    const activeModule = runnerRef.current
+      ? readingFullSetCurrentModuleAttempt(runnerRef.current.attempt)
+      : null;
+    const targetModuleAttemptId = moduleAttemptId ?? activeModule?.moduleAttemptId;
+    const targetModuleNumber = moduleNumber ?? activeModule?.moduleNumber;
+    if (!targetModuleAttemptId || !targetModuleNumber) return true;
+    const flushTrace = trace ?? createReadingFullSetPerformanceTrace(attemptId);
+    const startedAt = performance.now();
+    logReadingFullSetPerformancePhase(flushTrace, "durability_flush_start", {
+      moduleNumber: targetModuleNumber
+    });
+    const saved = await saveQueueRef.current!.flush(targetModuleAttemptId);
+    logReadingFullSetPerformancePhase(flushTrace, "durability_flush_end", {
+      durationMs: performance.now() - startedAt,
+      failure: saved ? null : "ANSWER_SAVE_FAILED",
+      moduleNumber: targetModuleNumber,
+      success: saved
+    });
+    return saved;
+  }, [attemptId, enqueuePendingSave]);
 
   useEffect(() => {
     if (!currentOccurrence || !currentPayload) return;
@@ -972,7 +1065,6 @@ export function ReadingFullSetRunner({
       if (submittingRef.current) return;
       commitActiveQuestionTime();
       stageCurrentOccurrenceSave();
-      void flushPendingSave();
     }, 10_000);
     return () => window.clearInterval(timer);
   }, [commitActiveQuestionTime, currentOccurrence, currentPayload, flushPendingSave, stageCurrentOccurrenceSave]);
@@ -991,34 +1083,31 @@ export function ReadingFullSetRunner({
         moduleAttemptId: moduleAttempt.moduleAttemptId,
         moduleNumber: moduleAttempt.moduleNumber,
         occurrenceId: currentOccurrence.occurrenceId,
-        practice: currentPayload.practice
+        practice: currentPayload.practice,
+        taskType: currentOccurrence.taskType
       };
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       saveTimerRef.current = setTimeout(() => {
         const pending = pendingSaveRef.current;
         pendingSaveRef.current = null;
-        if (pending) void persistSave(pending);
+        if (pending) enqueuePendingSave(pending);
       }, 600);
       return next;
     });
-  }, [currentOccurrence, currentPayload, persistSave, runner]);
+  }, [currentOccurrence, currentPayload, enqueuePendingSave, runner]);
 
   useEffect(() => {
     const saveBeforeLeaving = () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-      saveTimerRef.current = null;
-      const pending = pendingSaveRef.current;
-      pendingSaveRef.current = null;
-      if (pending) void persistSave(pending);
+      commitActiveQuestionTime();
+      stageCurrentOccurrenceSave();
     };
     window.addEventListener("pagehide", saveBeforeLeaving);
     return () => {
       window.removeEventListener("pagehide", saveBeforeLeaving);
-      saveBeforeLeaving();
     };
-  }, [persistSave]);
+  }, [commitActiveQuestionTime, stageCurrentOccurrenceSave]);
 
-  const move = useCallback(async (direction: -1 | 1) => {
+  const move = useCallback((direction: -1 | 1) => {
     if (!runner || !currentPayload || movingRef.current) return;
     const nextPosition = moveReadingFullSetPosition(runner.occurrences, position, direction);
     const nextOccurrence = runner.occurrences[nextPosition.occurrenceIndex];
@@ -1041,32 +1130,14 @@ export function ReadingFullSetRunner({
       taskType: nextOccurrence.taskType
     });
     commitActiveQuestionTime();
-    stageCurrentOccurrenceSave();
-    const saveStartedAt = performance.now();
-    logReadingFullSetPerformancePhase(trace, "current_save_start", {
+    stageCurrentOccurrenceSave(trace);
+    navigation.navigationAfterEnqueueAt = performance.now();
+    logReadingFullSetPerformancePhase(trace, "navigation_after_enqueue", {
+      durationMs: navigation.navigationAfterEnqueueAt - clickedAt,
       moduleNumber: moduleAttempt.moduleNumber,
       occurrenceId: currentOccurrence?.occurrenceId,
       taskType: currentOccurrence?.taskType
     });
-    const saved = await flushPendingSave();
-    navigation.saveCompletedAt = performance.now();
-    navigation.saveDurationMs = navigation.saveCompletedAt - saveStartedAt;
-    logReadingFullSetPerformancePhase(trace, "current_save_end", {
-      durationMs: navigation.saveDurationMs,
-      failure: saved ? null : "ANSWER_SAVE_FAILED",
-      moduleNumber: moduleAttempt.moduleNumber,
-      occurrenceId: currentOccurrence?.occurrenceId,
-      saveDurationMs: navigation.saveDurationMs,
-      success: saved,
-      taskType: currentOccurrence?.taskType,
-      totalDurationMs: navigation.saveCompletedAt - clickedAt
-    });
-    if (!saved) {
-      if (transitionTraceRef.current?.traceId === trace.traceId) transitionTraceRef.current = null;
-      movingRef.current = false;
-      setNavigating(false);
-      return;
-    }
     if (nextOccurrence.occurrenceId !== currentOccurrence?.occurrenceId) {
       activeTimingRef.current = null;
       navigationRef.current = navigation;
@@ -1092,10 +1163,9 @@ export function ReadingFullSetRunner({
       requestAnimationFrame(() => {
         logReadingFullSetPerformancePhase(trace, "next_first_interactive", {
           cacheStatus: "hit",
-          durationMs: performance.now() - (navigation.saveCompletedAt ?? performance.now()),
+          durationMs: performance.now() - clickedAt,
           moduleNumber: moduleAttempt.moduleNumber,
           occurrenceId: nextOccurrence.occurrenceId,
-          saveDurationMs: navigation.saveDurationMs,
           taskType: nextOccurrence.taskType,
           totalDurationMs: performance.now() - clickedAt
         });
@@ -1104,7 +1174,7 @@ export function ReadingFullSetRunner({
         setNavigating(false);
       });
     }
-  }, [attemptId, commitActiveQuestionTime, currentOccurrence, currentPayload, flushPendingSave, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
+  }, [attemptId, commitActiveQuestionTime, currentOccurrence, currentPayload, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
 
   const leavePractice = useCallback(async () => {
     commitActiveQuestionTime();
@@ -1131,27 +1201,25 @@ export function ReadingFullSetRunner({
     setError("");
     try {
       commitActiveQuestionTime();
-      stageCurrentOccurrenceSave();
-      if (automatic) {
-        if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-        saveTimerRef.current = null;
-        pendingSaveRef.current = null;
-      } else {
-        const flushStartedAt = performance.now();
-        if (moduleNumber === 1) {
-          logTransitionPhase("m1_final_flush_start", { moduleNumber: 1 });
-        }
-        const saved = await flushPendingSave();
-        if (moduleNumber === 1) {
-          logTransitionPhase("m1_final_flush_end", {
-            durationMs: performance.now() - flushStartedAt,
-            failure: saved ? null : "ANSWER_SAVE_FAILED",
-            moduleNumber: 1,
-            success: saved
-          });
-        }
-        if (!saved) throw new Error("答案尚未成功保存，请稍后重试。");
+      stageCurrentOccurrenceSave(transitionTraceRef.current);
+      const flushStartedAt = performance.now();
+      if (moduleNumber === 1) {
+        logTransitionPhase("m1_final_flush_start", { moduleNumber: 1 });
       }
+      const saved = await flushPendingSave(
+        readingFullSetRunnerModuleKey(activeRunner.attempt) ?? undefined,
+        moduleNumber,
+        transitionTraceRef.current
+      );
+      if (moduleNumber === 1) {
+        logTransitionPhase("m1_final_flush_end", {
+          durationMs: performance.now() - flushStartedAt,
+          failure: saved ? null : "ANSWER_SAVE_FAILED",
+          moduleNumber: 1,
+          success: saved
+        });
+      }
+      if (!saved) throw new Error("答案尚未成功保存，请稍后重试。");
       const submitStartedAt = performance.now();
       if (moduleNumber === 1) {
         logTransitionPhase("m1_submit_request_start", {
@@ -1182,6 +1250,8 @@ export function ReadingFullSetRunner({
         });
       }
       if (!response.ok || !result.attempt) throw new Error(result.error ?? "Module 提交失败，请稍后重试。");
+      const submittedModuleAttemptId = readingFullSetRunnerModuleKey(activeRunner.attempt);
+      if (submittedModuleAttemptId) saveQueueRef.current?.clear(submittedModuleAttemptId);
       const stillActive = readingFullSetActiveModuleAttempt(result.attempt);
       if (automatic && stillActive?.moduleNumber === moduleNumber) {
         applyAttempt(result.attempt);

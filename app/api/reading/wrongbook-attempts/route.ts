@@ -11,14 +11,25 @@ import {
 } from "@/lib/reading/wrongbook";
 import {
   loadReadingFullSetPreservedAnswers,
+  loadReadingFullSetWrongbookBootstrapQueue,
   loadReadingFullSetWrongbookQueue
 } from "@/lib/reading/fullSetWrongbook.server";
+import {
+  loadStudentReadingPractice,
+  StudentReadingLoadError,
+  type StudentReadingPracticePayload
+} from "@/lib/reading/studentPractice";
 import {
   loadReadingWrongbookPreservedAnswers,
   loadReadingWrongbookQueue,
   toReadingWrongbookPreservedAnswers
 } from "@/lib/reading/wrongbook.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  sameReadingFullSetWrongbookTarget,
+  sameReadingFullSetWrongbookTargets,
+  type ReadingFullSetWrongbookTarget
+} from "@/lib/wrongQuestions";
 import {
   appendSupabaseDebugMetrics,
   createServerDebugTrace,
@@ -80,6 +91,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const requestStartedAt = performance.now();
   const debugMetrics: SupabaseQueryMetric[] = [];
   const stageMetrics: ServerDebugMetric[] = [];
   synchronizeServerDebugOrigins(debugMetrics, stageMetrics);
@@ -115,11 +127,48 @@ export async function POST(request: Request) {
   try {
     if (parsed.taskType === "full_set") {
       const sourceAttemptId = parsed.sourceAttemptId!;
+      const firstPracticeLoad: {
+        promise?: Promise<
+          | { error: unknown; practice?: never }
+          | { error?: never; practice: StudentReadingPracticePayload }
+        >;
+        target?: ReadingFullSetWrongbookTarget;
+      } = {};
       const [item] = await profile.measure(
         "Full Set historical/correction lookup",
         ["correction auth"],
-        () => loadReadingFullSetWrongbookQueue({
+        () => loadReadingFullSetWrongbookBootstrapQueue({
           db: service(),
+          onFirstTarget: (target) => {
+            firstPracticeLoad.target = target;
+            profile.record(
+              "Full Set first target known",
+              0,
+              ["Full Set first target selection"],
+              1
+            );
+            profile.record(
+              "Full Set first practice start",
+              0,
+              ["Full Set first target known"],
+              1
+            );
+            firstPracticeLoad.promise = profile.measure(
+              "Full Set first practice load",
+              ["Full Set first practice start"],
+              () => loadStudentReadingPractice(
+                service(),
+                target.logicalItemId,
+                undefined,
+                {},
+                profile
+              ),
+              (value) => value.questions.length
+            ).then(
+              (practice) => ({ practice }),
+              (error: unknown) => ({ error })
+            );
+          },
           profile,
           scope: parsed.scope,
           sourceAttemptId,
@@ -130,6 +179,22 @@ export async function POST(request: Request) {
         (value) => value.length
       );
       if (!item) return readingAttemptJson({ error: "这套错题已经订正完成。" }, { status: 409 });
+      profile.record(
+        "Full Set full queue finish",
+        0,
+        ["Full Set bootstrap queue calculation"],
+        item.targets.length
+      );
+      const firstTarget = firstPracticeLoad.target;
+      const firstPracticePromise = firstPracticeLoad.promise;
+      if (
+        !firstTarget
+        || !firstPracticePromise
+        || !sameReadingFullSetWrongbookTarget(firstTarget, item.targets[0])
+      ) {
+        await firstPracticePromise;
+        throw new Error("READING_FULL_SET_FIRST_TARGET_MISMATCH");
+      }
       profile.record(
         "current occurrence identity",
         0,
@@ -154,8 +219,9 @@ export async function POST(request: Request) {
         !isReadingFullSetWrongbookAttemptSummary(data)
         || data.sourceAttemptId !== item.sourceAttemptId
         || data.sourceFullSetId !== item.fullSetId
+        || !sameReadingFullSetWrongbookTargets(data.targets, item.targets)
       ) return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
-      const preservedAnswersByOccurrence = await profile.measure(
+      const preservedAnswersPromise = profile.measure(
         "Full Set preserved/historical answer lookup",
         ["wrongbook attempt creation/reuse"],
         () => profileSupabaseQuery(
@@ -173,13 +239,32 @@ export async function POST(request: Request) {
         ),
         (value) => Object.values(value).reduce((sum, rows) => sum + rows.length, 0)
       );
+      const [preservedAnswersByOccurrence, firstPracticeResult] = await Promise.all([
+        preservedAnswersPromise,
+        firstPracticePromise
+      ]);
+      if ("error" in firstPracticeResult) throw firstPracticeResult.error;
+      const payload = {
+        attempt: data,
+        firstPractice: firstPracticeResult.practice,
+        firstTarget,
+        item,
+        preservedAnswersByOccurrence
+      };
       const response = profile.measureSync(
-        "correction response creation",
-        ["Full Set preserved/historical answer lookup"],
+        "Full Set bootstrap serialization",
+        ["Full Set preserved/historical answer lookup", "Full Set first practice load"],
         () => readingAttemptJson(
-          { attempt: data, item, preservedAnswersByOccurrence },
+          payload,
           { status: data.created ? 201 : 200 }
-        )
+        ),
+        () => new TextEncoder().encode(JSON.stringify(payload)).length
+      );
+      profile.record(
+        "Full Set bootstrap total",
+        performance.now() - requestStartedAt,
+        ["Full Set bootstrap serialization"],
+        item.targets.length
       );
       return debugEnabled
         ? appendSupabaseDebugMetrics(response, debugMetrics, stageMetrics)
@@ -260,7 +345,14 @@ export async function POST(request: Request) {
     console.error("Reading wrongbook attempt creation failed", {
       message: error instanceof Error ? error.message : String(error)
     });
-    return readingAttemptJson({ error: "暂时无法进入错题订正，请稍后重试。" }, { status: 500 });
+    return readingAttemptJson(
+      {
+        error: error instanceof StudentReadingLoadError
+          ? `首题内容加载失败：${error.publicMessage}`
+          : "暂时无法进入错题订正，请稍后重试。"
+      },
+      { status: error instanceof StudentReadingLoadError ? error.status : 500 }
+    );
   }
 }
 

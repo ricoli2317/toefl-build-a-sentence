@@ -1,27 +1,71 @@
 import type { LogicalImportOutcome } from "@/lib/practiceImporter/server";
 import type {
   ImportResult,
-  LogicalImportMetrics,
-  SupabaseLikeError
+  LogicalImportMetrics
 } from "./types";
 
 export function serializeError(error: unknown) {
-  const supabaseError = error as SupabaseLikeError;
-  const message =
-    supabaseError?.message ??
-    (error instanceof Error ? error.message : "Unknown import error");
+  const chain = errorChain(error);
+  const message = firstString(chain, "message")
+    ?? (error instanceof Error ? error.message : "Unknown import error");
   const relationMatch = message.match(/relation \"([^\"]+)\"/i);
   const columnMatch = message.match(/column \"([^\"]+)\"/i);
   const constraintMatch = message.match(/constraint \"([^\"]+)\"/i);
   return {
     message,
-    code: supabaseError?.code ?? null,
-    table: supabaseError?.table ?? relationMatch?.[1] ?? null,
-    column: supabaseError?.column ?? columnMatch?.[1] ?? null,
-    constraint: supabaseError?.constraint ?? constraintMatch?.[1] ?? null,
-    details: supabaseError?.details ?? null,
-    hint: supabaseError?.hint ?? null
+    code: firstString(chain, "code") ?? fallbackImportErrorCode(chain),
+    table: firstString(chain, "table") ?? relationMatch?.[1] ?? null,
+    column: firstString(chain, "column") ?? columnMatch?.[1] ?? null,
+    constraint: firstString(chain, "constraint") ?? constraintMatch?.[1] ?? null,
+    details: firstString(chain, "details") ?? structuredErrorDetails(chain),
+    hint: firstString(chain, "hint") ?? null
   };
+}
+
+function errorChain(error: unknown) {
+  const result: Array<Record<string, unknown>> = [];
+  const queue: unknown[] = [error];
+  const seen = new Set<unknown>();
+  while (queue.length > 0) {
+    const candidate = queue.shift();
+    if (!candidate || (typeof candidate !== "object" && typeof candidate !== "function")) continue;
+    if (seen.has(candidate)) continue;
+    seen.add(candidate);
+    const record = candidate as Record<string, unknown>;
+    result.push(record);
+    for (const key of ["cause", "error", "originalError"]) {
+      if (record[key] !== undefined) queue.push(record[key]);
+    }
+  }
+  return result;
+}
+
+function firstString(chain: Array<Record<string, unknown>>, key: string) {
+  for (const candidate of chain) {
+    const value = candidate[key];
+    if (typeof value === "string" && value.trim()) return value;
+  }
+  return null;
+}
+
+function fallbackImportErrorCode(chain: Array<Record<string, unknown>>) {
+  const name = firstString(chain, "name");
+  if (name === "ReadingValidationError") return "READING_VALIDATION_ERROR";
+  return "IMPORT_FAILED";
+}
+
+function structuredErrorDetails(chain: Array<Record<string, unknown>>) {
+  const validationError = chain.find((candidate) => candidate.name === "ReadingValidationError");
+  if (!validationError) return null;
+  return [
+    typeof validationError.logicalItemId === "string"
+      ? `logical_item_id=${validationError.logicalItemId}`
+      : null,
+    typeof validationError.questionId === "string"
+      ? `question_id=${validationError.questionId}`
+      : null,
+    typeof validationError.path === "string" ? `path=${validationError.path}` : null
+  ].filter(Boolean).join("; ") || null;
 }
 
 export function logImportError(

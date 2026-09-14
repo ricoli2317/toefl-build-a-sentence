@@ -7,6 +7,7 @@ import {
 } from "@/lib/supabase/debugMetrics.server";
 import {
   buildReadingFullSetWrongbookQueue,
+  findReadingFullSetFirstWrongbookTarget,
   type ReadingFullSetWrongQuestionAnswer,
   type ReadingFullSetWrongQuestionAttempt,
   type ReadingFullSetWrongbookCorrectionAttempt,
@@ -37,15 +38,13 @@ type AnswerRow = {
   source_occurrence_id?: string | null;
 };
 
-type OccurrenceRow = {
-  occurrence_id: string;
-  source_question_start: number;
-};
-
-type QuestionOrderRow = {
-  module: "ctw" | "rdl" | "rap";
-  question_id: string;
-  question_order: number;
+type OrderedWrongAnswerRow = AnswerRow & {
+  reading_ctw_slots: null | { slot_order: number };
+  reading_questions: null | {
+    module: "ctw" | "rdl" | "rap";
+    question_order: number;
+  };
+  reading_source_occurrences: null | { source_question_start: number };
 };
 
 type CorrectionAttemptRow = {
@@ -119,65 +118,25 @@ export async function loadReadingFullSetWrongbookData(
   const modules = moduleResult.data ?? [];
   const moduleIds = modules.map((module) => module.module_attempt_id);
   const answerResult = await profileSupabaseQuery(
-    { query: "full_set_source_answers", dependsOn: ["full_set_module_attempts"] },
-    () => readByIds<AnswerRow>(
-      db,
-      "reading_full_set_answers",
-      "module_attempt_id,occurrence_id,logical_item_id,question_id,slot_id,is_correct",
-      "module_attempt_id",
-      moduleIds
-    )
+    { query: "full_set_source_wrong_answers_ordered", dependsOn: ["full_set_module_attempts"] },
+    () => readOrderedWrongFullSetAnswers(db, moduleIds)
   );
   if (answerResult.error) throw new Error(answerResult.error.message);
 
   const answers = answerResult.data ?? [];
-  const questionIds = Array.from(new Set([
-    ...answers.map((answer) => answer.question_id),
-    ...(correctionAnswerResult.data ?? []).map((answer) => answer.question_id)
-  ]));
-  const occurrenceIds = Array.from(new Set(answers
-    .map((answer) => answer.occurrence_id)
-    .filter((value): value is string => Boolean(value))));
-  const [questionResult, slotResult, occurrenceResult] = await Promise.all([
-    profileSupabaseQuery(
-      { query: "full_set_question_order", dependsOn: ["full_set_source_answers"] },
-      () => readByIds<QuestionOrderRow>(
-        db, "reading_questions", "question_id,question_order,module", "question_id", questionIds
-      )
-    ),
-    profileSupabaseQuery(
-      { query: "full_set_slot_order", dependsOn: ["full_set_source_answers"] },
-      () => readByIds<{ question_id: string; slot_id: string; slot_order: number }>(
-        db, "reading_ctw_slots", "question_id,slot_id,slot_order", "question_id", questionIds
-      )
-    ),
-    profileSupabaseQuery(
-      { query: "full_set_occurrence_identity", dependsOn: ["full_set_source_answers"] },
-      () => readByIds<OccurrenceRow>(
-        db, "reading_source_occurrences", "occurrence_id,source_question_start", "occurrence_id", occurrenceIds
-      )
-    )
-  ]);
-  const orderError = questionResult.error ?? slotResult.error ?? occurrenceResult.error;
-  if (orderError) throw new Error(orderError.message);
-
   const aggregationStartedAt = performance.now();
-  const occurrenceById = new Map((occurrenceResult.data ?? [])
-    .map((occurrence) => [occurrence.occurrence_id, occurrence]));
   const moduleById = new Map(modules.map((moduleAttempt) => [moduleAttempt.module_attempt_id, moduleAttempt]));
-  const questionOrder = new Map((questionResult.data ?? []).map((question) => [question.question_id, question.question_order]));
-  const questionModule = new Map((questionResult.data ?? []).map((question) => [question.question_id, question.module]));
-  const slotOrder = new Map((slotResult.data ?? []).map((slot) => [`${slot.question_id}:${slot.slot_id}`, slot.slot_order]));
   const sourceAnswerByKey = new Map<string, ReadingFullSetWrongQuestionAnswer>();
 
   const fullSetAnswers = answers.flatMap((answer): ReadingFullSetWrongQuestionAnswer[] => {
     const moduleAttempt = answer.module_attempt_id ? moduleById.get(answer.module_attempt_id) : undefined;
-    const occurrence = answer.occurrence_id ? occurrenceById.get(answer.occurrence_id) : undefined;
-    const taskType = questionModule.get(answer.question_id);
-    if (!moduleAttempt || !occurrence || !taskType || (moduleAttempt.module_number !== 1 && moduleAttempt.module_number !== 2)) return [];
+    const occurrence = answer.reading_source_occurrences;
+    const question = answer.reading_questions;
+    const taskType = question?.module;
+    if (!moduleAttempt || !occurrence || !question || !taskType || (moduleAttempt.module_number !== 1 && moduleAttempt.module_number !== 2)) return [];
     const localOrder = answer.slot_id
-      ? slotOrder.get(`${answer.question_id}:${answer.slot_id}`)
-      : questionOrder.get(answer.question_id);
+      ? answer.reading_ctw_slots?.slot_order
+      : question.question_order;
     if (!localOrder) return [];
     const normalized = {
       attemptId: moduleAttempt.attempt_id,
@@ -226,7 +185,7 @@ export async function loadReadingFullSetWrongbookData(
   profile?.record(
     "Full Set JS aggregation / queue inputs",
     performance.now() - aggregationStartedAt,
-    ["full_set_question_order", "full_set_slot_order", "full_set_occurrence_identity"],
+    ["full_set_source_wrong_answers_ordered"],
     result.fullSetAnswers.length + result.fullSetCorrectionAnswers.length
   );
   return result;
@@ -413,6 +372,54 @@ export async function loadReadingFullSetWrongbookQueue(input: {
   });
 }
 
+/**
+ * Correction bootstrap variant that exposes the first safe target as soon as
+ * the ordering inputs are available. Its callback may start I/O while the full
+ * queue is still being finalized synchronously.
+ */
+export async function loadReadingFullSetWrongbookBootstrapQueue(input: {
+  db: SupabaseClient;
+  onFirstTarget: (target: ReadingFullSetWrongbookQueueItem["targets"][number]) => void;
+  scope: "history" | "today";
+  sourceAttemptId: string;
+  studentId: string;
+  todayEnd: number;
+  todayStart: number;
+  profile?: ServerDebugTrace;
+}): Promise<ReadingFullSetWrongbookQueueItem[]> {
+  const data = await loadReadingFullSetWrongbookData(
+    input.db,
+    input.studentId,
+    input.sourceAttemptId,
+    input.profile
+  );
+  const queueInput = {
+    ...data,
+    scope: input.scope,
+    sourceAttemptId: input.sourceAttemptId,
+    todayEnd: input.todayEnd,
+    todayStart: input.todayStart
+  };
+  const firstTarget = input.profile
+    ? input.profile.measureSync(
+        "Full Set first target selection",
+        ["Full Set JS aggregation / queue inputs"],
+        () => findReadingFullSetFirstWrongbookTarget(queueInput),
+        (value) => value ? 1 : 0
+      )
+    : findReadingFullSetFirstWrongbookTarget(queueInput);
+  if (firstTarget) input.onFirstTarget(firstTarget);
+
+  return input.profile
+    ? input.profile.measureSync(
+        "Full Set bootstrap queue calculation",
+        ["Full Set first target selection"],
+        () => buildReadingFullSetWrongbookQueue(queueInput),
+        (value) => value.length
+      )
+    : buildReadingFullSetWrongbookQueue(queueInput);
+}
+
 export async function loadReadingFullSetPreservedAnswers(input: {
   before?: string;
   db: SupabaseClient;
@@ -507,6 +514,38 @@ async function readWrongFullSetAnswers(db: SupabaseClient, moduleAttemptIds: str
         .eq("is_correct", false)
         .range(from, to);
       return { data: page.data as AnswerRow[] | null, error: page.error };
+    })
+  );
+  return {
+    data: results.flatMap((result) => result.data ?? []),
+    error: results.find((result) => result.error)?.error ?? null
+  };
+}
+
+async function readOrderedWrongFullSetAnswers(
+  db: SupabaseClient,
+  moduleAttemptIds: string[]
+) {
+  if (!moduleAttemptIds.length) {
+    return { data: [] as OrderedWrongAnswerRow[], error: null };
+  }
+  const results = await mapWithConcurrency(chunk(moduleAttemptIds), 4, (values) =>
+    readAllSupabaseRows<OrderedWrongAnswerRow>(async (from, to) => {
+      const page = await db
+        .from("reading_full_set_answers")
+        .select(`
+          module_attempt_id,occurrence_id,logical_item_id,question_id,slot_id,is_correct,
+          reading_source_occurrences!inner(source_question_start),
+          reading_questions!inner(question_order,module),
+          reading_ctw_slots(slot_order)
+        `)
+        .in("module_attempt_id", values)
+        .eq("is_correct", false)
+        .range(from, to);
+      return {
+        data: page.data as unknown as OrderedWrongAnswerRow[] | null,
+        error: page.error
+      };
     })
   );
   return {

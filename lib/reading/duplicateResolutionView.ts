@@ -11,6 +11,7 @@ import { ctwQuestionFromPackage } from "./ctwLogicalIdentity.ts";
 import { buildReadingContentConflict } from "./contentReconciliation.ts";
 import { resolveReadingAssetUrl } from "./assets.ts";
 import { buildReadingInlineDiff } from "./reviewDiff.ts";
+import { buildReadingReviewVersion } from "./reviewPresentation.ts";
 
 export function buildReadingDuplicateResolutionItem(
   review: ReadingDuplicateReviewPlan,
@@ -140,7 +141,8 @@ export function readingDuplicatePreview(packageData: ReadingImportPackage): Read
     sourceOrder: occurrence?.sourceOrder ?? packageData.item.firstSeenSourceOrder,
     sourceQuestionRange: occurrence
       ? readingQuestionRange(occurrence.sourceQuestionStart, occurrence.sourceQuestionEnd)
-      : ""
+      : "",
+    reviewVersion: buildReadingReviewVersion(packageData)
   };
   if (packageData.item.module === "ctw") {
     const question = packageData.questions[0];
