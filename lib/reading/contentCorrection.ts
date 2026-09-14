@@ -77,37 +77,40 @@ export function buildReadingCanonicalContentUpdate(
     questions,
     occurrences
   };
-  // Maintain the database's legacy strict compatibility value for the chosen
-  // canonical representation; it is not used to decide CTW logical identity.
-  draft.item.dedupFingerprint = fingerprintReadingSourceOccurrence({
-    sourceOccurrenceId: "canonical-correction",
-    module: draft.item.module,
-    title: draft.item.title,
-    source: {
-      sourceKind: "canonical_correction",
-      sourceLabel: draft.item.firstSeenSourceLabel,
-      occurrenceDate: draft.item.firstSeenDate,
-      yearMonth: draft.item.firstSeenDate.slice(0, 7),
-      sourceQuestionFile: "canonical_correction",
-      sourceAnswerFile: "canonical_correction",
-      sourceModule: draft.occurrences[0]?.sourceModule ?? "m1",
-      sourceOrder: draft.item.firstSeenSourceOrder,
-      sourceQuestionStart: draft.occurrences[0]?.sourceQuestionStart ?? 1,
-      sourceQuestionEnd: draft.occurrences[0]?.sourceQuestionEnd ?? draft.questions.length
-    },
-    materials: draft.materials,
-    passages: draft.passages.map(({ logicalItemId: _, ...passage }) => passage),
-    questions: draft.questions.map((question) => {
-      const occurrenceSource = draft.occurrences[0]?.questionSources.find(
-        (source) => source.questionId === question.questionId
-      );
-      return {
-        ...question,
-        sourceQuestionStart: occurrenceSource?.sourceQuestionStart ?? question.questionOrder,
-        sourceQuestionEnd: occurrenceSource?.sourceQuestionEnd ?? question.questionOrder
-      };
-    })
-  });
+  // CTW keeps the database's original legacy compatibility key even when its
+  // canonical representation is corrected. Other Reading modules retain the
+  // strict canonical fingerprint behavior.
+  draft.item.dedupFingerprint = draft.item.module === "ctw"
+    ? existing.item.dedupFingerprint
+    : fingerprintReadingSourceOccurrence({
+      sourceOccurrenceId: "canonical-correction",
+      module: draft.item.module,
+      title: draft.item.title,
+      source: {
+        sourceKind: "canonical_correction",
+        sourceLabel: draft.item.firstSeenSourceLabel,
+        occurrenceDate: draft.item.firstSeenDate,
+        yearMonth: draft.item.firstSeenDate.slice(0, 7),
+        sourceQuestionFile: "canonical_correction",
+        sourceAnswerFile: "canonical_correction",
+        sourceModule: draft.occurrences[0]?.sourceModule ?? "m1",
+        sourceOrder: draft.item.firstSeenSourceOrder,
+        sourceQuestionStart: draft.occurrences[0]?.sourceQuestionStart ?? 1,
+        sourceQuestionEnd: draft.occurrences[0]?.sourceQuestionEnd ?? draft.questions.length
+      },
+      materials: draft.materials,
+      passages: draft.passages.map(({ logicalItemId: _, ...passage }) => passage),
+      questions: draft.questions.map((question) => {
+        const occurrenceSource = draft.occurrences[0]?.questionSources.find(
+          (source) => source.questionId === question.questionId
+        );
+        return {
+          ...question,
+          sourceQuestionStart: occurrenceSource?.sourceQuestionStart ?? question.questionOrder,
+          sourceQuestionEnd: occurrenceSource?.sourceQuestionEnd ?? question.questionOrder
+        };
+      })
+    });
   return validateReadingImportPackage(draft);
 }
 

@@ -260,7 +260,7 @@ test("CTW blank display serialization and smart quotes reuse historical canonica
   assert.equal(buildReadingImportRows(prepared.packageData).reading_logical_items[0].dedup_fingerprint, historical.item.dedupFingerprint);
 });
 
-test("CTW exact fingerprint owner survives later canonical text drift", async () => {
+test("CTW exact fingerprint owner blocks reuse when the current masked identity differs", async () => {
   const original = packageFrom("complete_the_words", "TOEFL_Complete_the_Words_TEMPLATE.csv");
   const incoming = incomingVariant(original, () => {});
   const historical = contentVariant(original, (candidate) => {
@@ -286,7 +286,71 @@ test("CTW exact fingerprint owner survives later canonical text drift", async ()
     prepared.packageData.questions[0].payload.paragraphs[0].rawText,
     /Canonical wording corrected/
   );
+  assert.match(prepared.occurrenceConflict, /masked logical identity 不同/);
+  assert.throws(
+    () => assertPreparedReadingPackageCanImport(prepared),
+    /masked logical identity 不同/
+  );
+});
+
+test("July 7.21B reuses repaired 956ee canonical despite its stale legacy fingerprint", async () => {
+  const legacy = historicalPackage("ctw", "reading-ctw-956eea9b8537363f0159a5e3");
+  const historical = structuredClone(legacy);
+  const historicalQuestion = historical.questions[0];
+  historicalQuestion.payload.paragraphs[0].segments.forEach((segment) => {
+    if (segment.kind === "text") segment.text = segment.text.replaceAll("’", "'");
+  });
+  historicalQuestion.payload.slots.forEach((slot) => {
+    slot.displayText = `${slot.prefix}${"_".repeat(slot.missingLength)}`;
+  });
+  rebuildCtwRawText(historicalQuestion);
+  historicalQuestion.rawDisplayText = historicalQuestion.payload.paragraphs
+    .map((paragraph) => paragraph.rawText)
+    .join("\n");
+
+  const currentCanonical = groupReadingSourceOccurrences([
+    packageToSourceCandidate(historical)
+  ]).packages[0];
+  assert.notEqual(currentCanonical.item.dedupFingerprint, historical.item.dedupFingerprint);
+  assert.equal(readingSemanticFingerprint(currentCanonical), readingSemanticFingerprint(historical));
+
+  const julyCandidate = packageToSourceCandidate(legacy);
+  julyCandidate.sourceOccurrenceId = "reading-csv-occ-7-21b-regression";
+  julyCandidate.source.sourceKind = "csv";
+  julyCandidate.source.sourceLabel = "7.21B";
+  julyCandidate.source.occurrenceDate = "2026-07-21";
+  julyCandidate.source.yearMonth = "2026-07";
+  julyCandidate.source.sourceModule = "m1";
+  julyCandidate.source.sourceOrder = 1;
+  const july = groupReadingSourceOccurrences([julyCandidate]).packages[0];
+  const database = historicalDatabase(historical);
+
+  const [prepared] = await prepareReadingPackagesForImport(database, [july], {
+    enableHistoricalSemanticFallback: true
+  });
+  assert.equal(prepared.reuseKind, "exact_fingerprint");
+  assert.equal(prepared.existingItem.logicalItemId, legacy.item.logicalItemId);
+  assert.equal(prepared.packageData.item.logicalItemId, legacy.item.logicalItemId);
+  assert.equal(prepared.packageData.item.dedupFingerprint, legacy.item.dedupFingerprint);
+  assert.equal(prepared.occurrenceConflict, null);
   assert.equal(prepared.addedOccurrenceCount, 1);
+  assert.doesNotThrow(() => buildReadingImportRows(prepared.packageData));
+  assert.match(prepared.packageData.questions[0].payload.paragraphs[0].rawText, /Europeans/);
+  assert.doesNotMatch(prepared.packageData.questions[0].payload.paragraphs[0].rawText, /European powers/);
+
+  const replayDatabase = historicalDatabase(historical);
+  replayDatabase.from = occurrenceAwareFrom(replayDatabase.from, [{
+    ...july.occurrences[0],
+    logicalItemId: legacy.item.logicalItemId
+  }]);
+  const [replayed] = await prepareReadingPackagesForImport(replayDatabase, [july], {
+    enableHistoricalSemanticFallback: true
+  });
+  assert.equal(replayed.addedOccurrenceCount, 0);
+  assert.equal(replayed.occurrenceConflict, null);
+  assert.deepEqual(replayed.possibleDuplicateLogicalItemIds, []);
+  assert.equal(replayed.contentReconciliations.length, 0);
+  assert.doesNotThrow(() => buildReadingImportRows(replayed.packageData));
 });
 
 test("CTW-only normalization canonicalizes Unicode dashes, whitespace, and blank noise", () => {

@@ -19,6 +19,7 @@ import {
   buildReadingContentConflict,
   type ReadingContentConflictItem
 } from "./contentReconciliation.ts";
+import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -187,6 +188,14 @@ export async function prepareReadingPackagesForImport(
       if (historical) {
         try {
           packageData = attachIncomingOccurrencesToHistoricalPackage(historical, incomingPackage);
+          if (
+            incomingPackage.item.module === "ctw"
+            && !compareCtwPackageLogicalIdentity(historical, incomingPackage).sameLogicalItem
+          ) {
+            preparationConflict =
+              `题目内容存在异常，需要核对：CTW fingerprint owner ${existingItem.logicalItemId} ` +
+              "与来源题目的 masked logical identity 不同";
+          }
         } catch (error) {
           preparationConflict =
             `题目内容存在异常，需要核对：${error instanceof Error ? error.message : String(error)}`;

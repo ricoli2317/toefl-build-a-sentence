@@ -101,6 +101,16 @@ test("rejects CTW reconstruction and missing-length errors", () => {
   expectInvalid("ctw", (input) => { input.questions[0].payload.slots[1].slotId = input.questions[0].payload.slots[0].slotId; }, "duplicate slotId");
 });
 
+test("CTW validation accepts a stale legacy fingerprint while other modules remain strict", () => {
+  const ctw = fixture("ctw");
+  ctw.questions[0].stem += " Corrected canonical wording.";
+  assert.doesNotThrow(() => validateReadingImportPackage(ctw));
+
+  expectInvalid("rdl", (input) => {
+    input.questions[0].stem += " Corrected canonical wording.";
+  }, "legacy dedupFingerprint does not match canonical content");
+});
+
 test("rejects invalid RDL answers and fake binding state", () => {
   expectInvalid("rdl", (input) => { input.questions[0].payload.correctOptionId = "missing-option"; }, "correctOptionId does not exist");
   expectInvalid("rdl", (input) => { input.materials[0].imageAssetPath = "/reading/not-verified.png"; }, "pending material paths must both be null");

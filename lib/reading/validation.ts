@@ -157,34 +157,40 @@ export function validateReadingImportPackage(input: unknown): ReadingImportPacka
     item,
     context
   );
-  // The persisted field is the legacy strict compatibility fingerprint. CTW
-  // logical identity has already been validated above by the shared helper.
-  const computedLegacyFingerprint = fingerprintReadingSourceOccurrence({
-    sourceOccurrenceId: "validation",
-    module: item.module as "ctw" | "rdl" | "rap",
-    title: item.title as string | null,
-    source: {
-      sourceKind: "validation",
-      sourceLabel: "validation",
-      occurrenceDate: item.firstSeenDate as string,
-      yearMonth: String(item.firstSeenDate).slice(0, 7),
-      sourceQuestionFile: "validation",
-      sourceAnswerFile: "validation",
-      sourceModule: "m1",
-      sourceOrder: 1,
-      sourceQuestionStart: 1,
-      sourceQuestionEnd: 1
-    },
-    materials: materials as ReadingMaterial[],
-    passages: (passages as ReadingPassage[]).map(({ logicalItemId: _, ...passage }) => passage),
-    questions: (questions as ReadingQuestion[]).map(({ logicalItemId: _, ...question }) => ({
-      ...question,
-      sourceQuestionStart: 1,
-      sourceQuestionEnd: question.questionType === "ctw" ? question.payload.slots.length : 1
-    }))
-  });
-  if (computedLegacyFingerprint !== item.dedupFingerprint) {
-    fail("legacy dedupFingerprint does not match canonical content", "$.item.dedupFingerprint", context);
+  // A persisted CTW fingerprint is a legacy compatibility lookup, not a hash
+  // invariant for the current canonical representation. Prefix, punctuation,
+  // display, and other canonical corrections may legitimately leave it stale;
+  // CTW identity is enforced by buildCtwLogicalIdentity above and by importer
+  // comparisons against the current database package. Other Reading modules
+  // still require their strict fingerprint to match canonical content.
+  if (item.module !== "ctw") {
+    const computedLegacyFingerprint = fingerprintReadingSourceOccurrence({
+      sourceOccurrenceId: "validation",
+      module: item.module as "rdl" | "rap",
+      title: item.title as string,
+      source: {
+        sourceKind: "validation",
+        sourceLabel: "validation",
+        occurrenceDate: item.firstSeenDate as string,
+        yearMonth: String(item.firstSeenDate).slice(0, 7),
+        sourceQuestionFile: "validation",
+        sourceAnswerFile: "validation",
+        sourceModule: "m1",
+        sourceOrder: 1,
+        sourceQuestionStart: 1,
+        sourceQuestionEnd: 1
+      },
+      materials: materials as ReadingMaterial[],
+      passages: (passages as ReadingPassage[]).map(({ logicalItemId: _, ...passage }) => passage),
+      questions: (questions as ReadingQuestion[]).map(({ logicalItemId: _, ...question }) => ({
+        ...question,
+        sourceQuestionStart: 1,
+        sourceQuestionEnd: 1
+      }))
+    });
+    if (computedLegacyFingerprint !== item.dedupFingerprint) {
+      fail("legacy dedupFingerprint does not match canonical content", "$.item.dedupFingerprint", context);
+    }
   }
 
   return input as ReadingImportPackage;

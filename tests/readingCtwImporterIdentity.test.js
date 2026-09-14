@@ -156,6 +156,7 @@ test("real access boundary reuses historical identity and becomes a prefix conte
 
   const corrected = buildReadingCanonicalContentUpdate(historical, incoming);
   assert.equal(corrected.item.logicalItemId, historical.item.logicalItemId);
+  assert.equal(corrected.item.dedupFingerprint, historical.item.dedupFingerprint);
   assert.equal(corrected.questions[0].payload.slots[0].prefix, "acc");
 });
 

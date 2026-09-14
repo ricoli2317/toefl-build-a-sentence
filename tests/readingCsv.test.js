@@ -422,15 +422,19 @@ test("reimporting the identical CTW occurrence is idempotent", async () => {
   assert.equal(database.rpcCalls.length, 1);
 });
 
-test("the same CTW occurrence with different content fails before the atomic RPC", async () => {
+test("the same CTW occurrence with a different blank order fails before the atomic RPC", async () => {
   const original = ctwPackageAt({ label: "260121A", date: "2026-01-21", groupId: "ctw-260121a-m1" });
   const changed = ctwPackageAt({
     label: "260121A",
     date: "2026-01-21",
     groupId: "ctw-260121a-m1",
-    mutateSlots(slots) {
-      slots[0].missingText = "xxxx";
-      slots[0].answer = `${slots[0].prefix}${slots[0].missingText}`;
+    mutatePassage(paragraphs) {
+      paragraphs[0].rawText = "A studies scien____ nature.";
+      paragraphs[0].segments = [
+        { kind: "text", text: "A studies " },
+        { kind: "blank", slotId: "s1" },
+        { kind: "text", text: " nature." }
+      ];
     }
   });
   assert.notEqual(original.item.dedupFingerprint, changed.item.dedupFingerprint);
@@ -460,19 +464,19 @@ test("the same CTW passage with a different blank template stays two logical ite
     label: "260305B",
     date: "2026-03-05",
     groupId: "ctw-260305b-m1",
-    mutateSlots(slots) {
-      slots[0].missingText = "xxxx";
-      slots[0].answer = `${slots[0].prefix}${slots[0].missingText}`;
+    mutatePassage(paragraphs) {
+      paragraphs[0].rawText = "A studies scien____ nature.";
+      paragraphs[0].segments = [
+        { kind: "text", text: "A studies " },
+        { kind: "blank", slotId: "s1" },
+        { kind: "text", text: " nature." }
+      ];
     }
   });
-  assert.deepEqual(
-    first.questions[0].payload.paragraphs.map((paragraph) => paragraph.rawText),
-    second.questions[0].payload.paragraphs.map((paragraph) => paragraph.rawText)
-  );
   const grouped = groupReadingSourceOccurrences([first, second]);
   assert.equal(grouped.packages.length, 2);
   assert.notEqual(grouped.packages[0].item.dedupFingerprint, grouped.packages[1].item.dedupFingerprint);
-  assert.equal(grouped.report.possibleDuplicates.length, 1);
+  assert.equal(grouped.report.possibleDuplicates.length, 0);
 });
 
 test("all three templates generate identical business keys on a second upload", () => {
@@ -527,7 +531,7 @@ function businessKeys(rows) {
   ]));
 }
 
-function ctwCandidateAt({ label, date, groupId, mutateSlots }) {
+function ctwCandidateAt({ label, date, groupId, mutateSlots, mutatePassage }) {
   const document = template("TOEFL_Complete_the_Words_TEMPLATE.csv");
   const row = document.rows[0];
   row.source_label = label;
@@ -540,6 +544,11 @@ function ctwCandidateAt({ label, date, groupId, mutateSlots }) {
     const slots = JSON.parse(row.slots_json);
     mutateSlots(slots);
     row.slots_json = JSON.stringify(slots);
+  }
+  if (mutatePassage) {
+    const paragraphs = JSON.parse(row.passage_json);
+    mutatePassage(paragraphs);
+    row.passage_json = JSON.stringify(paragraphs);
   }
   const result = adapt("complete_the_words", document);
   assert.deepEqual(result.failures, []);
