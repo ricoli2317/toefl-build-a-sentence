@@ -8,7 +8,7 @@ import type {
   ReadingDuplicateResolutionChoice,
   ReadingDuplicateResolutionItem
 } from "@/lib/reading/duplicateResolutionModel";
-import type { ReadingInlineDiff } from "@/lib/reading/reviewDiff";
+import { ReadingInlineVersionValue } from "./ReadingInlineVersionValue";
 
 export type ReadingResolutionDraft =
   | { action: null; logicalItemId: string }
@@ -145,8 +145,8 @@ function CompactDuplicateDifferences({ candidate }: { candidate: ReadingDuplicat
             <div className="rounded-lg bg-white p-3" key={`${difference.label}-${index}`}>
               <div className="font-bold text-student-text">{difference.label}</div>
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
-                <InlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
-                <InlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
+                <ReadingInlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
+                <ReadingInlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
               </div>
             </div>
           ))}
@@ -193,8 +193,6 @@ function ResolvedDuplicateSummary({ draft, item, onReopen, selectedCandidate }: 
     </article>
   );
 }
-
-function InlineVersionValue({ title, segments }: { title: "题库版本" | "来源 CSV"; segments: ReadingInlineDiff["existing"] }) { return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{segments.map((segment, index) => segment.changed ? <mark className="rounded bg-amber-300 px-0.5 text-inherit" key={index}>{segment.text || "∅"}</mark> : <span key={index}>{segment.text}</span>)}</div></div>; }
 
 function duplicateActionLabel(action: ReadingResolutionDraft["action"]) {
   return action === "reuse_existing" ? "归入题库版本" : action === "create_new" ? "保留为新题" : "尚未选择";

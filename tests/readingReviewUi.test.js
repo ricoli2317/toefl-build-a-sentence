@@ -6,6 +6,7 @@ const test = require("node:test");
 const root = path.resolve(__dirname, "..");
 const content = fs.readFileSync(path.join(root, "components/import/ReadingContentConflictList.tsx"), "utf8");
 const duplicate = fs.readFileSync(path.join(root, "components/import/ReadingDuplicateResolutionList.tsx"), "utf8");
+const inlineDiff = fs.readFileSync(path.join(root, "components/import/ReadingInlineVersionValue.tsx"), "utf8");
 const teacher = fs.readFileSync(path.join(root, "components/TeacherImportQuestions.tsx"), "utf8");
 
 test("compact CTW review renders only DB canonical left and CSV source right", () => {
@@ -52,8 +53,10 @@ test("resolved reviews toggle independently and never expose whole-content dumps
   }
   assert.doesNotMatch(content, /FullContentComparison|QuestionVersion|内部题目编号/);
   assert.doesNotMatch(duplicate, /FullDuplicateComparison|ReadingDuplicateDetail/);
-  assert.match(content, /<mark/);
-  assert.match(duplicate, /<mark/);
+  assert.match(content, /ReadingInlineVersionValue/);
+  assert.match(duplicate, /ReadingInlineVersionValue/);
+  assert.match(inlineDiff, /<mark/);
+  assert.doesNotMatch(inlineDiff, /∅|Ø|\[缺失\]/);
 });
 
 test("RDL duplicate review shows both material images with click-to-enlarge links", () => {

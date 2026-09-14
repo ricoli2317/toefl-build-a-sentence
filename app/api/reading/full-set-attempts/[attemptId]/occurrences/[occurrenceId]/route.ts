@@ -1,5 +1,6 @@
 import {
   isUuid,
+  loadReadingFullSetOccurrencePracticePayload,
   loadOwnedReadingFullSetAttempt,
   readingFullSetAttemptError,
   readingFullSetAttemptJson,
@@ -10,11 +11,10 @@ import {
   readingFullSetCurrentModuleAttempt,
   type ReadingFullSetAttemptSummary
 } from "@/lib/reading/fullSetAttempts";
-import { findValidReadingFullSet, type ReadingFullSetOccurrence } from "@/lib/reading/fullSets";
-import { loadReadingFullSets } from "@/lib/reading/fullSets.server";
-import { buildSubmittedReadingAnswerState, type SubmittedReadingAnswerRow } from "@/lib/reading/review";
-import { loadStudentReadingPractice, StudentReadingLoadError } from "@/lib/reading/studentPractice";
+import { loadReadingFullSet } from "@/lib/reading/fullSets.server";
+import { StudentReadingLoadError } from "@/lib/reading/studentPractice";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 
 export const dynamic = "force-dynamic";
 
@@ -22,57 +22,61 @@ export async function GET(
   request: Request,
   { params }: { params: { attemptId: string; occurrenceId: string } }
 ) {
-  const auth = await requireReadingFullSetStudent(request);
-  if (auth.error) return auth.error;
-  if (!auth.client) return readingFullSetAttemptJson({ error: "请先登录。" }, { status: 401 });
+  const timing = createStudentPerformanceTrace(
+    "/api/reading/full-set-attempts/[attemptId]/occurrences/[occurrenceId]",
+    {
+      attemptId: params.attemptId,
+      traceId: request.headers.get("x-reading-full-set-trace-id")
+    }
+  );
+  const respond = (response: ReturnType<typeof readingFullSetAttemptJson>) => {
+    timing.finishHeaders(response.headers, response.ok).forEach((value, name) => {
+      response.headers.set(name, value);
+    });
+    return response;
+  };
+  const auth = await requireReadingFullSetStudent(request, timing);
+  if (auth.error) return respond(auth.error);
+  if (!auth.client) return respond(readingFullSetAttemptJson({ error: "请先登录。" }, { status: 401 }));
   if (!isUuid(params.attemptId) || !params.occurrenceId) {
-    return readingFullSetAttemptJson({ error: "无效的套题题目请求。" }, { status: 400 });
+    return respond(readingFullSetAttemptJson({ error: "无效的套题题目请求。" }, { status: 400 }));
   }
-  const owned = await loadOwnedReadingFullSetAttempt(auth.client, params.attemptId);
+  const owned = await timing.measure(
+    "database",
+    "ownership",
+    () => loadOwnedReadingFullSetAttempt(auth.client!, params.attemptId)
+  );
   if (owned.error || !owned.attempt) {
-    return readingFullSetAttemptError(owned.error, "套题题目加载失败，请稍后重试。");
+    return respond(readingFullSetAttemptError(owned.error, "套题题目加载失败，请稍后重试。"));
   }
   const active = activeModule(owned.attempt);
   if (!active) {
-    return readingFullSetAttemptJson({ error: "当前 Module 已结束。" }, { status: 409 });
+    return respond(readingFullSetAttemptJson({ error: "当前 Module 已结束。" }, { status: 409 }));
   }
   try {
-    const fullSet = findValidReadingFullSet(
-      await loadReadingFullSets(createServiceSupabase()),
-      owned.attempt.fullSetId
+    const fullSet = await timing.measure(
+      "database",
+      "definition_resolution",
+      () => loadReadingFullSet(createServiceSupabase(), owned.attempt!.fullSetId)
     );
     const occurrence = fullSet
       ? moduleOccurrences(fullSet, active.moduleNumber)
         .find((candidate) => candidate.occurrenceId === params.occurrenceId)
       : null;
     if (!fullSet || !occurrence) {
-      return readingFullSetAttemptJson({ error: "这个题目不属于当前 Module。" }, { status: 404 });
+      return respond(readingFullSetAttemptJson({ error: "这个题目不属于当前 Module。" }, { status: 404 }));
     }
-    const db = createServiceSupabase();
-    const practice = await loadStudentReadingPractice(db, occurrence.logicalItemId);
-    const answerResult = await db
-      .from("reading_full_set_answers")
-      .select("question_id,slot_id,answer_kind,student_answer,question_time_seconds")
-      .eq("module_attempt_id", active.moduleAttemptId)
-      .eq("occurrence_id", occurrence.occurrenceId);
-    if (answerResult.error) {
-      return readingFullSetAttemptError(answerResult.error, "套题答案加载失败，请稍后重试。");
-    }
-    const rows = (answerResult.data ?? []) as SubmittedReadingAnswerRow[];
-    const answers = rows.length ? buildSubmittedReadingAnswerState(practice, rows) : {};
-    const questionTimes = Object.fromEntries(Array.from(new Set(rows.map((row) => row.question_id))).flatMap((questionId) => {
-      const values = rows
-        .filter((row) => row.question_id === questionId && row.question_time_seconds !== null)
-        .map((row) => Number(row.question_time_seconds));
-      return values.length ? [[questionId, Math.max(...values)]] : [];
-    }));
-    return readingFullSetAttemptJson({
-      answerRevision: active.answerRevision,
-      answers,
-      occurrence: publicOccurrence(occurrence),
-      practice,
-      questionTimes
+    const payload = await loadReadingFullSetOccurrencePracticePayload({
+      contentPhase: "occurrence_content",
+      db: createServiceSupabase(),
+      moduleAttempt: active,
+      occurrence,
+      timing,
+      title: fullSet.title
     });
+    return respond(timing.measureSync("processing", "serialization", () =>
+      readingFullSetAttemptJson(payload)
+    ));
   } catch (error) {
     if (error instanceof StudentReadingLoadError) {
       console.error("Reading Full Set occurrence content failed", {
@@ -80,14 +84,14 @@ export async function GET(
         detail: error.message,
         occurrenceId: params.occurrenceId
       });
-      return readingFullSetAttemptJson({ error: error.publicMessage }, { status: error.status });
+      return respond(readingFullSetAttemptJson({ error: error.publicMessage }, { status: error.status }));
     }
     console.error("Reading Full Set occurrence load failed", {
       error,
       attemptId: params.attemptId,
       occurrenceId: params.occurrenceId
     });
-    return readingFullSetAttemptJson({ error: "套题题目加载失败，请稍后重试。" }, { status: 500 });
+    return respond(readingFullSetAttemptJson({ error: "套题题目加载失败，请稍后重试。" }, { status: 500 }));
   }
 }
 
@@ -95,11 +99,24 @@ export async function PUT(
   request: Request,
   { params }: { params: { attemptId: string; occurrenceId: string } }
 ) {
-  const auth = await requireReadingFullSetStudent(request);
-  if (auth.error) return auth.error;
-  if (!auth.client) return readingFullSetAttemptJson({ error: "请先登录。" }, { status: 401 });
+  const timing = createStudentPerformanceTrace(
+    "/api/reading/full-set-attempts/[attemptId]/occurrences/[occurrenceId]",
+    {
+      attemptId: params.attemptId,
+      traceId: request.headers.get("x-reading-full-set-trace-id")
+    }
+  );
+  const respond = (response: ReturnType<typeof readingFullSetAttemptJson>) => {
+    timing.finishHeaders(response.headers, response.ok).forEach((value, name) => {
+      response.headers.set(name, value);
+    });
+    return response;
+  };
+  const auth = await requireReadingFullSetStudent(request, timing);
+  if (auth.error) return respond(auth.error);
+  if (!auth.client) return respond(readingFullSetAttemptJson({ code: "AUTH_FAILED", error: "请先登录。" }, { status: 401 }));
   if (!isUuid(params.attemptId) || !params.occurrenceId) {
-    return readingFullSetAttemptJson({ error: "无效的套题答案请求。" }, { status: 400 });
+    return respond(readingFullSetAttemptJson({ error: "无效的套题答案请求。" }, { status: 400 }));
   }
   const body = await request.json().catch(() => ({})) as {
     answers?: unknown;
@@ -114,20 +131,26 @@ export async function PUT(
     || expectedRevision < 0
     || !Array.isArray(body.answers)
   ) {
-    return readingFullSetAttemptJson({ error: "无效的套题答案请求。" }, { status: 400 });
+    return respond(readingFullSetAttemptJson({ error: "无效的套题答案请求。" }, { status: 400 }));
   }
-  const { data, error } = await auth.client.rpc("save_reading_full_set_occurrence_answers", {
-    p_answers: body.answers,
-    p_attempt_id: params.attemptId,
-    p_expected_revision: expectedRevision,
-    p_module_number: moduleNo,
-    p_occurrence_id: params.occurrenceId
-  });
-  if (error) return readingFullSetAttemptError(error, "套题答案保存失败，请稍后重试。");
+  const { data, error } = await timing.measure(
+    "database",
+    moduleNo === 1 ? "m1_final_flush" : "answer_save",
+    () => auth.client!.rpc("save_reading_full_set_occurrence_answers", {
+      p_answers: body.answers,
+      p_attempt_id: params.attemptId,
+      p_expected_revision: expectedRevision,
+      p_module_number: moduleNo,
+      p_occurrence_id: params.occurrenceId
+    })
+  );
+  if (error) return respond(readingFullSetAttemptError(error, "套题答案保存失败，请稍后重试。"));
   if (!isSaveResult(data)) {
-    return readingFullSetAttemptJson({ error: "套题答案保存状态返回了无效数据。" }, { status: 500 });
+    return respond(readingFullSetAttemptJson({ error: "套题答案保存状态返回了无效数据。" }, { status: 500 }));
   }
-  return readingFullSetAttemptJson(data, { status: data.accepted ? 200 : 409 });
+  return respond(timing.measureSync("processing", "serialization", () =>
+    readingFullSetAttemptJson(data, { status: data.accepted ? 200 : 409 })
+  ));
 }
 
 function activeModule(attempt: ReadingFullSetAttemptSummary) {
@@ -135,20 +158,10 @@ function activeModule(attempt: ReadingFullSetAttemptSummary) {
 }
 
 function moduleOccurrences(
-  fullSet: NonNullable<ReturnType<typeof findValidReadingFullSet>>,
+  fullSet: NonNullable<Awaited<ReturnType<typeof loadReadingFullSet>>>,
   moduleNumber: 1 | 2
 ) {
   return moduleNumber === 1 ? fullSet.module1.occurrences : fullSet.module2.occurrences;
-}
-
-function publicOccurrence(occurrence: ReadingFullSetOccurrence) {
-  return {
-    occurrenceId: occurrence.occurrenceId,
-    logicalItemId: occurrence.logicalItemId,
-    taskType: occurrence.taskType,
-    sourceQuestionStart: occurrence.sourceQuestionStart,
-    sourceQuestionEnd: occurrence.sourceQuestionEnd
-  };
 }
 
 function isSaveResult(value: unknown): value is {

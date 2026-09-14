@@ -75,10 +75,12 @@ test("wrongbook invalidation marks cached data stale and revalidates without bla
   assert.doesNotMatch(wrongQuestionsHome, /refreshOnMount/);
 });
 
-test("Reading correction bootstrap is cache-deduped and parallelizes its two required requests", () => {
-  assert.match(readingWrongbookPractice, /reading-correction-detail:/);
-  assert.match(readingWrongbookPractice, /useStudentCachedData<Awaited<ReturnType<typeof loadCorrectionDetail>>>/);
-  assert.match(readingWrongbookPractice, /Promise\.all\(\[[\s\S]*\/api\/reading\/practice\/[\s\S]*\/api\/reading\/wrongbook-attempts/);
+test("Reading correction independently cache-dedupes its concurrent practice and attempt requests", () => {
+  assert.match(readingWrongbookPractice, /reading-correction-practice:/);
+  assert.match(readingWrongbookPractice, /reading-correction-attempt:/);
+  assert.match(readingWrongbookPractice, /useStudentCachedData<StudentReadingPracticePayload>/);
+  assert.match(readingWrongbookPractice, /useStudentCachedData<Awaited<ReturnType<typeof loadCorrectionAttempt>>>/);
+  assert.match(readingWrongbookPractice, /ReadingPracticePendingShell/);
 });
 
 test("Full Set correction loads only the current logical item instead of an eager bulk practice payload", () => {

@@ -127,6 +127,10 @@ export function buildReadingDuplicateReviewPlans(
       ...batchCandidates
     ]).filter(
       (candidate) => candidate.item.logicalItemId !== incoming.packageData.item.logicalItemId
+        && (
+          incoming.packageData.item.module !== "rdl"
+          || arePossibleReadingDuplicates(incoming.packageData, candidate)
+        )
     );
     if (incoming.packageData.item.module === "ctw") {
       assertCtwCandidateIdentityClusters(incoming.packageData, candidatePool);

@@ -1,8 +1,21 @@
 type DbMetric = {
+  dependsOn?: string[];
   durationMs: number;
   error: boolean;
   operation: string;
+  query?: string;
   rows: number;
+  selectedColumns?: string;
+  startedAtMs?: number;
+  table?: string;
+};
+
+type StageMetric = {
+  dependsOn: string[];
+  durationMs: number;
+  rows: number | null;
+  stage: string;
+  startedAtMs: number;
 };
 
 type HttpMetric = {
@@ -11,6 +24,7 @@ type HttpMetric = {
   method: string;
   path: string;
   payloadBytes: number;
+  stages: StageMetric[];
   status: number;
 };
 
@@ -58,7 +72,13 @@ const overviewPayload = parseJson(overview.body) as {
 };
 report.homepage = scenarioReport([overview.metric], {
   groups: overviewPayload.groups?.length ?? 0,
+  rowsByModule: overviewRowsByModule(overview.metric.db),
   stats: overviewPayload.stats ?? null
+});
+
+const baseline = await measuredRequest("/api/wrong-questions?performanceBaseline=1");
+report.supabase_round_trip_baseline = scenarioReport([baseline.metric], {
+  samples: baseline.metric.db.filter((metric) => metric.query?.startsWith("round_trip_baseline_"))
 });
 
 const groups = overviewPayload.groups ?? [];
@@ -71,7 +91,11 @@ if (bas) {
     todayStart: day.start
   });
   const result = await measuredRequest(`/api/wrong-questions?${query}`);
-  report.bas = scenarioReport([result.metric], parseJson(result.body));
+  const payload = parseJson(result.body) as { count?: number; stats?: unknown } | null;
+  report.bas = scenarioReport([result.metric], {
+    count: payload?.count ?? null,
+    stats: payload?.stats ?? null
+  });
 } else {
   report.bas = { status: "no_pending_group" };
 }
@@ -97,7 +121,11 @@ for (const taskType of ["ctw", "rdl", "rap"] as const) {
     measuredRequest(`/api/reading/practice/${encodeURIComponent(group.groupId)}`),
     measuredRequest("/api/reading/wrongbook-attempts", { body, method: "POST" })
   ]);
-  report[taskType] = scenarioReport([practice.metric, attempt.metric]);
+  report[taskType] = {
+    ...scenarioReport([practice.metric, attempt.metric]),
+    firstRenderReadyMs: Math.max(practice.metric.durationMs, attempt.metric.durationMs),
+    requestRelationship: "parallel"
+  };
 }
 
 const fullSet = firstPending(groups, "full_set");
@@ -126,7 +154,11 @@ if (!fullSet) {
       `/api/reading/practice/${encodeURIComponent(logicalItemId)}`
     )).metric);
   }
-  report.full_set = scenarioReport(metrics, { firstLogicalItemIdFound: Boolean(logicalItemId) });
+  report.full_set = {
+    ...scenarioReport(metrics, { firstLogicalItemIdFound: Boolean(logicalItemId) }),
+    firstRenderReadyMs: metrics.reduce((sum, metric) => sum + metric.durationMs, 0),
+    requestRelationship: "bootstrap_then_practice_GET"
+  };
 }
 
 console.log(JSON.stringify({
@@ -167,6 +199,17 @@ function scenarioReport(http: HttpMetric[], payload?: unknown) {
   };
 }
 
+function overviewRowsByModule(metrics: DbMetric[]) {
+  const sum = (predicate: (query: string) => boolean) => metrics
+    .filter((metric) => predicate(metric.query ?? ""))
+    .reduce((total, metric) => total + metric.rows, 0);
+  return {
+    bas: sum((query) => query.startsWith("overview_bas_")),
+    fullSet: sum((query) => query.startsWith("overview_full_set_")),
+    reading: sum((query) => query.startsWith("reading_"))
+  };
+}
+
 async function measuredRequest(
   path: string,
   options: { body?: unknown; method?: "GET" | "POST" } = {}
@@ -191,6 +234,7 @@ async function measuredRequest(
     method,
     path,
     payloadBytes: new TextEncoder().encode(body).length,
+    stages: decodeHeader<StageMetric[]>(response.headers.get("x-tps-stage-metrics"), []),
     status: response.status
   };
   if (!response.ok) {
@@ -200,11 +244,15 @@ async function measuredRequest(
 }
 
 function decodeDbMetrics(value: string | null): DbMetric[] {
-  if (!value) return [];
+  return decodeHeader<DbMetric[]>(value, []);
+}
+
+function decodeHeader<T>(value: string | null, fallback: T): T {
+  if (!value) return fallback;
   try {
-    return JSON.parse(Buffer.from(value, "base64url").toString("utf8")) as DbMetric[];
+    return JSON.parse(Buffer.from(value, "base64url").toString("utf8")) as T;
   } catch {
-    return [];
+    return fallback;
   }
 }
 

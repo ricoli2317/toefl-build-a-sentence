@@ -166,14 +166,21 @@ export async function prepareReadingPackagesForImport(
           .filter((logicalItemId) => logicalItemId !== survivor.item.logicalItemId)
           .sort();
       } else {
-        possibleDuplicateLogicalItemIds = uniqueIds([
+        const possibleCandidates = uniquePackages([
           ...equivalentCandidates,
           ...(historicalByPossible.get(readingPossibleDuplicateFingerprint(incomingPackage)) ?? []),
           ...historicalPackages.filter((historical) =>
             readingSemanticFingerprint(historical) !== semanticFingerprint
             && arePossibleReadingDuplicates(incomingPackage, historical)
           )
-        ]).filter((id) => id !== incomingPackage.item.logicalItemId);
+        ]).filter((candidate) =>
+          candidate.item.logicalItemId !== incomingPackage.item.logicalItemId
+          && (
+            incomingPackage.item.module !== "rdl"
+            || arePossibleReadingDuplicates(incomingPackage, candidate)
+          )
+        );
+        possibleDuplicateLogicalItemIds = uniqueIds(possibleCandidates);
       }
     }
 

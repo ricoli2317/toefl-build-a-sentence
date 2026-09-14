@@ -6,6 +6,7 @@ const test = require("node:test");
 const { parseCsvDocument } = require("../lib/csv.ts");
 const { adaptReadingCsv } = require("../lib/reading/csvAdapter.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
+const { buildReadingDuplicateReviewPlans } = require("../lib/reading/duplicateResolution.ts");
 const {
   assertPreparedReadingPackageCanImport,
   buildReadingImportRows,
@@ -689,7 +690,64 @@ test("RDL unresolved material similarity remains possible material duplicate and
   assert.equal(prepared.reuseKind, "new");
   assert.equal(prepared.materialMatchKind, "possible_material_duplicate");
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, [historical.item.logicalItemId]);
+  assert.equal(buildReadingDuplicateReviewPlans([prepared]).length, 1);
   assert.throws(() => assertPreparedReadingPackageCanImport(prepared), /需确认/);
+});
+
+test("registered RDL-095 and RDL-127 title/type match does not bypass question evidence", async () => {
+  const historical = contentVariant(
+    packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv"),
+    (candidate) => {
+      candidate.title = "Physics For Engineers I";
+      candidate.materials[0] = {
+        ...candidate.materials[0],
+        materialId: "RDL-095",
+        title: "Physics For Engineers I",
+        materialType: "course_description",
+        imageAssetPath: "reading/rdl/RDL-095/material_final.png",
+        hitboxDataPath: "reading/rdl/RDL-095/selection_map.json"
+      };
+      for (const [index, question] of candidate.questions.entries()) {
+        question.stem = [
+          "What prerequisite appears below PHYS 121?",
+          "Which students should enroll in PHYS 121?",
+          "How is the two-column PHYS 121 description organized?"
+        ][index];
+        question.payload.materialId = "RDL-095";
+      }
+    }
+  );
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.materials[0] = {
+      ...candidate.materials[0],
+      materialId: "RDL-127",
+      title: "Physics For Engineers I",
+      materialType: "course_description",
+      imageAssetPath: "reading/rdl/RDL-127/material_final.png",
+      hitboxDataPath: "reading/rdl/RDL-127/selection_map.json"
+    };
+    for (const [index, question] of candidate.questions.entries()) {
+      question.stem = [
+        "What does the PHYS 101 overview emphasize?",
+        "Where is the PHYS 101 prerequisite displayed?",
+        "What information appears in the third column?"
+      ][index];
+      question.payload.materialId = "RDL-127";
+    }
+  });
+  const [prepared] = await prepareReadingPackagesForImport(
+    historicalDatabase(historical),
+    [incoming],
+    {
+      enableHistoricalSemanticFallback: true,
+      rdlMaterialCatalog: [historical.materials[0], incoming.materials[0]]
+    }
+  );
+
+  assert.equal(prepared.materialMatchKind, "exact_material");
+  assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+  assert.deepEqual(prepared.possibleDuplicateCandidates, []);
+  assert.equal(buildReadingDuplicateReviewPlans([prepared]).length, 0);
 });
 
 test("7.15A RDL-013 and RDL-014 reuse historical logical items across versioned asset keys", async () => {

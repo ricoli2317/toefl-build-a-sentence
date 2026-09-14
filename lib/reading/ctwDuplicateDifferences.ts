@@ -60,8 +60,8 @@ function passageLexicalDifferences(
     return [{
       kind: "passage_lexical" as const,
       location: `完整正文第 ${wordNumber} 个词`,
-      incoming: incomingWords.join(" ") || "∅",
-      candidate: candidateWords.join(" ") || "∅"
+      incoming: incomingWords.join(" "),
+      candidate: candidateWords.join(" ")
     }];
   });
 }
@@ -152,8 +152,8 @@ function sequenceDifferences(
     return {
       kind,
       location: slotOrders ? `第 ${position} 空${label}` : `${label}第 ${position} 处`,
-      incoming: left ?? "∅",
-      candidate: right ?? "∅"
+      incoming: left ?? "",
+      candidate: right ?? ""
     };
   }).filter((difference): difference is ReadingCtwDuplicateDifference => difference !== null);
 }

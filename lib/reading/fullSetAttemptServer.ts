@@ -2,14 +2,19 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createAnonSupabase } from "@/lib/supabase/server";
+import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import {
   isReadingFullSetAttemptSummary,
   readingFullSetCurrentModuleAttempt,
   type ReadingFullSetAttemptSummary,
+  type ReadingFullSetModuleAttemptSummary,
+  type ReadingFullSetOccurrencePracticePayload,
   type ReadingFullSetRunnerOccurrence,
   type ReadingFullSetRunnerPayload
 } from "./fullSetAttempts.ts";
-import type { ReadingFullSet } from "./fullSets.ts";
+import type { ReadingFullSet, ReadingFullSetOccurrence } from "./fullSets.ts";
+import { buildSubmittedReadingAnswerState, type SubmittedReadingAnswerRow } from "./review.ts";
+import { loadStudentReadingPractice } from "./studentPractice.ts";
 
 export type ReadingFullSetAttemptAuth = {
   client: ReturnType<typeof createAnonSupabase> | null;
@@ -24,10 +29,14 @@ export function readingFullSetAttemptJson(data: unknown, init?: ResponseInit) {
 }
 
 export async function requireReadingFullSetStudent(
-  request: Request
+  request: Request,
+  timing?: StudentPerformanceTrace
 ): Promise<ReadingFullSetAttemptAuth> {
   const token = bearerToken(request);
-  const auth = await requireUserWithRole(token, "student");
+  const auth = await requireUserWithRole(token, "student", timing, {
+    auth: "auth",
+    profile: "profile_validation"
+  });
   if (auth.error || !auth.userId || !token) {
     return {
       client: null,
@@ -107,6 +116,72 @@ export function buildReadingFullSetRunnerPayload(
       sourceQuestionEnd: occurrence.sourceQuestionEnd
     })),
     title: fullSet.title ?? attempt.fullSetId
+  };
+}
+
+export async function loadReadingFullSetOccurrencePracticePayload(input: {
+  contentPhase?: string;
+  db: SupabaseClient;
+  moduleAttempt: ReadingFullSetModuleAttemptSummary;
+  occurrence: ReadingFullSetOccurrence;
+  timing?: StudentPerformanceTrace;
+  title?: string | null;
+}): Promise<ReadingFullSetOccurrencePracticePayload> {
+  const loadPractice = () => loadStudentReadingPractice(
+    input.db,
+    input.occurrence.logicalItemId,
+    undefined,
+    input.occurrence.taskType === "ctw" && input.title
+      ? { ctwDisplayTitle: input.title }
+      : undefined
+  );
+  const practicePromise = input.timing
+    ? input.timing.measure("database", input.contentPhase ?? "first_occurrence_content", loadPractice)
+    : loadPractice();
+  const answerPromise = input.timing
+    ? input.timing.measure("database", "answers", () => loadOccurrenceAnswers(input))
+    : loadOccurrenceAnswers(input);
+  const [practice, rows] = await Promise.all([practicePromise, answerPromise]);
+  const answers = rows.length ? buildSubmittedReadingAnswerState(practice, rows) : {};
+  return {
+    answerRevision: input.moduleAttempt.answerRevision,
+    answers,
+    occurrence: publicReadingFullSetOccurrence(input.occurrence),
+    practice,
+    questionTimes: readingFullSetQuestionTimes(rows)
+  };
+}
+
+async function loadOccurrenceAnswers(input: {
+  db: SupabaseClient;
+  moduleAttempt: ReadingFullSetModuleAttemptSummary;
+  occurrence: ReadingFullSetOccurrence;
+}) {
+  const result = await input.db
+    .from("reading_full_set_answers")
+    .select("question_id,slot_id,answer_kind,student_answer,question_time_seconds")
+    .eq("module_attempt_id", input.moduleAttempt.moduleAttemptId)
+    .eq("occurrence_id", input.occurrence.occurrenceId);
+  if (result.error) throw result.error;
+  return (result.data ?? []) as SubmittedReadingAnswerRow[];
+}
+
+function readingFullSetQuestionTimes(rows: SubmittedReadingAnswerRow[]) {
+  return Object.fromEntries(Array.from(new Set(rows.map((row) => row.question_id))).flatMap((questionId) => {
+    const values = rows
+      .filter((row) => row.question_id === questionId && row.question_time_seconds !== null)
+      .map((row) => Number(row.question_time_seconds));
+    return values.length ? [[questionId, Math.max(...values)]] : [];
+  }));
+}
+
+export function publicReadingFullSetOccurrence(occurrence: ReadingFullSetOccurrence) {
+  return {
+    occurrenceId: occurrence.occurrenceId,
+    logicalItemId: occurrence.logicalItemId,
+    taskType: occurrence.taskType,
+    sourceQuestionStart: occurrence.sourceQuestionStart,
+    sourceQuestionEnd: occurrence.sourceQuestionEnd
   };
 }
 

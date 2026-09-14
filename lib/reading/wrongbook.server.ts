@@ -2,6 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { mapWithConcurrency } from "../mapWithConcurrency.ts";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
+  profileSupabaseQuery,
+  type ServerDebugTrace
+} from "@/lib/supabase/debugMetrics.server";
+import {
   buildReadingWrongbookQueue,
   type ReadingWrongQuestionAnswer,
   type ReadingWrongQuestionAttempt,
@@ -9,8 +13,8 @@ import {
   type ReadingWrongbookQueueItem
 } from "@/lib/wrongQuestions";
 import {
-  compareReadingCatalogIdentityOrder,
-  readingCatalogDisplayNumber
+  readingCatalogDisplayNumber,
+  readingCatalogDisplayNumbers
 } from "./catalog";
 import type { ReadingModule } from "./types";
 import type { ReadingWrongbookPreservedAnswer } from "./wrongbook";
@@ -55,6 +59,11 @@ type ReadingItemRow = {
   title: string | null;
 };
 
+type ReadingItemIdentityRow = Pick<
+  ReadingItemRow,
+  "first_seen_date" | "first_seen_source_label" | "first_seen_source_order" | "logical_item_id"
+>;
+
 export type ReadingWrongbookData = {
   readingAnswers: ReadingWrongQuestionAnswer[];
   readingAttempts: ReadingWrongQuestionAttempt[];
@@ -66,28 +75,35 @@ export type ReadingWrongbookData = {
 export async function loadReadingWrongbookData(
   db: SupabaseClient,
   studentId: string,
-  filters: { itemId?: string | null; taskType?: ReadingModule } = {}
+  filters: { itemId?: string | null; taskType?: ReadingModule } = {},
+  profile?: ServerDebugTrace
 ): Promise<ReadingWrongbookData> {
   const [attemptResult, correctionAttemptResult] = await Promise.all([
-    readAllSupabaseRows<ReadingAttemptRow>((from, to) => {
-      let query = db.from("reading_attempts")
-        .select("attempt_id,logical_item_id,task_type,submitted_at")
-        .eq("student_id", studentId)
-        .eq("status", "submitted");
-      if (filters.itemId) query = query.eq("logical_item_id", filters.itemId);
-      if (filters.taskType) query = query.eq("task_type", filters.taskType);
-      return query.order("attempt_id", { ascending: true }).range(from, to);
-    }),
-    readAllSupabaseRows<ReadingCorrectionAttemptRow>((from, to) => {
-      let query = db.from("reading_wrongbook_attempts")
-        .select("attempt_id,logical_item_id,task_type,scope,submitted_at")
-        .eq("student_id", studentId)
-        .eq("status", "submitted")
-        .neq("task_type", "full_set");
-      if (filters.itemId) query = query.eq("logical_item_id", filters.itemId);
-      if (filters.taskType) query = query.eq("task_type", filters.taskType);
-      return query.order("attempt_id", { ascending: true }).range(from, to);
-    })
+    profileSupabaseQuery(
+      { query: "reading_formal_attempts", dependsOn: ["student/account validation"] },
+      () => readAllSupabaseRows<ReadingAttemptRow>((from, to) => {
+        let query = db.from("reading_attempts")
+          .select("attempt_id,logical_item_id,task_type,submitted_at")
+          .eq("student_id", studentId)
+          .eq("status", "submitted");
+        if (filters.itemId) query = query.eq("logical_item_id", filters.itemId);
+        if (filters.taskType) query = query.eq("task_type", filters.taskType);
+        return query.order("attempt_id", { ascending: true }).range(from, to);
+      })
+    ),
+    profileSupabaseQuery(
+      { query: "reading_correction_attempts", dependsOn: ["student/account validation"] },
+      () => readAllSupabaseRows<ReadingCorrectionAttemptRow>((from, to) => {
+        let query = db.from("reading_wrongbook_attempts")
+          .select("attempt_id,logical_item_id,task_type,scope,submitted_at")
+          .eq("student_id", studentId)
+          .eq("status", "submitted")
+          .neq("task_type", "full_set");
+        if (filters.itemId) query = query.eq("logical_item_id", filters.itemId);
+        if (filters.taskType) query = query.eq("task_type", filters.taskType);
+        return query.order("attempt_id", { ascending: true }).range(from, to);
+      })
+    )
   ]);
   const firstError = attemptResult.error ?? correctionAttemptResult.error;
   if (firstError) throw new Error(firstError.message);
@@ -102,24 +118,38 @@ export async function loadReadingWrongbookData(
     ...readingCorrectionAttempts.map((attempt) => attempt.logicalItemId)
   ]));
   const [answerResult, correctionAnswerResult, itemResult] = await Promise.all([
-    readAnswers(db, "reading_attempt_answers", readingAttempts.map((attempt) => attempt.attemptId)),
-    readAnswers(
-      db,
-      "reading_wrongbook_attempt_answers",
-      readingCorrectionAttempts.map((attempt) => attempt.attemptId)
+    profileSupabaseQuery(
+      { query: "reading_formal_answers", dependsOn: ["reading_formal_attempts"] },
+      () => readAnswers(db, "reading_attempt_answers", readingAttempts.map((attempt) => attempt.attemptId))
     ),
-    readItems(db, logicalItemIds)
+    profileSupabaseQuery(
+      { query: "reading_correction_answers", dependsOn: ["reading_correction_attempts"] },
+      () => readAnswers(
+        db,
+        "reading_wrongbook_attempt_answers",
+        readingCorrectionAttempts.map((attempt) => attempt.attemptId)
+      )
+    ),
+    readItems(db, logicalItemIds, profile)
   ]);
   const answerError = answerResult.error ?? correctionAnswerResult.error ?? itemResult.error;
   if (answerError) throw new Error(answerError.message);
 
-  return {
+  const aggregationStartedAt = performance.now();
+  const result = {
     readingAnswers: (answerResult.data ?? []).map(normalizeAnswer),
     readingAttempts,
     readingCorrectionAnswers: (correctionAnswerResult.data ?? []).map(normalizeAnswer),
     readingCorrectionAttempts,
     readingTitles: buildReadingTitles(itemResult.data ?? [])
   };
+  profile?.record(
+    "ordinary Reading JS aggregation",
+    performance.now() - aggregationStartedAt,
+    ["reading_formal_answers", "reading_correction_answers", "reading_item_metadata"],
+    result.readingAnswers.length + result.readingCorrectionAnswers.length + result.readingTitles.size
+  );
+  return result;
 }
 
 export async function loadReadingWrongbookQueue(input: {
@@ -130,12 +160,24 @@ export async function loadReadingWrongbookQueue(input: {
   taskType: ReadingModule;
   todayEnd: number;
   todayStart: number;
+  profile?: ServerDebugTrace;
 }): Promise<ReadingWrongbookQueueItem[]> {
   const data = await loadReadingWrongbookData(input.db, input.studentId, {
     itemId: input.itemId,
     taskType: input.taskType
-  });
-  const queue = buildReadingWrongbookQueue({
+  }, input.profile);
+  const queue = input.profile?.measureSync(
+    "correction queue calculation",
+    ["reading_formal_answers", "reading_correction_answers", "reading_item_metadata"],
+    () => buildReadingWrongbookQueue({
+      ...data,
+      scope: input.scope,
+      taskType: input.taskType,
+      todayEnd: input.todayEnd,
+      todayStart: input.todayStart
+    }),
+    (value) => value.length
+  ) ?? buildReadingWrongbookQueue({
     ...data,
     scope: input.scope,
     taskType: input.taskType,
@@ -164,43 +206,60 @@ export async function loadReadingWrongbookPreservedAnswers(input: {
     .map((target) => target.sourceAttemptId)
     .filter((value): value is string => Boolean(value))));
   const preferred = new Set(preferredIds);
-  const ordinaryAttemptsResult = await readAllSupabaseRows<{
-    attempt_id: string;
-    submitted_at: string;
-  }>((from, to) => {
-    let query = input.db.from("reading_attempts")
-      .select("attempt_id,submitted_at")
-      .eq("student_id", input.studentId)
-      .eq("logical_item_id", input.logicalItemId)
-      .eq("status", "submitted")
-      .order("submitted_at", { ascending: false })
-      .order("attempt_id", { ascending: true });
-    return query.range(from, to);
-  });
+  const [ordinaryAttemptsResult, priorCorrectionResult] = await Promise.all([
+    profileSupabaseQuery(
+      { query: "reading_preserved_formal_attempts", dependsOn: ["reading_get_or_create_attempt"] },
+      () => readAllSupabaseRows<{
+        attempt_id: string;
+        submitted_at: string;
+      }>((from, to) => input.db.from("reading_attempts")
+        .select("attempt_id,submitted_at")
+        .eq("student_id", input.studentId)
+        .eq("logical_item_id", input.logicalItemId)
+        .eq("status", "submitted")
+        .order("submitted_at", { ascending: false })
+        .order("attempt_id", { ascending: true })
+        .range(from, to))
+    ),
+    profileSupabaseQuery(
+      { query: "reading_preserved_correction_attempts", dependsOn: ["reading_get_or_create_attempt"] },
+      () => readAllSupabaseRows<{
+        attempt_id: string;
+        submitted_at: string;
+      }>((from, to) => input.db.from("reading_wrongbook_attempts")
+        .select("attempt_id,submitted_at")
+        .eq("student_id", input.studentId)
+        .eq("logical_item_id", input.logicalItemId)
+        .eq("status", "submitted")
+        .lte("submitted_at", input.before)
+        .order("submitted_at", { ascending: false })
+        .order("attempt_id", { ascending: true })
+        .range(from, to))
+    )
+  ]);
   if (ordinaryAttemptsResult.error) throw new Error(ordinaryAttemptsResult.error.message);
-
+  if (priorCorrectionResult.error) throw new Error(priorCorrectionResult.error.message);
   const ordinaryIds = (ordinaryAttemptsResult.data ?? [])
     .filter((attempt) => preferred.has(attempt.attempt_id)
       || Date.parse(attempt.submitted_at) <= Date.parse(input.before))
     .map((attempt) => attempt.attempt_id);
-  const priorCorrectionResult = await readAllSupabaseRows<{
-    attempt_id: string;
-    submitted_at: string;
-  }>((from, to) => input.db.from("reading_wrongbook_attempts")
-    .select("attempt_id,submitted_at")
-    .eq("student_id", input.studentId)
-    .eq("logical_item_id", input.logicalItemId)
-    .eq("status", "submitted")
-    .lte("submitted_at", input.before)
-    .order("submitted_at", { ascending: false })
-    .order("attempt_id", { ascending: true })
-    .range(from, to));
-  if (priorCorrectionResult.error) throw new Error(priorCorrectionResult.error.message);
   const correctionIds = (priorCorrectionResult.data ?? []).map((attempt) => attempt.attempt_id);
 
   const [ordinaryAnswers, correctionAnswers] = await Promise.all([
-    readPreservedAnswerRows(input.db, "reading_attempt_answers", ordinaryIds),
-    readPreservedAnswerRows(input.db, "reading_wrongbook_attempt_answers", correctionIds)
+    profileSupabaseQuery(
+      {
+        query: "reading_preserved_formal_answers",
+        dependsOn: ["reading_preserved_formal_attempts", "reading_preserved_correction_attempts"]
+      },
+      () => readPreservedAnswerRows(input.db, "reading_attempt_answers", ordinaryIds)
+    ),
+    profileSupabaseQuery(
+      {
+        query: "reading_preserved_correction_answers",
+        dependsOn: ["reading_preserved_formal_attempts", "reading_preserved_correction_attempts"]
+      },
+      () => readPreservedAnswerRows(input.db, "reading_wrongbook_attempt_answers", correctionIds)
+    )
   ]);
   const rank = new Map([
     ...preferredIds,
@@ -295,14 +354,20 @@ async function readPreservedAnswerRows(
   return results.flatMap((result) => result.data ?? []);
 }
 
-async function readItems(db: SupabaseClient, itemIds: string[]) {
+async function readItems(db: SupabaseClient, itemIds: string[], profile?: ServerDebugTrace) {
   if (itemIds.length === 0) return { data: [] as ReadingItemRow[], error: null };
-  const results = await mapWithConcurrency(chunk(itemIds), 4, (ids) =>
-    readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
-      .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
-      .in("logical_item_id", ids)
-      .order("logical_item_id", { ascending: true })
-      .range(from, to))
+  const results = await profileSupabaseQuery(
+    {
+      query: "reading_item_metadata",
+      dependsOn: ["reading_formal_attempts", "reading_correction_attempts"]
+    },
+    () => mapWithConcurrency(chunk(itemIds), 4, (ids) =>
+      readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
+        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
+        .in("logical_item_id", ids)
+        .order("logical_item_id", { ascending: true })
+        .range(from, to))
+    )
   );
   const firstError = results.find((result) => result.error)?.error ?? null;
   if (firstError) return { data: null, error: firstError };
@@ -310,50 +375,27 @@ async function readItems(db: SupabaseClient, itemIds: string[]) {
   const ctwDates = Array.from(new Set(selected
     .filter((item) => item.module === "ctw")
     .map((item) => item.first_seen_date)));
-  const [beforeResults, sameDayResult] = await Promise.all([
-    mapWithConcurrency(ctwDates, 4, async (date) => {
-      const result = await db.from("reading_logical_items")
-        .select("logical_item_id", { count: "exact", head: true })
-        .eq("module", "ctw")
-        .lt("first_seen_date", date);
-      return { count: result.count ?? 0, date, error: result.error };
-    }),
-    ctwDates.length
-      ? readAllSupabaseRows<ReadingItemRow>((from, to) => db.from("reading_logical_items")
-        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order")
-        .eq("module", "ctw")
-        .in("first_seen_date", ctwDates)
-        .order("logical_item_id", { ascending: true })
-        .range(from, to))
-      : Promise.resolve({ data: [] as ReadingItemRow[], error: null })
-  ]);
-  const ctwError = beforeResults.find((result) => result.error)?.error
-    ?? sameDayResult.error
-    ?? null;
-  const beforeCountByDate = new Map(beforeResults.map((result) => [result.date, result.count]));
-  const rowsByDate = new Map<string, ReadingItemRow[]>();
-  for (const item of sameDayResult.data ?? []) {
-    rowsByDate.set(item.first_seen_date, [...(rowsByDate.get(item.first_seen_date) ?? []), item]);
-  }
-  const displayNumberById = new Map<string, string>();
-  for (const date of ctwDates) {
-    [...(rowsByDate.get(date) ?? [])]
-      .sort(compareReadingCatalogIdentityOrder)
-      .forEach((item, index) => {
-        displayNumberById.set(
-          item.logical_item_id,
-          String((beforeCountByDate.get(date) ?? 0) + index + 1).padStart(3, "0")
-        );
-      });
-  }
+  const latestCtwDate = [...ctwDates].sort().at(-1);
+  const ctwCatalogResult = latestCtwDate
+    ? await profileSupabaseQuery(
+        { query: "reading_ctw_rank_catalog", dependsOn: ["reading_item_metadata"] },
+        () => readAllSupabaseRows<ReadingItemIdentityRow>((from, to) => db.from("reading_logical_items")
+          .select("logical_item_id,first_seen_date,first_seen_source_label,first_seen_source_order")
+          .eq("module", "ctw")
+          .lte("first_seen_date", latestCtwDate)
+          .order("logical_item_id", { ascending: true })
+          .range(from, to))
+      )
+    : { data: [] as ReadingItemRow[], error: null };
+  const displayNumberById = readingCatalogDisplayNumbers(ctwCatalogResult.data ?? []);
   return {
-    data: ctwError
+    data: ctwCatalogResult.error
       ? null
       : selected.map((item) => ({
           ...item,
           display_number: displayNumberById.get(item.logical_item_id) ?? null
         })),
-    error: ctwError
+    error: ctwCatalogResult.error
   };
 }
 

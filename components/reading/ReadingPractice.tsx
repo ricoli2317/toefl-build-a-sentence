@@ -810,6 +810,56 @@ export function ReadingPracticeShell({
   );
 }
 
+export function ReadingPracticePendingShell({
+  onBack,
+  onExit,
+  practice,
+  reviewTitle
+}: {
+  onBack: () => void;
+  onExit?: () => void;
+  practice: StudentReadingPracticePayload;
+  reviewTitle?: string;
+}) {
+  const currentQuestion = practice.questions[0];
+  if (!currentQuestion) {
+    return <ReadingPracticeMessage description="原题内容不完整，请稍后重试。" title="无法显示原题" />;
+  }
+  return (
+    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text" data-testid="reading-wrongbook-preview">
+      <ReadingPracticeHeader
+        elapsedSeconds={0}
+        onBack={onBack}
+        onExit={onExit}
+        showElapsed={false}
+        title={reviewTitle ?? practice.item.title}
+      />
+      <main
+        className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
+        style={practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
+      >
+        <p className="mb-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-3 text-sm font-semibold text-student-primary">
+          原题已载入，正在准备订正记录；准备完成前题面只读。
+        </p>
+        <section className={practice.item.module === "ctw"
+          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
+          : "flex flex-1 flex-col bg-white"}
+        >
+          <ReadingWorkspaceRouter
+            answers={{}}
+            currentQuestion={currentQuestion}
+            lookupEnabled={false}
+            layoutMode="natural"
+            onAnswerChange={() => undefined}
+            practice={practice}
+            readOnly
+          />
+        </section>
+      </main>
+    </div>
+  );
+}
+
 function ReadingPracticeHeader({
   elapsedSeconds,
   onBack,

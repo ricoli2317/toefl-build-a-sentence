@@ -7,8 +7,11 @@ import {
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   appendSupabaseDebugMetrics,
+  createServerDebugTrace,
   instrumentSupabaseClient,
+  synchronizeServerDebugOrigins,
   wantsSupabaseDebugMetrics,
+  type ServerDebugMetric,
   type SupabaseQueryMetric
 } from "@/lib/supabase/debugMetrics.server";
 
@@ -25,21 +28,43 @@ export async function GET(
   request: Request,
   { params }: { params: { itemId: string } }
 ) {
-  const auth = await requireUserWithRole(bearerToken(request), "student");
+  const debugMetrics: SupabaseQueryMetric[] = [];
+  const stageMetrics: ServerDebugMetric[] = [];
+  synchronizeServerDebugOrigins(debugMetrics, stageMetrics);
+  const debugEnabled = wantsSupabaseDebugMetrics(request);
+  const profile = createServerDebugTrace(stageMetrics, debugEnabled);
+  const auth = await profile.measure(
+    "practice auth",
+    [],
+    () => requireUserWithRole(bearerToken(request), "student")
+  );
   if (auth.error || !auth.userId) {
     return json({ error: "请先登录后再开始阅读练习。" }, { status: 401 });
   }
 
   try {
-    const debugMetrics: SupabaseQueryMetric[] = [];
-    const debugEnabled = wantsSupabaseDebugMetrics(request);
     const service = createServiceSupabase();
-    const practice = await loadStudentReadingPractice(
-      debugEnabled ? instrumentSupabaseClient(service, debugMetrics) : service,
-      params.itemId
+    const practice = await profile.measure(
+      "practice content loading total",
+      ["practice auth"],
+      () => loadStudentReadingPractice(
+        debugEnabled ? instrumentSupabaseClient(service, debugMetrics) : service,
+        params.itemId,
+        undefined,
+        {},
+        profile
+      ),
+      (value) => value.questions.length
     );
-    const response = json({ practice });
-    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
+    const response = profile.measureSync(
+      "practice serialization",
+      ["practice content loading total"],
+      () => json({ practice }),
+      (value) => Number(value.headers.get("content-length") ?? 0) || null
+    );
+    return debugEnabled
+      ? appendSupabaseDebugMetrics(response, debugMetrics, stageMetrics)
+      : response;
   } catch (error) {
     if (error instanceof StudentReadingLoadError) {
       console.error("Student Reading practice load failed", {

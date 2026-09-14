@@ -21,8 +21,12 @@ import {
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   appendSupabaseDebugMetrics,
+  createServerDebugTrace,
   instrumentSupabaseClient,
+  profileSupabaseQuery,
+  synchronizeServerDebugOrigins,
   wantsSupabaseDebugMetrics,
+  type ServerDebugMetric,
   type SupabaseQueryMetric
 } from "@/lib/supabase/debugMetrics.server";
 
@@ -76,11 +80,21 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireReadingAttemptStudent(request);
+  const debugMetrics: SupabaseQueryMetric[] = [];
+  const stageMetrics: ServerDebugMetric[] = [];
+  synchronizeServerDebugOrigins(debugMetrics, stageMetrics);
+  const debugEnabled = wantsSupabaseDebugMetrics(request);
+  const profile = createServerDebugTrace(stageMetrics, debugEnabled);
+  const auth = await profile.measure(
+    "correction auth",
+    [],
+    () => requireReadingAttemptStudent(request)
+  );
   if (auth.error) return auth.error;
   if (!auth.client || !auth.userId) {
     return readingAttemptJson({ error: "请先登录。" }, { status: 401 });
   }
+  const userId = auth.userId;
   const body = await request.json().catch(() => ({})) as Record<string, unknown>;
   const params = new URLSearchParams();
   for (const key of ["itemId", "scope", "sourceAttemptId", "taskType", "todayEnd", "todayStart"] as const) {
@@ -90,8 +104,6 @@ export async function POST(request: Request) {
   if (!parsed || (parsed.taskType === "full_set" ? !parsed.sourceAttemptId : !parsed.itemId)) {
     return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
   }
-  const debugMetrics: SupabaseQueryMetric[] = [];
-  const debugEnabled = wantsSupabaseDebugMetrics(request);
   const service = () => {
     const client = createServiceSupabase();
     return debugEnabled ? instrumentSupabaseClient(client, debugMetrics) : client;
@@ -102,75 +114,148 @@ export async function POST(request: Request) {
 
   try {
     if (parsed.taskType === "full_set") {
-      const [item] = await loadReadingFullSetWrongbookQueue({
-        db: service(),
-        scope: parsed.scope,
-        sourceAttemptId: parsed.sourceAttemptId,
-        studentId: auth.userId,
-        todayEnd: parsed.todayEnd,
-        todayStart: parsed.todayStart
-      });
+      const sourceAttemptId = parsed.sourceAttemptId!;
+      const [item] = await profile.measure(
+        "Full Set historical/correction lookup",
+        ["correction auth"],
+        () => loadReadingFullSetWrongbookQueue({
+          db: service(),
+          profile,
+          scope: parsed.scope,
+          sourceAttemptId,
+          studentId: userId,
+          todayEnd: parsed.todayEnd,
+          todayStart: parsed.todayStart
+        }),
+        (value) => value.length
+      );
       if (!item) return readingAttemptJson({ error: "这套错题已经订正完成。" }, { status: 409 });
-      const { data, error } = await mutationClient.rpc("get_or_create_reading_full_set_wrongbook_attempt", {
-        p_full_set_id: item.fullSetId,
-        p_scope: parsed.scope,
-        p_source_attempt_id: item.sourceAttemptId,
-        p_targets: item.targets
-      });
+      profile.record(
+        "current occurrence identity",
+        0,
+        ["Full Set bootstrap queue calculation"],
+        item.targets.length
+      );
+      const { data, error } = await profile.measure(
+        "wrongbook attempt creation/reuse",
+        ["current occurrence identity"],
+        () => profileSupabaseQuery(
+          { query: "full_set_get_or_create_attempt", dependsOn: ["current occurrence identity"] },
+          () => mutationClient.rpc("get_or_create_reading_full_set_wrongbook_attempt", {
+            p_full_set_id: item.fullSetId,
+            p_scope: parsed.scope,
+            p_source_attempt_id: item.sourceAttemptId,
+            p_targets: item.targets
+          })
+        )
+      );
       if (error) return readingAttemptError(error, "暂时无法进入错题订正，请稍后重试。");
       if (
         !isReadingFullSetWrongbookAttemptSummary(data)
         || data.sourceAttemptId !== item.sourceAttemptId
         || data.sourceFullSetId !== item.fullSetId
       ) return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
-      const preservedAnswersByOccurrence = await loadReadingFullSetPreservedAnswers({
-        before: data.startedAt,
-        db: service(),
-        excludeAttemptId: data.attemptId,
-        sourceAttemptId: item.sourceAttemptId,
-        targets: item.targets
-      });
-      const response = readingAttemptJson(
-        { attempt: data, item, preservedAnswersByOccurrence },
-        { status: data.created ? 201 : 200 }
+      const preservedAnswersByOccurrence = await profile.measure(
+        "Full Set preserved/historical answer lookup",
+        ["wrongbook attempt creation/reuse"],
+        () => profileSupabaseQuery(
+          {
+            query: "full_set_preserved_answers",
+            dependsOn: ["full_set_get_or_create_attempt"]
+          },
+          () => loadReadingFullSetPreservedAnswers({
+            before: data.startedAt,
+            db: service(),
+            excludeAttemptId: data.attemptId,
+            sourceAttemptId: item.sourceAttemptId,
+            targets: item.targets
+          })
+        ),
+        (value) => Object.values(value).reduce((sum, rows) => sum + rows.length, 0)
       );
-      return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
+      const response = profile.measureSync(
+        "correction response creation",
+        ["Full Set preserved/historical answer lookup"],
+        () => readingAttemptJson(
+          { attempt: data, item, preservedAnswersByOccurrence },
+          { status: data.created ? 201 : 200 }
+        )
+      );
+      return debugEnabled
+        ? appendSupabaseDebugMetrics(response, debugMetrics, stageMetrics)
+        : response;
     }
-    const [item] = await loadReadingWrongbookQueue({
-      db: service(),
-      itemId: parsed.itemId,
-      scope: parsed.scope,
-      studentId: auth.userId,
-      taskType: parsed.taskType,
-      todayEnd: parsed.todayEnd,
-      todayStart: parsed.todayStart
-    });
+    const taskType = parsed.taskType;
+    const [item] = await profile.measure(
+      "historical/correction lookup",
+      ["correction auth"],
+      () => loadReadingWrongbookQueue({
+        db: service(),
+        itemId: parsed.itemId,
+        profile,
+        scope: parsed.scope,
+        studentId: userId,
+        taskType,
+        todayEnd: parsed.todayEnd,
+        todayStart: parsed.todayStart
+      }),
+      (value) => value.length
+    );
     if (!item) {
       return readingAttemptJson({ error: "这组错题已经订正完成。" }, { status: 409 });
     }
-    const { data, error } = await mutationClient.rpc("get_or_create_reading_wrongbook_attempt", {
-      p_logical_item_id: item.logicalItemId,
-      p_scope: parsed.scope,
-      p_targets: item.targets
-    });
+    const { data, error } = await profile.measure(
+      "wrongbook attempt creation/reuse",
+      ["correction queue calculation"],
+      () => profileSupabaseQuery(
+        { query: "reading_get_or_create_attempt", dependsOn: ["correction queue calculation"] },
+        () => mutationClient.rpc("get_or_create_reading_wrongbook_attempt", {
+          p_logical_item_id: item.logicalItemId,
+          p_scope: parsed.scope,
+          p_targets: item.targets
+        })
+      )
+    );
     if (error) return readingAttemptError(error, "暂时无法进入错题订正，请稍后重试。");
     if (!isReadingWrongbookAttemptSummary(data) || data.logicalItemId !== item.logicalItemId) {
       return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
     }
     const preservedAnswers = data.taskType === "ctw"
-      ? toReadingWrongbookPreservedAnswers(await loadReadingWrongbookPreservedAnswers({
-          before: data.startedAt,
-          db: service(),
-          logicalItemId: data.logicalItemId,
-          studentId: auth.userId,
-          targets: data.targets
-        }))
+      ? toReadingWrongbookPreservedAnswers(await profile.measure(
+          "historical/correction answer lookup",
+          ["wrongbook attempt creation/reuse"],
+          () => profileSupabaseQuery(
+            { query: "reading_preserved_answers", dependsOn: ["reading_get_or_create_attempt"] },
+            () => loadReadingWrongbookPreservedAnswers({
+              before: data.startedAt,
+              db: service(),
+              logicalItemId: data.logicalItemId,
+              studentId: userId,
+              targets: data.targets
+            })
+          ),
+          (value) => value.length
+        ))
       : [];
-    const response = readingAttemptJson(
-      { attempt: data, item, preservedAnswers },
-      { status: data.created ? 201 : 200 }
+    if (data.taskType !== "ctw") {
+      profile.record(
+        "historical/correction answer lookup (not required)",
+        0,
+        ["wrongbook attempt creation/reuse"],
+        0
+      );
+    }
+    const response = profile.measureSync(
+      "correction response creation",
+      [data.taskType === "ctw" ? "historical/correction answer lookup" : "wrongbook attempt creation/reuse"],
+      () => readingAttemptJson(
+        { attempt: data, item, preservedAnswers },
+        { status: data.created ? 201 : 200 }
+      )
     );
-    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
+    return debugEnabled
+      ? appendSupabaseDebugMetrics(response, debugMetrics, stageMetrics)
+      : response;
   } catch (error) {
     console.error("Reading wrongbook attempt creation failed", {
       message: error instanceof Error ? error.message : String(error)

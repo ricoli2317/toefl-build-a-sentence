@@ -31,6 +31,7 @@ const loadPauseRoute = read("app/api/reading/full-set-attempts/[attemptId]/loads
 const loadPauseFinishRoute = read("app/api/reading/full-set-attempts/[attemptId]/loads/[loadId]/route.ts");
 const activateRoute = read("app/api/reading/full-set-attempts/[attemptId]/modules/[moduleNumber]/activate/route.ts");
 const existingRuntime = read("components/reading/ReadingPractice.tsx");
+const fullSetAttemptServer = read("lib/reading/fullSetAttemptServer.ts");
 
 function moduleAttempt(moduleNumber, status = "active") {
   return {
@@ -197,7 +198,7 @@ test("student APIs enforce ownership and do not expose answer keys or the next M
   }
   assert.match(runnerRoute, /loadOwnedReadingFullSetAttempt/);
   assert.match(occurrenceRoute, /loadOwnedReadingFullSetAttempt/);
-  assert.match(occurrenceRoute, /select\("question_id,slot_id,answer_kind,student_answer,question_time_seconds"\)/);
+  assert.match(fullSetAttemptServer, /select\("question_id,slot_id,answer_kind,student_answer,question_time_seconds"\)/);
   assert.doesNotMatch(occurrenceRoute, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text/);
   assert.match(runnerRoute, /buildReadingFullSetRunnerPayload/);
   assert.match(read("lib/reading/fullSetAttemptServer.ts"), /readingFullSetCurrentModuleAttempt\(attempt\)[\s\S]*currentModule\?\.moduleNumber === 2[\s\S]*fullSet\.module2\.occurrences/);
@@ -223,7 +224,7 @@ test("normal Full Set autosave is silent and does not disable navigation", () =>
   assert.match(runnerUi, /答案保存失败，请检查网络后重试。/);
 });
 
-test("same-route M2 transition invalidates M1 state and reloads the server runner", () => {
+test("same-route M2 transition invalidates M1 state and applies bootstrap state", () => {
   assert.match(runnerUi, /readingFullSetRunnerModuleKey\(current\.attempt\)[\s\S]*readingFullSetRunnerModuleKey\(attempt\)/);
   assert.match(runnerUi, /occurrences: moduleChanged \? \[\] : current\.occurrences/);
   assert.match(runnerUi, /moduleAttemptId: moduleAttempt\.moduleAttemptId/);
@@ -231,7 +232,9 @@ test("same-route M2 transition invalidates M1 state and reloads the server runne
   assert.match(runnerUi, /if \(submittingRef\.current\) return/);
   assert.match(runnerUi, /runnerGenerationRef\.current \+= 1/);
   assert.match(runnerUi, /occurrenceRequestRef\.current \+= 1/);
-  assert.match(runnerUi, /module_2_preparing[\s\S]*applyAttempt\(result\.attempt\)[\s\S]*loadRunner\(accessToken\)/);
+  const startModule2 = runnerUi.slice(runnerUi.indexOf("const startModule2"), runnerUi.indexOf("if (loading)"));
+  assert.match(startModule2, /result\.runner[\s\S]*result\.firstOccurrence[\s\S]*applyRunner\(result\.runner\)/);
+  assert.doesNotMatch(startModule2, /loadRunner\(accessToken\)/);
 });
 
 test("occurrence loading has loaded/error convergence and Retry refreshes server truth", () => {

@@ -327,16 +327,15 @@ test("content conflict UI defaults to compact fixed-direction review with local 
   assert.match(source, /同题内容差异待确认/);
   assert.match(source, /系统已确认这是同一道题/);
   assert.match(source, /第 \{slot\.slotOrder\} 空内容不同/);
-  assert.match(source, /<InlineVersionValue title="题库版本" segments=\{slot\.inlineDiff\.existing\}/);
-  assert.match(source, /<InlineVersionValue title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
+  assert.match(source, /<ReadingInlineVersionValue title="题库版本" segments=\{slot\.inlineDiff\.existing\}/);
+  assert.match(source, /<ReadingInlineVersionValue title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
   assert.match(source, /保留题库版本/);
   assert.match(source, /使用来源版本更新题库/);
   assert.doesNotMatch(source, /当前版本|另一来源版本|existingVersionOrigin/);
   assert.match(source, /已选择：/);
   assert.match(source, /修改选择/);
   assert.match(source, /重新查看/);
-  assert.match(source, /InlineVersionValue/);
-  assert.match(source, /<mark/);
+  assert.match(source, /ReadingInlineVersionValue/);
   assert.doesNotMatch(source, /展开完整内容|QuestionVersion|内部题目编号/);
 });
 

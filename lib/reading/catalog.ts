@@ -80,10 +80,15 @@ export function readingCatalogDisplayNumber(
   items: ReadingCatalogIdentityRow[],
   itemId: string
 ) {
-  const index = [...items]
-    .sort(compareReadingCatalogIdentityOrder)
-    .findIndex((item) => item.logical_item_id === itemId);
-  return index < 0 ? null : String(index + 1).padStart(3, "0");
+  return readingCatalogDisplayNumbers(items).get(itemId) ?? null;
+}
+
+export function readingCatalogDisplayNumbers(items: ReadingCatalogIdentityRow[]) {
+  return new Map(
+    [...items]
+      .sort(compareReadingCatalogIdentityOrder)
+      .map((item, index) => [item.logical_item_id, String(index + 1).padStart(3, "0")])
+  );
 }
 
 export function buildReadingCatalogPayload(input: {

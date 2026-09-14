@@ -17,7 +17,8 @@ export type AuthenticatedAccount = {
 
 export async function requireAuthenticatedAccount(
   token: string | null,
-  timing?: StudentPerformanceTrace
+  timing?: StudentPerformanceTrace,
+  performanceNames?: { auth?: string; profile?: string }
 ): Promise<AuthenticatedAccount> {
   if (!token) return { error: "Missing access token", userId: null, role: null };
 
@@ -25,7 +26,7 @@ export async function requireAuthenticatedAccount(
   const {
     data: claimsData,
     error: claimsError
-  } = await measure(timing, "auth", "supabase_auth_get_claims", () =>
+  } = await measure(timing, "auth", performanceNames?.auth ?? "supabase_auth_get_claims", () =>
     anon.auth.getClaims(token)
   );
   const userId = typeof claimsData?.claims.sub === "string"
@@ -38,7 +39,7 @@ export async function requireAuthenticatedAccount(
   const { data: profile, error: profileError } = await measure(
     timing,
     "database",
-    "profiles_role",
+    performanceNames?.profile ?? "profiles_role",
     () => anon.from("profiles").select("role,is_active").eq("id", userId).single()
   );
   if (profileError || !profile || profile.is_active === false || !isUserRole(profile.role)) {
@@ -50,9 +51,10 @@ export async function requireAuthenticatedAccount(
 export async function requireUserWithRole(
   token: string | null,
   role: AppArea,
-  timing?: StudentPerformanceTrace
+  timing?: StudentPerformanceTrace,
+  performanceNames?: { auth?: string; profile?: string }
 ) {
-  const account = await requireAuthenticatedAccount(token, timing);
+  const account = await requireAuthenticatedAccount(token, timing, performanceNames);
   if (account.error || !account.userId || !account.role) return account;
   if (!roleCanAccess(account.role, role)) {
     return { error: "Unauthorized", userId: null, role: account.role };

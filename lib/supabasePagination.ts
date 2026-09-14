@@ -27,6 +27,9 @@ export async function readAllSupabaseRows<T>(
     }
 
     rows.push(...page);
+    if (page.length < PAGE_SIZE) {
+      return { data: rows, error: null };
+    }
     from += page.length;
   }
 }

@@ -19,6 +19,10 @@ const {
   buildReadingCorrectionResultAnswers,
   readingCorrectionMarkState
 } = require("../lib/reading/correctionResult.ts");
+const {
+  compareReadingCatalogIdentityOrder,
+  readingCatalogDisplayNumbers
+} = require("../lib/reading/catalog.ts");
 
 const projectRoot = path.resolve(__dirname, "..");
 
@@ -463,15 +467,60 @@ test("wrongbook detail queries are scoped before answers and overview title look
 
   assert.match(reading, /if \(filters\.itemId\) query = query\.eq\("logical_item_id", filters\.itemId\)/);
   assert.match(reading, /if \(filters\.taskType\) query = query\.eq\("task_type", filters\.taskType\)/);
-  assert.match(reading, /\.lt\("first_seen_date", date\)/);
-  assert.match(reading, /\.in\("first_seen_date", ctwDates\)/);
-  assert.doesNotMatch(reading, /\.eq\("module", "ctw"\)\s*\.order\("logical_item_id"/);
+  assert.match(reading, /query: "reading_ctw_rank_catalog"/);
+  assert.match(reading, /\.eq\("module", "ctw"\)/);
+  assert.match(reading, /\.lte\("first_seen_date", latestCtwDate\)/);
+  assert.doesNotMatch(reading, /count: "exact", head: true/);
   assert.match(fullSet, /if \(sourceAttemptId\) query = query\.eq\("attempt_id", sourceAttemptId\)/);
   assert.match(fullSet, /if \(sourceAttemptId\) query = query\.eq\("source_attempt_id", sourceAttemptId\)/);
   assert.match(fullSet, /reading_source_occurrences/);
   assert.doesNotMatch(fullSet, /loadReadingFullSets/);
   assert.match(runtime, /enabled: !itemId/);
   assert.match(runtime, /attemptPayload\.item/);
+});
+
+test("Reading homepage CTW rank keeps the exact historical tie-breakers with one catalog read", () => {
+  const rows = [
+    { logical_item_id: "z", first_seen_date: "2026-01-02", first_seen_source_label: "Set 2", first_seen_source_order: 1 },
+    { logical_item_id: "b", first_seen_date: "2026-01-01", first_seen_source_label: "Set 10", first_seen_source_order: 1 },
+    { logical_item_id: "c", first_seen_date: "2026-01-01", first_seen_source_label: "Set 2", first_seen_source_order: 2 },
+    { logical_item_id: "a", first_seen_date: "2026-01-01", first_seen_source_label: "Set 2", first_seen_source_order: 2 }
+  ];
+  const legacy = new Map();
+  for (const row of rows) {
+    const before = rows.filter((candidate) => candidate.first_seen_date < row.first_seen_date).length;
+    const sameDay = rows
+      .filter((candidate) => candidate.first_seen_date === row.first_seen_date)
+      .sort(compareReadingCatalogIdentityOrder);
+    legacy.set(row.logical_item_id, String(before + sameDay.findIndex((candidate) => candidate.logical_item_id === row.logical_item_id) + 1).padStart(3, "0"));
+  }
+  assert.deepEqual(readingCatalogDisplayNumbers(rows), legacy);
+});
+
+test("wrongbook orchestration removes BAS and preserved-answer sibling waterfalls", () => {
+  const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
+  const reading = fs.readFileSync(path.join(projectRoot, "lib/reading/wrongbook.server.ts"), "utf8");
+  assert.match(route, /const questionPromise =[\s\S]*const candidateAnswerPromise =/);
+  assert.match(route, /dependsOn: \["bas_correction_answers_lookup"\]/);
+  assert.doesNotMatch(route, /dependsOn: \["bas_correction_answers_lookup", "bas_question_metadata_lookup"\]/);
+  assert.match(route, /const wrongAnswerResult = await wrongAnswerPromise;[\s\S]*const questionPromise =[\s\S]*Promise\.all\(\[[\s\S]*displayResolverPromise,[\s\S]*questionPromise/);
+  assert.match(reading, /const \[ordinaryAttemptsResult, priorCorrectionResult\] = await Promise\.all\(\[/);
+  assert.match(reading, /const \[ordinaryAnswers, correctionAnswers\] = await Promise\.all\(\[/);
+  assert.match(reading, /\.lte\("submitted_at", input\.before\)/);
+  assert.match(reading, /\.\.\.preferredIds,[\s\S]*\.\.\.ordinaryIds\.filter[\s\S]*\.\.\.correctionIds/);
+});
+
+test("CTW correction shows only a readonly preview until attempt and preserved answers are ready", () => {
+  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
+  const shell = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  assert.match(runtime, /if \(previewPractice && correctionRequest\.loading\)[\s\S]*ReadingPracticePendingShell/);
+  assert.match(runtime, /if \(queue\.error \|\| requestError \|\| ready\?\.error\)/);
+  assert.match(runtime, /taskType === "ctw" && raw\.questions\.length === 1/);
+  assert.match(runtime, /reading-correction-practice:\$\{logicalItemId\}/);
+  assert.match(runtime, /reading-correction-attempt:\$\{scope\}:\$\{taskType\}:\$\{logicalItemId\}/);
+  assert.doesNotMatch(runtime, /setPractice|setAttempt|setCurrentItem/);
+  assert.match(shell, /data-testid="reading-wrongbook-preview"[\s\S]*readOnly/);
+  assert.match(shell, /showElapsed=\{false\}/);
 });
 
 test("Reading correction routes reuse the three existing renderers and persist isolated wrongbook attempts", () => {

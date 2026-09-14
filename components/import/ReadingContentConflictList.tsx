@@ -7,7 +7,7 @@ import type {
   ReadingContentConflictResolution,
   ReadingQuestionContentConflict
 } from "@/lib/reading/contentReconciliation";
-import type { ReadingInlineDiff } from "@/lib/reading/reviewDiff";
+import { ReadingInlineVersionValue } from "./ReadingInlineVersionValue";
 
 export type ReadingContentResolutionDraft = { action: null } | ReadingContentConflictResolution;
 
@@ -99,8 +99,8 @@ function CompactQuestionConflict({ conflict }: { conflict: ReadingQuestionConten
           <div className="mt-3 first:mt-0" key={slot.slotOrder}>
             <h3 className="font-bold text-student-text">第 {slot.slotOrder} 空内容不同</h3>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              <InlineVersionValue title="题库版本" segments={slot.inlineDiff.existing} />
-              <InlineVersionValue title="来源 CSV" segments={slot.inlineDiff.incoming} />
+              <ReadingInlineVersionValue title="题库版本" segments={slot.inlineDiff.existing} />
+              <ReadingInlineVersionValue title="来源 CSV" segments={slot.inlineDiff.incoming} />
             </div>
           </div>
         ))}
@@ -126,8 +126,8 @@ function DifferenceCard({ difference }: {
     <div className="rounded-lg bg-white p-3">
       <div className="font-bold text-student-text">{difference.label}</div>
       <div className="mt-2 grid gap-3 sm:grid-cols-2">
-        <InlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
-        <InlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
+        <ReadingInlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
+        <ReadingInlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
       </div>
     </div>
   );
@@ -151,7 +151,6 @@ function ResolvedContentSummary({ draft, item, onReopen }: {
   );
 }
 
-function InlineVersionValue({ title, segments }: { title: "题库版本" | "来源 CSV"; segments: ReadingInlineDiff["existing"] }) { return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{segments.map((segment, index) => segment.changed ? <mark className="rounded bg-amber-300 px-0.5 text-inherit" key={index}>{segment.text || "∅"}</mark> : <span key={index}>{segment.text}</span>)}</div></div>; }
 function contentActionLabel(action: ReadingContentResolutionDraft["action"]) { return action === "keep_existing" ? "保留题库版本" : action === "update_from_source" ? "使用来源版本更新题库" : "尚未选择"; }
 function compactSourceLabel(item: ReadingContentConflictItem) {
   const labels = Array.from(new Set(item.sources.map((source) => source.sourceLabel)));

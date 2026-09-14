@@ -39,6 +39,20 @@ import {
 } from "@/lib/reading/practiceState";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import { formatReadingFullSetTime } from "@/lib/reading/fullSetPresentation";
+import {
+  createReadingFullSetPerformanceTrace,
+  fetchReadingFullSetWithTimeout,
+  logReadingFullSetPerformancePhase,
+  readingFullSetTraceHeaders,
+  type ReadingFullSetPerformancePhase,
+  type ReadingFullSetPerformanceTrace
+} from "@/lib/reading/fullSetPerformance.client";
+import {
+  ReadingFullSetImagePreloadCache,
+  ReadingFullSetOccurrenceCache,
+  readingFullSetOccurrenceCacheKey,
+  type ReadingFullSetCacheSource
+} from "@/lib/reading/fullSetOccurrenceCache.client";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
@@ -49,6 +63,13 @@ import {
 type RunnerResponse = { error?: string; runner?: ReadingFullSetRunnerPayload };
 type OccurrenceResponse = Partial<ReadingFullSetOccurrencePracticePayload> & { error?: string };
 type AttemptResponse = { attempt?: ReadingFullSetAttemptSummary; error?: string };
+type BootstrapResponse = {
+  code?: string;
+  error?: string;
+  firstOccurrence?: ReadingFullSetOccurrencePracticePayload;
+  runner?: ReadingFullSetRunnerPayload;
+  traceId?: string;
+};
 type LoadPauseResponse = AttemptResponse & {
   expiresAt?: string;
   finished?: boolean;
@@ -77,6 +98,17 @@ type OccurrenceLoadState =
   | { status: "idle" }
   | { occurrenceId: string; status: "loading" }
   | { message: string; status: "error" };
+
+type OccurrenceNavigation = {
+  cacheStatus?: ReadingFullSetCacheSource;
+  clickedAt: number;
+  occurrenceId: string;
+  saveCompletedAt?: number;
+  saveDurationMs?: number;
+  taskType: "ctw" | "rap" | "rdl";
+  trace: ReadingFullSetPerformanceTrace;
+  workspaceMounted?: boolean;
+};
 
 export function ReadingFullSetRunner({
   attemptId,
@@ -111,6 +143,8 @@ export function ReadingFullSetRunner({
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
   const [startingModule2, setStartingModule2] = useState(false);
+  const [navigating, setNavigating] = useState(false);
+  const movingRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSaveRef = useRef<PendingSave | null>(null);
   const saveChainRef = useRef<Promise<void>>(Promise.resolve());
@@ -122,10 +156,45 @@ export function ReadingFullSetRunner({
   const activeLoadPauseRef = useRef<{ expiresAt: string; loadId: string } | null>(null);
   const [activeLoadPause, setActiveLoadPause] = useState<{ expiresAt: string; loadId: string } | null>(null);
   const readyActionRef = useRef<string | null>(null);
+  const transitionTraceRef = useRef<ReadingFullSetPerformanceTrace | null>(null);
+  const transitionLoggedPhasesRef = useRef(new Set<ReadingFullSetPerformancePhase>());
+  const occurrenceCacheRef = useRef(new ReadingFullSetOccurrenceCache<ReadingFullSetOccurrencePracticePayload>());
+  const imagePreloadCacheRef = useRef(new ReadingFullSetImagePreloadCache());
+  const imagePreloadStatusRef = useRef(new Map<string, "failed" | "hit" | "miss" | "not_applicable">());
+  const prefetchTraceRef = useRef(new Map<string, ReadingFullSetPerformanceTrace>());
+  const navigationRef = useRef<OccurrenceNavigation | null>(null);
+  const [interactiveOccurrenceId, setInteractiveOccurrenceId] = useState("");
+
+  const beginTransitionTrace = useCallback(() => {
+    const trace = createReadingFullSetPerformanceTrace(attemptId);
+    transitionTraceRef.current = trace;
+    transitionLoggedPhasesRef.current = new Set();
+    return trace;
+  }, [attemptId]);
+
+  const logTransitionPhase = useCallback((
+    phase: ReadingFullSetPerformancePhase,
+    input: Parameters<typeof logReadingFullSetPerformancePhase>[2],
+    once = false
+  ) => {
+    const trace = transitionTraceRef.current;
+    if (!trace || (once && transitionLoggedPhasesRef.current.has(phase))) return;
+    if (once) transitionLoggedPhasesRef.current.add(phase);
+    logReadingFullSetPerformancePhase(trace, phase, input);
+  }, []);
 
   const updateActiveLoadPause = useCallback((pause: { expiresAt: string; loadId: string } | null) => {
     activeLoadPauseRef.current = pause;
     setActiveLoadPause(pause);
+  }, []);
+
+  const clearOccurrenceCaches = useCallback(() => {
+    occurrenceCacheRef.current.clear();
+    imagePreloadCacheRef.current.clear();
+    imagePreloadStatusRef.current.clear();
+    prefetchTraceRef.current.clear();
+    navigationRef.current = null;
+    setInteractiveOccurrenceId("");
   }, []);
 
   const applyRunner = useCallback((next: ReadingFullSetRunnerPayload) => {
@@ -134,6 +203,7 @@ export function ReadingFullSetRunner({
       : null;
     const nextModuleKey = readingFullSetRunnerModuleKey(next.attempt);
     if (previousModuleKey !== nextModuleKey) {
+      clearOccurrenceCaches();
       runnerGenerationRef.current += 1;
       occurrenceRequestRef.current += 1;
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -146,6 +216,8 @@ export function ReadingFullSetRunner({
       activeTimingRef.current = null;
       setPosition({ occurrenceIndex: 0, questionIndex: 0 });
       setOccurrenceLoad({ status: "idle" });
+      movingRef.current = false;
+      setNavigating(false);
     }
     runnerRef.current = next;
     setRunner(next);
@@ -177,7 +249,7 @@ export function ReadingFullSetRunner({
       timeoutSubmitStartedRef.current = false;
       timeoutRetryAfterRef.current = 0;
     }
-  }, [invalidate, setCachedData]);
+  }, [clearOccurrenceCaches, invalidate, setCachedData]);
 
   const loadRunner = useCallback(async (token: string) => {
     const response = await fetch(`/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}`, {
@@ -341,21 +413,169 @@ export function ReadingFullSetRunner({
     return () => { cancelled = true; };
   }, [beginLoadPause, finishLoadPause, loadRunner, updateActiveLoadPause]);
 
+  useEffect(() => () => {
+    occurrenceCacheRef.current.clear();
+    imagePreloadCacheRef.current.clear();
+    prefetchTraceRef.current.clear();
+  }, []);
+
   const currentOccurrence = runner?.occurrences[position.occurrenceIndex] ?? null;
   const currentPayload = currentOccurrence
     ? occurrencePayloads[currentOccurrence.occurrenceId] ?? null
     : null;
   const currentQuestion = currentPayload?.practice.questions[position.questionIndex];
 
+  const acquireOccurrence = useCallback((input: {
+    moduleNumber: 1 | 2;
+    occurrence: ReadingFullSetRunnerPayload["occurrences"][number];
+    prefetch: boolean;
+    retryError?: boolean;
+    trace: ReadingFullSetPerformanceTrace;
+  }) => {
+    const key = readingFullSetOccurrenceCacheKey({
+      attemptId,
+      moduleNumber: input.moduleNumber,
+      occurrenceId: input.occurrence.occurrenceId
+    });
+    const route = `/api/reading/full-set-attempts/${attemptId}/occurrences/${input.occurrence.occurrenceId}`;
+    return occurrenceCacheRef.current.acquire(key, async (signal) => {
+      const contentStartedAt = performance.now();
+      const response = await fetch(
+        `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(input.occurrence.occurrenceId)}`,
+        {
+          cache: "no-store",
+          headers: readingFullSetTraceHeaders(accessToken, input.trace),
+          signal
+        }
+      );
+      const payload = await response.json().catch(() => ({})) as OccurrenceResponse;
+      if (!response.ok || !payload.practice || !payload.occurrence || !payload.answers || !Number.isInteger(payload.answerRevision)) {
+        throw new Error(payload.error ?? "题目加载失败，请重试。");
+      }
+      const completePayload = payload as ReadingFullSetOccurrencePracticePayload;
+      if (input.prefetch) {
+        logReadingFullSetPerformancePhase(input.trace, "next_prefetch_content_end", {
+          durationMs: performance.now() - contentStartedAt,
+          moduleNumber: input.moduleNumber,
+          occurrenceId: input.occurrence.occurrenceId,
+          route,
+          taskType: input.occurrence.taskType
+        });
+      }
+
+      const imageUrl = input.occurrence.taskType === "rdl"
+        ? completePayload.practice.material?.imageUrl
+        : null;
+      if (imageUrl) {
+        const imageStartedAt = performance.now();
+        const image = imagePreloadCacheRef.current.acquire(imageUrl);
+        imagePreloadStatusRef.current.set(key, image.source);
+        logReadingFullSetPerformancePhase(input.trace, "rdl_image_preload_start", {
+          imagePreloadStatus: image.source,
+          moduleNumber: input.moduleNumber,
+          occurrenceId: input.occurrence.occurrenceId,
+          taskType: input.occurrence.taskType
+        });
+        try {
+          await image.promise;
+          logReadingFullSetPerformancePhase(input.trace, "rdl_image_preload_end", {
+            durationMs: performance.now() - imageStartedAt,
+            imagePreloadStatus: image.source,
+            moduleNumber: input.moduleNumber,
+            occurrenceId: input.occurrence.occurrenceId,
+            taskType: input.occurrence.taskType
+          });
+        } catch (error) {
+          imagePreloadStatusRef.current.set(key, "failed");
+          logReadingFullSetPerformancePhase(input.trace, "rdl_image_preload_end", {
+            durationMs: performance.now() - imageStartedAt,
+            failure: error instanceof DOMException && error.name === "AbortError"
+              ? "IMAGE_PRELOAD_ABORTED"
+              : "IMAGE_PRELOAD_FAILED",
+            imagePreloadStatus: "failed",
+            moduleNumber: input.moduleNumber,
+            occurrenceId: input.occurrence.occurrenceId,
+            success: false,
+            taskType: input.occurrence.taskType
+          });
+        }
+      } else {
+        imagePreloadStatusRef.current.set(key, "not_applicable");
+      }
+      if (input.prefetch) {
+        logReadingFullSetPerformancePhase(input.trace, "next_prefetch_ready", {
+          imagePreloadStatus: imagePreloadStatusRef.current.get(key) ?? "not_applicable",
+          moduleNumber: input.moduleNumber,
+          occurrenceId: input.occurrence.occurrenceId,
+          taskType: input.occurrence.taskType
+        });
+      }
+      return completePayload;
+    }, { retryError: input.retryError, timeoutMs: 15_000 });
+  }, [accessToken, attemptId]);
+
+  const applyOccurrencePayload = useCallback((completePayload: ReadingFullSetOccurrencePracticePayload) => {
+    const occurrenceId = completePayload.occurrence.occurrenceId;
+    revisionRef.current = Math.max(revisionRef.current, completePayload.answerRevision);
+    setOccurrencePayloads((current) => current[occurrenceId]
+      ? current
+      : { ...current, [occurrenceId]: completePayload });
+    setAnswersByOccurrence((current) => {
+      if (Object.prototype.hasOwnProperty.call(current, occurrenceId)) return current;
+      const next = { ...current, [occurrenceId]: completePayload.answers };
+      answersRef.current = next;
+      return next;
+    });
+    if (!Object.prototype.hasOwnProperty.call(questionTimesRef.current, occurrenceId)) {
+      questionTimesRef.current = {
+        ...questionTimesRef.current,
+        [occurrenceId]: completePayload.questionTimes
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      currentOccurrence?.taskType === "ctw"
+      && currentPayload
+      && runner
+      && (readingFullSetAttemptPhase(runner.attempt) === "module_2_preparing"
+        || readingFullSetAttemptPhase(runner.attempt) === "module_2_active")
+    ) {
+      logTransitionPhase("m2_first_ctw_mounted", { moduleNumber: 2 }, true);
+    }
+  }, [currentOccurrence, currentPayload, logTransitionPhase, runner]);
+
+  useEffect(() => {
+    const navigation = navigationRef.current;
+    const moduleAttempt = runner ? readingFullSetCurrentModuleAttempt(runner.attempt) : null;
+    if (
+      !currentPayload
+      || !currentOccurrence
+      || !moduleAttempt
+      || !navigation
+      || navigation.workspaceMounted
+      || navigation.occurrenceId !== currentOccurrence.occurrenceId
+    ) return;
+    navigation.workspaceMounted = true;
+    logReadingFullSetPerformancePhase(navigation.trace, "next_workspace_mounted", {
+      cacheStatus: navigation.cacheStatus,
+      durationMs: navigation.saveCompletedAt ? performance.now() - navigation.saveCompletedAt : undefined,
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: currentOccurrence.occurrenceId,
+      saveDurationMs: navigation.saveDurationMs,
+      taskType: currentOccurrence.taskType,
+      totalDurationMs: performance.now() - navigation.clickedAt
+    });
+  }, [currentOccurrence, currentPayload, runner]);
+
   useEffect(() => {
     if (!accessToken || !currentOccurrence || currentPayload) return;
     const requestId = occurrenceRequestRef.current + 1;
     occurrenceRequestRef.current = requestId;
     const generation = runnerGenerationRef.current;
-    const controller = new AbortController();
     let pause = activeLoadPauseRef.current;
     setOccurrenceLoad({ occurrenceId: currentOccurrence.occurrenceId, status: "loading" });
-    setTimerPausedForLoad(true);
 
     void (async () => {
       try {
@@ -363,49 +583,99 @@ export function ReadingFullSetRunner({
           ? readingFullSetCurrentModuleAttempt(runnerRef.current.attempt)
           : null;
         if (!moduleAttempt || moduleAttempt.status === "submitted") throw new Error("当前 Module 已结束。");
-        if (moduleAttempt.status === "active" && !pause) {
+        const key = readingFullSetOccurrenceCacheKey({
+          attemptId,
+          moduleNumber: moduleAttempt.moduleNumber,
+          occurrenceId: currentOccurrence.occurrenceId
+        });
+        const navigation = navigationRef.current?.occurrenceId === currentOccurrence.occurrenceId
+          ? navigationRef.current
+          : null;
+        const trace = navigation?.trace
+          ?? prefetchTraceRef.current.get(key)
+          ?? createReadingFullSetPerformanceTrace(attemptId);
+        const cachedStatus = occurrenceCacheRef.current.status(key);
+        const navigationSource: ReadingFullSetCacheSource = cachedStatus === "ready"
+          ? "hit"
+          : cachedStatus === "loading"
+            ? "wait"
+            : "miss";
+        if (navigation) {
+          navigation.cacheStatus = navigationSource;
+          logReadingFullSetPerformancePhase(trace, `navigation_cache_${navigationSource}`, {
+            cacheStatus: navigationSource,
+            imagePreloadStatus: imagePreloadStatusRef.current.get(key) ?? "not_applicable",
+            moduleNumber: moduleAttempt.moduleNumber,
+            occurrenceId: currentOccurrence.occurrenceId,
+            taskType: currentOccurrence.taskType
+          });
+        }
+        if (moduleAttempt.status === "active" && navigationSource !== "hit" && !pause) {
+          setTimerPausedForLoad(true);
           pause = await beginLoadPause(accessToken, currentOccurrence.occurrenceId);
         }
-        if (moduleAttempt.status === "active" && !pause) throw new Error("题目加载失败，请重试。");
-        const response = await fetch(
-          `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(currentOccurrence.occurrenceId)}`,
-          {
-            cache: "no-store",
-            headers: { Authorization: `Bearer ${accessToken}` },
-            signal: controller.signal
-          }
-        );
-        const payload = await response.json().catch(() => ({})) as OccurrenceResponse;
-        if (!response.ok || !payload.practice || !payload.occurrence || !payload.answers || !Number.isInteger(payload.answerRevision)) {
-          throw new Error(payload.error ?? "题目加载失败，请重试。");
+        if (moduleAttempt.status === "active" && navigationSource !== "hit" && !pause) {
+          throw new Error("题目加载失败，请重试。");
         }
-        const completePayload = payload as ReadingFullSetOccurrencePracticePayload;
-        if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
-        revisionRef.current = Math.max(revisionRef.current, completePayload.answerRevision);
-        setOccurrencePayloads((current) => ({
-          ...current,
-          [currentOccurrence.occurrenceId]: completePayload
-        }));
-        setAnswersByOccurrence((current) => {
-          if (current[currentOccurrence.occurrenceId]) return current;
-          const next = { ...current, [currentOccurrence.occurrenceId]: completePayload.answers };
-          answersRef.current = next;
-          return next;
+        let acquisition = acquireOccurrence({
+          moduleNumber: moduleAttempt.moduleNumber,
+          occurrence: currentOccurrence,
+          prefetch: false,
+          retryError: true,
+          trace
         });
-        questionTimesRef.current = {
-          ...questionTimesRef.current,
-          [currentOccurrence.occurrenceId]: completePayload.questionTimes
-        };
+        if (navigation && navigationSource === "wait" && acquisition.source === "miss") {
+          navigation.cacheStatus = "miss";
+          logReadingFullSetPerformancePhase(trace, "navigation_cache_miss", {
+            cacheStatus: "miss",
+            moduleNumber: moduleAttempt.moduleNumber,
+            occurrenceId: currentOccurrence.occurrenceId,
+            taskType: currentOccurrence.taskType
+          });
+        }
+        let completePayload: ReadingFullSetOccurrencePracticePayload;
+        try {
+          completePayload = await acquisition.promise;
+        } catch (prefetchError) {
+          if (acquisition.source !== "wait") throw prefetchError;
+          acquisition = acquireOccurrence({
+            moduleNumber: moduleAttempt.moduleNumber,
+            occurrence: currentOccurrence,
+            prefetch: false,
+            retryError: true,
+            trace
+          });
+          if (navigation) {
+            navigation.cacheStatus = "miss";
+            logReadingFullSetPerformancePhase(trace, "navigation_cache_miss", {
+              cacheStatus: "miss",
+              moduleNumber: moduleAttempt.moduleNumber,
+              occurrenceId: currentOccurrence.occurrenceId,
+              taskType: currentOccurrence.taskType
+            });
+          }
+          completePayload = await acquisition.promise;
+        }
+        if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
+        applyOccurrencePayload(completePayload);
       } catch {
         if (pause) await finishLoadPause(accessToken, pause.loadId).catch(() => undefined);
         updateActiveLoadPause(null);
         if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
+        const failedNavigation = navigationRef.current;
+        if (failedNavigation?.occurrenceId === currentOccurrence.occurrenceId) {
+          if (transitionTraceRef.current?.traceId === failedNavigation.trace.traceId) {
+            transitionTraceRef.current = null;
+          }
+          navigationRef.current = null;
+        }
+        movingRef.current = false;
+        setNavigating(false);
         setTimerPausedForLoad(false);
         setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
       }
     })();
-    return () => controller.abort();
-  }, [accessToken, attemptId, beginLoadPause, currentOccurrence, currentPayload, finishLoadPause, updateActiveLoadPause]);
+  }, [accessToken, acquireOccurrence, applyOccurrencePayload, attemptId, beginLoadPause, currentOccurrence, currentPayload, finishLoadPause, updateActiveLoadPause]);
 
   const handleWorkspaceReady = useCallback(() => {
     const activeRunner = runnerRef.current;
@@ -417,18 +687,59 @@ export function ReadingFullSetRunner({
     const readyKey = `${runnerGenerationRef.current}:${moduleAttempt.moduleAttemptId}:${occurrence.occurrenceId}`;
     if (readyActionRef.current === readyKey) return;
     readyActionRef.current = readyKey;
+    const mountedNavigation = navigationRef.current;
+    if (mountedNavigation?.occurrenceId === occurrence.occurrenceId && !mountedNavigation.workspaceMounted) {
+      mountedNavigation.workspaceMounted = true;
+      logReadingFullSetPerformancePhase(mountedNavigation.trace, "next_workspace_mounted", {
+        cacheStatus: mountedNavigation.cacheStatus,
+        durationMs: mountedNavigation.saveCompletedAt
+          ? performance.now() - mountedNavigation.saveCompletedAt
+          : undefined,
+        moduleNumber: moduleAttempt.moduleNumber,
+        occurrenceId: occurrence.occurrenceId,
+        saveDurationMs: mountedNavigation.saveDurationMs,
+        taskType: occurrence.taskType,
+        totalDurationMs: performance.now() - mountedNavigation.clickedAt
+      });
+    }
     void (async () => {
       try {
         if (moduleAttempt.status === "preparing") {
-          const response = await fetch(
+          const isModule2 = moduleAttempt.moduleNumber === 2;
+          if (isModule2) {
+            logTransitionPhase("m2_first_ctw_mounted", { moduleNumber: 2 }, true);
+            logTransitionPhase("m2_first_interactive", { moduleNumber: 2 }, true);
+            logTransitionPhase("m2_activation_start", {
+              moduleNumber: 2,
+              route: `/api/reading/full-set-attempts/${attemptId}/modules/2/activate`
+            }, true);
+          }
+          const activationStartedAt = performance.now();
+          const response = await fetchReadingFullSetWithTimeout(
             `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleAttempt.moduleNumber}/activate`,
-            { method: "POST", cache: "no-store", headers: { Authorization: `Bearer ${accessToken}` } }
+            {
+              method: "POST",
+              cache: "no-store",
+              headers: readingFullSetTraceHeaders(accessToken, transitionTraceRef.current)
+            },
+            12_000
           );
           const payload = await response.json().catch(() => ({})) as AttemptResponse;
           if (!response.ok || !payload.attempt) {
             throw new Error(payload.error ?? "Module 计时启动失败，请重试。");
           }
           applyAttempt(payload.attempt);
+          if (isModule2) {
+            logTransitionPhase("m2_activation_end", {
+              durationMs: performance.now() - activationStartedAt,
+              moduleNumber: 2,
+              route: `/api/reading/full-set-attempts/${attemptId}/modules/2/activate`
+            }, true);
+            requestAnimationFrame(() => {
+              logTransitionPhase("m2_countdown_active", { moduleNumber: 2 }, true);
+              transitionTraceRef.current = null;
+            });
+          }
         } else {
           const pause = activeLoadPauseRef.current;
           if (pause) await finishLoadPause(accessToken, pause.loadId);
@@ -436,15 +747,106 @@ export function ReadingFullSetRunner({
         setOccurrenceLoad({ status: "idle" });
         setTimerPausedForLoad(false);
         setError("");
+        setInteractiveOccurrenceId(occurrence.occurrenceId);
+        const navigation = navigationRef.current;
+        if (navigation?.occurrenceId === occurrence.occurrenceId) {
+          const key = readingFullSetOccurrenceCacheKey({
+            attemptId,
+            moduleNumber: moduleAttempt.moduleNumber,
+            occurrenceId: occurrence.occurrenceId
+          });
+          logReadingFullSetPerformancePhase(navigation.trace, "next_first_interactive", {
+            cacheStatus: navigation.cacheStatus,
+            durationMs: navigation.saveCompletedAt ? performance.now() - navigation.saveCompletedAt : undefined,
+            imagePreloadStatus: imagePreloadStatusRef.current.get(key) ?? "not_applicable",
+            moduleNumber: moduleAttempt.moduleNumber,
+            occurrenceId: occurrence.occurrenceId,
+            saveDurationMs: navigation.saveDurationMs,
+            taskType: occurrence.taskType,
+            totalDurationMs: performance.now() - navigation.clickedAt
+          });
+          if (transitionTraceRef.current?.traceId === navigation.trace.traceId) {
+            transitionTraceRef.current = null;
+          }
+          navigationRef.current = null;
+        }
+        movingRef.current = false;
+        setNavigating(false);
       } catch (readyError) {
+        if (moduleAttempt.moduleNumber === 2) {
+          logTransitionPhase("m2_activation_end", {
+            failure: readyError instanceof Error && readyError.name === "ReadingFullSetRequestTimeout"
+              ? "ACTIVATION_FAILED"
+              : readyError instanceof DOMException && readyError.name === "AbortError"
+                ? "NETWORK_ABORT"
+                : "ACTIVATION_FAILED",
+            moduleNumber: 2,
+            route: `/api/reading/full-set-attempts/${attemptId}/modules/2/activate`,
+            success: false
+          });
+        }
         readyActionRef.current = null;
+        const failedNavigation = navigationRef.current;
+        if (failedNavigation?.occurrenceId === occurrence.occurrenceId) {
+          if (transitionTraceRef.current?.traceId === failedNavigation.trace.traceId) {
+            transitionTraceRef.current = null;
+          }
+          navigationRef.current = null;
+        }
         updateActiveLoadPause(null);
         setTimerPausedForLoad(false);
         setError(readyError instanceof Error ? readyError.message : "Module 计时同步失败，请重试。");
         setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
+        movingRef.current = false;
+        setNavigating(false);
       }
     })();
-  }, [accessToken, applyAttempt, attemptId, finishLoadPause, position.occurrenceIndex, updateActiveLoadPause]);
+  }, [accessToken, applyAttempt, attemptId, finishLoadPause, logTransitionPhase, position.occurrenceIndex, updateActiveLoadPause]);
+
+  useEffect(() => {
+    if (
+      !accessToken
+      || !runner
+      || !currentOccurrence
+      || !currentPayload
+      || interactiveOccurrenceId !== currentOccurrence.occurrenceId
+    ) return;
+    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
+    const nextOccurrence = runner.occurrences[position.occurrenceIndex + 1];
+    if (!moduleAttempt || !nextOccurrence) return;
+    const key = readingFullSetOccurrenceCacheKey({
+      attemptId,
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: nextOccurrence.occurrenceId
+    });
+    if (occurrenceCacheRef.current.status(key) !== "idle") return;
+
+    const trace = createReadingFullSetPerformanceTrace(attemptId);
+    prefetchTraceRef.current.set(key, trace);
+    logReadingFullSetPerformancePhase(trace, "next_prefetch_start", {
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: nextOccurrence.occurrenceId,
+      taskType: nextOccurrence.taskType
+    });
+    const acquisition = acquireOccurrence({
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrence: nextOccurrence,
+      prefetch: true,
+      retryError: false,
+      trace
+    });
+    void acquisition.promise.catch((prefetchError) => {
+      logReadingFullSetPerformancePhase(trace, "next_prefetch_ready", {
+        failure: prefetchError instanceof DOMException && prefetchError.name === "AbortError"
+          ? "PREFETCH_ABORTED"
+          : "PREFETCH_FAILED",
+        moduleNumber: moduleAttempt.moduleNumber,
+        occurrenceId: nextOccurrence.occurrenceId,
+        success: false,
+        taskType: nextOccurrence.taskType
+      });
+    });
+  }, [accessToken, acquireOccurrence, attemptId, currentOccurrence, currentPayload, interactiveOccurrenceId, position.occurrenceIndex, runner]);
 
   const commitActiveQuestionTime = useCallback(() => {
     const active = activeTimingRef.current;
@@ -503,7 +905,7 @@ export function ReadingFullSetRunner({
             cache: "no-store",
             keepalive: true,
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              ...readingFullSetTraceHeaders(accessToken, transitionTraceRef.current),
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -617,21 +1019,92 @@ export function ReadingFullSetRunner({
   }, [persistSave]);
 
   const move = useCallback(async (direction: -1 | 1) => {
-    if (!runner || !currentPayload) return;
-    commitActiveQuestionTime();
-    stageCurrentOccurrenceSave();
-    const saved = await flushPendingSave();
-    if (!saved) return;
+    if (!runner || !currentPayload || movingRef.current) return;
     const nextPosition = moveReadingFullSetPosition(runner.occurrences, position, direction);
     const nextOccurrence = runner.occurrences[nextPosition.occurrenceIndex];
-    if (nextOccurrence?.occurrenceId !== currentOccurrence?.occurrenceId) {
-      activeTimingRef.current = null;
+    const moduleAttempt = readingFullSetCurrentModuleAttempt(runner.attempt);
+    if (!nextOccurrence || !moduleAttempt) return;
+    movingRef.current = true;
+    setNavigating(true);
+    const trace = createReadingFullSetPerformanceTrace(attemptId);
+    const clickedAt = performance.now();
+    const navigation: OccurrenceNavigation = {
+      clickedAt,
+      occurrenceId: nextOccurrence.occurrenceId,
+      taskType: nextOccurrence.taskType,
+      trace
+    };
+    transitionTraceRef.current = trace;
+    logReadingFullSetPerformancePhase(trace, "navigation_click", {
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: nextOccurrence.occurrenceId,
+      taskType: nextOccurrence.taskType
+    });
+    commitActiveQuestionTime();
+    stageCurrentOccurrenceSave();
+    const saveStartedAt = performance.now();
+    logReadingFullSetPerformancePhase(trace, "current_save_start", {
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: currentOccurrence?.occurrenceId,
+      taskType: currentOccurrence?.taskType
+    });
+    const saved = await flushPendingSave();
+    navigation.saveCompletedAt = performance.now();
+    navigation.saveDurationMs = navigation.saveCompletedAt - saveStartedAt;
+    logReadingFullSetPerformancePhase(trace, "current_save_end", {
+      durationMs: navigation.saveDurationMs,
+      failure: saved ? null : "ANSWER_SAVE_FAILED",
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: currentOccurrence?.occurrenceId,
+      saveDurationMs: navigation.saveDurationMs,
+      success: saved,
+      taskType: currentOccurrence?.taskType,
+      totalDurationMs: navigation.saveCompletedAt - clickedAt
+    });
+    if (!saved) {
+      if (transitionTraceRef.current?.traceId === trace.traceId) transitionTraceRef.current = null;
+      movingRef.current = false;
+      setNavigating(false);
+      return;
     }
-    if (nextOccurrence && !occurrencePayloads[nextOccurrence.occurrenceId]) {
-      setTimerPausedForLoad(true);
+    if (nextOccurrence.occurrenceId !== currentOccurrence?.occurrenceId) {
+      activeTimingRef.current = null;
+      navigationRef.current = navigation;
+      setInteractiveOccurrenceId("");
+      if (occurrencePayloads[nextOccurrence.occurrenceId]) {
+        navigation.cacheStatus = "hit";
+        const key = readingFullSetOccurrenceCacheKey({
+          attemptId,
+          moduleNumber: moduleAttempt.moduleNumber,
+          occurrenceId: nextOccurrence.occurrenceId
+        });
+        logReadingFullSetPerformancePhase(trace, "navigation_cache_hit", {
+          cacheStatus: "hit",
+          imagePreloadStatus: imagePreloadStatusRef.current.get(key) ?? "not_applicable",
+          moduleNumber: moduleAttempt.moduleNumber,
+          occurrenceId: nextOccurrence.occurrenceId,
+          taskType: nextOccurrence.taskType
+        });
+      }
     }
     setPosition(nextPosition);
-  }, [commitActiveQuestionTime, currentOccurrence, currentPayload, flushPendingSave, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
+    if (nextOccurrence.occurrenceId === currentOccurrence?.occurrenceId) {
+      requestAnimationFrame(() => {
+        logReadingFullSetPerformancePhase(trace, "next_first_interactive", {
+          cacheStatus: "hit",
+          durationMs: performance.now() - (navigation.saveCompletedAt ?? performance.now()),
+          moduleNumber: moduleAttempt.moduleNumber,
+          occurrenceId: nextOccurrence.occurrenceId,
+          saveDurationMs: navigation.saveDurationMs,
+          taskType: nextOccurrence.taskType,
+          totalDurationMs: performance.now() - clickedAt
+        });
+        if (transitionTraceRef.current?.traceId === trace.traceId) transitionTraceRef.current = null;
+        movingRef.current = false;
+        setNavigating(false);
+      });
+    }
+  }, [attemptId, commitActiveQuestionTime, currentOccurrence, currentPayload, flushPendingSave, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
 
   const leavePractice = useCallback(async () => {
     commitActiveQuestionTime();
@@ -648,8 +1121,13 @@ export function ReadingFullSetRunner({
     const moduleNumber = phase === "module_1_active" ? 1 : phase === "module_2_active" ? 2 : null;
     if (!moduleNumber) return;
     if (!automatic && !window.confirm(`确定提交 Module ${moduleNumber} 吗？\n提交后不能返回修改答案。`)) return;
+    if (!automatic && moduleNumber === 1) {
+      const trace = beginTransitionTrace();
+      logReadingFullSetPerformancePhase(trace, "m1_submit_click", { moduleNumber: 1 });
+    }
     submittingRef.current = true;
     setSubmitting(true);
+    clearOccurrenceCaches();
     setError("");
     try {
       commitActiveQuestionTime();
@@ -659,8 +1137,27 @@ export function ReadingFullSetRunner({
         saveTimerRef.current = null;
         pendingSaveRef.current = null;
       } else {
+        const flushStartedAt = performance.now();
+        if (moduleNumber === 1) {
+          logTransitionPhase("m1_final_flush_start", { moduleNumber: 1 });
+        }
         const saved = await flushPendingSave();
+        if (moduleNumber === 1) {
+          logTransitionPhase("m1_final_flush_end", {
+            durationMs: performance.now() - flushStartedAt,
+            failure: saved ? null : "ANSWER_SAVE_FAILED",
+            moduleNumber: 1,
+            success: saved
+          });
+        }
         if (!saved) throw new Error("答案尚未成功保存，请稍后重试。");
+      }
+      const submitStartedAt = performance.now();
+      if (moduleNumber === 1) {
+        logTransitionPhase("m1_submit_request_start", {
+          moduleNumber: 1,
+          route: `/api/reading/full-set-attempts/${attemptId}/modules/1/submit`
+        });
       }
       const response = await fetch(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleNumber}/submit`,
@@ -668,13 +1165,22 @@ export function ReadingFullSetRunner({
           method: "POST",
           cache: "no-store",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            ...readingFullSetTraceHeaders(accessToken, transitionTraceRef.current),
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ timeoutOnly: automatic })
         }
       );
       const result = await response.json().catch(() => ({})) as AttemptResponse;
+      if (moduleNumber === 1) {
+        logTransitionPhase("m1_submit_request_end", {
+          durationMs: performance.now() - submitStartedAt,
+          failure: response.ok ? null : "M1_SUBMIT_FAILED",
+          moduleNumber: 1,
+          route: `/api/reading/full-set-attempts/${attemptId}/modules/1/submit`,
+          success: response.ok
+        });
+      }
       if (!response.ok || !result.attempt) throw new Error(result.error ?? "Module 提交失败，请稍后重试。");
       const stillActive = readingFullSetActiveModuleAttempt(result.attempt);
       if (automatic && stillActive?.moduleNumber === moduleNumber) {
@@ -695,7 +1201,7 @@ export function ReadingFullSetRunner({
       submittingRef.current = false;
       setSubmitting(false);
     }
-  }, [accessToken, applyAttempt, applyRunner, attemptId, commitActiveQuestionTime, flushPendingSave, stageCurrentOccurrenceSave, submitting]);
+  }, [accessToken, applyAttempt, applyRunner, attemptId, beginTransitionTrace, clearOccurrenceCaches, commitActiveQuestionTime, flushPendingSave, logTransitionPhase, stageCurrentOccurrenceSave, submitting]);
 
   useEffect(() => {
     if (!runner) return;
@@ -732,6 +1238,7 @@ export function ReadingFullSetRunner({
     let pause: { expiresAt: string; loadId: string } | null = null;
     try {
       pause = await beginLoadPause(accessToken, occurrenceId);
+      clearOccurrenceCaches();
       runnerGenerationRef.current += 1;
       occurrenceRequestRef.current += 1;
       setOccurrencePayloads({});
@@ -747,30 +1254,78 @@ export function ReadingFullSetRunner({
       setTimerPausedForLoad(false);
       setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
     }
-  }, [accessToken, beginLoadPause, currentOccurrence, finishLoadPause, loadRunner, updateActiveLoadPause]);
+  }, [accessToken, beginLoadPause, clearOccurrenceCaches, currentOccurrence, finishLoadPause, loadRunner, updateActiveLoadPause]);
 
   const startModule2 = async () => {
     if (!accessToken || !runner || startingModule2) return;
+    const trace = transitionTraceRef.current ?? beginTransitionTrace();
+    logReadingFullSetPerformancePhase(trace, "m2_start_click", { moduleNumber: 2 });
     setStartingModule2(true);
     setError("");
-    let module2Started = false;
+    const route = `/api/reading/full-set-attempts/${attemptId}/modules/2/start`;
+    const bootstrapStartedAt = performance.now();
+    logTransitionPhase("m2_bootstrap_request_start", { moduleNumber: 2, route });
     try {
-      const response = await fetch(
+      const response = await fetchReadingFullSetWithTimeout(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/2/start`,
-        { method: "POST", cache: "no-store", headers: { Authorization: `Bearer ${accessToken}` } }
+        {
+          method: "POST",
+          cache: "no-store",
+          headers: readingFullSetTraceHeaders(accessToken, trace)
+        },
+        20_000
       );
-      const result = await response.json().catch(() => ({})) as AttemptResponse;
-      if (!response.ok || !result.attempt) throw new Error(result.error ?? "暂时无法开始 Module 2。");
-      module2Started = readingFullSetAttemptPhase(result.attempt) === "module_2_preparing"
-        || readingFullSetAttemptPhase(result.attempt) === "module_2_active";
-      applyAttempt(result.attempt);
-      await loadRunner(accessToken);
+      const result = await response.json().catch(() => ({})) as BootstrapResponse;
+      logTransitionPhase("m2_bootstrap_response", {
+        durationMs: performance.now() - bootstrapStartedAt,
+        failure: response.ok ? null : result.code ?? "M2_PREPARE_FAILED",
+        moduleNumber: 2,
+        route,
+        success: response.ok
+      });
+      if (!response.ok || !result.runner || !result.firstOccurrence) {
+        throw new Error(result.error ?? "暂时无法开始 Module 2。");
+      }
+      if (result.runner.attempt.fullSetId !== expectedFullSetId) {
+        throw new Error("这次练习不属于当前套题。");
+      }
+      const firstOccurrenceId = result.firstOccurrence.occurrence.occurrenceId;
+      if (result.runner.occurrences[0]?.occurrenceId !== firstOccurrenceId) {
+        throw new Error("Module 2 首题状态无效。");
+      }
+      applyRunner(result.runner);
+      occurrenceCacheRef.current.prime(readingFullSetOccurrenceCacheKey({
+        attemptId,
+        moduleNumber: 2,
+        occurrenceId: firstOccurrenceId
+      }), result.firstOccurrence);
+      revisionRef.current = Math.max(
+        revisionRef.current,
+        result.firstOccurrence.answerRevision
+      );
+      setOccurrencePayloads({ [firstOccurrenceId]: result.firstOccurrence });
+      setAnswersByOccurrence({ [firstOccurrenceId]: result.firstOccurrence.answers });
+      answersRef.current = { [firstOccurrenceId]: result.firstOccurrence.answers };
+      questionTimesRef.current = { [firstOccurrenceId]: result.firstOccurrence.questionTimes };
+      setOccurrenceLoad({ status: "idle" });
+      setTimerPausedForLoad(false);
+      logTransitionPhase("m2_state_applied", { moduleNumber: 2 }, true);
     } catch (startError) {
       setTimerPausedForLoad(false);
-      if (module2Started) {
-        setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
+      const timedOut = startError instanceof Error && startError.name === "ReadingFullSetRequestTimeout";
+      const networkAbort = startError instanceof DOMException && startError.name === "AbortError";
+      if (timedOut || networkAbort) {
+        logTransitionPhase("m2_bootstrap_response", {
+          durationMs: performance.now() - bootstrapStartedAt,
+          failure: timedOut ? "BOOTSTRAP_TIMEOUT" : "NETWORK_ABORT",
+          moduleNumber: 2,
+          route,
+          success: false
+        });
       }
-      setError(startError instanceof Error ? startError.message : "暂时无法开始 Module 2。");
+      setError(timedOut
+        ? "Module 2 准备超时，请重试。"
+        : startError instanceof Error ? startError.message : "暂时无法开始 Module 2。");
     } finally {
       setStartingModule2(false);
     }
@@ -886,7 +1441,7 @@ export function ReadingFullSetRunner({
           )}
         </section>
         <nav className="mt-4 grid min-h-16 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 rounded-2xl border border-student-border bg-white px-4 py-2 shadow-sm" aria-label="套题题目导航">
-          <button className="student-button-secondary h-10 w-28 justify-self-start" disabled={isFirst || !currentPayload || !workspaceInteractive || submitting} onClick={() => void move(-1)} type="button">
+          <button className="student-button-secondary h-10 w-28 justify-self-start" disabled={isFirst || !currentPayload || !workspaceInteractive || navigating || submitting} onClick={() => void move(-1)} type="button">
             <ChevronLeft aria-hidden="true" size={18} /> Previous
           </button>
           <p className="text-center text-sm font-bold text-student-text" data-testid="full-set-question-number">
@@ -895,11 +1450,11 @@ export function ReadingFullSetRunner({
               : `Questions ${displayRange.start}–${displayRange.end} / ${moduleQuestionCount}`}
           </p>
           {isLast ? (
-            <button className="student-button-primary h-10 min-w-28 justify-self-end" disabled={!currentPayload || !workspaceInteractive || submitting} onClick={() => void submitModule(false)} type="button">
+            <button className="student-button-primary h-10 min-w-28 justify-self-end" disabled={!currentPayload || !workspaceInteractive || navigating || submitting} onClick={() => void submitModule(false)} type="button">
               {submitting ? "Submitting..." : `Submit Module ${moduleNumber}`}
             </button>
           ) : (
-            <button className="student-button-secondary h-10 w-28 justify-self-end" disabled={!currentPayload || !workspaceInteractive || submitting} onClick={() => void move(1)} type="button">
+            <button className="student-button-secondary h-10 w-28 justify-self-end" disabled={!currentPayload || !workspaceInteractive || navigating || submitting} onClick={() => void move(1)} type="button">
               Next <ChevronRight aria-hidden="true" size={18} />
             </button>
           )}

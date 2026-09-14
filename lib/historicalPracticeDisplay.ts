@@ -3,6 +3,10 @@ import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 import { mapWithConcurrency } from "./mapWithConcurrency.ts";
+import {
+  profileSupabaseQuery,
+  type ServerDebugTrace
+} from "./supabase/debugMetrics.server.ts";
 
 export type HistoricalPracticeItemRow = {
   item_id: string;
@@ -262,45 +266,51 @@ export async function loadHistoricalPracticeDisplayResolver(
 export async function loadBuildSentenceHistoricalPracticeDisplayResolver(
   supabase: SupabaseClient,
   rawSetIds: string[],
-  timing?: StudentPerformanceTrace
+  timing?: StudentPerformanceTrace,
+  profile?: ServerDebugTrace
 ): Promise<HistoricalPracticeDisplayResolver> {
   const setIds = distinct(rawSetIds.map((setId) => setId.trim()).filter(Boolean));
   const sources = await measureDatabase(
     timing,
     "historical_practice_item_sources",
-    () =>
-      readRowsInBatches<HistoricalPracticeSourceRow>(
-        setIds,
-        (batch, from, to) =>
-          supabase
-            .from("practice_item_sources")
-            .select("source_id,item_id,task_type,source_set_id,source_question_id")
-            .eq("task_type", "build_sentence")
-            .in("source_set_id", batch)
-            .order("source_id", { ascending: true })
-            .range(from, to) as unknown as PromiseLike<{
-              data: HistoricalPracticeSourceRow[] | null;
-              error: { message: string } | null;
-            }>,
-        "practice_item_sources"
+    () => profileSupabaseQuery(
+      { query: "overview_bas_display_sources", dependsOn: ["overview_bas_attempts"] },
+      () => readRowsInBatches<HistoricalPracticeSourceRow>(
+          setIds,
+          (batch, from, to) =>
+            supabase
+              .from("practice_item_sources")
+              .select("source_id,item_id,task_type,source_set_id,source_question_id")
+              .eq("task_type", "build_sentence")
+              .in("source_set_id", batch)
+              .order("source_id", { ascending: true })
+              .range(from, to) as unknown as PromiseLike<{
+                data: HistoricalPracticeSourceRow[] | null;
+                error: { message: string } | null;
+              }>,
+          "practice_item_sources"
       )
+    )
   );
   const itemIds = distinct(sources.map((source) => String(source.item_id)));
   const items = await measureDatabase(timing, "historical_practice_items", () =>
-    readRowsInBatches<HistoricalPracticeItemRow>(
-      itemIds,
-      (batch, from, to) =>
-        supabase
-          .from("practice_items")
-          .select("item_id,task_type,display_number,display_title,is_active")
-          .eq("task_type", "build_sentence")
-          .in("item_id", batch)
-          .order("item_id", { ascending: true })
-          .range(from, to) as unknown as PromiseLike<{
-            data: HistoricalPracticeItemRow[] | null;
-            error: { message: string } | null;
-          }>,
-      "practice_items"
+    profileSupabaseQuery(
+      { query: "overview_bas_display_items", dependsOn: ["overview_bas_display_sources"] },
+      () => readRowsInBatches<HistoricalPracticeItemRow>(
+        itemIds,
+        (batch, from, to) =>
+          supabase
+            .from("practice_items")
+            .select("item_id,task_type,display_number,display_title,is_active")
+            .eq("task_type", "build_sentence")
+            .in("item_id", batch)
+            .order("item_id", { ascending: true })
+            .range(from, to) as unknown as PromiseLike<{
+              data: HistoricalPracticeItemRow[] | null;
+              error: { message: string } | null;
+            }>,
+        "practice_items"
+      )
     )
   );
   const buildResolver = () => createHistoricalPracticeDisplayResolver({ items, sources });

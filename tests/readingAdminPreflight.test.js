@@ -10,6 +10,7 @@ const component = read("components/TeacherImportQuestions.tsx");
 const route = read("app/api/teacher/import-questions/route.ts");
 const readingImporter = read("app/api/teacher/import-questions/importers/reading.ts");
 const resolutionComponent = read("components/import/ReadingDuplicateResolutionList.tsx");
+const inlineDiffComponent = read("components/import/ReadingInlineVersionValue.tsx");
 const resolutionModel = read("lib/reading/duplicateResolutionModel.ts");
 
 test("Reading upload starts with readonly preflight and resets it for a new file", () => {
@@ -130,9 +131,10 @@ test("one pending list controls rendering and enforces the flag/list invariant",
 });
 
 test("shared confirmation shell renders only changed content and RDL image evidence", () => {
-  assert.match(resolutionComponent, /InlineVersionValue/);
+  assert.match(resolutionComponent, /ReadingInlineVersionValue/);
   assert.match(resolutionComponent, /RdlMaterialComparison/);
-  assert.match(resolutionComponent, /<mark/);
+  assert.match(inlineDiffComponent, /<mark/);
+  assert.doesNotMatch(inlineDiffComponent, /∅|Ø|\[缺失\]/);
   assert.doesNotMatch(resolutionComponent, /FullDuplicateComparison|ReadingDuplicateDetail|expandedDetails/);
 });
 

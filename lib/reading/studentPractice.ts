@@ -14,6 +14,10 @@ import type { ReadingImportPackage, ReadingModule, ReadingQuestion } from "./typ
 import { READING_PRODUCT_NAMES } from "./product.ts";
 import { readingCatalogDisplayNumber } from "./catalog.ts";
 import { isRdlMaterialType, type RdlMaterialType } from "./materialTypes.ts";
+import {
+  profileSupabaseQuery,
+  type ServerDebugTrace
+} from "../supabase/debugMetrics.server.ts";
 
 export { READING_PRODUCT_NAMES } from "./product.ts";
 
@@ -225,16 +229,30 @@ function toStudentQuestion(question: ReadingQuestion): StudentReadingPracticePay
 export async function loadStudentReadingPractice(
   db: SupabaseClient,
   itemId: string,
-  assetBaseUrl = process.env.READING_ASSET_BASE_URL
+  assetBaseUrl = process.env.READING_ASSET_BASE_URL,
+  options: { ctwDisplayTitle?: string } = {},
+  profile?: ServerDebugTrace
 ): Promise<StudentReadingPracticePayload> {
   if (!/^reading-(ctw|rdl|rap)-[a-f0-9]{24}$/.test(itemId)) {
     throw new StudentReadingLoadError("invalid Reading item identity", "这个阅读练习链接无效。", 400);
   }
-  const { data: item, error: itemError } = await db
-    .from("reading_logical_items")
-    .select("logical_item_id,module,title,question_count,scored_item_count")
-    .eq("logical_item_id", itemId)
-    .maybeSingle();
+  const [itemResult, questionResult] = await Promise.all([
+    profileSupabaseQuery(
+      { query: "practice_logical_item_lookup", dependsOn: ["practice auth"] },
+      () => db.from("reading_logical_items")
+        .select("logical_item_id,module,title,question_count,scored_item_count")
+        .eq("logical_item_id", itemId)
+        .maybeSingle()
+    ),
+    profileSupabaseQuery(
+      { query: "practice_questions", dependsOn: ["practice auth"] },
+      () => db.from("reading_questions")
+        .select("question_id,question_order,module,question_type,stem,passage_id,material_id,insert_sentence,target_paragraph_id,passage_highlight_ranges")
+        .eq("logical_item_id", itemId)
+        .order("question_order", { ascending: true })
+    )
+  ]);
+  const { data: item, error: itemError } = itemResult;
   if (itemError) throw databaseLoadError("item", itemError);
   if (!item) throw new StudentReadingLoadError(`Reading item not found: ${itemId}`, "没有找到这个阅读练习。", 404);
   if (!isReadingModule(item.module)) {
@@ -242,12 +260,16 @@ export async function loadStudentReadingPractice(
   }
 
   const taskType = item.module;
+  profile?.record("practice occurrence lookup (not required by item GET)", 0, ["practice_logical_item_lookup"], 0);
   let ctwDisplayNumber: string | null = null;
-  if (taskType === "ctw") {
-    const { data: ctwItems, error: ctwItemsError } = await db
-      .from("reading_logical_items")
-      .select("logical_item_id,first_seen_date,first_seen_source_label,first_seen_source_order")
-      .eq("module", "ctw");
+  if (taskType === "ctw" && !options.ctwDisplayTitle) {
+    const { data: ctwItems, error: ctwItemsError } = await profileSupabaseQuery(
+      { query: "practice_ctw_display_rank", dependsOn: ["practice_logical_item_lookup"] },
+      () => db
+        .from("reading_logical_items")
+        .select("logical_item_id,first_seen_date,first_seen_source_label,first_seen_source_order")
+        .eq("module", "ctw")
+    );
     if (ctwItemsError) throw databaseLoadError("Complete the Words display number", ctwItemsError);
     ctwDisplayNumber = readingCatalogDisplayNumber(
       (ctwItems ?? []).map((ctwItem) => ({
@@ -262,11 +284,7 @@ export async function loadStudentReadingPractice(
       throw new StudentReadingLoadError(`CTW display rank missing for ${itemId}`, "这个阅读练习暂时无法打开。", 422);
     }
   }
-  const { data: questionRows, error: questionError } = await db
-    .from("reading_questions")
-    .select("question_id,question_order,module,question_type,stem,passage_id,material_id,insert_sentence,target_paragraph_id,passage_highlight_ranges")
-    .eq("logical_item_id", itemId)
-    .order("question_order", { ascending: true });
+  const { data: questionRows, error: questionError } = questionResult;
   if (questionError) throw databaseLoadError("questions", questionError);
   if (!questionRows?.length || questionRows.length !== Number(item.question_count)) {
     throw new StudentReadingLoadError(`incomplete question group for ${itemId}`, "这个阅读练习的数据尚未准备完整。", 422);
@@ -280,7 +298,7 @@ export async function loadStudentReadingPractice(
     module: taskType,
     productName: READING_PRODUCT_NAMES[taskType],
     title: taskType === "ctw"
-      ? `套题${ctwDisplayNumber}`
+      ? options.ctwDisplayTitle ?? `套题${ctwDisplayNumber}`
       : taskType === "rdl"
         ? ""
         : String(item.title || READING_PRODUCT_NAMES[taskType]),
@@ -290,9 +308,18 @@ export async function loadStudentReadingPractice(
 
   if (taskType === "ctw") {
     const [paragraphResult, segmentResult, slotResult] = await Promise.all([
-      db.from("reading_ctw_paragraphs").select("question_id,paragraph_id,paragraph_order,raw_text").in("question_id", questionIds).order("paragraph_order"),
-      db.from("reading_ctw_segments").select("question_id,paragraph_id,segment_order,segment_type,text_content,slot_id").in("question_id", questionIds).order("segment_order"),
-      db.from("reading_ctw_slots").select("question_id,slot_id,slot_order,paragraph_id,prefix,missing_length").in("question_id", questionIds).order("slot_order")
+      profileSupabaseQuery(
+        { query: "practice_ctw_paragraphs", dependsOn: ["practice_questions"] },
+        () => db.from("reading_ctw_paragraphs").select("question_id,paragraph_id,paragraph_order,raw_text").in("question_id", questionIds).order("paragraph_order")
+      ),
+      profileSupabaseQuery(
+        { query: "practice_ctw_segments", dependsOn: ["practice_questions"] },
+        () => db.from("reading_ctw_segments").select("question_id,paragraph_id,segment_order,segment_type,text_content,slot_id").in("question_id", questionIds).order("segment_order")
+      ),
+      profileSupabaseQuery(
+        { query: "practice_ctw_slots", dependsOn: ["practice_questions"] },
+        () => db.from("reading_ctw_slots").select("question_id,slot_id,slot_order,paragraph_id,prefix,missing_length").in("question_id", questionIds).order("slot_order")
+      )
     ]);
     if (paragraphResult.error || segmentResult.error || slotResult.error) {
       throw databaseLoadError("Complete the Words structure", paragraphResult.error || segmentResult.error || slotResult.error!);
@@ -342,11 +369,14 @@ export async function loadStudentReadingPractice(
     };
   }
 
-  const { data: optionRows, error: optionError } = await db
-    .from("reading_question_options")
-    .select("question_id,option_id,option_order,option_text")
-    .in("question_id", questionIds)
-    .order("option_order", { ascending: true });
+  const { data: optionRows, error: optionError } = await profileSupabaseQuery(
+    { query: "practice_question_options", dependsOn: ["practice_questions"] },
+    () => db
+      .from("reading_question_options")
+      .select("question_id,option_id,option_order,option_text")
+      .in("question_id", questionIds)
+      .order("option_order", { ascending: true })
+  );
   if (optionError) throw databaseLoadError("question options", optionError);
   const optionsFor = (questionId: string): StudentChoiceOption[] => (optionRows ?? [])
     .filter((option) => option.question_id === questionId)
@@ -361,11 +391,14 @@ export async function loadStudentReadingPractice(
     if (!materialId || questionRows.some((question) => question.question_type !== "rdl" || question.material_id !== materialId)) {
       throw new StudentReadingLoadError(`broken material reference for ${itemId}`, "这个 Read in Daily Life 练习的材料尚未准备完整。", 422);
     }
-    const { data: material, error: materialError } = await db
-      .from("reading_materials")
-      .select("material_id,title,material_type,binding_status,image_asset_path,hitbox_data_path")
-      .eq("material_id", materialId)
-      .maybeSingle();
+    const { data: material, error: materialError } = await profileSupabaseQuery(
+      { query: "practice_asset_metadata", dependsOn: ["practice_question_options"] },
+      () => db
+        .from("reading_materials")
+        .select("material_id,title,material_type,binding_status,image_asset_path,hitbox_data_path")
+        .eq("material_id", materialId)
+        .maybeSingle()
+    );
     if (materialError) throw databaseLoadError("material", materialError);
     if (!material || material.binding_status !== "bound" || !material.image_asset_path || !material.hitbox_data_path) {
       throw new StudentReadingLoadError(`unready material ${materialId}`, "这个 Read in Daily Life 练习的材料尚未准备完整。", 422);
@@ -382,7 +415,7 @@ export async function loadStudentReadingPractice(
     }
     const imageUrl = resolveReadingAssetUrl(String(material.image_asset_path), assetBaseUrl);
     const selectionMapUrl = resolveReadingAssetUrl(String(material.hitbox_data_path), assetBaseUrl);
-    const verifiedSelection = await loadVerifiedRdlSelectionMap(
+    const fetchAssets = () => loadVerifiedRdlSelectionMap(
       imageUrl,
       selectionMapUrl,
       String(material.image_asset_path)
@@ -390,6 +423,9 @@ export async function loadStudentReadingPractice(
       console.error("RDL runtime selection binding verification failed", { error, materialId });
       return null;
     });
+    const verifiedSelection = profile
+      ? await profile.measure("practice RDL asset fetch / verify", ["practice_asset_metadata"], fetchAssets)
+      : await fetchAssets();
     const materialType = isRdlMaterialType(material.material_type) ? material.material_type : null;
     if (!materialType && process.env.NODE_ENV !== "production") {
       console.error("RDL material type is missing or invalid", { materialId });
@@ -416,10 +452,22 @@ export async function loadStudentReadingPractice(
     throw new StudentReadingLoadError(`broken passage reference for ${itemId}`, "这个 Read an Academic Passage 练习的文章尚未准备完整。", 422);
   }
   const [passageResult, paragraphResult, sentenceResult, anchorResult] = await Promise.all([
-    db.from("reading_passages").select("passage_id,title").eq("passage_id", passageId).maybeSingle(),
-    db.from("reading_passage_paragraphs").select("passage_id,paragraph_id,paragraph_order,paragraph_text,raw_text").eq("passage_id", passageId).order("paragraph_order"),
-    db.from("reading_passage_sentences").select("passage_id,paragraph_id,sentence_id,sentence_order,sentence_text").eq("passage_id", passageId).order("sentence_order"),
-    db.from("reading_rap_insertion_anchors").select("question_id,anchor_id,anchor_order,paragraph_id,boundary_index,after_sentence_id").in("question_id", questionIds).order("anchor_order")
+    profileSupabaseQuery(
+      { query: "practice_rap_passage", dependsOn: ["practice_question_options"] },
+      () => db.from("reading_passages").select("passage_id,title").eq("passage_id", passageId).maybeSingle()
+    ),
+    profileSupabaseQuery(
+      { query: "practice_rap_paragraphs", dependsOn: ["practice_question_options"] },
+      () => db.from("reading_passage_paragraphs").select("passage_id,paragraph_id,paragraph_order,paragraph_text,raw_text").eq("passage_id", passageId).order("paragraph_order")
+    ),
+    profileSupabaseQuery(
+      { query: "practice_rap_sentences", dependsOn: ["practice_question_options"] },
+      () => db.from("reading_passage_sentences").select("passage_id,paragraph_id,sentence_id,sentence_order,sentence_text").eq("passage_id", passageId).order("sentence_order")
+    ),
+    profileSupabaseQuery(
+      { query: "practice_rap_anchors", dependsOn: ["practice_question_options"] },
+      () => db.from("reading_rap_insertion_anchors").select("question_id,anchor_id,anchor_order,paragraph_id,boundary_index,after_sentence_id").in("question_id", questionIds).order("anchor_order")
+    )
   ]);
   if (passageResult.error || paragraphResult.error || sentenceResult.error || anchorResult.error) {
     throw databaseLoadError("academic passage", passageResult.error || paragraphResult.error || sentenceResult.error || anchorResult.error!);
