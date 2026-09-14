@@ -1,4 +1,5 @@
 import type { ReadingModule } from "./types.ts";
+import type { ReadingInlineDiff } from "./reviewDiff.ts";
 
 export type ReadingDuplicateIdentityScope = "logical_item" | "material" | "passage";
 
@@ -59,20 +60,14 @@ export type ReadingRdlDuplicatePreview = ReadingDuplicatePreviewBase & {
     materialType: string | null;
     materialTitle: string | null;
     materialSource: string;
-    imageAssetPath: string | null;
-    hitboxDataPath: string | null;
-    questions: string[];
+    imageUrl: string | null;
   };
 };
 
 export type ReadingRapDuplicatePreview = ReadingDuplicatePreviewBase & {
   questionType: "rap";
   detail: {
-    passageId: string;
     passageTitle: string;
-    passage: string;
-    questionTypes: string[];
-    questions: string[];
   };
 };
 
@@ -90,6 +85,7 @@ export type ReadingDuplicateCandidate = ReadingDuplicatePreview & {
     label: string;
     existing: string;
     incoming: string;
+    inlineDiff: ReadingInlineDiff;
   }>;
 };
 

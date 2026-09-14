@@ -8,6 +8,7 @@ import type {
   ReadingDuplicateResolutionChoice,
   ReadingDuplicateResolutionItem
 } from "@/lib/reading/duplicateResolutionModel";
+import type { ReadingInlineDiff } from "@/lib/reading/reviewDiff";
 
 export type ReadingResolutionDraft =
   | { action: null; logicalItemId: string }
@@ -19,7 +20,6 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
   onChange: (resolutionId: string, draft: ReadingResolutionDraft) => void;
 }) {
   const [expandedReviewItems, setExpandedReviewItems] = useState<Set<string>>(new Set());
-  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
   const collapseReviewItem = (resolutionId: string) => {
     setExpandedReviewItems((current) => removeFromSet(current, resolutionId));
   };
@@ -94,6 +94,10 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
                 </label>
               ) : null}
 
+              {item.questionType === "rdl" && selectedCandidate?.questionType === "rdl"
+                && item.incoming.questionType === "rdl" ? (
+                <RdlMaterialComparison candidate={selectedCandidate} incoming={item.incoming} />
+              ) : null}
               <CompactDuplicateDifferences candidate={selectedCandidate ?? null} />
 
               <div className="mt-3 flex flex-wrap gap-3">
@@ -122,17 +126,6 @@ export function ReadingDuplicateResolutionList({ drafts, items, onChange }: {
                   <button className="underline" onClick={() => onChange(item.resolutionId, { action: null, logicalItemId: selectedId })} type="button">修改选择</button>
                 </div>
               ) : null}
-
-              <button
-                className="mt-4 text-sm font-bold text-student-primary underline"
-                onClick={() => setExpandedDetails((current) => toggleSet(current, item.resolutionId))}
-                type="button"
-              >
-                {expandedDetails.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
-              </button>
-              {expandedDetails.has(item.resolutionId) ? (
-                <FullDuplicateComparison candidate={selectedCandidate ?? null} incoming={item.incoming} />
-              ) : null}
             </article>
           );
         })}
@@ -146,14 +139,14 @@ function CompactDuplicateDifferences({ candidate }: { candidate: ReadingDuplicat
   return (
     <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
       <h3 className="text-sm font-bold text-amber-900">需要判断的实际差异</h3>
-      {differences.length === 0 ? <p className="mt-2 text-sm">题目框架存在结构差异，请展开完整内容核对。</p> : (
+      {differences.length === 0 ? <p className="mt-2 text-sm">文字内容一致；请结合两侧素材或结构判断。</p> : (
         <div className="mt-3 grid gap-3">
           {differences.map((difference, index) => (
             <div className="rounded-lg bg-white p-3" key={`${difference.label}-${index}`}>
               <div className="font-bold text-student-text">{difference.label}</div>
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
-                <VersionValue title="题库版本" value={difference.existing} />
-                <VersionValue title="来源 CSV" value={difference.incoming} />
+                <InlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
+                <InlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
               </div>
             </div>
           ))}
@@ -163,23 +156,24 @@ function CompactDuplicateDifferences({ candidate }: { candidate: ReadingDuplicat
   );
 }
 
-function FullDuplicateComparison({ candidate, incoming }: {
-  candidate: ReadingDuplicateCandidate | null;
-  incoming: ReadingDuplicatePreview;
+function RdlMaterialComparison({ candidate, incoming }: {
+  candidate: Extract<ReadingDuplicateCandidate, { questionType: "rdl" }>;
+  incoming: Extract<ReadingDuplicatePreview, { questionType: "rdl" }>;
 }) {
   return (
     <div className="mt-4 grid gap-4 lg:grid-cols-2">
-      <div>
-        <div className="mb-2 text-xs font-semibold text-student-muted">题库版本 · {candidate ? readingSourceLabel(candidate) : "不可用"}</div>
-        <ReadingDuplicateDetail preview={candidate} />
-        {candidate?.sourceOccurrences.length ? <CandidateOccurrences candidate={candidate} /> : null}
-      </div>
-      <div>
-        <div className="mb-2 text-xs font-semibold text-student-muted">来源 CSV · {readingSourceLabel(incoming)}</div>
-        <ReadingDuplicateDetail preview={incoming} />
-      </div>
+      <MaterialImage title="题库已有素材" preview={candidate} />
+      <MaterialImage title="来源 CSV 素材" preview={incoming} />
     </div>
   );
+}
+
+function MaterialImage({ title, preview }: {
+  title: string;
+  preview: Extract<ReadingDuplicatePreview, { questionType: "rdl" }>;
+}) {
+  const caption = `${preview.detail.materialId} · ${preview.detail.materialSource || preview.sourceLabel}`;
+  return <figure className="overflow-hidden rounded-xl border border-student-border bg-student-primary-soft/20 p-3"><figcaption className="mb-2 text-sm font-bold text-student-text">{title} · {caption}</figcaption>{preview.detail.imageUrl ? <a href={preview.detail.imageUrl} rel="noreferrer" target="_blank" title="点击放大素材图片"><img alt={`${title} ${preview.detail.materialId}`} className="h-auto max-h-[32rem] w-full rounded-lg bg-white object-contain" loading="lazy" src={preview.detail.imageUrl} /></a> : <div className="grid min-h-40 place-items-center rounded-lg border border-dashed bg-white text-sm text-student-muted">素材图片暂不可用</div>}</figure>;
 }
 
 function ResolvedDuplicateSummary({ draft, item, onReopen, selectedCandidate }: {
@@ -200,36 +194,15 @@ function ResolvedDuplicateSummary({ draft, item, onReopen, selectedCandidate }: 
   );
 }
 
-function ReadingDuplicateDetail({ preview }: { preview: ReadingDuplicatePreview | null }) {
-  if (!preview) return <p className="text-sm text-student-muted">题目详情不可用。</p>;
-  if (preview.questionType === "ctw") return <div className="rounded-xl border p-4 text-sm"><Detail label="Passage" value={preview.detail.passage} /><Detail label="Ordered blanks" value={preview.detail.orderedBlanks.join("\n")} /><Detail label="Correct answers" value={preview.detail.correctAnswers.join("\n")} /></div>;
-  if (preview.questionType === "rdl") return <div className="rounded-xl border p-4 text-sm"><Detail label="Material" value={`${preview.detail.materialTitle ?? "无标题"}\n${preview.detail.materialType ?? "unknown"}\n${preview.detail.materialSource}`} /><Detail label="Questions" value={preview.detail.questions.join("\n\n")} /></div>;
-  return <div className="rounded-xl border p-4 text-sm"><Detail label="Passage" value={`${preview.detail.passageTitle}\n${preview.detail.passage}`} /><Detail label="Questions" value={preview.detail.questions.join("\n\n")} /></div>;
-}
-
-function VersionValue({ title, value }: { title: "题库版本" | "来源 CSV"; value: string }) {
-  return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{value}</div></div>;
-}
-
-function Detail({ label, value }: { label: string; value: string }) {
-  return <div className="mt-3 first:mt-0"><div className="font-bold text-student-muted">{label}</div><div className="mt-0.5 whitespace-pre-wrap text-student-text">{value}</div></div>;
-}
-
-function CandidateOccurrences({ candidate }: { candidate: ReadingDuplicateCandidate }) {
-  return <div className="mt-3 text-xs text-student-muted">已有来源：{candidate.sourceOccurrences.map(readingSourceLabel).join("；")}</div>;
-}
+function InlineVersionValue({ title, segments }: { title: "题库版本" | "来源 CSV"; segments: ReadingInlineDiff["existing"] }) { return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{segments.map((segment, index) => segment.changed ? <mark className="rounded bg-amber-300 px-0.5 text-inherit" key={index}>{segment.text || "∅"}</mark> : <span key={index}>{segment.text}</span>)}</div></div>; }
 
 function duplicateActionLabel(action: ReadingResolutionDraft["action"]) {
   return action === "reuse_existing" ? "归入题库版本" : action === "create_new" ? "保留为新题" : "尚未选择";
 }
 
 function readingModuleLabel(questionType: ReadingDuplicatePreview["questionType"]) { return questionType.toUpperCase(); }
-function readingSourceLabel(source: Pick<ReadingDuplicatePreview, "sourceLabel" | "occurrenceDate" | "sourceModule" | "sourceOrder" | "sourceQuestionRange">) {
-  return [source.sourceLabel, source.occurrenceDate, source.sourceModule ? source.sourceModule.toUpperCase() : null, `顺序 ${source.sourceOrder}`, source.sourceQuestionRange ? `原题 ${source.sourceQuestionRange}` : null].filter(Boolean).join(" · ");
-}
 function compactReadingSourceLabel(source: Pick<ReadingDuplicatePreview, "sourceLabel" | "sourceModule" | "sourceQuestionRange">) {
   return [source.sourceLabel, source.sourceModule ? source.sourceModule.toUpperCase() : null, source.sourceQuestionRange ? `Q${source.sourceQuestionRange}` : null].filter(Boolean).join(" · ");
 }
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
 function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }
-function toggleSet(values: Set<string>, value: string) { const next = new Set(values); if (next.has(value)) next.delete(value); else next.add(value); return next; }

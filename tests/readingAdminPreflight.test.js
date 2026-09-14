@@ -103,9 +103,9 @@ test("Reading duplicate cards collect every resolution and send it only with fin
   assert.match(resolutionComponent, /不是同一道题，保留为新题/);
   assert.match(resolutionComponent, /题库版本/);
   assert.match(resolutionComponent, /来源 CSV/);
-  assert.match(resolutionComponent, /difference\.incoming/);
-  assert.match(resolutionComponent, /difference\.existing/);
-  assert.match(resolutionComponent, /展开完整内容/);
+  assert.match(resolutionComponent, /difference\.inlineDiff\.incoming/);
+  assert.match(resolutionComponent, /difference\.inlineDiff\.existing/);
+  assert.doesNotMatch(resolutionComponent, /展开完整内容/);
   assert.match(resolutionComponent, /重新查看/);
   assert.match(resolutionComponent, /已选择：/);
   assert.match(component, /readingDuplicateResolutions: readingDryRun[\s\S]*resolutionId:[\s\S]*questionType:[\s\S]*logicalItemId/);
@@ -129,12 +129,11 @@ test("one pending list controls rendering and enforces the flag/list invariant",
   assert.match(resolutionModel, /hasPendingDuplicates && input\.pendingResolutionItems\.length === 0/);
 });
 
-test("shared confirmation shell keeps full Reading content folded behind one detail component", () => {
-  assert.match(resolutionComponent, /function ReadingDuplicateDetail/);
-  assert.match(resolutionComponent, /preview\.questionType === "ctw"/);
-  assert.match(resolutionComponent, /preview\.questionType === "rdl"/);
-  assert.match(resolutionComponent, /FullDuplicateComparison/);
-  assert.match(resolutionComponent, /expandedDetails\.has\(item\.resolutionId\)/);
+test("shared confirmation shell renders only changed content and RDL image evidence", () => {
+  assert.match(resolutionComponent, /InlineVersionValue/);
+  assert.match(resolutionComponent, /RdlMaterialComparison/);
+  assert.match(resolutionComponent, /<mark/);
+  assert.doesNotMatch(resolutionComponent, /FullDuplicateComparison|ReadingDuplicateDetail|expandedDetails/);
 });
 
 test("RDL preflight explains registered-material reuse with a first logical question set", () => {

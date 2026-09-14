@@ -2,17 +2,24 @@ import type {
   CtwQuestion,
   ReadingImportPackage,
   ReadingInsertionAnchor,
-  ReadingOption,
   ReadingPassage,
   ReadingQuestion
 } from "./types.ts";
 import { compareCtwLogicalIdentity } from "./ctwLogicalIdentity.ts";
+import {
+  alignChangedReadingOptions,
+  buildReadingInlineDiff,
+  normalizeReadingQuestionStem,
+  normalizeReadingReviewText,
+  type ReadingInlineDiff
+} from "./reviewDiff.ts";
 
 export type ReadingContentDifferenceKind =
+  | "passage_title"
+  | "passage"
   | "question_type"
   | "stem"
   | "options"
-  | "option_order"
   | "correct_answer"
   | "ctw_slot_content"
   | "insert_sentence"
@@ -24,27 +31,10 @@ export type ReadingContentDifferenceKind =
 export type ReadingContentDifference = {
   kind: ReadingContentDifferenceKind;
   label: string;
-  substantive: boolean;
-};
-
-export type ReadingContentOptionPreview = {
-  label: string;
-  text: string;
-  correct: boolean;
-};
-
-export type ReadingContentQuestionVersion = {
-  questionType: ReadingQuestion["questionType"];
-  stem: string;
-  options?: ReadingContentOptionPreview[];
-  correctAnswer?: string;
-  ctwPassage?: string;
-  ctwBlanks?: string[];
-  insertSentence?: string;
-  insertionAnchors?: string[];
-  correctInsertionLocation?: string;
-  targetSentenceStructure?: string[];
-  selectedSentence?: string;
+  substantive: true;
+  existing: string;
+  incoming: string;
+  inlineDiff: ReadingInlineDiff;
 };
 
 export type ReadingCtwSlotConflictPreview = {
@@ -54,6 +44,7 @@ export type ReadingCtwSlotConflictPreview = {
   incoming: string;
   existingAnswer: string;
   incomingAnswer: string;
+  inlineDiff: ReadingInlineDiff;
 };
 
 export type ReadingQuestionContentConflict = {
@@ -62,8 +53,6 @@ export type ReadingQuestionContentConflict = {
   differences: ReadingContentDifference[];
   correctAnswerSemanticallyDifferent: boolean;
   ctwSlotConflicts?: ReadingCtwSlotConflictPreview[];
-  existing: ReadingContentQuestionVersion;
-  incoming: ReadingContentQuestionVersion;
 };
 
 export type ReadingContentConflictItem = {
@@ -77,6 +66,7 @@ export type ReadingContentConflictItem = {
   sourceQuestionRange: string;
   passageTitle: string | null;
   materialId: string | null;
+  passageConflicts: ReadingContentDifference[];
   questionConflicts: ReadingQuestionContentConflict[];
 };
 
@@ -104,35 +94,21 @@ export function indexReadingContentConflictResolutions(
 }
 
 const DIFFERENCE_LABELS: Record<ReadingContentDifferenceKind, string> = {
-  question_type: "Question type different",
-  stem: "Stem different",
-  options: "Options different",
-  option_order: "Option order different",
-  correct_answer: "Correct answer different",
-  ctw_slot_content: "CTW blank content different",
-  insert_sentence: "Insert sentence different",
-  insertion_anchors: "Insert anchors different",
-  correct_insertion_location: "Correct insertion location different",
-  target_sentence_structure: "Target sentence structure different",
-  selected_sentence: "Selected sentence different"
+  passage_title: "文章标题",
+  passage: "文章正文",
+  question_type: "题型",
+  stem: "题干",
+  options: "选项",
+  correct_answer: "正确答案",
+  ctw_slot_content: "填空内容",
+  insert_sentence: "待插入句子",
+  insertion_anchors: "可插入位置",
+  correct_insertion_location: "正确插入位置",
+  target_sentence_structure: "目标段落句子",
+  selected_sentence: "正确句子"
 };
 
-const PRESENTATION_ONLY = new Set<ReadingContentDifferenceKind>(["option_order"]);
-
-/** Reconciliation normalization deliberately ignores display-only noise. It is
- * stricter than identity matching about words, but looser about case, spacing,
- * punctuation glyphs, dash variants, insertion markers, and OCR word spacing. */
-export function normalizeReadingReconciliationText(value: string) {
-  return value
-    .normalize("NFKC")
-    .replace(/[\u2018\u2019\u02bc\uff07]/g, "'")
-    .replace(/[\u201c\u201d\uff02]/g, '"')
-    .replace(/[\u2010-\u2015\u2212\ufe58\ufe63\uff0d]/g, "-")
-    .toLocaleLowerCase("en-US")
-    .replace(/\b([ap])\.?\s*m\.?\b/g, "$1m")
-    .replace(/[!-/:-@[-`{-~\u00a1-\u00bf\u2000-\u206f\u20a0-\u20cf\u25a0\s]+/g, "")
-    .trim();
-}
+export const normalizeReadingReconciliationText = normalizeReadingReviewText;
 
 export function buildReadingContentConflict(
   existing: ReadingImportPackage,
@@ -141,18 +117,21 @@ export function buildReadingContentConflict(
   if (existing.item.module !== incoming.item.module) {
     throw new Error("Reading content reconciliation requires the same module");
   }
+  const passageConflicts = existing.item.module === "rap"
+    ? compareRapPassages(existing.passages, incoming.passages)
+    : [];
   const existingByOrder = new Map(existing.questions.map((question) => [question.questionOrder, question]));
   const incomingByOrder = new Map(incoming.questions.map((question) => [question.questionOrder, question]));
   const orders = Array.from(new Set([
     ...Array.from(existingByOrder.keys()),
     ...Array.from(incomingByOrder.keys())
-  ])).sort((a, b) => a - b);
+  ])).sort((left, right) => left - right);
   const questionConflicts = orders.flatMap<ReadingQuestionContentConflict>((questionOrder) => {
     const existingQuestion = existingByOrder.get(questionOrder);
     const incomingQuestion = incomingByOrder.get(questionOrder);
     if (!existingQuestion || !incomingQuestion) return [];
     const differences = compareQuestion(existingQuestion, incomingQuestion, existing, incoming);
-    if (!differences.some((difference) => difference.substantive)) return [];
+    if (differences.length === 0) return [];
     const ctwSlotConflicts = existingQuestion.questionType === "ctw"
       && incomingQuestion.questionType === "ctw"
       ? buildCtwSlotConflictPreviews(existingQuestion, incomingQuestion)
@@ -166,12 +145,10 @@ export function buildReadingContentConflict(
         || difference.kind === "correct_insertion_location"
         || difference.kind === "selected_sentence"
       ) || Boolean(ctwSlotConflicts?.some((conflict) => conflict.differenceKinds.includes("answer"))),
-      ctwSlotConflicts,
-      existing: questionVersion(existingQuestion, existing),
-      incoming: questionVersion(incomingQuestion, incoming)
+      ctwSlotConflicts
     }];
   });
-  if (questionConflicts.length === 0) return null;
+  if (passageConflicts.length === 0 && questionConflicts.length === 0) return null;
   const occurrence = incoming.occurrences[0];
   const title = incoming.item.module === "rap"
     ? incoming.passages[0]?.title ?? incoming.item.title
@@ -194,8 +171,39 @@ export function buildReadingContentConflict(
       : "",
     passageTitle: title,
     materialId: incoming.item.module === "rdl" ? incoming.materials[0]?.materialId ?? null : null,
+    passageConflicts,
     questionConflicts
   };
+}
+
+function compareRapPassages(existing: ReadingPassage[], incoming: ReadingPassage[]) {
+  const result: ReadingContentDifference[] = [];
+  const count = Math.max(existing.length, incoming.length);
+  for (let passageIndex = 0; passageIndex < count; passageIndex += 1) {
+    const left = existing[passageIndex];
+    const right = incoming[passageIndex];
+    if (!left || !right) {
+      result.push(difference("passage", left?.title ?? "未提供", right?.title ?? "未提供"));
+      continue;
+    }
+    if (!sameText(left.title, right.title)) {
+      result.push(difference("passage_title", left.title, right.title));
+    }
+    const leftByOrder = new Map(left.paragraphs.map((paragraph) => [paragraph.paragraphOrder, paragraph]));
+    const rightByOrder = new Map(right.paragraphs.map((paragraph) => [paragraph.paragraphOrder, paragraph]));
+    const orders = Array.from(new Set([
+      ...Array.from(leftByOrder.keys()),
+      ...Array.from(rightByOrder.keys())
+    ])).sort((a, b) => a - b);
+    for (const order of orders) {
+      const leftText = leftByOrder.get(order)?.text ?? "未提供";
+      const rightText = rightByOrder.get(order)?.text ?? "未提供";
+      if (!sameText(leftText, rightText)) {
+        result.push(difference("passage", leftText, rightText, `文章第 ${order} 段`));
+      }
+    }
+  }
+  return result;
 }
 
 function compareQuestion(
@@ -203,21 +211,31 @@ function compareQuestion(
   incoming: ReadingQuestion,
   existingPackage: ReadingImportPackage,
   incomingPackage: ReadingImportPackage
-) {
-  const kinds: ReadingContentDifferenceKind[] = [];
+): ReadingContentDifference[] {
+  const result: ReadingContentDifference[] = [];
   if (existing.questionType !== incoming.questionType) {
-    kinds.push("question_type");
+    return [difference("question_type", existing.questionType, incoming.questionType)];
   }
-  if (!sameText(existing.stem, incoming.stem)) kinds.push("stem");
-  if (existing.questionType !== incoming.questionType) return differences(kinds);
+  if (
+    normalizeReadingQuestionStem(existing.questionType, existing.stem)
+      !== normalizeReadingQuestionStem(incoming.questionType, incoming.stem)
+  ) result.push(difference("stem", existing.stem, incoming.stem));
 
   if (isChoice(existing) && isChoice(incoming)) {
-    const existingTexts = optionTexts(existing.payload.options);
-    const incomingTexts = optionTexts(incoming.payload.options);
-    if (!sameArray([...existingTexts].sort(), [...incomingTexts].sort())) kinds.push("options");
-    else if (!sameArray(existingTexts, incomingTexts)) kinds.push("option_order");
-    if (!sameText(correctOptionText(existing), correctOptionText(incoming))) kinds.push("correct_answer");
-    return differences(kinds);
+    for (const pair of alignChangedReadingOptions(existing.payload.options, incoming.payload.options)) {
+      const left = pair.existing?.text ?? "未提供";
+      const right = pair.incoming?.text ?? "未提供";
+      const optionName = pair.existing
+        ? optionLabel(pair.existing.optionOrder)
+        : pair.incoming ? optionLabel(pair.incoming.optionOrder) : "?";
+      result.push(difference("options", left, right, `选项 ${optionName}`));
+    }
+    const existingCorrect = correctOptionText(existing);
+    const incomingCorrect = correctOptionText(incoming);
+    if (!sameText(existingCorrect, incomingCorrect)) {
+      result.push(difference("correct_answer", existingCorrect, incomingCorrect));
+    }
+    return result;
   }
   if (existing.questionType === "ctw" && incoming.questionType === "ctw") {
     const identity = compareCtwLogicalIdentity(existing, incoming);
@@ -227,43 +245,47 @@ function compareQuestion(
         { code: "READING_CTW_IDENTITY_CLUSTER_INVARIANT" }
       );
     }
-    if (identity.nonIdentityConflicts.length > 0) kinds.push("ctw_slot_content");
-    return differences(kinds);
+    if (identity.nonIdentityConflicts.length > 0) {
+      result.push(difference("ctw_slot_content", "", ""));
+    }
+    return result;
   }
   if (existing.questionType === "rap_sentence_insertion" && incoming.questionType === "rap_sentence_insertion") {
-    if (!sameText(existing.payload.insertSentence, incoming.payload.insertSentence)) kinds.push("insert_sentence");
+    if (!sameText(existing.payload.insertSentence, incoming.payload.insertSentence)) {
+      result.push(difference("insert_sentence", existing.payload.insertSentence, incoming.payload.insertSentence));
+    }
     const existingPassage = requiredPassage(existingPackage, existing.payload.passageId);
     const incomingPassage = requiredPassage(incomingPackage, incoming.payload.passageId);
-    const existingAnchors = existing.payload.anchors
-      .map((anchor) => anchorIdentity(anchor, existingPassage))
-      .sort();
-    const incomingAnchors = incoming.payload.anchors
-      .map((anchor) => anchorIdentity(anchor, incomingPassage))
-      .sort();
-    if (!sameArray(existingAnchors, incomingAnchors)) kinds.push("insertion_anchors");
-    if (!sameText(
-      correctAnchorIdentity(existing, existingPassage),
-      correctAnchorIdentity(incoming, incomingPassage)
-    )) kinds.push("correct_insertion_location");
-    return differences(kinds);
+    const existingAnchors = existing.payload.anchors.map((anchor) => anchorIdentity(anchor, existingPassage)).sort();
+    const incomingAnchors = incoming.payload.anchors.map((anchor) => anchorIdentity(anchor, incomingPassage)).sort();
+    if (!sameArray(existingAnchors, incomingAnchors)) {
+      result.push(difference("insertion_anchors", existingAnchors.join("\n"), incomingAnchors.join("\n")));
+    }
+    const existingCorrect = correctAnchorDisplay(existing, existingPassage);
+    const incomingCorrect = correctAnchorDisplay(incoming, incomingPassage);
+    if (!sameText(existingCorrect, incomingCorrect)) {
+      result.push(difference("correct_insertion_location", existingCorrect, incomingCorrect));
+    }
+    return result;
   }
   if (existing.questionType === "rap_sentence_selection" && incoming.questionType === "rap_sentence_selection") {
     const existingTarget = targetParagraph(existingPackage, existing.payload.targetParagraphId);
     const incomingTarget = targetParagraph(incomingPackage, incoming.payload.targetParagraphId);
-    const existingStructure = orderedSentences(existingTarget?.sentences ?? []);
-    const incomingStructure = orderedSentences(incomingTarget?.sentences ?? []);
-    if (!sameArray(existingStructure, incomingStructure)) kinds.push("target_sentence_structure");
-    if (!sameText(selectedSentence(existing, existingPackage), selectedSentence(incoming, incomingPackage))) {
-      kinds.push("selected_sentence");
+    const existingStructure = displaySentences(existingTarget?.sentences ?? []);
+    const incomingStructure = displaySentences(incomingTarget?.sentences ?? []);
+    if (!sameArray(existingStructure.map(normalizeReadingReviewText), incomingStructure.map(normalizeReadingReviewText))) {
+      result.push(difference("target_sentence_structure", existingStructure.join("\n"), incomingStructure.join("\n")));
+    }
+    const existingSelected = selectedSentence(existing, existingPackage);
+    const incomingSelected = selectedSentence(incoming, incomingPackage);
+    if (!sameText(existingSelected, incomingSelected)) {
+      result.push(difference("selected_sentence", existingSelected, incomingSelected));
     }
   }
-  return differences(kinds);
+  return result;
 }
 
-function buildCtwSlotConflictPreviews(
-  existing: CtwQuestion,
-  incoming: CtwQuestion
-): ReadingCtwSlotConflictPreview[] {
+function buildCtwSlotConflictPreviews(existing: CtwQuestion, incoming: CtwQuestion) {
   return compareCtwLogicalIdentity(existing, incoming).nonIdentityConflicts.flatMap((conflict) =>
     conflict.slots.map((slot) => ({
       slotOrder: slot.slotOrder,
@@ -271,112 +293,56 @@ function buildCtwSlotConflictPreviews(
       existing: slot.leftReviewText,
       incoming: slot.rightReviewText,
       existingAnswer: slot.leftAnswer,
-      incomingAnswer: slot.rightAnswer
+      incomingAnswer: slot.rightAnswer,
+      inlineDiff: buildReadingInlineDiff(slot.leftReviewText, slot.rightReviewText)
     }))
   );
 }
 
-function questionVersion(question: ReadingQuestion, packageData: ReadingImportPackage): ReadingContentQuestionVersion {
-  const base = { questionType: question.questionType, stem: question.stem };
-  if (isChoice(question)) {
-    const orderedOptions = [...question.payload.options].sort((left, right) => left.optionOrder - right.optionOrder);
-    const correct = orderedOptions.find((option) => option.optionId === question.payload.correctOptionId);
-    return {
-      ...base,
-      options: orderedOptions.map((option) => ({
-        label: optionLabel(option.optionOrder),
-        text: option.text,
-        correct: option.optionId === question.payload.correctOptionId
-      })),
-      correctAnswer: correct ? `${optionLabel(correct.optionOrder)} — ${correct.text}` : "Unresolved"
-    };
-  }
-  if (question.questionType === "ctw") {
-    const slots = [...question.payload.slots].sort((left, right) => left.slotOrder - right.slotOrder);
-    return {
-      ...base,
-      ctwPassage: question.payload.paragraphs.map((paragraph) => paragraph.rawText).join("\n\n"),
-      ctwBlanks: slots.map((slot) => `${slot.slotOrder}. ${slot.displayText}`),
-      correctAnswer: slots.map((slot) => `${slot.slotOrder}. ${slot.answer}`).join("\n")
-    };
-  }
-  if (question.questionType === "rap_sentence_insertion") {
-    const passage = requiredPassage(packageData, question.payload.passageId);
-    const anchors = [...question.payload.anchors].sort((left, right) => left.anchorOrder - right.anchorOrder);
-    const correct = anchors.find((anchor) => anchor.anchorId === question.payload.correctAnchorId);
-    return {
-      ...base,
-      insertSentence: question.payload.insertSentence,
-      insertionAnchors: anchors.map((anchor) => anchorDisplay(anchor, passage)),
-      correctInsertionLocation: correct ? anchorDisplay(correct, passage) : "Unresolved"
-    };
-  }
-  const target = targetParagraph(packageData, question.payload.targetParagraphId);
+function difference(
+  kind: ReadingContentDifferenceKind,
+  existing: string,
+  incoming: string,
+  label = DIFFERENCE_LABELS[kind]
+): ReadingContentDifference {
   return {
-    ...base,
-    targetSentenceStructure: target?.sentences.map((sentence) =>
-      `${sentence.sentenceOrder}. ${sentence.text}`
-    ) ?? [],
-    selectedSentence: selectedSentence(question, packageData)
-  };
-}
-
-function differences(kinds: ReadingContentDifferenceKind[]): ReadingContentDifference[] {
-  return Array.from(new Set(kinds)).map((kind) => ({
     kind,
-    label: DIFFERENCE_LABELS[kind],
-    substantive: !PRESENTATION_ONLY.has(kind)
-  }));
+    label,
+    substantive: true,
+    existing,
+    incoming,
+    inlineDiff: buildReadingInlineDiff(existing, incoming)
+  };
 }
 
 function isChoice(question: ReadingQuestion): question is Extract<ReadingQuestion, { questionType: "rdl" | "rap_multiple_choice" }> {
   return question.questionType === "rdl" || question.questionType === "rap_multiple_choice";
 }
 
-function optionTexts(options: ReadingOption[]) {
-  return [...options]
-    .sort((left, right) => left.optionOrder - right.optionOrder)
-    .map((option) => normalizeReadingReconciliationText(option.text));
-}
-
 function correctOptionText(question: Extract<ReadingQuestion, { questionType: "rdl" | "rap_multiple_choice" }>) {
-  return question.payload.options.find((option) => option.optionId === question.payload.correctOptionId)?.text ?? "";
+  return question.payload.options.find((option) => option.optionId === question.payload.correctOptionId)?.text ?? "未解析";
 }
 
-function orderedSentences(sentences: Array<{ sentenceOrder: number; text: string }>) {
+function displaySentences(sentences: Array<{ sentenceOrder: number; text: string }>) {
   return [...sentences]
     .sort((left, right) => left.sentenceOrder - right.sentenceOrder)
-    .map((sentence) => normalizeReadingReconciliationText(sentence.text));
+    .map((sentence) => `${sentence.sentenceOrder}. ${sentence.text}`);
 }
 
 function anchorIdentity(anchor: ReadingInsertionAnchor, passage: ReadingPassage) {
   const paragraph = targetParagraphInPassage(passage, anchor.paragraphId);
   const afterSentence = anchor.afterSentenceId
     ? paragraph?.sentences.find((sentence) => sentence.sentenceId === anchor.afterSentenceId)?.text ?? ""
-    : "<start>";
-  return [
-    paragraph?.paragraphOrder ?? "missing",
-    anchor.boundaryIndex,
-    normalizeReadingReconciliationText(afterSentence)
-  ].join(":");
+    : "段落开头";
+  return `第 ${paragraph?.paragraphOrder ?? "?"} 段 · ${anchor.boundaryIndex === 0 ? "段落开头" : `在“${afterSentence}”之后`}`;
 }
 
-function correctAnchorIdentity(
+function correctAnchorDisplay(
   question: Extract<ReadingQuestion, { questionType: "rap_sentence_insertion" }>,
   passage: ReadingPassage
 ) {
   const anchor = question.payload.anchors.find((candidate) => candidate.anchorId === question.payload.correctAnchorId);
-  return anchor ? anchorIdentity(anchor, passage) : "<unresolved>";
-}
-
-function anchorDisplay(anchor: ReadingInsertionAnchor, passage: ReadingPassage) {
-  const paragraph = targetParagraphInPassage(passage, anchor.paragraphId);
-  const after = anchor.afterSentenceId
-    ? paragraph?.sentences.find((sentence) => sentence.sentenceId === anchor.afterSentenceId)
-    : null;
-  return after
-    ? `Location ${anchor.anchorOrder}: paragraph ${paragraph?.paragraphOrder ?? "?"}, after “${after.text}”`
-    : `Location ${anchor.anchorOrder}: paragraph ${paragraph?.paragraphOrder ?? "?"}, before the first sentence`;
+  return anchor ? anchorIdentity(anchor, passage) : "未解析";
 }
 
 function selectedSentence(
@@ -385,7 +351,7 @@ function selectedSentence(
 ) {
   return targetParagraph(packageData, question.payload.targetParagraphId)?.sentences.find(
     (sentence) => sentence.sentenceId === question.payload.correctSentenceId
-  )?.text ?? "Unresolved";
+  )?.text ?? "未解析";
 }
 
 function requiredPassage(packageData: ReadingImportPackage, passageId: string) {
@@ -404,7 +370,7 @@ function targetParagraphInPassage(passage: ReadingPassage, paragraphId: string) 
 }
 
 function sameText(left: string, right: string) {
-  return normalizeReadingReconciliationText(left) === normalizeReadingReconciliationText(right);
+  return normalizeReadingReviewText(left) === normalizeReadingReviewText(right);
 }
 
 function sameArray(left: string[], right: string[]) {

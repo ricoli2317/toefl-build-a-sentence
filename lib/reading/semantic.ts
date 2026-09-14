@@ -11,8 +11,12 @@ import {
   buildCtwPackageLogicalIdentity,
   compareCtwPackageLogicalIdentity
 } from "./ctwLogicalIdentity.ts";
+import {
+  normalizeReadingQuestionStem,
+  normalizeReadingReviewText
+} from "./reviewDiff.ts";
 
-export const READING_SEMANTIC_VERSION = "reading-semantic-v1";
+export const READING_SEMANTIC_VERSION = "reading-semantic-v2";
 export const CTW_SEMANTIC_VERSION = "ctw-semantic-v2";
 
 export function normalizeReadingSemanticText(value: string) {
@@ -86,8 +90,11 @@ export function arePossibleReadingDuplicates(
     const leftSemantic = stableStringify(readingMaterialSemanticIdentity(left.materials[0]));
     const rightSemantic = stableStringify(readingMaterialSemanticIdentity(right.materials[0]));
     return leftSemantic === rightSemantic
-      || stableStringify(readingMaterialReviewIdentity(left.materials[0]))
-        === stableStringify(readingMaterialReviewIdentity(right.materials[0]));
+      || (
+        stableStringify(readingMaterialReviewIdentity(left.materials[0]))
+          === stableStringify(readingMaterialReviewIdentity(right.materials[0]))
+        && haveRdlDuplicateQuestionEvidence(left, right)
+      );
   }
   const leftText = reviewPassageText(left);
   const rightText = reviewPassageText(right);
@@ -170,7 +177,7 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
   }
   const common = {
     type: question.questionType,
-    stem: normalizeReadingSemanticText(question.stem)
+    stem: normalizeReadingQuestionStem(question.questionType, question.stem)
   };
   if (question.questionType === "rdl" || question.questionType === "rap_multiple_choice") {
     const correct = question.payload.options.find(
@@ -183,9 +190,9 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
         ? { highlights: highlightIdentity(question.payload.highlightRanges, requiredPassage(passageById, question.payload.passageId)) }
         : {}),
       options: question.payload.options
-        .map((option) => normalizeReadingSemanticText(option.text))
+        .map((option) => normalizeReadingReviewText(option.text))
         .sort(),
-      correctOptionText: normalizeReadingSemanticText(correct.text)
+      correctOptionText: normalizeReadingReviewText(correct.text)
     };
   }
   const passage = requiredPassage(passageById, question.payload.passageId);
@@ -221,6 +228,26 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
     correctSentenceOrder: correctSentence.sentenceOrder,
     correctSentenceText: normalizeReadingSemanticText(correctSentence.text)
   };
+}
+
+export function haveRdlDuplicateQuestionEvidence(
+  left: ReadingImportPackage,
+  right: ReadingImportPackage
+) {
+  const signatures = (packageData: ReadingImportPackage) => packageData.questions
+    .filter((question) => question.questionType === "rdl")
+    .map((question) => normalizeReadingQuestionStem(question.questionType, question.stem));
+  const leftSignatures = signatures(left);
+  const rightRemaining = [...signatures(right)];
+  let matches = 0;
+  for (const signature of leftSignatures) {
+    const matchIndex = rightRemaining.indexOf(signature);
+    if (matchIndex < 0) continue;
+    matches += 1;
+    rightRemaining.splice(matchIndex, 1);
+  }
+  const requiredMatches = Math.max(1, Math.ceil(Math.min(leftSignatures.length, rightRemaining.length + matches) / 2));
+  return matches >= requiredMatches;
 }
 
 function ctwIdentity(question: CtwQuestion) {

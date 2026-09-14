@@ -17,6 +17,7 @@ import {
   buildCtwPackageLogicalIdentity,
   compareCtwPackageLogicalIdentity
 } from "./ctwLogicalIdentity.ts";
+import { readingUnorderedPairKey } from "./reviewDiff.ts";
 
 export type ReadingDuplicateReviewPlan = {
   resolutionId: string;
@@ -115,6 +116,7 @@ export function buildReadingDuplicateReviewPlans(
   prepared: PreparedReadingImportPackage[]
 ): ReadingDuplicateReviewPlan[] {
   assertCtwPreparedIdentityClusters(prepared);
+  const emittedPairs = new Set<string>();
   const reviews = prepared.flatMap((incoming) => {
     const batchCandidates = prepared
       .filter((candidate) => candidate !== incoming)
@@ -123,17 +125,31 @@ export function buildReadingDuplicateReviewPlans(
     const candidatePool = uniquePackages([
       ...incoming.possibleDuplicateCandidates,
       ...batchCandidates
-    ]);
+    ]).filter(
+      (candidate) => candidate.item.logicalItemId !== incoming.packageData.item.logicalItemId
+    );
     if (incoming.packageData.item.module === "ctw") {
       assertCtwCandidateIdentityClusters(incoming.packageData, candidatePool);
     }
-    const candidates = candidatePool.filter(
-      (candidate) => candidate.item.logicalItemId !== incoming.packageData.item.logicalItemId
-    );
+    const candidates = candidatePool.filter((candidate) => {
+      const pairKey = readingUnorderedPairKey(
+        incoming.packageData.item.logicalItemId,
+        candidate.item.logicalItemId
+      );
+      if (emittedPairs.has(pairKey)) return false;
+      emittedPairs.add(pairKey);
+      return true;
+    });
     if (candidates.length === 0) return [];
     const questionType = incoming.packageData.item.module;
+    const resolutionIdentity = candidates.length === 1
+      ? readingUnorderedPairKey(
+          incoming.packageData.item.logicalItemId,
+          candidates[0].item.logicalItemId
+        ).replace("\u001f", ":")
+      : incoming.packageData.item.logicalItemId;
     return [{
-      resolutionId: `reading-duplicate:${questionType}:${incoming.packageData.item.logicalItemId}`,
+      resolutionId: `reading-duplicate:${questionType}:${resolutionIdentity}`,
       questionType,
       identityScope: readingDuplicateIdentityScope(questionType),
       reasonCode: readingDuplicateReasonCode(questionType),

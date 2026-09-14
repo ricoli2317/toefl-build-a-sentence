@@ -15,8 +15,8 @@ test("compact CTW review renders only slot conflicts with database left and CSV 
   );
   assert.match(compact, /conflict\.ctwSlotConflicts/);
   assert.match(compact, /第 \{slot\.slotOrder\} 空内容不同/);
-  assert.match(compact, /title="题库版本" value=\{slot\.existing\}/);
-  assert.match(compact, /title="来源 CSV" value=\{slot\.incoming\}/);
+  assert.match(compact, /title="题库版本" segments=\{slot\.inlineDiff\.existing\}/);
+  assert.match(compact, /title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
   assert.doesNotMatch(compact, /ctwPassage|ctwBlanks|displayText|missingLength|Ordered blanks|Correct answers/);
 });
 
@@ -38,7 +38,7 @@ test("review actions immediately follow compact differences and expose local sel
   }
 });
 
-test("resolved reviews toggle independently, reconfirm collapses, and full context stays folded by default", () => {
+test("resolved reviews toggle independently and never expose whole-content dumps", () => {
   for (const source of [content, duplicate]) {
     assert.match(source, /const resolved = Boolean\(draft\.action\)/);
     assert.match(source, /const reviewExpanded = expandedReviewItems\.has\(item\.resolutionId\)/);
@@ -47,12 +47,20 @@ test("resolved reviews toggle independently, reconfirm collapses, and full conte
     assert.match(source, />收起<\/button>/);
     assert.match(source, /confirmResolution[\s\S]*collapseReviewItem\(resolutionId\)/);
     assert.match(source, /setExpandedReviewItems\(\(current\) => removeFromSet\(current, resolutionId\)\)/);
-    assert.match(source, /expandedDetails\.has\(item\.resolutionId\)/);
-    assert.match(source, /展开完整内容/);
-    assert.match(source, /收起完整内容/);
+    assert.doesNotMatch(source, /expandedDetails|展开完整内容|收起完整内容/);
   }
-  assert.match(content, /FullContentComparison/);
-  assert.match(duplicate, /FullDuplicateComparison/);
+  assert.doesNotMatch(content, /FullContentComparison|QuestionVersion|内部题目编号/);
+  assert.doesNotMatch(duplicate, /FullDuplicateComparison|ReadingDuplicateDetail/);
+  assert.match(content, /<mark/);
+  assert.match(duplicate, /<mark/);
+});
+
+test("RDL duplicate review shows both material images with click-to-enlarge links", () => {
+  assert.match(duplicate, /RdlMaterialComparison/);
+  assert.match(duplicate, /题库已有素材/);
+  assert.match(duplicate, /来源 CSV 素材/);
+  assert.match(duplicate, /target="_blank"/);
+  assert.match(duplicate, /object-contain/);
 });
 
 test("the combined Reading review area calculates live handled and pending progress", () => {

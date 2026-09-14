@@ -15,6 +15,7 @@ const { assertReadingPendingResolutionInvariant } = require("../lib/reading/dupl
 const { buildReadingDuplicateResolutionItem } = require("../lib/reading/duplicateResolutionView.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
 const { importReadingPackageAtomic } = require("../lib/reading/importer.ts");
+const { arePossibleReadingDuplicates } = require("../lib/reading/semantic.ts");
 
 const templateFile = path.join(
   __dirname,
@@ -65,6 +66,7 @@ function incomingVariant(historical, suffix, answer) {
   const question = structuredClone(historical.questions[0]);
   question.logicalItemId = "temporary";
   question.questionId = `temporary-${suffix}`;
+  question.stem = `${question.stem} (${suffix})`;
   const slot = question.payload.slots[0];
   const previousDisplayText = slot.displayText;
   slot.answer = `${slot.prefix}${answer}`;
@@ -97,7 +99,14 @@ function incomingVariant(historical, suffix, answer) {
       sourceQuestionEnd: occurrence.sourceQuestionEnd
     }]
   };
-  return groupReadingSourceOccurrences([candidate]).packages[0];
+  const packageData = groupReadingSourceOccurrences([candidate]).packages[0];
+  const firstText = packageData.questions[0].payload.paragraphs[0].segments.find((segment) => segment.kind === "text");
+  firstText.text = `Variant ${suffix}. ${firstText.text}`;
+  packageData.questions[0].payload.paragraphs[0].rawText = `Variant ${suffix}. ${packageData.questions[0].payload.paragraphs[0].rawText}`;
+  packageData.item.logicalItemId = `${packageData.item.logicalItemId}-variant-${suffix}`;
+  packageData.questions[0].logicalItemId = packageData.item.logicalItemId;
+  packageData.occurrences[0].logicalItemId = packageData.item.logicalItemId;
+  return packageData;
 }
 
 function prepared(packageData, candidates = []) {
@@ -123,7 +132,10 @@ test("Reading possible duplicate becomes one actionable review with a stable can
   const reviews = buildReadingDuplicateReviewPlans([item]);
 
   assert.equal(reviews.length, 1);
-  assert.equal(reviews[0].resolutionId, `reading-duplicate:ctw:${incoming.item.logicalItemId}`);
+  assert.equal(
+    reviews[0].resolutionId,
+    `reading-duplicate:ctw:${[incoming.item.logicalItemId, historical.item.logicalItemId].sort().join(":")}`
+  );
   assert.equal(reviews[0].questionType, "ctw");
   assert.equal(reviews[0].identityScope, "logical_item");
   assert.equal(reviews[0].incoming, item);
@@ -211,7 +223,6 @@ test("manual create keeps and writes a distinct logical item while another pendi
   ]));
   const reuseReview = reviewByIncomingId.get(reusedIncoming.item.logicalItemId);
   const newReview = reviewByIncomingId.get(newIncoming.item.logicalItemId);
-  const normalReview = reviewByIncomingId.get(normalIncoming.item.logicalItemId);
   const resolutions = new Map([
     [reuseReview.resolutionId, {
       resolutionId: reuseReview.resolutionId,
@@ -221,11 +232,6 @@ test("manual create keeps and writes a distinct logical item while another pendi
     }],
     [newReview.resolutionId, {
       resolutionId: newReview.resolutionId,
-      questionType: "ctw",
-      action: "create_new"
-    }],
-    [normalReview.resolutionId, {
-      resolutionId: normalReview.resolutionId,
       questionType: "ctw",
       action: "create_new"
     }]
@@ -268,24 +274,27 @@ test("manual create keeps and writes a distinct logical item while another pendi
   assert.equal(calls[0].args.p_rows.reading_source_occurrences.length, 1);
 });
 
-test("two batch duplicates can resolve independently and circular merge choices are rejected", () => {
-  const historical = basePackage();
-  const first = prepared(incomingVariant(historical, 7, "batch-one"));
-  const second = prepared(incomingVariant(historical, 8, "batch-two"));
+test("one unordered batch pair produces exactly one review", () => {
+  const historical = modulePackage("rdl");
+  const firstPackage = relabeledIncoming(historical, 7);
+  const secondPackage = relabeledIncoming(historical, 8);
+  firstPackage.materials[0].materialId = "RDL-095";
+  firstPackage.materials[0].imageAssetPath = "reading/rdl/RDL-095/material_final.png";
+  secondPackage.materials[0].materialId = "RDL-127";
+  secondPackage.materials[0].imageAssetPath = "reading/rdl/RDL-127/material_final.png";
+  const first = prepared(firstPackage);
+  const second = prepared(secondPackage);
   const reviews = buildReadingDuplicateReviewPlans([first, second]);
-  assert.equal(reviews.length, 2);
+  assert.equal(reviews.length, 1);
+  const reverseReviews = buildReadingDuplicateReviewPlans([second, first]);
+  assert.equal(reverseReviews.length, 1);
+  assert.equal(reverseReviews[0].resolutionId, reviews[0].resolutionId);
 
-  const independent = resolveReadingDuplicateImports([first, second], reviews, new Map([
-    [reviews[0].resolutionId, { resolutionId: reviews[0].resolutionId, questionType: "ctw", action: "reuse_existing", logicalItemId: second.packageData.item.logicalItemId }],
-    [reviews[1].resolutionId, { resolutionId: reviews[1].resolutionId, questionType: "ctw", action: "create_new" }]
+  const merged = resolveReadingDuplicateImports([first, second], reviews, new Map([
+    [reviews[0].resolutionId, { resolutionId: reviews[0].resolutionId, questionType: "rdl", action: "reuse_existing", logicalItemId: second.packageData.item.logicalItemId }],
   ]));
-  assert.equal(independent.length, 1);
-  assert.equal(independent[0].packageData.occurrences.length, 2);
-
-  assert.throws(() => resolveReadingDuplicateImports([first, second], reviews, new Map([
-    [reviews[0].resolutionId, { resolutionId: reviews[0].resolutionId, questionType: "ctw", action: "reuse_existing", logicalItemId: second.packageData.item.logicalItemId }],
-    [reviews[1].resolutionId, { resolutionId: reviews[1].resolutionId, questionType: "ctw", action: "reuse_existing", logicalItemId: first.packageData.item.logicalItemId }]
-  ])), /循环归组/);
+  assert.equal(merged.length, 1);
+  assert.equal(merged[0].packageData.occurrences.length, 2);
 });
 
 test("CTW, RDL, and RAP all adapt duplicate candidates to one resolution plan shape", () => {
@@ -301,7 +310,10 @@ test("CTW, RDL, and RAP all adapt duplicate candidates to one resolution plan sh
     assert.ok(review);
     assert.equal(review.questionType, module);
     assert.equal(review.identityScope, expectedScopes[module]);
-    assert.equal(review.resolutionId, `reading-duplicate:${module}:${incoming.item.logicalItemId}`);
+    assert.equal(
+      review.resolutionId,
+      `reading-duplicate:${module}:${[incoming.item.logicalItemId, historical.item.logicalItemId].sort().join(":")}`
+    );
     assert.equal(review.candidates[0].item.logicalItemId, historical.item.logicalItemId);
     const resolutionItem = buildReadingDuplicateResolutionItem(review, new Map());
     assert.equal(resolutionItem.questionType, module);
@@ -314,11 +326,11 @@ test("CTW, RDL, and RAP all adapt duplicate candidates to one resolution plan sh
       assert.ok(resolutionItem.incoming.detail.correctAnswers.length > 0);
     } else if (module === "rdl") {
       assert.ok(resolutionItem.incoming.detail.materialId);
-      assert.ok(resolutionItem.incoming.detail.questions.length > 0);
+      assert.equal("questions" in resolutionItem.incoming.detail, false);
     } else {
-      assert.ok(resolutionItem.incoming.detail.passage);
-      assert.ok(resolutionItem.incoming.detail.questionTypes.length > 0);
-      assert.ok(resolutionItem.incoming.detail.questions.length > 0);
+      assert.ok(resolutionItem.incoming.detail.passageTitle);
+      assert.equal("passage" in resolutionItem.incoming.detail, false);
+      assert.equal("questions" in resolutionItem.incoming.detail, false);
     }
   }
 });
@@ -522,4 +534,37 @@ test("pending flag and actionable list invariant is enforced for every Reading t
       resolution: null
     }]
   }), (error) => error.code === "READING_PENDING_RESOLUTION_INVARIANT");
+});
+
+test("RDL-095 and RDL-127 style template-title match lacks structural duplicate evidence", () => {
+  const left = relabeledIncoming(modulePackage("rdl"), 31);
+  const right = relabeledIncoming(modulePackage("rdl"), 32);
+  left.materials[0].materialId = "RDL-095";
+  left.materials[0].imageAssetPath = "reading/rdl/RDL-095/material_final.png";
+  right.materials[0].materialId = "RDL-127";
+  right.materials[0].imageAssetPath = "reading/rdl/RDL-127/material_final.png";
+  for (const [index, question] of right.questions.entries()) {
+    question.stem = `Different PHYS entity question ${index + 1}`;
+  }
+  assert.equal(arePossibleReadingDuplicates(left, right), false);
+  assert.equal(buildReadingDuplicateReviewPlans([prepared(left), prepared(right)]).length, 0);
+});
+
+test("RDL possible-material review carries resolved images for both sides", () => {
+  const previousBaseUrl = process.env.READING_ASSET_BASE_URL;
+  process.env.READING_ASSET_BASE_URL = "https://assets.example.test";
+  try {
+    const historical = modulePackage("rdl");
+    const incoming = relabeledIncoming(historical, 33);
+    incoming.materials[0].materialId = "RDL-127";
+    incoming.materials[0].imageAssetPath = "reading/rdl/RDL-127/material_final.png";
+    const item = prepared(incoming, [historical]);
+    item.materialMatchKind = "possible_material_duplicate";
+    const view = buildReadingDuplicateResolutionItem(buildReadingDuplicateReviewPlans([item])[0], new Map());
+    assert.equal(view.incoming.detail.imageUrl, "https://assets.example.test/reading/rdl/RDL-127/material_final.png");
+    assert.equal(view.candidates[0].detail.imageUrl, `https://assets.example.test/${historical.materials[0].imageAssetPath.replace(/^\/+/, "")}`);
+  } finally {
+    if (previousBaseUrl === undefined) delete process.env.READING_ASSET_BASE_URL;
+    else process.env.READING_ASSET_BASE_URL = previousBaseUrl;
+  }
 });

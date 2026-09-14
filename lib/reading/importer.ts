@@ -9,6 +9,7 @@ import {
 import {
   areReadingPackagesHistoricalSemanticEquivalents,
   arePossibleReadingDuplicates,
+  haveRdlDuplicateQuestionEvidence,
   readingMaterialReviewIdentity,
   readingMaterialStorageIdentity,
   readingPossibleDuplicateFingerprint,
@@ -499,6 +500,10 @@ function materialMatchKind(
     material?.materialId !== incomingMaterial?.materialId
     && JSON.stringify(readingMaterialReviewIdentity(material)) === review
     && (!storageKey || JSON.stringify(readingMaterialStorageIdentity(material)) !== storageKey)
+    && historicalPackages.some((historical) =>
+      historical.materials[0]?.materialId === material?.materialId
+      && haveRdlDuplicateQuestionEvidence(incoming, historical)
+    )
   );
   return possible ? "possible_material_duplicate" : "exact_material";
 }

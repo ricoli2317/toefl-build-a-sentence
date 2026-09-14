@@ -8,6 +8,9 @@ import type {
 import type { ReadingImportPackage, ReadingQuestion } from "./types.ts";
 import { buildCtwDuplicateDifferences } from "./ctwDuplicateDifferences.ts";
 import { ctwQuestionFromPackage } from "./ctwLogicalIdentity.ts";
+import { buildReadingContentConflict } from "./contentReconciliation.ts";
+import { resolveReadingAssetUrl } from "./assets.ts";
+import { buildReadingInlineDiff } from "./reviewDiff.ts";
 
 export function buildReadingDuplicateResolutionItem(
   review: ReadingDuplicateReviewPlan,
@@ -41,6 +44,8 @@ export function buildReadingDuplicateResolutionItem(
           : historicalOccurrences.get(candidate.item.logicalItemId) ?? [],
         detectedDifferences,
         reviewDifferences: duplicateReviewDifferences(
+          candidate,
+          review.incoming.packageData,
           candidatePreview,
           incomingPreview,
           detectedDifferences
@@ -52,12 +57,14 @@ export function buildReadingDuplicateResolutionItem(
 }
 
 function duplicateReviewDifferences(
+  existingPackage: ReadingImportPackage,
+  incomingPackage: ReadingImportPackage,
   existing: ReadingDuplicatePreview,
   incoming: ReadingDuplicatePreview,
   ctwDifferences?: NonNullable<ReadingDuplicateCandidate["detectedDifferences"]>
 ): ReadingDuplicateCandidate["reviewDifferences"] {
   if (existing.questionType !== incoming.questionType) {
-    return [{ label: "题型", existing: existing.questionType, incoming: incoming.questionType }];
+    return [reviewDifference("题型", existing.questionType, incoming.questionType)];
   }
   if (existing.questionType === "ctw" && incoming.questionType === "ctw") {
     const answerPairs = new Set((ctwDifferences ?? [])
@@ -71,25 +78,22 @@ function duplicateReviewDifferences(
       return [{
         label: difference.location,
         existing: difference.candidate,
-        incoming: difference.incoming
+        incoming: difference.incoming,
+        inlineDiff: buildReadingInlineDiff(difference.candidate, difference.incoming)
       }];
     });
   }
   if (existing.questionType === "rdl" && incoming.questionType === "rdl") {
-    return changedFields([
-      ["素材编号", existing.detail.materialId, incoming.detail.materialId],
-      ["素材类型", existing.detail.materialType ?? "未提供", incoming.detail.materialType ?? "未提供"],
-      ["素材标题", existing.detail.materialTitle ?? "无标题", incoming.detail.materialTitle ?? "无标题"],
-      ["题目", existing.detail.questions.join("\n\n"), incoming.detail.questions.join("\n\n")]
-    ]);
+    return [
+      ...changedFields([
+        ["素材类型", existing.detail.materialType ?? "未提供", incoming.detail.materialType ?? "未提供"],
+        ["素材标题", existing.detail.materialTitle ?? "无标题", incoming.detail.materialTitle ?? "无标题"]
+      ]),
+      ...contentReviewDifferences(existingPackage, incomingPackage)
+    ];
   }
   if (existing.questionType === "rap" && incoming.questionType === "rap") {
-    return changedFields([
-      ["文章标题", existing.detail.passageTitle, incoming.detail.passageTitle],
-      ["文章", existing.detail.passage, incoming.detail.passage],
-      ["题型", existing.detail.questionTypes.join(", "), incoming.detail.questionTypes.join(", ")],
-      ["题目", existing.detail.questions.join("\n\n"), incoming.detail.questions.join("\n\n")]
-    ]);
+    return contentReviewDifferences(existingPackage, incomingPackage);
   }
   return [];
 }
@@ -99,7 +103,30 @@ function changedFields(
 ): ReadingDuplicateCandidate["reviewDifferences"] {
   return values.flatMap(([label, existing, incoming]) => existing === incoming
     ? []
-    : [{ label, existing, incoming }]);
+    : [reviewDifference(label, existing, incoming)]);
+}
+
+function contentReviewDifferences(
+  existing: ReadingImportPackage,
+  incoming: ReadingImportPackage
+): ReadingDuplicateCandidate["reviewDifferences"] {
+  const conflict = buildReadingContentConflict(existing, incoming);
+  if (!conflict) return [];
+  return [...conflict.passageConflicts, ...conflict.questionConflicts.flatMap((question) =>
+    question.differences.map((difference) => ({
+      ...difference,
+      label: `题目 ${question.sourceQuestionNumber ?? question.questionOrder} · ${difference.label}`
+    }))
+  )].map(({ label, existing: left, incoming: right, inlineDiff }) => ({
+    label,
+    existing: left,
+    incoming: right,
+    inlineDiff
+  }));
+}
+
+function reviewDifference(label: string, existing: string, incoming: string) {
+  return { label, existing, incoming, inlineDiff: buildReadingInlineDiff(existing, incoming) };
 }
 
 export function readingDuplicatePreview(packageData: ReadingImportPackage): ReadingDuplicatePreview {
@@ -142,9 +169,7 @@ export function readingDuplicatePreview(packageData: ReadingImportPackage): Read
         materialType: material.materialType,
         materialTitle: material.title,
         materialSource: material.source,
-        imageAssetPath: material.imageAssetPath,
-        hitboxDataPath: material.hitboxDataPath,
-        questions: packageData.questions.map(readingQuestionPreviewText)
+        imageUrl: resolveOptionalImageUrl(material.imageAssetPath)
       }
     };
   }
@@ -154,16 +179,12 @@ export function readingDuplicatePreview(packageData: ReadingImportPackage): Read
     ...common,
     questionType: "rap",
     detail: {
-      passageId: passage.passageId,
-      passageTitle: passage.title,
-      passage: passage.paragraphs.map((paragraph) => paragraph.text).join("\n\n"),
-      questionTypes: packageData.questions.map((question) => question.questionType),
-      questions: packageData.questions.map(readingQuestionPreviewText)
+      passageTitle: passage.title
     }
   };
 }
 
-export function readingQuestionPreviewText(question: ReadingQuestion) {
+export function readingQuestionPreviewText(question: ReadingQuestion, packageData?: ReadingImportPackage) {
   const heading = `${question.questionOrder}. ${question.stem}`;
   if (question.questionType === "rdl" || question.questionType === "rap_multiple_choice") {
     return [
@@ -177,9 +198,24 @@ export function readingQuestionPreviewText(question: ReadingQuestion) {
     return `${heading}\nInsert: ${question.payload.insertSentence}`;
   }
   if (question.questionType === "rap_sentence_selection") {
-    return `${heading}\nCorrect sentence: ${question.payload.correctSentenceId}`;
+    const paragraph = packageData?.passages.flatMap((passage) => passage.paragraphs).find(
+      (candidate) => candidate.paragraphId === question.payload.targetParagraphId
+    );
+    const selected = paragraph?.sentences.find(
+      (sentence) => sentence.sentenceId === question.payload.correctSentenceId
+    )?.text;
+    return `${heading}\nCorrect sentence: ${selected ?? "Unresolved"}`;
   }
   return heading;
+}
+
+function resolveOptionalImageUrl(objectKey: string | null) {
+  if (!objectKey) return null;
+  try {
+    return resolveReadingAssetUrl(objectKey.replace(/^\/+/, ""));
+  } catch {
+    return null;
+  }
 }
 
 export function readingSourceOccurrencePreview(

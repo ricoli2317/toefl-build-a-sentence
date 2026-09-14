@@ -135,7 +135,7 @@ test("7.6A the/their boundary reuses one identity and becomes one answer conflic
   const conflict = buildReadingContentConflict(candidate, incoming);
   assert.ok(conflict);
   assert.deepEqual(conflict.questionConflicts[0].differences.map((item) => item.kind), ["ctw_slot_content"]);
-  assert.deepEqual(conflict.questionConflicts[0].ctwSlotConflicts, [{
+  assert.deepEqual(conflict.questionConflicts[0].ctwSlotConflicts.map(({ inlineDiff, ...slot }) => slot), [{
     slotOrder: 2,
     differenceKinds: ["answer"],
     existing: "th___ → their",
@@ -143,5 +143,8 @@ test("7.6A the/their boundary reuses one identity and becomes one answer conflic
     existingAnswer: "their",
     incomingAnswer: "the"
   }]);
+  assert.ok(conflict.questionConflicts[0].ctwSlotConflicts[0].inlineDiff.existing.some(
+    (segment) => segment.changed
+  ));
   assert.equal(buildReadingDuplicateReviewPlans([prepared(incoming, candidate, conflict)]).length, 0);
 });

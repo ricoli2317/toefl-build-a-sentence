@@ -5,9 +5,9 @@ import { Check } from "lucide-react";
 import type {
   ReadingContentConflictItem,
   ReadingContentConflictResolution,
-  ReadingContentQuestionVersion,
   ReadingQuestionContentConflict
 } from "@/lib/reading/contentReconciliation";
+import type { ReadingInlineDiff } from "@/lib/reading/reviewDiff";
 
 export type ReadingContentResolutionDraft = { action: null } | ReadingContentConflictResolution;
 
@@ -17,7 +17,6 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
   onChange: (resolutionId: string, draft: ReadingContentResolutionDraft) => void;
 }) {
   const [expandedReviewItems, setExpandedReviewItems] = useState<Set<string>>(new Set());
-  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
   const collapseReviewItem = (resolutionId: string) => {
     setExpandedReviewItems((current) => removeFromSet(current, resolutionId));
   };
@@ -56,6 +55,9 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
               </div>
 
               <div className="mt-4 grid gap-3">
+                {item.passageConflicts.map((difference, index) => (
+                  <DifferenceCard difference={difference} key={`${difference.kind}-${index}`} />
+                ))}
                 {item.questionConflicts.map((conflict) => <CompactQuestionConflict conflict={conflict} key={conflict.questionOrder} />)}
               </div>
 
@@ -81,11 +83,6 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
                   <button className="underline" onClick={() => onChange(item.resolutionId, { action: null })} type="button">修改选择</button>
                 </div>
               ) : null}
-
-              <button className="mt-4 text-sm font-bold text-student-primary underline" onClick={() => setExpandedDetails((current) => toggleSet(current, item.resolutionId))} type="button">
-                {expandedDetails.has(item.resolutionId) ? "收起完整内容" : "展开完整内容"}
-              </button>
-              {expandedDetails.has(item.resolutionId) ? <FullContentComparison item={item} /> : null}
             </article>
           );
         })}
@@ -102,8 +99,8 @@ function CompactQuestionConflict({ conflict }: { conflict: ReadingQuestionConten
           <div className="mt-3 first:mt-0" key={slot.slotOrder}>
             <h3 className="font-bold text-student-text">第 {slot.slotOrder} 空内容不同</h3>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              <VersionValue title="题库版本" value={slot.existing} />
-              <VersionValue title="来源 CSV" value={slot.incoming} />
+              <InlineVersionValue title="题库版本" segments={slot.inlineDiff.existing} />
+              <InlineVersionValue title="来源 CSV" segments={slot.inlineDiff.incoming} />
             </div>
           </div>
         ))}
@@ -114,29 +111,23 @@ function CompactQuestionConflict({ conflict }: { conflict: ReadingQuestionConten
     <section className="rounded-xl border border-amber-200 bg-amber-50 p-4">
       <h3 className="font-bold text-student-text">题目 {conflict.sourceQuestionNumber ?? conflict.questionOrder}</h3>
       <div className="mt-3 grid gap-3">
-        {conflict.differences.filter((difference) => difference.substantive).map((difference) => {
-          const values = differenceValues(conflict, difference.kind);
-          return <div className="rounded-lg bg-white p-3" key={difference.kind}><div className="font-bold text-student-text">{difference.label}</div><div className="mt-2 grid gap-3 sm:grid-cols-2"><VersionValue title="题库版本" value={values.existing} /><VersionValue title="来源 CSV" value={values.incoming} /></div></div>;
-        })}
+        {conflict.differences.map((difference, index) => (
+          <DifferenceCard difference={difference} key={`${difference.kind}-${index}`} />
+        ))}
       </div>
     </section>
   );
 }
 
-function FullContentComparison({ item }: { item: ReadingContentConflictItem }) {
+function DifferenceCard({ difference }: {
+  difference: ReadingQuestionContentConflict["differences"][number];
+}) {
   return (
-    <div className="mt-4 rounded-xl border border-student-border p-4">
-      <div className="text-xs text-student-muted">来源：{sourceLabel(item)} · 内部题目编号：{item.logicalItemId}</div>
-      <div className="mt-4 grid gap-5">
-        {item.questionConflicts.map((conflict) => (
-          <section key={conflict.questionOrder}>
-            <h3 className="font-bold text-student-text">题目 {conflict.sourceQuestionNumber ?? conflict.questionOrder}</h3>
-            <div className="mt-3 grid gap-4 lg:grid-cols-2">
-              <QuestionVersion title="题库版本" version={conflict.existing} />
-              <QuestionVersion title="来源 CSV" version={conflict.incoming} />
-            </div>
-          </section>
-        ))}
+    <div className="rounded-lg bg-white p-3">
+      <div className="font-bold text-student-text">{difference.label}</div>
+      <div className="mt-2 grid gap-3 sm:grid-cols-2">
+        <InlineVersionValue title="题库版本" segments={difference.inlineDiff.existing} />
+        <InlineVersionValue title="来源 CSV" segments={difference.inlineDiff.incoming} />
       </div>
     </div>
   );
@@ -160,31 +151,8 @@ function ResolvedContentSummary({ draft, item, onReopen }: {
   );
 }
 
-function differenceValues(conflict: ReadingQuestionContentConflict, kind: ReadingQuestionContentConflict["differences"][number]["kind"]) {
-  const value = (version: ReadingContentQuestionVersion) => {
-    if (kind === "question_type") return version.questionType;
-    if (kind === "stem") return version.stem;
-    if (kind === "options" || kind === "option_order") return version.options?.map((option) => `${option.label}. ${option.text}${option.correct ? " ✓" : ""}`).join("\n") ?? "未提供";
-    if (kind === "correct_answer") return version.correctAnswer ?? "未提供";
-    if (kind === "insert_sentence") return version.insertSentence ?? "未提供";
-    if (kind === "insertion_anchors") return version.insertionAnchors?.join("\n") ?? "未提供";
-    if (kind === "correct_insertion_location") return version.correctInsertionLocation ?? "未提供";
-    if (kind === "target_sentence_structure") return version.targetSentenceStructure?.join("\n") ?? "未提供";
-    if (kind === "selected_sentence") return version.selectedSentence ?? "未提供";
-    return version.correctAnswer ?? version.stem;
-  };
-  return { existing: value(conflict.existing), incoming: value(conflict.incoming) };
-}
-
-function QuestionVersion({ title, version }: { title: "题库版本" | "来源 CSV"; version: ReadingContentQuestionVersion }) {
-  return <div className="rounded-xl border border-student-border bg-student-primary-soft/20 p-4 text-sm"><h4 className="font-bold text-student-primary">【{title}】</h4><Detail label="Question type" value={version.questionType} /><Detail label="Stem" value={version.stem} />{version.options ? <Detail label="Options" value={version.options.map((option) => `${option.label}. ${option.text}${option.correct ? " ✓" : ""}`).join("\n")} /> : null}{version.correctAnswer ? <Detail label="Correct answers" value={version.correctAnswer} /> : null}{version.ctwPassage ? <Detail label="Passage" value={version.ctwPassage} /> : null}{version.ctwBlanks ? <Detail label="Ordered blanks" value={version.ctwBlanks.join("\n")} /> : null}{version.insertSentence ? <Detail label="Insert sentence" value={version.insertSentence} /> : null}{version.insertionAnchors ? <Detail label="Insertion anchors" value={version.insertionAnchors.join("\n")} /> : null}{version.correctInsertionLocation ? <Detail label="Correct location" value={version.correctInsertionLocation} /> : null}{version.targetSentenceStructure ? <Detail label="Target sentences" value={version.targetSentenceStructure.join("\n")} /> : null}{version.selectedSentence ? <Detail label="Selected sentence" value={version.selectedSentence} /> : null}</div>;
-}
-
-function VersionValue({ title, value }: { title: "题库版本" | "来源 CSV"; value: string }) { return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{value}</div></div>; }
-function Detail({ label, value }: { label: string; value: string }) { return <div className="mt-3"><div className="font-bold text-student-muted">{label}</div><div className="mt-0.5 whitespace-pre-wrap text-student-text">{value}</div></div>; }
+function InlineVersionValue({ title, segments }: { title: "题库版本" | "来源 CSV"; segments: ReadingInlineDiff["existing"] }) { return <div><div className="text-xs font-bold text-student-muted">【{title}】</div><div className="mt-1 whitespace-pre-wrap break-words font-mono text-sm text-student-text">{segments.map((segment, index) => segment.changed ? <mark className="rounded bg-amber-300 px-0.5 text-inherit" key={index}>{segment.text || "∅"}</mark> : <span key={index}>{segment.text}</span>)}</div></div>; }
 function contentActionLabel(action: ReadingContentResolutionDraft["action"]) { return action === "keep_existing" ? "保留题库版本" : action === "update_from_source" ? "使用来源版本更新题库" : "尚未选择"; }
-function sourceLabel(item: ReadingContentConflictItem) { return [item.sourceLabel, item.occurrenceDate, item.sourceModule.toUpperCase(), `顺序 ${item.sourceOrder}`, item.sourceQuestionRange ? `原题 ${item.sourceQuestionRange}` : null].filter(Boolean).join(" · "); }
 function compactSourceLabel(item: ReadingContentConflictItem) { return [item.sourceLabel, item.sourceModule.toUpperCase(), item.sourceQuestionRange ? `Q${item.sourceQuestionRange}` : null].filter(Boolean).join(" · "); }
 function addToSet(values: Set<string>, value: string) { const next = new Set(values); next.add(value); return next; }
 function removeFromSet(values: Set<string>, value: string) { const next = new Set(values); next.delete(value); return next; }
-function toggleSet(values: Set<string>, value: string) { const next = new Set(values); if (next.has(value)) next.delete(value); else next.add(value); return next; }

@@ -4,7 +4,10 @@ const path = require("node:path");
 const test = require("node:test");
 
 const { parseCsvDocument } = require("../lib/csv.ts");
-const { adaptReadingCsv } = require("../lib/reading/csvAdapter.ts");
+const {
+  adaptReadingCsv,
+  canonicalizeInsertionAnchors
+} = require("../lib/reading/csvAdapter.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");
 const {
   buildReadingContentConflict,
@@ -295,13 +298,103 @@ test("content conflict UI defaults to compact fixed-direction review with local 
   assert.match(source, /同题内容差异待确认/);
   assert.match(source, /系统已确认这是同一道题/);
   assert.match(source, /第 \{slot\.slotOrder\} 空内容不同/);
-  assert.match(source, /<VersionValue title="题库版本" value=\{slot\.existing\}/);
-  assert.match(source, /<VersionValue title="来源 CSV" value=\{slot\.incoming\}/);
+  assert.match(source, /<InlineVersionValue title="题库版本" segments=\{slot\.inlineDiff\.existing\}/);
+  assert.match(source, /<InlineVersionValue title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
   assert.match(source, /保留题库版本/);
   assert.match(source, /使用来源版本更新题库/);
   assert.match(source, /已选择：/);
   assert.match(source, /修改选择/);
   assert.match(source, /重新查看/);
-  assert.match(source, /展开完整内容/);
-  assert.match(source, /收起完整内容/);
+  assert.match(source, /InlineVersionValue/);
+  assert.match(source, /<mark/);
+  assert.doesNotMatch(source, /展开完整内容|QuestionVersion|内部题目编号/);
+});
+
+test("sentence-selection fixed instruction is not part of semantic stem identity", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const selection = incoming.questions.find((question) => question.questionType === "rap_sentence_selection");
+  selection.stem += " Select the sentence to make your choice.";
+  assert.equal(buildReadingContentConflict(existing, incoming), null);
+});
+
+test("conflict payload contains only changed fields and a minimal inline diff", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const question = choice(incoming);
+  const changedOption = question.payload.options.find((option) => option.optionId !== question.payload.correctOptionId);
+  changedOption.text = `${changedOption.text}r`;
+  const conflict = buildReadingContentConflict(existing, incoming);
+  assert.equal(conflict.passageConflicts.length, 0);
+  assert.equal(conflict.questionConflicts.length, 1);
+  assert.equal(conflict.questionConflicts[0].differences.length, 1);
+  const changed = conflict.questionConflicts[0].differences[0];
+  assert.equal(changed.kind, "options");
+  assert.equal("existing" in conflict.questionConflicts[0], false);
+  assert.deepEqual(changed.inlineDiff.incoming.filter((segment) => segment.changed), [
+    { text: "r", changed: true }
+  ]);
+});
+
+test("true OCR edits remain conflicts while case-only option edits disappear", () => {
+  const existing = rap();
+  const caseOnly = structuredClone(existing);
+  choice(caseOnly).payload.options[0].text = choice(caseOnly).payload.options[0].text.toUpperCase();
+  assert.equal(buildReadingContentConflict(existing, caseOnly), null);
+
+  for (const [left, right] of [
+    ["movementr", "movement"],
+    ["paragraph 32", "paragraph 3?"],
+    ["perlold", "period"]
+  ]) {
+    const base = rap();
+    const incoming = structuredClone(base);
+    choice(base).payload.options[0].text = left;
+    choice(incoming).payload.options[0].text = right;
+    const difference = buildReadingContentConflict(base, incoming).questionConflicts[0].differences[0];
+    assert.equal(difference.kind, "options");
+    assert.ok(difference.inlineDiff.existing.some((segment) => segment.changed));
+    assert.ok(difference.inlineDiff.incoming.some((segment) => segment.changed));
+  }
+});
+
+test("unchanged RAP passage and four unchanged questions stay out of one-question review", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  incoming.questions[2].stem = "A genuinely changed third question";
+  const conflict = buildReadingContentConflict(existing, incoming);
+  assert.equal(conflict.passageConflicts.length, 0);
+  assert.deepEqual(conflict.questionConflicts.map((question) => question.questionOrder), [3]);
+});
+
+test("RAP CSV canonicalizes parser anchor boundaries and one exact repeated marker", () => {
+  const file = "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv";
+  const document = parseCsvDocument(fs.readFileSync(path.join(templateDir, file), "utf8"), {
+    trimValues: false
+  });
+  const insertion = document.rows.find((row) => row.question_type === "rap_sentence_insertion");
+  const anchors = JSON.parse(insertion.insertion_anchors_json);
+  anchors[2].boundaryIndex = anchors[1].boundaryIndex;
+  anchors.push({ ...anchors[1], anchorId: "duplicate-marker", anchorOrder: 5 });
+  insertion.insertion_anchors_json = JSON.stringify(anchors);
+  const adapted = adaptReadingCsv({
+    type: "read_an_academic_passage",
+    rows: document.rows,
+    sourceFile: file
+  });
+  assert.deepEqual(adapted.failures, []);
+  const packageData = groupReadingSourceOccurrences(adapted.candidates).packages[0];
+  const normalized = packageData.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  assert.equal(normalized.payload.anchors.length, 4);
+  assert.deepEqual(normalized.payload.anchors.map((anchor) => anchor.boundaryIndex), [0, 1, 2, 3]);
+});
+
+test("RAP anchor canonicalization does not hide conflicting markers at one boundary", () => {
+  const anchors = [
+    { anchorId: "a", anchorOrder: 1, paragraphId: "p", boundaryIndex: 1, afterSentenceId: "missing-a" },
+    { anchorId: "b", anchorOrder: 2, paragraphId: "p", boundaryIndex: 1, afterSentenceId: "missing-b" }
+  ];
+  const normalized = canonicalizeInsertionAnchors(anchors, [], "a");
+  assert.equal(normalized.anchors.length, 2);
+  assert.deepEqual(normalized.anchors.map((anchor) => anchor.boundaryIndex), [1, 1]);
 });
