@@ -1,0 +1,38 @@
+# Dependencies and local build state
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+build/
+coverage/
+
+# Local configuration and logs
+.env.local
+.env*.local
+*.log
+.DS_Store
+.codex/
+
+# Local writing-review benchmark output
+/tmp/writing-review-reasoning-benchmark/
+/tmp/writing-review-provider-benchmark/
+/tmp/writing-review-reasoning-stability/
+/tmp/writing-review-candidate-models/
+/tmp/writing-review-deepseek-comparison/
+/tmp/writing-review-deepseek-stability/
+/tmp/writing-review-kimi-current-prompt/
+/tmp/writing-review-kimi-weak-retest/
+/tmp/writing-review-kimi-medium-weak/
+/tmp/writing-review-kimi-hedged-weak/
+/tmp/writing-review-production-export/
+/tmp/writing-review-prompt-benchmark/
+/tmp/writing-review-c3-production/
+
+# Reading assets are prepared outside TPS; production runtime reads them from R2
+/public/reading/rdl/
+/reading-work-reference/
+/tmp/travel-rdl-local-merge-staging/
+
+# Local build/performance snapshots
+/private/tmp/

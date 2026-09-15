@@ -3,9 +3,14 @@ import { fingerprintReadingSourceOccurrence } from "./grouping.ts";
 import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 import { buildReadingContentConflict } from "./contentReconciliation.ts";
 import { normalizeReadingReviewText } from "./reviewDiff.ts";
+import {
+  insertionPhysicalPositionsEqual,
+  resolveInsertionAnchorPhysicalPosition
+} from "./insertionBoundary.ts";
 import type {
   CtwQuestion,
   ReadingImportPackage,
+  ReadingInsertionAnchor,
   ReadingPassage,
   ReadingPassageHighlightRange,
   ReadingQuestion
@@ -50,6 +55,10 @@ export function buildReadingCanonicalContentUpdate(
         sentenceIds
       )
     : remapPassages(existing.passages, incoming.passages, passageIds, paragraphIds, sentenceIds);
+  const passageMappings = new Map(incoming.passages.map((incomingPassage, index) => [
+    incomingPassage.passageId,
+    { incoming: incomingPassage, canonical: passages[index] }
+  ]));
   const existingByOrder = new Map(existingQuestions.map((question) => [question.questionOrder, question]));
   const questions = incomingQuestions.map((question) => {
     const existingQuestion = requiredMap(existingByOrder, question.questionOrder, "canonical question");
@@ -60,7 +69,8 @@ export function buildReadingCanonicalContentUpdate(
       existing.item.logicalItemId,
       passageIds,
       paragraphIds,
-      sentenceIds
+      sentenceIds,
+      passageMappings
     );
   });
   const canonicalQuestionByOrder = new Map(questions.map((question) => [question.questionOrder, question]));
@@ -215,7 +225,8 @@ function remapQuestion(
   logicalItemId: string,
   passageIds: Map<string, string>,
   paragraphIds: Map<string, string>,
-  sentenceIds: Map<string, string>
+  sentenceIds: Map<string, string>,
+  passageMappings: Map<string, { incoming: ReadingPassage; canonical: ReadingPassage }>
 ): ReadingQuestion {
   const base = {
     questionId: existing.questionId,
@@ -257,6 +268,11 @@ function remapQuestion(
     };
   }
   if (incoming.questionType === "rap_sentence_insertion") {
+    const passageMapping = requiredMap(
+      passageMappings,
+      incoming.payload.passageId,
+      "canonical insertion passage"
+    );
     const existingAnchors = existing.questionType === "rap_sentence_insertion"
       ? ordered(existing.payload.anchors, (anchor) => anchor.anchorOrder)
       : [];
@@ -266,13 +282,17 @@ function remapQuestion(
     const anchors = incomingAnchors.map((anchor, index) => {
       const anchorId = existingAnchors[index]?.anchorId ?? `${existing.questionId}-anchor-${anchor.anchorOrder}`;
       anchorIds.set(anchor.anchorId, anchorId);
+      const canonicalPosition = remapInsertionAnchorPosition(
+        anchor,
+        passageMapping.incoming,
+        passageMapping.canonical,
+        paragraphIds,
+        sentenceIds
+      );
       return {
         ...anchor,
         anchorId,
-        paragraphId: requiredMap(paragraphIds, anchor.paragraphId, "canonical anchor paragraph"),
-        afterSentenceId: anchor.afterSentenceId
-          ? requiredMap(sentenceIds, anchor.afterSentenceId, "canonical anchor sentence")
-          : null
+        ...canonicalPosition
       };
     });
     return {
@@ -296,6 +316,74 @@ function remapQuestion(
       targetParagraphId: requiredMap(paragraphIds, incoming.payload.targetParagraphId, "canonical target paragraph"),
       correctSentenceId: requiredMap(sentenceIds, incoming.payload.correctSentenceId, "canonical selected sentence")
     }
+  };
+}
+
+/** Maps a source insertion location by its physical text boundary. Sentence
+ * IDs and ordinals belong to one passage serialization and are not stable when
+ * the same paragraph is segmented differently in another source. */
+function remapInsertionAnchorPosition(
+  anchor: ReadingInsertionAnchor,
+  incomingPassage: ReadingPassage,
+  canonicalPassage: ReadingPassage,
+  paragraphIds: Map<string, string>,
+  sentenceIds: Map<string, string>
+): Pick<ReadingInsertionAnchor, "paragraphId" | "boundaryIndex" | "afterSentenceId"> {
+  const paragraphId = requiredMap(paragraphIds, anchor.paragraphId, "canonical anchor paragraph");
+  if (anchor.afterSentenceId === null) {
+    return { paragraphId, boundaryIndex: 0, afterSentenceId: null };
+  }
+
+  const directlyMappedSentenceId = sentenceIds.get(anchor.afterSentenceId);
+  if (directlyMappedSentenceId) {
+    const canonicalParagraph = canonicalPassage.paragraphs.find(
+      (paragraph) => paragraph.paragraphId === paragraphId
+    );
+    const canonicalSentence = canonicalParagraph?.sentences.find(
+      (sentence) => sentence.sentenceId === directlyMappedSentenceId
+    );
+    if (canonicalSentence) {
+      return {
+        paragraphId,
+        boundaryIndex: canonicalSentence.sentenceOrder,
+        afterSentenceId: canonicalSentence.sentenceId
+      };
+    }
+  }
+
+  const incomingPosition = resolveInsertionAnchorPhysicalPosition(incomingPassage, anchor);
+  if (incomingPosition.resolutionStatus !== "resolved") {
+    throw new Error(
+      `Reading canonical correction cannot resolve canonical anchor sentence ${anchor.afterSentenceId}`
+    );
+  }
+  const canonicalParagraph = canonicalPassage.paragraphs.find(
+    (paragraph) => paragraph.paragraphId === paragraphId
+  );
+  const candidates = ordered(canonicalParagraph?.sentences ?? [], (sentence) => sentence.sentenceOrder)
+    .map((sentence) => {
+      const candidate: ReadingInsertionAnchor = {
+        anchorId: anchor.anchorId,
+        anchorOrder: anchor.anchorOrder,
+        paragraphId,
+        boundaryIndex: sentence.sentenceOrder,
+        afterSentenceId: sentence.sentenceId
+      };
+      return {
+        candidate,
+        position: resolveInsertionAnchorPhysicalPosition(canonicalPassage, candidate)
+      };
+    })
+    .filter(({ position }) => insertionPhysicalPositionsEqual(incomingPosition, position));
+  if (candidates.length !== 1) {
+    throw new Error(
+      `Reading canonical correction cannot resolve canonical anchor sentence ${anchor.afterSentenceId}`
+    );
+  }
+  return {
+    paragraphId,
+    boundaryIndex: candidates[0].candidate.boundaryIndex,
+    afterSentenceId: candidates[0].candidate.afterSentenceId
   };
 }
 

@@ -368,6 +368,65 @@ test("8.9B Q30 resolves physical boundaries across different sentence segmentati
   assert.notEqual(existingMarkers[1].semanticKey, incomingMarkers[2].semanticKey);
 });
 
+test("8.9B Q30 canonical correction remaps source anchors by physical boundary", () => {
+  const { existing, incoming } = computationalChemistryQ30Packages();
+  const incomingQuestion = incoming.questions.find(
+    (question) => question.questionType === "rap_sentence_insertion"
+  );
+  const incomingParagraph4 = incoming.passages[0].paragraphs.find(
+    (paragraph) => paragraph.paragraphOrder === 4
+  );
+  incomingQuestion.payload.highlightRanges = [{
+    paragraphId: incomingParagraph4.paragraphId,
+    startOffset: 0,
+    endOffset: 13
+  }];
+
+  const corrected = buildReadingCanonicalContentUpdate(existing, incoming);
+  const correctedQuestion = corrected.questions.find(
+    (question) => question.questionType === "rap_sentence_insertion"
+  );
+  const canonicalParagraph4 = corrected.passages[0].paragraphs.find(
+    (paragraph) => paragraph.paragraphOrder === 4
+  );
+  const canonicalSentences = corrected.passages[0].paragraphs.flatMap(
+    (paragraph) => paragraph.sentences
+  );
+
+  assert.equal(corrected.item.logicalItemId, existing.item.logicalItemId);
+  assert.deepEqual(correctedQuestion.payload.anchors.map((anchor) => ({
+    paragraphOrder: corrected.passages[0].paragraphs.find(
+      (paragraph) => paragraph.paragraphId === anchor.paragraphId
+    ).paragraphOrder,
+    boundaryIndex: anchor.boundaryIndex,
+    afterSentenceOrder: anchor.afterSentenceId === null
+      ? null
+      : canonicalSentences.find(
+          (sentence) => sentence.sentenceId === anchor.afterSentenceId
+        ).sentenceOrder
+  })), [
+    { paragraphOrder: 3, boundaryIndex: 3, afterSentenceOrder: 3 },
+    { paragraphOrder: 4, boundaryIndex: 0, afterSentenceOrder: null },
+    { paragraphOrder: 4, boundaryIndex: 2, afterSentenceOrder: 2 },
+    { paragraphOrder: 4, boundaryIndex: 3, afterSentenceOrder: 3 }
+  ]);
+  assert.equal(
+    correctedQuestion.payload.anchors.find(
+      (anchor) => anchor.anchorId === correctedQuestion.payload.correctAnchorId
+    ).boundaryIndex,
+    0
+  );
+  assert.deepEqual(correctedQuestion.payload.highlightRanges, [{
+    paragraphId: canonicalParagraph4.paragraphId,
+    startOffset: 0,
+    endOffset: 13
+  }]);
+  assert.doesNotThrow(() => prepareReadingPackageAtomicImport(corrected, {
+    replaceCanonicalContent: true,
+    expectedLogicalItemAction: "reuse_existing"
+  }));
+});
+
 test("same paragraph and boundary index do not match when sentence segmentation moves the text boundary", () => {
   const { existing, incoming } = computationalChemistryQ30Packages();
   const existingQuestion = existing.questions.find((question) => question.questionType === "rap_sentence_insertion");
@@ -934,9 +993,11 @@ function computationalChemistryQ30Packages() {
   ];
   incomingQuestion.payload.correctAnchorId = "csv-location-2";
   incoming.occurrences[0].sourceLabel = "8.9B";
+  incoming.item.firstSeenSourceLabel = "8.9B";
   const source = incoming.occurrences[0].questionSources.find((item) => item.questionId === incomingQuestion.questionId);
   source.sourceQuestionStart = 30;
   source.sourceQuestionEnd = 30;
+  incoming.occurrences[0].sourceQuestionEnd = 30;
   return { existing, incoming };
 }
 

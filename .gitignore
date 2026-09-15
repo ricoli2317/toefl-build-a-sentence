@@ -35,6 +35,14 @@ pnpm-debug.log*
 /tmp/writing-review-prompt-benchmark/
 /tmp/writing-review-c3-production/
 
+# Reading assets are prepared outside TPS; production runtime reads them from R2
+/public/reading/rdl/
+/reading-work-reference/
+/tmp/travel-rdl-local-merge-staging/
+
+# local build/performance snapshots
+/private/tmp/
+
 # system files
 .DS_Store
 
