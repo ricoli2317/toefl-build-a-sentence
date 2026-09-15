@@ -412,15 +412,29 @@ function canonicalQuestion(
   const passage = requiredMap(passageById, question.payload.passageId);
   const paragraphs = new Map(passage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph]));
   if (question.questionType === "rap_sentence_insertion") {
-    const ordered = [...question.payload.anchors].sort((left, right) => left.anchorOrder - right.anchorOrder);
+    const anchorPosition = (anchor: (typeof question.payload.anchors)[number]) => ({
+      paragraphOrder: requiredMap(paragraphs, anchor.paragraphId).paragraphOrder,
+      boundaryIndex: anchor.boundaryIndex
+    });
+    const positions = Array.from(new Map(question.payload.anchors.map((anchor) => {
+      const position = anchorPosition(anchor);
+      return [`${position.paragraphOrder}:${position.boundaryIndex}`, position];
+    })).values()).sort((left, right) =>
+      left.paragraphOrder - right.paragraphOrder || left.boundaryIndex - right.boundaryIndex
+    );
+    const correct = question.payload.anchors.find((anchor) => anchor.anchorId === question.payload.correctAnchorId);
+    if (!correct) throw new Error(`invalid insertion answer for ${question.questionId}`);
+    const correctPosition = anchorPosition(correct);
     return {
       ...common,
       insertSentence: normalizedText(question.payload.insertSentence),
-      anchors: ordered.map((anchor) => ({
-        paragraphOrder: requiredMap(paragraphs, anchor.paragraphId).paragraphOrder,
-        boundaryIndex: anchor.boundaryIndex
-      })),
-      correctAnchorOrder: ordered.findIndex((anchor) => anchor.anchorId === question.payload.correctAnchorId) + 1
+      anchors: positions,
+      // Keep the compatibility field name while deriving it from the sorted
+      // semantic set rather than source Location numbering.
+      correctAnchorOrder: positions.findIndex((position) =>
+        position.paragraphOrder === correctPosition.paragraphOrder
+        && position.boundaryIndex === correctPosition.boundaryIndex
+      ) + 1
     };
   }
   const target = requiredMap(paragraphs, question.payload.targetParagraphId);

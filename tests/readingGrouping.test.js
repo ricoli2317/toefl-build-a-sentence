@@ -55,6 +55,27 @@ test("same RAP occurrence reuses the passage and question identities", () => {
   assert.equal(new Set(result.packages[0].questions.map((item) => item.questionId)).size, 3);
 });
 
+test("RAP source grouping uses insertion semantic sets and semantic correct positions", () => {
+  const first = atSource(candidate("rap"), { id: "rap-anchor-a", label: "8.9A", date: "2026-08-09" });
+  const second = atSource(candidate("rap"), { id: "rap-anchor-b", label: "8.9B", date: "2026-08-09" });
+  const insertion = second.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  const correct = insertion.payload.anchors.find((anchor) => anchor.anchorId === insertion.payload.correctAnchorId);
+  const last = insertion.payload.anchors.find((anchor) => anchor.anchorOrder === 4);
+  insertion.payload.anchors.forEach((anchor) => {
+    anchor.anchorId = `renamed-${anchor.anchorOrder}`;
+    anchor.anchorOrder = 5 - anchor.anchorOrder;
+  });
+  insertion.payload.correctAnchorId = `renamed-${5 - correct.anchorOrder}`;
+  // Reassigning Location labels must not turn the same correct boundary into a
+  // different answer. Keep a second explicit semantic position reference here
+  // to guard against order-based matching returning.
+  assert.notEqual(correct.boundaryIndex, last.boundaryIndex);
+
+  const result = groupReadingSourceOccurrences([first, second]);
+  assert.equal(result.packages.length, 1);
+  assert.equal(result.packages[0].occurrences.length, 2);
+});
+
 test("a later import of an earlier occurrence moves firstSeenDate backward", () => {
   const later = atSource(candidate("ctw"), { id: "late", label: "5.18B", date: "2026-05-18" });
   const earlier = atSource(candidate("ctw"), { id: "early", label: "4.20A", date: "2026-04-20" });

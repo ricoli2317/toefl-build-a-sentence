@@ -9,7 +9,6 @@ import {
   useRef,
   useState
 } from "react";
-import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_FULL_SET_CACHE_PREFIX,
@@ -21,6 +20,7 @@ import {
 } from "@/lib/reading/attempts";
 import {
   moveReadingFullSetPosition,
+  isReadingFullSetBootstrapPayload,
   readingFullSetActiveModuleAttempt,
   readingFullSetAttemptPhase,
   readingFullSetCurrentModuleAttempt,
@@ -32,6 +32,7 @@ import {
   type ReadingFullSetRunnerPayload,
   type ReadingFullSetRunnerPosition
 } from "@/lib/reading/fullSetAttempts";
+import { consumeReadingFullSetBootstrapHandoff } from "@/lib/reading/fullSetBootstrapHandoff.client";
 import {
   setReadingAnswer,
   type ReadingAnswer,
@@ -66,7 +67,6 @@ import {
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
 
-type RunnerResponse = { error?: string; runner?: ReadingFullSetRunnerPayload };
 type OccurrenceResponse = Partial<ReadingFullSetOccurrencePracticePayload> & { error?: string };
 type AttemptResponse = { attempt?: ReadingFullSetAttemptSummary; error?: string };
 type BootstrapResponse = {
@@ -130,7 +130,12 @@ export function ReadingFullSetRunner({
   expectedFullSetId: string;
 }) {
   const router = useRouter();
-  const { invalidate, setData: setCachedData } = useStudentDataCache();
+  const {
+    getSession,
+    invalidate,
+    sessionReady,
+    setData: setCachedData
+  } = useStudentDataCache();
   const [accessToken, setAccessToken] = useState("");
   const studentIdRef = useRef("");
   const [runner, setRunner] = useState<ReadingFullSetRunnerPayload | null>(null);
@@ -274,21 +279,64 @@ export function ReadingFullSetRunner({
     }
   }, [clearOccurrenceCaches, invalidate, setCachedData]);
 
+  const applyBootstrap = useCallback((
+    bootstrap: BootstrapResponse,
+    moduleNumber: 1 | 2
+  ) => {
+    if (!isReadingFullSetBootstrapPayload(bootstrap)) {
+      throw new Error(`Module ${moduleNumber} bootstrap 状态无效。`);
+    }
+    if (bootstrap.runner.attempt.fullSetId !== expectedFullSetId) {
+      throw new Error("这次练习不属于当前套题。");
+    }
+    const occurrenceId = bootstrap.firstOccurrence.occurrence.occurrenceId;
+    const occurrenceIndex = bootstrap.runner.occurrences.findIndex(
+      (occurrence) => occurrence.occurrenceId === occurrenceId
+    );
+    if (occurrenceIndex < 0) throw new Error(`Module ${moduleNumber} 首题状态无效。`);
+    applyRunner(bootstrap.runner);
+    occurrenceCacheRef.current.prime(readingFullSetOccurrenceCacheKey({
+      attemptId,
+      moduleNumber,
+      occurrenceId
+    }), bootstrap.firstOccurrence);
+    revisionRef.current = Math.max(revisionRef.current, bootstrap.firstOccurrence.answerRevision);
+    setPosition({ occurrenceIndex, questionIndex: 0 });
+    setOccurrencePayloads({ [occurrenceId]: bootstrap.firstOccurrence });
+    setAnswersByOccurrence({ [occurrenceId]: bootstrap.firstOccurrence.answers });
+    answersRef.current = { [occurrenceId]: bootstrap.firstOccurrence.answers };
+    questionTimesRef.current = { [occurrenceId]: bootstrap.firstOccurrence.questionTimes };
+    setOccurrenceLoad({ status: "idle" });
+    if (!activeLoadPauseRef.current) setTimerPausedForLoad(false);
+    logTransitionPhase(moduleNumber === 1 ? "m1_state_applied" : "m2_state_applied", {
+      moduleNumber
+    }, true);
+  }, [applyRunner, attemptId, expectedFullSetId, logTransitionPhase]);
+
   const loadRunner = useCallback(async (token: string) => {
-    const response = await fetch(`/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}`, {
-      cache: "no-store",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const payload = await response.json().catch(() => ({})) as RunnerResponse;
+    const response = await fetchReadingFullSetWithTimeout(
+      `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}`,
+      {
+        cache: "no-store",
+        headers: readingFullSetTraceHeaders(token, transitionTraceRef.current)
+      },
+      20_000
+    );
+    const payload = await response.json().catch(() => ({})) as BootstrapResponse;
     if (!response.ok || !payload.runner) {
       throw new Error(payload.error ?? "套题练习加载失败，请稍后重试。");
     }
     if (payload.runner.attempt.fullSetId !== expectedFullSetId) {
       throw new Error("这次练习不属于当前套题。");
     }
-    applyRunner(payload.runner);
+    const moduleAttempt = readingFullSetCurrentModuleAttempt(payload.runner.attempt);
+    if (moduleAttempt && payload.firstOccurrence) {
+      applyBootstrap(payload, moduleAttempt.moduleNumber);
+    } else {
+      applyRunner(payload.runner);
+    }
     return payload.runner;
-  }, [applyRunner, attemptId, expectedFullSetId]);
+  }, [applyBootstrap, applyRunner, attemptId, expectedFullSetId]);
 
   const applyAttempt = useCallback((attempt: ReadingFullSetAttemptSummary) => {
     const current = runnerRef.current;
@@ -406,16 +454,25 @@ export function ReadingFullSetRunner({
   }, []);
 
   useEffect(() => {
+    if (!sessionReady) return;
     let cancelled = false;
-    void createBrowserSupabase().auth.getSession().then(async ({ data }) => {
+    void (async () => {
       let initialPause: { expiresAt: string; loadId: string } | null = null;
       let token = "";
       try {
-        if (!data.session) throw new Error("请先登录后再开始套题练习。");
+        const session = getSession();
+        if (!session) throw new Error("请先登录后再开始套题练习。");
         if (cancelled) return;
-        token = data.session.access_token;
-        studentIdRef.current = data.session.user.id;
+        token = session.accessToken;
+        studentIdRef.current = session.studentId;
         setAccessToken(token);
+        const handoff = consumeReadingFullSetBootstrapHandoff({ attemptId, expectedFullSetId });
+        if (handoff) {
+          transitionTraceRef.current = handoff.trace;
+          transitionLoggedPhasesRef.current = new Set();
+          applyBootstrap(handoff, 1);
+          return;
+        }
         initialPause = await beginLoadPause(token, null);
         if (cancelled) {
           if (initialPause) await finishLoadPause(token, initialPause.loadId);
@@ -432,9 +489,9 @@ export function ReadingFullSetRunner({
       } finally {
         if (!cancelled) setLoading(false);
       }
-    });
+    })();
     return () => { cancelled = true; };
-  }, [beginLoadPause, finishLoadPause, loadRunner, updateActiveLoadPause]);
+  }, [applyBootstrap, attemptId, beginLoadPause, expectedFullSetId, finishLoadPause, getSession, loadRunner, sessionReady, updateActiveLoadPause]);
 
   useEffect(() => () => {
     occurrenceCacheRef.current.clear();
@@ -562,10 +619,13 @@ export function ReadingFullSetRunner({
       currentOccurrence?.taskType === "ctw"
       && currentPayload
       && runner
-      && (readingFullSetAttemptPhase(runner.attempt) === "module_2_preparing"
-        || readingFullSetAttemptPhase(runner.attempt) === "module_2_active")
     ) {
-      logTransitionPhase("m2_first_ctw_mounted", { moduleNumber: 2 }, true);
+      const phase = readingFullSetAttemptPhase(runner.attempt);
+      if (phase === "module_1_preparing" || phase === "module_1_active") {
+        logTransitionPhase("m1_first_ctw_mounted", { moduleNumber: 1 }, true);
+      } else if (phase === "module_2_preparing" || phase === "module_2_active") {
+        logTransitionPhase("m2_first_ctw_mounted", { moduleNumber: 2 }, true);
+      }
     }
   }, [currentOccurrence, currentPayload, logTransitionPhase, runner]);
 
@@ -729,14 +789,17 @@ export function ReadingFullSetRunner({
       try {
         if (moduleAttempt.status === "preparing") {
           const isModule2 = moduleAttempt.moduleNumber === 2;
-          if (isModule2) {
-            logTransitionPhase("m2_first_ctw_mounted", { moduleNumber: 2 }, true);
-            logTransitionPhase("m2_first_interactive", { moduleNumber: 2 }, true);
-            logTransitionPhase("m2_activation_start", {
-              moduleNumber: 2,
-              route: `/api/reading/full-set-attempts/${attemptId}/modules/2/activate`
-            }, true);
-          }
+          const prefix = isModule2 ? "m2" : "m1";
+          logTransitionPhase(`${prefix}_first_ctw_mounted`, {
+            moduleNumber: moduleAttempt.moduleNumber
+          }, true);
+          logTransitionPhase(`${prefix}_first_interactive`, {
+            moduleNumber: moduleAttempt.moduleNumber
+          }, true);
+          logTransitionPhase(`${prefix}_activation_start`, {
+            moduleNumber: moduleAttempt.moduleNumber,
+            route: `/api/reading/full-set-attempts/${attemptId}/modules/${moduleAttempt.moduleNumber}/activate`
+          }, true);
           const activationStartedAt = performance.now();
           const response = await fetchReadingFullSetWithTimeout(
             `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleAttempt.moduleNumber}/activate`,
@@ -752,17 +815,16 @@ export function ReadingFullSetRunner({
             throw new Error(payload.error ?? "Module 计时启动失败，请重试。");
           }
           applyAttempt(payload.attempt);
-          if (isModule2) {
-            logTransitionPhase("m2_activation_end", {
-              durationMs: performance.now() - activationStartedAt,
-              moduleNumber: 2,
-              route: `/api/reading/full-set-attempts/${attemptId}/modules/2/activate`
+          logTransitionPhase(`${prefix}_activation_end`, {
+            durationMs: performance.now() - activationStartedAt,
+            moduleNumber: moduleAttempt.moduleNumber,
+            route: `/api/reading/full-set-attempts/${attemptId}/modules/${moduleAttempt.moduleNumber}/activate`
+          }, true);
+          requestAnimationFrame(() => {
+            logTransitionPhase(`${prefix}_countdown_active`, {
+              moduleNumber: moduleAttempt.moduleNumber
             }, true);
-            requestAnimationFrame(() => {
-              logTransitionPhase("m2_countdown_active", { moduleNumber: 2 }, true);
-              transitionTraceRef.current = null;
-            });
-          }
+          });
         } else {
           const pause = activeLoadPauseRef.current;
           if (pause) await finishLoadPause(accessToken, pause.loadId);
@@ -795,15 +857,15 @@ export function ReadingFullSetRunner({
         movingRef.current = false;
         setNavigating(false);
       } catch (readyError) {
-        if (moduleAttempt.moduleNumber === 2) {
-          logTransitionPhase("m2_activation_end", {
+        if (moduleAttempt.status === "preparing") {
+          logTransitionPhase(moduleAttempt.moduleNumber === 2 ? "m2_activation_end" : "m1_activation_end", {
             failure: readyError instanceof Error && readyError.name === "ReadingFullSetRequestTimeout"
               ? "ACTIVATION_FAILED"
               : readyError instanceof DOMException && readyError.name === "AbortError"
                 ? "NETWORK_ABORT"
                 : "ACTIVATION_FAILED",
-            moduleNumber: 2,
-            route: `/api/reading/full-set-attempts/${attemptId}/modules/2/activate`,
+            moduleNumber: moduleAttempt.moduleNumber,
+            route: `/api/reading/full-set-attempts/${attemptId}/modules/${moduleAttempt.moduleNumber}/activate`,
             success: false
           });
         }
@@ -843,7 +905,10 @@ export function ReadingFullSetRunner({
     });
     if (occurrenceCacheRef.current.status(key) !== "idle") return;
 
-    const trace = createReadingFullSetPerformanceTrace(attemptId);
+    const trace = transitionTraceRef.current ?? createReadingFullSetPerformanceTrace(attemptId);
+    if (transitionTraceRef.current?.traceId === trace.traceId) {
+      transitionTraceRef.current = null;
+    }
     prefetchTraceRef.current.set(key, trace);
     logReadingFullSetPerformancePhase(trace, "next_prefetch_start", {
       moduleNumber: moduleAttempt.moduleNumber,

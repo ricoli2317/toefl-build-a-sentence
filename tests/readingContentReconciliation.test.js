@@ -15,7 +15,7 @@ const { buildReadingCanonicalContentUpdate } = require("../lib/reading/contentCo
 const { areReadingPackagesHistoricalSemanticEquivalents } = require("../lib/reading/semantic.ts");
 const { attachIncomingOccurrencesToHistoricalPackage } = require("../lib/reading/historicalDedup.ts");
 const {
-  buildReadingReviewVersion,
+  buildReadingInsertionAnchorSet,
   resolveReadingInsertionPosition
 } = require("../lib/reading/reviewPresentation.ts");
 const {
@@ -162,6 +162,29 @@ test("RAP insertion anchor IDs do not matter but semantic insertion location doe
   ));
 });
 
+test("RAP insertion anchor order does not matter when the semantic set is unchanged", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const question = incoming.questions.find((candidate) => candidate.questionType === "rap_sentence_insertion");
+  question.payload.anchors.forEach((anchor) => {
+    anchor.anchorOrder = 5 - anchor.anchorOrder;
+  });
+  question.payload.anchors.reverse();
+
+  assert.equal(buildReadingContentConflict(existing, incoming), null);
+});
+
+test("RAP correct Location number changes do not conflict when the semantic position is unchanged", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const question = incoming.questions.find((candidate) => candidate.questionType === "rap_sentence_insertion");
+  const correct = question.payload.anchors.find((anchor) => anchor.anchorId === question.payload.correctAnchorId);
+  const other = question.payload.anchors.find((anchor) => anchor.anchorOrder === 4);
+  [correct.anchorOrder, other.anchorOrder] = [other.anchorOrder, correct.anchorOrder];
+
+  assert.equal(buildReadingContentConflict(existing, incoming), null);
+});
+
 test("The Discovery of Vitamins Q35 fixture keeps paragraph 3 end and paragraph 4 start distinct", () => {
   const packageData = rap();
   const passage = packageData.passages[0];
@@ -211,7 +234,7 @@ test("The Discovery of Vitamins Q35 fixture keeps paragraph 3 end and paragraph 
   assert.notEqual(afterFirstSentence.semanticKey, paragraphEnd.semanticKey);
 });
 
-test("RAP insertion conflict exposes only unmatched semantic positions and marker leaves passage text intact", () => {
+test("RAP insertion set diff exposes only unmatched positions and full review keeps all markers", () => {
   const existing = rap();
   const incoming = structuredClone(existing);
   const existingQuestion = existing.questions.find((question) => question.questionType === "rap_sentence_insertion");
@@ -231,21 +254,140 @@ test("RAP insertion conflict exposes only unmatched semantic positions and marke
   const conflict = buildReadingContentConflict(existing, incoming);
   const difference = conflict.questionConflicts.flatMap((question) => question.differences)
     .find((candidate) => candidate.kind === "insertion_anchors");
-  assert.equal(difference.insertionPositions.existing.length, 1);
-  assert.equal(difference.insertionPositions.incoming.length, 1);
+  assert.equal(difference.insertionPositions.comparisonKind, "set_difference");
+  assert.equal(difference.insertionPositions.existingOnly.length, 1);
+  assert.equal(difference.insertionPositions.incomingOnly.length, 1);
+  assert.deepEqual(difference.insertionPositions.existingDuplicates, []);
+  assert.deepEqual(difference.insertionPositions.incomingDuplicates, []);
   assert.notEqual(
-    difference.insertionPositions.existing[0].semanticKey,
-    difference.insertionPositions.incoming[0].semanticKey
+    difference.insertionPositions.existingOnly[0].semanticKey,
+    difference.insertionPositions.incomingOnly[0].semanticKey
   );
-  const marker = { ...difference.insertionPositions.existing[0], questionNumber: 35 };
-  const version = buildReadingReviewVersion(existing, [marker]);
-  const markedParagraph = version.passage.paragraphs.find((candidate) =>
-    candidate.paragraphOrder === marker.paragraphOrder
+  const existingMarkers = conflict.existingVersion.passage.paragraphs.flatMap((paragraph) => paragraph.markers);
+  const incomingMarkers = conflict.incomingVersion.passage.paragraphs.flatMap((paragraph) => paragraph.markers);
+  assert.equal(existingMarkers.length, 4);
+  assert.equal(incomingMarkers.length, 4);
+  assert.deepEqual(existingMarkers.map((marker) => marker.locationNumber).sort(), [1, 2, 3, 4]);
+  assert.deepEqual(incomingMarkers.map((marker) => marker.locationNumber).sort(), [1, 2, 3, 4]);
+  const markedParagraph = conflict.existingVersion.passage.paragraphs.find((candidate) =>
+    candidate.markers.length > 0
   );
   assert.equal(markedParagraph.text, existing.passages[0].paragraphs.find((candidate) =>
-    candidate.paragraphOrder === marker.paragraphOrder
+    candidate.paragraphOrder === markedParagraph.paragraphOrder
   ).text);
-  assert.deepEqual(markedParagraph.markers.map((candidate) => candidate.boundaryIndex), [marker.boundaryIndex]);
+});
+
+test("RAP duplicate semantic anchors are reported separately from set-only differences", () => {
+  const incoming = rap();
+  const existing = structuredClone(incoming);
+  const question = existing.questions.find((candidate) => candidate.questionType === "rap_sentence_insertion");
+  const duplicate = question.payload.anchors[2];
+  const target = question.payload.anchors[3];
+  duplicate.paragraphId = target.paragraphId;
+  duplicate.boundaryIndex = target.boundaryIndex;
+  duplicate.afterSentenceId = target.afterSentenceId;
+
+  const conflict = buildReadingContentConflict(existing, incoming);
+  const difference = conflict.questionConflicts.flatMap((questionConflict) => questionConflict.differences)
+    .find((candidate) => candidate.kind === "insertion_anchors");
+  assert.deepEqual(difference.insertionPositions.existingOnly, []);
+  assert.deepEqual(
+    difference.insertionPositions.incomingOnly.map((position) => position.semanticKey),
+    ["paragraph:1:boundary:2"]
+  );
+  assert.equal(difference.insertionPositions.existingDuplicates.length, 1);
+  assert.equal(difference.insertionPositions.existingDuplicates[0].position.semanticKey, "paragraph:1:boundary:3");
+  assert.deepEqual(difference.insertionPositions.existingDuplicates[0].locationNumbers, [3, 4]);
+  assert.deepEqual(difference.insertionPositions.incomingDuplicates, []);
+  const existingMarkers = conflict.existingVersion.passage.paragraphs.flatMap((paragraph) => paragraph.markers);
+  assert.equal(existingMarkers.length, 4);
+  assert.deepEqual(existingMarkers.filter((marker) => marker.duplicate).map((marker) => marker.locationNumber), [3, 4]);
+});
+
+test("a two-sentence paragraph canonicalizes after sentence 2 and paragraph end to one boundary", () => {
+  const packageData = rap();
+  const passage = packageData.passages[0];
+  const paragraph = passage.paragraphs[0];
+  paragraph.sentences = paragraph.sentences.slice(0, 2);
+  const afterSecond = {
+    anchorId: "after-second",
+    anchorOrder: 1,
+    paragraphId: paragraph.paragraphId,
+    boundaryIndex: 2,
+    afterSentenceId: paragraph.sentences[1].sentenceId
+  };
+  const paragraphEnd = { ...afterSecond, anchorId: "paragraph-end", anchorOrder: 2 };
+  const set = buildReadingInsertionAnchorSet(passage, [afterSecond, paragraphEnd]);
+
+  assert.equal(set.uniquePositions.length, 1);
+  assert.equal(set.uniquePositions[0].semanticKey, "paragraph:1:boundary:2");
+  assert.equal(set.uniquePositions[0].label, "第 1 段末尾");
+  assert.deepEqual(set.duplicates[0].locationNumbers, [1, 2]);
+});
+
+test("8.9B Q30 regression compares canonical anchor sets without pairing legal positions", () => {
+  const { existing, incoming } = computationalChemistryQ30Packages();
+  const conflict = buildReadingContentConflict(existing, incoming);
+  const difference = conflict.questionConflicts.flatMap((question) => question.differences)
+    .find((candidate) => candidate.kind === "insertion_anchors");
+  assert.deepEqual(
+    difference.insertionPositions.existingOnly.map((position) => position.semanticKey),
+    ["paragraph:4:boundary:3"]
+  );
+  assert.deepEqual(
+    difference.insertionPositions.incomingOnly.map((position) => position.semanticKey),
+    ["paragraph:3:boundary:3"]
+  );
+  assert.deepEqual(difference.insertionPositions.existingDuplicates, []);
+  assert.deepEqual(difference.insertionPositions.incomingDuplicates, []);
+  assert.equal(conflict.questionConflicts[0].correctAnswerSemanticallyDifferent, false);
+  assert.ok(conflict.questionConflicts[0].differences.every((item) =>
+    item.kind !== "correct_insertion_location"
+  ));
+
+  const existingMarkers = conflict.existingVersion.passage.paragraphs.flatMap((paragraph) => paragraph.markers);
+  const incomingMarkers = conflict.incomingVersion.passage.paragraphs.flatMap((paragraph) => paragraph.markers);
+  assert.equal(existingMarkers.length, 4);
+  assert.equal(incomingMarkers.length, 4);
+  assert.deepEqual(existingMarkers.map((marker) => marker.comparisonStatus), ["common", "common", "common", "existing_only"]);
+  assert.deepEqual(incomingMarkers.map((marker) => marker.comparisonStatus), ["incoming_only", "common", "common", "common"]);
+});
+
+test("7.22C normal insertion regression retains four unique boundaries and paragraph-end labeling", () => {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  for (const packageData of [existing, incoming]) {
+    const passage = packageData.passages[0];
+    const paragraph = passage.paragraphs[0];
+    paragraph.sentences.push({
+      sentenceId: `${paragraph.paragraphId}-s05`,
+      sentenceOrder: 5,
+      text: "A fifth sentence closes the paragraph."
+    });
+    paragraph.text = `${paragraph.text} A fifth sentence closes the paragraph.`;
+    paragraph.rawText = paragraph.text;
+    const question = packageData.questions.find((candidate) => candidate.questionType === "rap_sentence_insertion");
+    question.payload.anchors = [2, 3, 4, 5].map((boundaryIndex, index) => ({
+      anchorId: `${question.questionId}-722c-${index + 1}`,
+      anchorOrder: index + 1,
+      paragraphId: paragraph.paragraphId,
+      boundaryIndex,
+      afterSentenceId: paragraph.sentences[boundaryIndex - 1].sentenceId
+    }));
+    question.payload.correctAnchorId = question.payload.anchors[3].anchorId;
+  }
+  const insertion = existing.questions.find((candidate) => candidate.questionType === "rap_sentence_insertion");
+  const set = buildReadingInsertionAnchorSet(existing.passages[0], insertion.payload.anchors);
+
+  assert.deepEqual(set.uniquePositions.map((position) => position.semanticKey), [
+    "paragraph:1:boundary:2",
+    "paragraph:1:boundary:3",
+    "paragraph:1:boundary:4",
+    "paragraph:1:boundary:5"
+  ]);
+  assert.equal(set.uniquePositions.at(-1).label, "第 1 段末尾");
+  assert.deepEqual(set.duplicates, []);
+  assert.equal(buildReadingContentConflict(existing, incoming), null);
 });
 
 for (const [name, straight, curly] of [
@@ -591,6 +733,86 @@ test("real 7.11A Q35 marker-aware segmentation produces four legal unique anchor
     anchorRows[0].anchor_id
   );
 });
+
+function computationalChemistryQ30Packages() {
+  const existing = rap();
+  const incoming = structuredClone(existing);
+  const existingPassage = existing.passages[0];
+  const incomingPassage = incoming.passages[0];
+  const baseParagraph = existingPassage.paragraphs[0];
+  const makeParagraph = (order, sentenceTexts) => {
+    const paragraphId = `${existingPassage.passageId}-fixture-p${order}`;
+    return {
+      paragraphId,
+      paragraphOrder: order,
+      text: sentenceTexts.join(" "),
+      rawText: sentenceTexts.join(" "),
+      sentences: sentenceTexts.map((text, index) => ({
+        sentenceId: `${paragraphId}-s${index + 1}`,
+        sentenceOrder: index + 1,
+        text
+      }))
+    };
+  };
+  const paragraph2 = makeParagraph(2, ["Paragraph two sentence one."]);
+  const paragraph3 = makeParagraph(3, [
+    "Moreover, computational chemistry optimizes drug properties.",
+    "Researchers can predict changes in efficacy and safety.",
+    "Repeating and refining this process fine-tunes candidates.",
+    "For example, modifying a molecule can enhance stability."
+  ]);
+  const paragraph4Text = "Computational predictions must be validated experimentally, as computer models can sometimes produce false positives. Accurately simulating the human body's complex environment remains a formidable task.";
+  const existingParagraph4 = makeParagraph(4, [
+    "Computational predictions must be validated experimentally,",
+    "as computer models can sometimes produce false positives.",
+    "Accurately simulating the human body's complex environment remains a formidable task."
+  ]);
+  existingParagraph4.text = paragraph4Text;
+  existingParagraph4.rawText = paragraph4Text;
+  const incomingParagraph4 = makeParagraph(4, [
+    "Computational predictions must be validated experimentally, as computer models can sometimes produce false positives.",
+    "Accurately simulating the human body's complex environment remains a formidable task."
+  ]);
+  incomingParagraph4.text = paragraph4Text;
+  incomingParagraph4.rawText = paragraph4Text;
+  baseParagraph.paragraphOrder = 1;
+  incomingPassage.paragraphs[0].paragraphOrder = 1;
+  existingPassage.paragraphs.push(paragraph2, paragraph3, existingParagraph4);
+  incomingPassage.paragraphs.push(
+    structuredClone(paragraph2),
+    structuredClone(paragraph3),
+    incomingParagraph4
+  );
+
+  const existingQuestion = existing.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  const incomingQuestion = incoming.questions.find((question) => question.questionType === "rap_sentence_insertion");
+  const anchor = (id, order, paragraph, boundaryIndex) => ({
+    anchorId: id,
+    anchorOrder: order,
+    paragraphId: paragraph.paragraphId,
+    boundaryIndex,
+    afterSentenceId: boundaryIndex === 0 ? null : paragraph.sentences[boundaryIndex - 1].sentenceId
+  });
+  existingQuestion.payload.anchors = [
+    anchor("db-location-1", 1, existingParagraph4, 0),
+    anchor("db-location-2", 2, existingParagraph4, 1),
+    anchor("db-location-3", 3, existingParagraph4, 2),
+    anchor("db-location-4", 4, existingParagraph4, 3)
+  ];
+  existingQuestion.payload.correctAnchorId = "db-location-1";
+  incomingQuestion.payload.anchors = [
+    anchor("csv-location-1", 1, paragraph3, 3),
+    anchor("csv-location-2", 2, incomingParagraph4, 0),
+    anchor("csv-location-3", 3, incomingParagraph4, 1),
+    anchor("csv-location-4", 4, incomingParagraph4, 2)
+  ];
+  incomingQuestion.payload.correctAnchorId = "csv-location-2";
+  incoming.occurrences[0].sourceLabel = "8.9B";
+  const source = incoming.occurrences[0].questionSources.find((item) => item.questionId === incomingQuestion.questionId);
+  source.sourceQuestionStart = 30;
+  source.sourceQuestionEnd = 30;
+  return { existing, incoming };
+}
 
 function real711aInsertionRows(markerAware) {
   const file = "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv";

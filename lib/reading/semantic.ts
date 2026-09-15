@@ -202,13 +202,17 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
       paragraphOrder: requiredMap(paragraphOrder, anchor.paragraphId),
       boundaryIndex: anchor.boundaryIndex
     });
+    const anchors = Array.from(new Map(question.payload.anchors.map((anchor) => {
+      const position = anchorPosition(anchor);
+      return [`${position.paragraphOrder}:${position.boundaryIndex}`, position];
+    })).values()).sort(comparePosition);
     const correct = question.payload.anchors.find((anchor) => anchor.anchorId === question.payload.correctAnchorId);
     if (!correct) throw new Error(`Reading semantic identity cannot resolve insertion answer for ${question.questionId}`);
     return {
       ...common,
       highlights: highlightIdentity(question.payload.highlightRanges, passage),
       insertSentence: normalizeReadingSemanticText(question.payload.insertSentence),
-      anchors: question.payload.anchors.map(anchorPosition).sort(comparePosition),
+      anchors,
       correctPosition: anchorPosition(correct)
     };
   }

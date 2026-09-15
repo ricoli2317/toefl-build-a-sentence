@@ -447,7 +447,7 @@ test("Reading Full Set correction reuses Reading workspaces, submit route, resul
   assert.match(runtime, /readingWrongbookEditableSlotIds/);
   assert.match(runtime, /buildReadingWrongbookInitialAnswers/);
   assert.match(runtime, /selectReadingWrongbookSubmissionAnswers/);
-  assert.match(runtime, /\/api\/reading\/practice\/\$\{encodeURIComponent\(itemId\)\}/);
+  assert.match(runtime, /\/api\/reading\/wrongbook-attempts\/practice\/\$\{encodeURIComponent\(itemId\)\}/);
   assert.match(runtime, /full-set-correction-practice:/);
   assert.doesNotMatch(runtime, /itemIds: itemIds\.join/);
   assert.doesNotMatch(runtime, /Promise\.all\(uniqueOccurrences\.map/);

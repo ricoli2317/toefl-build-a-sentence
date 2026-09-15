@@ -4,7 +4,6 @@ import Link from "next/link";
 import { BookOpen, Clock3, Eye, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   useStudentCachedData,
   useStudentDataCache,
@@ -17,10 +16,21 @@ import {
 } from "@/components/student/StudentUI";
 import type { ReadingFullSet } from "@/lib/reading/fullSets";
 import {
+  isReadingFullSetBootstrapPayload,
   isReadingFullSetAttemptSummary,
   readingFullSetPrepAction,
+  type ReadingFullSetBootstrapPayload,
   type ReadingFullSetAttemptSummary
 } from "@/lib/reading/fullSetAttempts";
+import { storeReadingFullSetBootstrapHandoff } from "@/lib/reading/fullSetBootstrapHandoff.client";
+import {
+  createReadingFullSetPerformanceTrace,
+  fetchReadingFullSetWithTimeout,
+  logReadingFullSetPerformancePhase,
+  readingFullSetServerTimingDuration,
+  readingFullSetTraceHeaders,
+  type ReadingFullSetPerformanceTrace
+} from "@/lib/reading/fullSetPerformance.client";
 import { formatReadingFullSetTime } from "@/lib/reading/fullSetPresentation";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
@@ -56,18 +66,34 @@ export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
     if (starting || action.action === "completed") return;
     setStarting(true);
     setActionError("");
+    const trace = createReadingFullSetPerformanceTrace(
+      attemptState.data?.attempt?.attemptId ?? `pending-${fullSetId}`
+    );
+    const isM1Entry = action.action === "start_module_1" || action.action === "continue_module_1";
+    if (isM1Entry) {
+      logReadingFullSetPerformancePhase(trace, "m1_start_click", { moduleNumber: 1 });
+    }
     try {
-      const { data: { session } } = await createBrowserSupabase().auth.getSession();
+      const session = cache.getSession();
       if (!session) throw new Error("请先登录后再开始套题练习。");
       let attempt = attemptState.data?.attempt ?? null;
-      if (action.action === "start_module_1") {
-        attempt = await startReadingFullSetAttempt(fullSetId, session.access_token);
+      if (isM1Entry) {
+        const bootstrap = await startReadingFullSetAttempt(fullSetId, session.accessToken, trace);
+        attempt = bootstrap.runner.attempt;
+        trace.attemptId = attempt.attemptId;
+        storeReadingFullSetBootstrapHandoff(bootstrap, trace);
       } else if (action.action === "start_module_2" && attempt) {
-        attempt = await startReadingFullSetModule2(attempt.attemptId, session.access_token);
+        attempt = await startReadingFullSetModule2(attempt.attemptId, session.accessToken);
       }
       if (!attempt) throw new Error("套题练习状态暂时不可用。");
       cache.setData<ReadingFullSetAttemptPayload>(attemptCacheKey, { attempt });
       cache.invalidate(`${STUDENT_READING_FULL_SET_CACHE_PREFIX}:catalog`);
+      if (isM1Entry) {
+        logReadingFullSetPerformancePhase(trace, "m1_route_navigation", {
+          moduleNumber: 1,
+          route: `${STUDENT_ROUTES.readingFullSets}/${fullSetId}/attempt/${attempt.attemptId}`
+        });
+      }
       router.push(
         `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(attempt.attemptId)}`
       );
@@ -266,17 +292,59 @@ async function loadReadingFullSetAttempt(fullSetId: string, session: StudentCach
   return payload;
 }
 
-async function startReadingFullSetAttempt(fullSetId: string, accessToken: string) {
-  const response = await fetch("/api/reading/full-set-attempts", {
-    method: "POST",
-    cache: "no-store",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ fullSetId })
-  });
-  return readingFullSetAttemptResponse(response, "暂时无法开始 Module 1。");
+async function startReadingFullSetAttempt(
+  fullSetId: string,
+  accessToken: string,
+  trace: ReadingFullSetPerformanceTrace
+): Promise<ReadingFullSetBootstrapPayload> {
+  const route = "/api/reading/full-set-attempts";
+  const startedAt = performance.now();
+  logReadingFullSetPerformancePhase(trace, "m1_start_request_start", { moduleNumber: 1, route });
+  try {
+    const response = await fetchReadingFullSetWithTimeout(route, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        ...readingFullSetTraceHeaders(accessToken, trace),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ fullSetId })
+    }, 20_000);
+    const payload = await response.json().catch(() => ({})) as unknown;
+    for (const [phase, serverPhase] of [
+      ["m1_attempt_prepare", "attempt_create_or_reuse"],
+      ["m1_definition_resolution", "definition_resolution"],
+      ["m1_first_occurrence_content", "first_occurrence_content"]
+    ] as const) {
+      const durationMs = readingFullSetServerTimingDuration(response, serverPhase);
+      if (durationMs !== null) {
+        logReadingFullSetPerformancePhase(trace, phase, { durationMs, moduleNumber: 1, route });
+      }
+    }
+    logReadingFullSetPerformancePhase(trace, "m1_bootstrap_response", {
+      durationMs: performance.now() - startedAt,
+      failure: response.ok ? null : bootstrapErrorCode(payload),
+      moduleNumber: 1,
+      route,
+      success: response.ok
+    });
+    if (!response.ok || !isReadingFullSetBootstrapPayload(payload)) {
+      throw new Error(bootstrapErrorMessage(payload) ?? "暂时无法开始 Module 1。");
+    }
+    return payload;
+  } catch (error) {
+    if (error instanceof Error && error.name === "ReadingFullSetRequestTimeout") {
+      logReadingFullSetPerformancePhase(trace, "m1_bootstrap_response", {
+        durationMs: performance.now() - startedAt,
+        failure: "BOOTSTRAP_TIMEOUT",
+        moduleNumber: 1,
+        route,
+        success: false
+      });
+      throw new Error("Module 1 准备超时，请重试。");
+    }
+    throw error;
+  }
 }
 
 async function startReadingFullSetModule2(attemptId: string, accessToken: string) {
@@ -296,4 +364,16 @@ async function readingFullSetAttemptResponse(response: Response, fallback: strin
     throw new Error(payload.error ?? fallback);
   }
   return payload.attempt;
+}
+
+function bootstrapErrorCode(payload: unknown) {
+  return payload && typeof payload === "object" && typeof (payload as { code?: unknown }).code === "string"
+    ? (payload as { code: string }).code
+    : "M1_PREPARE_FAILED";
+}
+
+function bootstrapErrorMessage(payload: unknown) {
+  return payload && typeof payload === "object" && typeof (payload as { error?: unknown }).error === "string"
+    ? (payload as { error: string }).error
+    : null;
 }

@@ -7,6 +7,10 @@ import type {
   ReadingContentConflictResolution,
   ReadingQuestionContentConflict
 } from "@/lib/reading/contentReconciliation";
+import type {
+  ReadingInsertionDuplicateReview,
+  ReadingInsertionPositionReview
+} from "@/lib/reading/reviewPresentation";
 import { readingContentConflictSummary } from "@/lib/reading/contentReconciliation";
 import { ReadingInlineVersionValue } from "./ReadingInlineVersionValue";
 import {
@@ -143,7 +147,14 @@ function DifferenceCard({ difference }: {
   return (
     <div className="rounded-lg bg-white p-3">
       <div className="font-bold text-student-text">{difference.label}</div>
-      {difference.insertionPositions ? (
+      {difference.insertionPositions?.comparisonKind === "set_difference" ? (
+        <div className="mt-2 grid gap-3">
+          <PositionVersion title="题库版本独有" positions={difference.insertionPositions.existingOnly} />
+          <PositionVersion title="来源 CSV 独有" positions={difference.insertionPositions.incomingOnly} />
+          <DuplicatePositions title="题库版本存在重复可插入位置" duplicates={difference.insertionPositions.existingDuplicates} />
+          <DuplicatePositions title="来源 CSV 存在重复可插入位置" duplicates={difference.insertionPositions.incomingDuplicates} />
+        </div>
+      ) : difference.insertionPositions?.comparisonKind === "version_comparison" ? (
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
           <PositionVersion title="题库版本" positions={difference.insertionPositions.existing} />
           <PositionVersion title="来源 CSV" positions={difference.insertionPositions.incoming} />
@@ -159,16 +170,37 @@ function DifferenceCard({ difference }: {
 }
 
 function PositionVersion({ positions, title }: {
-  positions: NonNullable<ReadingQuestionContentConflict["differences"][number]["insertionPositions"]>["existing"];
+  positions: ReadingInsertionPositionReview[];
   title: string;
 }) {
+  if (positions.length === 0) return null;
   return (
     <section>
       <h4 className="mb-2 text-sm font-bold text-student-muted">{title}</h4>
       <div className="grid gap-2">
-        {positions.length > 0
-          ? positions.map((position) => <ReadingInsertionPosition key={position.semanticKey} position={position} />)
-          : <p className="rounded-lg border border-student-border bg-white p-3 text-sm text-student-muted">没有额外位置</p>}
+        {positions.map((position) => <ReadingInsertionPosition key={position.semanticKey} position={position} />)}
+      </div>
+    </section>
+  );
+}
+
+function DuplicatePositions({ duplicates, title }: {
+  duplicates: ReadingInsertionDuplicateReview[];
+  title: string;
+}) {
+  if (duplicates.length === 0) return null;
+  return (
+    <section>
+      <h4 className="mb-2 text-sm font-bold text-red-700">{title}</h4>
+      <div className="grid gap-2">
+        {duplicates.map((duplicate) => (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3" key={duplicate.position.semanticKey}>
+            <p className="text-sm font-bold text-student-text">位置：{duplicate.position.label}</p>
+            <p className="mt-1 text-sm text-red-700">
+              Location {duplicate.locationNumbers.join("、Location ")} 指向同一个 semantic boundary
+            </p>
+          </div>
+        ))}
       </div>
     </section>
   );

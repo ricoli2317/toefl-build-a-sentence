@@ -85,6 +85,21 @@ test("shared full content supports CTW, RDL images, RAP questions, and boundary 
   assert.match(fullContent, /data-boundary-index=\{marker\.boundaryIndex\}/);
   assert.match(fullContent, /data-paragraph-order=\{marker\.paragraphOrder\}/);
   assert.match(fullContent, /data-passage-text=\{paragraph\.text\}/);
+  assert.match(fullContent, /Location \{marker\.locationNumber\}/);
+  assert.match(fullContent, /data-comparison-status=\{marker\.comparisonStatus\}/);
+  assert.match(fullContent, /data-duplicate=\{marker\.duplicate/);
+  assert.match(fullContent, /marker\.comparisonStatus === "existing_only"/);
+  assert.match(fullContent, /marker\.comparisonStatus === "incoming_only"/);
+  assert.match(fullContent, /marker\.duplicate/);
+});
+
+test("sentence-insertion compact review presents set-only and duplicate sections without pairing anchors", () => {
+  assert.match(content, /title="题库版本独有" positions=\{difference\.insertionPositions\.existingOnly\}/);
+  assert.match(content, /title="来源 CSV 独有" positions=\{difference\.insertionPositions\.incomingOnly\}/);
+  assert.match(content, /题库版本存在重复可插入位置/);
+  assert.match(content, /来源 CSV 存在重复可插入位置/);
+  assert.match(content, /指向同一个 semantic boundary/);
+  assert.doesNotMatch(content, /<PositionVersion title="题库版本" positions=\{difference\.insertionPositions\.existingOnly\}/);
 });
 
 test("RDL duplicate review shows both material images with click-to-enlarge links", () => {

@@ -8,8 +8,14 @@ import {
   STUDENT_READING_FULL_SET_CACHE_PREFIX,
   useStudentDataCache
 } from "@/components/StudentDataCache";
-import { createBrowserSupabase } from "@/lib/supabase/client";
-import { isReadingFullSetAttemptSummary } from "@/lib/reading/fullSetAttempts";
+import { isReadingFullSetBootstrapPayload } from "@/lib/reading/fullSetAttempts";
+import { storeReadingFullSetBootstrapHandoff } from "@/lib/reading/fullSetBootstrapHandoff.client";
+import {
+  createReadingFullSetPerformanceTrace,
+  fetchReadingFullSetWithTimeout,
+  logReadingFullSetPerformancePhase,
+  readingFullSetTraceHeaders
+} from "@/lib/reading/fullSetPerformance.client";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 
 export function ReadingFullSetRetakeButton({
@@ -29,26 +35,49 @@ export function ReadingFullSetRetakeButton({
     if (loading) return;
     setLoading(true);
     setError("");
+    const trace = createReadingFullSetPerformanceTrace(`pending-${fullSetId}`);
+    logReadingFullSetPerformancePhase(trace, "m1_start_click", { moduleNumber: 1 });
     try {
-      const { data: { session } } = await createBrowserSupabase().auth.getSession();
+      const session = cache.getSession();
       if (!session) throw new Error("请先登录后再重新练习。");
-      const response = await fetch("/api/reading/full-set-attempts", {
+      const startedAt = performance.now();
+      logReadingFullSetPerformancePhase(trace, "m1_start_request_start", {
+        moduleNumber: 1,
+        route: "/api/reading/full-set-attempts"
+      });
+      const response = await fetchReadingFullSetWithTimeout("/api/reading/full-set-attempts", {
         method: "POST",
         cache: "no-store",
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          ...readingFullSetTraceHeaders(session.accessToken, trace),
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ fullSetId })
+      }, 20_000);
+      const payload = await response.json().catch(() => ({})) as unknown;
+      logReadingFullSetPerformancePhase(trace, "m1_bootstrap_response", {
+        durationMs: performance.now() - startedAt,
+        failure: response.ok ? null : "M1_PREPARE_FAILED",
+        moduleNumber: 1,
+        route: "/api/reading/full-set-attempts",
+        success: response.ok
       });
-      const payload = await response.json().catch(() => ({})) as { attempt?: unknown; error?: string };
-      if (!response.ok || !isReadingFullSetAttemptSummary(payload.attempt)) {
-        throw new Error(payload.error ?? "暂时无法开始再次练习。");
+      if (!response.ok || !isReadingFullSetBootstrapPayload(payload)) {
+        const message = payload && typeof payload === "object" && typeof (payload as { error?: unknown }).error === "string"
+          ? (payload as { error: string }).error
+          : "暂时无法开始再次练习。";
+        throw new Error(message);
       }
+      trace.attemptId = payload.runner.attempt.attemptId;
+      storeReadingFullSetBootstrapHandoff(payload, trace);
       cache.invalidate(STUDENT_READING_FULL_SET_CACHE_PREFIX);
       cache.invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
-      cache.setData(`reading:full-sets:attempt:${fullSetId}`, { attempt: payload.attempt });
-      router.push(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(payload.attempt.attemptId)}`);
+      cache.setData(`reading:full-sets:attempt:${fullSetId}`, { attempt: payload.runner.attempt });
+      logReadingFullSetPerformancePhase(trace, "m1_route_navigation", {
+        moduleNumber: 1,
+        route: `${STUDENT_ROUTES.readingFullSets}/${fullSetId}/attempt/${payload.runner.attempt.attemptId}`
+      });
+      router.push(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(payload.runner.attempt.attemptId)}`);
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "暂时无法开始再次练习。");
       setLoading(false);

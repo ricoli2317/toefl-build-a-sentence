@@ -13,8 +13,10 @@ import {
   type ReadingInlineDiff
 } from "./reviewDiff.ts";
 import {
+  buildReadingInsertionAnchorSet,
   buildReadingReviewVersion,
   resolveReadingInsertionPosition,
+  type ReadingInsertionDuplicateReview,
   type ReadingInsertionPositionReview,
   type ReadingReviewMarker,
   type ReadingReviewVersion
@@ -42,6 +44,13 @@ export type ReadingContentDifference = {
   incoming: string;
   inlineDiff: ReadingInlineDiff;
   insertionPositions?: {
+    comparisonKind: "set_difference";
+    existingOnly: ReadingInsertionPositionReview[];
+    incomingOnly: ReadingInsertionPositionReview[];
+    existingDuplicates: ReadingInsertionDuplicateReview[];
+    incomingDuplicates: ReadingInsertionDuplicateReview[];
+  } | {
+    comparisonKind: "version_comparison";
     existing: ReadingInsertionPositionReview[];
     incoming: ReadingInsertionPositionReview[];
   };
@@ -191,8 +200,8 @@ export function buildReadingContentConflict(
   const title = incoming.item.module === "rap"
     ? incoming.passages[0]?.title ?? incoming.item.title
     : incoming.item.title;
-  const existingMarkers = insertionMarkers(questionConflicts, "existing");
-  const incomingMarkers = insertionMarkers(questionConflicts, "incoming");
+  const existingMarkers = insertionMarkers(existing, incoming, "existing");
+  const incomingMarkers = insertionMarkers(incoming, existing, "incoming");
   return {
     resolutionId: [
       "reading-content",
@@ -299,19 +308,30 @@ function compareQuestion(
     }
     const existingPassage = requiredPassage(existingPackage, existing.payload.passageId);
     const incomingPassage = requiredPassage(incomingPackage, incoming.payload.passageId);
-    const existingAnchors = existing.payload.anchors.map((anchor) => resolveReadingInsertionPosition(existingPassage, anchor));
-    const incomingAnchors = incoming.payload.anchors.map((anchor) => resolveReadingInsertionPosition(incomingPassage, anchor));
-    const existingKeys = new Set(existingAnchors.map((position) => position.semanticKey));
-    const incomingKeys = new Set(incomingAnchors.map((position) => position.semanticKey));
-    const onlyExisting = existingAnchors.filter((position) => !incomingKeys.has(position.semanticKey));
-    const onlyIncoming = incomingAnchors.filter((position) => !existingKeys.has(position.semanticKey));
-    if (onlyExisting.length > 0 || onlyIncoming.length > 0) {
+    const existingAnchors = buildReadingInsertionAnchorSet(existingPassage, existing.payload.anchors);
+    const incomingAnchors = buildReadingInsertionAnchorSet(incomingPassage, incoming.payload.anchors);
+    const existingKeys = new Set(existingAnchors.uniquePositions.map((position) => position.semanticKey));
+    const incomingKeys = new Set(incomingAnchors.uniquePositions.map((position) => position.semanticKey));
+    const existingOnly = existingAnchors.uniquePositions.filter((position) => !incomingKeys.has(position.semanticKey));
+    const incomingOnly = incomingAnchors.uniquePositions.filter((position) => !existingKeys.has(position.semanticKey));
+    if (
+      existingOnly.length > 0
+      || incomingOnly.length > 0
+      || existingAnchors.duplicates.length > 0
+      || incomingAnchors.duplicates.length > 0
+    ) {
       result.push(difference(
         "insertion_anchors",
-        positionLabels(onlyExisting),
-        positionLabels(onlyIncoming),
+        anchorSetDifferenceText(existingOnly, existingAnchors.duplicates),
+        anchorSetDifferenceText(incomingOnly, incomingAnchors.duplicates),
         undefined,
-        { existing: onlyExisting, incoming: onlyIncoming }
+        {
+          comparisonKind: "set_difference",
+          existingOnly,
+          incomingOnly,
+          existingDuplicates: existingAnchors.duplicates,
+          incomingDuplicates: incomingAnchors.duplicates
+        }
       ));
     }
     const existingCorrect = correctAnchorPosition(existing, existingPassage);
@@ -322,7 +342,11 @@ function compareQuestion(
         existingCorrect.label,
         incomingCorrect.label,
         undefined,
-        { existing: [existingCorrect], incoming: [incomingCorrect] }
+        {
+          comparisonKind: "version_comparison",
+          existing: [existingCorrect],
+          incoming: [incomingCorrect]
+        }
       ));
     }
     return result;
@@ -399,24 +423,50 @@ function correctAnchorPosition(
   return resolveReadingInsertionPosition(passage, anchor);
 }
 
-function positionLabels(positions: ReadingInsertionPositionReview[]) {
-  return positions.length > 0 ? positions.map((position) => position.label).join("\n") : "没有额外位置";
+function anchorSetDifferenceText(
+  positions: ReadingInsertionPositionReview[],
+  duplicates: ReadingInsertionDuplicateReview[]
+) {
+  return [
+    ...positions.map((position) => `独有：${position.label}`),
+    ...duplicates.map((duplicate) =>
+      `重复：${duplicate.position.label}（Location ${duplicate.locationNumbers.join("、Location ")}）`
+    )
+  ].join("\n") || "没有集合差异";
 }
 
 function insertionMarkers(
-  conflicts: ReadingQuestionContentConflict[],
+  packageData: ReadingImportPackage,
+  otherPackage: ReadingImportPackage,
   side: "existing" | "incoming"
 ): ReadingReviewMarker[] {
-  const markers = conflicts.flatMap((conflict) => conflict.differences.flatMap((difference) =>
-    (difference.insertionPositions?.[side] ?? []).map((position) => ({
-      ...position,
-      questionNumber: conflict.sourceQuestionNumber ?? conflict.questionOrder
-    }))
-  ));
-  return Array.from(new Map(markers.map((marker) => [
-    `${marker.questionNumber}:${marker.semanticKey}`,
-    marker
-  ])).values());
+  const otherByOrder = new Map(otherPackage.questions.map((question) => [question.questionOrder, question]));
+  return packageData.questions.flatMap((question) => {
+    if (question.questionType !== "rap_sentence_insertion") return [];
+    const passage = requiredPassage(packageData, question.payload.passageId);
+    const anchorSet = buildReadingInsertionAnchorSet(passage, question.payload.anchors);
+    const otherQuestion = otherByOrder.get(question.questionOrder);
+    const otherKeys = otherQuestion?.questionType === "rap_sentence_insertion"
+      ? new Set(buildReadingInsertionAnchorSet(
+          requiredPassage(otherPackage, otherQuestion.payload.passageId),
+          otherQuestion.payload.anchors
+        ).uniquePositions.map((position) => position.semanticKey))
+      : new Set<string>();
+    const duplicateKeys = new Set(anchorSet.duplicates.map((duplicate) => duplicate.position.semanticKey));
+    const incomingQuestion = side === "incoming" ? question : otherQuestion;
+    const questionNumber = incomingQuestion
+      ? sourceQuestionNumber(side === "incoming" ? packageData : otherPackage, incomingQuestion.questionId)
+      : null;
+    return anchorSet.resolvedAnchors.map((anchor) => ({
+      ...anchor.position,
+      questionNumber: questionNumber ?? question.questionOrder,
+      locationNumber: anchor.locationNumber,
+      comparisonStatus: otherKeys.has(anchor.position.semanticKey)
+        ? "common" as const
+        : side === "existing" ? "existing_only" as const : "incoming_only" as const,
+      duplicate: duplicateKeys.has(anchor.position.semanticKey)
+    }));
+  });
 }
 
 function selectedSentence(

@@ -19,6 +19,7 @@ import {
   StudentReadingLoadError,
   type StudentReadingPracticePayload
 } from "@/lib/reading/studentPractice";
+import { loadFullSetWrongbookRdlAssets } from "@/lib/reading/fullSetWrongbookRdlAssets.server";
 import {
   loadReadingWrongbookPreservedAnswers,
   loadReadingWrongbookQueue,
@@ -160,7 +161,7 @@ export async function POST(request: Request) {
                 service(),
                 target.logicalItemId,
                 undefined,
-                {},
+                { rdlAssetLoader: loadFullSetWrongbookRdlAssets },
                 profile
               ),
               (value) => value.questions.length

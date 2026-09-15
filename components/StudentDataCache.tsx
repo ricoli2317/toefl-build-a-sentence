@@ -115,6 +115,7 @@ type CachedSetsPayload = {
 type StudentDataCacheValue = {
   clear: () => void;
   getEntry: (key: string) => CacheEntry | undefined;
+  getSession: () => StudentCacheSession | null;
   invalidate: (keyPrefix: string) => void;
   markStale: (keyPrefix: string) => void;
   load: <T>(
@@ -167,6 +168,8 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
     },
     [scopedKey]
   );
+
+  const getSession = useCallback(() => sessionRef.current, []);
 
   const invalidate = useCallback(
     (keyPrefix: string) => {
@@ -566,6 +569,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
     () => ({
       clear,
       getEntry,
+      getSession,
       invalidate,
       markStale,
       load,
@@ -580,6 +584,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
     [
       clear,
       getEntry,
+      getSession,
       invalidate,
       markStale,
       load,

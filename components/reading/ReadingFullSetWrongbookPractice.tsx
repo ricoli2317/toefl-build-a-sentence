@@ -1,7 +1,14 @@
 "use client";
 
 import { ArrowLeft, ChevronLeft, ChevronRight, Clock3 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type SyntheticEvent
+} from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatWritingTimer } from "@/lib/writing";
@@ -30,14 +37,17 @@ import {
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
+  logStudentPerformance,
   measureStudentRequest,
   useStudentPagePerformance
 } from "@/lib/studentPerformance.client";
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
+  useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
+import { ReadingFullSetImagePreloadCache } from "@/lib/reading/fullSetOccurrenceCache.client";
 import { ReadingWorkspaceRouter, readingTwoColumnScaleStyle } from "./ReadingPractice";
 
 type LoadedOccurrence = {
@@ -57,6 +67,7 @@ export function ReadingFullSetWrongbookPractice({
   sourceAttemptId: string;
 }) {
   const router = useRouter();
+  const studentDataCache = useStudentDataCache();
   const [todayRange] = useState(localDayRange);
   const bootstrapKey = studentWrongQuestionsCacheKey(
     `full-set-correction:${scope}:${sourceAttemptId}:${todayRange.start}`
@@ -78,10 +89,34 @@ export function ReadingFullSetWrongbookPractice({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [answerableStepKey, setAnswerableStepKey] = useState("");
+  const performanceStartedAtRef = useRef(performance.now());
   const startedAtRef = useRef(Date.now());
   const questionStartedAtRef = useRef(Date.now());
   const activeQuestionKeyRef = useRef("");
   const questionTimesRef = useRef<Record<string, number>>({});
+  const firstPhaseRef = useRef(new Set<string>());
+  const preloadedTargetRef = useRef(new Set<string>());
+  const imagePreloadCacheRef = useRef(new ReadingFullSetImagePreloadCache());
+  const workspaceRef = useRef<HTMLElement | null>(null);
+
+  const logFirstPhase = useCallback((event: string, detail: Record<string, unknown> = {}) => {
+    if (firstPhaseRef.current.has(event)) return;
+    firstPhaseRef.current.add(event);
+    logStudentPerformance({
+      elapsedMs: Math.round((performance.now() - performanceStartedAtRef.current) * 10) / 10,
+      event,
+      sourceAttemptId,
+      ...detail
+    });
+  }, [sourceAttemptId]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => logFirstPhase("wrongbook_page_shell_visible"));
+    return () => cancelAnimationFrame(frame);
+  }, [logFirstPhase]);
+
+  useEffect(() => () => imagePreloadCacheRef.current.clear(), []);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -143,6 +178,8 @@ export function ReadingFullSetWrongbookPractice({
   const currentOccurrenceId = current?.occurrenceId ?? "";
   const currentQuestionId = currentQuestion?.questionId ?? "";
   const currentModule = current?.practice.item.module;
+  const currentStepKey = step ? `${step.occurrenceId}:${step.questionId}` : "";
+  const currentAnswerable = Boolean(currentStepKey && answerableStepKey === currentStepKey);
   const currentTargets = current?.targets;
   const editableSlotIds = useMemo(
     () => currentModule === "ctw" && currentTargets
@@ -159,6 +196,102 @@ export function ReadingFullSetWrongbookPractice({
       taskType: "full_set"
     }).toString()}`
   });
+
+  useEffect(() => {
+    if (stepIndex !== 0 || !currentQuestion || !currentModule) return;
+    const frame = requestAnimationFrame(() => logFirstPhase("wrongbook_first_question_options_visible", {
+      taskType: currentModule
+    }));
+    return () => cancelAnimationFrame(frame);
+  }, [currentModule, currentQuestion, logFirstPhase, stepIndex]);
+
+  useEffect(() => {
+    if (stepIndex !== 0 || currentModule !== "rdl") return;
+    const workspace = workspaceRef.current;
+    if (!workspace) return;
+    const recordSelectionReady = () => {
+      if (!workspace.querySelector('[data-testid="rdl-selection-surface"]')) return;
+      logFirstPhase("wrongbook_rdl_selection_ready", { taskType: "rdl" });
+    };
+    recordSelectionReady();
+    const observer = new MutationObserver(recordSelectionReady);
+    observer.observe(workspace, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [currentModule, logFirstPhase, stepIndex]);
+
+  const handleWorkspaceReady = useCallback(() => {
+    if (!currentStepKey) return;
+    setAnswerableStepKey(currentStepKey);
+    if (stepIndex === 0) {
+      if (currentModule === "rdl") {
+        logFirstPhase("wrongbook_rdl_selection_ready", { taskType: "rdl" });
+      }
+      logFirstPhase("wrongbook_first_question_fully_answerable", {
+        taskType: currentModule ?? null
+      });
+    }
+  }, [currentModule, currentStepKey, logFirstPhase, stepIndex]);
+
+  const handleWorkspaceAssetLoad = useCallback((event: SyntheticEvent<HTMLElement>) => {
+    if (stepIndex !== 0 || currentModule !== "rdl" || !(event.target instanceof HTMLImageElement)) return;
+    const image = event.target;
+    void Promise.resolve(typeof image.decode === "function" ? image.decode() : undefined).then(() => {
+      const resource = performance.getEntriesByName(image.currentSrc || image.src).at(-1) as PerformanceResourceTiming | undefined;
+      logFirstPhase("wrongbook_rdl_material_image_visible", {
+        browserDurationMs: resource ? Math.round(resource.duration * 10) / 10 : null,
+        decodedBodyBytes: resource?.decodedBodySize ?? null,
+        taskType: "rdl",
+        transferBytes: resource?.transferSize ?? null
+      });
+    }).catch(() => undefined);
+  }, [currentModule, logFirstPhase, stepIndex]);
+
+  useEffect(() => {
+    if (!currentStepKey || answerableStepKey !== currentStepKey || !item || !current) return;
+    const nextStep = steps[stepIndex + 1];
+    if (!nextStep || nextStep.occurrenceId === current.occurrenceId) return;
+    const nextTarget = item.targets.find((target) =>
+      target.occurrenceId === nextStep.occurrenceId && target.questionId === nextStep.questionId
+    );
+    if (!nextTarget) return;
+    const preloadIdentity = `${nextTarget.occurrenceId}:${nextTarget.logicalItemId}`;
+    if (preloadedTargetRef.current.has(preloadIdentity)) return;
+    preloadedTargetRef.current.add(preloadIdentity);
+    const nextPracticeKey = studentWrongQuestionsCacheKey(
+      `full-set-correction-practice:${nextTarget.logicalItemId}`
+    );
+    logStudentPerformance({
+      event: "wrongbook_next_target_preload_started",
+      taskType: nextTarget.taskType
+    });
+    void studentDataCache.load<StudentReadingPracticePayload>(
+      nextPracticeKey,
+      (session) => loadReadingPractice(nextTarget.logicalItemId, session, "preload")
+    ).then((practice) => {
+      if (!practice) {
+        logStudentPerformance({
+          event: "wrongbook_next_target_preload_failed",
+          taskType: nextTarget.taskType
+        });
+        return;
+      }
+      logStudentPerformance({
+        event: "wrongbook_next_target_practice_ready",
+        taskType: nextTarget.taskType
+      });
+      if (practice.item.module !== "rdl" || !practice.material) return;
+      return imagePreloadCacheRef.current.acquire(practice.material.imageUrl).promise.then(
+        () => logStudentPerformance({
+          event: "wrongbook_next_target_rdl_image_ready",
+          taskType: "rdl"
+        }),
+        () => logStudentPerformance({
+          event: "wrongbook_next_target_rdl_image_preload_failed",
+          taskType: "rdl"
+        })
+      );
+    });
+  }, [answerableStepKey, current, currentStepKey, item, stepIndex, steps, studentDataCache]);
 
   useEffect(() => {
     activeQuestionKeyRef.current = currentOccurrenceId && currentQuestionId
@@ -180,7 +313,7 @@ export function ReadingFullSetWrongbookPractice({
   }
 
   function updateAnswer(questionId: string, answer: ReadingAnswer) {
-    if (!current) return;
+    if (!current || (current.practice.item.module === "rdl" && !currentAnswerable)) return;
     setOccurrences((values) => ({
       ...values,
       [current.occurrenceId]: {
@@ -254,9 +387,19 @@ export function ReadingFullSetWrongbookPractice({
       <main className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
         style={current.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}>
         <p className="mb-3 text-center text-sm font-bold text-student-muted">{readingFullSetWrongbookProgressLabel(step, progress.wrongQuestionCount)} · Module {current.targets[0]?.moduleNumber}</p>
-        <section className={current.practice.item.module === "ctw"
+        <section
+          aria-busy={current.practice.item.module === "rdl" && !currentAnswerable}
+          className={current.practice.item.module === "ctw"
           ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex flex-1 flex-col bg-white"}>
+          : `flex flex-1 flex-col bg-white ${current.practice.item.module === "rdl" && !currentAnswerable ? "[&_button]:pointer-events-none [&_button]:opacity-60" : ""}`}
+          onClickCapture={(event) => {
+            if (current.practice.item.module !== "rdl" || currentAnswerable) return;
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+          onLoadCapture={handleWorkspaceAssetLoad}
+          ref={workspaceRef}
+        >
           <ReadingWorkspaceRouter
             answers={current.answers}
             currentQuestion={currentQuestion}
@@ -264,6 +407,7 @@ export function ReadingFullSetWrongbookPractice({
             lookupEnabled={readingLookupEnabled("active", current.practice.item.module)}
             layoutMode="natural"
             onAnswerChange={updateAnswer}
+            onReady={handleWorkspaceReady}
             practice={current.practice}
             readOnly={false}
           />
@@ -343,12 +487,21 @@ async function loadFullSetCorrection(input: {
   });
 }
 
-async function loadReadingPractice(itemId: string, session: StudentCacheSession) {
-  const path = `/api/reading/practice/${encodeURIComponent(itemId)}`;
-  return measureStudentRequest(`GET ${path}`, async (captureResponse) => {
+async function loadReadingPractice(
+  itemId: string,
+  session: StudentCacheSession,
+  purpose: "navigation" | "preload" = "navigation"
+) {
+  const path = `/api/reading/wrongbook-attempts/practice/${encodeURIComponent(itemId)}`;
+  return measureStudentRequest(`GET ${path} (Full Set wrongbook ${purpose})`, async (captureResponse) => {
     const response = await fetch(path, {
       cache: "no-store",
-      headers: { Authorization: `Bearer ${session.accessToken}` }
+      headers: {
+        Authorization: `Bearer ${session.accessToken}`,
+        ...(process.env.NODE_ENV !== "production"
+          ? { "X-TPS-Performance-Debug": "1" }
+          : {})
+      }
     });
     captureResponse(response);
     const payload = await response.json().catch(() => ({})) as {

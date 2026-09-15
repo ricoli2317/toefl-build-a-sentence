@@ -60,6 +60,36 @@ export type ReadingFullSetOccurrencePracticePayload = {
   questionTimes: Record<string, number>;
 };
 
+export type ReadingFullSetBootstrapPayload = {
+  firstOccurrence: ReadingFullSetOccurrencePracticePayload;
+  runner: ReadingFullSetRunnerPayload;
+  traceId: string;
+};
+
+export function isReadingFullSetBootstrapPayload(
+  value: unknown
+): value is ReadingFullSetBootstrapPayload {
+  if (!value || typeof value !== "object") return false;
+  const payload = value as Partial<ReadingFullSetBootstrapPayload>;
+  if (
+    !payload.runner
+    || !isReadingFullSetAttemptSummary(payload.runner.attempt)
+    || !Array.isArray(payload.runner.occurrences)
+    || typeof payload.runner.title !== "string"
+    || !payload.firstOccurrence
+    || typeof payload.traceId !== "string"
+  ) return false;
+  const first = payload.firstOccurrence as Partial<ReadingFullSetOccurrencePracticePayload>;
+  return Boolean(first.occurrence)
+    && typeof first.answerRevision === "number"
+    && Boolean(first.answers && typeof first.answers === "object")
+    && Boolean(first.practice && typeof first.practice === "object")
+    && Boolean(first.questionTimes && typeof first.questionTimes === "object")
+    && payload.runner.occurrences.some(
+      (occurrence) => occurrence.occurrenceId === first.occurrence?.occurrenceId
+    );
+}
+
 export type ReadingFullSetRunnerPosition = {
   occurrenceIndex: number;
   questionIndex: number;

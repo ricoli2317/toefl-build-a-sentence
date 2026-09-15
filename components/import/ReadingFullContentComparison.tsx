@@ -2,6 +2,7 @@
 
 import type {
   ReadingInsertionPositionReview,
+  ReadingReviewMarker,
   ReadingReviewVersion
 } from "@/lib/reading/reviewPresentation";
 
@@ -94,23 +95,36 @@ function PassageParagraph({ paragraph }: {
   );
 }
 
-function InsertionMarkers({ markers }: { markers: ReadingReviewVersion["passage"] extends infer T
-  ? T extends { paragraphs: Array<{ markers: infer M }> } ? M : never
-  : never }) {
-  return (markers as ReadingReviewVersion["passage"] extends infer T
-    ? T extends { paragraphs: Array<{ markers: infer M }> } ? M : never
-    : never).map((marker) => (
+function InsertionMarkers({ markers }: { markers: ReadingReviewMarker[] }) {
+  return [...markers].sort((left, right) => left.locationNumber - right.locationNumber).map((marker) => (
     <span
-      aria-label={`题目 ${marker.questionNumber} 插入位置：${marker.label}`}
-      className="mx-1 inline-flex items-center gap-1 rounded bg-amber-200 px-1.5 py-0.5 font-bold text-amber-900 ring-2 ring-amber-400"
+      aria-label={`题目 ${marker.questionNumber} Location ${marker.locationNumber}：${marker.label}${marker.duplicate ? "，重复位置" : ""}`}
+      className={`mx-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-bold ring-2 ${markerClassName(marker)}`}
       data-boundary-index={marker.boundaryIndex}
+      data-comparison-status={marker.comparisonStatus}
+      data-duplicate={marker.duplicate ? "true" : "false"}
       data-paragraph-order={marker.paragraphOrder}
-      key={`${marker.questionNumber}-${marker.semanticKey}`}
+      key={`${marker.questionNumber}-${marker.locationNumber}-${marker.semanticKey}`}
       role="note"
     >
-      <span aria-hidden="true">│</span>题目 {marker.questionNumber} 插入位置
+      <span aria-hidden="true">│</span>Location {marker.locationNumber}
+      <span className="text-[10px] font-semibold">{markerStatusLabel(marker)}</span>
     </span>
   ));
+}
+
+function markerClassName(marker: ReadingReviewMarker) {
+  if (marker.duplicate) return "bg-red-100 text-red-800 ring-red-400";
+  if (marker.comparisonStatus === "existing_only") return "bg-amber-100 text-amber-900 ring-amber-400";
+  if (marker.comparisonStatus === "incoming_only") return "bg-blue-100 text-blue-900 ring-blue-400";
+  return "bg-emerald-100 text-emerald-900 ring-emerald-400";
+}
+
+function markerStatusLabel(marker: ReadingReviewMarker) {
+  if (marker.duplicate) return "重复";
+  if (marker.comparisonStatus === "existing_only") return "题库独有";
+  if (marker.comparisonStatus === "incoming_only") return "CSV 独有";
+  return "共同";
 }
 
 function ContextLine({ label, sentence }: {

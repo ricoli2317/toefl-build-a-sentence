@@ -23,8 +23,26 @@ export type ReadingInsertionPositionReview = {
   nextSentence: ReadingReviewSentenceContext | null;
 };
 
+export type ReadingInsertionDuplicateReview = {
+  position: ReadingInsertionPositionReview;
+  locationNumbers: number[];
+};
+
+export type ReadingInsertionAnchorSetReview = {
+  resolvedAnchors: Array<{
+    anchorId: string;
+    locationNumber: number;
+    position: ReadingInsertionPositionReview;
+  }>;
+  uniquePositions: ReadingInsertionPositionReview[];
+  duplicates: ReadingInsertionDuplicateReview[];
+};
+
 export type ReadingReviewMarker = ReadingInsertionPositionReview & {
   questionNumber: number;
+  locationNumber: number;
+  comparisonStatus: "common" | "existing_only" | "incoming_only";
+  duplicate: boolean;
 };
 
 export type ReadingReviewVersion = {
@@ -90,6 +108,41 @@ export function resolveReadingInsertionPosition(
     label,
     previousSentence: sentenceContext(previous, paragraphs),
     nextSentence: sentenceContext(next, paragraphs)
+  };
+}
+
+/**
+ * Resolves insertion candidates to paragraph/boundary identities before any
+ * reconciliation. Anchor IDs, sentence IDs, location numbers, and array order
+ * are deliberately excluded from the semantic identity.
+ */
+export function buildReadingInsertionAnchorSet(
+  passage: ReadingPassage,
+  anchors: ReadingInsertionAnchor[]
+): ReadingInsertionAnchorSetReview {
+  const resolvedAnchors = [...anchors]
+    .sort((left, right) => left.anchorOrder - right.anchorOrder)
+    .map((anchor) => ({
+      anchorId: anchor.anchorId,
+      locationNumber: anchor.anchorOrder,
+      position: resolveReadingInsertionPosition(passage, anchor)
+    }));
+  const bySemanticKey = new Map<string, typeof resolvedAnchors>();
+  for (const anchor of resolvedAnchors) {
+    bySemanticKey.set(anchor.position.semanticKey, [
+      ...(bySemanticKey.get(anchor.position.semanticKey) ?? []),
+      anchor
+    ]);
+  }
+  return {
+    resolvedAnchors,
+    uniquePositions: Array.from(bySemanticKey.values(), (matches) => matches[0].position),
+    duplicates: Array.from(bySemanticKey.values())
+      .filter((matches) => matches.length > 1)
+      .map((matches) => ({
+        position: matches[0].position,
+        locationNumbers: matches.map((match) => match.locationNumber)
+      }))
   };
 }
 

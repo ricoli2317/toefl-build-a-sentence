@@ -3,6 +3,19 @@
 import { logStudentPerformance } from "@/lib/studentPerformance.client";
 
 export type ReadingFullSetPerformancePhase =
+  | "m1_start_click"
+  | "m1_start_request_start"
+  | "m1_attempt_prepare"
+  | "m1_definition_resolution"
+  | "m1_first_occurrence_content"
+  | "m1_bootstrap_response"
+  | "m1_route_navigation"
+  | "m1_state_applied"
+  | "m1_first_ctw_mounted"
+  | "m1_first_interactive"
+  | "m1_activation_start"
+  | "m1_activation_end"
+  | "m1_countdown_active"
   | "m1_submit_click"
   | "m1_final_flush_start"
   | "m1_final_flush_end"
@@ -125,6 +138,22 @@ export async function fetchReadingFullSetWithTimeout(
   } finally {
     window.clearTimeout(timeout);
   }
+}
+
+export function readingFullSetServerTimingDuration(
+  response: Response,
+  phase: string
+) {
+  const header = response.headers.get("Server-Timing");
+  if (!header) return null;
+  for (const metric of header.split(/,\s*/)) {
+    const description = /(?:^|;)desc="([^"]+)"/.exec(metric)?.[1];
+    if (description !== phase) continue;
+    const duration = /(?:^|;)dur=([0-9.]+)/.exec(metric)?.[1];
+    const parsed = duration ? Number(duration) : Number.NaN;
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
 }
 
 function roundDuration(value: number) {
