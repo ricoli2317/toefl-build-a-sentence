@@ -868,6 +868,7 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
   const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
   const shell = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
+  const fullSetReview = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
   const todayPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/today/reading/practice/page.tsx"), "utf8");
   const historyPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/history/reading/practice/page.tsx"), "utf8");
 
@@ -878,8 +879,11 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
   assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
-  assert.match(shell, /submitLabel = "Submit"/);
-  assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*submitLabel/);
+  assert.match(shell, /aria-label="Submit"/);
+  assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*>Submit<\/span>/);
+  assert.doesNotMatch(shell, /Submit Module/);
+  assert.match(shell, /readingQuestionNavigationTargets\(reviewItems\.map\(\(item\) => item\.questionId\), reviewIndex\)/);
+  assert.match(fullSetReview, /readingQuestionNavigationTargets\([\s\S]*candidate\.occurrenceId[\s\S]*candidate\.questionId/);
   assert.match(todayPage, /itemId=\{searchParams\.itemId\}/);
   assert.match(historyPage, /itemId=\{searchParams\.itemId\}/);
 });

@@ -166,6 +166,30 @@ export function moveReadingNavigation(
   };
 }
 
+export function readingQuestionNavigationTargets(
+  questionKeys: string[],
+  currentIndex: number
+): { previousIndex: number | null; nextIndex: number | null } {
+  if (!questionKeys.length) return { previousIndex: null, nextIndex: null };
+  const boundedIndex = Math.max(0, Math.min(questionKeys.length - 1, currentIndex));
+  const uniqueQuestionKeys: string[] = [];
+  const questionStartIndices: number[] = [];
+  const seen = new Set<string>();
+  questionKeys.forEach((key, index) => {
+    if (seen.has(key)) return;
+    seen.add(key);
+    uniqueQuestionKeys.push(key);
+    questionStartIndices.push(index);
+  });
+  const questionPosition = uniqueQuestionKeys.indexOf(questionKeys[boundedIndex]);
+  return {
+    previousIndex: questionPosition > 0 ? questionStartIndices[questionPosition - 1] : null,
+    nextIndex: questionPosition < questionStartIndices.length - 1
+      ? questionStartIndices[questionPosition + 1]
+      : null
+  };
+}
+
 export function calculateReadingElapsedSeconds(sessionStartedAtMs: number, nowMs = Date.now()) {
   return calculateActiveWritingTimer({
     persistedElapsedSeconds: 0,

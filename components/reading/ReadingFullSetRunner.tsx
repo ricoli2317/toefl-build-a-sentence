@@ -70,6 +70,7 @@ import {
   ReadingPracticeHeader,
   ReadingQuestionViewport,
   ReadingWorkspaceRouter,
+  readingShellStyle,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
 
@@ -1620,7 +1621,7 @@ export function ReadingFullSetRunner({
     : `Questions ${displayRange.start}–${displayRange.end} / ${moduleQuestionCount}`}`;
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={() => void leavePractice()}
@@ -1632,7 +1633,7 @@ export function ReadingFullSetRunner({
         title={runner.title}
       />
       <main
-        className="mx-auto h-[calc(100dvh-68px)] min-h-0"
+        className="mx-auto h-[calc(100dvh-var(--reading-header-height))] min-h-0"
         style={readingTwoColumnScaleStyle}
       >
         <ReadingQuestionViewport
@@ -1646,7 +1647,6 @@ export function ReadingFullSetRunner({
           readOnly={false}
           submitError={saveError || error}
           submitDisabled={!currentPayload || !workspaceInteractive || navigating}
-          submitLabel={`Submit Module ${moduleNumber}`}
           submitting={submitting}
         >
           {occurrenceLoad.status === "error" ? (

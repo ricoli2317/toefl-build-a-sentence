@@ -12,6 +12,7 @@ const {
   calculateReadingElapsedSeconds,
   createReadingNavigation,
   moveReadingNavigation,
+  readingQuestionNavigationTargets,
   setReadingAnswer
 } = require("../lib/reading/practiceState.ts");
 const {
@@ -114,6 +115,26 @@ test("CTW remains one workspace while preserving all scoring points", () => {
   assert.equal(moveReadingNavigation(navigation, 1).currentIndex, 0);
 });
 
+test("review side navigation skips CTW slots and moves between Reading questions", () => {
+  const keys = ["ctw:q1", "ctw:q1", "ctw:q1", "rdl:q2", "rap:q3"];
+  assert.deepEqual(readingQuestionNavigationTargets(keys, 0), {
+    previousIndex: null,
+    nextIndex: 3
+  });
+  assert.deepEqual(readingQuestionNavigationTargets(keys, 2), {
+    previousIndex: null,
+    nextIndex: 3
+  });
+  assert.deepEqual(readingQuestionNavigationTargets(keys, 3), {
+    previousIndex: 0,
+    nextIndex: 4
+  });
+  assert.deepEqual(readingQuestionNavigationTargets(keys, 4), {
+    previousIndex: 3,
+    nextIndex: null
+  });
+});
+
 test("active CTW, RDL, and RAP all disable lookup through one capability gate", () => {
   assert.deepEqual(ACTIVE_READING_LOOKUP_CAPABILITIES, { ctw: false, rdl: false, rap: false });
   assert.equal(activeReadingLookupEnabled("ctw"), false);
@@ -185,7 +206,8 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   );
 
   assert.match(headerSource, /productName \? <p/);
-  assert.match(headerSource, /h-\[68px\]/);
+  assert.match(shellSource, /"--reading-header-height": "56px"/);
+  assert.match(headerSource, /h-\[var\(--reading-header-height\)\]/);
   assert.match(headerSource, /\{timeLabel\}/);
   assert.match(headerSource, /data-testid=\{progressTestId\}/);
   assert.doesNotMatch(headerSource, /min-h-\[54px\].*rounded-xl.*bg-student-primary-soft/);
@@ -195,7 +217,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   );
   assert.doesNotMatch(activeShellSource, /productName=/);
   assert.match(activeShellSource, /"h-\[100dvh\] overflow-hidden"/);
-  assert.match(activeShellSource, /h-\[calc\(100dvh-68px\)\] min-h-0/);
+  assert.match(activeShellSource, /h-\[calc\(100dvh-var\(--reading-header-height\)\)\] min-h-0/);
   assert.doesNotMatch(activeShellSource, /layoutMode="natural"/);
   assert.match(activeShellSource, /style=\{readingTwoColumnScaleStyle\}/);
   assert.match(shellSource, /"--reading-scale-unit": "clamp\(0\.875px, min\(calc\(0\.5px \+ 0\.034722vw\), calc\(0\.4px \+ 0\.066667vh\)\), 1\.12px\)"/);
@@ -206,18 +228,25 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.doesNotMatch(sharedShellSource, /divide-x|border-l|border-r/);
   assert.match(shellSource, /function ReadingQuestionColumn/);
   assert.doesNotMatch(sharedShellSource, /max-w-3xl/);
-  assert.match(shellSource, /fontSize: "17em"/);
+  assert.ok((shellSource.match(/fontSize: "18em"/g) ?? []).length >= 2);
   assert.match(shellSource, /gap: "24em"/);
-  assert.match(shellSource, /height: `\$\{20 \/ 17\}em`/);
+  assert.match(shellSource, /height: `\$\{20 \/ 18\}em`/);
   assert.equal((shellSource.match(/<ReadingQuestionColumn labelledBy=/g) ?? []).length, 2);
   assert.ok((shellSource.match(/style=\{readingQuestionTextStyle\}/g) ?? []).length >= 2);
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
-  assert.match(viewportSource, /h-\[calc\(100dvh-68px\)\].*py-\[12px\]/);
+  assert.match(viewportSource, /h-\[calc\(100dvh-var\(--reading-header-height\)\)\].*py-\[12px\]/);
   assert.doesNotMatch(viewportSource, /100dvh-92px/);
   assert.match(viewportSource, /pointer-events-none absolute inset-0/);
   assert.match(viewportSource, /aria-label="Previous"/);
   assert.match(viewportSource, /aria-label="Next"/);
-  assert.match(viewportSource, /aria-label=\{submitLabel\}[\s\S]*className=\{stepButtonClassName\}/);
+  assert.match(viewportSource, /aria-label="Submit"[\s\S]*className=\{stepButtonClassName\}/);
+  assert.match(viewportSource, /h-\[76px\] w-\[52px\]/);
+  assert.match(viewportSource, /group-disabled:bg-\[#f4f4f7\]/);
+  assert.match(viewportSource, /group-disabled:text-student-muted\/45/);
+  assert.match(viewportSource, />Previous<|>Previous\}/);
+  assert.match(viewportSource, />Next<|>Next\}/);
+  assert.match(viewportSource, />Submit<|>Submit\}/);
+  assert.doesNotMatch(viewportSource, /Q \d|Submit Module|size="36em"/);
   assert.doesNotMatch(viewportSource, /bg-student-primary px-\[14em\]/);
   const choiceListSource = shellSource.slice(
     shellSource.indexOf("function ChoiceOptionList"),
@@ -228,7 +257,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
 });
 
-test("CTW spacing stays in natural flow without compounding its 17em text size", () => {
+test("CTW passage is vertically centered in the body without compounding its 18em text size", () => {
   const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const ctwSource = source.slice(
     source.indexOf("function CtwPracticeWorkspace"),
@@ -236,12 +265,14 @@ test("CTW spacing stays in natural flow without compounding its 17em text size",
   );
 
   assert.match(ctwSource, /text-center text-\[20em\]/);
-  assert.match(ctwSource, /style=\{\{ marginTop: `\$\{28 \/ 17\}em` \}\}/);
-  assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 17\}em`/);
+  assert.match(ctwSource, /flex h-full min-h-0 max-w-4xl flex-col/);
+  assert.match(ctwSource, /flex min-h-0 flex-1 flex-col/);
+  assert.match(ctwSource, /my-auto w-full py-\[24em\] text-left text-\[18em\]/);
+  assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 18\}em`/);
   assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|mt-auto/);
 });
 
-test("single-practice timer and exit action use the shared lightweight Reading header", () => {
+test("single-practice timer uses the shared lightweight Reading header without a second exit action", () => {
   const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const headerSource = source.slice(
     source.indexOf("export function ReadingPracticeHeader"),
@@ -249,8 +280,7 @@ test("single-practice timer and exit action use the shared lightweight Reading h
   );
 
   assert.match(headerSource, /\{timeLabel\}[\s\S]*timeValue \?\? formatWritingTimer\(elapsedSeconds\)/);
-  assert.match(headerSource, /onExit[\s\S]*className="writing-header-back"/);
-  assert.doesNotMatch(headerSource, /writing-exit-button/);
+  assert.doesNotMatch(headerSource, /onExit|Exit Practice|DoorOpen|writing-exit-button/);
 });
 
 test("Full Set and wrongbook entry points reuse the compact header and fixed question viewport", () => {
@@ -267,6 +297,7 @@ test("Full Set and wrongbook entry points reuse the compact header and fixed que
     assert.doesNotMatch(source, /layoutMode="natural"|h-\[76px\]|100dvh-76px/);
   }
   assert.match(sources[0], /timeLabel="Time Left"/);
+  assert.doesNotMatch(sources[0], /Submit Module|submitLabel=/);
   assert.match(sources[0], /Questions \$\{displayRange\.start\}–\$\{displayRange\.end\} \/ \$\{moduleQuestionCount\}/);
 });
 
@@ -307,9 +338,11 @@ test("readonly Reading pages scroll outside a fixed question viewport", () => {
   assert.doesNotMatch(practiceShell, /layoutMode="natural"/);
   assert.match(practiceShell, /<ReadingQuestionViewport/);
   assert.match(fullSetShell, /min-h-\[100dvh\]/);
-  assert.match(fullSetShell, /min-h-\[calc\(100dvh-68px\)\]/);
+  assert.match(fullSetShell, /min-h-\[calc\(100dvh-var\(--reading-header-height\)\)\]/);
   assert.doesNotMatch(fullSetShell, /layoutMode="natural"/);
   assert.match(fullSetShell, /<ReadingQuestionViewport/);
+  assert.match(fullSetShell, /readingQuestionNavigationTargets\([\s\S]*item\.occurrenceId[\s\S]*item\.questionId/);
+  assert.doesNotMatch(fullSetShell, /onNext=\{\(\) => selectReviewItem\(activeIndex \+ 1\)\}/);
   assert.doesNotMatch(fullSetShell, /document\.(body|documentElement)\.style\.overflow/);
 });
 

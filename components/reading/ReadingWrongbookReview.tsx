@@ -7,7 +7,7 @@ import { isReadingAttemptSummary } from "@/lib/reading/attempts";
 import type { ReadingCorrectionAnswerPresentation } from "@/lib/reading/correctionResult";
 import type { SubmittedReadingReviewPayload } from "@/lib/reading/review";
 import type { SubmittedReadingReviewItem } from "@/lib/reading/review";
-import type { ReadingAnswerState } from "@/lib/reading/practiceState";
+import { readingQuestionNavigationTargets, type ReadingAnswerState } from "@/lib/reading/practiceState";
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import {
@@ -17,6 +17,7 @@ import {
   ReadingPracticeShell,
   ReadingQuestionViewport,
   ReadingWorkspaceRouter,
+  readingShellStyle,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
 
@@ -152,6 +153,10 @@ function ReadingFullSetWrongbookReviewShell({
     ? review.occurrences.find((candidate) => candidate.occurrenceId === item.occurrenceId)
     : null;
   const question = occurrence?.practice.questions.find((candidate) => candidate.questionId === item?.questionId);
+  const questionNavigationTargets = readingQuestionNavigationTargets(
+    review.reviewItems.map((candidate) => `${candidate.occurrenceId}:${candidate.questionId}`),
+    index
+  );
   if (!item || !occurrence || !question) {
     return <ReadingPracticeMessage description="订正作答内容不完整。" onLeave={onBack} title="无法打开订正作答" />;
   }
@@ -160,7 +165,7 @@ function ReadingFullSetWrongbookReviewShell({
   );
   const disclosure = review.disclosures[item.answerId];
   return (
-    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
+    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={onBack}
@@ -168,7 +173,7 @@ function ReadingFullSetWrongbookReviewShell({
         showElapsed={false}
         title={`错题订正结果 · ${review.attempt.title}`}
       />
-      <main className="mx-auto min-h-[calc(100dvh-68px)]" style={readingTwoColumnScaleStyle}>
+      <main className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]" style={readingTwoColumnScaleStyle}>
         <section className="mb-3 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className={`text-sm font-bold ${item.isCorrect ? "text-student-primary" : "text-student-error"}`}>第{item.order}题 · {item.isCorrect ? "正确" : "错误"}</p>
@@ -183,11 +188,15 @@ function ReadingFullSetWrongbookReviewShell({
           <ReadingAnswerDisclosure disclosure={disclosure} />
         </section>
         <ReadingQuestionViewport
-          canGoNext={index < review.reviewItems.length - 1}
-          canGoPrevious={index > 0}
+          canGoNext={questionNavigationTargets.nextIndex !== null}
+          canGoPrevious={questionNavigationTargets.previousIndex !== null}
           module={occurrence.practice.item.module}
-          onNext={() => setIndex(index + 1)}
-          onPrevious={() => setIndex(index - 1)}
+          onNext={() => {
+            if (questionNavigationTargets.nextIndex !== null) setIndex(questionNavigationTargets.nextIndex);
+          }}
+          onPrevious={() => {
+            if (questionNavigationTargets.previousIndex !== null) setIndex(questionNavigationTargets.previousIndex);
+          }}
           readOnly
         >
           <ReadingWorkspaceRouter

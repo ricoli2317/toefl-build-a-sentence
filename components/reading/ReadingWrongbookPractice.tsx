@@ -129,7 +129,6 @@ export function ReadingWrongbookPractice({
     return (
       <ReadingPracticePendingShell
         onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
-        onExit={() => router.push(STUDENT_ROUTES.wrongQuestions)}
         practice={previewPractice}
         reviewTitle={`错题订正 · ${queuedItem?.title ?? previewPractice.item.title}`}
       />
@@ -154,7 +153,6 @@ export function ReadingWrongbookPractice({
       attempt={ready.attempt}
       initialAnswers={ready.initialAnswers}
       onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
-      onExit={() => router.push(STUDENT_ROUTES.wrongQuestions)}
       practice={ready.practice}
       reviewTitle={`错题订正 · ${current.title} · ${index + 1}/${queue.data?.items.length ?? 1}`}
       wrongbook={{

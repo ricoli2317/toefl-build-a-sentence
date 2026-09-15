@@ -51,6 +51,7 @@ import {
   ReadingPracticeHeader,
   ReadingQuestionViewport,
   ReadingWorkspaceRouter,
+  readingShellStyle,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
 
@@ -380,14 +381,14 @@ export function ReadingFullSetWrongbookPractice({
   }
   if (!attempt || !current || !currentQuestion) return <Message description="正在加载错题和原题练习界面..." />;
   return (
-    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={elapsedSeconds}
         onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
         progressLabel={`Module ${current.targets[0]?.moduleNumber} · ${readingFullSetWrongbookProgressLabel(step, progress.wrongQuestionCount)}`}
         title={`错题订正 · ${item?.title}`}
       />
-      <main className="mx-auto h-[calc(100dvh-68px)] min-h-0" style={readingTwoColumnScaleStyle}>
+      <main className="mx-auto h-[calc(100dvh-var(--reading-header-height))] min-h-0" style={readingTwoColumnScaleStyle}>
         <ReadingQuestionViewport
           canGoNext={stepIndex < steps.length - 1}
           canGoPrevious={stepIndex > 0}
