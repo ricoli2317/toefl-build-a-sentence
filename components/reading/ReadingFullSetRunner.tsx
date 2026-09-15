@@ -26,7 +26,6 @@ import {
   readingFullSetAttemptPhase,
   readingFullSetCurrentModuleAttempt,
   readingFullSetDisplayRange,
-  readingFullSetRemainingSeconds,
   readingFullSetRestoredPosition,
   readingFullSetRunnerModuleKey,
   type ReadingFullSetAttemptSummary,
@@ -34,6 +33,13 @@ import {
   type ReadingFullSetRunnerPayload,
   type ReadingFullSetRunnerPosition
 } from "@/lib/reading/fullSetAttempts";
+import {
+  isReadingFullSetAttemptTimerStale,
+  mergeReadingFullSetTimerState,
+  readReadingFullSetTimer,
+  type ReadingFullSetTimerMergeMode,
+  type ReadingFullSetTimerState
+} from "@/lib/reading/fullSetTimer";
 import {
   ReadingFullSetCursorQueue,
   type ReadingFullSetCursorSnapshot
@@ -113,6 +119,10 @@ type CursorResponse = {
   error?: string;
   reason?: "locked" | "stale_revision" | "timed_out";
 };
+type TimerPauseResponse = AttemptResponse & {
+  accepted?: boolean;
+  reason?: "locked" | "stale_revision";
+};
 
 type PendingSave = {
   answers: ReadingAnswerState;
@@ -172,7 +182,7 @@ export function ReadingFullSetRunner({
   const questionTimesRef = useRef<Record<string, Record<string, number>>>({});
   const activeTimingRef = useRef<{ occurrenceId: string; questionId: string; startedAt: number } | null>(null);
   const revisionRef = useRef(0);
-  const syncRef = useRef({ clientNowAtSyncMs: Date.now(), serverNow: "" });
+  const timerRef = useRef<ReadingFullSetTimerState | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [error, setError] = useState("");
   const [saveError, setSaveError] = useState("");
@@ -215,6 +225,7 @@ export function ReadingFullSetRunner({
   }
   const timeoutSubmitStartedRef = useRef(false);
   const timeoutRetryAfterRef = useRef(0);
+  const timerSessionAttemptRef = useRef<string | null>(null);
   const runnerGenerationRef = useRef(0);
   const occurrenceRequestRef = useRef(0);
   const activeLoadPauseRef = useRef<{ expiresAt: string; loadId: string } | null>(null);
@@ -261,7 +272,10 @@ export function ReadingFullSetRunner({
     setInteractiveOccurrenceId("");
   }, []);
 
-  const applyRunner = useCallback((next: ReadingFullSetRunnerPayload) => {
+  const applyRunner = useCallback((
+    next: ReadingFullSetRunnerPayload,
+    timerMode: ReadingFullSetTimerMergeMode = "preserve_active"
+  ) => {
     const previousModuleKey = runnerRef.current
       ? readingFullSetRunnerModuleKey(runnerRef.current.attempt)
       : null;
@@ -287,6 +301,7 @@ export function ReadingFullSetRunner({
       setOccurrenceLoad({ status: "idle" });
       movingRef.current = false;
       setNavigating(false);
+      timerSessionAttemptRef.current = null;
     }
     runnerRef.current = next;
     setRunner(next);
@@ -301,23 +316,18 @@ export function ReadingFullSetRunner({
     if (moduleAttempt) {
       cursorQueueRef.current?.prime(moduleAttempt.moduleAttemptId, moduleAttempt.cursorRevision);
     }
-    if (moduleAttempt?.status === "preparing") {
-      revisionRef.current = moduleAttempt.answerRevision;
-      setRemainingSeconds(moduleAttempt.timeLimitSeconds);
-      timeoutSubmitStartedRef.current = false;
-      timeoutRetryAfterRef.current = 0;
-    } else if (moduleAttempt?.status === "active" && moduleAttempt.deadlineAt) {
-      revisionRef.current = moduleAttempt.answerRevision;
-      syncRef.current = {
-        clientNowAtSyncMs: Date.now(),
-        serverNow: next.attempt.serverNow
-      };
-      setRemainingSeconds(readingFullSetRemainingSeconds({
-        clientNowAtSyncMs: syncRef.current.clientNowAtSyncMs,
-        clientNowMs: Date.now(),
-        deadlineAt: moduleAttempt.deadlineAt ?? syncRef.current.serverNow,
-        serverNow: next.attempt.serverNow
-      }));
+    if (moduleAttempt) {
+      revisionRef.current = Math.max(revisionRef.current, moduleAttempt.answerRevision);
+    }
+    const nextTimer = mergeReadingFullSetTimerState({
+      current: timerRef.current,
+      incomingAttempt: next.attempt,
+      mode: timerMode
+    });
+    timerRef.current = nextTimer;
+    const nextRemaining = readReadingFullSetTimer(nextTimer);
+    setRemainingSeconds(nextRemaining);
+    if (previousModuleKey !== nextModuleKey || timerMode === "authoritative") {
       timeoutSubmitStartedRef.current = false;
       timeoutRetryAfterRef.current = 0;
     }
@@ -338,7 +348,7 @@ export function ReadingFullSetRunner({
       (occurrence) => occurrence.occurrenceId === occurrenceId
     );
     if (occurrenceIndex < 0) throw new Error(`Module ${moduleNumber} 首题状态无效。`);
-    applyRunner(bootstrap.runner);
+    applyRunner(bootstrap.runner, "authoritative");
     const occurrenceKey = readingFullSetOccurrenceCacheKey({
       attemptId,
       moduleNumber,
@@ -399,18 +409,27 @@ export function ReadingFullSetRunner({
     if (moduleAttempt && payload.firstOccurrence) {
       applyBootstrap(payload, moduleAttempt.moduleNumber);
     } else {
-      applyRunner(payload.runner);
+      applyRunner(payload.runner, "authoritative");
     }
     return payload.runner;
   }, [applyBootstrap, applyRunner, attemptId, expectedFullSetId]);
 
-  const applyAttempt = useCallback((attempt: ReadingFullSetAttemptSummary) => {
+  const applyAttempt = useCallback((
+    attempt: ReadingFullSetAttemptSummary,
+    timerMode: ReadingFullSetTimerMergeMode = "preserve_active"
+  ) => {
     const current = runnerRef.current;
     if (current) {
+      if (isReadingFullSetAttemptTimerStale(current.attempt, attempt)) return false;
       const moduleChanged = readingFullSetRunnerModuleKey(current.attempt)
         !== readingFullSetRunnerModuleKey(attempt);
-      applyRunner({ ...current, attempt, occurrences: moduleChanged ? [] : current.occurrences });
+      applyRunner(
+        { ...current, attempt, occurrences: moduleChanged ? [] : current.occurrences },
+        timerMode
+      );
+      return true;
     }
+    return false;
   }, [applyRunner]);
 
   const finishLoadPause = useCallback(async (token: string, loadId: string) => {
@@ -425,7 +444,7 @@ export function ReadingFullSetRunner({
         if (!response.ok || !payload.finished || !payload.attempt) {
           throw new Error(payload.error ?? "题目加载计时同步失败，请重试。");
         }
-        applyAttempt(payload.attempt);
+        applyAttempt(payload.attempt, "authoritative");
         if (activeLoadPauseRef.current?.loadId === loadId) updateActiveLoadPause(null);
         return;
       } catch (finishError) {
@@ -878,7 +897,15 @@ export function ReadingFullSetRunner({
     }
     void (async () => {
       try {
-        if (moduleAttempt.status === "preparing") {
+        if (moduleAttempt.status === "active") {
+          const pause = activeLoadPauseRef.current;
+          if (pause) await finishLoadPause(accessToken, pause.loadId);
+        }
+        if (
+          moduleAttempt.status === "preparing"
+          || moduleAttempt.status === "paused"
+          || timerSessionAttemptRef.current !== moduleAttempt.moduleAttemptId
+        ) {
           const isModule2 = moduleAttempt.moduleNumber === 2;
           const prefix = isModule2 ? "m2" : "m1";
           logTransitionPhase(`${prefix}_first_ctw_mounted`, {
@@ -905,7 +932,10 @@ export function ReadingFullSetRunner({
           if (!response.ok || !payload.attempt) {
             throw new Error(payload.error ?? "Module 计时启动失败，请重试。");
           }
-          applyAttempt(payload.attempt);
+          if (!applyAttempt(payload.attempt, "authoritative")) {
+            throw new Error("Module 计时状态已更新，请重试。");
+          }
+          timerSessionAttemptRef.current = moduleAttempt.moduleAttemptId;
           logTransitionPhase(`${prefix}_activation_end`, {
             durationMs: performance.now() - activationStartedAt,
             moduleNumber: moduleAttempt.moduleNumber,
@@ -916,9 +946,6 @@ export function ReadingFullSetRunner({
               moduleNumber: moduleAttempt.moduleNumber
             }, true);
           });
-        } else {
-          const pause = activeLoadPauseRef.current;
-          if (pause) await finishLoadPause(accessToken, pause.loadId);
         }
         setOccurrenceLoad({ status: "idle" });
         setTimerPausedForLoad(false);
@@ -948,7 +975,7 @@ export function ReadingFullSetRunner({
         movingRef.current = false;
         setNavigating(false);
       } catch (readyError) {
-        if (moduleAttempt.status === "preparing") {
+        if (moduleAttempt.status === "preparing" || moduleAttempt.status === "paused") {
           logTransitionPhase(moduleAttempt.moduleNumber === 2 ? "m2_activation_end" : "m1_activation_end", {
             failure: readyError instanceof Error && readyError.name === "ReadingFullSetRequestTimeout"
               ? "ACTIVATION_FAILED"
@@ -1299,6 +1326,47 @@ export function ReadingFullSetRunner({
     });
   }, [currentOccurrence, currentPayload, enqueuePendingSave, runner]);
 
+  const pauseActiveModule = useCallback(async (bestEffort = false) => {
+    const activeRunner = runnerRef.current;
+    const moduleAttempt = activeRunner
+      ? readingFullSetActiveModuleAttempt(activeRunner.attempt)
+      : null;
+    const timer = timerRef.current;
+    if (
+      !accessToken
+      || !moduleAttempt
+      || !timer
+      || timer.moduleAttemptId !== moduleAttempt.moduleAttemptId
+    ) return true;
+
+    const response = await fetch(
+      `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleAttempt.moduleNumber}/pause`,
+      {
+        method: "POST",
+        cache: "no-store",
+        keepalive: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          expectedTimerRevision: timer.timerRevision,
+          moduleAttemptId: moduleAttempt.moduleAttemptId,
+          remainingSeconds: timerPausedForLoad
+            ? remainingSeconds
+            : readReadingFullSetTimer(timer)
+        })
+      }
+    );
+    const result = await response.json().catch(() => ({})) as TimerPauseResponse;
+    if (result.attempt) applyAttempt(result.attempt, "authoritative");
+    if (!response.ok || result.accepted !== true) {
+      if (bestEffort) return false;
+      throw new Error(result.error ?? "Module 计时暂停失败，请重试。");
+    }
+    return true;
+  }, [accessToken, applyAttempt, attemptId, remainingSeconds, timerPausedForLoad]);
+
   useEffect(() => {
     const saveBeforeLeaving = () => {
       commitActiveQuestionTime();
@@ -1306,13 +1374,21 @@ export function ReadingFullSetRunner({
       const moduleAttempt = runnerRef.current
         ? readingFullSetActiveModuleAttempt(runnerRef.current.attempt)
         : null;
-      if (moduleAttempt) cursorQueueRef.current?.flushBestEffort(moduleAttempt.moduleAttemptId);
+      if (!moduleAttempt) return;
+      cursorQueueRef.current?.flushBestEffort(moduleAttempt.moduleAttemptId);
+      void flushPendingSave(moduleAttempt.moduleAttemptId, moduleAttempt.moduleNumber)
+        .catch(() => undefined);
+      // Start the keepalive pause before the document is frozen. The answer
+      // queue has already initiated its own keepalive write above.
+      void pauseActiveModule(true).catch(() => undefined);
     };
     window.addEventListener("pagehide", saveBeforeLeaving);
+    window.addEventListener("popstate", saveBeforeLeaving);
     return () => {
       window.removeEventListener("pagehide", saveBeforeLeaving);
+      window.removeEventListener("popstate", saveBeforeLeaving);
     };
-  }, [commitActiveQuestionTime, stageCurrentOccurrenceSave]);
+  }, [commitActiveQuestionTime, flushPendingSave, pauseActiveModule, stageCurrentOccurrenceSave]);
 
   const move = useCallback((
     nextPosition: ReadingFullSetRunnerPosition,
@@ -1417,8 +1493,14 @@ export function ReadingFullSetRunner({
     stageCurrentOccurrenceSave();
     const saved = await flushPendingSave();
     if (!saved) return;
+    try {
+      await pauseActiveModule();
+    } catch (pauseError) {
+      setError(pauseError instanceof Error ? pauseError.message : "Module 计时暂停失败，请重试。");
+      return;
+    }
     router.push(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(expectedFullSetId)}`);
-  }, [commitActiveQuestionTime, expectedFullSetId, flushPendingSave, router, stageCurrentOccurrenceSave]);
+  }, [commitActiveQuestionTime, expectedFullSetId, flushPendingSave, pauseActiveModule, router, stageCurrentOccurrenceSave]);
 
   const submitModule = useCallback(async (automatic = false) => {
     const activeRunner = runnerRef.current;
@@ -1512,16 +1594,10 @@ export function ReadingFullSetRunner({
   useEffect(() => {
     if (!runner) return;
     const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
-    if (!moduleAttempt || !moduleAttempt.deadlineAt) return;
-    const deadlineAt = moduleAttempt.deadlineAt;
+    if (!moduleAttempt || timerRef.current?.moduleAttemptId !== moduleAttempt.moduleAttemptId) return;
     const update = () => {
       if (timerPausedForLoad) return;
-      const remaining = readingFullSetRemainingSeconds({
-        clientNowAtSyncMs: syncRef.current.clientNowAtSyncMs,
-        clientNowMs: Date.now(),
-        deadlineAt,
-        serverNow: syncRef.current.serverNow
-      });
+      const remaining = readReadingFullSetTimer(timerRef.current);
       setRemainingSeconds(remaining);
       if (
         remaining === 0
@@ -1605,7 +1681,7 @@ export function ReadingFullSetRunner({
       if (result.runner.occurrences[0]?.occurrenceId !== firstOccurrenceId) {
         throw new Error("Module 2 首题状态无效。");
       }
-      applyRunner(result.runner);
+      applyRunner(result.runner, "authoritative");
       occurrenceCacheRef.current.prime(readingFullSetOccurrenceCacheKey({
         attemptId,
         moduleNumber: 2,

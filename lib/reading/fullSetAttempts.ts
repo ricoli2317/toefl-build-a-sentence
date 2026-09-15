@@ -2,7 +2,7 @@ import type { ReadingAnswerState } from "./practiceState.ts";
 import type { ReadingModule } from "./types.ts";
 
 export type ReadingFullSetAttemptStatus = "in_progress" | "completed";
-export type ReadingFullSetModuleStatus = "preparing" | "active" | "submitted";
+export type ReadingFullSetModuleStatus = "preparing" | "active" | "paused" | "submitted";
 export type ReadingFullSetSubmissionReason = "manual" | "timeout" | null;
 
 export type ReadingFullSetModuleAttemptSummary = {
@@ -12,6 +12,8 @@ export type ReadingFullSetModuleAttemptSummary = {
   timeLimitSeconds: number;
   startedAt: string | null;
   deadlineAt: string | null;
+  remainingSeconds: number;
+  timerRevision: number;
   submittedAt: string | null;
   submissionReason: ReadingFullSetSubmissionReason;
   answerRevision: number;
@@ -109,7 +111,7 @@ export function readingFullSetAttemptPhase(
 ): ReadingFullSetAttemptPhase {
   if (attempt.status === "completed") return "completed";
   if (attempt.module2?.status === "preparing") return "module_2_preparing";
-  if (attempt.module2?.status === "active") return "module_2_active";
+  if (attempt.module2?.status === "active" || attempt.module2?.status === "paused") return "module_2_active";
   if (attempt.module1.status === "submitted") return "module_2_ready";
   return attempt.module1.status === "preparing" ? "module_1_preparing" : "module_1_active";
 }
@@ -179,7 +181,7 @@ export function readingFullSetBootstrapOccurrence(
   occurrences: ReadingFullSetRunnerOccurrence[],
   moduleAttempt: ReadingFullSetModuleAttemptSummary
 ) {
-  if (moduleAttempt.status !== "active" || !moduleAttempt.currentOccurrenceId) {
+  if ((moduleAttempt.status !== "active" && moduleAttempt.status !== "paused") || !moduleAttempt.currentOccurrenceId) {
     return occurrences[0] ?? null;
   }
   return occurrences.find(
@@ -198,7 +200,7 @@ export function readingFullSetRestoredPosition(input: {
   );
   if (occurrenceIndex < 0) return { occurrenceIndex: 0, questionIndex: 0 };
   const occurrence = input.occurrences[occurrenceIndex];
-  const questionIndex = input.moduleAttempt.status === "active"
+  const questionIndex = (input.moduleAttempt.status === "active" || input.moduleAttempt.status === "paused")
     && input.moduleAttempt.currentOccurrenceId === input.restoredOccurrenceId
     && Number.isInteger(input.moduleAttempt.currentQuestionIndex)
     && Number(input.moduleAttempt.currentQuestionIndex) >= 0
@@ -269,12 +271,19 @@ function isReadingFullSetModuleAttemptSummary(
   const moduleAttempt = value as Partial<ReadingFullSetModuleAttemptSummary>;
   return typeof moduleAttempt.moduleAttemptId === "string"
     && (moduleAttempt.moduleNumber === 1 || moduleAttempt.moduleNumber === 2)
-    && (moduleAttempt.status === "preparing" || moduleAttempt.status === "active" || moduleAttempt.status === "submitted")
+    && (moduleAttempt.status === "preparing" || moduleAttempt.status === "active" || moduleAttempt.status === "paused" || moduleAttempt.status === "submitted")
     && Number.isInteger(moduleAttempt.timeLimitSeconds)
     && (moduleAttempt.startedAt === null || typeof moduleAttempt.startedAt === "string")
     && (moduleAttempt.deadlineAt === null || typeof moduleAttempt.deadlineAt === "string")
     && (moduleAttempt.status !== "preparing" || (moduleAttempt.startedAt === null && moduleAttempt.deadlineAt === null))
-    && (moduleAttempt.status === "preparing" || (typeof moduleAttempt.startedAt === "string" && typeof moduleAttempt.deadlineAt === "string"))
+    && (moduleAttempt.status !== "active" || (typeof moduleAttempt.startedAt === "string" && typeof moduleAttempt.deadlineAt === "string"))
+    && (moduleAttempt.status !== "paused" || (typeof moduleAttempt.startedAt === "string" && moduleAttempt.deadlineAt === null))
+    && (moduleAttempt.status !== "submitted" || typeof moduleAttempt.startedAt === "string")
+    && Number.isInteger(moduleAttempt.remainingSeconds)
+    && Number(moduleAttempt.remainingSeconds) >= 0
+    && Number(moduleAttempt.remainingSeconds) <= Number(moduleAttempt.timeLimitSeconds)
+    && Number.isInteger(moduleAttempt.timerRevision)
+    && Number(moduleAttempt.timerRevision) >= 0
     && Number.isInteger(moduleAttempt.answerRevision)
     && (moduleAttempt.currentOccurrenceId === null || typeof moduleAttempt.currentOccurrenceId === "string")
     && (moduleAttempt.currentQuestionIndex === null || (Number.isInteger(moduleAttempt.currentQuestionIndex) && Number(moduleAttempt.currentQuestionIndex) >= 0))

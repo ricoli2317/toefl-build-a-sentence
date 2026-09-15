@@ -27,6 +27,8 @@ function moduleAttempt(overrides = {}) {
     currentQuestionIndex: null,
     cursorRevision: 0,
     deadlineAt: null,
+    remainingSeconds: 1230,
+    timerRevision: 0,
     moduleAttemptId: "module-attempt-1",
     moduleNumber: 1,
     startedAt: null,

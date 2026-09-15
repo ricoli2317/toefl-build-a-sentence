@@ -41,6 +41,8 @@ function moduleAttempt(moduleNumber, status = "active") {
     timeLimitSeconds: moduleNumber === 1 ? 1230 : 540,
     startedAt: status === "preparing" ? null : "2026-08-30T00:00:00.000Z",
     deadlineAt: status === "preparing" ? null : "2026-08-30T00:20:30.000Z",
+    remainingSeconds: status === "submitted" ? 0 : moduleNumber === 1 ? 1230 : 540,
+    timerRevision: 0,
     submittedAt: status === "submitted" ? "2026-08-30T00:10:00.000Z" : null,
     submissionReason: status === "submitted" ? "manual" : null,
     answerRevision: 0,
@@ -238,7 +240,7 @@ test("same-route M2 transition invalidates M1 state and applies bootstrap state"
   assert.match(runnerUi, /runnerGenerationRef\.current \+= 1/);
   assert.match(runnerUi, /occurrenceRequestRef\.current \+= 1/);
   const startModule2 = runnerUi.slice(runnerUi.indexOf("const startModule2"), runnerUi.indexOf("if (loading)"));
-  assert.match(startModule2, /result\.runner[\s\S]*result\.firstOccurrence[\s\S]*applyRunner\(result\.runner\)/);
+  assert.match(startModule2, /result\.runner[\s\S]*result\.firstOccurrence[\s\S]*applyRunner\(result\.runner, "authoritative"\)/);
   assert.doesNotMatch(startModule2, /loadRunner\(accessToken\)/);
   assert.match(startModule2, /const currentSession = getSession\(\)/);
   assert.match(startModule2, /readingFullSetTraceHeaders\(currentAccessToken, trace\)/);

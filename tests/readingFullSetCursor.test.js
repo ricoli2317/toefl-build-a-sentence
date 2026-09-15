@@ -31,6 +31,8 @@ function moduleAttempt(overrides = {}) {
     currentQuestionIndex: null,
     cursorRevision: 0,
     deadlineAt: "2026-09-15T12:30:00Z",
+    remainingSeconds: 1230,
+    timerRevision: 0,
     moduleAttemptId: "module-1",
     moduleNumber: 1,
     startedAt: "2026-09-15T12:00:00Z",
@@ -121,6 +123,8 @@ test("preparing Module ignores any cursor and submitted Module never becomes a r
     currentOccurrenceId: "m1-rap",
     currentQuestionIndex: 3,
     deadlineAt: null,
+    remainingSeconds: 1230,
+    timerRevision: 0,
     startedAt: null,
     status: "preparing"
   });

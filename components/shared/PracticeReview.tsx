@@ -5,17 +5,20 @@ export type PracticeReviewItem = {
   questionNumber?: number;
 };
 
+type PracticeReviewProps = {
+  currentIndex: number;
+  onSelect: (index: number) => void;
+} & (
+  | { items: Array<PracticeReviewItem & { questionNumber: number }>; layout: "compact" }
+  | { items: PracticeReviewItem[]; layout?: "default" }
+);
+
 export function PracticeReview({
   currentIndex,
   items,
   layout = "default",
   onSelect
-}: {
-  currentIndex: number;
-  items: PracticeReviewItem[];
-  layout?: "default" | "compact";
-  onSelect: (index: number) => void;
-}) {
+}: PracticeReviewProps) {
   const compact = layout === "compact";
 
   return (
@@ -33,7 +36,7 @@ export function PracticeReview({
           <button
             aria-current={currentIndex === index ? "true" : undefined}
             className={`${compact
-              ? "flex min-h-[52px] items-center justify-between gap-2 rounded-[10px] border px-3 py-2 text-left font-semibold transition hover:border-student-primary"
+              ? "relative grid min-h-[52px] place-items-center rounded-[10px] border px-3 py-2 text-left font-semibold transition hover:border-student-primary"
               : "flex items-center justify-between gap-3 rounded-[10px] border px-4 py-3 text-left font-semibold transition hover:border-student-primary"} ${
               currentIndex === index ? "border-student-primary bg-student-primary-soft" : "border-student-border bg-student-bg"
             }`}
@@ -42,8 +45,8 @@ export function PracticeReview({
             onClick={() => onSelect(index)}
             type="button"
           >
-            <span className={compact ? "inline-flex items-center tabular-nums leading-none" : undefined}>
-              {compact && item.questionNumber !== undefined ? item.questionNumber : item.label}
+            <span className={compact ? "absolute inset-y-0 left-3 inline-flex items-center text-sm tabular-nums leading-none" : undefined}>
+              {compact ? requireCompactQuestionNumber(item) : item.label}
             </span>
             <span
               className={`${compact
@@ -59,4 +62,11 @@ export function PracticeReview({
       </div>
     </article>
   );
+}
+
+function requireCompactQuestionNumber(item: PracticeReviewItem) {
+  if (!Number.isInteger(item.questionNumber) || Number(item.questionNumber) < 1) {
+    throw new Error("Compact PracticeReview items require a positive official questionNumber.");
+  }
+  return item.questionNumber;
 }

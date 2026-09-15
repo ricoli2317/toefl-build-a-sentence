@@ -120,6 +120,29 @@ test("Review targets CTW slots and RDL or RAP workspace questions through the of
   assert.equal(readingFullSetActiveReviewIndex(items, { occurrenceIndex: 0, questionIndex: 0 }, 1), 1);
 });
 
+test("Review labels expose only official CTW slot, RDL, and RAP question numbers", () => {
+  const items = buildReadingFullSetActiveReviewItems({
+    answersByOccurrence: {},
+    moduleAttemptId: "module-numbering",
+    occurrencePayloads: {},
+    occurrences: [
+      { occurrenceId: "numbered-ctw", logicalItemId: "ctw", taskType: "ctw", sourceQuestionStart: 21, sourceQuestionEnd: 23 },
+      { occurrenceId: "numbered-rdl", logicalItemId: "rdl", taskType: "rdl", sourceQuestionStart: 24, sourceQuestionEnd: 25 },
+      { occurrenceId: "numbered-rap", logicalItemId: "rap", taskType: "rap", sourceQuestionStart: 26, sourceQuestionEnd: 28 }
+    ]
+  });
+
+  assert.deepEqual(
+    items.map((item) => [item.taskType, item.questionNumber, item.label]),
+    [
+      ["ctw", 21, "21"], ["ctw", 22, "22"], ["ctw", 23, "23"],
+      ["rdl", 24, "24"], ["rdl", 25, "25"],
+      ["rap", 26, "26"], ["rap", 27, "27"], ["rap", 28, "28"]
+    ]
+  );
+  assert.equal(items.some((item) => !item.label || item.label === "-" || item.label === "."), false);
+});
+
 test("Module scope is rebuilt from only the active Module and rejects every stale Module target", () => {
   const module1Occurrences = [
     { occurrenceId: "m1-all", logicalItemId: "m1", taskType: "rap", sourceQuestionStart: 1, sourceQuestionEnd: 35 }
@@ -196,7 +219,11 @@ test("BAS and active Reading Full Set share one Review UI while Full Set open st
   assert.match(shared, /Completed[\s\S]*Incomplete/);
   assert.match(shared, /min-\[1100px\]:grid-cols-5/);
   assert.match(shared, /compact \? null : <h2[^>]*>Question status<\/h2>/);
-  assert.match(shared, /compact && item\.questionNumber !== undefined \? item\.questionNumber : item\.label/);
+  assert.match(shared, /compact \? requireCompactQuestionNumber\(item\) : item\.label/);
+  assert.match(shared, /Compact PracticeReview items require a positive official questionNumber/);
+  assert.match(shared, /relative grid min-h-\[52px\] place-items-center/);
+  assert.match(shared, /absolute inset-y-0 left-3 inline-flex items-center text-sm/);
+  assert.doesNotMatch(shared, /compact[\s\S]{0,160}justify-between/);
   const basReview = bas.slice(bas.indexOf("<PracticeReview"), bas.indexOf("/>", bas.indexOf("<PracticeReview")) + 2);
   assert.doesNotMatch(basReview, /layout=/);
   const headerOpen = runner.slice(runner.indexOf("<ReadingPracticeHeader"), runner.indexOf("<main"));
