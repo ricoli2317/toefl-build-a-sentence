@@ -135,9 +135,9 @@ test("Module scope is rebuilt from only the active Module and rejects every stal
     answersByOccurrence: {}, moduleAttemptId: "module-2", occurrencePayloads: {}, occurrences: module2Occurrences
   });
   assert.equal(m1.length, 35);
-  assert.deepEqual([m1[0].label, m1[34].label], ["Question 1", "Question 35"]);
+  assert.deepEqual([m1[0].label, m1[34].label], ["1", "35"]);
   assert.equal(m2.length, 15);
-  assert.deepEqual([m2[0].label, m2[14].label], ["Question 1", "Question 15"]);
+  assert.deepEqual([m2[0].label, m2[14].label], ["1", "15"]);
   assert.equal(m2.some((item) => item.occurrenceId.startsWith("m1-")), false);
   assert.equal(readingFullSetActiveReviewTarget(m1[0], "module-2", module2Occurrences), null);
   assert.equal(readingFullSetActiveReviewTarget({ ...m2[0], occurrenceIndex: 99 }, "module-2", module2Occurrences), null);
@@ -189,9 +189,16 @@ test("BAS and active Reading Full Set share one Review UI while Full Set open st
   assert.match(bas, /<PracticeReview/);
   assert.doesNotMatch(bas, /function ReviewPanel/);
   assert.match(runner, /<PracticeReview/);
+  assert.match(runner, /layout="compact"/);
+  assert.match(runner, /max-w-\[1600px\]/);
   assert.match(runner, /onReview=\{\(\) => setShowReview\(true\)\}/);
   assert.match(runner, /setShowReview\(false\)[\s\S]*setCtwReviewScoringPointIndex\(0\)/);
   assert.match(shared, /Completed[\s\S]*Incomplete/);
+  assert.match(shared, /min-\[1100px\]:grid-cols-5/);
+  assert.match(shared, /compact \? null : <h2[^>]*>Question status<\/h2>/);
+  assert.match(shared, /compact && item\.questionNumber !== undefined \? item\.questionNumber : item\.label/);
+  const basReview = bas.slice(bas.indexOf("<PracticeReview"), bas.indexOf("/>", bas.indexOf("<PracticeReview")) + 2);
+  assert.doesNotMatch(basReview, /layout=/);
   const headerOpen = runner.slice(runner.indexOf("<ReadingPracticeHeader"), runner.indexOf("<main"));
   assert.doesNotMatch(headerOpen, /fetch\(|loadRunner|acquireOccurrence/);
   assert.match(server, /answerRevision === 0[\s\S]*return \[\]/);

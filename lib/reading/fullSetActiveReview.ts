@@ -61,7 +61,7 @@ export function buildReadingFullSetActiveReviewItems(input: {
               )
             : input.completedQuestionNumbers?.has(questionNumber) ?? false,
           key: `${input.moduleAttemptId}:${occurrence.occurrenceId}:${questionNumber}`,
-          label: `Question ${questionNumber}`,
+          label: String(questionNumber),
           moduleAttemptId: input.moduleAttemptId,
           occurrenceId: occurrence.occurrenceId,
           occurrenceIndex,

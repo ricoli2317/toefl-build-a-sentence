@@ -1719,10 +1719,11 @@ export function ReadingFullSetRunner({
       >
         {showReview ? (
           <div className="h-full overflow-y-auto px-4 py-6 sm:px-7" data-testid="reading-full-set-active-review">
-            <div className="mx-auto max-w-4xl">
+            <div className="mx-auto w-full max-w-[1600px]">
               <PracticeReview
                 currentIndex={activeReviewIndex}
                 items={activeReviewItems}
+                layout="compact"
                 onSelect={(index) => {
                   const item = activeReviewItems[index];
                   if (item) jumpToReviewItem(item);
