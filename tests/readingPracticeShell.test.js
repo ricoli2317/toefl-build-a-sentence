@@ -411,7 +411,10 @@ test("readonly Reading answers use fixed in-viewport zones without restoring the
 
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-zone"/);
   assert.match(ctwAnswerSource, /h-\[132em\] shrink-0 items-center justify-center/);
+  assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-card"/);
+  assert.match(ctwAnswerSource, /grid h-auto w-max max-w-full/);
   assert.match(source, /items-center \$\{readOnly \? "overflow-hidden" : ""\}/);
+  assert.match(source, /const readingAnswerCardClassName = "rounded-xl bg-student-bg px-\[24px\] py-\[16px\] shadow-\[0_4px_16px_rgba\(60,47,119,0\.08\)\]"/);
   assert.match(ctwAnswerSource, /grid-cols-\[max-content_minmax\(0,auto\)\]/);
   assert.match(ctwAnswerSource, /style=\{readingQuestionTextStyle\}/);
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-slots"/);
@@ -419,12 +422,16 @@ test("readonly Reading answers use fixed in-viewport zones without restoring the
   assert.match(ctwAnswerSource, /grid auto-rows-max items-baseline gap-y-\[10px\]/);
   assert.match(ctwAnswerSource, /\[\.\.\.question\.slots\]\.sort\(\(left, right\) => left\.slotOrder - right\.slotOrder\)/);
   assert.match(ctwAnswerSource, /你的回答[\s\S]*正确答案/);
-  assert.match(ctwAnswerSource, /presentation\?\.studentAnswer/);
+  assert.match(ctwAnswerSource, /function CtwReadonlyStudentWord/);
+  assert.match(ctwAnswerSource, /!reviewItem\?\.isAnswered[\s\S]*font-medium text-student-muted[\s\S]*未作答/);
+  assert.match(ctwAnswerSource, /part\.emphasized[\s\S]*reviewItem\.isCorrect \? "text-student-primary" : "text-student-error"/);
+  assert.match(ctwAnswerSource, /data-ctw-student-fill=\{part\.emphasized \? \(reviewItem\.isCorrect \? "correct" : "incorrect"\) : undefined\}/);
   assert.match(ctwAnswerSource, /emphasizeCtwFill=\{false\}/);
-  assert.doesNotMatch(ctwAnswerSource, /text-student-primary|text-student-error|data-ctw-student-fill/);
-  assert.doesNotMatch(ctwAnswerSource, /absolute|border-t|shadow|bg-|justify-between|justify-around|space-evenly|overflow-x/);
+  assert.doesNotMatch(ctwAnswerSource, /absolute|border-t|justify-between|justify-around|space-evenly|overflow-x/);
 
   assert.match(questionColumnSource, /data-testid="reading-choice-answer-zone"/);
+  assert.match(questionColumnSource, /data-testid="reading-readonly-answer-card"/);
+  assert.match(questionColumnSource, /w-full max-w-\[640px\]/);
   assert.match(questionColumnSource, /h-\[132em\] shrink-0/);
   assert.match(questionColumnSource, /paddingLeft: "4em"/);
   assert.match(questionColumnSource, /min-h-0 flex-1 lg:overflow-y-auto/);

@@ -181,6 +181,8 @@ const readingPassageTextStyle = {
   lineHeight: 28 / 19
 } as CSSProperties;
 
+const readingAnswerCardClassName = "rounded-xl bg-student-bg px-[24px] py-[16px] shadow-[0_4px_16px_rgba(60,47,119,0.08)]";
+
 const readingSpecialNoticeStyle = {
   fontSize: "14em",
   lineHeight: 12 / 7,
@@ -1383,6 +1385,7 @@ function CtwReadonlyAnswerZone({
     const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
     return {
       presentation: reviewItem ? reviewPresentations[reviewItem.answerId] : undefined,
+      reviewItem,
       slot
     };
   });
@@ -1394,7 +1397,8 @@ function CtwReadonlyAnswerZone({
       data-testid="ctw-readonly-answer-zone"
     >
       <div
-        className="grid w-max max-w-full grid-cols-[max-content_minmax(0,auto)] items-start gap-x-[20px]"
+        className={`${readingAnswerCardClassName} grid h-auto w-max max-w-full grid-cols-[max-content_minmax(0,auto)] items-start gap-x-[20px]`}
+        data-testid="ctw-readonly-answer-card"
         style={readingQuestionTextStyle}
       >
         <div className="grid auto-rows-max items-baseline gap-y-[10px]">
@@ -1402,14 +1406,14 @@ function CtwReadonlyAnswerZone({
           <span className="whitespace-nowrap font-semibold text-student-text">正确答案</span>
         </div>
         <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]" data-testid="ctw-readonly-answer-slots">
-          {entries.map(({ presentation, slot }) => (
+          {entries.map(({ presentation, reviewItem, slot }) => (
             <div
               className="grid auto-rows-max items-baseline gap-y-[10px]"
               data-slot-order={slot.slotOrder}
               key={slot.slotId}
             >
-              <span className="whitespace-nowrap font-medium text-student-text">
-                {presentation?.studentAnswer}
+              <span className="whitespace-nowrap">
+                <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
               </span>
               <span className="whitespace-nowrap font-medium text-student-text">
                 {presentation ? (
@@ -1422,6 +1426,39 @@ function CtwReadonlyAnswerZone({
       </div>
     </div>
   );
+}
+
+function CtwReadonlyStudentWord({
+  presentation,
+  reviewItem
+}: {
+  presentation?: ReadingCorrectionAnswerPresentation;
+  reviewItem?: SubmittedReadingReviewItem;
+}) {
+  if (!presentation || presentation.correctAnswer.kind !== "ctw_word") return null;
+
+  if (!reviewItem?.isAnswered) {
+    return <span className="font-medium text-student-muted">未作答</span>;
+  }
+
+  const studentCharacters = Array.from(presentation.studentAnswer);
+  let cursor = 0;
+  return presentation.correctAnswer.parts.map((part, index) => {
+    const partLength = Array.from(part.text).length;
+    const text = studentCharacters.slice(cursor, cursor + partLength).join("");
+    cursor += partLength;
+    return (
+      <span
+        className={part.emphasized
+          ? `font-semibold ${reviewItem.isCorrect ? "text-student-primary" : "text-student-error"}`
+          : "font-medium text-student-text"}
+        data-ctw-student-fill={part.emphasized ? (reviewItem.isCorrect ? "correct" : "incorrect") : undefined}
+        key={`${index}:${part.text}`}
+      >
+        {text}
+      </span>
+    );
+  });
 }
 
 function ReadingReviewStatusBar({
@@ -1571,26 +1608,31 @@ function ReadingReadonlyChoiceAnswerZone({
       : "text-student-error";
 
   return (
-    <dl
-      className="grid items-baseline"
-      data-testid="reading-readonly-answer-block"
-      style={{ ...readingQuestionTextStyle, columnGap: "24px", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10px" }}
+    <div
+      className={`${readingAnswerCardClassName} w-full max-w-[640px]`}
+      data-testid="reading-readonly-answer-card"
     >
-      <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
-      <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
-        !reviewItem.isAnswered
-          ? "unanswered"
-          : reviewItem.isCorrect
-            ? "correct"
-            : "incorrect"
-      }>
-        {presentation.studentAnswer}
-      </dd>
-      <dt className="whitespace-nowrap font-semibold text-student-text">正确答案</dt>
-      <dd className="font-medium text-student-text">
-        <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
-      </dd>
-    </dl>
+      <dl
+        className="grid items-baseline"
+        data-testid="reading-readonly-answer-block"
+        style={{ ...readingQuestionTextStyle, columnGap: "24px", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10px" }}
+      >
+        <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
+        <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
+          !reviewItem.isAnswered
+            ? "unanswered"
+            : reviewItem.isCorrect
+              ? "correct"
+              : "incorrect"
+        }>
+          {presentation.studentAnswer}
+        </dd>
+        <dt className="whitespace-nowrap font-semibold text-student-text">正确答案</dt>
+        <dd className="font-medium text-student-text">
+          <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
+        </dd>
+      </dl>
+    </div>
   );
 }
 
