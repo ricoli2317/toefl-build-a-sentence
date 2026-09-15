@@ -174,7 +174,7 @@ function ReadingFullSetWrongbookReviewShell({
         title={`错题订正结果 · ${review.attempt.title}`}
       />
       <main className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]" style={readingTwoColumnScaleStyle}>
-        <section className="mb-3 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm">
+        <section className="mx-auto mb-3 max-w-[1600em] rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className={`text-sm font-bold ${item.isCorrect ? "text-student-primary" : "text-student-error"}`}>第{item.order}题 · {item.isCorrect ? "正确" : "错误"}</p>
             <div className="flex flex-wrap gap-1.5" aria-label="阅读作答题号导航">

@@ -115,9 +115,9 @@ type FullSetReviewResponse = Partial<ReadingFullSetReviewPayload> & { error?: st
 export const readingTwoColumnScaleStyle = {
   "--reading-scale-unit": "clamp(0.875px, min(calc(0.5px + 0.034722vw), calc(0.4px + 0.066667vh)), 1.12px)",
   fontSize: "var(--reading-scale-unit)",
-  maxWidth: "1600em",
   paddingLeft: "16em",
-  paddingRight: "16em"
+  paddingRight: "16em",
+  width: "100%"
 } as CSSProperties;
 
 export const readingShellStyle = {
@@ -497,7 +497,7 @@ function ReadingFullSetReviewShell({
         className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]"
         style={readingTwoColumnScaleStyle}
       >
-        <div className="mb-3">
+        <div className="mx-auto mb-3 max-w-[1600em]">
           <ReadingFullSetQuestionNavigator
             currentIndex={activeIndex}
             items={payload.reviewItems}
@@ -818,7 +818,7 @@ export function ReadingPracticePendingShell({
         className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]"
         style={readingTwoColumnScaleStyle}
       >
-        <p className="mb-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-3 text-sm font-semibold text-student-primary">
+        <p className="mx-auto mb-3 max-w-[1600em] rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-3 text-sm font-semibold text-student-primary">
           原题已载入，正在准备订正记录；准备完成前题面只读。
         </p>
         <ReadingQuestionViewport module={practice.item.module} readOnly>
@@ -1226,9 +1226,9 @@ function CtwPracticeWorkspace({
         />
       ) : null}
       <h1 className="text-center text-[20em] font-bold leading-[1.6] text-student-text">Fill in the missing letters in the paragraph.</h1>
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 items-center">
         <article
-          className="my-auto w-full py-[24em] text-left text-[18em] leading-[1.75] text-student-text"
+          className="w-full text-left text-[18em] leading-[1.75] text-student-text"
           data-testid="ctw-passage"
         >
           {[...question.paragraphs]
@@ -1377,7 +1377,7 @@ function ReadingReviewStatusBar({
       ? "text-student-error"
       : "text-student-muted";
   return (
-    <section className="mb-3 shrink-0 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-review-status">
+    <section className="mx-auto mb-3 max-w-[1600em] shrink-0 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-review-status">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className={`text-sm font-bold ${currentTone}`}>
           第{current.order}题 · {currentState} · {formatReviewQuestionTime(current.questionTimeSeconds)}
@@ -2319,7 +2319,7 @@ export function ReadingQuestionViewport({
 }) {
   return (
     <div
-      className="grid h-[calc(100dvh-var(--reading-header-height))] min-h-0 grid-cols-[80px_minmax(0,1fr)_80px] grid-rows-[minmax(0,1fr)_auto] py-[12px]"
+      className="grid h-[calc(100dvh-var(--reading-header-height))] min-h-0 grid-cols-[minmax(100px,1fr)_minmax(0,1440em)_minmax(100px,1fr)] grid-rows-[minmax(0,1fr)_auto] py-[12px]"
       data-testid="reading-question-viewport"
     >
       <section className={module === "ctw"
@@ -2367,9 +2367,9 @@ function ReadingQuestionNavigation({
   submitDisabled: boolean;
   submitting: boolean;
 }) {
-  const stepButtonClassName = "group flex h-[76px] w-[52px] flex-col items-center justify-center gap-1 bg-transparent text-student-primary focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary";
-  const controlClassName = "flex h-10 w-10 items-center justify-center rounded-full bg-student-primary-soft transition-colors group-hover:bg-student-primary-border group-disabled:bg-[#f4f4f7] group-disabled:text-student-muted/45";
-  const labelClassName = "text-[11px] font-bold leading-none group-disabled:text-student-muted/45";
+  const stepButtonClassName = "group flex h-[92px] w-[72px] flex-col items-center justify-center gap-1.5 bg-transparent text-student-primary focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary";
+  const controlClassName = "flex h-[60px] w-[60px] items-center justify-center rounded-full bg-student-primary-soft transition-colors group-hover:bg-student-primary-border group-disabled:bg-[#f4f4f7] group-disabled:text-student-muted/45";
+  const labelClassName = "whitespace-nowrap text-[11px] font-bold leading-none group-disabled:text-student-muted/45";
   const previousDisabled = !canGoPrevious || navigationDisabled;
   const nextDisabled = !canGoNext || navigationDisabled;
   return (
@@ -2379,14 +2379,14 @@ function ReadingQuestionNavigation({
     >
       <div className="col-start-1 row-start-1 flex items-center justify-center" data-reading-navigation-rail="previous">
         <button aria-label="Previous" className={stepButtonClassName} disabled={previousDisabled} onClick={onPrevious} type="button">
-          <span className={controlClassName}><ChevronLeft aria-hidden="true" size={26} strokeWidth={2.4} /></span>
+          <span className={controlClassName}><ChevronLeft aria-hidden="true" size={32} strokeWidth={2.4} /></span>
           <span className={labelClassName}>Previous</span>
         </button>
       </div>
       <div className="col-start-3 row-start-1 flex items-center justify-center" data-reading-navigation-rail="next">
         {canGoNext || readOnly ? (
           <button aria-label="Next" className={stepButtonClassName} disabled={nextDisabled} onClick={onNext} type="button">
-            <span className={controlClassName}><ChevronRight aria-hidden="true" size={26} strokeWidth={2.4} /></span>
+            <span className={controlClassName}><ChevronRight aria-hidden="true" size={32} strokeWidth={2.4} /></span>
             <span className={labelClassName}>Next</span>
           </button>
         ) : (
@@ -2397,7 +2397,7 @@ function ReadingQuestionNavigation({
             onClick={onSubmit}
             type="button"
           >
-            <span className={controlClassName}><ChevronRight aria-hidden="true" size={26} strokeWidth={2.4} /></span>
+            <span className={controlClassName}><ChevronRight aria-hidden="true" size={32} strokeWidth={2.4} /></span>
             <span className={labelClassName}>Submit</span>
           </button>
         )}

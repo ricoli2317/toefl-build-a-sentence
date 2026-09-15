@@ -222,7 +222,8 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.match(activeShellSource, /style=\{readingTwoColumnScaleStyle\}/);
   assert.match(shellSource, /"--reading-scale-unit": "clamp\(0\.875px, min\(calc\(0\.5px \+ 0\.034722vw\), calc\(0\.4px \+ 0\.066667vh\)\), 1\.12px\)"/);
   assert.match(shellSource, /fontSize: "var\(--reading-scale-unit\)"/);
-  assert.match(shellSource, /maxWidth: "1600em"/);
+  assert.match(shellSource, /width: "100%"/);
+  assert.doesNotMatch(shellSource, /maxWidth: "1600em"/);
   assert.match(sharedShellSource, /bg-white/);
   assert.match(sharedShellSource, /style=\{readingTitleStyle\}/);
   assert.doesNotMatch(sharedShellSource, /divide-x|border-l|border-r/);
@@ -236,7 +237,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
   assert.match(viewportSource, /h-\[calc\(100dvh-var\(--reading-header-height\)\)\].*py-\[12px\]/);
   assert.doesNotMatch(viewportSource, /100dvh-92px/);
-  assert.match(viewportSource, /grid-cols-\[80px_minmax\(0,1fr\)_80px\]/);
+  assert.match(viewportSource, /grid-cols-\[minmax\(100px,1fr\)_minmax\(0,1440em\)_minmax\(100px,1fr\)\]/);
   assert.match(viewportSource, /col-start-2 row-start-1/);
   assert.match(viewportSource, /className="contents"/);
   assert.match(viewportSource, /data-reading-navigation-rail="previous"/);
@@ -245,7 +246,9 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.match(viewportSource, /aria-label="Previous"/);
   assert.match(viewportSource, /aria-label="Next"/);
   assert.match(viewportSource, /col-start-3 row-start-1[\s\S]*aria-label="Submit"/);
-  assert.match(viewportSource, /h-\[76px\] w-\[52px\]/);
+  assert.match(viewportSource, /h-\[92px\] w-\[72px\]/);
+  assert.match(viewportSource, /h-\[60px\] w-\[60px\]/);
+  assert.match(viewportSource, /size=\{32\}/);
   assert.match(viewportSource, /group-disabled:bg-\[#f4f4f7\]/);
   assert.match(viewportSource, /group-disabled:text-student-muted\/45/);
   assert.match(viewportSource, />Previous<|>Previous\}/);
@@ -273,10 +276,10 @@ test("CTW passage is vertically centered in the body without compounding its 18e
 
   assert.match(ctwSource, /text-center text-\[20em\]/);
   assert.match(ctwSource, /flex h-full min-h-0 max-w-4xl flex-col/);
-  assert.match(ctwSource, /flex min-h-0 flex-1 flex-col/);
-  assert.match(ctwSource, /my-auto w-full py-\[24em\] text-left text-\[18em\]/);
+  assert.match(ctwSource, /flex min-h-0 flex-1 items-center/);
+  assert.match(ctwSource, /w-full text-left text-\[18em\]/);
   assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 18\}em`/);
-  assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|mt-auto/);
+  assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|m[ty]-auto|py-\[24em\]|absolute bottom|translate-y/);
 });
 
 test("single-practice timer uses the shared lightweight Reading header without a second exit action", () => {
