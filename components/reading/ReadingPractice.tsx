@@ -125,9 +125,13 @@ export const readingShellStyle = {
   "--reading-header-height": "56px"
 } as CSSProperties;
 
-const readingTitleStyle = {
+const readingTitleTypographyStyle = {
   fontSize: "24em",
-  lineHeight: 4 / 3,
+  lineHeight: 4 / 3
+} as CSSProperties;
+
+const readingTitleStyle = {
+  ...readingTitleTypographyStyle,
   padding: "1em 1.333333em 0.666667em"
 } as CSSProperties;
 
@@ -935,6 +939,7 @@ export function ReadingWorkspaceRouter({
         onReady={onReady}
         question={currentQuestion}
         readOnly={readOnly}
+        reviewItem={selectedReviewItem ?? undefined}
         reviewPresentation={reviewPresentation}
       />
     );
@@ -950,6 +955,7 @@ export function ReadingWorkspaceRouter({
         passage={practice.passage}
         question={currentQuestion as StudentRapQuestion}
         readOnly={readOnly}
+        reviewItem={selectedReviewItem ?? undefined}
         reviewPresentation={reviewPresentation}
       />
     );
@@ -1226,7 +1232,7 @@ function CtwPracticeWorkspace({
           type="text"
         />
       ) : null}
-      <h1 className="text-center text-[20em] font-bold leading-[1.6] text-student-text">Fill in the missing letters in the paragraph.</h1>
+      <h1 className="text-center font-extrabold text-student-text" style={readingTitleTypographyStyle}>Fill in the missing letters in the paragraph.</h1>
       <div className={`flex min-h-0 flex-1 items-center ${readOnly ? "overflow-hidden" : ""}`}>
         <article
           className="w-full text-left text-[19em] leading-[1.6842105263] text-student-text"
@@ -1387,7 +1393,10 @@ function CtwReadonlyAnswerZone({
       data-slot-count={entries.length}
       data-testid="ctw-readonly-answer-zone"
     >
-      <div className="grid w-max max-w-full grid-cols-[max-content_minmax(0,auto)] items-start gap-x-[20px] text-[14em] leading-[1.5]">
+      <div
+        className="grid w-max max-w-full grid-cols-[max-content_minmax(0,auto)] items-start gap-x-[20px]"
+        style={readingQuestionTextStyle}
+      >
         <div className="grid auto-rows-max items-baseline gap-y-[10px]">
           <span className="whitespace-nowrap font-semibold text-student-text">你的回答</span>
           <span className="whitespace-nowrap font-semibold text-student-text">正确答案</span>
@@ -1549,28 +1558,29 @@ function ReadingQuestionColumn({
 }
 
 function ReadingReadonlyChoiceAnswerZone({
-  presentation
+  presentation,
+  reviewItem
 }: {
   presentation: ReadingCorrectionAnswerPresentation;
+  reviewItem: SubmittedReadingReviewItem;
 }) {
-  const reviewState = presentation.reviewState;
-  const studentTone = !reviewState?.studentAnswerId
+  const studentTone = !reviewItem.isAnswered
     ? "text-student-muted"
-    : reviewState.studentAnswerId === reviewState.correctAnswerId
+    : reviewItem.isCorrect
       ? "text-student-primary"
       : "text-student-error";
 
   return (
     <dl
-      className="grid items-baseline text-[14em] leading-[1.5]"
+      className="grid items-baseline"
       data-testid="reading-readonly-answer-block"
-      style={{ columnGap: "24px", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10px" }}
+      style={{ ...readingQuestionTextStyle, columnGap: "24px", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10px" }}
     >
       <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
       <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
-        !reviewState?.studentAnswerId
+        !reviewItem.isAnswered
           ? "unanswered"
-          : reviewState.studentAnswerId === reviewState.correctAnswerId
+          : reviewItem.isCorrect
             ? "correct"
             : "incorrect"
       }>
@@ -1593,6 +1603,7 @@ function RdlPracticeWorkspace({
   onReady,
   question,
   readOnly,
+  reviewItem,
   reviewPresentation
 }: {
   answer: ReadingAnswer | undefined;
@@ -1603,6 +1614,7 @@ function RdlPracticeWorkspace({
   onReady?: () => void;
   question: StudentRdlQuestion;
   readOnly: boolean;
+  reviewItem?: SubmittedReadingReviewItem;
   reviewPresentation?: ReadingCorrectionAnswerPresentation;
 }) {
   const [assetStatus, setAssetStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -1929,8 +1941,8 @@ function RdlPracticeWorkspace({
       ratio="rdl"
       right={(
       <ReadingQuestionColumn
-        answerZone={readOnly && reviewPresentation
-          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} />
+        answerZone={readOnly && reviewPresentation && reviewItem
+          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} reviewItem={reviewItem} />
           : undefined}
         labelledBy="rdl-question-stem"
         naturalFlow={naturalFlow}
@@ -1981,6 +1993,7 @@ function RapPracticeWorkspace({
   passage,
   question,
   readOnly,
+  reviewItem,
   reviewPresentation
 }: {
   answer: ReadingAnswer | undefined;
@@ -1991,6 +2004,7 @@ function RapPracticeWorkspace({
   passage: NonNullable<StudentReadingPracticePayload["passage"]>;
   question: StudentRapQuestion;
   readOnly: boolean;
+  reviewItem?: SubmittedReadingReviewItem;
   reviewPresentation?: ReadingCorrectionAnswerPresentation;
 }) {
   const orderedParagraphs = useMemo(
@@ -2221,8 +2235,8 @@ function RapPracticeWorkspace({
       ratio="rap"
       right={(
       <ReadingQuestionColumn
-        answerZone={readOnly && reviewPresentation
-          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} />
+        answerZone={readOnly && reviewPresentation && reviewItem
+          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} reviewItem={reviewItem} />
           : undefined}
         labelledBy="rap-question-stem"
         naturalFlow={naturalFlow}
