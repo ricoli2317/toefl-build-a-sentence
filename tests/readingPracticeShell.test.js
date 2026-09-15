@@ -236,10 +236,15 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
   assert.match(viewportSource, /h-\[calc\(100dvh-var\(--reading-header-height\)\)\].*py-\[12px\]/);
   assert.doesNotMatch(viewportSource, /100dvh-92px/);
-  assert.match(viewportSource, /pointer-events-none absolute inset-0/);
+  assert.match(viewportSource, /grid-cols-\[80px_minmax\(0,1fr\)_80px\]/);
+  assert.match(viewportSource, /col-start-2 row-start-1/);
+  assert.match(viewportSource, /className="contents"/);
+  assert.match(viewportSource, /data-reading-navigation-rail="previous"/);
+  assert.match(viewportSource, /data-reading-navigation-rail="next"/);
+  assert.doesNotMatch(viewportSource, /absolute inset-0|z-20|mx-\[52em\]/);
   assert.match(viewportSource, /aria-label="Previous"/);
   assert.match(viewportSource, /aria-label="Next"/);
-  assert.match(viewportSource, /aria-label="Submit"[\s\S]*className=\{stepButtonClassName\}/);
+  assert.match(viewportSource, /col-start-3 row-start-1[\s\S]*aria-label="Submit"/);
   assert.match(viewportSource, /h-\[76px\] w-\[52px\]/);
   assert.match(viewportSource, /group-disabled:bg-\[#f4f4f7\]/);
   assert.match(viewportSource, /group-disabled:text-student-muted\/45/);
@@ -248,6 +253,8 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.match(viewportSource, />Submit<|>Submit\}/);
   assert.doesNotMatch(viewportSource, /Q \d|Submit Module|size="36em"/);
   assert.doesNotMatch(viewportSource, /bg-student-primary px-\[14em\]/);
+  assert.match(viewportSource, /module === "ctw"[\s\S]*overflow-visible/);
+  assert.doesNotMatch(viewportSource, /module === "ctw"[\s\S]*?overflow-y-(?:auto|scroll)/);
   const choiceListSource = shellSource.slice(
     shellSource.indexOf("function ChoiceOptionList"),
     shellSource.indexOf("export function ReadingQuestionViewport")

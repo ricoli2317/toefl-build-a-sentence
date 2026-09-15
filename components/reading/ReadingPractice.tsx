@@ -2318,10 +2318,13 @@ export function ReadingQuestionViewport({
   submitting?: boolean;
 }) {
   return (
-    <div className="relative h-[calc(100dvh-var(--reading-header-height))] min-h-0 py-[12px]" data-testid="reading-question-viewport">
+    <div
+      className="grid h-[calc(100dvh-var(--reading-header-height))] min-h-0 grid-cols-[80px_minmax(0,1fr)_80px] grid-rows-[minmax(0,1fr)_auto] py-[12px]"
+      data-testid="reading-question-viewport"
+    >
       <section className={module === "ctw"
-        ? "mx-[52em] h-full overflow-y-auto rounded-2xl border border-student-border bg-white p-[28em] shadow-sm"
-        : "mx-[52em] flex h-full min-h-0 flex-col overflow-hidden bg-white"}
+        ? "col-start-2 row-start-1 h-full overflow-visible rounded-2xl border border-student-border bg-white p-[28em] shadow-sm"
+        : "col-start-2 row-start-1 flex h-full min-h-0 flex-col overflow-hidden bg-white"}
       >
         {children}
       </section>
@@ -2364,7 +2367,7 @@ function ReadingQuestionNavigation({
   submitDisabled: boolean;
   submitting: boolean;
 }) {
-  const stepButtonClassName = "group pointer-events-auto flex h-[76px] w-[52px] flex-col items-center justify-center gap-1 bg-transparent text-student-primary focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary";
+  const stepButtonClassName = "group flex h-[76px] w-[52px] flex-col items-center justify-center gap-1 bg-transparent text-student-primary focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary";
   const controlClassName = "flex h-10 w-10 items-center justify-center rounded-full bg-student-primary-soft transition-colors group-hover:bg-student-primary-border group-disabled:bg-[#f4f4f7] group-disabled:text-student-muted/45";
   const labelClassName = "text-[11px] font-bold leading-none group-disabled:text-student-muted/45";
   const previousDisabled = !canGoPrevious || navigationDisabled;
@@ -2372,30 +2375,34 @@ function ReadingQuestionNavigation({
   return (
     <nav
       aria-label="阅读题目导航"
-      className="pointer-events-none absolute inset-0 z-20 flex items-center justify-between"
+      className="contents"
     >
-      <button aria-label="Previous" className={stepButtonClassName} disabled={previousDisabled} onClick={onPrevious} type="button">
-        <span className={controlClassName}><ChevronLeft aria-hidden="true" size={26} strokeWidth={2.4} /></span>
-        <span className={labelClassName}>Previous</span>
-      </button>
-      {canGoNext || readOnly ? (
-        <button aria-label="Next" className={stepButtonClassName} disabled={nextDisabled} onClick={onNext} type="button">
-          <span className={controlClassName}><ChevronRight aria-hidden="true" size={26} strokeWidth={2.4} /></span>
-          <span className={labelClassName}>Next</span>
+      <div className="col-start-1 row-start-1 flex items-center justify-center" data-reading-navigation-rail="previous">
+        <button aria-label="Previous" className={stepButtonClassName} disabled={previousDisabled} onClick={onPrevious} type="button">
+          <span className={controlClassName}><ChevronLeft aria-hidden="true" size={26} strokeWidth={2.4} /></span>
+          <span className={labelClassName}>Previous</span>
         </button>
-      ) : (
-        <button
-          aria-label="Submit"
-          className={stepButtonClassName}
-          disabled={submitDisabled || submitting || navigationDisabled}
-          onClick={onSubmit}
-          type="button"
-        >
-          <span className={controlClassName}><ChevronRight aria-hidden="true" size={26} strokeWidth={2.4} /></span>
-          <span className={labelClassName}>Submit</span>
-        </button>
-      )}
-      {submitError ? <p className="pointer-events-none absolute bottom-[4em] left-[52em] right-[52em] text-center text-[13em] font-semibold text-student-error">{submitError}</p> : null}
+      </div>
+      <div className="col-start-3 row-start-1 flex items-center justify-center" data-reading-navigation-rail="next">
+        {canGoNext || readOnly ? (
+          <button aria-label="Next" className={stepButtonClassName} disabled={nextDisabled} onClick={onNext} type="button">
+            <span className={controlClassName}><ChevronRight aria-hidden="true" size={26} strokeWidth={2.4} /></span>
+            <span className={labelClassName}>Next</span>
+          </button>
+        ) : (
+          <button
+            aria-label="Submit"
+            className={stepButtonClassName}
+            disabled={submitDisabled || submitting || navigationDisabled}
+            onClick={onSubmit}
+            type="button"
+          >
+            <span className={controlClassName}><ChevronRight aria-hidden="true" size={26} strokeWidth={2.4} /></span>
+            <span className={labelClassName}>Submit</span>
+          </button>
+        )}
+      </div>
+      {submitError ? <p className="col-start-2 row-start-2 pt-[4em] text-center text-[13em] font-semibold text-student-error">{submitError}</p> : null}
     </nav>
   );
 }
