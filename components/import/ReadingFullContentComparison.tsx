@@ -22,10 +22,25 @@ export function ReadingInsertionPosition({ position }: { position: ReadingInsert
   return (
     <div className="rounded-lg border border-student-border bg-white p-3 text-sm">
       <p className="font-bold text-student-text">位置：{position.label}</p>
+      {position.resolutionStatus === "resolved" ? (
+        <p className="mt-1 text-student-muted">
+          <span className="font-semibold">文本边界：</span>
+          {boundaryPreview(position)}
+        </p>
+      ) : (
+        <p className="mt-1 font-semibold text-red-700">无法安全定位到段落原文，按独有位置处理</p>
+      )}
       <ContextLine label="前一句" sentence={position.previousSentence} />
       <ContextLine label="后一句" sentence={position.nextSentence} />
     </div>
   );
+}
+
+function boundaryPreview(position: ReadingInsertionPositionReview) {
+  const contextLength = 56;
+  const left = Array.from(position.normalizedLeftContext ?? "");
+  const right = Array.from(position.normalizedRightContext ?? "");
+  return `${left.length > contextLength ? "…" : ""}${left.slice(-contextLength).join("")} │ ${right.slice(0, contextLength).join("")}${right.length > contextLength ? "…" : ""}`;
 }
 
 function ReadingVersion({ title, version }: { title: string; version: ReadingReviewVersion }) {
@@ -75,22 +90,27 @@ function PassageParagraph({ paragraph }: {
     ? T extends { paragraphs: Array<infer P> } ? P : never
     : never;
 }) {
-  if (paragraph.markers.length === 0 || paragraph.sentences.length === 0) {
+  if (paragraph.markers.length === 0) {
     return <p>{paragraph.text}</p>;
   }
-  const markersByBoundary = new Map<number, typeof paragraph.markers>();
-  for (const marker of paragraph.markers) {
-    markersByBoundary.set(marker.boundaryIndex, [...(markersByBoundary.get(marker.boundaryIndex) ?? []), marker]);
+  const textCharacters = Array.from(paragraph.text);
+  const markersByOffset = new Map<number, typeof paragraph.markers>();
+  const unresolvedMarkers = paragraph.markers.filter((marker) => marker.textOffset === null);
+  for (const marker of paragraph.markers.filter((item) => item.textOffset !== null)) {
+    const offset = marker.textOffset!;
+    markersByOffset.set(offset, [...(markersByOffset.get(offset) ?? []), marker]);
   }
+  const offsets = Array.from(markersByOffset.keys()).sort((left, right) => left - right);
+  let cursor = 0;
   return (
     <p data-passage-text={paragraph.text}>
-      <InsertionMarkers markers={markersByBoundary.get(0) ?? []} />
-      {paragraph.sentences.map((sentence, index) => (
-        <span key={sentence.sentenceOrder}>
-          {index > 0 ? " " : ""}{sentence.text}
-          <InsertionMarkers markers={markersByBoundary.get(index + 1) ?? []} />
-        </span>
-      ))}
+      {unresolvedMarkers.length > 0 ? <InsertionMarkers markers={unresolvedMarkers} /> : null}
+      {offsets.map((offset) => {
+        const text = textCharacters.slice(cursor, offset).join("");
+        cursor = offset;
+        return <span key={offset}>{text}<InsertionMarkers markers={markersByOffset.get(offset) ?? []} /></span>;
+      })}
+      {textCharacters.slice(cursor).join("")}
     </p>
   );
 }
@@ -101,6 +121,7 @@ function InsertionMarkers({ markers }: { markers: ReadingReviewMarker[] }) {
       aria-label={`题目 ${marker.questionNumber} Location ${marker.locationNumber}：${marker.label}${marker.duplicate ? "，重复位置" : ""}`}
       className={`mx-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-bold ring-2 ${markerClassName(marker)}`}
       data-boundary-index={marker.boundaryIndex}
+      data-text-offset={marker.textOffset ?? "unresolved"}
       data-comparison-status={marker.comparisonStatus}
       data-duplicate={marker.duplicate ? "true" : "false"}
       data-paragraph-order={marker.paragraphOrder}

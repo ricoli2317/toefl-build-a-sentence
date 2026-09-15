@@ -26,7 +26,6 @@ export const READ_IN_DAILY_LIFE_HEADERS = [
   "question_order",
   "question_stem",
   "raw_display_text",
-  "passage_highlights_json",
   "options_json",
   "correct_option_id"
 ] as const;
@@ -41,6 +40,7 @@ export const READ_AN_ACADEMIC_PASSAGE_HEADERS = [
   "question_type",
   "question_stem",
   "raw_display_text",
+  "passage_highlights_json",
   "options_json",
   "correct_option_id",
   "insert_sentence",
@@ -49,6 +49,10 @@ export const READ_AN_ACADEMIC_PASSAGE_HEADERS = [
   "target_paragraph_id",
   "correct_sentence_id"
 ] as const;
+
+/** RAP CSVs produced before question-specific source highlights were added. */
+export const LEGACY_READ_AN_ACADEMIC_PASSAGE_HEADERS = READ_AN_ACADEMIC_PASSAGE_HEADERS
+  .filter((header) => header !== "passage_highlights_json");
 
 export type ReadingCsvType =
   | "complete_the_words"

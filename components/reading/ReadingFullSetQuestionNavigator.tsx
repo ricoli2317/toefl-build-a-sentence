@@ -1,15 +1,22 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import {
   readingFullSetReviewItemLabel,
   type ReadingFullSetReviewItem
 } from "@/lib/reading/fullSetReview";
+import {
+  readingAnswerState,
+  readingAnswerStateToneClassName
+} from "./ReadingQuestionStatusChips";
 
 export function ReadingFullSetQuestionNavigator({
+  children,
   currentIndex,
   items,
   onSelect,
   showCurrentStatus = false
 }: {
+  children?: ReactNode;
   currentIndex?: number;
   items: ReadingFullSetReviewItem[];
   onSelect?: (index: number) => void;
@@ -41,15 +48,11 @@ export function ReadingFullSetQuestionNavigator({
             <div className="flex min-w-0 flex-wrap gap-1.5">
               {items.map((item, index) => {
                 if (item.moduleNumber !== moduleNumber) return null;
-                const state = !item.isAnswered ? "unanswered" : item.isCorrect ? "correct" : "incorrect";
+                const state = readingAnswerState(item);
                 const className = `min-h-8 min-w-8 rounded-full border px-2 text-xs font-bold tabular-nums ${
                   index === currentIndex
                     ? "border-amber-500 bg-amber-100 text-student-text ring-2 ring-amber-200"
-                    : state === "correct"
-                      ? "border-student-primary-border bg-student-primary-soft text-student-primary"
-                      : state === "incorrect"
-                        ? "border-student-error-border bg-student-error-soft text-student-error"
-                        : "border-student-border bg-student-bg text-student-muted"
+                    : readingAnswerStateToneClassName(state)
                 }`;
                 const label = readingFullSetReviewItemLabel(item);
                 return onSelect ? (
@@ -82,6 +85,7 @@ export function ReadingFullSetQuestionNavigator({
           </div>
         ))}
       </div>
+      {children}
     </section>
   );
 }

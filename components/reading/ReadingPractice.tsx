@@ -307,6 +307,7 @@ export function ReadingSubmittedReview({
           || !payload.practice
           || !isReadingAttemptSummary(payload.attempt)
           || !payload.answers
+          || !payload.disclosures
           || !Array.isArray(payload.reviewItems)
         ) {
           throw new Error(payload.error ?? "阅读作答加载失败，请稍后重试。");
@@ -315,7 +316,13 @@ export function ReadingSubmittedReview({
           throw new Error("这次阅读作答暂时无法显示。");
         }
         if (!cancelled) {
-          setReview({ answers: payload.answers, attempt: payload.attempt, practice: payload.practice, reviewItems: payload.reviewItems });
+          setReview({
+            answers: payload.answers,
+            attempt: payload.attempt,
+            disclosures: payload.disclosures,
+            practice: payload.practice,
+            reviewItems: payload.reviewItems
+          });
         }
       } catch (loadError) {
         if (!cancelled) {
@@ -348,6 +355,8 @@ export function ReadingSubmittedReview({
       mode="submitted_review"
       onBack={() => router.push(`/student/reading/results/${encodeURIComponent(attemptId)}`)}
       practice={review.practice}
+      reviewDisclosureLabel="正确答案"
+      reviewDisclosures={review.disclosures}
       reviewItems={review.reviewItems}
     />
   );
@@ -390,7 +399,7 @@ async function loadReadingFullSetReview(
   );
   const result = await response.json().catch(() => ({})) as FullSetReviewResponse;
   if (
-    !response.ok || result.error || !result.attempt
+    !response.ok || result.error || !result.attempt || !result.disclosures
     || !Array.isArray(result.occurrences) || !Array.isArray(result.reviewItems)
   ) {
     throw new Error(result.error ?? "套题作答加载失败，请稍后重试。");
@@ -465,6 +474,9 @@ function ReadingFullSetReviewShell({
   const selectedReviewItem = currentItem.taskType === "ctw"
     ? activeSlotReview ?? null
     : workspaceReviewItems[0] ?? null;
+  const disclosure = selectedReviewItem
+    ? payload.disclosures[selectedReviewItem.answerId]
+    : undefined;
   const statusLabel = `第${currentItem.orderStart}题`;
 
   return (
@@ -485,7 +497,9 @@ function ReadingFullSetReviewShell({
             items={payload.reviewItems}
             onSelect={selectReviewItem}
             showCurrentStatus
-          />
+          >
+            <ReadingAnswerDisclosure disclosure={disclosure} />
+          </ReadingFullSetQuestionNavigator>
         </div>
         <section className={currentOccurrence.practice.item.module === "ctw"
           ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
@@ -499,6 +513,7 @@ function ReadingFullSetReviewShell({
             onAnswerChange={() => undefined}
             practice={currentOccurrence.practice}
             readOnly
+            reviewPresentation={disclosure}
             reviewItems={workspaceReviewItems}
             selectedReviewItem={selectedReviewItem}
           />
@@ -1424,20 +1439,33 @@ function ReadingReviewStatusBar({
         </div>
       </div>
       {disclosure && disclosureLabel ? (
-        <dl className="mt-3 grid gap-3 border-t border-student-border pt-3 text-sm leading-6 sm:grid-cols-2">
-          <div>
-            <dt className="inline font-semibold text-student-muted">你的答案</dt>
-            <dd className="ml-2 inline font-semibold text-student-text">{disclosure.studentAnswer}</dd>
-          </div>
-          <div>
-            <dt className="inline font-semibold text-student-muted">{disclosureLabel}</dt>
-            <dd className="ml-2 inline font-semibold text-student-text">
-              <ReadingCorrectionAnswerValue answer={disclosure.correctAnswer} />
-            </dd>
-          </div>
-        </dl>
+        <ReadingAnswerDisclosure disclosure={disclosure} label={disclosureLabel} />
       ) : null}
     </section>
+  );
+}
+
+export function ReadingAnswerDisclosure({
+  disclosure,
+  label = "正确答案"
+}: {
+  disclosure?: ReadingCorrectionAnswerPresentation;
+  label?: string;
+}) {
+  if (!disclosure) return null;
+  return (
+    <dl className="mt-3 grid gap-3 border-t border-student-border pt-3 text-sm leading-6 sm:grid-cols-2" data-testid="reading-answer-disclosure">
+      <div>
+        <dt className="inline font-semibold text-student-muted">你的答案</dt>
+        <dd className="ml-2 inline font-semibold text-student-text">{disclosure.studentAnswer}</dd>
+      </div>
+      <div>
+        <dt className="inline font-semibold text-student-muted">{label}</dt>
+        <dd className="ml-2 inline font-semibold text-student-text">
+          <ReadingCorrectionAnswerValue answer={disclosure.correctAnswer} />
+        </dd>
+      </div>
+    </dl>
   );
 }
 

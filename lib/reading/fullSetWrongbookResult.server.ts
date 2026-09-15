@@ -1,17 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import {
-  buildReadingCorrectionAnswerPresentations,
-  type ReadingCorrectionAnchorRow,
-  type ReadingCorrectionAnswerPresentation,
-  type ReadingCorrectionCtwSlotRow,
-  type ReadingCorrectionOptionRow,
-  type ReadingCorrectionQuestionRow,
-  type ReadingCorrectionResultAnswer,
-  type ReadingCorrectionSentenceRow
-} from "./correctionResult";
+import type { ReadingCorrectionResultAnswer } from "./correctionResult";
 import type { ReadingAnswerRow } from "./history";
 import { loadReadingFullSets } from "./fullSets.server";
 import { buildSubmittedReadingAnswerState, type SubmittedReadingAnswerRow } from "./review";
+import { loadReadingAnswerDisclosures } from "./reviewDisclosures.server";
 import { loadStudentReadingPractice } from "./studentPractice";
 import { selectReadingWrongbookPractice } from "./wrongbook";
 import { loadReadingFullSetPreservedAnswers } from "./fullSetWrongbook.server";
@@ -68,7 +60,7 @@ export async function loadReadingFullSetWrongbookResultData(input: {
       || (leftTarget?.order ?? 0) - (rightTarget?.order ?? 0)
       || left.attempt_answer_id.localeCompare(right.attempt_answer_id);
   });
-  const presentations = await loadPresentations(db, orderedRows);
+  const presentations = await loadReadingAnswerDisclosures(db, orderedRows);
   const fullSets = await loadReadingFullSets(db);
   const fullSet = fullSets.find((candidate) => candidate.fullSetId === attempt.source_full_set_id);
   const title = fullSet?.title ?? attempt.source_full_set_id;
@@ -151,37 +143,6 @@ export async function loadReadingFullSetWrongbookReviewData(input: {
     };
   });
   return { ...base, occurrences, reviewItems };
-}
-
-async function loadPresentations(db: SupabaseClient, rows: CorrectionRow[]): Promise<Record<string, ReadingCorrectionAnswerPresentation>> {
-  const questionIds = Array.from(new Set(rows.map((row) => row.question_id)));
-  const questionResult = await db.from("reading_questions")
-    .select("question_id,question_order,question_type,correct_option_id,correct_anchor_id,correct_sentence_id")
-    .in("question_id", questionIds);
-  if (questionResult.error) throw new Error(questionResult.error.message);
-  const questions = (questionResult.data ?? []) as ReadingCorrectionQuestionRow[];
-  const sentenceIds = Array.from(new Set([
-    ...questions.map((question) => question.correct_sentence_id),
-    ...rows.filter((row) => row.answer_kind === "sentence_selection").map((row) => row.student_answer)
-  ].filter((value): value is string => Boolean(value))));
-  const [optionResult, anchorResult, slotResult, sentenceResult] = await Promise.all([
-    db.from("reading_question_options").select("question_id,option_id,option_order,option_text").in("question_id", questionIds),
-    db.from("reading_rap_insertion_anchors").select("question_id,anchor_id,anchor_order").in("question_id", questionIds),
-    db.from("reading_ctw_slots").select("question_id,slot_id,prefix,answer,display_text,missing_text").in("question_id", questionIds),
-    sentenceIds.length
-      ? db.from("reading_passage_sentences").select("sentence_id,sentence_order,sentence_text").in("sentence_id", sentenceIds)
-      : Promise.resolve({ data: [], error: null })
-  ]);
-  const error = optionResult.error ?? anchorResult.error ?? slotResult.error ?? sentenceResult.error;
-  if (error) throw new Error(error.message);
-  return buildReadingCorrectionAnswerPresentations({
-    anchors: (anchorResult.data ?? []) as ReadingCorrectionAnchorRow[],
-    correctionRows: rows,
-    ctwSlots: (slotResult.data ?? []) as ReadingCorrectionCtwSlotRow[],
-    options: (optionResult.data ?? []) as ReadingCorrectionOptionRow[],
-    questions,
-    sentences: (sentenceResult.data ?? []) as ReadingCorrectionSentenceRow[]
-  });
 }
 
 function targetKey(target: Pick<ReadingFullSetWrongbookTarget, "logicalItemId" | "occurrenceId" | "questionId" | "slotId">) {

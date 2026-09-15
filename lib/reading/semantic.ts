@@ -15,8 +15,9 @@ import {
   normalizeReadingQuestionStem,
   normalizeReadingReviewText
 } from "./reviewDiff.ts";
+import { resolveInsertionAnchorPhysicalPosition } from "./insertionBoundary.ts";
 
-export const READING_SEMANTIC_VERSION = "reading-semantic-v2";
+export const READING_SEMANTIC_VERSION = "reading-semantic-v3";
 export const CTW_SEMANTIC_VERSION = "ctw-semantic-v2";
 
 export function normalizeReadingSemanticText(value: string) {
@@ -186,9 +187,6 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
     if (!correct) throw new Error(`Reading semantic identity cannot resolve correct option for ${question.questionId}`);
     return {
       ...common,
-      ...(question.questionType === "rap_multiple_choice"
-        ? { highlights: highlightIdentity(question.payload.highlightRanges, requiredPassage(passageById, question.payload.passageId)) }
-        : {}),
       options: question.payload.options
         .map((option) => normalizeReadingReviewText(option.text))
         .sort(),
@@ -197,23 +195,36 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
   }
   const passage = requiredPassage(passageById, question.payload.passageId);
   if (question.questionType === "rap_sentence_insertion") {
-    const paragraphOrder = new Map(passage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder]));
-    const anchorPosition = (anchor: (typeof question.payload.anchors)[number]) => ({
-      paragraphOrder: requiredMap(paragraphOrder, anchor.paragraphId),
-      boundaryIndex: anchor.boundaryIndex
-    });
+    const anchorPosition = (position: ReturnType<typeof resolveInsertionAnchorPhysicalPosition>) => {
+      return position.resolutionStatus === "resolved"
+        ? {
+            paragraphOrder: position.paragraphOrder,
+            normalizedOffset: position.normalizedOffset,
+            normalizedLeftContext: position.normalizedLeftContext,
+            normalizedRightContext: position.normalizedRightContext
+          }
+        : {
+            paragraphOrder: position.paragraphOrder,
+            unresolved: true,
+            boundaryIndex: position.boundaryIndex,
+            resolutionReason: position.resolutionReason
+          };
+    };
     const anchors = Array.from(new Map(question.payload.anchors.map((anchor) => {
-      const position = anchorPosition(anchor);
-      return [`${position.paragraphOrder}:${position.boundaryIndex}`, position];
-    })).values()).sort(comparePosition);
+      const physical = resolveInsertionAnchorPhysicalPosition(passage, anchor);
+      return [physical.semanticKey, anchorPosition(physical)];
+    })).values()).sort((left, right) =>
+      left.paragraphOrder - right.paragraphOrder
+      || (("normalizedOffset" in left ? left.normalizedOffset ?? -1 : -1)
+        - ("normalizedOffset" in right ? right.normalizedOffset ?? -1 : -1))
+    );
     const correct = question.payload.anchors.find((anchor) => anchor.anchorId === question.payload.correctAnchorId);
     if (!correct) throw new Error(`Reading semantic identity cannot resolve insertion answer for ${question.questionId}`);
     return {
       ...common,
-      highlights: highlightIdentity(question.payload.highlightRanges, passage),
       insertSentence: normalizeReadingSemanticText(question.payload.insertSentence),
       anchors,
-      correctPosition: anchorPosition(correct)
+      correctPosition: anchorPosition(resolveInsertionAnchorPhysicalPosition(passage, correct))
     };
   }
   const targetParagraph = passage.paragraphs.find(
@@ -227,7 +238,6 @@ function semanticQuestion(question: ReadingQuestion, passageById: Map<string, Re
   }
   return {
     ...common,
-    highlights: highlightIdentity(question.payload.highlightRanges, passage),
     targetParagraphOrder: targetParagraph.paragraphOrder,
     correctSentenceOrder: correctSentence.sentenceOrder,
     correctSentenceText: normalizeReadingSemanticText(correctSentence.text)
@@ -370,18 +380,6 @@ function boundedEditDistance(left: string, right: string, maximum: number) {
   return previous[right.length];
 }
 
-function highlightIdentity(
-  ranges: Array<{ paragraphId: string; startOffset: number; endOffset: number }> | undefined,
-  passage: ReadingPassage
-) {
-  const paragraphOrder = new Map(passage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph.paragraphOrder]));
-  return (ranges ?? []).map((range) => ({
-    paragraphOrder: requiredMap(paragraphOrder, range.paragraphId),
-    startOffset: range.startOffset,
-    endOffset: range.endOffset
-  })).sort((left, right) => comparePosition(left, right) || left.endOffset - right.endOffset);
-}
-
 function looseReviewText(value: string) {
   return normalizeReadingSemanticText(value)
     .replace(/[!-/:-@[-`{-~\u00a1-\u00bf\u2000-\u206f\u20a0-\u20cf]+/g, " ")
@@ -431,14 +429,6 @@ function normalizeAssetKey(value: string | null) {
 
 function ordered<T>(values: T[], order: (value: T) => number) {
   return [...values].sort((left, right) => order(left) - order(right));
-}
-
-function comparePosition(
-  left: { paragraphOrder: number; boundaryIndex?: number },
-  right: { paragraphOrder: number; boundaryIndex?: number }
-) {
-  return left.paragraphOrder - right.paragraphOrder
-    || (left.boundaryIndex ?? 0) - (right.boundaryIndex ?? 0);
 }
 
 function requiredPassage(passages: Map<string, ReadingPassage>, passageId: string) {

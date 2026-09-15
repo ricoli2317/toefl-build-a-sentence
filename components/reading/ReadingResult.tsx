@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   studentReadingResultCacheKey,
@@ -29,6 +28,7 @@ import {
 } from "@/lib/resultPeerComparison";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
+import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
 export function ReadingResult({ attemptId }: { attemptId: string }) {
   const state = useStudentCachedData<ReadingResultPayload>(
@@ -111,50 +111,11 @@ function ReadingDetailCard({
         </div>
         <ReadingRetakeButton attemptId={attemptId} />
       </div>
-      <ReadingQuestionStatusChips answers={answers} attemptId={attemptId} />
+      <ReadingQuestionStatusChips
+        answers={answers}
+        questionHrefBase={`/student/reading/results/${encodeURIComponent(attemptId)}`}
+      />
     </section>
-  );
-}
-
-export function ReadingQuestionStatusChips({
-  answers,
-  attemptId,
-  questionHrefBase
-}: {
-  answers: ReadingResultAnswer[];
-  attemptId: string;
-  questionHrefBase?: string;
-}) {
-  return (
-    <div className="mt-6 flex flex-wrap justify-center gap-3" data-testid="reading-result-question-chips">
-      {answers.map((answer, questionIndex) => {
-        const state = !answer.isAnswered ? "unanswered" : answer.isCorrect ? "correct" : "incorrect";
-        const className = state === "correct"
-          ? "border-student-primary-border bg-student-primary-soft text-student-primary"
-          : state === "incorrect"
-            ? "border-student-error-border bg-student-error-soft text-student-error"
-            : "border-student-border bg-student-bg text-student-muted";
-        return questionHrefBase ? (
-          <Link
-            className={`inline-flex min-h-10 items-center rounded-full border px-4 py-2 text-sm font-semibold tabular-nums ${className}`}
-            data-answer-state={state}
-            href={`${questionHrefBase}/questions/${questionIndex}`}
-            key={answer.answerId}
-          >
-            第{answer.order}题 · {formatQuestionTime(answer.questionTimeSeconds)}
-          </Link>
-        ) : (
-          <Link
-            className={`inline-flex min-h-10 items-center rounded-full border px-4 py-2 text-sm font-semibold tabular-nums ${className}`}
-            data-answer-state={state}
-            href={`/student/reading/results/${encodeURIComponent(attemptId)}/questions/${questionIndex}`}
-            key={answer.answerId}
-          >
-            第{answer.order}题 · {formatQuestionTime(answer.questionTimeSeconds)}
-          </Link>
-        );
-      })}
-    </div>
   );
 }
 
@@ -185,12 +146,6 @@ async function loadReadingPeerComparison(attemptId: string) {
     throw new Error(payload.error ?? "同班比较加载失败。");
   }
   return payload.peer_comparison;
-}
-
-function formatQuestionTime(seconds: number | null) {
-  if (seconds === null) return "—";
-  const minutes = Math.floor(seconds / 60);
-  return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
 function formatDateTime(value: string) {

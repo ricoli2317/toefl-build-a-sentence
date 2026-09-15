@@ -155,8 +155,12 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.match(resultRoute, /status !== "completed"/);
   assert.doesNotMatch(reviewRoute, /searchParams|get\("questionIndex"\)/);
   assert.match(reviewRoute, /buildReadingFullSetReviewItems/);
+  assert.match(reviewRoute, /loadReadingAnswerDisclosures\(db, disclosureRows\)/);
   assert.match(reviewRoute, /Promise\.all\(occurrenceMetadata\.map/);
   assert.match(practice, /data-testid="reading-review-status"/);
+  assert.match(practice, /payload\.disclosures\[selectedReviewItem\.answerId\]/);
+  assert.match(practice, /reviewPresentation=\{disclosure\}/);
+  assert.match(practice, /<ReadingFullSetQuestionNavigator[\s\S]*<ReadingAnswerDisclosure disclosure=\{disclosure\} \/>[\s\S]*<\/ReadingFullSetQuestionNavigator>/);
   assert.match(practice, /data-current-slot/);
   assert.doesNotMatch(practice, />只读</);
 });

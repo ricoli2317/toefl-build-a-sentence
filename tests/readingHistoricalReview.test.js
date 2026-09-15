@@ -15,6 +15,7 @@ const root = path.join(__dirname, "..");
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "utf8");
 const practiceUi = read("components/reading/ReadingPractice.tsx");
 const resultUi = read("components/reading/ReadingResult.tsx");
+const statusChipsUi = read("components/reading/ReadingQuestionStatusChips.tsx");
 const reviewRoute = read("app/api/reading/attempts/[attemptId]/review/route.ts");
 const reviewPage = read("app/student/reading/results/[attemptId]/questions/[questionIndex]/page.tsx");
 const retakeMigration = read("supabase/reading_history_retake.sql");
@@ -75,7 +76,8 @@ test("historical review route is owned submitted-only GET data with no mutation 
 });
 
 test("result chip route keeps submitted attempt id plus zero-based question index", () => {
-  assert.match(resultUi, /href=\{`\/student\/reading\/results\/\$\{encodeURIComponent\(attemptId\)\}\/questions\/\$\{questionIndex\}`\}/);
+  assert.match(resultUi, /questionHrefBase=\{`\/student\/reading\/results\/\$\{encodeURIComponent\(attemptId\)\}`\}/);
+  assert.match(statusChipsUi, /href=\{`\$\{questionHrefBase\}\/questions\/\$\{reviewIndex\}`\}/);
   assert.match(reviewPage, /params: \{ attemptId: string; questionIndex: string \}/);
   assert.match(reviewPage, /ReadingSubmittedReview/);
 });
@@ -86,6 +88,8 @@ test("submitted review reuses ReadingPractice shell while suppressing every answ
     practiceUi.indexOf("export function ReadingFullSetSubmittedReview")
   );
   assert.match(reviewLoader, /mode="submitted_review"/);
+  assert.match(reviewLoader, /reviewDisclosures=\{review\.disclosures\}/);
+  assert.match(reviewLoader, /reviewDisclosureLabel="正确答案"/);
   assert.match(reviewLoader, /\/review`/);
   assert.doesNotMatch(reviewLoader, /method: "(POST|PUT|PATCH|DELETE)"/);
   assert.match(practiceUi, /if \(readOnly\) return;[\s\S]*setAnswers/);

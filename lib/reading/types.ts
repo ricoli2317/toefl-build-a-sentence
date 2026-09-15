@@ -147,6 +147,8 @@ export type RdlQuestion = ReadingQuestionBase<"rdl", {
 export type RapMultipleChoiceQuestion = ReadingQuestionBase<"rap_multiple_choice", {
   passageId: string;
   highlightRanges: ReadingPassageHighlightRange[];
+  /** Import-only provenance; omitted for stored/historical packages. */
+  highlightRangesAuthoritative?: boolean;
   options: ReadingOption[];
   correctOptionId: string;
 }>;
@@ -154,6 +156,8 @@ export type RapMultipleChoiceQuestion = ReadingQuestionBase<"rap_multiple_choice
 export type RapSentenceInsertionQuestion = ReadingQuestionBase<"rap_sentence_insertion", {
   passageId: string;
   highlightRanges: ReadingPassageHighlightRange[];
+  /** Import-only provenance; omitted for stored/historical packages. */
+  highlightRangesAuthoritative?: boolean;
   insertSentence: string;
   anchors: ReadingInsertionAnchor[];
   correctAnchorId: string;
@@ -162,6 +166,8 @@ export type RapSentenceInsertionQuestion = ReadingQuestionBase<"rap_sentence_ins
 export type RapSentenceSelectionQuestion = ReadingQuestionBase<"rap_sentence_selection", {
   passageId: string;
   highlightRanges: ReadingPassageHighlightRange[];
+  /** Import-only provenance; omitted for stored/historical packages. */
+  highlightRangesAuthoritative?: boolean;
   targetParagraphId: string;
   correctSentenceId: string;
 }>;

@@ -19,14 +19,14 @@ const performanceClient = read("lib/reading/fullSetPerformance.client.ts");
 const performanceServer = read("lib/studentPerformance.server.ts");
 const lifecycle = read("supabase/reading_full_set_preparing_load_lease_20260914.sql");
 
-test("M2 bootstrap validates ownership, prepares idempotently, and returns first CTW state", () => {
+test("M2 bootstrap validates ownership, prepares idempotently, and returns its initial state", () => {
   assert.match(bootstrap, /requireReadingFullSetStudent\(request, timing\)/);
   assert.match(bootstrap, /loadOwnedReadingFullSetAttempt/);
   assert.match(bootstrap, /ownedAttempt\.module1\.status !== "submitted"/);
   assert.match(bootstrap, /prepare_reading_full_set_module_2/);
-  assert.match(bootstrap, /first\.taskType !== "ctw"/);
+  assert.match(bootstrap, /moduleAttempt\.status === "preparing" && initialOccurrence\.taskType !== "ctw"/);
   assert.match(bootstrap, /loadReadingFullSetOccurrencePracticePayload/);
-  assert.match(bootstrap, /firstOccurrence[\s\S]*runner: buildReadingFullSetRunnerPayload[\s\S]*traceId/);
+  assert.match(bootstrap, /const runner = buildReadingFullSetRunnerPayload[\s\S]*firstOccurrence[\s\S]*runner,[\s\S]*traceId/);
   assert.match(serverHelper, /Promise\.all\(\[practicePromise, answerPromise\]\)/);
 });
 

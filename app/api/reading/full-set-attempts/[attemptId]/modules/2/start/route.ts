@@ -7,6 +7,7 @@ import {
 } from "@/lib/reading/fullSetAttemptServer";
 import {
   isReadingFullSetAttemptSummary,
+  readingFullSetBootstrapOccurrence,
   readingFullSetCurrentModuleAttempt
 } from "@/lib/reading/fullSetAttempts";
 import { loadReadingFullSet } from "@/lib/reading/fullSets.server";
@@ -121,15 +122,21 @@ async function buildBootstrap(
   if (!moduleAttempt || moduleAttempt.moduleNumber !== 2 || moduleAttempt.status === "submitted") {
     throw new BootstrapFailure("M2_PREPARE_FAILED", "m2_prepare_rpc", "Module 2 状态无效。", 409);
   }
-  const first = fullSet.module2.occurrences[0];
-  if (!first || first.taskType !== "ctw") {
-    throw new BootstrapFailure("CONTENT_FAILED", "first_occurrence_content", "Module 2 首题数据不可用。", 409);
+  const runner = buildReadingFullSetRunnerPayload(attempt, fullSet);
+  const initialRunnerOccurrence = readingFullSetBootstrapOccurrence(runner.occurrences, moduleAttempt);
+  const initialOccurrence = initialRunnerOccurrence
+    ? fullSet.module2.occurrences.find(
+      (occurrence) => occurrence.occurrenceId === initialRunnerOccurrence.occurrenceId
+    )
+    : null;
+  if (!initialOccurrence || (moduleAttempt.status === "preparing" && initialOccurrence.taskType !== "ctw")) {
+    throw new BootstrapFailure("CONTENT_FAILED", "first_occurrence_content", "Module 2 当前题目数据不可用。", 409);
   }
 
   const firstOccurrence = await loadReadingFullSetOccurrencePracticePayload({
     db: createServiceSupabase(),
     moduleAttempt,
-    occurrence: first,
+    occurrence: initialOccurrence,
     timing,
     title: fullSet.title
   }).catch((error) => {
@@ -144,7 +151,7 @@ async function buildBootstrap(
 
   return {
     firstOccurrence,
-    runner: buildReadingFullSetRunnerPayload(attempt, fullSet),
+    runner,
     traceId: timing.traceId
   };
 }

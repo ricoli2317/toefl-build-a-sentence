@@ -5,7 +5,10 @@ import {
   loadReadingFullSetOccurrencePracticePayload,
   requireReadingFullSetStudent
 } from "@/lib/reading/fullSetAttemptServer";
-import { readingFullSetCurrentModuleAttempt } from "@/lib/reading/fullSetAttempts";
+import {
+  readingFullSetBootstrapOccurrence,
+  readingFullSetCurrentModuleAttempt
+} from "@/lib/reading/fullSetAttempts";
 import { loadReadingFullSet } from "@/lib/reading/fullSets.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -49,12 +52,14 @@ export async function GET(
     }
     const runner = buildReadingFullSetRunnerPayload(owned.attempt, fullSet);
     const moduleAttempt = readingFullSetCurrentModuleAttempt(owned.attempt);
-    const first = runner.occurrences[0];
-    if (!moduleAttempt || !first) return respond({ runner, traceId: timing.traceId });
+    const initialOccurrence = moduleAttempt
+      ? readingFullSetBootstrapOccurrence(runner.occurrences, moduleAttempt)
+      : null;
+    if (!moduleAttempt || !initialOccurrence) return respond({ runner, traceId: timing.traceId });
     const definitionOccurrence = (moduleAttempt.moduleNumber === 1
       ? fullSet.module1.occurrences
       : fullSet.module2.occurrences
-    ).find((occurrence) => occurrence.occurrenceId === first.occurrenceId);
+    ).find((occurrence) => occurrence.occurrenceId === initialOccurrence.occurrenceId);
     if (!definitionOccurrence) {
       return respond({ error: "当前题目数据已不可用。" }, { status: 409 });
     }

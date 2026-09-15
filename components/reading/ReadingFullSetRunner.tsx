@@ -26,12 +26,17 @@ import {
   readingFullSetCurrentModuleAttempt,
   readingFullSetDisplayRange,
   readingFullSetRemainingSeconds,
+  readingFullSetRestoredPosition,
   readingFullSetRunnerModuleKey,
   type ReadingFullSetAttemptSummary,
   type ReadingFullSetOccurrencePracticePayload,
   type ReadingFullSetRunnerPayload,
   type ReadingFullSetRunnerPosition
 } from "@/lib/reading/fullSetAttempts";
+import {
+  ReadingFullSetCursorQueue,
+  type ReadingFullSetCursorSnapshot
+} from "@/lib/reading/fullSetCursorQueue.client";
 import { consumeReadingFullSetBootstrapHandoff } from "@/lib/reading/fullSetBootstrapHandoff.client";
 import {
   setReadingAnswer,
@@ -88,6 +93,12 @@ type SaveResponse = {
   accepted?: boolean;
   answerRevision?: number;
   attempt?: ReadingFullSetAttemptSummary;
+  error?: string;
+  reason?: "locked" | "stale_revision" | "timed_out";
+};
+type CursorResponse = {
+  accepted?: boolean;
+  cursorRevision?: number;
   error?: string;
   reason?: "locked" | "stale_revision" | "timed_out";
 };
@@ -176,6 +187,16 @@ export function ReadingFullSetRunner({
       transport: (snapshot) => saveTransportRef.current(snapshot)
     });
   }
+  const cursorTransportRef = useRef<(snapshot: ReadingFullSetCursorSnapshot) => Promise<void>>(
+    async () => { throw new Error("题位保存尚未初始化。"); }
+  );
+  const cursorQueueRef = useRef<ReadingFullSetCursorQueue | null>(null);
+  if (!cursorQueueRef.current) {
+    cursorQueueRef.current = new ReadingFullSetCursorQueue({
+      maxRetries: 1,
+      transport: (snapshot) => cursorTransportRef.current(snapshot)
+    });
+  }
   const timeoutSubmitStartedRef = useRef(false);
   const timeoutRetryAfterRef = useRef(0);
   const runnerGenerationRef = useRef(0);
@@ -230,6 +251,7 @@ export function ReadingFullSetRunner({
       : null;
     const nextModuleKey = readingFullSetRunnerModuleKey(next.attempt);
     if (previousModuleKey !== nextModuleKey) {
+      if (previousModuleKey) cursorQueueRef.current?.clear(previousModuleKey);
       clearOccurrenceCaches();
       runnerGenerationRef.current += 1;
       occurrenceRequestRef.current += 1;
@@ -257,6 +279,9 @@ export function ReadingFullSetRunner({
       invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
     }
     const moduleAttempt = readingFullSetCurrentModuleAttempt(next.attempt);
+    if (moduleAttempt) {
+      cursorQueueRef.current?.prime(moduleAttempt.moduleAttemptId, moduleAttempt.cursorRevision);
+    }
     if (moduleAttempt?.status === "preparing") {
       revisionRef.current = moduleAttempt.answerRevision;
       setRemainingSeconds(moduleAttempt.timeLimitSeconds);
@@ -295,13 +320,33 @@ export function ReadingFullSetRunner({
     );
     if (occurrenceIndex < 0) throw new Error(`Module ${moduleNumber} 首题状态无效。`);
     applyRunner(bootstrap.runner);
-    occurrenceCacheRef.current.prime(readingFullSetOccurrenceCacheKey({
+    const occurrenceKey = readingFullSetOccurrenceCacheKey({
       attemptId,
       moduleNumber,
       occurrenceId
-    }), bootstrap.firstOccurrence);
+    });
+    occurrenceCacheRef.current.prime(occurrenceKey, bootstrap.firstOccurrence);
+    const imageUrl = bootstrap.firstOccurrence.occurrence.taskType === "rdl"
+      ? bootstrap.firstOccurrence.practice.material?.imageUrl
+      : null;
+    if (imageUrl) {
+      const preload = imagePreloadCacheRef.current.acquire(imageUrl);
+      imagePreloadStatusRef.current.set(occurrenceKey, preload.source);
+      void preload.promise.catch(() => {
+        imagePreloadStatusRef.current.set(occurrenceKey, "failed");
+      });
+    } else {
+      imagePreloadStatusRef.current.set(occurrenceKey, "not_applicable");
+    }
     revisionRef.current = Math.max(revisionRef.current, bootstrap.firstOccurrence.answerRevision);
-    setPosition({ occurrenceIndex, questionIndex: 0 });
+    const moduleAttempt = readingFullSetCurrentModuleAttempt(bootstrap.runner.attempt);
+    if (!moduleAttempt) throw new Error(`Module ${moduleNumber} 状态无效。`);
+    setPosition(readingFullSetRestoredPosition({
+      moduleAttempt,
+      occurrences: bootstrap.runner.occurrences,
+      questionCount: bootstrap.firstOccurrence.practice.questions.length,
+      restoredOccurrenceId: occurrenceId
+    }));
     setOccurrencePayloads({ [occurrenceId]: bootstrap.firstOccurrence });
     setAnswersByOccurrence({ [occurrenceId]: bootstrap.firstOccurrence.answers });
     answersRef.current = { [occurrenceId]: bootstrap.firstOccurrence.answers };
@@ -1055,6 +1100,48 @@ export function ReadingFullSetRunner({
     }
   };
 
+  const persistCursor = useCallback(async (snapshot: ReadingFullSetCursorSnapshot) => {
+    const activeRunner = runnerRef.current;
+    if (!accessToken || !activeRunner) throw new Error("题位保存尚未准备好。");
+    const moduleAttempt = readingFullSetActiveModuleAttempt(activeRunner.attempt);
+    if (!moduleAttempt || moduleAttempt.moduleAttemptId !== snapshot.moduleAttemptId) return;
+    const response = await fetch(
+      `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${snapshot.moduleNumber}/cursor`,
+      {
+        method: "PUT",
+        cache: "no-store",
+        keepalive: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          cursorRevision: snapshot.cursorRevision,
+          occurrenceId: snapshot.occurrenceId,
+          questionIndex: snapshot.questionIndex
+        })
+      }
+    );
+    const result = await response.json().catch(() => ({})) as CursorResponse;
+    if (!response.ok || typeof result.accepted !== "boolean" || !Number.isInteger(result.cursorRevision)) {
+      throw new Error(result.error ?? "套题题位保存失败。");
+    }
+    cursorQueueRef.current?.prime(snapshot.moduleAttemptId, Number(result.cursorRevision));
+  }, [accessToken, attemptId]);
+
+  cursorTransportRef.current = persistCursor;
+
+  const enqueueCursor = useCallback((
+    moduleAttempt: NonNullable<ReturnType<typeof readingFullSetActiveModuleAttempt>>,
+    occurrenceId: string,
+    questionIndex: number
+  ) => cursorQueueRef.current!.enqueue({
+    moduleAttemptId: moduleAttempt.moduleAttemptId,
+    moduleNumber: moduleAttempt.moduleNumber,
+    occurrenceId,
+    questionIndex
+  }), []);
+
   const enqueuePendingSave = useCallback((pending: PendingSave, trace?: ReadingFullSetPerformanceTrace | null) => {
     const saveTrace = trace ?? createReadingFullSetPerformanceTrace(attemptId);
     const answers = buildReadingSubmissionAnswers(
@@ -1165,6 +1252,10 @@ export function ReadingFullSetRunner({
     const saveBeforeLeaving = () => {
       commitActiveQuestionTime();
       stageCurrentOccurrenceSave();
+      const moduleAttempt = runnerRef.current
+        ? readingFullSetActiveModuleAttempt(runnerRef.current.attempt)
+        : null;
+      if (moduleAttempt) cursorQueueRef.current?.flushBestEffort(moduleAttempt.moduleAttemptId);
     };
     window.addEventListener("pagehide", saveBeforeLeaving);
     return () => {
@@ -1176,7 +1267,7 @@ export function ReadingFullSetRunner({
     if (!runner || !currentPayload || movingRef.current) return;
     const nextPosition = moveReadingFullSetPosition(runner.occurrences, position, direction);
     const nextOccurrence = runner.occurrences[nextPosition.occurrenceIndex];
-    const moduleAttempt = readingFullSetCurrentModuleAttempt(runner.attempt);
+    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
     if (!nextOccurrence || !moduleAttempt) return;
     movingRef.current = true;
     setNavigating(true);
@@ -1224,6 +1315,7 @@ export function ReadingFullSetRunner({
       }
     }
     setPosition(nextPosition);
+    enqueueCursor(moduleAttempt, nextOccurrence.occurrenceId, nextPosition.questionIndex);
     if (nextOccurrence.occurrenceId === currentOccurrence?.occurrenceId) {
       requestAnimationFrame(() => {
         logReadingFullSetPerformancePhase(trace, "next_first_interactive", {
@@ -1239,7 +1331,7 @@ export function ReadingFullSetRunner({
         setNavigating(false);
       });
     }
-  }, [attemptId, commitActiveQuestionTime, currentOccurrence, currentPayload, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
+  }, [attemptId, commitActiveQuestionTime, currentOccurrence, currentPayload, enqueueCursor, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
 
   const leavePractice = useCallback(async () => {
     commitActiveQuestionTime();

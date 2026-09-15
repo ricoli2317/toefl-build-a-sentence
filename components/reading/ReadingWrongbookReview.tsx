@@ -11,8 +11,8 @@ import type { ReadingAnswerState } from "@/lib/reading/practiceState";
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { ReadingCorrectionAnswerValue } from "./ReadingCorrectionAnswerValue";
 import {
+  ReadingAnswerDisclosure,
   ReadingPracticeMessage,
   ReadingPracticeShell,
   ReadingWorkspaceRouter,
@@ -178,10 +178,7 @@ function ReadingFullSetWrongbookReviewShell({
                 type="button">{candidate.order}</button>)}
             </div>
           </div>
-          {disclosure ? <dl className="mt-3 grid gap-3 border-t border-student-border pt-3 text-sm leading-6 sm:grid-cols-2">
-            <div><dt className="inline font-semibold text-student-muted">你的答案</dt><dd className="ml-2 inline font-semibold text-student-text">{disclosure.studentAnswer}</dd></div>
-            <div><dt className="inline font-semibold text-student-muted">正确答案</dt><dd className="ml-2 inline font-semibold text-student-text"><ReadingCorrectionAnswerValue answer={disclosure.correctAnswer} /></dd></div>
-          </dl> : null}
+          <ReadingAnswerDisclosure disclosure={disclosure} />
         </section>
         <section className={occurrence.practice.item.module === "ctw"
           ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"

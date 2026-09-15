@@ -201,6 +201,83 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.doesNotMatch(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
 });
 
+test("corrected Reading cards reopen the exact historical correction result", () => {
+  const ordinaryCorrectionId = "11111111-1111-4111-8111-111111111111";
+  const fullSetCorrectionId = "22222222-2222-4222-8222-222222222222";
+  const sourceFullSetAttemptId = "33333333-3333-4333-8333-333333333333";
+  const payload = buildWrongQuestionsOverview({
+    basAnswers: [],
+    basAttempts: [],
+    basCorrectionAnswers: [],
+    basGroupsBySet: new Map(),
+    readingAnswers: [{ attemptId: "ordinary-rdl", isCorrect: false, questionId: "rdl-q", slotId: null }],
+    readingAttempts: [{
+      attemptId: "ordinary-rdl",
+      logicalItemId: "rdl-item",
+      submittedAt: "2026-08-28T08:00:00.000Z",
+      taskType: "rdl"
+    }],
+    readingCorrectionAnswers: [{
+      attemptId: ordinaryCorrectionId,
+      isCorrect: true,
+      questionId: "rdl-q",
+      slotId: null
+    }],
+    readingCorrectionAttempts: [{
+      attemptId: ordinaryCorrectionId,
+      logicalItemId: "rdl-item",
+      scope: "history",
+      submittedAt: "2026-08-29T08:00:00.000Z",
+      taskType: "rdl"
+    }],
+    readingTitles: new Map([["rdl-item", "RDL item"]]),
+    fullSetAnswers: [{
+      attemptId: sourceFullSetAttemptId,
+      isCorrect: false,
+      logicalItemId: "rap-item",
+      moduleNumber: 1,
+      occurrenceId: "occurrence-1",
+      order: 31,
+      questionId: "rap-q",
+      slotId: null,
+      taskType: "rap"
+    }],
+    fullSetAttempts: [{
+      attemptId: sourceFullSetAttemptId,
+      completedAt: "2026-08-28T09:00:00.000Z",
+      fullSetId: "20260828A",
+      title: "20260828A"
+    }],
+    fullSetCorrectionAnswers: [{
+      attemptId: fullSetCorrectionId,
+      isCorrect: true,
+      logicalItemId: "rap-item",
+      moduleNumber: 1,
+      occurrenceId: "occurrence-1",
+      order: 31,
+      questionId: "rap-q",
+      slotId: null,
+      taskType: "rap"
+    }],
+    fullSetCorrectionAttempts: [{
+      attemptId: fullSetCorrectionId,
+      sourceAttemptId: sourceFullSetAttemptId,
+      submittedAt: "2026-08-29T09:00:00.000Z"
+    }],
+    todayStart: Date.parse("2026-08-30T00:00:00.000Z"),
+    todayEnd: Date.parse("2026-08-31T00:00:00.000Z")
+  });
+
+  assert.equal(
+    payload.groups.find((group) => group.taskType === "rdl").actionHref,
+    `/student/reading/wrongbook-results/${ordinaryCorrectionId}`
+  );
+  assert.equal(
+    payload.groups.find((group) => group.taskType === "full_set").actionHref,
+    `/student/reading/wrongbook-results/${fullSetCorrectionId}`
+  );
+});
+
 test("Reading canonical identities drive pending queues and correction answers update only their exact targets", () => {
   const input = {
     readingAttempts: [
@@ -435,7 +512,7 @@ test("Full Set pending progress removes only individually corrected CTW slots", 
   assert.equal(progress.wrongQuestionCount, 6);
 });
 
-test("Reading Full Set correction reuses Reading workspaces, submit route, result cards, and readonly answer renderers", () => {
+test("Reading Full Set correction reuses Reading workspaces, submit route, result chips, and readonly answer renderers", () => {
   const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingFullSetWrongbookPractice.tsx"), "utf8");
   const review = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
   const result = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookResult.tsx"), "utf8");
@@ -453,7 +530,8 @@ test("Reading Full Set correction reuses Reading workspaces, submit route, resul
   assert.doesNotMatch(runtime, /Promise\.all\(uniqueOccurrences\.map/);
   assert.match(queueRoute, /loadReadingFullSetWrongbookQueue/);
   assert.match(submitRoute, /submit_reading_full_set_wrongbook_attempt/);
-  assert.match(result, /ReadingCorrectionAnswerValue/);
+  assert.match(result, /ReadingQuestionStatusChips/);
+  assert.doesNotMatch(result, /你的答案|正确答案|ReadingCorrectionAnswerValue/);
   assert.match(review, /ReadingWorkspaceRouter/);
   assert.match(review, /reviewPresentation=\{disclosure\}/);
   assert.match(migration, /source_attempt_id uuid references public\.reading_full_set_attempts/);
@@ -585,11 +663,13 @@ test("CTW correction restores genuine correct slot text while leaving correction
   });
 });
 
-test("Reading correction submit opens its exact isolated result and only correction review discloses keys", () => {
+test("Reading correction submit opens its exact isolated result and shared submitted review discloses keys", () => {
   const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
   const ordinaryResult = fs.readFileSync(path.join(projectRoot, "app/api/reading/results/[attemptId]/route.ts"), "utf8");
   const correctionResult = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/result/route.ts"), "utf8");
   const correctionReview = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts"), "utf8");
+  const ordinaryReview = fs.readFileSync(path.join(projectRoot, "app/api/reading/attempts/[attemptId]/review/route.ts"), "utf8");
+  const disclosureLoader = fs.readFileSync(path.join(projectRoot, "lib/reading/reviewDisclosures.server.ts"), "utf8");
   const correctionReviewUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
   const correctionResultUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookResult.tsx"), "utf8");
   const correctionAnswerUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingCorrectionAnswerValue.tsx"), "utf8");
@@ -600,23 +680,20 @@ test("Reading correction submit opens its exact isolated result and only correct
   assert.match(runtime, /wrongbook-results\/\$\{encodeURIComponent\(submittedAttempt\.attemptId\)\}/);
   assert.match(correctionResult, /\.from\("reading_wrongbook_attempts"\)[\s\S]*\.eq\("attempt_id", params\.attemptId\)/);
   assert.match(correctionResult, /reading_wrongbook_attempt_answers/);
-  assert.match(correctionReview, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
-  assert.match(correctionReview, /buildReadingCorrectionAnswerPresentations/);
+  assert.match(disclosureLoader, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
+  assert.match(disclosureLoader, /buildReadingCorrectionAnswerPresentations/);
+  assert.match(correctionReview, /loadReadingAnswerDisclosures\(db, rows\)/);
+  assert.match(ordinaryReview, /loadReadingAnswerDisclosures\(db, rows\)/);
   assert.match(correctionResult, /buildReadingCorrectionResultAnswers/);
   assert.match(correctionReviewUi, /reviewDisclosureLabel="正确答案"/);
-  assert.match(correctionResultUi, /你的答案/);
-  assert.match(correctionResultUi, /正确答案/);
-  assert.match(correctionResultUi, /answer\.reviewIndex/);
+  assert.doesNotMatch(correctionResultUi, /你的答案|正确答案/);
+  assert.match(correctionResultUi, /ReadingQuestionStatusChips/);
   assert.match(correctionResultUi, /scoreComparison=\{null\}/);
   assert.match(correctionResultUi, /timeComparison=\{null\}/);
-  assert.match(correctionResultUi, /<Link[\s\S]*data-answer-state=\{state\}[\s\S]*href=\{`\$\{questionHrefBase\}\/questions\/\$\{answer\.reviewIndex\}`\}/);
-  assert.doesNotMatch(correctionResultUi, /<article/);
-  assert.match(correctionResultUi, /cursor-pointer/);
-  assert.match(correctionResultUi, /focus-visible:ring-2/);
+  assert.doesNotMatch(correctionResultUi, /reading-correction-answer-cards|cursor-pointer/);
   assert.match(resultSummaryUi, /comparison \? "min-h-\[144px\]" : ""/);
   assert.match(resultSummaryUi, /\{comparison \? \([\s\S]*\{comparison\}[\s\S]*\) : null\}/);
   assert.match(correctionAnswerUi, /data-ctw-correct-fill/);
-  assert.match(correctionResultUi, /ReadingCorrectionAnswerValue/);
   assert.match(practiceUi, /ReadingCorrectionAnswerValue answer=\{disclosure\.correctAnswer\}/);
   assert.match(practiceUi, /你的答案/);
   assert.doesNotMatch(`${correctionReviewUi}\n${correctionResultUi}`, /Correct Answer/);

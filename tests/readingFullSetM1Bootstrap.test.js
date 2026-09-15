@@ -23,6 +23,9 @@ const lifecycle = read("supabase/reading_full_set_preparing_load_lease_20260914.
 function moduleAttempt(overrides = {}) {
   return {
     answerRevision: 0,
+    currentOccurrenceId: null,
+    currentQuestionIndex: null,
+    cursorRevision: 0,
     deadlineAt: null,
     moduleAttemptId: "module-attempt-1",
     moduleNumber: 1,
@@ -79,9 +82,9 @@ function bootstrap(overrides = {}) {
 test("M1 Start is one idempotent bootstrap returning preparing attempt and first CTW", () => {
   assert.match(startRoute, /get_or_create_reading_full_set_attempt/);
   assert.match(startRoute, /phase !== "module_1_preparing" && phase !== "module_1_active"/);
-  assert.match(startRoute, /first\.taskType !== "ctw"/);
+  assert.match(startRoute, /attempt\.module1\.status === "preparing" && initialOccurrence\.taskType !== "ctw"/);
   assert.match(startRoute, /loadReadingFullSetOccurrencePracticePayload/);
-  assert.match(startRoute, /firstOccurrence[\s\S]*runner: buildReadingFullSetRunnerPayload[\s\S]*traceId/);
+  assert.match(startRoute, /const runner = buildReadingFullSetRunnerPayload[\s\S]*firstOccurrence[\s\S]*runner,[\s\S]*traceId/);
   assert.doesNotMatch(startRoute, /activate_reading_full_set_module/);
   assert.match(lifecycle, /status, time_limit_seconds, started_at, deadline_at[\s\S]*'preparing',[\s\S]*null, null/);
   assert.match(lifecycle, /where student_id = v_user_id and full_set_id = p_full_set_id and status = 'in_progress'/);

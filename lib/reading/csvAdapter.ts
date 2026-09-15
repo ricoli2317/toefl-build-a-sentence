@@ -248,14 +248,15 @@ function buildCandidate(
       sourceQuestionEnd: sourceNumber
     };
     const questionType = required(row, "question_type");
-    const highlightRanges = rapHighlightRanges(row, passageJson);
+    const highlights = rapHighlights(row);
     if (questionType === "rap_multiple_choice") {
       return {
         ...common,
         questionType,
         payload: {
           passageId,
-          highlightRanges,
+          highlightRanges: highlights.ranges,
+          highlightRangesAuthoritative: highlights.authoritative,
           options: parseJson<ReadingOption[]>(required(row, "options_json"), "options_json"),
           correctOptionId: required(row, "correct_option_id")
         }
@@ -267,7 +268,8 @@ function buildCandidate(
         questionType,
         payload: {
           passageId,
-          highlightRanges,
+          highlightRanges: highlights.ranges,
+          highlightRangesAuthoritative: highlights.authoritative,
           insertSentence: required(row, "insert_sentence"),
           anchors: parseJson<ReadingInsertionAnchor[]>(
             required(row, "insertion_anchors_json"),
@@ -286,7 +288,8 @@ function buildCandidate(
         questionType,
         payload: {
           passageId,
-          highlightRanges,
+          highlightRanges: highlights.ranges,
+          highlightRangesAuthoritative: highlights.authoritative,
           targetParagraphId: required(row, "target_paragraph_id"),
           correctSentenceId: required(row, "correct_sentence_id")
         }
@@ -358,30 +361,30 @@ function validateProductionMaterial(
   }
 }
 
-function rapHighlightRanges(
-  row: Record<string, string>,
-  paragraphs: ReadingPassageParagraph[]
-): ReadingPassageHighlightRange[] {
-  const serialized = optional(row, "passage_highlights_json");
-  if (serialized) {
-    return parseJson<ReadingPassageHighlightRange[]>(serialized, "passage_highlights_json");
+function rapHighlights(row: Record<string, string>): {
+  ranges: ReadingPassageHighlightRange[];
+  authoritative: boolean;
+} {
+  if (!Object.prototype.hasOwnProperty.call(row, "passage_highlights_json")) {
+    return { ranges: [], authoritative: false };
   }
-
-  const quotedPhrases = Array.from(
-    required(row, "question_stem").matchAll(/[“"]([^”"]+)[”"]/g),
-    (match) => match[1]
-  );
-  return quotedPhrases.flatMap((phrase) => {
-    const matches = paragraphs.flatMap((paragraph) => {
-      const startOffset = paragraph.text.indexOf(phrase);
-      return startOffset < 0 ? [] : [{
-        paragraphId: paragraph.paragraphId,
-        startOffset,
-        endOffset: startOffset + phrase.length
-      }];
-    });
-    return matches.length === 1 ? matches : [];
-  });
+  const parsed = parseJson<unknown>(required(row, "passage_highlights_json"), "passage_highlights_json");
+  if (!Array.isArray(parsed)) throw new Error("passage_highlights_json must contain a JSON array");
+  return {
+    authoritative: true,
+    // The source may include a redundant `text` audit value. TPS persists only
+    // the established offset-based range contract.
+    ranges: parsed.map((value) => {
+      const range = value && typeof value === "object" && !Array.isArray(value)
+        ? value as Record<string, unknown>
+        : {};
+      return {
+        paragraphId: range.paragraphId as string,
+        startOffset: range.startOffset as number,
+        endOffset: range.endOffset as number
+      };
+    })
+  };
 }
 
 function isVersionedCanonicalMaterialPair(material: ReadingMaterial) {

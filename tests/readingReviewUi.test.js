@@ -83,6 +83,7 @@ test("shared full content supports CTW, RDL images, RAP questions, and boundary 
   assert.match(fullContent, /version\.passage\.paragraphs/);
   assert.match(fullContent, /version\.questions\.map/);
   assert.match(fullContent, /data-boundary-index=\{marker\.boundaryIndex\}/);
+  assert.match(fullContent, /data-text-offset=\{marker\.textOffset \?\? "unresolved"\}/);
   assert.match(fullContent, /data-paragraph-order=\{marker\.paragraphOrder\}/);
   assert.match(fullContent, /data-passage-text=\{paragraph\.text\}/);
   assert.match(fullContent, /Location \{marker\.locationNumber\}/);
@@ -91,6 +92,7 @@ test("shared full content supports CTW, RDL images, RAP questions, and boundary 
   assert.match(fullContent, /marker\.comparisonStatus === "existing_only"/);
   assert.match(fullContent, /marker\.comparisonStatus === "incoming_only"/);
   assert.match(fullContent, /marker\.duplicate/);
+  assert.match(fullContent, /markersByOffset/);
 });
 
 test("sentence-insertion compact review presents set-only and duplicate sections without pairing anchors", () => {

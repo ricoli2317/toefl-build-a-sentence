@@ -1,18 +1,10 @@
 import { readingAttemptJson, requireReadingAttemptStudent } from "@/lib/reading/attemptServer";
 import {
-  buildReadingCorrectionAnswerPresentations,
-  type ReadingCorrectionAnchorRow,
-  type ReadingCorrectionCtwSlotRow,
-  type ReadingCorrectionOptionRow,
-  type ReadingCorrectionQuestionRow,
-  type ReadingCorrectionSentenceRow
-} from "@/lib/reading/correctionResult";
-import type { ReadingAnswerRow } from "@/lib/reading/history";
-import {
   buildSubmittedReadingAnswerState,
   buildSubmittedReadingReviewItems,
   type SubmittedReadingAnswerRow
 } from "@/lib/reading/review";
+import { loadReadingAnswerDisclosures } from "@/lib/reading/reviewDisclosures.server";
 import { selectReadingWrongbookPractice } from "@/lib/reading/wrongbook";
 import { loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.server";
 import { loadStudentReadingPractice, StudentReadingLoadError } from "@/lib/reading/studentPractice";
@@ -138,7 +130,7 @@ export async function GET(
         incorrectPoints: rows.filter((row) => isTargetRow(row, targets) && answered(row) && !row.is_correct).length,
         unansweredPoints: rows.filter((row) => isTargetRow(row, targets) && !answered(row)).length
       },
-      disclosures: await loadDisclosures(db, rows),
+      disclosures: await loadReadingAnswerDisclosures(db, rows),
       practice,
       reviewItems
     });
@@ -149,41 +141,6 @@ export async function GET(
     });
     return readingAttemptJson({ error: "订正作答数据暂时无法显示。" }, { status: 500 });
   }
-}
-
-async function loadDisclosures(db: ReturnType<typeof createServiceSupabase>, rows: ReviewRow[]) {
-  const questionIds = Array.from(new Set(rows.map((row) => row.question_id)));
-  const [questionResult, slotResult, optionResult, anchorResult] = await Promise.all([
-    db.from("reading_questions")
-      .select("question_id,question_type,correct_option_id,correct_anchor_id,correct_sentence_id")
-      .in("question_id", questionIds),
-    db.from("reading_ctw_slots").select("question_id,slot_id,prefix,answer,display_text,missing_text").in("question_id", questionIds),
-    db.from("reading_question_options").select("question_id,option_id,option_order,option_text").in("question_id", questionIds),
-    db.from("reading_rap_insertion_anchors").select("question_id,anchor_id,anchor_order").in("question_id", questionIds)
-  ]);
-  const baseError = questionResult.error || slotResult.error || optionResult.error || anchorResult.error;
-  if (baseError) throw new Error(baseError.message);
-  const questions = (questionResult.data ?? []) as ReadingCorrectionQuestionRow[];
-  const sentenceIds = Array.from(new Set([
-    ...questions.map((question) => question.correct_sentence_id),
-    ...rows
-      .filter((row) => row.answer_kind === "sentence_selection")
-      .map((row) => row.student_answer)
-  ].filter((value): value is string => Boolean(value))));
-  const sentenceResult = sentenceIds.length
-    ? await db.from("reading_passage_sentences").select("sentence_id,sentence_order,sentence_text").in("sentence_id", sentenceIds)
-    : { data: [], error: null };
-  if (sentenceResult.error) throw new Error(sentenceResult.error.message);
-
-  const presentations = buildReadingCorrectionAnswerPresentations({
-    anchors: (anchorResult.data ?? []) as ReadingCorrectionAnchorRow[],
-    correctionRows: rows as ReadingAnswerRow[],
-    ctwSlots: (slotResult.data ?? []) as ReadingCorrectionCtwSlotRow[],
-    options: (optionResult.data ?? []) as ReadingCorrectionOptionRow[],
-    questions,
-    sentences: (sentenceResult.data ?? []) as ReadingCorrectionSentenceRow[]
-  });
-  return presentations;
 }
 
 function isTargetRow(row: ReviewRow, targets: ReadingWrongbookTarget[]) {

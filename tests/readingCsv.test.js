@@ -16,6 +16,7 @@ const {
 } = require("../lib/reading/importer.ts");
 const {
   COMPLETE_THE_WORDS_HEADERS,
+  LEGACY_READ_AN_ACADEMIC_PASSAGE_HEADERS,
   READ_AN_ACADEMIC_PASSAGE_HEADERS,
   READ_IN_DAILY_LIFE_HEADERS
 } = require("../lib/reading/csvSchemas.ts");
@@ -48,6 +49,15 @@ test("teacher CSV detection recognizes the three fixed Reading headers", () => {
   assert.equal(detectQuestionType(COMPLETE_THE_WORDS_HEADERS), "complete_the_words");
   assert.equal(detectQuestionType(READ_IN_DAILY_LIFE_HEADERS), "read_in_daily_life");
   assert.equal(detectQuestionType(READ_AN_ACADEMIC_PASSAGE_HEADERS), "read_an_academic_passage");
+  assert.equal(detectQuestionType(LEGACY_READ_AN_ACADEMIC_PASSAGE_HEADERS), "read_an_academic_passage");
+  assert.equal(
+    detectQuestionType(template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv").headers),
+    "read_an_academic_passage"
+  );
+  assert.equal(
+    detectQuestionType(template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv").headers),
+    "read_in_daily_life"
+  );
   assert.equal(detectQuestionType([...READ_IN_DAILY_LIFE_HEADERS, "r2_url"]), "unknown");
 });
 
@@ -189,22 +199,134 @@ test("RAP groups all supported question shapes and rejects conflicting passage r
   assert.match(invalid.failures[0].reason, /passage_json conflicts/);
 });
 
-test("RAP production schema reconstructs quoted highlights and defaults others to an empty list", () => {
+test("legacy RAP CSV without passage_highlights_json remains compatible and defaults to empty ranges", () => {
   const document = template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
-  const passage = JSON.parse(document.rows[0].passage_json);
-  const phrase = passage[0].text.slice(0, 4);
-  document.rows[0].question_stem = `Why does the author mention “${phrase}”?`;
   document.headers = document.headers.filter((header) => header !== "passage_highlights_json");
   document.rows.forEach((row) => { delete row.passage_highlights_json; });
   const result = adapt("read_an_academic_passage", document);
   assert.deepEqual(result.failures, []);
   assert.equal(result.candidates.length, 1);
-  assert.deepEqual(result.candidates[0].questions[0].payload.highlightRanges, [{
-    paragraphId: passage[0].paragraphId,
-    startOffset: 0,
-    endOffset: phrase.length
-  }]);
-  assert.deepEqual(result.candidates[0].questions[1].payload.highlightRanges, []);
+  assert.ok(result.candidates[0].questions.every((question) =>
+    question.payload.highlightRanges.length === 0
+    && question.payload.highlightRangesAuthoritative === false
+  ));
+});
+
+test("RAP parses distinct per-question and multiple authoritative highlight ranges", () => {
+  const document = template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  const passage = JSON.parse(document.rows[0].passage_json);
+  const paragraph = passage[0];
+  const ranges = [
+    { paragraphId: paragraph.paragraphId, startOffset: 0, endOffset: 5, text: paragraph.text.slice(0, 5) },
+    { paragraphId: paragraph.paragraphId, startOffset: 6, endOffset: 11, text: paragraph.text.slice(6, 11) }
+  ];
+  const other = [{
+    paragraphId: paragraph.paragraphId,
+    startOffset: 12,
+    endOffset: 16,
+    text: paragraph.text.slice(12, 16)
+  }];
+  document.rows[0].passage_highlights_json = JSON.stringify(ranges);
+  document.rows[1].passage_highlights_json = JSON.stringify(other);
+  document.rows[2].passage_highlights_json = "[]";
+
+  const result = adapt("read_an_academic_passage", document);
+  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.candidates[0].questions[0].payload.highlightRanges, ranges.map(({ text, ...range }) => range));
+  assert.deepEqual(result.candidates[0].questions[1].payload.highlightRanges, other.map(({ text, ...range }) => range));
+  assert.deepEqual(result.candidates[0].questions[2].payload.highlightRanges, []);
+  assert.ok(result.candidates[0].questions.every((question) =>
+    question.payload.highlightRangesAuthoritative === true
+  ));
+
+  const withoutHighlights = structuredClone(document);
+  withoutHighlights.headers = withoutHighlights.headers.filter((header) => header !== "passage_highlights_json");
+  withoutHighlights.rows.forEach((row) => { delete row.passage_highlights_json; });
+  const withPackage = groupReadingSourceOccurrences(result.candidates).packages[0];
+  const withoutPackage = groupReadingSourceOccurrences(
+    adapt("read_an_academic_passage", withoutHighlights).candidates
+  ).packages[0];
+  assert.equal(withPackage.item.logicalItemId, withoutPackage.item.logicalItemId);
+  assert.equal(withPackage.item.dedupFingerprint, withoutPackage.item.dedupFingerprint);
+});
+
+test("7.22A M2 Q11, Q13, Q14, and Q15 retain separate source highlights", () => {
+  const document = template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  const expected = new Map([
+    [11, "foster"],
+    [13, "When children collaborate in theater, music ensembles, or group visual arts projects, they build a sense of belonging and shared purpose—key components of motivation and engagement, factors known to influence academic achievement."],
+    [14, "studies"],
+    [15, "mixed findings"]
+  ]);
+  const paragraphTexts = [
+    "Arts programs foster curiosity and sustained attention.",
+    `Researchers observed that ${expected.get(13)} Later work considered assessment quality.`,
+    "Several studies compared program designs and reported mixed findings across schools."
+  ];
+  const paragraphs = paragraphTexts.map((text, index) => ({
+    paragraphId: `p${index + 1}`,
+    paragraphOrder: index + 1,
+    text,
+    rawText: text,
+    sentences: [{ sentenceId: `p${index + 1}s1`, sentenceOrder: 1, text }]
+  }));
+  const targets = [
+    { sourceNumber: 11, questionOrder: 1, paragraph: paragraphs[0], text: expected.get(11) },
+    { sourceNumber: 12, questionOrder: 2, paragraph: paragraphs[0], text: null },
+    { sourceNumber: 13, questionOrder: 3, paragraph: paragraphs[1], text: expected.get(13) },
+    { sourceNumber: 14, questionOrder: 4, paragraph: paragraphs[2], text: expected.get(14) },
+    { sourceNumber: 15, questionOrder: 5, paragraph: paragraphs[2], text: expected.get(15) }
+  ];
+  document.rows = targets.map((target) => {
+    const row = structuredClone(document.rows[0]);
+    const startOffset = target.text === null ? 0 : Array.from(target.paragraph.text.slice(
+      0,
+      target.paragraph.text.indexOf(target.text)
+    )).length;
+    return {
+      ...row,
+      source_label: "7.22A",
+      occurrence_date: "2026-07-22",
+      year_month: "2026-07",
+      source_module: "m2",
+      source_order: "1",
+      source_group_id: "reading-2026-07-22-a-m2-rap-p01",
+      source_question_number: String(target.sourceNumber),
+      question_order: String(target.questionOrder),
+      question_stem: `Question ${target.sourceNumber}`,
+      passage_id: "reading-2026-07-22-a-m2-rap-p01",
+      passage_title: "The Arts and Academic Achievement",
+      passage_json: JSON.stringify(paragraphs),
+      passage_highlights_json: JSON.stringify(target.text === null ? [] : [{
+        paragraphId: target.paragraph.paragraphId,
+        startOffset,
+        endOffset: startOffset + Array.from(target.text).length,
+        text: target.text
+      }])
+    };
+  });
+
+  const result = adapt("read_an_academic_passage", document);
+  assert.deepEqual(result.failures, []);
+  const candidate = result.candidates[0];
+  assert.equal(candidate.questions.length, 5);
+  const paragraphById = new Map(candidate.passages[0].paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph]));
+  for (const question of candidate.questions) {
+    const sourceNumber = question.sourceQuestionStart;
+    if (!expected.has(sourceNumber)) {
+      assert.deepEqual(question.payload.highlightRanges, []);
+      continue;
+    }
+    const [range] = question.payload.highlightRanges;
+    const paragraph = paragraphById.get(range.paragraphId);
+    assert.equal(
+      Array.from(paragraph.text).slice(range.startOffset, range.endOffset).join(""),
+      expected.get(sourceNumber)
+    );
+  }
+  assert.equal(new Set(candidate.questions.filter((question) => question.payload.highlightRanges.length > 0).map((question) =>
+    JSON.stringify(question.payload.highlightRanges)
+  )).size, 4);
 });
 
 test("RAP keeps its complete original passage title even when it exceeds five words", () => {

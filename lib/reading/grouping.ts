@@ -268,6 +268,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
             highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
+            highlightRangesAuthoritative: sourceQuestion.payload.highlightRangesAuthoritative,
             ...remapOptions(sourceQuestion.payload, questionId)
           }
         };
@@ -289,6 +290,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
             highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
+            highlightRangesAuthoritative: sourceQuestion.payload.highlightRangesAuthoritative,
             insertSentence: sourceQuestion.payload.insertSentence,
             anchors,
             correctAnchorId: anchors[correctOrder].anchorId
@@ -302,6 +304,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
             highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
+            highlightRangesAuthoritative: sourceQuestion.payload.highlightRangesAuthoritative,
             targetParagraphId: requiredMap(paragraphIds, sourceQuestion.payload.targetParagraphId),
             correctSentenceId: requiredMap(sentenceIds, sourceQuestion.payload.correctSentenceId)
           }

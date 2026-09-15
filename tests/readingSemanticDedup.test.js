@@ -870,9 +870,17 @@ test("RAP identity ignores title when the actual passage is unchanged", async ()
 
 test("same RAP occurrence with changed source questions is an idempotent replay without review", async () => {
   const historical = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  historical.questions[0].payload.highlightRanges = [];
   const incoming = incomingVariant(historical, (candidate) => {
     candidate.sourceOccurrenceId = historical.occurrences[0].occurrenceId;
     candidate.questions[0].stem = "Different content for the same occurrence";
+    const paragraph = candidate.passages[0].paragraphs[0];
+    candidate.questions[0].payload.highlightRanges = [{
+      paragraphId: paragraph.paragraphId,
+      startOffset: 0,
+      endOffset: 5
+    }];
+    candidate.questions[0].payload.highlightRangesAuthoritative = true;
   });
   const database = historicalDatabase(historical);
   database.from = occurrenceAwareFrom(database.from, historical.occurrences);
@@ -882,8 +890,47 @@ test("same RAP occurrence with changed source questions is an idempotent replay 
   assert.equal(prepared.occurrenceConflict, null);
   assert.equal(prepared.addedOccurrenceCount, 0);
   assert.equal(prepared.packageData.questions[0].stem, historical.questions[0].stem);
+  assert.deepEqual(prepared.packageData.questions[0].payload.highlightRanges, [{
+    paragraphId: historical.passages[0].paragraphs[0].paragraphId,
+    startOffset: 0,
+    endOffset: 5
+  }]);
+  assert.equal(prepared.packageData.occurrences.length, 1);
+  assert.equal(prepared.packageData.occurrences[0].occurrenceId, historical.occurrences[0].occurrenceId);
   assert.equal(prepared.contentReconciliations.length, 0);
   assert.deepEqual(prepared.possibleDuplicateLogicalItemIds, []);
+});
+
+test("RAP semantic identity excludes question-specific passage highlights", () => {
+  const withoutHighlights = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  withoutHighlights.questions.forEach((question) => { question.payload.highlightRanges = []; });
+  const withHighlights = structuredClone(withoutHighlights);
+  const paragraph = withHighlights.passages[0].paragraphs[0];
+  withHighlights.questions[0].payload.highlightRanges = [{
+    paragraphId: paragraph.paragraphId,
+    startOffset: 0,
+    endOffset: 5
+  }];
+  assert.equal(readingSemanticFingerprint(withHighlights), readingSemanticFingerprint(withoutHighlights));
+});
+
+test("a later duplicate RAP occurrence cannot clear an earlier canonical question highlight", async () => {
+  const historical = packageFrom("read_an_academic_passage", "TOEFL_Read_an_Academic_Passage_TEMPLATE.csv");
+  const paragraph = historical.passages[0].paragraphs[0];
+  historical.questions[0].payload.highlightRanges = [{
+    paragraphId: paragraph.paragraphId,
+    startOffset: 0,
+    endOffset: 5
+  }];
+  const incoming = incomingVariant(historical, (candidate) => {
+    candidate.questions[0].payload.highlightRanges = [];
+    candidate.questions[0].payload.highlightRangesAuthoritative = true;
+  });
+  const { prepared } = await historicalMatch(historical, incoming);
+  assert.deepEqual(
+    prepared.packageData.questions[0].payload.highlightRanges,
+    historical.questions[0].payload.highlightRanges
+  );
 });
 
 test("same-material variants in one CSV coalesce without creating a database content review", async () => {

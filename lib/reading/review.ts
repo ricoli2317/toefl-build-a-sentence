@@ -1,6 +1,7 @@
 import type { ReadingAttemptSummary } from "./attempts.ts";
 import type { ReadingAnswerState } from "./practiceState.ts";
 import type { StudentReadingPracticePayload } from "./studentPractice.ts";
+import type { ReadingCorrectionAnswerPresentation } from "./correctionResult.ts";
 
 export type SubmittedReadingAnswerRow = {
   attempt_answer_id?: string;
@@ -26,6 +27,7 @@ export type SubmittedReadingReviewItem = {
 export type SubmittedReadingReviewPayload = {
   answers: ReadingAnswerState;
   attempt: ReadingAttemptSummary;
+  disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
   practice: StudentReadingPracticePayload;
   reviewItems: SubmittedReadingReviewItem[];
 };

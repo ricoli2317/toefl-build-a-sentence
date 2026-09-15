@@ -9,6 +9,7 @@ const root = path.join(__dirname, "..");
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "utf8");
 const practiceUi = read("components/reading/ReadingPractice.tsx");
 const resultUi = read("components/reading/ReadingResult.tsx");
+const statusChipsUi = read("components/reading/ReadingQuestionStatusChips.tsx");
 const resultRoute = read("app/api/reading/results/[attemptId]/route.ts");
 const peerRoute = read("app/api/reading/results/[attemptId]/peer-comparison/route.ts");
 
@@ -40,23 +41,23 @@ test("Reading result summary is unified and removes duplicate completion copy", 
 });
 
 test("CTW result uses the same ten scoring-slot chips and opens the full paragraph review", () => {
-  assert.match(resultUi, /<ReadingQuestionStatusChips answers=\{answers\} attemptId=\{attemptId\} \/>/);
-  assert.match(resultUi, /第\{answer\.order\}题/);
+  assert.match(resultUi, /<ReadingQuestionStatusChips/);
+  assert.match(statusChipsUi, /\{answer\.order\}/);
+  assert.doesNotMatch(statusChipsUi, /questionTimeSeconds|formatQuestionTime|用时/);
   assert.match(practiceUi, /data-current-slot/);
   assert.match(practiceUi, /data-testid="ctw-passage"/);
   assert.match(practiceUi, /reviewItems\.filter/);
   assert.doesNotMatch(resultRoute, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
 });
 
-test("RDL and RAP share centered state chips with time and neutral unanswered state", () => {
-  assert.match(resultUi, /export function ReadingQuestionStatusChips/);
-  assert.match(resultUi, /flex flex-wrap justify-center gap-3/);
-  assert.match(resultUi, /第\{answer\.order\}题 · \{formatQuestionTime/);
-  assert.match(resultUi, /!answer\.isAnswered \? "unanswered"/);
-  assert.match(resultUi, /border-student-border bg-student-bg text-student-muted/);
-  assert.match(resultUi, /<Link[\s\S]*href=\{`\/student\/reading\/results\/\$\{encodeURIComponent\(attemptId\)\}\/questions\/\$\{questionIndex\}`\}/);
+test("RDL and RAP share centered circular state chips with neutral unanswered state", () => {
+  assert.match(statusChipsUi, /export function ReadingQuestionStatusChips/);
+  assert.match(statusChipsUi, /flex flex-wrap justify-center gap-3/);
+  assert.match(statusChipsUi, /h-10 w-10/);
+  assert.match(statusChipsUi, /!answer\.isAnswered \? "unanswered"/);
+  assert.match(statusChipsUi, /border-student-border bg-student-bg text-student-muted/);
+  assert.match(statusChipsUi, /href=\{`\$\{questionHrefBase\}\/questions\/\$\{reviewIndex\}`\}/);
   assert.match(resultRoute, /question_time_seconds/);
-  assert.match(resultUi, /if \(seconds === null\) return "—"/);
 });
 
 test("question-time normalization keeps only finite non-negative whole seconds", () => {

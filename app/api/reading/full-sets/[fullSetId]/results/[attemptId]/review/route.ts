@@ -8,6 +8,7 @@ import {
 import { loadReadingFullSetResult } from "@/lib/reading/fullSetResultServer";
 import { buildReadingFullSetReviewItems } from "@/lib/reading/fullSetReview";
 import { buildSubmittedReadingAnswerState } from "@/lib/reading/review";
+import { loadReadingAnswerDisclosures } from "@/lib/reading/reviewDisclosures.server";
 import { loadStudentReadingPractice } from "@/lib/reading/studentPractice";
 import { createServiceSupabase } from "@/lib/supabase/server";
 
@@ -55,6 +56,10 @@ export async function GET(
       .in("answer_id", answerIds);
     if (answerResult.error) throw new Error(answerResult.error.message);
     const submittedRows = answerResult.data ?? [];
+    const disclosureRows = submittedRows.map((row) => ({
+      ...row,
+      attempt_answer_id: row.answer_id
+    }));
     const occurrences = occurrenceMetadata.map((occurrence, index) => {
       const practice = practices[index];
       if (!practice) throw new Error("READING_FULL_SET_REVIEW_PRACTICE_MISSING");
@@ -75,6 +80,7 @@ export async function GET(
         fullSetId: result.attempt.fullSetId,
         title: result.attempt.title
       },
+      disclosures: await loadReadingAnswerDisclosures(db, disclosureRows),
       occurrences,
       reviewItems: buildReadingFullSetReviewItems(
         result.answers,

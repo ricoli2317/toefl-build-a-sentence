@@ -5,6 +5,10 @@ import type {
   ReadingQuestion
 } from "./types.ts";
 import { resolveReadingAssetUrl } from "./assets.ts";
+import {
+  insertionPhysicalPositionsEqual,
+  resolveInsertionAnchorPhysicalPosition
+} from "./insertionBoundary.ts";
 
 export type ReadingReviewSentenceContext = {
   paragraphOrder: number;
@@ -17,6 +21,13 @@ export type ReadingInsertionPositionReview = {
   paragraphIndex: number;
   boundaryIndex: number;
   sentenceCount: number;
+  resolutionStatus: "resolved" | "unresolved";
+  resolutionReason: string | null;
+  textOffset: number | null;
+  normalizedOffset: number | null;
+  normalizedParagraphLength: number;
+  normalizedLeftContext: string | null;
+  normalizedRightContext: string | null;
   semanticKey: string;
   label: string;
   previousSentence: ReadingReviewSentenceContext | null;
@@ -88,6 +99,8 @@ export function resolveReadingInsertionPosition(
     throw new Error(`Reading insertion boundary ${anchor.boundaryIndex} has inconsistent afterSentenceId`);
   }
 
+  const physicalPosition = resolveInsertionAnchorPhysicalPosition(passage, anchor);
+
   const previous = anchor.boundaryIndex > 0
     ? sentences[anchor.boundaryIndex - 1]
     : orderedSentences(paragraphs[paragraphIndex - 1]).at(-1) ?? null;
@@ -100,11 +113,7 @@ export function resolveReadingInsertionPosition(
       ? `第 ${paragraph.paragraphOrder} 段末尾`
       : `第 ${paragraph.paragraphOrder} 段第 ${anchor.boundaryIndex} 句之后`;
   return {
-    paragraphOrder: paragraph.paragraphOrder,
-    paragraphIndex,
-    boundaryIndex: anchor.boundaryIndex,
-    sentenceCount: sentences.length,
-    semanticKey: `paragraph:${paragraph.paragraphOrder}:boundary:${anchor.boundaryIndex}`,
+    ...physicalPosition,
     label,
     previousSentence: sentenceContext(previous, paragraphs),
     nextSentence: sentenceContext(next, paragraphs)
@@ -112,9 +121,9 @@ export function resolveReadingInsertionPosition(
 }
 
 /**
- * Resolves insertion candidates to paragraph/boundary identities before any
- * reconciliation. Anchor IDs, sentence IDs, location numbers, and array order
- * are deliberately excluded from the semantic identity.
+ * Resolves insertion candidates to physical paragraph-text boundaries before
+ * reconciliation. Anchor IDs, sentence IDs, location numbers, boundary
+ * ordinals, and array order are excluded from resolved semantic identity.
  */
 export function buildReadingInsertionAnchorSet(
   passage: ReadingPassage,
@@ -128,7 +137,8 @@ export function buildReadingInsertionAnchorSet(
       position: resolveReadingInsertionPosition(passage, anchor)
     }));
   const bySemanticKey = new Map<string, typeof resolvedAnchors>();
-  for (const anchor of resolvedAnchors) {
+  const unresolved = resolvedAnchors.filter((anchor) => anchor.position.resolutionStatus === "unresolved");
+  for (const anchor of resolvedAnchors.filter((item) => item.position.resolutionStatus === "resolved")) {
     bySemanticKey.set(anchor.position.semanticKey, [
       ...(bySemanticKey.get(anchor.position.semanticKey) ?? []),
       anchor
@@ -136,7 +146,10 @@ export function buildReadingInsertionAnchorSet(
   }
   return {
     resolvedAnchors,
-    uniquePositions: Array.from(bySemanticKey.values(), (matches) => matches[0].position),
+    uniquePositions: [
+      ...Array.from(bySemanticKey.values(), (matches) => matches[0].position),
+      ...unresolved.map((anchor) => anchor.position)
+    ],
     duplicates: Array.from(bySemanticKey.values())
       .filter((matches) => matches.length > 1)
       .map((matches) => ({
@@ -145,6 +158,8 @@ export function buildReadingInsertionAnchorSet(
       }))
   };
 }
+
+export { insertionPhysicalPositionsEqual };
 
 export function buildReadingReviewVersion(
   packageData: ReadingImportPackage,

@@ -15,6 +15,7 @@ import {
 import {
   buildReadingInsertionAnchorSet,
   buildReadingReviewVersion,
+  insertionPhysicalPositionsEqual,
   resolveReadingInsertionPosition,
   type ReadingInsertionDuplicateReview,
   type ReadingInsertionPositionReview,
@@ -310,10 +311,12 @@ function compareQuestion(
     const incomingPassage = requiredPassage(incomingPackage, incoming.payload.passageId);
     const existingAnchors = buildReadingInsertionAnchorSet(existingPassage, existing.payload.anchors);
     const incomingAnchors = buildReadingInsertionAnchorSet(incomingPassage, incoming.payload.anchors);
-    const existingKeys = new Set(existingAnchors.uniquePositions.map((position) => position.semanticKey));
-    const incomingKeys = new Set(incomingAnchors.uniquePositions.map((position) => position.semanticKey));
-    const existingOnly = existingAnchors.uniquePositions.filter((position) => !incomingKeys.has(position.semanticKey));
-    const incomingOnly = incomingAnchors.uniquePositions.filter((position) => !existingKeys.has(position.semanticKey));
+    const existingOnly = existingAnchors.uniquePositions.filter((position) =>
+      !incomingAnchors.uniquePositions.some((candidate) => insertionPhysicalPositionsEqual(position, candidate))
+    );
+    const incomingOnly = incomingAnchors.uniquePositions.filter((position) =>
+      !existingAnchors.uniquePositions.some((candidate) => insertionPhysicalPositionsEqual(position, candidate))
+    );
     if (
       existingOnly.length > 0
       || incomingOnly.length > 0
@@ -336,7 +339,7 @@ function compareQuestion(
     }
     const existingCorrect = correctAnchorPosition(existing, existingPassage);
     const incomingCorrect = correctAnchorPosition(incoming, incomingPassage);
-    if (existingCorrect.semanticKey !== incomingCorrect.semanticKey) {
+    if (!insertionPhysicalPositionsEqual(existingCorrect, incomingCorrect)) {
       result.push(difference(
         "correct_insertion_location",
         existingCorrect.label,
@@ -446,12 +449,12 @@ function insertionMarkers(
     const passage = requiredPassage(packageData, question.payload.passageId);
     const anchorSet = buildReadingInsertionAnchorSet(passage, question.payload.anchors);
     const otherQuestion = otherByOrder.get(question.questionOrder);
-    const otherKeys = otherQuestion?.questionType === "rap_sentence_insertion"
-      ? new Set(buildReadingInsertionAnchorSet(
+    const otherPositions = otherQuestion?.questionType === "rap_sentence_insertion"
+      ? buildReadingInsertionAnchorSet(
           requiredPassage(otherPackage, otherQuestion.payload.passageId),
           otherQuestion.payload.anchors
-        ).uniquePositions.map((position) => position.semanticKey))
-      : new Set<string>();
+        ).uniquePositions
+      : [];
     const duplicateKeys = new Set(anchorSet.duplicates.map((duplicate) => duplicate.position.semanticKey));
     const incomingQuestion = side === "incoming" ? question : otherQuestion;
     const questionNumber = incomingQuestion
@@ -461,7 +464,9 @@ function insertionMarkers(
       ...anchor.position,
       questionNumber: questionNumber ?? question.questionOrder,
       locationNumber: anchor.locationNumber,
-      comparisonStatus: otherKeys.has(anchor.position.semanticKey)
+      comparisonStatus: otherPositions.some((position) =>
+        insertionPhysicalPositionsEqual(anchor.position, position)
+      )
         ? "common" as const
         : side === "existing" ? "existing_only" as const : "incoming_only" as const,
       duplicate: duplicateKeys.has(anchor.position.semanticKey)

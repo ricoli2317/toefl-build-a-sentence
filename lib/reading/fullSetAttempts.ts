@@ -15,6 +15,9 @@ export type ReadingFullSetModuleAttemptSummary = {
   submittedAt: string | null;
   submissionReason: ReadingFullSetSubmissionReason;
   answerRevision: number;
+  currentOccurrenceId: string | null;
+  currentQuestionIndex: number | null;
+  cursorRevision: number;
 };
 
 export type ReadingFullSetAttemptSummary = {
@@ -166,6 +169,40 @@ export function readingFullSetOccurrenceWorkspaceCount(
     : occurrence.sourceQuestionEnd - occurrence.sourceQuestionStart + 1;
 }
 
+export function readingFullSetBootstrapOccurrence(
+  occurrences: ReadingFullSetRunnerOccurrence[],
+  moduleAttempt: ReadingFullSetModuleAttemptSummary
+) {
+  if (moduleAttempt.status !== "active" || !moduleAttempt.currentOccurrenceId) {
+    return occurrences[0] ?? null;
+  }
+  return occurrences.find(
+    (occurrence) => occurrence.occurrenceId === moduleAttempt.currentOccurrenceId
+  ) ?? occurrences[0] ?? null;
+}
+
+export function readingFullSetRestoredPosition(input: {
+  moduleAttempt: ReadingFullSetModuleAttemptSummary;
+  occurrences: ReadingFullSetRunnerOccurrence[];
+  questionCount: number;
+  restoredOccurrenceId: string;
+}): ReadingFullSetRunnerPosition {
+  const occurrenceIndex = input.occurrences.findIndex(
+    (occurrence) => occurrence.occurrenceId === input.restoredOccurrenceId
+  );
+  if (occurrenceIndex < 0) return { occurrenceIndex: 0, questionIndex: 0 };
+  const occurrence = input.occurrences[occurrenceIndex];
+  const questionIndex = input.moduleAttempt.status === "active"
+    && input.moduleAttempt.currentOccurrenceId === input.restoredOccurrenceId
+    && Number.isInteger(input.moduleAttempt.currentQuestionIndex)
+    && Number(input.moduleAttempt.currentQuestionIndex) >= 0
+    && (occurrence.taskType !== "ctw" || Number(input.moduleAttempt.currentQuestionIndex) === 0)
+    && Number(input.moduleAttempt.currentQuestionIndex) < input.questionCount
+    ? Number(input.moduleAttempt.currentQuestionIndex)
+    : 0;
+  return { occurrenceIndex, questionIndex };
+}
+
 export function readingFullSetDisplayRange(
   occurrence: ReadingFullSetRunnerOccurrence,
   questionIndex: number
@@ -232,5 +269,9 @@ function isReadingFullSetModuleAttemptSummary(
     && (moduleAttempt.deadlineAt === null || typeof moduleAttempt.deadlineAt === "string")
     && (moduleAttempt.status !== "preparing" || (moduleAttempt.startedAt === null && moduleAttempt.deadlineAt === null))
     && (moduleAttempt.status === "preparing" || (typeof moduleAttempt.startedAt === "string" && typeof moduleAttempt.deadlineAt === "string"))
-    && Number.isInteger(moduleAttempt.answerRevision);
+    && Number.isInteger(moduleAttempt.answerRevision)
+    && (moduleAttempt.currentOccurrenceId === null || typeof moduleAttempt.currentOccurrenceId === "string")
+    && (moduleAttempt.currentQuestionIndex === null || (Number.isInteger(moduleAttempt.currentQuestionIndex) && Number(moduleAttempt.currentQuestionIndex) >= 0))
+    && Number.isInteger(moduleAttempt.cursorRevision)
+    && Number(moduleAttempt.cursorRevision) >= 0;
 }

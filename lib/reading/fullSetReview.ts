@@ -2,6 +2,7 @@ import type { ReadingAnswerState } from "./practiceState.ts";
 import type { ReadingFullSetResultAnswer } from "./fullSetResults.ts";
 import type { StudentReadingPracticePayload } from "./studentPractice.ts";
 import type { ReadingModule } from "./types.ts";
+import type { ReadingCorrectionAnswerPresentation } from "./correctionResult.ts";
 
 export type ReadingFullSetReviewItem = {
   key: string;
@@ -32,6 +33,7 @@ export type ReadingFullSetReviewPayload = {
     fullSetId: string;
     title: string;
   };
+  disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
   occurrences: ReadingFullSetReviewOccurrence[];
   reviewItems: ReadingFullSetReviewItem[];
 };

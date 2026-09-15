@@ -4,6 +4,7 @@ import {
   buildSubmittedReadingReviewItems,
   type SubmittedReadingAnswerRow
 } from "@/lib/reading/review";
+import { loadReadingAnswerDisclosures } from "@/lib/reading/reviewDisclosures.server";
 import {
   loadStudentReadingPractice,
   StudentReadingLoadError
@@ -12,7 +13,10 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-type ReviewAnswerRow = SubmittedReadingAnswerRow & { is_correct: boolean };
+type ReviewAnswerRow = Omit<SubmittedReadingAnswerRow, "attempt_answer_id"> & {
+  attempt_answer_id: string;
+  is_correct: boolean;
+};
 
 export async function GET(
   request: Request,
@@ -80,6 +84,7 @@ export async function GET(
         incorrectPoints,
         unansweredPoints
       },
+      disclosures: await loadReadingAnswerDisclosures(db, rows),
       practice: practiceResult,
       reviewItems: buildSubmittedReadingReviewItems(practiceResult, rows)
     });

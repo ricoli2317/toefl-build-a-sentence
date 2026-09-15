@@ -6,6 +6,7 @@ import type {
   ReadingPassage,
   ReadingQuestion
 } from "./types.ts";
+import { compareReadingSourceLabels } from "./grouping.ts";
 
 type Row = Record<string, unknown>;
 
@@ -136,6 +137,9 @@ export function attachIncomingOccurrencesToHistoricalPackage(
           : material;
       })
     : historical.materials;
+  const questions = historical.item.module === "rap"
+    ? mergeAuthoritativeRapHighlights(historical, incoming)
+    : historical.questions;
   return {
     ...historical,
     item: {
@@ -149,6 +153,7 @@ export function attachIncomingOccurrencesToHistoricalPackage(
       firstSeenSourceOrder: incoming.item.firstSeenSourceOrder
     },
     materials,
+    questions,
     occurrences: incoming.occurrences.map((occurrence) => ({
       ...occurrence,
       logicalItemId: historical.item.logicalItemId,
@@ -162,6 +167,90 @@ export function attachIncomingOccurrencesToHistoricalPackage(
       })
     }))
   };
+}
+
+type RapQuestion = Extract<ReadingQuestion, { questionType:
+  | "rap_multiple_choice"
+  | "rap_sentence_insertion"
+  | "rap_sentence_selection"
+}>;
+
+function mergeAuthoritativeRapHighlights(
+  historical: ReadingImportPackage,
+  incoming: ReadingImportPackage
+): ReadingQuestion[] {
+  const incomingOwnsCanonicalPresentation = comparePackageFirstSeen(incoming, historical) <= 0;
+  const incomingByOrder = new Map(incoming.questions.map((question) => [question.questionOrder, question]));
+  return historical.questions.map((historicalQuestion) => {
+    const incomingQuestion = requiredMap(
+      incomingByOrder,
+      historicalQuestion.questionOrder,
+      "incoming question order"
+    );
+    if (
+      !isRapQuestion(historicalQuestion)
+      || !isRapQuestion(incomingQuestion)
+      || incomingQuestion.payload.highlightRangesAuthoritative !== true
+    ) return historicalQuestion;
+    if (
+      !incomingOwnsCanonicalPresentation
+      && (
+        historicalQuestion.payload.highlightRanges.length > 0
+        || incomingQuestion.payload.highlightRanges.length === 0
+      )
+    ) return historicalQuestion;
+
+    const incomingPassage = requiredMap(
+      new Map(incoming.passages.map((passage) => [passage.passageId, passage])),
+      incomingQuestion.payload.passageId,
+      "incoming passage"
+    );
+    const historicalPassage = requiredMap(
+      new Map(historical.passages.map((passage) => [passage.passageId, passage])),
+      historicalQuestion.payload.passageId,
+      "historical passage"
+    );
+    const incomingParagraphs = new Map(incomingPassage.paragraphs.map((paragraph) => [paragraph.paragraphId, paragraph]));
+    const historicalByOrder = new Map(historicalPassage.paragraphs.map((paragraph) => [paragraph.paragraphOrder, paragraph]));
+    const highlightRanges = incomingQuestion.payload.highlightRanges.map((range) => {
+      const incomingParagraph = requiredMap(incomingParagraphs, range.paragraphId, "incoming highlight paragraph");
+      const historicalParagraph = requiredMap(
+        historicalByOrder,
+        incomingParagraph.paragraphOrder,
+        "historical highlight paragraph order"
+      );
+      if (incomingParagraph.text !== historicalParagraph.text) {
+        throw new Error(
+          `authoritative highlight text cannot map safely at question order ${historicalQuestion.questionOrder}, ` +
+          `paragraph order ${incomingParagraph.paragraphOrder}`
+        );
+      }
+      return {
+        paragraphId: historicalParagraph.paragraphId,
+        startOffset: range.startOffset,
+        endOffset: range.endOffset
+      };
+    });
+    return {
+      ...historicalQuestion,
+      payload: {
+        ...historicalQuestion.payload,
+        highlightRanges
+      }
+    } as RapQuestion;
+  });
+}
+
+function comparePackageFirstSeen(left: ReadingImportPackage, right: ReadingImportPackage) {
+  return left.item.firstSeenDate.localeCompare(right.item.firstSeenDate)
+    || compareReadingSourceLabels(left.item.firstSeenSourceLabel, right.item.firstSeenSourceLabel)
+    || left.item.firstSeenSourceOrder - right.item.firstSeenSourceOrder;
+}
+
+function isRapQuestion(question: ReadingQuestion): question is RapQuestion {
+  return question.questionType === "rap_multiple_choice"
+    || question.questionType === "rap_sentence_insertion"
+    || question.questionType === "rap_sentence_selection";
 }
 
 async function selectIn(

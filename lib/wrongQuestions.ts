@@ -183,6 +183,7 @@ export function buildWrongQuestionsOverview(input: {
   const { basHistory, items: basItems } = buildBasWrongQuestionState(input);
 
   const atomic: AtomicWrongQuestion[] = basItems.map((item) => ({
+    actionCandidateTime: item.latestWrongTime,
     actionHref: `/student/results/${encodeURIComponent(item.answer.attemptId)}?source=practice-history`,
     correctionHref: item.corrected ? null : basCorrectionHref(item.groupId),
     corrected: item.corrected,
@@ -223,16 +224,23 @@ function buildReadingFullSetAtomicWrongQuestions(input: {
   const attempts = input.fullSetAttempts ?? [];
   const attemptById = new Map(attempts.map((attempt) => [attempt.attemptId, attempt]));
   const correctionState = buildReadingFullSetCorrectionState(input);
+  const correctionResultByAnswer = buildReadingFullSetCorrectionResultByAnswer(input);
 
   return (input.fullSetAnswers ?? []).flatMap((answer): AtomicWrongQuestion[] => {
     if (answer.isCorrect) return [];
     const attempt = attemptById.get(answer.attemptId);
     if (!attempt) return [];
     const corrected = correctionState.get(attempt.attemptId)?.get(readingFullSetAnswerKey(answer)) ?? false;
+    const correctionResult = corrected
+      ? correctionResultByAnswer.get(attempt.attemptId)?.get(readingFullSetAnswerKey(answer))
+      : undefined;
     const wrongTime = answerTime(attempt.completedAt);
     const scope = wrongTime >= input.todayStart && wrongTime < input.todayEnd ? "today" : "history";
     return [{
-      actionHref: `/student/reading/full-sets/${encodeURIComponent(attempt.fullSetId)}/result/${encodeURIComponent(attempt.attemptId)}`,
+      actionCandidateTime: correctionResult?.submittedTime ?? wrongTime,
+      actionHref: correctionResult
+        ? `/student/reading/wrongbook-results/${encodeURIComponent(correctionResult.attemptId)}`
+        : `/student/reading/full-sets/${encodeURIComponent(attempt.fullSetId)}/result/${encodeURIComponent(attempt.attemptId)}`,
       correctionHref: corrected ? null : `/student/wrong-questions/${scope}/reading/practice?${new URLSearchParams({
         sourceAttemptId: attempt.attemptId,
         taskType: "full_set"
@@ -367,6 +375,37 @@ function buildReadingFullSetCorrectionState(input: {
     stateBySource.set(attempt.sourceAttemptId, state);
   }
   return stateBySource;
+}
+
+function buildReadingFullSetCorrectionResultByAnswer(input: {
+  fullSetCorrectionAnswers?: ReadingFullSetWrongQuestionAnswer[];
+  fullSetCorrectionAttempts?: ReadingFullSetWrongbookCorrectionAttempt[];
+}) {
+  const answerKeysByAttempt = new Map<string, Map<string, boolean>>();
+  for (const answer of input.fullSetCorrectionAnswers ?? []) {
+    const state = answerKeysByAttempt.get(answer.attemptId) ?? new Map<string, boolean>();
+    state.set(readingFullSetAnswerKey(answer), answer.isCorrect);
+    answerKeysByAttempt.set(answer.attemptId, state);
+  }
+  const resultBySource = new Map<string, Map<string, { attemptId: string; submittedTime: number }>>();
+  for (const attempt of [...(input.fullSetCorrectionAttempts ?? [])]
+    .sort((left, right) => answerTime(left.submittedAt) - answerTime(right.submittedAt))) {
+    const state = resultBySource.get(attempt.sourceAttemptId) ?? new Map();
+    const answerKeys = answerKeysByAttempt.get(attempt.attemptId);
+    if (!answerKeys) continue;
+    for (const [answerKey, isCorrect] of Array.from(answerKeys.entries())) {
+      if (isCorrect) {
+        state.set(answerKey, {
+          attemptId: attempt.attemptId,
+          submittedTime: answerTime(attempt.submittedAt)
+        });
+      } else {
+        state.delete(answerKey);
+      }
+    }
+    resultBySource.set(attempt.sourceAttemptId, state);
+  }
+  return resultBySource;
 }
 
 export function compareReadingFullSetTargets(
@@ -530,6 +569,7 @@ function buildBasWrongQuestionState(input: BasWrongQuestionStateInput) {
 }
 
 type AtomicWrongQuestion = {
+  actionCandidateTime: number;
   actionHref: string;
   correctionHref: string | null;
   corrected: boolean;
@@ -550,14 +590,24 @@ function buildReadingAtomicWrongQuestions(input: {
   todayStart: number;
 }) {
   const { attemptById, stateByKey } = buildReadingWrongbookState(input);
+  const correctionAttemptIds = new Set(
+    (input.readingCorrectionAttempts ?? []).map((attempt) => attempt.attemptId)
+  );
 
   return Array.from(stateByKey.values()).flatMap((state): AtomicWrongQuestion[] => {
     const latestAttempt = attemptById.get(state.latest.attemptId);
     const latestWrongAttempt = attemptById.get(state.latestWrongAttemptId);
     const attempt = latestAttempt ?? latestWrongAttempt;
     if (!attempt) return [];
+    const correctionResultAttemptId = state.latest.isCorrect
+      && correctionAttemptIds.has(state.latest.attemptId)
+      ? state.latest.attemptId
+      : null;
     return [{
-      actionHref: `/student/reading/results/${encodeURIComponent(state.latestWrongAttemptId)}`,
+      actionCandidateTime: state.latestTime,
+      actionHref: correctionResultAttemptId
+        ? `/student/reading/wrongbook-results/${encodeURIComponent(correctionResultAttemptId)}`
+        : `/student/reading/results/${encodeURIComponent(state.latestWrongAttemptId)}`,
       correctionHref: state.latest.isCorrect
         ? null
         : readingCorrectionHref(
@@ -708,13 +758,17 @@ function buildReadingWrongbookState(input: {
 }
 
 function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
-  const groups = new Map<string, WrongQuestionGroup & { correctionCandidateTime: number }>();
+  const groups = new Map<string, WrongQuestionGroup & {
+    actionCandidateTime: number;
+    correctionCandidateTime: number;
+  }>();
   for (const item of items) {
     const key = `${item.taskType}:${item.groupId}`;
     const existing = groups.get(key);
     if (!existing) {
       groups.set(key, {
         actionHref: item.actionHref,
+        actionCandidateTime: item.actionCandidateTime,
         correctionCandidateTime: item.correctionHref ? item.latestWrongTime : Number.NEGATIVE_INFINITY,
         correctionHref: item.correctionHref,
         correctedCount: item.corrected ? 1 : 0,
@@ -735,13 +789,20 @@ function aggregateWrongQuestionGroups(items: AtomicWrongQuestion[]) {
       existing.correctionCandidateTime = item.latestWrongTime;
       existing.correctionHref = item.correctionHref;
     }
-    if (item.latestWrongTime > Date.parse(existing.latestWrongAt)) {
+    if (item.actionCandidateTime > existing.actionCandidateTime) {
       existing.actionHref = item.actionHref;
+      existing.actionCandidateTime = item.actionCandidateTime;
+    }
+    if (item.latestWrongTime > Date.parse(existing.latestWrongAt)) {
       existing.latestWrongAt = new Date(item.latestWrongTime).toISOString();
     }
   }
   return Array.from(groups.values())
-    .map(({ correctionCandidateTime: _correctionCandidateTime, ...group }) => group)
+    .map(({
+      actionCandidateTime: _actionCandidateTime,
+      correctionCandidateTime: _correctionCandidateTime,
+      ...group
+    }) => group)
     .sort((left, right) =>
       Date.parse(right.latestWrongAt) - Date.parse(left.latestWrongAt)
       || left.taskType.localeCompare(right.taskType)

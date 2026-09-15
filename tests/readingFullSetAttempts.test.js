@@ -44,6 +44,9 @@ function moduleAttempt(moduleNumber, status = "active") {
     submittedAt: status === "submitted" ? "2026-08-30T00:10:00.000Z" : null,
     submissionReason: status === "submitted" ? "manual" : null,
     answerRevision: 0,
+    currentOccurrenceId: null,
+    currentQuestionIndex: null,
+    cursorRevision: 0,
     totalPoints: status === "submitted" ? (moduleNumber === 1 ? 35 : 15) : 0,
     correctPoints: 0
   };
