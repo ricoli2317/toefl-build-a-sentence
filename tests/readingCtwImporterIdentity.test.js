@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 
-const { buildCtwPackageLogicalIdentity } = require("../lib/reading/ctwLogicalIdentity.ts");
+const { buildCtwPackageLogicalIdentity } = require("../lib/reading/ctwLogicalIdentity.server.ts");
 const { buildReadingCanonicalContentUpdate } = require("../lib/reading/contentCorrection.ts");
 const { buildReadingDuplicateReviewPlans } = require("../lib/reading/duplicateResolution.ts");
 const { groupReadingSourceOccurrences } = require("../lib/reading/grouping.ts");

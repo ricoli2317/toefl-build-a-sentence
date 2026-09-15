@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import type { CtwQuestion, CtwSlot, ReadingImportPackage } from "./types.ts";
 
 export const CTW_LOGICAL_IDENTITY_VERSION = "ctw-masked-framework-v2";
@@ -12,7 +11,6 @@ export type CtwLogicalIdentity = {
   normalizedMaskedParagraphs: string[];
   orderedBlankSequence: number[];
   blankCount: number;
-  key: string;
 };
 
 export type CtwSlotContentConflict = {
@@ -121,18 +119,21 @@ export function buildCtwLogicalIdentity(question: CtwLogicalIdentityQuestion): C
   const orderedBlankSequence = normalizedMaskedParagraphs.flatMap((paragraph) =>
     Array.from(paragraph.matchAll(BLANK_PLACEHOLDER), (match) => Number(match[1]))
   );
-  const canonicalValue = JSON.stringify([
-    CTW_LOGICAL_IDENTITY_VERSION,
-    normalizedMaskedParagraphs,
-    orderedBlankSequence
-  ]);
   return {
     version: CTW_LOGICAL_IDENTITY_VERSION,
     normalizedMaskedParagraphs,
     orderedBlankSequence,
-    blankCount: orderedBlankSequence.length,
-    key: createHash("sha256").update(canonicalValue).digest("hex")
+    blankCount: orderedBlankSequence.length
   };
+}
+
+/** Stable SHA-256 input. Hashing this value belongs in the server-only module. */
+export function serializeCtwLogicalIdentity(identity: CtwLogicalIdentity): string {
+  return JSON.stringify([
+    identity.version,
+    identity.normalizedMaskedParagraphs,
+    identity.orderedBlankSequence
+  ]);
 }
 
 export function ctwQuestionFromPackage(packageData: ReadingImportPackage): CtwQuestion {
@@ -171,7 +172,8 @@ export function compareCtwLogicalIdentity(
 ): CtwLogicalIdentityComparison {
   const leftIdentity = buildCtwLogicalIdentity(left);
   const rightIdentity = buildCtwLogicalIdentity(right);
-  const sameLogicalItem = leftIdentity.key === rightIdentity.key;
+  const sameLogicalItem = serializeCtwLogicalIdentity(leftIdentity)
+    === serializeCtwLogicalIdentity(rightIdentity);
   return {
     sameLogicalItem,
     leftIdentity,

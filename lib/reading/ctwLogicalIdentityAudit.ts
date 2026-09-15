@@ -7,7 +7,7 @@ import {
   normalizeCtwAnswer,
   normalizeCtwIdentityPassage,
   reconstructCompletedCtwPassage
-} from "./ctwLogicalIdentity.ts";
+} from "./ctwLogicalIdentity.server.ts";
 import type { CtwQuestion } from "./types.ts";
 
 export type CtwAuditOccurrence = {

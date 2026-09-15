@@ -16,7 +16,7 @@ import type { ReadingImportPackage } from "./types.ts";
 import {
   buildCtwPackageLogicalIdentity,
   compareCtwPackageLogicalIdentity
-} from "./ctwLogicalIdentity.ts";
+} from "./ctwLogicalIdentity.server.ts";
 import { readingUnorderedPairKey } from "./reviewDiff.ts";
 
 export type ReadingDuplicateReviewPlan = {

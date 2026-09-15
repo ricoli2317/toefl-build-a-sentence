@@ -10,7 +10,7 @@ import {
   buildCtwLogicalIdentity,
   buildCtwPackageLogicalIdentity,
   compareCtwPackageLogicalIdentity
-} from "./ctwLogicalIdentity.ts";
+} from "./ctwLogicalIdentity.server.ts";
 import {
   normalizeReadingQuestionStem,
   normalizeReadingReviewText

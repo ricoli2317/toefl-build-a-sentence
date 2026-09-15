@@ -10,7 +10,7 @@ import type {
   ReadingSourceOccurrenceCandidate,
   ReadingSourceQuestion
 } from "./types.ts";
-import { buildCtwLogicalIdentity } from "./ctwLogicalIdentity.ts";
+import { buildCtwLogicalIdentity } from "./ctwLogicalIdentity.server.ts";
 
 type DedupReport = {
   schemaVersion: 1;

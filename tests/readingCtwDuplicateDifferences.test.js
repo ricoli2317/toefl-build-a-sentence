@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
 
-const { compareCtwPackageLogicalIdentity } = require("../lib/reading/ctwLogicalIdentity.ts");
+const { compareCtwPackageLogicalIdentity } = require("../lib/reading/ctwLogicalIdentity.server.ts");
 const { buildReadingDuplicateReviewPlans } = require("../lib/reading/duplicateResolution.ts");
 const { buildReadingContentConflict } = require("../lib/reading/contentReconciliation.ts");
 

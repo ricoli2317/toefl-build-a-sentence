@@ -11,7 +11,7 @@ const {
   normalizeCtwMaskedFramework,
   normalizeCtwOrderedAnswers,
   reconstructCompletedCtwPassage
-} = require("../lib/reading/ctwLogicalIdentity.ts");
+} = require("../lib/reading/ctwLogicalIdentity.server.ts");
 
 function ctwQuestion({
   textBefore = "Scientists dictate ",
