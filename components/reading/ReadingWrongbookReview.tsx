@@ -10,11 +10,12 @@ import type { SubmittedReadingReviewItem } from "@/lib/reading/review";
 import type { ReadingAnswerState } from "@/lib/reading/practiceState";
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   ReadingAnswerDisclosure,
+  ReadingPracticeHeader,
   ReadingPracticeMessage,
   ReadingPracticeShell,
+  ReadingQuestionViewport,
   ReadingWorkspaceRouter,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
@@ -160,13 +161,14 @@ function ReadingFullSetWrongbookReviewShell({
   const disclosure = review.disclosures[item.answerId];
   return (
     <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
-      <header className="grid h-[76px] grid-cols-[1fr_auto_1fr] items-center border-b border-student-border bg-white px-5">
-        <button className="writing-header-back justify-self-start" onClick={onBack} type="button"><ArrowLeft size={20} /> Back</button>
-        <p className="max-w-[50vw] truncate text-sm font-bold text-student-primary">错题订正结果 · {review.attempt.title}</p>
-        <span />
-      </header>
-      <main className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
-        style={occurrence.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}>
+      <ReadingPracticeHeader
+        elapsedSeconds={0}
+        onBack={onBack}
+        progressLabel={`Module ${item.moduleNumber} · Question ${item.order} / ${item.moduleNumber === 1 ? 35 : 15}`}
+        showElapsed={false}
+        title={`错题订正结果 · ${review.attempt.title}`}
+      />
+      <main className="mx-auto min-h-[calc(100dvh-68px)]" style={readingTwoColumnScaleStyle}>
         <section className="mb-3 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className={`text-sm font-bold ${item.isCorrect ? "text-student-primary" : "text-student-error"}`}>第{item.order}题 · {item.isCorrect ? "正确" : "错误"}</p>
@@ -180,14 +182,18 @@ function ReadingFullSetWrongbookReviewShell({
           </div>
           <ReadingAnswerDisclosure disclosure={disclosure} />
         </section>
-        <section className={occurrence.practice.item.module === "ctw"
-          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex flex-1 flex-col bg-white"}>
+        <ReadingQuestionViewport
+          canGoNext={index < review.reviewItems.length - 1}
+          canGoPrevious={index > 0}
+          module={occurrence.practice.item.module}
+          onNext={() => setIndex(index + 1)}
+          onPrevious={() => setIndex(index - 1)}
+          readOnly
+        >
           <ReadingWorkspaceRouter
             answers={occurrence.answers}
             currentQuestion={question}
             lookupEnabled={readingLookupEnabled("submitted_review", occurrence.practice.item.module)}
-            layoutMode="natural"
             onAnswerChange={() => undefined}
             practice={occurrence.practice}
             readOnly
@@ -195,12 +201,7 @@ function ReadingFullSetWrongbookReviewShell({
             reviewItems={sameQuestionItems}
             selectedReviewItem={item}
           />
-        </section>
-        <div className="mt-4 grid grid-cols-3 items-center gap-3">
-          <button className="student-button-secondary justify-self-start" disabled={index === 0} onClick={() => setIndex(index - 1)} type="button"><ChevronLeft size={18} /> Previous</button>
-          <span />
-          <button className="student-button-primary justify-self-end" disabled={index === review.reviewItems.length - 1} onClick={() => setIndex(index + 1)} type="button">Next <ChevronRight size={18} /></button>
-        </div>
+        </ReadingQuestionViewport>
       </main>
     </div>
   );

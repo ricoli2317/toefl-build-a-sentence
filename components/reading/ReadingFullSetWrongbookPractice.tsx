@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowLeft, ChevronLeft, ChevronRight, Clock3 } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -48,7 +47,12 @@ import {
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { ReadingFullSetImagePreloadCache } from "@/lib/reading/fullSetOccurrenceCache.client";
-import { ReadingWorkspaceRouter, readingTwoColumnScaleStyle } from "./ReadingPractice";
+import {
+  ReadingPracticeHeader,
+  ReadingQuestionViewport,
+  ReadingWorkspaceRouter,
+  readingTwoColumnScaleStyle
+} from "./ReadingPractice";
 
 type LoadedOccurrence = {
   answers: ReadingAnswerState;
@@ -376,49 +380,48 @@ export function ReadingFullSetWrongbookPractice({
   }
   if (!attempt || !current || !currentQuestion) return <Message description="正在加载错题和原题练习界面..." />;
   return (
-    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
-      <header className="grid h-[76px] grid-cols-[1fr_auto_1fr] items-center border-b border-student-border bg-white px-5">
-        <button className="writing-header-back justify-self-start" onClick={() => router.push(STUDENT_ROUTES.wrongQuestions)} type="button">
-          <ArrowLeft aria-hidden="true" size={20} /> Back
-        </button>
-        <p className="max-w-[50vw] truncate text-sm font-bold text-student-primary">错题订正 · {item?.title}</p>
-        <div className="flex items-center gap-2 justify-self-end font-mono text-sm font-bold"><Clock3 size={18} />{formatWritingTimer(elapsedSeconds)}</div>
-      </header>
-      <main className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
-        style={current.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}>
-        <p className="mb-3 text-center text-sm font-bold text-student-muted">{readingFullSetWrongbookProgressLabel(step, progress.wrongQuestionCount)} · Module {current.targets[0]?.moduleNumber}</p>
-        <section
-          aria-busy={current.practice.item.module === "rdl" && !currentAnswerable}
-          className={current.practice.item.module === "ctw"
-          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : `flex flex-1 flex-col bg-white ${current.practice.item.module === "rdl" && !currentAnswerable ? "[&_button]:pointer-events-none [&_button]:opacity-60" : ""}`}
-          onClickCapture={(event) => {
-            if (current.practice.item.module !== "rdl" || currentAnswerable) return;
-            event.preventDefault();
-            event.stopPropagation();
-          }}
-          onLoadCapture={handleWorkspaceAssetLoad}
-          ref={workspaceRef}
+    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+      <ReadingPracticeHeader
+        elapsedSeconds={elapsedSeconds}
+        onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
+        progressLabel={`Module ${current.targets[0]?.moduleNumber} · ${readingFullSetWrongbookProgressLabel(step, progress.wrongQuestionCount)}`}
+        title={`错题订正 · ${item?.title}`}
+      />
+      <main className="mx-auto h-[calc(100dvh-68px)] min-h-0" style={readingTwoColumnScaleStyle}>
+        <ReadingQuestionViewport
+          canGoNext={stepIndex < steps.length - 1}
+          canGoPrevious={stepIndex > 0}
+          module={current.practice.item.module}
+          onNext={() => move(1)}
+          onPrevious={() => move(-1)}
+          onSubmit={submit}
+          readOnly={false}
+          submitError={error}
+          submitting={submitting}
         >
-          <ReadingWorkspaceRouter
-            answers={current.answers}
-            currentQuestion={currentQuestion}
-            editableSlotIds={editableSlotIds}
-            lookupEnabled={readingLookupEnabled("active", current.practice.item.module)}
-            layoutMode="natural"
-            onAnswerChange={updateAnswer}
-            onReady={handleWorkspaceReady}
-            practice={current.practice}
-            readOnly={false}
-          />
-        </section>
-        <div className="mt-4 grid grid-cols-3 items-center gap-3">
-          <button className="student-button-secondary justify-self-start" disabled={stepIndex === 0} onClick={() => move(-1)} type="button"><ChevronLeft size={18} /> Previous</button>
-          <p className="text-center text-xs font-semibold text-student-muted">{error}</p>
-          {stepIndex < steps.length - 1
-            ? <button className="student-button-primary justify-self-end" onClick={() => move(1)} type="button">Next <ChevronRight size={18} /></button>
-            : <button className="student-button-primary justify-self-end" disabled={submitting} onClick={submit} type="button">{submitting ? "Submitting..." : "Submit"}</button>}
-        </div>
+          <section
+            aria-busy={current.practice.item.module === "rdl" && !currentAnswerable}
+            className={`flex h-full min-h-0 flex-col ${current.practice.item.module === "rdl" && !currentAnswerable ? "[&_button]:pointer-events-none [&_button]:opacity-60" : ""}`}
+            onClickCapture={(event) => {
+              if (current.practice.item.module !== "rdl" || currentAnswerable) return;
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+            onLoadCapture={handleWorkspaceAssetLoad}
+            ref={workspaceRef}
+          >
+            <ReadingWorkspaceRouter
+              answers={current.answers}
+              currentQuestion={currentQuestion}
+              editableSlotIds={editableSlotIds}
+              lookupEnabled={readingLookupEnabled("active", current.practice.item.module)}
+              onAnswerChange={updateAnswer}
+              onReady={handleWorkspaceReady}
+              practice={current.practice}
+              readOnly={false}
+            />
+          </section>
+        </ReadingQuestionViewport>
       </main>
     </div>
   );

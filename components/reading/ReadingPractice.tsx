@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ChevronLeft, ChevronRight, Clock3, DoorOpen } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, DoorOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Fragment,
@@ -18,7 +18,6 @@ import {
   type ReactNode
 } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import { WritingPracticeActions } from "@/components/writing/WritingPracticeActions";
 import { ReadingCorrectionAnswerValue } from "@/components/reading/ReadingCorrectionAnswerValue";
 import { ReadingFullSetQuestionNavigator } from "@/components/reading/ReadingFullSetQuestionNavigator";
 import {
@@ -115,11 +114,11 @@ type FullSetReviewResponse = Partial<ReadingFullSetReviewPayload> & { error?: st
 export const readingTwoColumnScaleStyle = {
   "--reading-scale-unit": "clamp(0.875px, min(calc(0.5px + 0.034722vw), calc(0.4px + 0.066667vh)), 1.12px)",
   fontSize: "var(--reading-scale-unit)",
-  maxWidth: "1440em",
-  paddingBottom: "16em",
-  paddingLeft: "32em",
-  paddingRight: "32em",
-  paddingTop: "16em"
+  maxWidth: "1600em",
+  paddingBottom: "12px",
+  paddingLeft: "16em",
+  paddingRight: "16em",
+  paddingTop: "12px"
 } as CSSProperties;
 
 const readingTitleStyle = {
@@ -148,7 +147,7 @@ const readingQuestionTextStyle = {
 } as CSSProperties;
 
 const readingChoiceListStyle = {
-  gap: "26em",
+  gap: "24em",
   marginTop: "24em"
 } as CSSProperties;
 
@@ -170,8 +169,8 @@ const readingRadioDotStyle = {
 } as CSSProperties;
 
 const readingPassageTextStyle = {
-  fontSize: "16em",
-  lineHeight: 1.75
+  fontSize: "17em",
+  lineHeight: 28 / 17
 } as CSSProperties;
 
 const readingSpecialNoticeStyle = {
@@ -477,19 +476,20 @@ function ReadingFullSetReviewShell({
   const disclosure = selectedReviewItem
     ? payload.disclosures[selectedReviewItem.answerId]
     : undefined;
-  const statusLabel = `第${currentItem.orderStart}题`;
+  const progressLabel = `Module ${currentItem.moduleNumber} · Question ${currentItem.orderStart} / ${currentItem.moduleNumber === 1 ? 35 : 15}`;
 
   return (
     <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={onBack}
+        progressLabel={progressLabel}
         showElapsed={false}
-        title={`${payload.attempt.title} · Module ${currentItem.moduleNumber}`}
+        title={payload.attempt.title}
       />
       <main
-        className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
-        style={currentOccurrence.practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
+        className="mx-auto min-h-[calc(100dvh-68px)]"
+        style={readingTwoColumnScaleStyle}
       >
         <div className="mb-3">
           <ReadingFullSetQuestionNavigator
@@ -501,15 +501,18 @@ function ReadingFullSetReviewShell({
             <ReadingAnswerDisclosure disclosure={disclosure} />
           </ReadingFullSetQuestionNavigator>
         </div>
-        <section className={currentOccurrence.practice.item.module === "ctw"
-          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex flex-1 flex-col bg-white"}
+        <ReadingQuestionViewport
+          canGoNext={activeIndex < payload.reviewItems.length - 1}
+          canGoPrevious={activeIndex > 0}
+          module={currentOccurrence.practice.item.module}
+          onNext={() => selectReviewItem(activeIndex + 1)}
+          onPrevious={() => selectReviewItem(activeIndex - 1)}
+          readOnly
         >
           <ReadingWorkspaceRouter
             answers={currentOccurrence.answers}
             currentQuestion={currentQuestion}
             lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence.practice.item.module)}
-            layoutMode="natural"
             onAnswerChange={() => undefined}
             practice={currentOccurrence.practice}
             readOnly
@@ -517,40 +520,7 @@ function ReadingFullSetReviewShell({
             reviewItems={workspaceReviewItems}
             selectedReviewItem={selectedReviewItem}
           />
-          {currentOccurrence.practice.item.module !== "ctw" ? (
-            <ReadingQuestionNavigation
-              canGoNext={activeIndex < payload.reviewItems.length - 1}
-              canGoPrevious={activeIndex > 0}
-              currentIndex={activeIndex}
-              embedded
-              module={currentOccurrence.practice.item.module}
-              onNext={() => selectReviewItem(activeIndex + 1)}
-              onPrevious={() => selectReviewItem(activeIndex - 1)}
-              onSubmit={() => undefined}
-              readOnly
-              statusLabel={statusLabel}
-              submitError=""
-              submitting={false}
-              workspaceCount={payload.reviewItems.length}
-            />
-          ) : null}
-        </section>
-        {currentOccurrence.practice.item.module === "ctw" ? (
-          <ReadingQuestionNavigation
-            canGoNext={activeIndex < payload.reviewItems.length - 1}
-            canGoPrevious={activeIndex > 0}
-            currentIndex={activeIndex}
-            module={currentOccurrence.practice.item.module}
-            onNext={() => selectReviewItem(activeIndex + 1)}
-            onPrevious={() => selectReviewItem(activeIndex - 1)}
-            onSubmit={() => undefined}
-            readOnly
-            statusLabel={statusLabel}
-            submitError=""
-            submitting={false}
-            workspaceCount={payload.reviewItems.length}
-          />
-        ) : null}
+        </ReadingQuestionViewport>
       </main>
     </div>
   );
@@ -647,6 +617,11 @@ export function ReadingPracticeShell({
     ? reviewQuestionIndex
     : navigation.currentIndex;
   const currentQuestion = practice.questions[effectiveQuestionIndex] ?? practice.questions[0];
+  const progressLabel = readOnly && currentReviewItem
+    ? `Question ${currentReviewItem.order} / ${reviewItems.length}`
+    : practice.item.module === "ctw"
+      ? `Questions 1–${navigation.scoringPointCount} / ${navigation.scoringPointCount}`
+      : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
   const captureCurrentQuestionTime = useCallback(() => {
     const questionId = activeQuestionIdRef.current;
     const elapsed = Math.max(0, Math.round((Date.now() - questionStartedAtRef.current) / 1000));
@@ -748,17 +723,18 @@ export function ReadingPracticeShell({
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text">
+    <div className={`${readOnly ? "min-h-[100dvh]" : "h-[100dvh] overflow-hidden"} bg-[#fbfbfe] text-student-text`}>
       <ReadingPracticeHeader
         elapsedSeconds={elapsedSeconds}
         onBack={onBack}
         onExit={onExit}
+        progressLabel={progressLabel}
         showElapsed={!readOnly}
         title={reviewTitle ?? practice.item.title}
       />
       <main
-        className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
-        style={practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
+        className={`mx-auto ${readOnly ? "min-h-[calc(100dvh-68px)]" : "h-[calc(100dvh-68px)] min-h-0"}`}
+        style={readingTwoColumnScaleStyle}
       >
         {readOnly && currentReviewItem ? (
           <ReadingReviewStatusBar
@@ -769,16 +745,22 @@ export function ReadingPracticeShell({
             onSelect={selectReviewItem}
           />
         ) : null}
-        <section className={practice.item.module === "ctw"
-          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex flex-1 flex-col bg-white"}
+        <ReadingQuestionViewport
+          canGoNext={readOnly ? reviewIndex < reviewItems.length - 1 : navigation.currentIndex < navigation.workspaceCount - 1}
+          canGoPrevious={readOnly ? reviewIndex > 0 : navigation.currentIndex > 0}
+          module={practice.item.module}
+          onNext={() => move(1)}
+          onPrevious={() => move(-1)}
+          onSubmit={submit}
+          readOnly={readOnly}
+          submitError={submitError}
+          submitting={submitting}
         >
           <ReadingWorkspaceRouter
             answers={answers}
             currentQuestion={currentQuestion}
             editableSlotIds={editableSlotIds}
             lookupEnabled={lookupEnabled}
-            layoutMode="natural"
             onAnswerChange={updateAnswer}
             practice={practice}
             readOnly={readOnly}
@@ -788,38 +770,7 @@ export function ReadingPracticeShell({
             reviewItems={reviewItems.filter((item) => item.questionId === currentQuestion.questionId)}
             selectedReviewItem={currentReviewItem}
           />
-          {practice.item.module !== "ctw" ? (
-            <ReadingQuestionNavigation
-              canGoNext={readOnly ? reviewIndex < reviewItems.length - 1 : navigation.currentIndex < navigation.workspaceCount - 1}
-              canGoPrevious={readOnly ? reviewIndex > 0 : navigation.currentIndex > 0}
-              currentIndex={readOnly ? reviewIndex : navigation.currentIndex}
-              embedded
-              module={practice.item.module}
-              onNext={() => move(1)}
-              onPrevious={() => move(-1)}
-              onSubmit={submit}
-              readOnly={readOnly}
-              submitError={submitError}
-              submitting={submitting}
-              workspaceCount={readOnly ? reviewItems.length : navigation.workspaceCount}
-            />
-          ) : null}
-        </section>
-        {practice.item.module === "ctw" ? (
-          <ReadingQuestionNavigation
-            canGoNext={readOnly ? reviewIndex < reviewItems.length - 1 : navigation.currentIndex < navigation.workspaceCount - 1}
-            canGoPrevious={readOnly ? reviewIndex > 0 : navigation.currentIndex > 0}
-            currentIndex={readOnly ? reviewIndex : navigation.currentIndex}
-            module={practice.item.module}
-            onNext={() => move(1)}
-            onPrevious={() => move(-1)}
-            onSubmit={submit}
-            readOnly={readOnly}
-            submitError={submitError}
-            submitting={submitting}
-            workspaceCount={readOnly ? reviewItems.length : navigation.workspaceCount}
-          />
-        ) : null}
+        </ReadingQuestionViewport>
       </main>
     </div>
   );
@@ -846,69 +797,77 @@ export function ReadingPracticePendingShell({
         elapsedSeconds={0}
         onBack={onBack}
         onExit={onExit}
+        progressLabel={practice.item.module === "ctw"
+          ? `Questions 1–${practice.item.scoringPointCount} / ${practice.item.scoringPointCount}`
+          : `Question 1 / ${practice.item.questionCount}`}
         showElapsed={false}
         title={reviewTitle ?? practice.item.title}
       />
       <main
-        className="mx-auto flex min-h-[calc(100dvh-76px)] max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
-        style={practice.item.module === "ctw" ? undefined : readingTwoColumnScaleStyle}
+        className="mx-auto min-h-[calc(100dvh-68px)]"
+        style={readingTwoColumnScaleStyle}
       >
         <p className="mb-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-3 text-sm font-semibold text-student-primary">
           原题已载入，正在准备订正记录；准备完成前题面只读。
         </p>
-        <section className={practice.item.module === "ctw"
-          ? "flex-1 rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex flex-1 flex-col bg-white"}
-        >
+        <ReadingQuestionViewport module={practice.item.module} readOnly>
           <ReadingWorkspaceRouter
             answers={{}}
             currentQuestion={currentQuestion}
             lookupEnabled={false}
-            layoutMode="natural"
             onAnswerChange={() => undefined}
             practice={practice}
             readOnly
           />
-        </section>
+        </ReadingQuestionViewport>
       </main>
     </div>
   );
 }
 
-function ReadingPracticeHeader({
+export function ReadingPracticeHeader({
   elapsedSeconds,
   onBack,
   onExit,
   productName,
+  progressLabel,
+  progressTestId = "reading-navigation-status",
   showElapsed = true,
+  timeLabel = "Elapsed",
+  timeTestId = "reading-elapsed-time",
+  timeValue,
   title
 }: {
   elapsedSeconds: number;
   onBack: () => void;
   onExit?: () => void;
   productName?: string;
+  progressLabel?: string;
+  progressTestId?: string;
   showElapsed?: boolean;
+  timeLabel?: string;
+  timeTestId?: string;
+  timeValue?: string;
   title: string;
 }) {
   return (
-    <header className="grid h-[76px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
+    <header className="grid h-[68px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
       <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
         <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
         <span>Back</span>
       </button>
       <div className="min-w-0 justify-self-center text-center">
         {productName ? <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-student-muted">{productName}</p> : null}
-        <p className="max-w-[42vw] truncate text-sm font-bold text-student-primary">{title}</p>
+        <p className="max-w-[58vw] truncate text-sm font-bold text-student-text sm:text-base">
+          {title}{progressLabel ? <> <span aria-hidden="true" className="text-student-muted">·</span> <span data-testid={progressTestId}>{progressLabel}</span></> : null}
+        </p>
       </div>
       <div className="flex items-center justify-self-end gap-3">
-        {showElapsed ? <div className="hidden min-h-[54px] items-center gap-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 text-student-primary sm:flex">
-          <Clock3 aria-hidden="true" size={20} />
-          <div className="text-center">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.08em]">Elapsed</p>
-            <p className="font-mono text-lg font-bold leading-5 tabular-nums text-student-text" data-testid="reading-elapsed-time">
-              {formatWritingTimer(elapsedSeconds)}
-            </p>
-          </div>
+        {showElapsed ? <div className="hidden items-baseline gap-2 whitespace-nowrap sm:flex">
+          <span className="text-sm font-medium text-student-muted">{timeLabel}</span>
+          <span className="font-mono text-base font-bold tabular-nums text-student-primary" data-testid={timeTestId}>
+            {timeValue ?? formatWritingTimer(elapsedSeconds)}
+          </span>
         </div> : null}
         {onExit ? (
           <button className="writing-exit-button" onClick={onExit} type="button">
@@ -1225,7 +1184,7 @@ function CtwPracticeWorkspace({
   return (
     <DomTextLookupRegion enabled={lookupEnabled}>
     <div
-      className={`mx-auto max-w-4xl py-2 sm:py-5 ${lookupEnabled ? "" : "select-none"}`}
+      className={`mx-auto max-w-4xl py-[8em] ${lookupEnabled ? "" : "select-none"}`}
       data-lookup-enabled={lookupEnabled ? "true" : "false"}
     >
       {!readOnly ? (
@@ -1263,12 +1222,12 @@ function CtwPracticeWorkspace({
           type="text"
         />
       ) : null}
-      <h1 className="text-center text-xl font-bold leading-8 text-student-text sm:text-2xl">Fill in the missing letters in the paragraph.</h1>
-      <article className="mt-8 text-[18px] leading-[2.05] text-student-text sm:text-[20px]" data-testid="ctw-passage">
+      <h1 className="text-center text-[20em] font-bold leading-[1.6] text-student-text">Fill in the missing letters in the paragraph.</h1>
+      <article className="mt-[28em] text-[17em] leading-[1.75] text-student-text" data-testid="ctw-passage">
         {[...question.paragraphs]
           .sort((left, right) => left.paragraphOrder - right.paragraphOrder)
           .map((paragraph) => (
-            <p className="mb-6 last:mb-0" key={paragraph.paragraphId}>
+            <p className="mb-[20em] last:mb-0" key={paragraph.paragraphId}>
               {paragraph.segments.map((segment, segmentIndex) => {
                 if (segment.kind === "text") {
                   return <span key={`${paragraph.paragraphId}:text:${segmentIndex}`}>{segment.text}</span>;
@@ -2320,77 +2279,109 @@ function ChoiceOptionList({
   );
 }
 
+export function ReadingQuestionViewport({
+  canGoNext = false,
+  canGoPrevious = false,
+  children,
+  module,
+  navigationDisabled = false,
+  onNext = () => undefined,
+  onPrevious = () => undefined,
+  onSubmit,
+  readOnly,
+  submitError = "",
+  submitDisabled = false,
+  submitLabel = "Submit",
+  submitting = false
+}: {
+  canGoNext?: boolean;
+  canGoPrevious?: boolean;
+  children: ReactNode;
+  module: StudentReadingPracticePayload["item"]["module"];
+  navigationDisabled?: boolean;
+  onNext?: () => void;
+  onPrevious?: () => void;
+  onSubmit?: () => void;
+  readOnly: boolean;
+  submitError?: string;
+  submitDisabled?: boolean;
+  submitLabel?: string;
+  submitting?: boolean;
+}) {
+  return (
+    <div className="relative h-[calc(100dvh-92px)] min-h-0" data-testid="reading-question-viewport">
+      <section className={module === "ctw"
+        ? "mx-[52em] h-full overflow-y-auto rounded-2xl border border-student-border bg-white p-[28em] shadow-sm"
+        : "mx-[52em] flex h-full min-h-0 flex-col overflow-hidden bg-white"}
+      >
+        {children}
+      </section>
+      <ReadingQuestionNavigation
+        canGoNext={canGoNext}
+        canGoPrevious={canGoPrevious}
+        navigationDisabled={navigationDisabled}
+        onNext={onNext}
+        onPrevious={onPrevious}
+        onSubmit={onSubmit}
+        readOnly={readOnly}
+        submitError={submitError}
+        submitDisabled={submitDisabled}
+        submitLabel={submitLabel}
+        submitting={submitting}
+      />
+    </div>
+  );
+}
+
 function ReadingQuestionNavigation({
   canGoNext,
   canGoPrevious,
-  currentIndex,
-  embedded = false,
-  module,
+  navigationDisabled,
   onNext,
   onPrevious,
   onSubmit,
   readOnly,
-  statusLabel,
   submitError,
+  submitDisabled,
+  submitLabel,
   submitting,
-  workspaceCount
 }: {
   canGoNext: boolean;
   canGoPrevious: boolean;
-  currentIndex: number;
-  embedded?: boolean;
-  module: StudentReadingPracticePayload["item"]["module"];
+  navigationDisabled: boolean;
   onNext: () => void;
   onPrevious: () => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   readOnly: boolean;
-  statusLabel?: string;
   submitError: string;
+  submitDisabled: boolean;
+  submitLabel: string;
   submitting: boolean;
-  workspaceCount: number;
 }) {
-  const navigationButtonSizeClassName = "h-10 w-28 px-3 py-2";
-  const stepButtonClassName = `student-button-secondary ${navigationButtonSizeClassName}`;
-  if (module === "ctw" && !readOnly) {
-    return (
-      <div className="mt-3 shrink-0">
-        <WritingPracticeActions
-          compact
-          disabled={submitting}
-          onSubmit={onSubmit}
-          submitLabel={submitting ? "Submitting..." : "Submit"}
-        />
-        {submitError ? <p className="w-full text-sm font-semibold text-student-error">{submitError}</p> : null}
-      </div>
-    );
-  }
+  const stepButtonClassName = "pointer-events-auto flex h-[72px] w-[48em] items-center justify-center bg-transparent text-student-primary transition-opacity hover:opacity-70 focus-visible:rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary disabled:cursor-default disabled:opacity-20";
   return (
     <nav
       aria-label="阅读题目导航"
-      className={embedded
-        ? "grid min-h-16 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-t border-student-border bg-white px-5 py-2 sm:px-8"
-        : "mt-4 flex min-h-14 flex-wrap items-center justify-between gap-4 rounded-2xl border border-student-border bg-white px-4 py-2 shadow-sm"}
+      className="pointer-events-none absolute inset-0 z-20 flex items-center justify-between"
     >
-      <button className={`${stepButtonClassName} justify-self-start`} disabled={!canGoPrevious} onClick={onPrevious} type="button">
-        <ChevronLeft aria-hidden="true" size={18} /> Previous
+      <button aria-label="Previous" className={stepButtonClassName} disabled={!canGoPrevious || navigationDisabled} onClick={onPrevious} type="button">
+        <ChevronLeft aria-hidden="true" size="36em" strokeWidth={2.2} />
       </button>
-      <p className="text-center text-sm font-bold text-student-text" data-testid="reading-navigation-status">
-        {statusLabel ?? `Question ${currentIndex + 1} of ${workspaceCount}`}
-      </p>
-      {readOnly ? (
-        <button className={`${stepButtonClassName} justify-self-end`} disabled={!canGoNext} onClick={onNext} type="button">
-          Next <ChevronRight aria-hidden="true" size={18} />
-        </button>
-      ) : canGoNext ? (
-        <button className={`${stepButtonClassName} justify-self-end`} onClick={onNext} type="button">
-          Next <ChevronRight aria-hidden="true" size={18} />
+      {canGoNext || readOnly ? (
+        <button aria-label="Next" className={stepButtonClassName} disabled={!canGoNext || navigationDisabled} onClick={onNext} type="button">
+          <ChevronRight aria-hidden="true" size="36em" strokeWidth={2.2} />
         </button>
       ) : (
-        <button className={`student-button-primary ${navigationButtonSizeClassName} justify-self-end`} disabled={submitting} onClick={onSubmit} type="button">
-          {submitting ? "Submitting..." : "Submit"}
+        <button
+          className="pointer-events-auto mr-[4em] min-h-[42px] rounded-xl bg-student-primary px-[14em] text-[14em] font-bold text-white shadow-sm disabled:opacity-60"
+          disabled={submitDisabled || submitting}
+          onClick={onSubmit}
+          type="button"
+        >
+          {submitting ? "Submitting..." : submitLabel}
         </button>
       )}
-      {submitError ? <p className="col-span-3 w-full text-sm font-semibold text-student-error">{submitError}</p> : null}
+      {submitError ? <p className="pointer-events-none absolute bottom-[4em] left-[52em] right-[52em] text-center text-[13em] font-semibold text-student-error">{submitError}</p> : null}
     </nav>
   );
 }

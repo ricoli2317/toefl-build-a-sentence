@@ -255,7 +255,8 @@ test("Full Set review switches in memory and updates history without route navig
   assert.equal((fullSetReview.match(/fetch\(/g) ?? []).length, 1);
   assert.doesNotMatch(fullSetReview, /router\.push\(target\.href\)|questionIndex=\$\{questionIndex\}/);
   assert.match(fullSetReview, /ReadingFullSetQuestionNavigator/);
-  assert.match(fullSetReview, /statusLabel=\{statusLabel\}/);
+  assert.match(fullSetReview, /progressLabel=\{progressLabel\}/);
+  assert.match(fullSetReview, /<ReadingQuestionViewport/);
   assert.match(fullSetReview, /activeSlotReview/);
   assert.match(fullSetReview, /item\.index === currentItem\.sourceAnswerIndex/);
   assert.doesNotMatch(fullSetReview, /key=\{currentItem/);

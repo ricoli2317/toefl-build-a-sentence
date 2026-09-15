@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ChevronLeft, ChevronRight, Clock3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   useCallback,
@@ -68,6 +67,8 @@ import {
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
+  ReadingPracticeHeader,
+  ReadingQuestionViewport,
   ReadingWorkspaceRouter,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
@@ -1608,39 +1609,39 @@ export function ReadingFullSetRunner({
   const isLast = position.occurrenceIndex === lastOccurrenceIndex
     && Boolean(lastOccurrence)
     && displayRange.end === lastOccurrence.sourceQuestionEnd;
+  const progressLabel = `Module ${moduleNumber} · ${displayRange.start === displayRange.end
+    ? `Question ${displayRange.start} / ${moduleQuestionCount}`
+    : `Questions ${displayRange.start}–${displayRange.end} / ${moduleQuestionCount}`}`;
 
   return (
     <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
-      <header className="grid h-[76px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
-        <button
-          className="writing-header-back justify-self-start"
-          onClick={() => void leavePractice()}
-          type="button"
-        >
-          <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
-          <span>Back</span>
-        </button>
-        <div className="min-w-0 text-center">
-          <p className="truncate text-sm font-bold text-student-primary">{runner.title}</p>
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-student-muted">Module {moduleNumber}</p>
-        </div>
-        <div className="flex min-h-[54px] items-center gap-2 justify-self-end rounded-xl border border-student-primary-border bg-student-primary-soft px-3 text-student-primary sm:px-4">
-          <Clock3 aria-hidden="true" size={19} />
-          <div className="text-center">
-            <p className="text-[9px] font-semibold uppercase tracking-[0.08em]">Time Left</p>
-            <p className="font-mono text-base font-bold leading-5 tabular-nums text-student-text" data-testid="full-set-time-left">
-              {formatReadingFullSetTime(remainingSeconds)}
-            </p>
-          </div>
-        </div>
-      </header>
+      <ReadingPracticeHeader
+        elapsedSeconds={0}
+        onBack={() => void leavePractice()}
+        progressLabel={progressLabel}
+        progressTestId="full-set-question-number"
+        timeLabel="Time Left"
+        timeTestId="full-set-time-left"
+        timeValue={formatReadingFullSetTime(remainingSeconds)}
+        title={runner.title}
+      />
       <main
-        className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1440px] flex-col px-4 py-4 sm:px-6 lg:px-8"
-        style={currentOccurrence?.taskType === "ctw" ? undefined : readingTwoColumnScaleStyle}
+        className="mx-auto h-[calc(100dvh-68px)] min-h-0"
+        style={readingTwoColumnScaleStyle}
       >
-        <section className={currentOccurrence?.taskType === "ctw"
-          ? "min-h-0 flex-1 overflow-auto rounded-2xl border border-student-border bg-white p-5 shadow-sm sm:p-7"
-          : "flex min-h-0 flex-1 flex-col overflow-hidden bg-white"}
+        <ReadingQuestionViewport
+          canGoNext={!isLast}
+          canGoPrevious={!isFirst}
+          module={currentOccurrence?.taskType ?? "rap"}
+          navigationDisabled={!currentPayload || !workspaceInteractive || navigating || submitting}
+          onNext={() => void move(1)}
+          onPrevious={() => void move(-1)}
+          onSubmit={() => void submitModule(false)}
+          readOnly={false}
+          submitError={saveError || error}
+          submitDisabled={!currentPayload || !workspaceInteractive || navigating}
+          submitLabel={`Submit Module ${moduleNumber}`}
+          submitting={submitting}
         >
           {occurrenceLoad.status === "error" ? (
             <div className="m-auto grid justify-items-center gap-3 text-center">
@@ -1666,28 +1667,7 @@ export function ReadingFullSetRunner({
           ) : (
             <p className="m-auto text-sm text-student-muted">正在加载当前题目...</p>
           )}
-        </section>
-        <nav className="mt-4 grid min-h-16 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 rounded-2xl border border-student-border bg-white px-4 py-2 shadow-sm" aria-label="套题题目导航">
-          <button className="student-button-secondary h-10 w-28 justify-self-start" disabled={isFirst || !currentPayload || !workspaceInteractive || navigating || submitting} onClick={() => void move(-1)} type="button">
-            <ChevronLeft aria-hidden="true" size={18} /> Previous
-          </button>
-          <p className="text-center text-sm font-bold text-student-text" data-testid="full-set-question-number">
-            {displayRange.start === displayRange.end
-              ? `Question ${displayRange.start} / ${moduleQuestionCount}`
-              : `Questions ${displayRange.start}–${displayRange.end} / ${moduleQuestionCount}`}
-          </p>
-          {isLast ? (
-            <button className="student-button-primary h-10 min-w-28 justify-self-end" disabled={!currentPayload || !workspaceInteractive || navigating || submitting} onClick={() => void submitModule(false)} type="button">
-              {submitting ? "Submitting..." : `Submit Module ${moduleNumber}`}
-            </button>
-          ) : (
-            <button className="student-button-secondary h-10 w-28 justify-self-end" disabled={!currentPayload || !workspaceInteractive || navigating || submitting} onClick={() => void move(1)} type="button">
-              Next <ChevronRight aria-hidden="true" size={18} />
-            </button>
-          )}
-        </nav>
-        {saveError ? <p className="mt-1 text-sm font-semibold text-student-error">{saveError}</p> : null}
-        {error ? <p className="mt-1 text-sm font-semibold text-student-error">{error}</p> : null}
+        </ReadingQuestionViewport>
       </main>
     </div>
   );

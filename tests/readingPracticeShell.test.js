@@ -169,7 +169,7 @@ test("student loader selects only public columns and shell keeps 7B integration 
   assert.match(shellSource, /wrongbook[\s\S]*invalidateStudentWrongbook/i);
 });
 
-test("RDL and RAP share one continuous practice shell with embedded navigation", () => {
+test("CTW, RDL, and RAP share one fixed-height practice viewport with side navigation", () => {
   const shellSource = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const headerSource = shellSource.slice(
     shellSource.indexOf("function ReadingPracticeHeader"),
@@ -179,48 +179,78 @@ test("RDL and RAP share one continuous practice shell with embedded navigation",
     shellSource.indexOf("function ReadingTwoColumnPracticeShell"),
     shellSource.indexOf("function RdlPracticeWorkspace")
   );
-  const navigationSource = shellSource.slice(
-    shellSource.indexOf("function ReadingQuestionNavigation"),
+  const viewportSource = shellSource.slice(
+    shellSource.indexOf("export function ReadingQuestionViewport"),
     shellSource.indexOf("function ReadingPracticeMessage")
   );
 
   assert.match(headerSource, /productName \? <p/);
+  assert.match(headerSource, /h-\[68px\]/);
+  assert.match(headerSource, /\{timeLabel\}/);
+  assert.match(headerSource, /data-testid=\{progressTestId\}/);
+  assert.doesNotMatch(headerSource, /min-h-\[54px\].*rounded-xl.*bg-student-primary-soft/);
   const activeShellSource = shellSource.slice(
     shellSource.indexOf("export function ReadingPracticeShell"),
     shellSource.indexOf("function ReadingPracticeHeader")
   );
   assert.doesNotMatch(activeShellSource, /productName=/);
-  assert.match(activeShellSource, /min-h-\[100dvh\]/);
-  assert.match(activeShellSource, /min-h-\[calc\(100dvh-76px\)\]/);
-  assert.match(activeShellSource, /layoutMode="natural"/);
-  assert.doesNotMatch(activeShellSource, /className="h-\[100dvh\]|className="[^"]* h-\[calc\(100dvh-76px\)\]|overflow-hidden|overflow-auto/);
-  assert.match(activeShellSource, /style=\{practice\.item\.module === "ctw" \? undefined : readingTwoColumnScaleStyle\}/);
+  assert.match(activeShellSource, /"h-\[100dvh\] overflow-hidden"/);
+  assert.match(activeShellSource, /h-\[calc\(100dvh-68px\)\] min-h-0/);
+  assert.doesNotMatch(activeShellSource, /layoutMode="natural"/);
+  assert.match(activeShellSource, /style=\{readingTwoColumnScaleStyle\}/);
   assert.match(shellSource, /"--reading-scale-unit": "clamp\(0\.875px, min\(calc\(0\.5px \+ 0\.034722vw\), calc\(0\.4px \+ 0\.066667vh\)\), 1\.12px\)"/);
   assert.match(shellSource, /fontSize: "var\(--reading-scale-unit\)"/);
-  assert.match(shellSource, /maxWidth: "1440em"/);
+  assert.match(shellSource, /maxWidth: "1600em"/);
   assert.match(sharedShellSource, /bg-white/);
   assert.match(sharedShellSource, /style=\{readingTitleStyle\}/);
   assert.doesNotMatch(sharedShellSource, /divide-x|border-l|border-r/);
   assert.match(shellSource, /function ReadingQuestionColumn/);
   assert.doesNotMatch(sharedShellSource, /max-w-3xl/);
   assert.match(shellSource, /fontSize: "17em"/);
-  assert.match(shellSource, /gap: "26em"/);
+  assert.match(shellSource, /gap: "24em"/);
   assert.match(shellSource, /height: `\$\{20 \/ 17\}em`/);
   assert.equal((shellSource.match(/<ReadingQuestionColumn labelledBy=/g) ?? []).length, 2);
   assert.ok((shellSource.match(/style=\{readingQuestionTextStyle\}/g) ?? []).length >= 2);
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
-  assert.match(shellSource, /practice\.item\.module !== "ctw"[\s\S]*?<ReadingQuestionNavigation/);
-  assert.match(navigationSource, /embedded[\s\S]*?border-t border-student-border/);
-  assert.match(navigationSource, /navigationButtonSizeClassName = "h-10 w-28 px-3 py-2"/);
-  assert.match(navigationSource, /stepButtonClassName = `student-button-secondary \$\{navigationButtonSizeClassName\}`/);
-  assert.match(navigationSource, /`\$\{stepButtonClassName\} justify-self-start`/);
-  assert.match(navigationSource, /`\$\{stepButtonClassName\} justify-self-end`/);
-  assert.match(navigationSource, /`student-button-primary \$\{navigationButtonSizeClassName\} justify-self-end`/);
+  assert.match(viewportSource, /h-\[calc\(100dvh-92px\)\]/);
+  assert.match(viewportSource, /pointer-events-none absolute inset-0/);
+  assert.match(viewportSource, /aria-label="Previous"/);
+  assert.match(viewportSource, /aria-label="Next"/);
+  const choiceListSource = shellSource.slice(
+    shellSource.indexOf("function ChoiceOptionList"),
+    shellSource.indexOf("export function ReadingQuestionViewport")
+  );
+  assert.doesNotMatch(choiceListSource, /justify-between|justify-around|space-evenly/);
   assert.match(shellSource, /rdlMaterialInstruction\(material\.materialType\)/);
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
 });
 
-test("ordinary, wrongbook, and Full Set Reading reviews use one natural page scroll", () => {
+test("Full Set and wrongbook entry points reuse the compact header and fixed question viewport", () => {
+  const sources = [
+    "ReadingFullSetRunner.tsx",
+    "ReadingFullSetWrongbookPractice.tsx",
+    "ReadingWrongbookReview.tsx"
+  ].map((file) => fs.readFileSync(path.join(__dirname, `../components/reading/${file}`), "utf8"));
+
+  for (const source of sources) {
+    assert.match(source, /<ReadingPracticeHeader/);
+    assert.match(source, /<ReadingQuestionViewport/);
+    assert.match(source, /style=\{readingTwoColumnScaleStyle\}/);
+    assert.doesNotMatch(source, /layoutMode="natural"|h-\[76px\]|100dvh-76px/);
+  }
+  assert.match(sources[0], /timeLabel="Time Left"/);
+  assert.match(sources[0], /Questions \$\{displayRange\.start\}–\$\{displayRange\.end\} \/ \$\{moduleQuestionCount\}/);
+});
+
+test("only Reading question routes bypass the standard Student shell chrome", () => {
+  const studentShell = fs.readFileSync(path.join(__dirname, "../components/student/StudentShell.tsx"), "utf8");
+  assert.match(studentShell, /reading\\\/full-sets\\\/\[\^\/\]\+\\\/result/);
+  assert.match(studentShell, /reading\\\/\(\?:results\|wrongbook-results\)/);
+  assert.match(studentShell, /wrong-questions\\\/\(\?:today\|history\)\\\/reading\\\/practice/);
+  assert.doesNotMatch(studentShell, /pathname\.startsWith\("\/student\/reading\/results\/"\)/);
+});
+
+test("readonly Reading pages scroll outside a fixed question viewport", () => {
   const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const ordinaryLoader = source.slice(
     source.indexOf("export function ReadingPractice"),
@@ -245,18 +275,17 @@ test("ordinary, wrongbook, and Full Set Reading reviews use one natural page scr
 
   assert.doesNotMatch(ordinaryLoader, /document\.(body|documentElement)\.style\.overflow/);
   assert.doesNotMatch(submittedReview, /document\.(body|documentElement)\.style\.overflow/);
-  assert.match(practiceShell, /min-h-\[100dvh\]/);
-  assert.match(practiceShell, /layoutMode="natural"/);
-  assert.match(twoColumnShell, /naturalFlow \? "overflow-visible"/);
-  assert.match(twoColumnShell, /naturalFlow \? "min-w-0"/);
+  assert.match(practiceShell, /readOnly \? "min-h-\[100dvh\]" : "h-\[100dvh\] overflow-hidden"/);
+  assert.doesNotMatch(practiceShell, /layoutMode="natural"/);
+  assert.match(practiceShell, /<ReadingQuestionViewport/);
   assert.match(fullSetShell, /min-h-\[100dvh\]/);
-  assert.match(fullSetShell, /min-h-\[calc\(100dvh-76px\)\]/);
-  assert.match(fullSetShell, /layoutMode="natural"/);
-  assert.doesNotMatch(fullSetShell, /className="h-\[100dvh\]|className="[^"]* h-\[calc\(100dvh-76px\)\]|overflow-hidden|overflow-auto/);
+  assert.match(fullSetShell, /min-h-\[calc\(100dvh-68px\)\]/);
+  assert.doesNotMatch(fullSetShell, /layoutMode="natural"/);
+  assert.match(fullSetShell, /<ReadingQuestionViewport/);
   assert.doesNotMatch(fullSetShell, /document\.(body|documentElement)\.style\.overflow/);
 });
 
-test("CTW, RDL, and RAP natural layout keeps long content and bottom navigation in document flow", () => {
+test("CTW, RDL, and RAP keep bounded content geometry without a bottom navigation bar", () => {
   const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const practiceShell = source.slice(
     source.indexOf("export function ReadingPracticeShell"),
@@ -271,11 +300,12 @@ test("CTW, RDL, and RAP natural layout keeps long content and bottom navigation 
     source.indexOf("function renderRapHighlightedText")
   );
 
-  assert.match(practiceShell, /\? "flex-1 rounded-2xl/);
-  assert.doesNotMatch(practiceShell, /max-h-|fixed|absolute/);
-  assert.ok(practiceShell.indexOf("<ReadingWorkspaceRouter") < practiceShell.indexOf("<ReadingQuestionNavigation"));
+  assert.match(practiceShell, /<ReadingQuestionViewport/);
+  assert.doesNotMatch(practiceShell, /layoutMode="natural"/);
+  assert.doesNotMatch(practiceShell, /border-t border-student-border/);
   assert.match(rdlSource, /naturalFlow \? "h-auto" : "h-full"/);
-  assert.match(rdlSource, /naturalFlow[\s\S]*?overflow-visible/);
+  assert.match(rdlSource, /object-contain/);
+  assert.match(rdlSource, /overflow-hidden lg:min-h-0/);
   assert.match(rapSource, /naturalFlow[\s\S]*?\? "min-w-0"/);
   assert.match(rapSource, /question\.questionType === "rap_multiple_choice"/);
   assert.match(rapSource, /question\.questionType === "rap_sentence_insertion"/);

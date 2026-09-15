@@ -190,10 +190,6 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
     path.join(__dirname, "../components/reading/ReadingPractice.tsx"),
     "utf8"
   );
-  const writingSource = fs.readFileSync(
-    path.join(__dirname, "../components/writing/WritingPractice.tsx"),
-    "utf8"
-  );
   assert.match(source, /paragraph\.segments\.map/);
   assert.match(source, /data-ctw-position/);
   assert.match(source, /data-filled/);
@@ -211,13 +207,13 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.ok(blankWordSource.indexOf("data-ctw-fill-region") < blankWordSource.indexOf("characters.map"));
   assert.equal((blankWordSource.match(/bg-\[#f1f2f5\]/g) ?? []).length, 1);
   assert.doesNotMatch(blankWordSource, /tracking-/);
-  assert.match(source, /WritingPracticeActions/);
-  assert.match(source, /components\/writing\/WritingPracticeActions/);
-  assert.match(writingSource, /components\/writing\/WritingPracticeActions/);
   assert.match(source, /Fill in the missing letters in the paragraph\./);
+  assert.match(source, /text-center text-\[20em\]/);
+  assert.match(source, /data-testid="ctw-passage"/);
+  assert.match(source, /text-\[17em\] leading-\[1\.75\]/);
   assert.doesNotMatch(source, /Type the missing letters in the passage\.|1 个完整练习|个填写位置/);
   assert.match(source, /focusPosition\(firstCtwPosition/);
-  assert.match(source, /if \(module === "ctw" && !readOnly\)/);
+  assert.match(source, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
   assert.doesNotMatch(source, /rawText\.(match|replace)|querySelector|setTimeout/);
 });
 
@@ -270,7 +266,7 @@ test("all editable CTW entry points share one iOS-compatible native keyboard inp
   assert.doesNotMatch(activateSource, /setTimeout|requestAnimationFrame|Promise|async/);
   assert.match(source, /onClick=\{readOnly \? undefined : \(\) => onActivatePosition\(position\)\}/);
   assert.match(source, /export function ReadingPracticeShell[\s\S]*<ReadingWorkspaceRouter[\s\S]*readOnly=\{readOnly\}/);
-  assert.match(fullSetSource, /<ReadingWorkspaceRouter[\s\S]*readOnly=\{false\}/);
+  assert.match(fullSetSource, /<ReadingWorkspaceRouter[\s\S]*readOnly=\{!workspaceInteractive\}/);
   assert.match(fullSetWrongbookSource, /<ReadingWorkspaceRouter[\s\S]*editableSlotIds=\{editableSlotIds\}[\s\S]*readOnly=\{false\}/);
 });
 

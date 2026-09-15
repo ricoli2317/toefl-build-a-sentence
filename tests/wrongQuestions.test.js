@@ -877,8 +877,9 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   assert.match(runtime, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
   assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
-  assert.match(shell, /if \(module === "ctw" && !readOnly\)[\s\S]*submitLabel=/);
-  assert.match(shell, /canGoNext \? \([\s\S]*Submit/);
+  assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
+  assert.match(shell, /submitLabel = "Submit"/);
+  assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*submitLabel/);
   assert.match(todayPage, /itemId=\{searchParams\.itemId\}/);
   assert.match(historyPage, /itemId=\{searchParams\.itemId\}/);
 });
