@@ -20,6 +20,7 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { ReadingCorrectionAnswerValue } from "@/components/reading/ReadingCorrectionAnswerValue";
 import { ReadingFullSetQuestionNavigator } from "@/components/reading/ReadingFullSetQuestionNavigator";
+import { ReadingReviewStatusLine } from "@/components/reading/ReadingReviewStatusLine";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
@@ -356,7 +357,6 @@ export function ReadingSubmittedReview({
       mode="submitted_review"
       onBack={() => router.push(`/student/reading/results/${encodeURIComponent(attemptId)}`)}
       practice={review.practice}
-      reviewDisclosureLabel="正确答案"
       reviewDisclosures={review.disclosures}
       reviewItems={review.reviewItems}
     />
@@ -503,9 +503,7 @@ function ReadingFullSetReviewShell({
             items={payload.reviewItems}
             onSelect={selectReviewItem}
             showCurrentStatus
-          >
-            <ReadingAnswerDisclosure disclosure={disclosure} />
-          </ReadingFullSetQuestionNavigator>
+          />
         </div>
         <ReadingQuestionViewport
           canGoNext={questionNavigationTargets.nextIndex !== null}
@@ -527,6 +525,7 @@ function ReadingFullSetReviewShell({
             practice={currentOccurrence.practice}
             readOnly
             reviewPresentation={disclosure}
+            reviewPresentations={payload.disclosures}
             reviewItems={workspaceReviewItems}
             selectedReviewItem={selectedReviewItem}
           />
@@ -545,7 +544,6 @@ export function ReadingPracticeShell({
   onBack,
   practice,
   reviewItems = [],
-  reviewDisclosureLabel,
   reviewDisclosures = {},
   reviewTitle,
   wrongbook
@@ -558,7 +556,6 @@ export function ReadingPracticeShell({
   onBack: () => void;
   practice: StudentReadingPracticePayload;
   reviewItems?: SubmittedReadingReviewItem[];
-  reviewDisclosureLabel?: string;
   reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewTitle?: string;
   wrongbook?: {
@@ -753,8 +750,6 @@ export function ReadingPracticeShell({
         {readOnly && currentReviewItem ? (
           <ReadingReviewStatusBar
             currentIndex={reviewIndex}
-            disclosure={reviewDisclosures[currentReviewItem.answerId]}
-            disclosureLabel={reviewDisclosureLabel}
             items={reviewItems}
             onSelect={selectReviewItem}
           />
@@ -781,6 +776,7 @@ export function ReadingPracticeShell({
             reviewPresentation={readOnly && currentReviewItem
               ? reviewDisclosures[currentReviewItem.answerId]
               : undefined}
+            reviewPresentations={readOnly ? reviewDisclosures : undefined}
             reviewItems={reviewItems.filter((item) => item.questionId === currentQuestion.questionId)}
             selectedReviewItem={currentReviewItem}
           />
@@ -894,6 +890,7 @@ export function ReadingWorkspaceRouter({
   practice,
   readOnly,
   reviewPresentation,
+  reviewPresentations,
   reviewItems = [],
   selectedReviewItem = null
 }: {
@@ -907,6 +904,7 @@ export function ReadingWorkspaceRouter({
   practice: StudentReadingPracticePayload;
   readOnly: boolean;
   reviewPresentation?: ReadingCorrectionAnswerPresentation;
+  reviewPresentations?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewItems?: SubmittedReadingReviewItem[];
   selectedReviewItem?: SubmittedReadingReviewItem | null;
 }) {
@@ -921,6 +919,7 @@ export function ReadingWorkspaceRouter({
         question={currentQuestion}
         readOnly={readOnly}
         reviewItems={reviewItems}
+        reviewPresentations={reviewPresentations}
         selectedReviewItem={selectedReviewItem}
       />
     );
@@ -1069,6 +1068,7 @@ function CtwPracticeWorkspace({
   question,
   readOnly,
   reviewItems,
+  reviewPresentations,
   selectedReviewItem
 }: {
   answer: ReadingAnswer | undefined;
@@ -1079,6 +1079,7 @@ function CtwPracticeWorkspace({
   question: StudentCtwQuestion;
   readOnly: boolean;
   reviewItems: SubmittedReadingReviewItem[];
+  reviewPresentations?: Record<string, ReadingCorrectionAnswerPresentation>;
   selectedReviewItem: SubmittedReadingReviewItem | null;
 }) {
   const emptySlots = useMemo(() => createCtwSlotAnswers(question.slots), [question.slots]);
@@ -1226,7 +1227,7 @@ function CtwPracticeWorkspace({
         />
       ) : null}
       <h1 className="text-center text-[20em] font-bold leading-[1.6] text-student-text">Fill in the missing letters in the paragraph.</h1>
-      <div className="flex min-h-0 flex-1 items-center">
+      <div className={`flex min-h-0 flex-1 items-center ${readOnly ? "overflow-hidden" : ""}`}>
         <article
           className="w-full text-left text-[18em] leading-[1.75] text-student-text"
           data-testid="ctw-passage"
@@ -1268,6 +1269,13 @@ function CtwPracticeWorkspace({
             ))}
         </article>
       </div>
+      {readOnly && reviewPresentations && reviewItems.length ? (
+        <CtwReadonlyAnswerZone
+          question={question}
+          reviewItems={reviewItems}
+          reviewPresentations={reviewPresentations}
+        />
+      ) : null}
     </div>
     </DomTextLookupRegion>
   );
@@ -1355,33 +1363,110 @@ function CtwBlankWord({
   );
 }
 
+function CtwReadonlyAnswerZone({
+  question,
+  reviewItems,
+  reviewPresentations
+}: {
+  question: StudentCtwQuestion;
+  reviewItems: SubmittedReadingReviewItem[];
+  reviewPresentations: Record<string, ReadingCorrectionAnswerPresentation>;
+}) {
+  const orderedSlots = [...question.slots].sort((left, right) => left.slotOrder - right.slotOrder);
+  const entries = orderedSlots.map((slot) => {
+    const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
+    return {
+      presentation: reviewItem ? reviewPresentations[reviewItem.answerId] : undefined,
+      reviewItem,
+      slot
+    };
+  });
+
+  return (
+    <div
+      className="flex h-[132em] shrink-0 items-center justify-center"
+      data-slot-count={entries.length}
+      data-testid="ctw-readonly-answer-zone"
+    >
+      <dl
+        className="grid max-w-full items-baseline text-[14em] leading-[1.5]"
+        style={{
+          columnGap: "16em",
+          gridTemplateColumns: "max-content repeat(10, max-content)",
+          rowGap: "10em"
+        }}
+      >
+        <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
+        {entries.map(({ presentation, reviewItem, slot }) => (
+          <dd className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={`student:${slot.slotId}`}>
+            <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
+          </dd>
+        ))}
+        <dt className="whitespace-nowrap font-semibold text-student-text">正确答案</dt>
+        {entries.map(({ presentation, slot }) => (
+          <dd className="whitespace-nowrap font-medium text-student-text" data-slot-order={slot.slotOrder} key={`correct:${slot.slotId}`}>
+            {presentation ? (
+              <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
+            ) : null}
+          </dd>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+function CtwReadonlyStudentWord({
+  presentation,
+  reviewItem
+}: {
+  presentation?: ReadingCorrectionAnswerPresentation;
+  reviewItem?: SubmittedReadingReviewItem;
+}) {
+  if (!presentation) return null;
+  if (!reviewItem?.isAnswered || presentation.correctAnswer.kind !== "ctw_word") {
+    return <span className="font-medium text-student-muted">{presentation.studentAnswer}</span>;
+  }
+
+  const studentCharacters = Array.from(presentation.studentAnswer);
+  let cursor = 0;
+  return presentation.correctAnswer.parts.map((part, index) => {
+    const partLength = Array.from(part.text).length;
+    const text = studentCharacters.slice(cursor, cursor + partLength).join("");
+    cursor += partLength;
+    return (
+      <span
+        className={part.emphasized
+          ? `font-semibold ${reviewItem.isCorrect ? "text-student-primary" : "text-student-error"}`
+          : "font-medium text-student-text"}
+        data-ctw-student-fill={part.emphasized ? (reviewItem.isCorrect ? "correct" : "incorrect") : undefined}
+        key={`${index}:${part.text}`}
+      >
+        {text}
+      </span>
+    );
+  });
+}
+
 function ReadingReviewStatusBar({
   currentIndex,
-  disclosure,
-  disclosureLabel,
   items,
   onSelect
 }: {
   currentIndex: number;
-  disclosure?: ReadingCorrectionAnswerPresentation;
-  disclosureLabel?: string;
   items: SubmittedReadingReviewItem[];
   onSelect: (index: number) => void;
 }) {
   const current = items[currentIndex];
   if (!current) return null;
-  const currentState = !current.isAnswered ? "未作答" : current.isCorrect ? "正确" : "错误";
-  const currentTone = current.isCorrect
-    ? "text-student-primary"
-    : current.isAnswered
-      ? "text-student-error"
-      : "text-student-muted";
   return (
     <section className="mx-auto mb-3 max-w-[1600em] shrink-0 rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-review-status">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className={`text-sm font-bold ${currentTone}`}>
-          第{current.order}题 · {currentState} · {formatReviewQuestionTime(current.questionTimeSeconds)}
-        </p>
+        <ReadingReviewStatusLine
+          isAnswered={current.isAnswered}
+          isCorrect={current.isCorrect}
+          order={current.order}
+          questionTimeSeconds={current.questionTimeSeconds}
+        />
         <div className="flex max-w-full flex-wrap gap-1.5" aria-label="阅读作答题号导航">
           {items.map((item, index) => {
             const state = !item.isAnswered ? "unanswered" : item.isCorrect ? "correct" : "incorrect";
@@ -1408,40 +1493,8 @@ function ReadingReviewStatusBar({
           })}
         </div>
       </div>
-      {disclosure && disclosureLabel ? (
-        <ReadingAnswerDisclosure disclosure={disclosure} label={disclosureLabel} />
-      ) : null}
     </section>
   );
-}
-
-export function ReadingAnswerDisclosure({
-  disclosure,
-  label = "正确答案"
-}: {
-  disclosure?: ReadingCorrectionAnswerPresentation;
-  label?: string;
-}) {
-  if (!disclosure) return null;
-  return (
-    <dl className="mt-3 grid gap-3 border-t border-student-border pt-3 text-sm leading-6 sm:grid-cols-2" data-testid="reading-answer-disclosure">
-      <div>
-        <dt className="inline font-semibold text-student-muted">你的答案</dt>
-        <dd className="ml-2 inline font-semibold text-student-text">{disclosure.studentAnswer}</dd>
-      </div>
-      <div>
-        <dt className="inline font-semibold text-student-muted">{label}</dt>
-        <dd className="ml-2 inline font-semibold text-student-text">
-          <ReadingCorrectionAnswerValue answer={disclosure.correctAnswer} />
-        </dd>
-      </div>
-    </dl>
-  );
-}
-
-function formatReviewQuestionTime(seconds: number | null) {
-  if (seconds === null) return "—";
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
 function ctwPositionKey(position: CtwPosition) {
@@ -1492,24 +1545,74 @@ function ReadingTwoColumnPracticeShell({
 }
 
 function ReadingQuestionColumn({
+  answerZone,
   children,
   labelledBy,
   naturalFlow
 }: {
+  answerZone?: ReactNode;
   children: ReactNode;
   labelledBy: string;
   naturalFlow: boolean;
 }) {
+  const fixedAnswerLayout = Boolean(answerZone) && !naturalFlow;
   return (
     <section
       aria-labelledby={labelledBy}
-      className={naturalFlow
-        ? "min-w-0 overflow-visible bg-white"
-        : "min-w-0 overflow-visible bg-white lg:h-full lg:overflow-y-auto"}
+      className={fixedAnswerLayout
+        ? "flex min-w-0 flex-col overflow-visible bg-white lg:h-full lg:min-h-0 lg:overflow-hidden"
+        : naturalFlow
+          ? "min-w-0 overflow-visible bg-white"
+          : "min-w-0 overflow-visible bg-white lg:h-full lg:overflow-y-auto"}
       style={readingColumnStyle}
     >
-      <div className="w-full">{children}</div>
+      <div className={fixedAnswerLayout ? "w-full min-h-0 flex-1 lg:overflow-y-auto" : "w-full"}>{children}</div>
+      {answerZone ? (
+        <div
+          className="flex h-[132em] shrink-0 items-center"
+          data-testid="reading-choice-answer-zone"
+          style={{ paddingLeft: "4em" }}
+        >
+          {answerZone}
+        </div>
+      ) : null}
     </section>
+  );
+}
+
+function ReadingReadonlyChoiceAnswerZone({
+  presentation
+}: {
+  presentation: ReadingCorrectionAnswerPresentation;
+}) {
+  const reviewState = presentation.reviewState;
+  const studentTone = !reviewState?.studentAnswerId
+    ? "text-student-muted"
+    : reviewState.studentAnswerId === reviewState.correctAnswerId
+      ? "text-student-primary"
+      : "text-student-error";
+
+  return (
+    <dl
+      className="grid items-baseline text-[14em] leading-[1.5]"
+      data-testid="reading-readonly-answer-block"
+      style={{ columnGap: "24em", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10em" }}
+    >
+      <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
+      <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
+        !reviewState?.studentAnswerId
+          ? "unanswered"
+          : reviewState.studentAnswerId === reviewState.correctAnswerId
+            ? "correct"
+            : "incorrect"
+      }>
+        {presentation.studentAnswer}
+      </dd>
+      <dt className="whitespace-nowrap font-semibold text-student-text">正确答案</dt>
+      <dd className="font-medium text-student-text">
+        <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
+      </dd>
+    </dl>
   );
 }
 
@@ -1857,7 +1960,13 @@ function RdlPracticeWorkspace({
       naturalFlow={naturalFlow}
       ratio="rdl"
       right={(
-      <ReadingQuestionColumn labelledBy="rdl-question-stem" naturalFlow={naturalFlow}>
+      <ReadingQuestionColumn
+        answerZone={readOnly && reviewPresentation
+          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} />
+          : undefined}
+        labelledBy="rdl-question-stem"
+        naturalFlow={naturalFlow}
+      >
         <h2 className="font-bold text-student-text" id="rdl-question-stem" style={readingQuestionTextStyle}>
           {question.stem}
         </h2>
@@ -2143,7 +2252,13 @@ function RapPracticeWorkspace({
       naturalFlow={naturalFlow}
       ratio="rap"
       right={(
-      <ReadingQuestionColumn labelledBy="rap-question-stem" naturalFlow={naturalFlow}>
+      <ReadingQuestionColumn
+        answerZone={readOnly && reviewPresentation
+          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} />
+          : undefined}
+        labelledBy="rap-question-stem"
+        naturalFlow={naturalFlow}
+      >
         {question.questionType === "rap_multiple_choice" ? (
           <>
             <h2 className="font-bold text-student-text" id="rap-question-stem" style={readingQuestionTextStyle}>

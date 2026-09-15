@@ -685,7 +685,8 @@ test("Reading correction submit opens its exact isolated result and shared submi
   assert.match(correctionReview, /loadReadingAnswerDisclosures\(db, rows\)/);
   assert.match(ordinaryReview, /loadReadingAnswerDisclosures\(db, rows\)/);
   assert.match(correctionResult, /buildReadingCorrectionResultAnswers/);
-  assert.match(correctionReviewUi, /reviewDisclosureLabel="正确答案"/);
+  assert.match(correctionReviewUi, /reviewPresentations=\{review\.disclosures\}/);
+  assert.doesNotMatch(correctionReviewUi, /reviewDisclosureLabel|ReadingAnswerDisclosure/);
   assert.doesNotMatch(correctionResultUi, /你的答案|正确答案/);
   assert.match(correctionResultUi, /ReadingQuestionStatusChips/);
   assert.match(correctionResultUi, /scoreComparison=\{null\}/);
@@ -694,8 +695,8 @@ test("Reading correction submit opens its exact isolated result and shared submi
   assert.match(resultSummaryUi, /comparison \? "min-h-\[144px\]" : ""/);
   assert.match(resultSummaryUi, /\{comparison \? \([\s\S]*\{comparison\}[\s\S]*\) : null\}/);
   assert.match(correctionAnswerUi, /data-ctw-correct-fill/);
-  assert.match(practiceUi, /ReadingCorrectionAnswerValue answer=\{disclosure\.correctAnswer\}/);
-  assert.match(practiceUi, /你的答案/);
+  assert.match(practiceUi, /ReadingCorrectionAnswerValue answer=\{presentation\.correctAnswer\} emphasizeCtwFill=\{false\}/);
+  assert.match(practiceUi, /你的回答/);
   assert.doesNotMatch(`${correctionReviewUi}\n${correctionResultUi}`, /Correct Answer/);
   assert.doesNotMatch(ordinaryResult, /missing_text|correct_option_id|correct_anchor_id|correct_sentence_id/);
 });

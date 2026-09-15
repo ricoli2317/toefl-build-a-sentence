@@ -232,7 +232,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.ok((shellSource.match(/fontSize: "18em"/g) ?? []).length >= 2);
   assert.match(shellSource, /gap: "24em"/);
   assert.match(shellSource, /height: `\$\{20 \/ 18\}em`/);
-  assert.equal((shellSource.match(/<ReadingQuestionColumn labelledBy=/g) ?? []).length, 2);
+  assert.equal((shellSource.match(/<ReadingQuestionColumn\s/g) ?? []).length, 2);
   assert.ok((shellSource.match(/style=\{readingQuestionTextStyle\}/g) ?? []).length >= 2);
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
   assert.match(viewportSource, /h-\[calc\(100dvh-var\(--reading-header-height\)\)\].*py-\[12px\]/);
@@ -381,4 +381,50 @@ test("CTW, RDL, and RAP keep bounded content geometry without a bottom navigatio
   assert.match(rapSource, /question\.questionType === "rap_multiple_choice"/);
   assert.match(rapSource, /question\.questionType === "rap_sentence_insertion"/);
   assert.match(rapSource, /question\.questionType === "rap_sentence_selection"/);
+});
+
+test("readonly Reading answers use fixed in-viewport zones without restoring the old top disclosure", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
+  const statusSource = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingReviewStatusLine.tsx"), "utf8");
+  const ctwAnswerSource = source.slice(
+    source.indexOf("function CtwReadonlyAnswerZone"),
+    source.indexOf("function ReadingReviewStatusBar")
+  );
+  const questionColumnSource = source.slice(
+    source.indexOf("function ReadingQuestionColumn"),
+    source.indexOf("function RdlPracticeWorkspace")
+  );
+  const rdlSource = source.slice(
+    source.indexOf("function RdlPracticeWorkspace"),
+    source.indexOf("function sameRdlRect")
+  );
+  const rapSource = source.slice(
+    source.indexOf("function RapPracticeWorkspace"),
+    source.indexOf("function renderRapHighlightedText")
+  );
+
+  assert.doesNotMatch(source, /ReadingAnswerDisclosure|reading-answer-disclosure|你的答案/);
+  assert.match(statusSource, /耗时：/);
+  assert.doesNotMatch(statusSource, /耗时:/);
+
+  assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-zone"/);
+  assert.match(ctwAnswerSource, /h-\[132em\] shrink-0 items-center justify-center/);
+  assert.match(source, /items-center \$\{readOnly \? "overflow-hidden" : ""\}/);
+  assert.match(ctwAnswerSource, /gridTemplateColumns: "max-content repeat\(10, max-content\)"/);
+  assert.match(ctwAnswerSource, /\[\.\.\.question\.slots\]\.sort\(\(left, right\) => left\.slotOrder - right\.slotOrder\)/);
+  assert.match(ctwAnswerSource, /你的回答[\s\S]*正确答案/);
+  assert.match(ctwAnswerSource, /text-student-text[\s\S]*part\.emphasized[\s\S]*text-student-primary[\s\S]*text-student-error/);
+  assert.match(ctwAnswerSource, /emphasizeCtwFill=\{false\}/);
+  assert.doesNotMatch(ctwAnswerSource, /absolute|border-t|shadow|bg-/);
+
+  assert.match(questionColumnSource, /data-testid="reading-choice-answer-zone"/);
+  assert.match(questionColumnSource, /h-\[132em\] shrink-0/);
+  assert.match(questionColumnSource, /paddingLeft: "4em"/);
+  assert.match(questionColumnSource, /min-h-0 flex-1 lg:overflow-y-auto/);
+  assert.match(questionColumnSource, /gridTemplateColumns: "max-content minmax\(0, 1fr\)"/);
+  assert.match(questionColumnSource, /reviewState\.studentAnswerId === reviewState\.correctAnswerId[\s\S]*text-student-primary[\s\S]*text-student-error/);
+  assert.doesNotMatch(questionColumnSource, /justify-center|border-t|shadow|bg-student-primary-soft/);
+  assert.match(rdlSource, /answerZone=\{readOnly && reviewPresentation/);
+  assert.match(rapSource, /answerZone=\{readOnly && reviewPresentation/);
+  assert.match(rapSource, /lg:overflow-y-auto/);
 });

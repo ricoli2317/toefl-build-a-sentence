@@ -131,6 +131,7 @@ test("catalog status prioritizes active and picks latest completed with a stable
 test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, readonly, and retake-enabled", () => {
   const resultUi = read("components/reading/ReadingFullSetResult.tsx");
   const navigatorUi = read("components/reading/ReadingFullSetQuestionNavigator.tsx");
+  const reviewStatusUi = read("components/reading/ReadingReviewStatusLine.tsx");
   const sharedSummary = read("components/PracticeResult.tsx");
   const resultRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/route.ts");
   const reviewRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/review/route.ts");
@@ -149,7 +150,8 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.doesNotMatch(resultUi, /section\.taskName|formatQuestionTime|ctwTimeByOccurrence/);
   assert.match(navigatorUi, /Module \{moduleNumber\}/);
   assert.match(navigatorUi, /data-answer-state=\{state\}/);
-  assert.match(navigatorUi, /第\{readingFullSetReviewItemLabel\(current\)\}题 · \{currentState\} · 耗时:/);
+  assert.match(navigatorUi, /<ReadingReviewStatusLine/);
+  assert.match(reviewStatusUi, /第\{order\}题 · \{state\} · 耗时：\{formatReadingReviewQuestionTime\(questionTimeSeconds\)\}/);
   assert.match(resultRoute, /loadOwnedReadingFullSetAttempt/);
   assert.match(resultRoute, /owned\.attempt\.fullSetId !== params\.fullSetId/);
   assert.match(resultRoute, /status !== "completed"/);
@@ -160,7 +162,8 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.match(practice, /data-testid="reading-review-status"/);
   assert.match(practice, /payload\.disclosures\[selectedReviewItem\.answerId\]/);
   assert.match(practice, /reviewPresentation=\{disclosure\}/);
-  assert.match(practice, /<ReadingFullSetQuestionNavigator[\s\S]*<ReadingAnswerDisclosure disclosure=\{disclosure\} \/>[\s\S]*<\/ReadingFullSetQuestionNavigator>/);
+  assert.match(practice, /reviewPresentations=\{payload\.disclosures\}/);
+  assert.doesNotMatch(practice, /ReadingAnswerDisclosure|reading-answer-disclosure/);
   assert.match(practice, /data-current-slot/);
   assert.doesNotMatch(practice, />只读</);
 });

@@ -11,7 +11,6 @@ import { readingQuestionNavigationTargets, type ReadingAnswerState } from "@/lib
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import {
-  ReadingAnswerDisclosure,
   ReadingPracticeHeader,
   ReadingPracticeMessage,
   ReadingPracticeShell,
@@ -20,6 +19,7 @@ import {
   readingShellStyle,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
+import { ReadingReviewStatusLine } from "./ReadingReviewStatusLine";
 
 type Payload = Partial<SubmittedReadingReviewPayload> & {
   disclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
@@ -130,7 +130,6 @@ export function ReadingWrongbookReview({
       mode="submitted_review"
       onBack={() => router.push(resultHref)}
       practice={review.practice}
-      reviewDisclosureLabel="正确答案"
       reviewDisclosures={review.disclosures}
       reviewItems={review.reviewItems}
       reviewTitle="错题订正结果"
@@ -176,7 +175,12 @@ function ReadingFullSetWrongbookReviewShell({
       <main className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]" style={readingTwoColumnScaleStyle}>
         <section className="mx-auto mb-3 max-w-[1600em] rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className={`text-sm font-bold ${item.isCorrect ? "text-student-primary" : "text-student-error"}`}>第{item.order}题 · {item.isCorrect ? "正确" : "错误"}</p>
+            <ReadingReviewStatusLine
+              isAnswered={item.isAnswered}
+              isCorrect={item.isCorrect}
+              order={item.order}
+              questionTimeSeconds={item.questionTimeSeconds}
+            />
             <div className="flex flex-wrap gap-1.5" aria-label="阅读作答题号导航">
               {review.reviewItems.map((candidate, candidateIndex) => <button
                 className={`min-h-8 min-w-8 rounded-full border px-2 text-xs font-bold ${candidateIndex === index ? "border-amber-500 bg-amber-100" : candidate.isCorrect ? "border-student-primary-border bg-student-primary-soft text-student-primary" : "border-student-error-border bg-student-error-soft text-student-error"}`}
@@ -185,7 +189,6 @@ function ReadingFullSetWrongbookReviewShell({
                 type="button">{candidate.order}</button>)}
             </div>
           </div>
-          <ReadingAnswerDisclosure disclosure={disclosure} />
         </section>
         <ReadingQuestionViewport
           canGoNext={questionNavigationTargets.nextIndex !== null}
@@ -207,6 +210,7 @@ function ReadingFullSetWrongbookReviewShell({
             practice={occurrence.practice}
             readOnly
             reviewPresentation={disclosure}
+            reviewPresentations={review.disclosures}
             reviewItems={sameQuestionItems}
             selectedReviewItem={item}
           />

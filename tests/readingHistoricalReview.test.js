@@ -89,7 +89,7 @@ test("submitted review reuses ReadingPractice shell while suppressing every answ
   );
   assert.match(reviewLoader, /mode="submitted_review"/);
   assert.match(reviewLoader, /reviewDisclosures=\{review\.disclosures\}/);
-  assert.match(reviewLoader, /reviewDisclosureLabel="正确答案"/);
+  assert.doesNotMatch(reviewLoader, /reviewDisclosureLabel|ReadingAnswerDisclosure/);
   assert.match(reviewLoader, /\/review`/);
   assert.doesNotMatch(reviewLoader, /method: "(POST|PUT|PATCH|DELETE)"/);
   assert.match(practiceUi, /if \(readOnly\) return;[\s\S]*setAnswers/);

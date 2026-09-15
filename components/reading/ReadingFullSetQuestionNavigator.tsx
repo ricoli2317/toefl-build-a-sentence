@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import {
   readingFullSetReviewItemLabel,
   type ReadingFullSetReviewItem
@@ -8,38 +7,31 @@ import {
   readingAnswerState,
   readingAnswerStateToneClassName
 } from "./ReadingQuestionStatusChips";
+import { ReadingReviewStatusLine } from "./ReadingReviewStatusLine";
 
 export function ReadingFullSetQuestionNavigator({
-  children,
   currentIndex,
   items,
   onSelect,
   showCurrentStatus = false
 }: {
-  children?: ReactNode;
   currentIndex?: number;
   items: ReadingFullSetReviewItem[];
   onSelect?: (index: number) => void;
   showCurrentStatus?: boolean;
 }) {
   const current = currentIndex === undefined ? undefined : items[currentIndex];
-  const currentState = current
-    ? !current.isAnswered ? "未作答" : current.isCorrect ? "正确" : "错误"
-    : null;
-  const currentTone = current
-    ? current.isCorrect
-      ? "text-student-primary"
-      : current.isAnswered
-        ? "text-student-error"
-        : "text-student-muted"
-    : "text-student-muted";
 
   return (
     <section className="rounded-2xl border border-student-border bg-white px-4 py-3 shadow-sm" data-testid="reading-full-set-review-status">
       {showCurrentStatus && current ? (
-        <p className={`mb-3 text-sm font-bold ${currentTone}`}>
-          第{readingFullSetReviewItemLabel(current)}题 · {currentState} · 耗时: {formatQuestionTime(current.questionTimeSeconds)}
-        </p>
+        <ReadingReviewStatusLine
+          className="mb-3"
+          isAnswered={current.isAnswered}
+          isCorrect={current.isCorrect}
+          order={readingFullSetReviewItemLabel(current)}
+          questionTimeSeconds={current.questionTimeSeconds}
+        />
       ) : null}
       <div className="grid gap-2" aria-label="完整阅读套题作答题号导航">
         {([1, 2] as const).map((moduleNumber) => (
@@ -85,12 +77,6 @@ export function ReadingFullSetQuestionNavigator({
           </div>
         ))}
       </div>
-      {children}
     </section>
   );
-}
-
-function formatQuestionTime(seconds: number | null) {
-  if (seconds === null) return "—";
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
