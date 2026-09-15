@@ -462,9 +462,11 @@ test("atomic database failures retain nested PostgreSQL diagnostics", async () =
   const packageData = groupReadingSourceOccurrences(
     adapt("read_an_academic_passage", template("TOEFL_Read_an_Academic_Passage_TEMPLATE.csv")).candidates
   ).packages[0];
+  let calls = 0;
   await assert.rejects(
     () => importReadingPackageAtomic({
       async rpc() {
+        calls += 1;
         return {
           data: null,
           error: {
@@ -480,6 +482,7 @@ test("atomic database failures retain nested PostgreSQL diagnostics", async () =
       && error.cause.details === "Key (question_id) is not present"
       && error.cause.hint === "Check question identity"
   );
+  assert.equal(calls, 1);
 });
 
 test("legacy CTW logical ID with the same fingerprint reuses all canonical identities", async () => {

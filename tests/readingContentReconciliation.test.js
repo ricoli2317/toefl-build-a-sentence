@@ -376,6 +376,18 @@ test("8.9B Q30 canonical correction remaps source anchors by physical boundary",
   const incomingParagraph4 = incoming.passages[0].paragraphs.find(
     (paragraph) => paragraph.paragraphOrder === 4
   );
+  const priorParagraphId = incomingParagraph4.paragraphId;
+  incomingParagraph4.paragraphId = "reading-rap-562f6e3361901006567f6bf9-passage-01-p04";
+  incomingParagraph4.sentences.forEach((sentence) => {
+    sentence.sentenceId = `${incomingParagraph4.paragraphId}-s${String(sentence.sentenceOrder).padStart(2, "0")}`;
+  });
+  incomingQuestion.payload.anchors.forEach((anchor) => {
+    if (anchor.paragraphId !== priorParagraphId) return;
+    anchor.paragraphId = incomingParagraph4.paragraphId;
+    anchor.afterSentenceId = anchor.boundaryIndex === 0
+      ? null
+      : incomingParagraph4.sentences[anchor.boundaryIndex - 1].sentenceId;
+  });
   incomingQuestion.payload.highlightRanges = [{
     paragraphId: incomingParagraph4.paragraphId,
     startOffset: 0,
