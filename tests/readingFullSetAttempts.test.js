@@ -240,6 +240,8 @@ test("same-route M2 transition invalidates M1 state and applies bootstrap state"
   const startModule2 = runnerUi.slice(runnerUi.indexOf("const startModule2"), runnerUi.indexOf("if (loading)"));
   assert.match(startModule2, /result\.runner[\s\S]*result\.firstOccurrence[\s\S]*applyRunner\(result\.runner\)/);
   assert.doesNotMatch(startModule2, /loadRunner\(accessToken\)/);
+  assert.match(startModule2, /const currentSession = getSession\(\)/);
+  assert.match(startModule2, /readingFullSetTraceHeaders\(currentAccessToken, trace\)/);
 });
 
 test("occurrence loading has loaded/error convergence and Retry refreshes server truth", () => {

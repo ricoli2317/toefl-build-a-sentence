@@ -212,10 +212,13 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.equal((shellSource.match(/<ReadingQuestionColumn labelledBy=/g) ?? []).length, 2);
   assert.ok((shellSource.match(/style=\{readingQuestionTextStyle\}/g) ?? []).length >= 2);
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
-  assert.match(viewportSource, /h-\[calc\(100dvh-92px\)\]/);
+  assert.match(viewportSource, /h-\[calc\(100dvh-68px\)\].*py-\[12px\]/);
+  assert.doesNotMatch(viewportSource, /100dvh-92px/);
   assert.match(viewportSource, /pointer-events-none absolute inset-0/);
   assert.match(viewportSource, /aria-label="Previous"/);
   assert.match(viewportSource, /aria-label="Next"/);
+  assert.match(viewportSource, /aria-label=\{submitLabel\}[\s\S]*className=\{stepButtonClassName\}/);
+  assert.doesNotMatch(viewportSource, /bg-student-primary px-\[14em\]/);
   const choiceListSource = shellSource.slice(
     shellSource.indexOf("function ChoiceOptionList"),
     shellSource.indexOf("export function ReadingQuestionViewport")
@@ -223,6 +226,31 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.doesNotMatch(choiceListSource, /justify-between|justify-around|space-evenly/);
   assert.match(shellSource, /rdlMaterialInstruction\(material\.materialType\)/);
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
+});
+
+test("CTW spacing stays in natural flow without compounding its 17em text size", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
+  const ctwSource = source.slice(
+    source.indexOf("function CtwPracticeWorkspace"),
+    source.indexOf("function CtwBlankWord")
+  );
+
+  assert.match(ctwSource, /text-center text-\[20em\]/);
+  assert.match(ctwSource, /style=\{\{ marginTop: `\$\{28 \/ 17\}em` \}\}/);
+  assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 17\}em`/);
+  assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|mt-auto/);
+});
+
+test("single-practice timer and exit action use the shared lightweight Reading header", () => {
+  const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
+  const headerSource = source.slice(
+    source.indexOf("export function ReadingPracticeHeader"),
+    source.indexOf("export function ReadingWorkspaceRouter")
+  );
+
+  assert.match(headerSource, /\{timeLabel\}[\s\S]*timeValue \?\? formatWritingTimer\(elapsedSeconds\)/);
+  assert.match(headerSource, /onExit[\s\S]*className="writing-header-back"/);
+  assert.doesNotMatch(headerSource, /writing-exit-button/);
 });
 
 test("Full Set and wrongbook entry points reuse the compact header and fixed question viewport", () => {

@@ -1494,12 +1494,18 @@ export function ReadingFullSetRunner({
     const bootstrapStartedAt = performance.now();
     logTransitionPhase("m2_bootstrap_request_start", { moduleNumber: 2, route });
     try {
+      const currentSession = getSession();
+      if (!currentSession || currentSession.studentId !== studentIdRef.current) {
+        throw new Error("请先登录后再开始套题练习。");
+      }
+      const currentAccessToken = currentSession.accessToken;
+      if (currentAccessToken !== accessToken) setAccessToken(currentAccessToken);
       const response = await fetchReadingFullSetWithTimeout(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/2/start`,
         {
           method: "POST",
           cache: "no-store",
-          headers: readingFullSetTraceHeaders(accessToken, trace)
+          headers: readingFullSetTraceHeaders(currentAccessToken, trace)
         },
         20_000
       );

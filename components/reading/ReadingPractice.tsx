@@ -115,10 +115,8 @@ export const readingTwoColumnScaleStyle = {
   "--reading-scale-unit": "clamp(0.875px, min(calc(0.5px + 0.034722vw), calc(0.4px + 0.066667vh)), 1.12px)",
   fontSize: "var(--reading-scale-unit)",
   maxWidth: "1600em",
-  paddingBottom: "12px",
   paddingLeft: "16em",
-  paddingRight: "16em",
-  paddingTop: "12px"
+  paddingRight: "16em"
 } as CSSProperties;
 
 const readingTitleStyle = {
@@ -870,8 +868,8 @@ export function ReadingPracticeHeader({
           </span>
         </div> : null}
         {onExit ? (
-          <button className="writing-exit-button" onClick={onExit} type="button">
-            <DoorOpen aria-hidden="true" size={19} />
+          <button className="writing-header-back" onClick={onExit} type="button">
+            <DoorOpen aria-hidden="true" size={18} strokeWidth={2.2} />
             <span className="hidden sm:inline">Exit Practice</span>
           </button>
         ) : null}
@@ -1223,11 +1221,18 @@ function CtwPracticeWorkspace({
         />
       ) : null}
       <h1 className="text-center text-[20em] font-bold leading-[1.6] text-student-text">Fill in the missing letters in the paragraph.</h1>
-      <article className="mt-[28em] text-[17em] leading-[1.75] text-student-text" data-testid="ctw-passage">
+      <article
+        className="text-[17em] leading-[1.75] text-student-text"
+        data-testid="ctw-passage"
+        style={{ marginTop: `${28 / 17}em` }}
+      >
         {[...question.paragraphs]
           .sort((left, right) => left.paragraphOrder - right.paragraphOrder)
-          .map((paragraph) => (
-            <p className="mb-[20em] last:mb-0" key={paragraph.paragraphId}>
+          .map((paragraph, paragraphIndex, paragraphs) => (
+            <p
+              key={paragraph.paragraphId}
+              style={{ marginBottom: paragraphIndex === paragraphs.length - 1 ? 0 : `${20 / 17}em` }}
+            >
               {paragraph.segments.map((segment, segmentIndex) => {
                 if (segment.kind === "text") {
                   return <span key={`${paragraph.paragraphId}:text:${segmentIndex}`}>{segment.text}</span>;
@@ -2309,7 +2314,7 @@ export function ReadingQuestionViewport({
   submitting?: boolean;
 }) {
   return (
-    <div className="relative h-[calc(100dvh-92px)] min-h-0" data-testid="reading-question-viewport">
+    <div className="relative h-[calc(100dvh-68px)] min-h-0 py-[12px]" data-testid="reading-question-viewport">
       <section className={module === "ctw"
         ? "mx-[52em] h-full overflow-y-auto rounded-2xl border border-student-border bg-white p-[28em] shadow-sm"
         : "mx-[52em] flex h-full min-h-0 flex-col overflow-hidden bg-white"}
@@ -2373,12 +2378,15 @@ function ReadingQuestionNavigation({
         </button>
       ) : (
         <button
-          className="pointer-events-auto mr-[4em] min-h-[42px] rounded-xl bg-student-primary px-[14em] text-[14em] font-bold text-white shadow-sm disabled:opacity-60"
+          aria-label={submitLabel}
+          className={stepButtonClassName}
           disabled={submitDisabled || submitting}
           onClick={onSubmit}
           type="button"
         >
-          {submitting ? "Submitting..." : submitLabel}
+          <span className="max-w-full text-center text-[11em] font-bold leading-tight [overflow-wrap:anywhere]">
+            {submitting ? "Submitting..." : submitLabel}
+          </span>
         </button>
       )}
       {submitError ? <p className="pointer-events-none absolute bottom-[4em] left-[52em] right-[52em] text-center text-[13em] font-semibold text-student-error">{submitError}</p> : null}
