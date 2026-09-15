@@ -96,7 +96,8 @@ test("submitted review reuses ReadingPractice shell while suppressing every answ
   assert.match(practiceUi, /disabled=\{readOnly\}/);
   assert.match(practiceUi, /onClick=\{readOnly \? undefined/);
   assert.match(practiceUi, /\{canGoNext \|\| readOnly \? \(/);
-  assert.match(practiceUi, /disabled=\{!canGoNext \|\| navigationDisabled\}/);
+  assert.match(practiceUi, /const nextDisabled = !canGoNext \|\| navigationDisabled/);
+  assert.match(practiceUi, /label="Next"[\s\S]*disabled=\{nextDisabled\}|disabled=\{nextDisabled\}[\s\S]*label="Next"/);
   assert.doesNotMatch(reviewLoader, /只读|Readonly|历史模式|Review mode/i);
 });
 

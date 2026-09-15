@@ -880,8 +880,8 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
   assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
-  assert.match(shell, /aria-label="Submit"/);
-  assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*>Submit<\/span>/);
+  assert.match(shell, /aria-label=\{label\}/);
+  assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*label="Submit"/);
   assert.doesNotMatch(shell, /Submit Module/);
   assert.match(shell, /readingQuestionNavigationTargets\(reviewItems\.map\(\(item\) => item\.questionId\), reviewIndex\)/);
   assert.match(fullSetReview, /readingQuestionNavigationTargets\([\s\S]*candidate\.occurrenceId[\s\S]*candidate\.questionId/);

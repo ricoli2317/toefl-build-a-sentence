@@ -146,8 +146,8 @@ const readingMaterialStageStyle = {
 } as CSSProperties;
 
 const readingQuestionTextStyle = {
-  fontSize: "18em",
-  lineHeight: 32 / 18
+  fontSize: "19em",
+  lineHeight: 32 / 19
 } as CSSProperties;
 
 const readingChoiceListStyle = {
@@ -156,25 +156,25 @@ const readingChoiceListStyle = {
 } as CSSProperties;
 
 const readingChoiceStyle = {
-  columnGap: `${12 / 18}em`,
-  padding: `${10 / 18}em ${4 / 18}em`
+  columnGap: `${12 / 19}em`,
+  padding: `${10 / 19}em ${4 / 19}em`
 } as CSSProperties;
 
 const readingRadioStyle = {
-  borderWidth: `${2 / 18}em`,
-  height: `${20 / 18}em`,
-  marginTop: `${5 / 18}em`,
-  width: `${20 / 18}em`
+  borderWidth: `${2 / 19}em`,
+  height: `${20 / 19}em`,
+  marginTop: `${5 / 19}em`,
+  width: `${20 / 19}em`
 } as CSSProperties;
 
 const readingRadioDotStyle = {
-  height: `${8 / 18}em`,
-  width: `${8 / 18}em`
+  height: `${8 / 19}em`,
+  width: `${8 / 19}em`
 } as CSSProperties;
 
 const readingPassageTextStyle = {
-  fontSize: "18em",
-  lineHeight: 28 / 18
+  fontSize: "19em",
+  lineHeight: 28 / 19
 } as CSSProperties;
 
 const readingSpecialNoticeStyle = {
@@ -1229,7 +1229,7 @@ function CtwPracticeWorkspace({
       <h1 className="text-center text-[20em] font-bold leading-[1.6] text-student-text">Fill in the missing letters in the paragraph.</h1>
       <div className={`flex min-h-0 flex-1 items-center ${readOnly ? "overflow-hidden" : ""}`}>
         <article
-          className="w-full text-left text-[18em] leading-[1.75] text-student-text"
+          className="w-full text-left text-[19em] leading-[1.6842105263] text-student-text"
           data-testid="ctw-passage"
         >
           {[...question.paragraphs]
@@ -1237,7 +1237,7 @@ function CtwPracticeWorkspace({
             .map((paragraph, paragraphIndex, paragraphs) => (
               <p
                 key={paragraph.paragraphId}
-                style={{ marginBottom: paragraphIndex === paragraphs.length - 1 ? 0 : `${20 / 18}em` }}
+                style={{ marginBottom: paragraphIndex === paragraphs.length - 1 ? 0 : `${20 / 19}em` }}
               >
                 {paragraph.segments.map((segment, segmentIndex) => {
                   if (segment.kind === "text") {
@@ -1377,7 +1377,6 @@ function CtwReadonlyAnswerZone({
     const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
     return {
       presentation: reviewItem ? reviewPresentations[reviewItem.answerId] : undefined,
-      reviewItem,
       slot
     };
   });
@@ -1388,63 +1387,32 @@ function CtwReadonlyAnswerZone({
       data-slot-count={entries.length}
       data-testid="ctw-readonly-answer-zone"
     >
-      <dl
-        className="grid max-w-full items-baseline text-[14em] leading-[1.5]"
-        style={{
-          columnGap: "16em",
-          gridTemplateColumns: "max-content repeat(10, max-content)",
-          rowGap: "10em"
-        }}
-      >
-        <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
-        {entries.map(({ presentation, reviewItem, slot }) => (
-          <dd className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={`student:${slot.slotId}`}>
-            <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
-          </dd>
-        ))}
-        <dt className="whitespace-nowrap font-semibold text-student-text">正确答案</dt>
-        {entries.map(({ presentation, slot }) => (
-          <dd className="whitespace-nowrap font-medium text-student-text" data-slot-order={slot.slotOrder} key={`correct:${slot.slotId}`}>
-            {presentation ? (
-              <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
-            ) : null}
-          </dd>
-        ))}
-      </dl>
+      <div className="grid w-max max-w-full grid-cols-[max-content_minmax(0,auto)] items-start gap-x-[20px] text-[14em] leading-[1.5]">
+        <div className="grid auto-rows-max items-baseline gap-y-[10px]">
+          <span className="whitespace-nowrap font-semibold text-student-text">你的回答</span>
+          <span className="whitespace-nowrap font-semibold text-student-text">正确答案</span>
+        </div>
+        <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]" data-testid="ctw-readonly-answer-slots">
+          {entries.map(({ presentation, slot }) => (
+            <div
+              className="grid auto-rows-max items-baseline gap-y-[10px]"
+              data-slot-order={slot.slotOrder}
+              key={slot.slotId}
+            >
+              <span className="whitespace-nowrap font-medium text-student-text">
+                {presentation?.studentAnswer}
+              </span>
+              <span className="whitespace-nowrap font-medium text-student-text">
+                {presentation ? (
+                  <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
+                ) : null}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
-}
-
-function CtwReadonlyStudentWord({
-  presentation,
-  reviewItem
-}: {
-  presentation?: ReadingCorrectionAnswerPresentation;
-  reviewItem?: SubmittedReadingReviewItem;
-}) {
-  if (!presentation) return null;
-  if (!reviewItem?.isAnswered || presentation.correctAnswer.kind !== "ctw_word") {
-    return <span className="font-medium text-student-muted">{presentation.studentAnswer}</span>;
-  }
-
-  const studentCharacters = Array.from(presentation.studentAnswer);
-  let cursor = 0;
-  return presentation.correctAnswer.parts.map((part, index) => {
-    const partLength = Array.from(part.text).length;
-    const text = studentCharacters.slice(cursor, cursor + partLength).join("");
-    cursor += partLength;
-    return (
-      <span
-        className={part.emphasized
-          ? `font-semibold ${reviewItem.isCorrect ? "text-student-primary" : "text-student-error"}`
-          : "font-medium text-student-text"}
-        data-ctw-student-fill={part.emphasized ? (reviewItem.isCorrect ? "correct" : "incorrect") : undefined}
-        key={`${index}:${part.text}`}
-      >
-        {text}
-      </span>
-    );
-  });
 }
 
 function ReadingReviewStatusBar({
@@ -1596,7 +1564,7 @@ function ReadingReadonlyChoiceAnswerZone({
     <dl
       className="grid items-baseline text-[14em] leading-[1.5]"
       data-testid="reading-readonly-answer-block"
-      style={{ columnGap: "24em", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10em" }}
+      style={{ columnGap: "24px", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10px" }}
     >
       <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
       <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
@@ -2482,9 +2450,6 @@ function ReadingQuestionNavigation({
   submitDisabled: boolean;
   submitting: boolean;
 }) {
-  const stepButtonClassName = "group flex h-[92px] w-[72px] flex-col items-center justify-center gap-1.5 bg-transparent text-student-primary focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary";
-  const controlClassName = "flex h-[60px] w-[60px] items-center justify-center rounded-full bg-student-primary-soft transition-colors group-hover:bg-student-primary-border group-disabled:bg-[#f4f4f7] group-disabled:text-student-muted/45";
-  const labelClassName = "whitespace-nowrap text-[11px] font-bold leading-none group-disabled:text-student-muted/45";
   const previousDisabled = !canGoPrevious || navigationDisabled;
   const nextDisabled = !canGoNext || navigationDisabled;
   return (
@@ -2493,32 +2458,56 @@ function ReadingQuestionNavigation({
       className="contents"
     >
       <div className="col-start-1 row-start-1 flex items-center justify-center" data-reading-navigation-rail="previous">
-        <button aria-label="Previous" className={stepButtonClassName} disabled={previousDisabled} onClick={onPrevious} type="button">
-          <span className={controlClassName}><ChevronLeft aria-hidden="true" size={32} strokeWidth={2.4} /></span>
-          <span className={labelClassName}>Previous</span>
-        </button>
+        <ReadingNavigationButton direction="previous" disabled={previousDisabled} label="Previous" onClick={onPrevious} />
       </div>
       <div className="col-start-3 row-start-1 flex items-center justify-center" data-reading-navigation-rail="next">
         {canGoNext || readOnly ? (
-          <button aria-label="Next" className={stepButtonClassName} disabled={nextDisabled} onClick={onNext} type="button">
-            <span className={controlClassName}><ChevronRight aria-hidden="true" size={32} strokeWidth={2.4} /></span>
-            <span className={labelClassName}>Next</span>
-          </button>
+          <ReadingNavigationButton direction="next" disabled={nextDisabled} label="Next" onClick={onNext} />
         ) : (
-          <button
-            aria-label="Submit"
-            className={stepButtonClassName}
+          <ReadingNavigationButton
+            direction="next"
             disabled={submitDisabled || submitting || navigationDisabled}
+            label="Submit"
             onClick={onSubmit}
-            type="button"
-          >
-            <span className={controlClassName}><ChevronRight aria-hidden="true" size={32} strokeWidth={2.4} /></span>
-            <span className={labelClassName}>Submit</span>
-          </button>
+          />
         )}
       </div>
       {submitError ? <p className="col-start-2 row-start-2 pt-[4em] text-center text-[13em] font-semibold text-student-error">{submitError}</p> : null}
     </nav>
+  );
+}
+
+function ReadingNavigationButton({
+  direction,
+  disabled,
+  label,
+  onClick
+}: {
+  direction: "previous" | "next";
+  disabled: boolean;
+  label: "Previous" | "Next" | "Submit";
+  onClick?: () => void;
+}) {
+  const Icon = direction === "previous" ? ChevronLeft : ChevronRight;
+  const buttonTone = disabled
+    ? "cursor-default text-student-muted/60"
+    : "cursor-pointer text-student-primary";
+  const controlTone = disabled
+    ? "bg-[#f1f1f4] text-student-muted/60"
+    : "bg-student-primary-soft group-hover:bg-student-primary-border";
+  return (
+    <button
+      aria-label={label}
+      className={`group flex h-[92px] w-[72px] flex-col items-center justify-center gap-1.5 bg-transparent focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary ${buttonTone}`}
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
+      <span className={`flex h-[60px] w-[60px] items-center justify-center rounded-full transition-colors ${controlTone}`}>
+        <Icon aria-hidden="true" size={32} strokeWidth={2.4} />
+      </span>
+      <span className="whitespace-nowrap text-[16px] font-semibold leading-none">{label}</span>
+    </button>
   );
 }
 

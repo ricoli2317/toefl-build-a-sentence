@@ -229,9 +229,9 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.doesNotMatch(sharedShellSource, /divide-x|border-l|border-r/);
   assert.match(shellSource, /function ReadingQuestionColumn/);
   assert.doesNotMatch(sharedShellSource, /max-w-3xl/);
-  assert.ok((shellSource.match(/fontSize: "18em"/g) ?? []).length >= 2);
+  assert.ok((shellSource.match(/fontSize: "19em"/g) ?? []).length >= 2);
   assert.match(shellSource, /gap: "24em"/);
-  assert.match(shellSource, /height: `\$\{20 \/ 18\}em`/);
+  assert.match(shellSource, /height: `\$\{20 \/ 19\}em`/);
   assert.equal((shellSource.match(/<ReadingQuestionColumn\s/g) ?? []).length, 2);
   assert.ok((shellSource.match(/style=\{readingQuestionTextStyle\}/g) ?? []).length >= 2);
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
@@ -243,17 +243,18 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.match(viewportSource, /data-reading-navigation-rail="previous"/);
   assert.match(viewportSource, /data-reading-navigation-rail="next"/);
   assert.doesNotMatch(viewportSource, /absolute inset-0|z-20|mx-\[52em\]/);
-  assert.match(viewportSource, /aria-label="Previous"/);
-  assert.match(viewportSource, /aria-label="Next"/);
-  assert.match(viewportSource, /col-start-3 row-start-1[\s\S]*aria-label="Submit"/);
+  assert.match(viewportSource, /label="Previous"/);
+  assert.match(viewportSource, /label="Next"/);
+  assert.match(viewportSource, /col-start-3 row-start-1[\s\S]*label="Submit"/);
   assert.match(viewportSource, /h-\[92px\] w-\[72px\]/);
   assert.match(viewportSource, /h-\[60px\] w-\[60px\]/);
   assert.match(viewportSource, /size=\{32\}/);
-  assert.match(viewportSource, /group-disabled:bg-\[#f4f4f7\]/);
-  assert.match(viewportSource, /group-disabled:text-student-muted\/45/);
-  assert.match(viewportSource, />Previous<|>Previous\}/);
-  assert.match(viewportSource, />Next<|>Next\}/);
-  assert.match(viewportSource, />Submit<|>Submit\}/);
+  assert.match(viewportSource, /text-\[16px\] font-semibold/);
+  assert.match(viewportSource, /const buttonTone = disabled[\s\S]*cursor-default text-student-muted\/60[\s\S]*cursor-pointer text-student-primary/);
+  assert.match(viewportSource, /const controlTone = disabled[\s\S]*bg-\[#f1f1f4\] text-student-muted\/60[\s\S]*bg-student-primary-soft group-hover:bg-student-primary-border/);
+  assert.match(viewportSource, /disabled=\{previousDisabled\}/);
+  assert.match(viewportSource, /disabled=\{nextDisabled\}/);
+  assert.match(viewportSource, /aria-label=\{label\}/);
   assert.doesNotMatch(viewportSource, /Q \d|Submit Module|size="36em"/);
   assert.doesNotMatch(viewportSource, /bg-student-primary px-\[14em\]/);
   assert.match(viewportSource, /module === "ctw"[\s\S]*overflow-visible/);
@@ -267,7 +268,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
 });
 
-test("CTW passage is vertically centered in the body without compounding its 18em text size", () => {
+test("CTW passage is vertically centered in the body without compounding its 19em text size", () => {
   const source = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
   const ctwSource = source.slice(
     source.indexOf("function CtwPracticeWorkspace"),
@@ -277,8 +278,8 @@ test("CTW passage is vertically centered in the body without compounding its 18e
   assert.match(ctwSource, /text-center text-\[20em\]/);
   assert.match(ctwSource, /flex h-full min-h-0 max-w-4xl flex-col/);
   assert.match(ctwSource, /flex min-h-0 flex-1 items-center/);
-  assert.match(ctwSource, /w-full text-left text-\[18em\]/);
-  assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 18\}em`/);
+  assert.match(ctwSource, /w-full text-left text-\[19em\]/);
+  assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 19\}em`/);
   assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|m[ty]-auto|py-\[24em\]|absolute bottom|translate-y/);
 });
 
@@ -410,18 +411,24 @@ test("readonly Reading answers use fixed in-viewport zones without restoring the
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-zone"/);
   assert.match(ctwAnswerSource, /h-\[132em\] shrink-0 items-center justify-center/);
   assert.match(source, /items-center \$\{readOnly \? "overflow-hidden" : ""\}/);
-  assert.match(ctwAnswerSource, /gridTemplateColumns: "max-content repeat\(10, max-content\)"/);
+  assert.match(ctwAnswerSource, /grid-cols-\[max-content_minmax\(0,auto\)\]/);
+  assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-slots"/);
+  assert.match(ctwAnswerSource, /flex min-w-0 flex-wrap gap-x-\[20px\] gap-y-\[10px\]/);
+  assert.match(ctwAnswerSource, /grid auto-rows-max items-baseline gap-y-\[10px\]/);
   assert.match(ctwAnswerSource, /\[\.\.\.question\.slots\]\.sort\(\(left, right\) => left\.slotOrder - right\.slotOrder\)/);
   assert.match(ctwAnswerSource, /你的回答[\s\S]*正确答案/);
-  assert.match(ctwAnswerSource, /text-student-text[\s\S]*part\.emphasized[\s\S]*text-student-primary[\s\S]*text-student-error/);
+  assert.match(ctwAnswerSource, /presentation\?\.studentAnswer/);
   assert.match(ctwAnswerSource, /emphasizeCtwFill=\{false\}/);
-  assert.doesNotMatch(ctwAnswerSource, /absolute|border-t|shadow|bg-/);
+  assert.doesNotMatch(ctwAnswerSource, /text-student-primary|text-student-error|data-ctw-student-fill/);
+  assert.doesNotMatch(ctwAnswerSource, /absolute|border-t|shadow|bg-|justify-between|justify-around|space-evenly|overflow-x/);
 
   assert.match(questionColumnSource, /data-testid="reading-choice-answer-zone"/);
   assert.match(questionColumnSource, /h-\[132em\] shrink-0/);
   assert.match(questionColumnSource, /paddingLeft: "4em"/);
   assert.match(questionColumnSource, /min-h-0 flex-1 lg:overflow-y-auto/);
   assert.match(questionColumnSource, /gridTemplateColumns: "max-content minmax\(0, 1fr\)"/);
+  assert.match(questionColumnSource, /columnGap: "24px"/);
+  assert.match(questionColumnSource, /rowGap: "10px"/);
   assert.match(questionColumnSource, /reviewState\.studentAnswerId === reviewState\.correctAnswerId[\s\S]*text-student-primary[\s\S]*text-student-error/);
   assert.doesNotMatch(questionColumnSource, /justify-center|border-t|shadow|bg-student-primary-soft/);
   assert.match(rdlSource, /answerZone=\{readOnly && reviewPresentation/);
