@@ -65,6 +65,7 @@ export type ReadingFullSetOccurrencePracticePayload = {
 
 export type ReadingFullSetBootstrapPayload = {
   firstOccurrence: ReadingFullSetOccurrencePracticePayload;
+  reviewCompletedQuestionNumbers?: number[];
   runner: ReadingFullSetRunnerPayload;
   traceId: string;
 };
@@ -88,6 +89,11 @@ export function isReadingFullSetBootstrapPayload(
     && Boolean(first.answers && typeof first.answers === "object")
     && Boolean(first.practice && typeof first.practice === "object")
     && Boolean(first.questionTimes && typeof first.questionTimes === "object")
+    && (payload.reviewCompletedQuestionNumbers === undefined
+      || (Array.isArray(payload.reviewCompletedQuestionNumbers)
+        && payload.reviewCompletedQuestionNumbers.every((questionNumber) =>
+          Number.isInteger(questionNumber) && questionNumber > 0
+        )))
     && payload.runner.occurrences.some(
       (occurrence) => occurrence.occurrenceId === first.occurrence?.occurrenceId
     );

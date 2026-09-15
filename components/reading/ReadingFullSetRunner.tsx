@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from "react";
+import { PracticeReview } from "@/components/shared/PracticeReview";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_FULL_SET_CACHE_PREFIX,
@@ -45,6 +47,12 @@ import {
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import { formatReadingFullSetTime } from "@/lib/reading/fullSetPresentation";
 import {
+  buildReadingFullSetActiveReviewItems,
+  readingFullSetActiveReviewIndex,
+  readingFullSetActiveReviewTarget,
+  type ReadingFullSetActiveReviewItem
+} from "@/lib/reading/fullSetActiveReview";
+import {
   createReadingFullSetPerformanceTrace,
   fetchReadingFullSetWithTimeout,
   logReadingFullSetPerformancePhase,
@@ -80,6 +88,7 @@ type BootstrapResponse = {
   code?: string;
   error?: string;
   firstOccurrence?: ReadingFullSetOccurrencePracticePayload;
+  reviewCompletedQuestionNumbers?: number[];
   runner?: ReadingFullSetRunnerPayload;
   traceId?: string;
 };
@@ -174,6 +183,11 @@ export function ReadingFullSetRunner({
   const submittingRef = useRef(false);
   const [startingModule2, setStartingModule2] = useState(false);
   const [navigating, setNavigating] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+  const [ctwReviewScoringPointIndex, setCtwReviewScoringPointIndex] = useState(0);
+  const [reviewCompletedQuestionNumbers, setReviewCompletedQuestionNumbers] = useState<ReadonlySet<number>>(
+    () => new Set()
+  );
   const movingRef = useRef(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSaveRef = useRef<PendingSave | null>(null);
@@ -267,6 +281,9 @@ export function ReadingFullSetRunner({
       questionTimesRef.current = {};
       activeTimingRef.current = null;
       setPosition({ occurrenceIndex: 0, questionIndex: 0 });
+      setShowReview(false);
+      setCtwReviewScoringPointIndex(0);
+      setReviewCompletedQuestionNumbers(new Set());
       setOccurrenceLoad({ status: "idle" });
       movingRef.current = false;
       setNavigating(false);
@@ -349,6 +366,8 @@ export function ReadingFullSetRunner({
       questionCount: bootstrap.firstOccurrence.practice.questions.length,
       restoredOccurrenceId: occurrenceId
     }));
+    setCtwReviewScoringPointIndex(0);
+    setReviewCompletedQuestionNumbers(new Set(bootstrap.reviewCompletedQuestionNumbers ?? []));
     setOccurrencePayloads({ [occurrenceId]: bootstrap.firstOccurrence });
     setAnswersByOccurrence({ [occurrenceId]: bootstrap.firstOccurrence.answers });
     answersRef.current = { [occurrenceId]: bootstrap.firstOccurrence.answers };
@@ -551,6 +570,31 @@ export function ReadingFullSetRunner({
     ? occurrencePayloads[currentOccurrence.occurrenceId] ?? null
     : null;
   const currentQuestion = currentPayload?.practice.questions[position.questionIndex];
+  const activeReviewModuleAttempt = runner
+    ? readingFullSetCurrentModuleAttempt(runner.attempt)
+    : null;
+  const activeReviewItems = useMemo(
+    () => activeReviewModuleAttempt
+      ? buildReadingFullSetActiveReviewItems({
+          answersByOccurrence,
+          completedQuestionNumbers: reviewCompletedQuestionNumbers,
+          moduleAttemptId: activeReviewModuleAttempt.moduleAttemptId,
+          occurrencePayloads,
+          occurrences: runner?.occurrences ?? []
+        })
+      : [],
+    [activeReviewModuleAttempt, answersByOccurrence, occurrencePayloads, reviewCompletedQuestionNumbers, runner?.occurrences]
+  );
+  const activeReviewIndex = readingFullSetActiveReviewIndex(
+    activeReviewItems,
+    position,
+    ctwReviewScoringPointIndex
+  );
+  const focusedCtwSlotId = currentOccurrence?.taskType === "ctw"
+    && currentQuestion?.questionType === "ctw"
+    ? [...currentQuestion.slots]
+        .sort((left, right) => left.slotOrder - right.slotOrder)[ctwReviewScoringPointIndex]?.slotId
+    : undefined;
 
   const acquireOccurrence = useCallback((input: {
     moduleNumber: 1 | 2;
@@ -1009,6 +1053,11 @@ export function ReadingFullSetRunner({
 
   useEffect(() => {
     const activeModule = runner ? readingFullSetActiveModuleAttempt(runner.attempt) : null;
+    if (showReview) {
+      commitActiveQuestionTime();
+      activeTimingRef.current = null;
+      return;
+    }
     if (!currentOccurrence || !currentQuestion || !activeModule || occurrenceLoad.status !== "idle") return;
     const active = activeTimingRef.current;
     if (active?.occurrenceId === currentOccurrence.occurrenceId && active.questionId === currentQuestion.questionId) return;
@@ -1018,7 +1067,7 @@ export function ReadingFullSetRunner({
       questionId: currentQuestion.questionId,
       startedAt: Date.now()
     };
-  }, [commitActiveQuestionTime, currentOccurrence, currentQuestion, occurrenceLoad.status, runner]);
+  }, [commitActiveQuestionTime, currentOccurrence, currentQuestion, occurrenceLoad.status, runner, showReview]);
 
   const persistSave = useCallback(async (snapshot: ReadingFullSetSaveSnapshot<BackgroundSave>) => {
     const activeRunner = runnerRef.current;
@@ -1265,11 +1314,14 @@ export function ReadingFullSetRunner({
     };
   }, [commitActiveQuestionTime, stageCurrentOccurrenceSave]);
 
-  const move = useCallback((direction: -1 | 1) => {
-    if (!runner || !currentPayload || movingRef.current) return;
-    const nextPosition = moveReadingFullSetPosition(runner.occurrences, position, direction);
-    const nextOccurrence = runner.occurrences[nextPosition.occurrenceIndex];
-    const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
+  const move = useCallback((
+    nextPosition: ReadingFullSetRunnerPosition,
+    nextCtwScoringPointIndex = 0
+  ) => {
+    const activeRunner = runnerRef.current;
+    if (!activeRunner || movingRef.current) return;
+    const nextOccurrence = activeRunner.occurrences[nextPosition.occurrenceIndex];
+    const moduleAttempt = readingFullSetActiveModuleAttempt(activeRunner.attempt);
     if (!nextOccurrence || !moduleAttempt) return;
     movingRef.current = true;
     setNavigating(true);
@@ -1316,7 +1368,9 @@ export function ReadingFullSetRunner({
         });
       }
     }
+    setCtwReviewScoringPointIndex(nextOccurrence.taskType === "ctw" ? nextCtwScoringPointIndex : 0);
     setPosition(nextPosition);
+    setShowReview(false);
     enqueueCursor(moduleAttempt, nextOccurrence.occurrenceId, nextPosition.questionIndex);
     if (nextOccurrence.occurrenceId === currentOccurrence?.occurrenceId) {
       requestAnimationFrame(() => {
@@ -1333,7 +1387,30 @@ export function ReadingFullSetRunner({
         setNavigating(false);
       });
     }
-  }, [attemptId, commitActiveQuestionTime, currentOccurrence, currentPayload, enqueueCursor, occurrencePayloads, position, runner, stageCurrentOccurrenceSave]);
+  }, [attemptId, commitActiveQuestionTime, currentOccurrence, enqueueCursor, occurrencePayloads, stageCurrentOccurrenceSave]);
+
+  const moveByDirection = useCallback((direction: -1 | 1) => {
+    if (!runner || !currentPayload) return;
+    move(moveReadingFullSetPosition(runner.occurrences, position, direction));
+  }, [currentPayload, move, position, runner]);
+
+  const jumpToReviewItem = useCallback((item: ReadingFullSetActiveReviewItem) => {
+    const activeRunner = runnerRef.current;
+    const moduleAttempt = activeRunner
+      ? readingFullSetActiveModuleAttempt(activeRunner.attempt)
+      : null;
+    if (!activeRunner || !moduleAttempt) return;
+    const nextPosition = readingFullSetActiveReviewTarget(
+      item,
+      moduleAttempt.moduleAttemptId,
+      activeRunner.occurrences
+    );
+    if (!nextPosition) {
+      setShowReview(false);
+      return;
+    }
+    move(nextPosition, item.scoringPointIndex);
+  }, [move]);
 
   const leavePractice = useCallback(async () => {
     commitActiveQuestionTime();
@@ -1541,6 +1618,7 @@ export function ReadingFullSetRunner({
       setOccurrencePayloads({ [firstOccurrenceId]: result.firstOccurrence });
       setAnswersByOccurrence({ [firstOccurrenceId]: result.firstOccurrence.answers });
       answersRef.current = { [firstOccurrenceId]: result.firstOccurrence.answers };
+      setReviewCompletedQuestionNumbers(new Set(result.reviewCompletedQuestionNumbers ?? []));
       questionTimesRef.current = { [firstOccurrenceId]: result.firstOccurrence.questionTimes };
       setOccurrenceLoad({ status: "idle" });
       setTimerPausedForLoad(false);
@@ -1625,8 +1703,11 @@ export function ReadingFullSetRunner({
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={() => void leavePractice()}
+        onReview={() => setShowReview(true)}
         progressLabel={progressLabel}
         progressTestId="full-set-question-number"
+        reviewActive={showReview}
+        reviewDisabled={!currentPayload || !workspaceInteractive || navigating || submitting}
         timeLabel="Time Left"
         timeTestId="full-set-time-left"
         timeValue={formatReadingFullSetTime(remainingSeconds)}
@@ -1636,44 +1717,60 @@ export function ReadingFullSetRunner({
         className="mx-auto h-[calc(100dvh-var(--reading-header-height))] min-h-0"
         style={readingTwoColumnScaleStyle}
       >
-        <ReadingQuestionViewport
-          canGoNext={!isLast}
-          canGoPrevious={!isFirst}
-          module={currentOccurrence?.taskType ?? "rap"}
-          navigationDisabled={!currentPayload || !workspaceInteractive || navigating || submitting}
-          onNext={() => void move(1)}
-          onPrevious={() => void move(-1)}
-          onSubmit={() => void submitModule(false)}
-          readOnly={false}
-          submitError={saveError || error}
-          submitDisabled={!currentPayload || !workspaceInteractive || navigating}
-          submitting={submitting}
-        >
-          {occurrenceLoad.status === "error" ? (
-            <div className="m-auto grid justify-items-center gap-3 text-center">
-              <p className="text-sm font-semibold text-student-error">{occurrenceLoad.message}</p>
-              <button
-                className="student-button-secondary min-h-10 px-4"
-                onClick={() => void retryOccurrence()}
-                type="button"
-              >
-                重试
-              </button>
+        {showReview ? (
+          <div className="h-full overflow-y-auto px-4 py-6 sm:px-7" data-testid="reading-full-set-active-review">
+            <div className="mx-auto max-w-4xl">
+              <PracticeReview
+                currentIndex={activeReviewIndex}
+                items={activeReviewItems}
+                onSelect={(index) => {
+                  const item = activeReviewItems[index];
+                  if (item) jumpToReviewItem(item);
+                }}
+              />
             </div>
-          ) : currentPayload && currentQuestion ? (
-            <ReadingWorkspaceRouter
-              answers={currentAnswers}
-              currentQuestion={currentQuestion}
-              lookupEnabled={readingLookupEnabled("active", currentPayload.practice.item.module)}
-              onAnswerChange={updateAnswer}
-              onReady={handleWorkspaceReady}
-              practice={currentPayload.practice}
-              readOnly={!workspaceInteractive}
-            />
-          ) : (
-            <p className="m-auto text-sm text-student-muted">正在加载当前题目...</p>
-          )}
-        </ReadingQuestionViewport>
+          </div>
+        ) : (
+          <ReadingQuestionViewport
+            canGoNext={!isLast}
+            canGoPrevious={!isFirst}
+            module={currentOccurrence?.taskType ?? "rap"}
+            navigationDisabled={!currentPayload || !workspaceInteractive || navigating || submitting}
+            onNext={() => void moveByDirection(1)}
+            onPrevious={() => void moveByDirection(-1)}
+            onSubmit={() => void submitModule(false)}
+            readOnly={false}
+            submitError={saveError || error}
+            submitDisabled={!currentPayload || !workspaceInteractive || navigating}
+            submitting={submitting}
+          >
+            {occurrenceLoad.status === "error" ? (
+              <div className="m-auto grid justify-items-center gap-3 text-center">
+                <p className="text-sm font-semibold text-student-error">{occurrenceLoad.message}</p>
+                <button
+                  className="student-button-secondary min-h-10 px-4"
+                  onClick={() => void retryOccurrence()}
+                  type="button"
+                >
+                  重试
+                </button>
+              </div>
+            ) : currentPayload && currentQuestion ? (
+              <ReadingWorkspaceRouter
+                answers={currentAnswers}
+                currentQuestion={currentQuestion}
+                focusedCtwSlotId={focusedCtwSlotId}
+                lookupEnabled={readingLookupEnabled("active", currentPayload.practice.item.module)}
+                onAnswerChange={updateAnswer}
+                onReady={handleWorkspaceReady}
+                practice={currentPayload.practice}
+                readOnly={!workspaceInteractive}
+              />
+            ) : (
+              <p className="m-auto text-sm text-student-muted">正在加载当前题目...</p>
+            )}
+          </ReadingQuestionViewport>
+        )}
       </main>
     </div>
   );

@@ -3,6 +3,7 @@ import {
   isFullSetId,
   loadOwnedReadingFullSetAttempt,
   loadReadingFullSetOccurrencePracticePayload,
+  loadReadingFullSetReviewCompletedQuestionNumbers,
   readingFullSetAttemptError,
   readingFullSetAttemptJson,
   requireReadingFullSetStudent
@@ -177,13 +178,20 @@ async function buildM1Bootstrap(
   if (!initialOccurrence || (attempt.module1.status === "preparing" && initialOccurrence.taskType !== "ctw")) {
     throw new M1BootstrapFailure("CONTENT_FAILED", "first_occurrence_content", "Module 1 当前题目数据不可用。", 409);
   }
-  const firstOccurrence = await loadReadingFullSetOccurrencePracticePayload({
-    db,
-    moduleAttempt: attempt.module1,
-    occurrence: initialOccurrence,
-    timing,
-    title: fullSet.title
-  }).catch((error) => {
+  const [firstOccurrence, reviewCompletedQuestionNumbers] = await Promise.all([
+    loadReadingFullSetOccurrencePracticePayload({
+      db,
+      moduleAttempt: attempt.module1,
+      occurrence: initialOccurrence,
+      timing,
+      title: fullSet.title
+    }),
+    loadReadingFullSetReviewCompletedQuestionNumbers({
+      db,
+      moduleAttempt: attempt.module1,
+      occurrences: runner.occurrences
+    })
+  ]).catch((error) => {
     throw new M1BootstrapFailure(
       "CONTENT_FAILED",
       "first_occurrence_content",
@@ -195,6 +203,7 @@ async function buildM1Bootstrap(
 
   return {
     firstOccurrence,
+    reviewCompletedQuestionNumbers,
     runner,
     traceId: timing.traceId
   };

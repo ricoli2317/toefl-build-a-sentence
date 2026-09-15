@@ -13,6 +13,7 @@ import {
   type ReadingFullSetRunnerPayload
 } from "./fullSetAttempts.ts";
 import type { ReadingFullSet, ReadingFullSetOccurrence } from "./fullSets.ts";
+import { readingFullSetCompletedQuestionNumbersFromRows } from "./fullSetActiveReview.ts";
 import { buildSubmittedReadingAnswerState, type SubmittedReadingAnswerRow } from "./review.ts";
 import { loadStudentReadingPractice } from "./studentPractice.ts";
 
@@ -117,6 +118,76 @@ export function buildReadingFullSetRunnerPayload(
     })),
     title: fullSet.title ?? attempt.fullSetId
   };
+}
+
+export async function loadReadingFullSetReviewCompletedQuestionNumbers(input: {
+  db: SupabaseClient;
+  moduleAttempt: ReadingFullSetModuleAttemptSummary;
+  occurrences: ReadingFullSetRunnerOccurrence[];
+}) {
+  if (input.moduleAttempt.answerRevision === 0 || input.occurrences.length === 0) return [];
+  const occurrenceIds = input.occurrences.map((occurrence) => occurrence.occurrenceId);
+  const [answerResult, questionOccurrenceResult] = await Promise.all([
+    input.db
+      .from("reading_full_set_answers")
+      .select("occurrence_id,question_id,slot_id,student_answer")
+      .eq("module_attempt_id", input.moduleAttempt.moduleAttemptId),
+    input.db
+      .from("reading_question_occurrences")
+      .select("occurrence_id,question_id,source_question_start")
+      .in("occurrence_id", occurrenceIds)
+  ]);
+  if (answerResult.error) throw answerResult.error;
+  if (questionOccurrenceResult.error) throw questionOccurrenceResult.error;
+
+  const answerRows = (answerResult.data ?? []) as Array<{
+    occurrence_id: string;
+    question_id: string;
+    slot_id: string | null;
+    student_answer: string | null;
+  }>;
+  const questionOccurrences = (questionOccurrenceResult.data ?? []) as Array<{
+    occurrence_id: string;
+    question_id: string;
+    source_question_start: number;
+  }>;
+  const ctwQuestionIds = Array.from(new Set(questionOccurrences
+    .filter((row) => input.occurrences.find(
+      (occurrence) => occurrence.occurrenceId === row.occurrence_id
+    )?.taskType === "ctw")
+    .map((row) => row.question_id)));
+  const slotResult = ctwQuestionIds.length
+    ? await input.db
+        .from("reading_ctw_slots")
+        .select("question_id,slot_id,slot_order")
+        .in("question_id", ctwQuestionIds)
+    : { data: [], error: null };
+  if (slotResult.error) throw slotResult.error;
+
+  const slots = (slotResult.data ?? []) as Array<{
+    question_id: string;
+    slot_id: string;
+    slot_order: number;
+  }>;
+  return readingFullSetCompletedQuestionNumbersFromRows({
+    answers: answerRows.map((row) => ({
+      occurrenceId: row.occurrence_id,
+      questionId: row.question_id,
+      slotId: row.slot_id,
+      studentAnswer: row.student_answer
+    })),
+    occurrences: input.occurrences,
+    questionOccurrences: questionOccurrences.map((row) => ({
+      occurrenceId: row.occurrence_id,
+      questionId: row.question_id,
+      sourceQuestionStart: Number(row.source_question_start)
+    })),
+    slots: slots.map((row) => ({
+      questionId: row.question_id,
+      slotId: row.slot_id,
+      slotOrder: Number(row.slot_order)
+    }))
+  });
 }
 
 export async function loadReadingFullSetOccurrencePracticePayload(input: {

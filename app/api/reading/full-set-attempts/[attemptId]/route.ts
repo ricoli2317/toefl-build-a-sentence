@@ -3,6 +3,7 @@ import {
   isUuid,
   loadOwnedReadingFullSetAttempt,
   loadReadingFullSetOccurrencePracticePayload,
+  loadReadingFullSetReviewCompletedQuestionNumbers,
   requireReadingFullSetStudent
 } from "@/lib/reading/fullSetAttemptServer";
 import {
@@ -63,14 +64,21 @@ export async function GET(
     if (!definitionOccurrence) {
       return respond({ error: "当前题目数据已不可用。" }, { status: 409 });
     }
-    const firstOccurrence = await loadReadingFullSetOccurrencePracticePayload({
-      db,
-      moduleAttempt,
-      occurrence: definitionOccurrence,
-      timing,
-      title: fullSet.title
-    });
-    return respond({ firstOccurrence, runner, traceId: timing.traceId });
+    const [firstOccurrence, reviewCompletedQuestionNumbers] = await Promise.all([
+      loadReadingFullSetOccurrencePracticePayload({
+        db,
+        moduleAttempt,
+        occurrence: definitionOccurrence,
+        timing,
+        title: fullSet.title
+      }),
+      loadReadingFullSetReviewCompletedQuestionNumbers({
+        db,
+        moduleAttempt,
+        occurrences: runner.occurrences
+      })
+    ]);
+    return respond({ firstOccurrence, reviewCompletedQuestionNumbers, runner, traceId: timing.traceId });
   } catch (error) {
     console.error("Reading Full Set runner load failed", { error, attemptId: params.attemptId });
     return respond({ error: "套题练习加载失败，请稍后重试。" }, { status: 500 });

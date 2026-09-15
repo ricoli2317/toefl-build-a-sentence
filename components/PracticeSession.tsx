@@ -10,6 +10,7 @@ import {
   QuestionDisplay,
   type QuestionWordBlock
 } from "@/components/shared/QuestionDisplay";
+import { PracticeReview } from "@/components/shared/PracticeReview";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
@@ -447,11 +448,20 @@ export function PracticeSession({
       {displayError ? <p className="student-error-state">{displayError}</p> : null}
 
       {showReview ? (
-        <ReviewPanel
+        <PracticeReview
           currentIndex={currentIndex}
-          draftAnswers={draftAnswers}
-          onJumpToQuestion={jumpToQuestion}
-          questions={questions}
+          items={questions.map((question, index) => {
+            const answer = normalizeOptionAnswer(
+              draftAnswers[question.question_id],
+              question.blank_count
+            );
+            return {
+              completed: answer.length === question.blank_count && answer.every(Boolean),
+              key: question.question_id,
+              label: `Question ${index + 1}`
+            };
+          })}
+          onSelect={jumpToQuestion}
         />
       ) : (
         <QuestionDisplay
@@ -563,54 +573,4 @@ function normalizeOptionAnswer(
   blankCount: number
 ) {
   return Array.from({ length: blankCount }, (_, index) => answer?.[index] ?? null);
-}
-
-function ReviewPanel({
-  currentIndex,
-  draftAnswers,
-  onJumpToQuestion,
-  questions
-}: {
-  currentIndex: number;
-  draftAnswers: DraftAnswers;
-  onJumpToQuestion: (index: number) => void;
-  questions: PublicQuestion[];
-}) {
-  return (
-    <article className="student-card">
-      <div>
-        <p className="text-sm font-semibold text-student-primary">Review</p>
-        <h2 className="mt-1 text-xl font-bold">Question status</h2>
-      </div>
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        {questions.map((question, index) => {
-          const answer = normalizeOptionAnswer(
-            draftAnswers[question.question_id],
-            question.blank_count
-          );
-          const completed = answer.length === question.blank_count && answer.every(Boolean);
-
-          return (
-            <button
-              className={`flex items-center justify-between gap-3 rounded-[10px] border px-4 py-3 text-left font-semibold transition hover:border-student-primary ${
-                currentIndex === index ? "border-student-primary bg-student-primary-soft" : "border-student-border bg-student-bg"
-              }`}
-              key={question.question_id}
-              onClick={() => onJumpToQuestion(index)}
-              type="button"
-            >
-              <span>Question {index + 1}</span>
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-bold ${
-                  completed ? "bg-student-primary-soft text-student-primary" : "bg-student-error-soft text-student-error"
-                }`}
-              >
-                {completed ? "Completed" : "Incomplete"}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </article>
-  );
 }

@@ -3,6 +3,7 @@ import {
   isUuid,
   loadOwnedReadingFullSetAttempt,
   loadReadingFullSetOccurrencePracticePayload,
+  loadReadingFullSetReviewCompletedQuestionNumbers,
   requireReadingFullSetStudent
 } from "@/lib/reading/fullSetAttemptServer";
 import {
@@ -133,13 +134,21 @@ async function buildBootstrap(
     throw new BootstrapFailure("CONTENT_FAILED", "first_occurrence_content", "Module 2 当前题目数据不可用。", 409);
   }
 
-  const firstOccurrence = await loadReadingFullSetOccurrencePracticePayload({
-    db: createServiceSupabase(),
-    moduleAttempt,
-    occurrence: initialOccurrence,
-    timing,
-    title: fullSet.title
-  }).catch((error) => {
+  const db = createServiceSupabase();
+  const [firstOccurrence, reviewCompletedQuestionNumbers] = await Promise.all([
+    loadReadingFullSetOccurrencePracticePayload({
+      db,
+      moduleAttempt,
+      occurrence: initialOccurrence,
+      timing,
+      title: fullSet.title
+    }),
+    loadReadingFullSetReviewCompletedQuestionNumbers({
+      db,
+      moduleAttempt,
+      occurrences: runner.occurrences
+    })
+  ]).catch((error) => {
     throw new BootstrapFailure(
       "CONTENT_FAILED",
       "first_occurrence_content",
@@ -151,6 +160,7 @@ async function buildBootstrap(
 
   return {
     firstOccurrence,
+    reviewCompletedQuestionNumbers,
     runner,
     traceId: timing.traceId
   };

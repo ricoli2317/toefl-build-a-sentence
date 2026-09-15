@@ -841,9 +841,12 @@ export function ReadingPracticePendingShell({
 export function ReadingPracticeHeader({
   elapsedSeconds,
   onBack,
+  onReview,
   productName,
   progressLabel,
   progressTestId = "reading-navigation-status",
+  reviewActive = false,
+  reviewDisabled = false,
   showElapsed = true,
   timeLabel = "Elapsed",
   timeTestId = "reading-elapsed-time",
@@ -852,9 +855,12 @@ export function ReadingPracticeHeader({
 }: {
   elapsedSeconds: number;
   onBack: () => void;
+  onReview?: () => void;
   productName?: string;
   progressLabel?: string;
   progressTestId?: string;
+  reviewActive?: boolean;
+  reviewDisabled?: boolean;
   showElapsed?: boolean;
   timeLabel?: string;
   timeTestId?: string;
@@ -869,11 +875,22 @@ export function ReadingPracticeHeader({
       </button>
       <div className="min-w-0 justify-self-center text-center">
         {productName ? <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-student-muted">{productName}</p> : null}
-        <p className="max-w-[58vw] truncate text-sm font-bold text-student-text sm:text-base">
+        <p className={`${onReview ? "max-w-[42vw] sm:max-w-[58vw]" : "max-w-[58vw]"} truncate text-sm font-bold text-student-text sm:text-base`}>
           {title}{progressLabel ? <> <span aria-hidden="true" className="text-student-muted">·</span> <span data-testid={progressTestId}>{progressLabel}</span></> : null}
         </p>
       </div>
-      <div className="flex items-center justify-self-end">
+      <div className="flex items-center justify-self-end gap-2 sm:gap-3">
+        {onReview ? (
+          <button
+            aria-pressed={reviewActive}
+            className="student-button-secondary min-h-9 px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={reviewDisabled}
+            onClick={onReview}
+            type="button"
+          >
+            Review
+          </button>
+        ) : null}
         {showElapsed ? <div className="hidden items-baseline gap-2 whitespace-nowrap sm:flex">
           <span className="text-sm font-medium text-student-muted">{timeLabel}</span>
           <span className="font-mono text-base font-bold tabular-nums text-student-primary" data-testid={timeTestId}>
@@ -889,6 +906,7 @@ export function ReadingWorkspaceRouter({
   answers,
   currentQuestion,
   editableSlotIds,
+  focusedCtwSlotId,
   lookupEnabled,
   layoutMode = "bounded",
   onAnswerChange,
@@ -903,6 +921,7 @@ export function ReadingWorkspaceRouter({
   answers: ReadingAnswerState;
   currentQuestion: StudentReadingPracticePayload["questions"][number];
   editableSlotIds?: ReadonlySet<string>;
+  focusedCtwSlotId?: string;
   lookupEnabled: boolean;
   layoutMode?: "bounded" | "natural";
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
@@ -919,6 +938,7 @@ export function ReadingWorkspaceRouter({
       <CtwPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
         editableSlotIds={editableSlotIds}
+        focusedSlotId={focusedCtwSlotId}
         lookupEnabled={lookupEnabled}
         onAnswerChange={onAnswerChange}
         onReady={onReady}
@@ -1070,6 +1090,7 @@ function DomTextLookupRegion({ children, enabled }: { children: ReactNode; enabl
 function CtwPracticeWorkspace({
   answer,
   editableSlotIds,
+  focusedSlotId,
   lookupEnabled,
   onAnswerChange,
   onReady,
@@ -1081,6 +1102,7 @@ function CtwPracticeWorkspace({
 }: {
   answer: ReadingAnswer | undefined;
   editableSlotIds?: ReadonlySet<string>;
+  focusedSlotId?: string;
   lookupEnabled: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   onReady?: () => void;
@@ -1127,8 +1149,11 @@ function CtwPracticeWorkspace({
 
   useEffect(() => {
     if (readOnly) return;
-    focusPosition(firstCtwPosition(interactionSlots));
-  }, [focusPosition, interactionSlots, question.questionId, readOnly]);
+    const focusedSlots = focusedSlotId
+      ? interactionSlots.filter((slot) => slot.slotId === focusedSlotId)
+      : interactionSlots;
+    focusPosition(firstCtwPosition(focusedSlots));
+  }, [focusPosition, focusedSlotId, interactionSlots, question.questionId, readOnly]);
 
   useLayoutEffect(() => {
     if (readOnly) {
@@ -1397,31 +1422,41 @@ function CtwReadonlyAnswerZone({
       data-testid="ctw-readonly-answer-zone"
     >
       <div
-        className={`${readingAnswerCardClassName} grid h-auto w-max max-w-full grid-cols-[max-content_minmax(0,auto)] items-start gap-x-[20px]`}
+        className={`${readingAnswerCardClassName} grid h-auto w-full shrink-0 gap-y-[10px]`}
         data-testid="ctw-readonly-answer-card"
         style={readingQuestionTextStyle}
       >
-        <div className="grid auto-rows-max items-baseline gap-y-[10px]">
+        <div
+          className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
+          data-testid="ctw-readonly-student-answer-group"
+        >
           <span className="whitespace-nowrap font-semibold text-student-text">你的回答</span>
-          <span className="whitespace-nowrap font-semibold text-student-text">正确答案</span>
-        </div>
-        <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]" data-testid="ctw-readonly-answer-slots">
-          {entries.map(({ presentation, reviewItem, slot }) => (
-            <div
-              className="grid auto-rows-max items-baseline gap-y-[10px]"
-              data-slot-order={slot.slotOrder}
-              key={slot.slotId}
-            >
-              <span className="whitespace-nowrap">
+          <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]">
+            {entries.map(({ presentation, reviewItem, slot }) => (
+              <span className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={slot.slotId}>
                 <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
               </span>
-              <span className="whitespace-nowrap font-medium text-student-text">
+            ))}
+          </div>
+        </div>
+        <div
+          className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
+          data-testid="ctw-readonly-correct-answer-group"
+        >
+          <span className="whitespace-nowrap font-semibold text-student-text">正确答案</span>
+          <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]">
+            {entries.map(({ presentation, reviewItem, slot }) => (
+              <span
+                className="whitespace-nowrap font-medium text-student-text"
+                data-slot-order={slot.slotOrder}
+                key={slot.slotId}
+              >
                 {presentation ? (
                   <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
                 ) : null}
               </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
