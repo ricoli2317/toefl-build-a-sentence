@@ -133,12 +133,13 @@ test("navigation enqueues a save without awaiting the network, then uses hit, wa
 
 test("prefetched mutable answers never replace an existing local answer state", () => {
   assert.match(runner, /Object\.prototype\.hasOwnProperty\.call\(current, occurrenceId\)\) return current/);
-  assert.match(runner, /revisionRef\.current = Math\.max\(revisionRef\.current, completePayload\.answerRevision\)/);
+  assert.match(runner, /answerRevisionRef\.current = Math\.max\(answerRevisionRef\.current, completePayload\.answerRevision\)/);
 });
 
 test("submit, timeout, and pagehide preserve answer durability boundaries", () => {
   const submit = runner.slice(runner.indexOf("const submitModule = useCallback"), runner.indexOf("useEffect(() => {", runner.indexOf("const submitModule = useCallback")));
-  assert.match(submit, /submittingRef\.current = true[\s\S]*commitActiveQuestionTime\(\)[\s\S]*stageCurrentOccurrenceSave[\s\S]*await flushPendingSave[\s\S]*if \(!saved\) throw[\s\S]*await fetch/);
+  assert.match(submit, /submittingRef\.current = true[\s\S]*commitActiveQuestionTime\(\)[\s\S]*stageModuleAnswerSnapshot[\s\S]*await flushPendingSave[\s\S]*if \(!saved\) throw[\s\S]*await fetch/);
+  assert.match(submit, /expectedAnswerRevision: answerRevisionRef\.current/);
   assert.doesNotMatch(submit, /if \(automatic\) \{[\s\S]*pendingSaveRef\.current = null/);
   assert.match(runner, /remaining === 0[\s\S]*void submitModule\(true\)/);
 
@@ -151,15 +152,16 @@ test("question time is committed before navigation snapshots and snapshots are i
   const move = runner.slice(runner.indexOf("const move = useCallback"), runner.indexOf("const leavePractice"));
   assert.ok(move.indexOf("commitActiveQuestionTime()") < move.indexOf("stageCurrentOccurrenceSave(trace)"));
   assert.match(runner, /buildReadingSubmissionAnswers\([\s\S]*snapshotQuestionTimes\(pending\.occurrenceId\)[\s\S]*saveQueueRef\.current!\.enqueue/);
-  assert.match(runner, /answers: snapshot\.value\.answers/);
+  assert.match(runner, /let answers = snapshot\.value\.answers/);
 });
 
-test("stale CAS responses refresh server truth but remain a blocking conflict without changing local answers", () => {
+test("stale CAS responses drop superseded writes, merge disjoint changes, and expose genuine conflicts", () => {
   const persist = runner.slice(runner.indexOf("const persistSave"), runner.indexOf("saveTransportRef.current = persistSave"));
   assert.match(persist, /if \(result\.attempt\) applyAttempt\(result\.attempt\)/);
-  assert.match(persist, /result\.reason === "stale_revision"[\s\S]*答案状态已在其他页面更新，请刷新后继续/);
-  assert.doesNotMatch(persist, /retryable: result\.reason === "stale_revision"/);
-  assert.doesNotMatch(persist, /setAnswersByOccurrence/);
+  assert.match(persist, /result\.reason === "stale_revision"[\s\S]*isSuperseded\(snapshot\)/);
+  assert.match(persist, /mergeReadingFullSetAnswers[\s\S]*reconciliation\.conflicts\.length/);
+  assert.match(runner, /保留本页答案并同步[\s\S]*使用服务器答案/);
+  assert.doesNotMatch(persist, /请刷新后继续/);
 });
 
 test("module transitions, submit, retry, and unmount clear runner-local prefetch state", () => {

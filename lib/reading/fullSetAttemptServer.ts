@@ -212,15 +212,41 @@ export async function loadReadingFullSetOccurrencePracticePayload(input: {
   const answerPromise = input.timing
     ? input.timing.measure("database", "answers", () => loadOccurrenceAnswers(input))
     : loadOccurrenceAnswers(input);
-  const [practice, rows] = await Promise.all([practicePromise, answerPromise]);
+  const occurrenceRevisionPromise = loadOccurrenceRevision(input);
+  const [practice, rows, occurrenceRevision] = await Promise.all([
+    practicePromise,
+    answerPromise,
+    occurrenceRevisionPromise
+  ]);
   const answers = rows.length ? buildSubmittedReadingAnswerState(practice, rows) : {};
   return {
     answerRevision: input.moduleAttempt.answerRevision,
+    occurrenceRevision,
     answers,
     occurrence: publicReadingFullSetOccurrence(input.occurrence),
     practice,
     questionTimes: readingFullSetQuestionTimes(rows)
   };
+}
+
+async function loadOccurrenceRevision(input: {
+  db: SupabaseClient;
+  moduleAttempt: ReadingFullSetModuleAttemptSummary;
+  occurrence: ReadingFullSetOccurrence;
+}) {
+  const result = await input.db
+    .from("reading_full_set_occurrence_revisions")
+    .select("revision")
+    .eq("module_attempt_id", input.moduleAttempt.moduleAttemptId)
+    .eq("occurrence_id", input.occurrence.occurrenceId)
+    .maybeSingle();
+  if (!result.error) return Number(result.data?.revision ?? 0);
+  // Compatibility while the answer-consistency migration is awaiting manual
+  // application. The legacy endpoint still uses the Module-wide revision.
+  if (result.error.code === "42P01" || result.error.code === "PGRST205") {
+    return input.moduleAttempt.answerRevision;
+  }
+  throw result.error;
 }
 
 async function loadOccurrenceAnswers(input: {

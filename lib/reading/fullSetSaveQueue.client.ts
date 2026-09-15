@@ -14,7 +14,7 @@ export type ReadingFullSetSaveQueueEvent<T> = {
   durationMs?: number;
   error?: unknown;
   snapshot: ReadingFullSetSaveSnapshot<T>;
-  type: "enqueued" | "error" | "retry" | "started" | "success";
+  type: "enqueued" | "error" | "retry" | "started" | "success" | "superseded";
 };
 
 export type ReadingFullSetSaveQueueState = {
@@ -31,6 +31,18 @@ export class ReadingFullSetSaveError extends Error {
     super(message, options.cause === undefined ? undefined : { cause: options.cause });
     this.name = "ReadingFullSetSaveError";
     this.retryable = options.retryable ?? false;
+  }
+}
+
+export class ReadingFullSetAnswerConflictError extends ReadingFullSetSaveError {
+  readonly serverAnswers: unknown;
+  readonly serverRevision: number;
+
+  constructor(message: string, options: { serverAnswers: unknown; serverRevision: number }) {
+    super(message);
+    this.name = "ReadingFullSetAnswerConflictError";
+    this.serverAnswers = options.serverAnswers;
+    this.serverRevision = options.serverRevision;
   }
 }
 
@@ -124,6 +136,30 @@ export class ReadingFullSetSaveQueue<T> {
     );
   }
 
+  isSuperseded(snapshot: ReadingFullSetSaveSnapshot<T>) {
+    const state = this.states.get(snapshot.key);
+    return Boolean(state && state.latestLocalRevision > snapshot.localRevision);
+  }
+
+  retry(moduleAttemptId: string, key?: string) {
+    for (const [stateKey, state] of Array.from(this.states.entries())) {
+      if (
+        state.latestSnapshot.moduleAttemptId === moduleAttemptId
+        && (!key || stateKey === key)
+        && state.latestDurableRevision < state.latestLocalRevision
+        && state.status === "error"
+      ) {
+        state.error = null;
+        state.status = "dirty";
+      }
+    }
+    void this.pump();
+  }
+
+  discard(key: string) {
+    this.states.delete(key);
+  }
+
   async flush(moduleAttemptId: string) {
     for (const state of Array.from(this.states.values())) {
       if (
@@ -215,6 +251,20 @@ export class ReadingFullSetSaveQueue<T> {
           });
           return;
         } catch (error) {
+          if (
+            error instanceof ReadingFullSetAnswerConflictError
+            && state.latestLocalRevision > snapshot.localRevision
+          ) {
+            state.latestDurableRevision = Math.max(
+              state.latestDurableRevision,
+              snapshot.localRevision
+            );
+            state.dirty = state.latestDurableRevision < state.latestLocalRevision;
+            state.error = null;
+            state.status = state.dirty ? "dirty" : "saved";
+            this.onEvent?.({ attempt, error, snapshot, type: "superseded" });
+            return;
+          }
           const retryable = error instanceof ReadingFullSetSaveError && error.retryable;
           if (retryable && attempt <= this.maxRetries) {
             this.onEvent?.({ attempt, error, snapshot, type: "retry" });

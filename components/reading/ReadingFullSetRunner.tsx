@@ -16,6 +16,7 @@ import {
   useStudentDataCache
 } from "@/components/StudentDataCache";
 import {
+  buildReadingAnswerStateFromSubmission,
   buildReadingSubmissionAnswers,
   type ReadingSubmittedAnswer
 } from "@/lib/reading/attempts";
@@ -73,11 +74,16 @@ import {
   type ReadingFullSetCacheSource
 } from "@/lib/reading/fullSetOccurrenceCache.client";
 import {
+  ReadingFullSetAnswerConflictError,
   ReadingFullSetSaveError,
   ReadingFullSetSaveQueue,
   type ReadingFullSetSaveQueueEvent,
   type ReadingFullSetSaveSnapshot
 } from "@/lib/reading/fullSetSaveQueue.client";
+import {
+  mergeReadingFullSetAnswers,
+  sameReadingFullSetAnswerValues
+} from "@/lib/reading/fullSetAnswerMerge";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
@@ -90,6 +96,11 @@ import {
 
 type OccurrenceResponse = Partial<ReadingFullSetOccurrencePracticePayload> & { error?: string };
 type AttemptResponse = { attempt?: ReadingFullSetAttemptSummary; error?: string };
+type SubmitResponse = AttemptResponse & {
+  accepted?: boolean;
+  answerRevision?: number;
+  reason?: "stale_revision";
+};
 type BootstrapResponse = {
   code?: string;
   error?: string;
@@ -109,9 +120,11 @@ type LoadPauseResponse = AttemptResponse & {
 type SaveResponse = {
   accepted?: boolean;
   answerRevision?: number;
+  occurrenceRevision?: number;
   attempt?: ReadingFullSetAttemptSummary;
   error?: string;
   reason?: "locked" | "stale_revision" | "timed_out";
+  serverAnswers?: ReadingSubmittedAnswer[];
 };
 type CursorResponse = {
   accepted?: boolean;
@@ -137,6 +150,14 @@ type BackgroundSave = {
   answers: ReadingSubmittedAnswer[];
   taskType: "ctw" | "rap" | "rdl";
   trace: ReadingFullSetPerformanceTrace;
+};
+
+type AnswerConflict = {
+  key: string;
+  moduleAttemptId: string;
+  occurrenceId: string;
+  serverAnswers: ReadingSubmittedAnswer[];
+  serverRevision: number;
 };
 
 type OccurrenceLoadState =
@@ -181,11 +202,15 @@ export function ReadingFullSetRunner({
   const answersRef = useRef<Record<string, ReadingAnswerState>>({});
   const questionTimesRef = useRef<Record<string, Record<string, number>>>({});
   const activeTimingRef = useRef<{ occurrenceId: string; questionId: string; startedAt: number } | null>(null);
-  const revisionRef = useRef(0);
+  const answerRevisionRef = useRef(0);
+  const occurrenceRevisionRef = useRef<Record<string, number>>({});
+  const durableAnswersRef = useRef<Record<string, ReadingSubmittedAnswer[]>>({});
   const timerRef = useRef<ReadingFullSetTimerState | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [error, setError] = useState("");
   const [saveError, setSaveError] = useState("");
+  const [answerConflict, setAnswerConflict] = useState<AnswerConflict | null>(null);
+  const answerConflictRef = useRef<AnswerConflict | null>(null);
   const [loading, setLoading] = useState(true);
   const [timerPausedForLoad, setTimerPausedForLoad] = useState(false);
   const [occurrenceLoad, setOccurrenceLoad] = useState<OccurrenceLoadState>({ status: "idle" });
@@ -289,6 +314,10 @@ export function ReadingFullSetRunner({
       saveTimerRef.current = null;
       pendingSaveRef.current = null;
       setSaveError("");
+      answerConflictRef.current = null;
+      setAnswerConflict(null);
+      occurrenceRevisionRef.current = {};
+      durableAnswersRef.current = {};
       setOccurrencePayloads({});
       setAnswersByOccurrence({});
       answersRef.current = {};
@@ -316,8 +345,10 @@ export function ReadingFullSetRunner({
     if (moduleAttempt) {
       cursorQueueRef.current?.prime(moduleAttempt.moduleAttemptId, moduleAttempt.cursorRevision);
     }
-    if (moduleAttempt) {
-      revisionRef.current = Math.max(revisionRef.current, moduleAttempt.answerRevision);
+    if (moduleAttempt && previousModuleKey !== nextModuleKey) {
+      // Only a Module identity transition initializes the answer clock here.
+      // Timer/cursor/load responses must never advance or rewind answer CAS.
+      answerRevisionRef.current = moduleAttempt.answerRevision;
     }
     const nextTimer = mergeReadingFullSetTimerState({
       current: timerRef.current,
@@ -367,7 +398,7 @@ export function ReadingFullSetRunner({
     } else {
       imagePreloadStatusRef.current.set(occurrenceKey, "not_applicable");
     }
-    revisionRef.current = Math.max(revisionRef.current, bootstrap.firstOccurrence.answerRevision);
+    answerRevisionRef.current = bootstrap.firstOccurrence.answerRevision;
     const moduleAttempt = readingFullSetCurrentModuleAttempt(bootstrap.runner.attempt);
     if (!moduleAttempt) throw new Error(`Module ${moduleNumber} 状态无效。`);
     setPosition(readingFullSetRestoredPosition({
@@ -382,6 +413,17 @@ export function ReadingFullSetRunner({
     setAnswersByOccurrence({ [occurrenceId]: bootstrap.firstOccurrence.answers });
     answersRef.current = { [occurrenceId]: bootstrap.firstOccurrence.answers };
     questionTimesRef.current = { [occurrenceId]: bootstrap.firstOccurrence.questionTimes };
+    occurrenceRevisionRef.current = {
+      [occurrenceId]: bootstrap.firstOccurrence.occurrenceRevision
+        ?? bootstrap.firstOccurrence.answerRevision
+    };
+    durableAnswersRef.current = {
+      [occurrenceId]: buildReadingSubmissionAnswers(
+        bootstrap.firstOccurrence.practice,
+        bootstrap.firstOccurrence.answers,
+        bootstrap.firstOccurrence.questionTimes
+      )
+    };
     setOccurrenceLoad({ status: "idle" });
     if (!activeLoadPauseRef.current) setTimerPausedForLoad(false);
     logTransitionPhase(moduleNumber === 1 ? "m1_state_applied" : "m2_state_applied", {
@@ -706,7 +748,7 @@ export function ReadingFullSetRunner({
 
   const applyOccurrencePayload = useCallback((completePayload: ReadingFullSetOccurrencePracticePayload) => {
     const occurrenceId = completePayload.occurrence.occurrenceId;
-    revisionRef.current = Math.max(revisionRef.current, completePayload.answerRevision);
+    answerRevisionRef.current = Math.max(answerRevisionRef.current, completePayload.answerRevision);
     setOccurrencePayloads((current) => current[occurrenceId]
       ? current
       : { ...current, [occurrenceId]: completePayload });
@@ -714,6 +756,18 @@ export function ReadingFullSetRunner({
       if (Object.prototype.hasOwnProperty.call(current, occurrenceId)) return current;
       const next = { ...current, [occurrenceId]: completePayload.answers };
       answersRef.current = next;
+      occurrenceRevisionRef.current = {
+        ...occurrenceRevisionRef.current,
+        [occurrenceId]: completePayload.occurrenceRevision ?? completePayload.answerRevision
+      };
+      durableAnswersRef.current = {
+        ...durableAnswersRef.current,
+        [occurrenceId]: buildReadingSubmissionAnswers(
+          completePayload.practice,
+          completePayload.answers,
+          completePayload.questionTimes
+        )
+      };
       return next;
     });
     if (!Object.prototype.hasOwnProperty.call(questionTimesRef.current, occurrenceId)) {
@@ -1096,6 +1150,27 @@ export function ReadingFullSetRunner({
     };
   }, [commitActiveQuestionTime, currentOccurrence, currentQuestion, occurrenceLoad.status, runner, showReview]);
 
+  const applyMergedOccurrenceAnswers = useCallback((
+    occurrenceId: string,
+    answers: ReadingSubmittedAnswer[]
+  ) => {
+    const payload = occurrencePayloads[occurrenceId];
+    if (!payload) return;
+    const answerState = buildReadingAnswerStateFromSubmission(payload.practice, answers);
+    setAnswersByOccurrence((current) => {
+      const next = { ...current, [occurrenceId]: answerState };
+      answersRef.current = next;
+      return next;
+    });
+    questionTimesRef.current = {
+      ...questionTimesRef.current,
+      [occurrenceId]: Object.fromEntries(answers.map((answer) => [
+        answer.questionId,
+        answer.questionTimeSeconds
+      ]))
+    };
+  }, [occurrencePayloads]);
+
   const persistSave = useCallback(async (snapshot: ReadingFullSetSaveSnapshot<BackgroundSave>) => {
     const activeRunner = runnerRef.current;
     if (!accessToken || !activeRunner) {
@@ -1104,50 +1179,115 @@ export function ReadingFullSetRunner({
     if (readingFullSetRunnerModuleKey(activeRunner.attempt) !== snapshot.moduleAttemptId) {
       throw new ReadingFullSetSaveError("当前 Module 已结束，答案不能再修改。");
     }
-    let response: Response;
-    try {
-      response = await fetch(
-        `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(snapshot.occurrenceId)}`,
-        {
-          method: "PUT",
-          cache: "no-store",
-          keepalive: true,
-          headers: {
-            ...readingFullSetTraceHeaders(accessToken, snapshot.value.trace),
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            answers: snapshot.value.answers,
-            expectedRevision: revisionRef.current,
-            moduleNumber: snapshot.moduleNumber
-          })
+    let answers = snapshot.value.answers;
+    for (let reconciliationAttempt = 0; reconciliationAttempt < 3; reconciliationAttempt += 1) {
+      let response: Response;
+      try {
+        response = await fetch(
+          `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(snapshot.occurrenceId)}`,
+          {
+            method: "PUT",
+            cache: "no-store",
+            keepalive: true,
+            headers: {
+              ...readingFullSetTraceHeaders(accessToken, snapshot.value.trace),
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              answers,
+              expectedOccurrenceRevision: occurrenceRevisionRef.current[snapshot.occurrenceId]
+                ?? answerRevisionRef.current,
+              expectedRevision: answerRevisionRef.current,
+              moduleNumber: snapshot.moduleNumber
+            })
+          }
+        );
+      } catch (error) {
+        throw new ReadingFullSetSaveError("答案保存失败，请检查网络后重试。", {
+          cause: error,
+          retryable: true
+        });
+      }
+      const result = await response.json().catch(() => ({})) as SaveResponse;
+      if (result.attempt) applyAttempt(result.attempt);
+      if (result.accepted && Number.isInteger(result.answerRevision)) {
+        if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== snapshot.moduleAttemptId) {
+          throw new ReadingFullSetSaveError("当前 Module 已结束，答案不能再修改。");
         }
-      );
-    } catch (error) {
-      throw new ReadingFullSetSaveError("答案保存失败，请检查网络后重试。", {
-        cause: error,
-        retryable: true
-      });
-    }
-    const result = await response.json().catch(() => ({})) as SaveResponse;
-    if (result.attempt) applyAttempt(result.attempt);
-    if (!response.ok || !result.accepted || !Number.isInteger(result.answerRevision)) {
+        answerRevisionRef.current = Math.max(
+          answerRevisionRef.current,
+          Number(result.answerRevision)
+        );
+        occurrenceRevisionRef.current = {
+          ...occurrenceRevisionRef.current,
+          [snapshot.occurrenceId]: Number(
+            result.occurrenceRevision ?? result.answerRevision
+          )
+        };
+        durableAnswersRef.current = {
+          ...durableAnswersRef.current,
+          [snapshot.occurrenceId]: answers
+        };
+        if (!sameReadingFullSetAnswerValues(answers, snapshot.value.answers)) {
+          applyMergedOccurrenceAnswers(snapshot.occurrenceId, answers);
+        }
+        return;
+      }
+      if (
+        result.reason === "stale_revision"
+        && Array.isArray(result.serverAnswers)
+        && Number.isInteger(result.occurrenceRevision)
+      ) {
+        const serverAnswers = result.serverAnswers;
+        const baseAnswers = durableAnswersRef.current[snapshot.occurrenceId]
+          ?? snapshot.value.answers;
+        answerRevisionRef.current = Math.max(
+          answerRevisionRef.current,
+          Number(result.answerRevision ?? 0)
+        );
+        occurrenceRevisionRef.current = {
+          ...occurrenceRevisionRef.current,
+          [snapshot.occurrenceId]: Number(result.occurrenceRevision)
+        };
+        durableAnswersRef.current = {
+          ...durableAnswersRef.current,
+          [snapshot.occurrenceId]: serverAnswers
+        };
+        if (saveQueueRef.current?.isSuperseded(snapshot)) {
+          throw new ReadingFullSetAnswerConflictError("旧答案响应已被后续编辑取代。", {
+            serverAnswers,
+            serverRevision: Number(result.occurrenceRevision)
+          });
+        }
+        const reconciliation = mergeReadingFullSetAnswers({
+          base: baseAnswers,
+          local: answers,
+          server: serverAnswers
+        });
+        if (reconciliation.conflicts.length > 0) {
+          throw new ReadingFullSetAnswerConflictError(
+            "检测到另一页面修改了同一道题，请选择要保留的答案。",
+            {
+              serverAnswers,
+              serverRevision: Number(result.occurrenceRevision)
+            }
+          );
+        }
+        answers = reconciliation.merged;
+        applyMergedOccurrenceAnswers(snapshot.occurrenceId, answers);
+        continue;
+      }
       const message = result.reason === "timed_out" || result.reason === "locked"
         ? "当前 Module 已结束，答案不能再修改。"
-        : result.reason === "stale_revision"
-          ? "答案状态已在其他页面更新，请刷新后继续。"
-          : result.error ?? "答案保存失败，请检查网络后重试。";
+        : result.error ?? "答案保存失败，请检查网络后重试。";
       throw new ReadingFullSetSaveError(message, {
         retryable: response.status === 408
           || response.status === 429
           || response.status >= 500
       });
     }
-    if (readingFullSetRunnerModuleKey(runnerRef.current?.attempt ?? activeRunner.attempt) !== snapshot.moduleAttemptId) {
-      throw new ReadingFullSetSaveError("当前 Module 已结束，答案不能再修改。");
-    }
-    revisionRef.current = Math.max(revisionRef.current, Number(result.answerRevision));
-  }, [accessToken, applyAttempt, attemptId]);
+    throw new ReadingFullSetSaveError("答案同步仍在变化，请重试。", { retryable: true });
+  }, [accessToken, applyAttempt, applyMergedOccurrenceAnswers, attemptId]);
 
   saveTransportRef.current = persistSave;
   saveEventRef.current = (event) => {
@@ -1156,7 +1296,7 @@ export function ReadingFullSetRunner({
       ? "background_save_enqueued"
       : event.type === "started"
         ? "background_save_started"
-        : event.type === "success"
+      : event.type === "success" || event.type === "superseded"
           ? "background_save_success"
           : event.type === "retry"
             ? "background_save_retry"
@@ -1169,11 +1309,25 @@ export function ReadingFullSetRunner({
       success: event.type !== "error",
       taskType: snapshot.value.taskType
     });
-    if (event.type === "error") {
+    if (event.type === "error" && event.error instanceof ReadingFullSetAnswerConflictError) {
+      const conflict = {
+        key: snapshot.key,
+        moduleAttemptId: snapshot.moduleAttemptId,
+        occurrenceId: snapshot.occurrenceId,
+        serverAnswers: event.error.serverAnswers as ReadingSubmittedAnswer[],
+        serverRevision: event.error.serverRevision
+      };
+      answerConflictRef.current = conflict;
+      setAnswerConflict(conflict);
+      setSaveError(event.error.message);
+    } else if (event.type === "error") {
       setSaveError(event.error instanceof Error
         ? event.error.message
         : "答案保存失败，请检查网络后重试。");
-    } else if (event.type === "success" && !saveQueueRef.current?.hasErrors(snapshot.moduleAttemptId)) {
+    } else if (
+      (event.type === "success" || event.type === "superseded")
+      && !saveQueueRef.current?.hasErrors(snapshot.moduleAttemptId)
+    ) {
       setSaveError("");
     }
   };
@@ -1258,6 +1412,29 @@ export function ReadingFullSetRunner({
     }, trace);
   }, [currentOccurrence, currentPayload, enqueuePendingSave, runner]);
 
+  const stageModuleAnswerSnapshot = useCallback((
+    moduleAttempt: NonNullable<ReturnType<typeof readingFullSetCurrentModuleAttempt>>,
+    trace?: ReadingFullSetPerformanceTrace | null
+  ) => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = null;
+    pendingSaveRef.current = null;
+    const activeRunner = runnerRef.current;
+    if (!activeRunner) return;
+    for (const occurrence of activeRunner.occurrences) {
+      const payload = occurrencePayloads[occurrence.occurrenceId];
+      if (!payload || !Object.prototype.hasOwnProperty.call(answersRef.current, occurrence.occurrenceId)) continue;
+      enqueuePendingSave({
+        answers: { ...(answersRef.current[occurrence.occurrenceId] ?? {}) },
+        moduleAttemptId: moduleAttempt.moduleAttemptId,
+        moduleNumber: moduleAttempt.moduleNumber,
+        occurrenceId: occurrence.occurrenceId,
+        practice: payload.practice,
+        taskType: occurrence.taskType
+      }, trace);
+    }
+  }, [enqueuePendingSave, occurrencePayloads]);
+
   const flushPendingSave = useCallback(async (
     moduleAttemptId?: string,
     moduleNumber?: 1 | 2,
@@ -1288,6 +1465,38 @@ export function ReadingFullSetRunner({
     });
     return saved;
   }, [attemptId, enqueuePendingSave]);
+
+  const keepLocalConflictAnswers = useCallback(() => {
+    const conflict = answerConflictRef.current;
+    if (!conflict) return;
+    answerConflictRef.current = null;
+    setAnswerConflict(null);
+    setSaveError("");
+    saveQueueRef.current?.retry(conflict.moduleAttemptId, conflict.key);
+  }, []);
+
+  const useServerConflictAnswers = useCallback(() => {
+    const conflict = answerConflictRef.current;
+    if (!conflict) return;
+    if (pendingSaveRef.current?.occurrenceId === conflict.occurrenceId) {
+      pendingSaveRef.current = null;
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    applyMergedOccurrenceAnswers(conflict.occurrenceId, conflict.serverAnswers);
+    durableAnswersRef.current = {
+      ...durableAnswersRef.current,
+      [conflict.occurrenceId]: conflict.serverAnswers
+    };
+    occurrenceRevisionRef.current = {
+      ...occurrenceRevisionRef.current,
+      [conflict.occurrenceId]: conflict.serverRevision
+    };
+    saveQueueRef.current?.discard(conflict.key);
+    answerConflictRef.current = null;
+    setAnswerConflict(null);
+    setSaveError("");
+  }, [applyMergedOccurrenceAnswers]);
 
   useEffect(() => {
     if (!currentOccurrence || !currentPayload) return;
@@ -1504,11 +1713,15 @@ export function ReadingFullSetRunner({
 
   const submitModule = useCallback(async (automatic = false) => {
     const activeRunner = runnerRef.current;
-    if (!activeRunner || submitting) return;
+    if (!activeRunner || submittingRef.current) return;
     const phase = readingFullSetAttemptPhase(activeRunner.attempt);
     const moduleNumber = phase === "module_1_active" ? 1 : phase === "module_2_active" ? 2 : null;
     if (!moduleNumber) return;
     if (!automatic && !window.confirm(`确定提交 Module ${moduleNumber} 吗？\n提交后不能返回修改答案。`)) return;
+    if (answerConflictRef.current?.moduleAttemptId === readingFullSetRunnerModuleKey(activeRunner.attempt)) {
+      setError("请先选择保留本页答案或服务器答案，再重新提交。");
+      return;
+    }
     if (!automatic && moduleNumber === 1) {
       const trace = beginTransitionTrace();
       logReadingFullSetPerformancePhase(trace, "m1_submit_click", { moduleNumber: 1 });
@@ -1519,7 +1732,11 @@ export function ReadingFullSetRunner({
     setError("");
     try {
       commitActiveQuestionTime();
-      stageCurrentOccurrenceSave(transitionTraceRef.current);
+      const moduleAttempt = readingFullSetCurrentModuleAttempt(activeRunner.attempt);
+      if (!moduleAttempt) throw new Error("当前 Module 状态无效，请重试。");
+      // Freeze and enqueue every locally materialized occurrence, making the
+      // confirmed local state—not only the visible question—the submit barrier.
+      stageModuleAnswerSnapshot(moduleAttempt, transitionTraceRef.current);
       const flushStartedAt = performance.now();
       if (moduleNumber === 1) {
         logTransitionPhase("m1_final_flush_start", { moduleNumber: 1 });
@@ -1554,10 +1771,13 @@ export function ReadingFullSetRunner({
             ...readingFullSetTraceHeaders(accessToken, transitionTraceRef.current),
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ timeoutOnly: automatic })
+          body: JSON.stringify({
+            expectedAnswerRevision: answerRevisionRef.current,
+            timeoutOnly: automatic
+          })
         }
       );
-      const result = await response.json().catch(() => ({})) as AttemptResponse;
+      const result = await response.json().catch(() => ({})) as SubmitResponse;
       if (moduleNumber === 1) {
         logTransitionPhase("m1_submit_request_end", {
           durationMs: performance.now() - submitStartedAt,
@@ -1567,7 +1787,12 @@ export function ReadingFullSetRunner({
           success: response.ok
         });
       }
-      if (!response.ok || !result.attempt) throw new Error(result.error ?? "Module 提交失败，请稍后重试。");
+      if (result.reason === "stale_revision") {
+        throw new Error("提交前答案又在其他页面发生变化，请同步答案后重试。");
+      }
+      if (!response.ok || result.accepted === false || !result.attempt) {
+        throw new Error(result.error ?? "Module 提交失败，请稍后重试。");
+      }
       const submittedModuleAttemptId = readingFullSetRunnerModuleKey(activeRunner.attempt);
       if (submittedModuleAttemptId) saveQueueRef.current?.clear(submittedModuleAttemptId);
       const stillActive = readingFullSetActiveModuleAttempt(result.attempt);
@@ -1589,7 +1814,7 @@ export function ReadingFullSetRunner({
       submittingRef.current = false;
       setSubmitting(false);
     }
-  }, [accessToken, applyAttempt, applyRunner, attemptId, beginTransitionTrace, clearOccurrenceCaches, commitActiveQuestionTime, flushPendingSave, logTransitionPhase, stageCurrentOccurrenceSave, submitting]);
+  }, [accessToken, applyAttempt, applyRunner, attemptId, beginTransitionTrace, clearOccurrenceCaches, commitActiveQuestionTime, flushPendingSave, logTransitionPhase, stageModuleAnswerSnapshot]);
 
   useEffect(() => {
     if (!runner) return;
@@ -1687,10 +1912,18 @@ export function ReadingFullSetRunner({
         moduleNumber: 2,
         occurrenceId: firstOccurrenceId
       }), result.firstOccurrence);
-      revisionRef.current = Math.max(
-        revisionRef.current,
-        result.firstOccurrence.answerRevision
-      );
+      answerRevisionRef.current = result.firstOccurrence.answerRevision;
+      occurrenceRevisionRef.current = {
+        [firstOccurrenceId]: result.firstOccurrence.occurrenceRevision
+          ?? result.firstOccurrence.answerRevision
+      };
+      durableAnswersRef.current = {
+        [firstOccurrenceId]: buildReadingSubmissionAnswers(
+          result.firstOccurrence.practice,
+          result.firstOccurrence.answers,
+          result.firstOccurrence.questionTimes
+        )
+      };
       setOccurrencePayloads({ [firstOccurrenceId]: result.firstOccurrence });
       setAnswersByOccurrence({ [firstOccurrenceId]: result.firstOccurrence.answers });
       answersRef.current = { [firstOccurrenceId]: result.firstOccurrence.answers };
@@ -1789,6 +2022,24 @@ export function ReadingFullSetRunner({
         timeValue={formatReadingFullSetTime(remainingSeconds)}
         title={runner.title}
       />
+      {answerConflict ? (
+        <div
+          className="fixed left-1/2 top-[calc(var(--reading-header-height)+12px)] z-50 w-[min(92vw,680px)] -translate-x-1/2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 shadow-lg"
+          role="alert"
+        >
+          <p className="text-sm font-semibold text-amber-950">
+            另一页面修改了同一道题。请选择要保留的版本，系统会立即继续保存。
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button className="student-button-primary min-h-9 px-3" onClick={keepLocalConflictAnswers} type="button">
+              保留本页答案并同步
+            </button>
+            <button className="student-button-secondary min-h-9 px-3" onClick={useServerConflictAnswers} type="button">
+              使用服务器答案
+            </button>
+          </div>
+        </div>
+      ) : null}
       <main
         className="mx-auto h-[calc(100dvh-var(--reading-header-height))] min-h-0"
         style={readingTwoColumnScaleStyle}

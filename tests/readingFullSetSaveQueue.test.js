@@ -2,6 +2,7 @@ const assert = require("node:assert/strict");
 const test = require("node:test");
 
 const {
+  ReadingFullSetAnswerConflictError,
   ReadingFullSetSaveError,
   ReadingFullSetSaveQueue
 } = require("../lib/reading/fullSetSaveQueue.client.ts");
@@ -202,6 +203,53 @@ test("a durability flush waits for an already in-flight request", async () => {
   assert.equal(finished, false);
   request.resolve();
   assert.equal(await flush, true);
+});
+
+test("a stale response for a superseded local snapshot is dropped and the latest save continues", async () => {
+  const requests = [];
+  const events = [];
+  const queue = new ReadingFullSetSaveQueue({
+    onEvent: (event) => events.push(event.type),
+    transport: (snapshot) => {
+      requests.push(snapshot);
+      if (snapshot.localRevision === 1) {
+        return Promise.reject(new ReadingFullSetAnswerConflictError("stale", {
+          serverAnswers: [],
+          serverRevision: 1
+        }));
+      }
+      return Promise.resolve();
+    }
+  });
+  queue.enqueue(input("ctw", "old"));
+  queue.enqueue(input("ctw", "latest"));
+  assert.equal(await queue.flush("module-1"), true);
+  assert.deepEqual(requests.map((snapshot) => snapshot.value), ["old", "latest"]);
+  assert.equal(events.includes("error"), false);
+  assert.equal(events.includes("superseded"), true);
+});
+
+test("a genuine conflict can be explicitly retried instead of becoming sticky", async () => {
+  let conflict = true;
+  let attempts = 0;
+  const queue = new ReadingFullSetSaveQueue({
+    transport: async () => {
+      attempts += 1;
+      if (conflict) {
+        throw new ReadingFullSetAnswerConflictError("conflict", {
+          serverAnswers: [],
+          serverRevision: 2
+        });
+      }
+    }
+  });
+  queue.enqueue(input("rap", "local"));
+  await nextTurn();
+  assert.equal(await queue.flush("module-1"), false);
+  conflict = false;
+  queue.retry("module-1", "attempt-1:module-1:rap");
+  assert.equal(await queue.flush("module-1"), true);
+  assert.equal(attempts, 2);
 });
 
 test("a lost successful response can be reconciled as an idempotent stale retry", () => {

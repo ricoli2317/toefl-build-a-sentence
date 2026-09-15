@@ -215,7 +215,8 @@ test("Full Set runner reuses the existing three-type workspace and implements au
   assert.match(runnerUi, /<ReadingWorkspaceRouter/);
   assert.match(runnerUi, /buildReadingSubmissionAnswers/);
   assert.match(runnerUi, /setTimeout[\s\S]*600/);
-  assert.match(runnerUi, /expectedRevision: revisionRef\.current/);
+  assert.match(runnerUi, /expectedOccurrenceRevision: occurrenceRevisionRef\.current/);
+  assert.match(runnerUi, /expectedRevision: answerRevisionRef\.current/);
   assert.match(runnerUi, /full-set-attempts.*modules\/\$\{moduleNumber\}\/submit/);
   assert.match(runnerUi, /Time Left/i);
   assert.match(runnerUi, /Questions \$\{displayRange\.start\}–\$\{displayRange\.end\}/);

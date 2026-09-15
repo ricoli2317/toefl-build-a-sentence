@@ -75,6 +75,47 @@ export function buildReadingSubmissionAnswers(
   return submitted;
 }
 
+export function buildReadingAnswerStateFromSubmission(
+  practice: StudentReadingPracticePayload,
+  submitted: ReadingSubmittedAnswer[]
+): ReadingAnswerState {
+  const byQuestion = new Map<string, ReadingSubmittedAnswer[]>();
+  for (const answer of submitted) {
+    const values = byQuestion.get(answer.questionId) ?? [];
+    values.push(answer);
+    byQuestion.set(answer.questionId, values);
+  }
+  const state: ReadingAnswerState = {};
+  for (const question of practice.questions) {
+    const answers = byQuestion.get(question.questionId) ?? [];
+    if (question.questionType === "ctw") {
+      state[question.questionId] = {
+        kind: "ctw",
+        slots: Object.fromEntries(question.slots.map((slot) => {
+          const value = answers.find((answer) => answer.slotId === slot.slotId)?.studentAnswer ?? "";
+          return [slot.slotId, Array.from({ length: slot.missingLength }, (_, index) => value[index] ?? "")];
+        }))
+      };
+    } else if (question.questionType === "rap_sentence_insertion") {
+      state[question.questionId] = {
+        anchorId: answers[0]?.studentAnswer ?? null,
+        kind: "insertion"
+      };
+    } else if (question.questionType === "rap_sentence_selection") {
+      state[question.questionId] = {
+        kind: "sentence_selection",
+        sentenceId: answers[0]?.studentAnswer ?? null
+      };
+    } else {
+      state[question.questionId] = {
+        kind: "choice",
+        optionId: answers[0]?.studentAnswer ?? null
+      };
+    }
+  }
+  return state;
+}
+
 function normalizeQuestionTime(value: number | undefined) {
   return Number.isFinite(value) && value !== undefined && value >= 0
     ? Math.min(604800, Math.round(value))

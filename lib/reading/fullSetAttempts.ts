@@ -59,6 +59,7 @@ export type ReadingFullSetRunnerPayload = {
 
 export type ReadingFullSetOccurrencePracticePayload = {
   answerRevision: number;
+  occurrenceRevision?: number;
   answers: ReadingAnswerState;
   occurrence: ReadingFullSetRunnerOccurrence;
   practice: import("./studentPractice.ts").StudentReadingPracticePayload;
@@ -88,6 +89,7 @@ export function isReadingFullSetBootstrapPayload(
   const first = payload.firstOccurrence as Partial<ReadingFullSetOccurrencePracticePayload>;
   return Boolean(first.occurrence)
     && typeof first.answerRevision === "number"
+    && (first.occurrenceRevision === undefined || typeof first.occurrenceRevision === "number")
     && Boolean(first.answers && typeof first.answers === "object")
     && Boolean(first.practice && typeof first.practice === "object")
     && Boolean(first.questionTimes && typeof first.questionTimes === "object")

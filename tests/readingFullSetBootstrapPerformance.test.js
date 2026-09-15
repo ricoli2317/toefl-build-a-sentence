@@ -27,7 +27,10 @@ test("M2 bootstrap validates ownership, prepares idempotently, and returns its i
   assert.match(bootstrap, /moduleAttempt\.status === "preparing" && initialOccurrence\.taskType !== "ctw"/);
   assert.match(bootstrap, /loadReadingFullSetOccurrencePracticePayload/);
   assert.match(bootstrap, /const runner = buildReadingFullSetRunnerPayload[\s\S]*firstOccurrence[\s\S]*runner,[\s\S]*traceId/);
-  assert.match(serverHelper, /Promise\.all\(\[practicePromise, answerPromise\]\)/);
+  assert.match(
+    serverHelper,
+    /Promise\.all\(\[[\s\S]*practicePromise,[\s\S]*answerPromise,[\s\S]*occurrenceRevisionPromise[\s\S]*\]\)/
+  );
 });
 
 test("bootstrap never activates and retry reuses the database's one M2 module attempt", () => {

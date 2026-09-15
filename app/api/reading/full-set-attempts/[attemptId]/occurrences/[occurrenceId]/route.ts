@@ -121,30 +121,50 @@ export async function PUT(
   }
   const body = await request.json().catch(() => ({})) as {
     answers?: unknown;
+    expectedOccurrenceRevision?: unknown;
     expectedRevision?: unknown;
     moduleNumber?: unknown;
   };
   const moduleNo = Number(body.moduleNumber);
   const expectedRevision = Number(body.expectedRevision);
+  const expectedOccurrenceRevision = Number(
+    body.expectedOccurrenceRevision ?? body.expectedRevision
+  );
   if (
     (moduleNo !== 1 && moduleNo !== 2)
     || !Number.isInteger(expectedRevision)
     || expectedRevision < 0
+    || !Number.isInteger(expectedOccurrenceRevision)
+    || expectedOccurrenceRevision < 0
     || !Array.isArray(body.answers)
   ) {
     return respond(readingFullSetAttemptJson({ error: "无效的套题答案请求。" }, { status: 400 }));
   }
-  const { data, error } = await timing.measure(
+  let saveResult = await timing.measure(
     "database",
     moduleNo === 1 ? "m1_final_flush" : "answer_save",
-    () => auth.client!.rpc("save_reading_full_set_occurrence_answers", {
+    () => auth.client!.rpc("save_reading_full_set_occurrence_answers_v2", {
       p_answers: body.answers,
       p_attempt_id: params.attemptId,
-      p_expected_revision: expectedRevision,
+      p_expected_occurrence_revision: expectedOccurrenceRevision,
       p_module_number: moduleNo,
       p_occurrence_id: params.occurrenceId
     })
   );
+  if (isMissingAnswerConsistencyRpc(saveResult.error)) {
+    saveResult = await timing.measure(
+      "database",
+      "answer_save_legacy_compatibility",
+      () => auth.client!.rpc("save_reading_full_set_occurrence_answers", {
+        p_answers: body.answers,
+        p_attempt_id: params.attemptId,
+        p_expected_revision: expectedRevision,
+        p_module_number: moduleNo,
+        p_occurrence_id: params.occurrenceId
+      })
+    );
+  }
+  const { data, error } = saveResult;
   if (error) return respond(readingFullSetAttemptError(error, "套题答案保存失败，请稍后重试。"));
   if (!isSaveResult(data)) {
     return respond(readingFullSetAttemptJson({ error: "套题答案保存状态返回了无效数据。" }, { status: 500 }));
@@ -166,8 +186,19 @@ export async function PUT(
           readingFullSetAttemptJson({
             accepted: true,
             answerRevision: moduleAttempt.answerRevision,
+            occurrenceRevision: Number(data.occurrenceRevision ?? moduleAttempt.answerRevision),
             attempt: data.attempt
           })
+        ));
+      }
+      if (!saved.error) {
+        return respond(timing.measureSync("processing", "serialization", () =>
+          readingFullSetAttemptJson({
+            ...data,
+            answerRevision: moduleAttempt.answerRevision,
+            occurrenceRevision: Number(data.occurrenceRevision ?? moduleAttempt.answerRevision),
+            serverAnswers: submittedAnswers(saved.data)
+          }, { status: 409 })
         ));
       }
     }
@@ -191,6 +222,7 @@ function moduleOccurrences(
 function isSaveResult(value: unknown): value is {
   accepted: boolean;
   answerRevision?: number;
+  occurrenceRevision?: number;
   attempt: import("@/lib/reading/fullSetAttempts").ReadingFullSetAttemptSummary;
   reason?: "locked" | "timed_out" | "stale_revision";
 } {
@@ -199,4 +231,25 @@ function isSaveResult(value: unknown): value is {
   return typeof result.accepted === "boolean"
     && isReadingFullSetAttemptSummary(result.attempt)
     && (result.accepted ? Number.isInteger(result.answerRevision) : typeof result.reason === "string");
+}
+
+function submittedAnswers(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value.map((row) => {
+    const answer = row as Record<string, unknown>;
+    return {
+      kind: answer.answer_kind,
+      questionId: answer.question_id,
+      questionTimeSeconds: Number(answer.question_time_seconds ?? 0),
+      ...(typeof answer.slot_id === "string" ? { slotId: answer.slot_id } : {}),
+      studentAnswer: typeof answer.student_answer === "string" ? answer.student_answer : null
+    };
+  });
+}
+
+function isMissingAnswerConsistencyRpc(error: { code?: string; message?: string } | null) {
+  return Boolean(error && (
+    error.code === "PGRST202"
+    || error.message?.includes("save_reading_full_set_occurrence_answers_v2")
+  ));
 }
