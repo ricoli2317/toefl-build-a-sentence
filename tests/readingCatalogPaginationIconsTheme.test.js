@@ -51,17 +51,18 @@ test("Full Set data produces ten-item, gap-free catalog pages", () => {
   );
 });
 
-test("Full Set API loads anchors, occurrences, and attempts for only the requested page", () => {
+test("Full Set API validates before pagination and counts only usable sets", () => {
   const route = read("app/api/reading/full-sets/route.ts");
   const server = read("lib/reading/fullSets.server.ts");
   assert.match(route, /searchParams\.get\("page"\)/);
   assert.match(route, /searchParams\.get\("limit"\)/);
   assert.match(route, /limit !== 10/);
   assert.match(server, /READING_FULL_SET_CATALOG_PAGE_SIZE = 10/);
-  assert.match(server, /\.range\(from, from \+ READING_FULL_SET_CATALOG_PAGE_SIZE - 1\)/);
-  assert.match(server, /\.eq\("source_module", "m1"\)[\s\S]*\.eq\("source_question_start", 1\)/);
-  assert.match(server, /loadReadingFullSetCatalogOccurrenceRows\(db, anchors\)/);
+  assert.match(server, /buildReadingFullSetCatalog\(buildReadingFullSets\(/);
+  assert.match(server, /catalog\.slice\(from, from \+ READING_FULL_SET_CATALOG_PAGE_SIZE\)/);
+  assert.match(server, /total: catalog\.length/);
   assert.match(server, /\.in\("full_set_id", fullSetIds\)/);
+  assert.doesNotMatch(server, /count: "exact"|catalog anchors/);
   assert.doesNotMatch(route, /loadReadingFullSets|readAllSupabaseRows/);
 });
 
