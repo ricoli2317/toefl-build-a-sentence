@@ -1,4 +1,5 @@
-import { createAnonSupabase, createServiceSupabase } from "@/lib/supabase/server";
+import { createServiceSupabase } from "@/lib/supabase/server";
+import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import type { WritingAttempt, WritingMode, WritingTaskType } from "@/lib/writing";
 import {
   calculateWritingAssignmentStudentStatus,
@@ -54,11 +55,16 @@ type AttemptRow = Pick<
   | "submitted_at"
   | "updated_at"
   | "writing_mode"
->;
+> & {
+  writing_reviews:
+    | { published_at: string | null; status: string }
+    | Array<{ published_at: string | null; status: string }>
+    | null;
+};
 
 export async function loadStudentAssignmentDetails(input: {
   memberships: StudentAssignmentMembershipDetailRow[];
-  supabase: ReturnType<typeof createAnonSupabase>;
+  timing?: StudentPerformanceTrace;
   userId: string;
 }) {
   const rows = input.memberships.flatMap((membership) => {
@@ -68,13 +74,24 @@ export async function loadStudentAssignmentDetails(input: {
   if (rows.length === 0) return { assignments: [] as StudentWritingAssignmentSummary[] };
 
   const assignmentIds = rows.map(({ assignment }) => assignment.assignment_id);
-  const attemptResult = await input.supabase
-    .from("writing_attempts")
-    .select("assignment_id,attempt_id,status,writing_mode,submitted_at,created_at,updated_at")
-    .eq("user_id", input.userId)
-    .in("assignment_id", assignmentIds)
-    .order("updated_at", { ascending: false })
-    .limit(5000);
+  const attemptResult = await measureDatabase(input.timing, "assignment_day_attempts_and_reviews", () =>
+    createServiceSupabase()
+      .from("writing_attempts")
+      .select(`
+        assignment_id,
+        attempt_id,
+        status,
+        writing_mode,
+        submitted_at,
+        created_at,
+        updated_at,
+        writing_reviews(status,published_at)
+      `)
+      .eq("user_id", input.userId)
+      .in("assignment_id", assignmentIds)
+      .order("updated_at", { ascending: false })
+      .limit(5000)
+  );
   if (attemptResult.error) return { assignments: null, error: attemptResult.error };
 
   const attempts = (attemptResult.data ?? []) as AttemptRow[];
@@ -86,25 +103,16 @@ export async function loadStudentAssignmentDetails(input: {
     attemptsByAssignment.set(attempt.assignment_id, existing);
   }
 
-  const submittedAttemptIds = attempts
-    .filter((attempt) => attempt.status === "submitted")
-    .map((attempt) => attempt.attempt_id);
-  const publishedAttemptIds = new Set<string>();
-  if (submittedAttemptIds.length > 0) {
-    const publishedResult = await createServiceSupabase()
-      .from("writing_reviews")
-      .select("attempt_id")
-      .eq("status", "published")
-      .not("published_at", "is", null)
-      .in("attempt_id", submittedAttemptIds)
-      .limit(5000);
-    if (publishedResult.error) {
-      return { assignments: null, error: publishedResult.error };
-    }
-    for (const review of publishedResult.data ?? []) {
-      publishedAttemptIds.add(review.attempt_id);
-    }
-  }
+  const publishedAttemptIds = new Set(
+    attempts
+      .filter((attempt) =>
+        attempt.status === "submitted"
+        && embeddedReviews(attempt.writing_reviews).some(
+          (review) => review.status === "published" && Boolean(review.published_at)
+        )
+      )
+      .map((attempt) => attempt.attempt_id)
+  );
 
   const assignments = rows.map(({ assignment, membership }) => {
     const assignmentAttempts = attemptsByAssignment.get(assignment.assignment_id) ?? [];
@@ -158,4 +166,17 @@ function compareSubmittedAttempts(left: AttemptRow, right: AttemptRow) {
 
 function normalizeWritingMode(value: WritingMode | null | undefined) {
   return value === "exam" || value === "practice" ? value : null;
+}
+
+function embeddedReviews<T>(value: T | T[] | null) {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function measureDatabase<T>(
+  timing: StudentPerformanceTrace | undefined,
+  name: string,
+  operation: () => PromiseLike<T>
+): Promise<T> {
+  return timing ? timing.measure("database", name, operation) : Promise.resolve(operation());
 }

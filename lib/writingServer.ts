@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import {
+  bearerToken,
+  isUserRole,
+  requireUserWithRole,
+  roleCanAccess
+} from "@/lib/auth";
 import { createAnonSupabase } from "@/lib/supabase/server";
 import {
   WRITING_TASK_CONFIG,
@@ -47,6 +52,68 @@ export async function requireWritingStudent(
     supabase: createAnonSupabase(token),
     userId: auth.userId
   };
+}
+
+export async function loadWritingStudentData<T>(
+  request: Request,
+  load: (context: {
+    supabase: ReturnType<typeof createAnonSupabase>;
+    userId: string;
+  }) => PromiseLike<T>,
+  timing?: StudentPerformanceTrace
+) {
+  const token = bearerToken(request);
+  if (!token) {
+    return {
+      data: null,
+      error: writingJson({ error: "Missing access token" }, { status: 401 }, timing),
+      supabase: null,
+      userId: null
+    };
+  }
+
+  const supabase = createAnonSupabase(token);
+  const { data: claimsData, error: claimsError } = await measureLayer(
+    timing,
+    "auth",
+    "supabase_auth_get_claims",
+    () => supabase.auth.getClaims(token)
+  );
+  const userId = typeof claimsData?.claims.sub === "string"
+    ? claimsData.claims.sub
+    : null;
+  if (claimsError || !userId) {
+    return {
+      data: null,
+      error: writingJson({ error: "Invalid session" }, { status: 401 }, timing),
+      supabase: null,
+      userId: null
+    };
+  }
+
+  const [profileResult, data] = await Promise.all([
+    measureLayer(timing, "database", "profiles_role", () =>
+      supabase.from("profiles").select("role,is_active").eq("id", userId).single()
+    ),
+    Promise.resolve(load({ supabase, userId }))
+  ]);
+  const profile = profileResult.data;
+  if (
+    profileResult.error
+    || !profile
+    || profile.is_active === false
+    || !isUserRole(profile.role)
+    || !roleCanAccess(profile.role, "student")
+  ) {
+    return {
+      data: null,
+      error: writingJson({ error: "Unauthorized" }, { status: 401 }, timing),
+      supabase: null,
+      userId: null
+    };
+  }
+
+  return { data, error: null, supabase, userId };
 }
 
 export function parseWritingTaskType(value: unknown) {
@@ -110,6 +177,15 @@ function measureDatabase<T>(
   operation: () => PromiseLike<T>
 ): Promise<T> {
   return timing ? timing.measure("database", name, operation) : Promise.resolve(operation());
+}
+
+function measureLayer<T>(
+  timing: StudentPerformanceTrace | undefined,
+  layer: "auth" | "database",
+  name: string,
+  operation: () => PromiseLike<T>
+): Promise<T> {
+  return timing ? timing.measure(layer, name, operation) : Promise.resolve(operation());
 }
 
 export async function readOwnedWritingAttempt(

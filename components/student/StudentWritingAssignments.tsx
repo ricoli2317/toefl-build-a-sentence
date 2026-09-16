@@ -300,27 +300,41 @@ function AssignmentCalendarCell({
   cell: CalendarCell;
 }) {
   const today = cell.dateKey === assignmentDateKey(new Date());
-  const content = (
+  const visibleAssignments = assignments.slice(0, DESKTOP_CALENDAR_VISIBLE_ASSIGNMENTS);
+  const hiddenAssignmentCount = assignments.length - visibleAssignments.length;
+  const content = cell.inCurrentMonth ? (
     <>
       <span className={clsx(
         "inline-flex h-7 min-w-7 items-center justify-center rounded-full text-sm font-bold",
-        today && cell.inCurrentMonth
+        today
           ? "bg-student-primary text-white"
-          : cell.inCurrentMonth ? "text-student-text" : "text-student-muted/55"
+          : "text-student-text"
       )}>
         {cell.day}
       </span>
       {assignments.length > 0 ? (
-        <div className="mt-2 grid gap-1.5">
-          {assignments.map((assignment) => (
-            <CalendarAssignmentTitle assignment={assignment} key={assignment.assignment_id} />
+        <div className="mt-2 grid min-h-0 gap-1.5 overflow-hidden">
+          {visibleAssignments.map((assignment) => (
+            <CalendarAssignmentTitle
+              assignment={assignment}
+              compact
+              key={assignment.assignment_id}
+            />
           ))}
+          {hiddenAssignmentCount > 0 ? (
+            <span
+              aria-label={`另有${hiddenAssignmentCount}项作业`}
+              className="block h-3 px-2 text-xs font-bold leading-3 text-student-primary"
+            >
+              …
+            </span>
+          ) : null}
         </div>
       ) : null}
     </>
-  );
+  ) : null;
   const className = clsx(
-    "min-h-[116px] border-b border-r border-student-border p-2.5 text-left transition xl:min-h-[132px] xl:p-3",
+    "h-[116px] overflow-hidden border-b border-r border-student-border p-2.5 text-left transition xl:h-[132px] xl:p-3",
     cell.inCurrentMonth ? "bg-white" : "bg-student-bg/20",
     assignments.length > 0 && "cursor-pointer hover:bg-student-primary-soft/25 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary"
   );
@@ -383,14 +397,24 @@ function MobileAssignmentCalendar({
 }
 
 function CalendarAssignmentTitle({
-  assignment
+  assignment,
+  compact = false
 }: {
   assignment: StudentWritingAssignmentCalendarItem;
+  compact?: boolean;
 }) {
   return (
-    <span className="flex min-w-0 items-start gap-1.5 rounded-md bg-student-primary-soft px-2 py-1.5 text-[11px] font-semibold leading-4 text-student-text xl:text-xs">
+    <span className={clsx(
+      "flex min-w-0 items-start gap-1.5 rounded-md bg-student-primary-soft px-2 text-[11px] font-semibold leading-4 text-student-text xl:text-xs",
+      compact ? "h-7 py-1.5" : "py-1.5"
+    )}>
       <span aria-hidden="true" className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-student-primary" />
-      <span className="min-w-0 overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
+      <span className={clsx(
+        "min-w-0 overflow-hidden",
+        compact
+          ? "block truncate whitespace-nowrap"
+          : "[display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]"
+      )}>
         {WRITING_TASK_CONFIG[assignment.task_type].label}: {assignment.title}
       </span>
     </span>
@@ -585,6 +609,7 @@ type CalendarCell = {
 };
 
 const WEEKDAY_LABELS = ["一", "二", "三", "四", "五", "六", "日"];
+const DESKTOP_CALENDAR_VISIBLE_ASSIGNMENTS = 2;
 
 async function loadStudentWritingAssignmentCalendar(
   month: string,
@@ -650,7 +675,9 @@ function calendarCells(month: string): CalendarCell[] {
   const [year, monthNumber] = month.split("-").map(Number);
   const first = new Date(Date.UTC(year, monthNumber - 1, 1));
   const mondayOffset = (first.getUTCDay() + 6) % 7;
-  return Array.from({ length: 42 }, (_, index) => {
+  const currentMonthDays = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
+  const visibleCellCount = Math.ceil((mondayOffset + currentMonthDays) / 7) * 7;
+  return Array.from({ length: visibleCellCount }, (_, index) => {
     const date = new Date(Date.UTC(year, monthNumber - 1, 1 - mondayOffset + index));
     return {
       dateKey: utcDateKey(date),

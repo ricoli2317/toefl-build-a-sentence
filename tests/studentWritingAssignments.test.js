@@ -134,6 +134,25 @@ test("student assignment calendar reads only a database-bounded minimal month in
   assert.doesNotMatch(ui, /prefetch/);
 });
 
+test("desktop assignment calendar keeps fixed cells and summarizes overflow", () => {
+  const ui = source("components/student/StudentWritingAssignments.tsx");
+  assert.match(ui, /DESKTOP_CALENDAR_VISIBLE_ASSIGNMENTS = 2/);
+  assert.match(ui, /assignments\.slice\(0, DESKTOP_CALENDAR_VISIBLE_ASSIGNMENTS\)/);
+  assert.match(ui, /hiddenAssignmentCount > 0/);
+  assert.match(ui, /另有\$\{hiddenAssignmentCount\}项作业/);
+  assert.match(ui, /h-\[116px\][^"\n]*overflow-hidden/);
+  assert.match(ui, /xl:h-\[132px\]/);
+  assert.doesNotMatch(ui, /min-h-\[116px\]/);
+});
+
+test("desktop calendar keeps adjacent-month grid cells visually empty", () => {
+  const ui = source("components/student/StudentWritingAssignments.tsx");
+  assert.match(ui, /const content = cell\.inCurrentMonth \? \(/);
+  assert.match(ui, /\) : null;/);
+  assert.match(ui, /Math\.ceil\(\(mondayOffset \+ currentMonthDays\) \/ 7\) \* 7/);
+  assert.doesNotMatch(ui, /Array\.from\(\{ length: 42 \}/);
+});
+
 test("assignment calendar ranges use Shanghai boundaries and real calendar dates", () => {
   assert.deepEqual(assignmentMonthRange("2026-12"), {
     startInclusive: "2026-12-01T00:00:00+08:00",
@@ -243,7 +262,8 @@ test("student day details are database-bounded before attempt and review hydrati
   assert.match(route, /\.is\("writing_assignments\.deleted_at", null\)/);
   assert.match(details, /\.in\("assignment_id", assignmentIds\)/);
   assert.match(details, /from\("writing_attempts"\)/);
-  assert.match(details, /from\("writing_reviews"\)/);
+  assert.match(details, /writing_reviews\(status,published_at\)/);
+  assert.match(details, /assignment_day_attempts_and_reviews/);
   assert.doesNotMatch(route, /readAllSupabaseRows/);
   assert.doesNotMatch(details, /response_text|question_snapshot,/);
   assert.match(source("supabase/student_assignment_calendar_index.sql"), /student_id, assigned_at, assignment_id/);

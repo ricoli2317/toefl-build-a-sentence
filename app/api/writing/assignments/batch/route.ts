@@ -32,7 +32,6 @@ export async function GET(request: Request) {
     }
     const details = await loadStudentAssignmentDetails({
       memberships: (membershipResult.data ?? []) as unknown as StudentAssignmentMembershipDetailRow[],
-      supabase: auth.supabase,
       userId: auth.userId
     });
     if (!details.assignments) {
