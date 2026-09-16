@@ -25,6 +25,7 @@ import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_HISTORY_CACHE_PREFIX,
   studentReadingCatalogCacheKey,
+  studentReadingFullSetReviewCacheKey,
   useStudentCachedData,
   useStudentDataCache
 } from "@/components/StudentDataCache";
@@ -100,6 +101,7 @@ import {
   findReadingFullSetReviewIndex,
   type ReadingFullSetReviewPayload
 } from "@/lib/reading/fullSetReview";
+import { readingFullSetSessionImagePreloadCache } from "@/lib/reading/fullSetOccurrenceCache.client";
 import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
 import {
   readingWrongbookEditableSlotIds,
@@ -181,7 +183,7 @@ const readingPassageTextStyle = {
   lineHeight: 28 / 19
 } as CSSProperties;
 
-const readingAnswerCardClassName = "rounded-xl bg-student-bg px-[24px] py-[16px] shadow-[0_4px_16px_rgba(60,47,119,0.08)]";
+const readingAnswerCardClassName = "rounded-xl bg-student-bg px-[24px] py-[16px] shadow-[0_4px_16px_rgba(52,127,220,0.08)]";
 
 const readingSpecialNoticeStyle = {
   fontSize: "14em",
@@ -380,7 +382,7 @@ export function ReadingFullSetSubmittedReview({
 }) {
   const router = useRouter();
   const state = useStudentCachedData<ReadingFullSetReviewPayload>(
-    `reading:full-sets:review:${attemptId}`,
+    studentReadingFullSetReviewCacheKey(attemptId),
     (session) => loadReadingFullSetReview(fullSetId, attemptId, session)
   );
   const resultHref = `/student/reading/full-sets/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`;
@@ -434,8 +436,7 @@ function ReadingFullSetReviewShell({
     for (const occurrence of payload.occurrences) {
       const imageUrl = occurrence.practice.material?.imageUrl;
       if (imageUrl) {
-        const image = new Image();
-        image.src = imageUrl;
+        void readingFullSetSessionImagePreloadCache.acquire(imageUrl).promise.catch(() => undefined);
       }
     }
   }, [payload.occurrences]);
@@ -491,7 +492,7 @@ function ReadingFullSetReviewShell({
   const progressLabel = `Module ${currentItem.moduleNumber} · Question ${currentItem.orderStart} / ${currentItem.moduleNumber === 1 ? 35 : 15}`;
 
   return (
-    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
+    <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={onBack}
@@ -741,7 +742,7 @@ export function ReadingPracticeShell({
   }
 
   return (
-    <div className={`${readOnly ? "min-h-[100dvh]" : "h-[100dvh] overflow-hidden"} bg-[#fbfbfe] text-student-text`} style={readingShellStyle}>
+    <div className={`reading-theme ${readOnly ? "min-h-[100dvh]" : "h-[100dvh] overflow-hidden"} bg-[#fbfbfe] text-student-text`} style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={elapsedSeconds}
         onBack={onBack}
@@ -806,7 +807,7 @@ export function ReadingPracticePendingShell({
     return <ReadingPracticeMessage description="原题内容不完整，请稍后重试。" title="无法显示原题" />;
   }
   return (
-    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text" data-testid="reading-wrongbook-preview" style={readingShellStyle}>
+    <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" data-testid="reading-wrongbook-preview" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={onBack}
@@ -871,7 +872,7 @@ export function ReadingPracticeHeader({
     <header className="grid h-[var(--reading-header-height)] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
       <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
         <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
-        <span>Back</span>
+        <span className="hidden sm:inline">Back</span>
       </button>
       <div className="min-w-0 justify-self-center text-center">
         {productName ? <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-student-muted">{productName}</p> : null}
@@ -1966,7 +1967,7 @@ function RdlPracticeWorkspace({
               {selectedCharacters.map((character) => (
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute rounded-[2px] bg-violet-400/30 shadow-[inset_0_-1px_0_rgba(109,40,217,0.45)]"
+                  className="pointer-events-none absolute rounded-[2px] bg-blue-400/30 shadow-[inset_0_-1px_0_rgba(37,99,235,0.45)]"
                   data-rdl-highlight="true"
                   key={character.id}
                   style={{
@@ -2493,12 +2494,12 @@ export function ReadingQuestionViewport({
 }) {
   return (
     <div
-      className="grid h-[calc(100dvh-var(--reading-header-height))] min-h-0 grid-cols-[minmax(100px,1fr)_minmax(0,1440em)_minmax(100px,1fr)] grid-rows-[minmax(0,1fr)_auto] py-[12px]"
+      className="grid h-[calc(100dvh-var(--reading-header-height))] min-h-0 grid-cols-2 grid-rows-[minmax(0,1fr)_auto_auto] gap-x-3 px-3 py-[12px] sm:grid-cols-[minmax(72px,1fr)_minmax(0,1440em)_minmax(72px,1fr)] sm:grid-rows-[minmax(0,1fr)_auto] sm:gap-x-0 sm:px-0 lg:grid-cols-[minmax(100px,1fr)_minmax(0,1440em)_minmax(100px,1fr)]"
       data-testid="reading-question-viewport"
     >
       <section className={module === "ctw"
-        ? "col-start-2 row-start-1 h-full overflow-visible rounded-2xl border border-student-border bg-white p-[28em] shadow-sm"
-        : "col-start-2 row-start-1 flex h-full min-h-0 flex-col overflow-hidden bg-white"}
+        ? "col-span-2 col-start-1 row-start-1 h-full overflow-visible rounded-2xl border border-student-border bg-white p-[28em] shadow-sm sm:col-span-1 sm:col-start-2"
+        : "col-span-2 col-start-1 row-start-1 flex h-full min-h-0 flex-col overflow-hidden bg-white sm:col-span-1 sm:col-start-2"}
       >
         {children}
       </section>
@@ -2548,10 +2549,10 @@ function ReadingQuestionNavigation({
       aria-label="阅读题目导航"
       className="contents"
     >
-      <div className="col-start-1 row-start-1 flex items-center justify-center" data-reading-navigation-rail="previous">
+      <div className="col-start-1 row-start-2 flex items-center justify-center sm:row-start-1" data-reading-navigation-rail="previous">
         <ReadingNavigationButton direction="previous" disabled={previousDisabled} label="Previous" onClick={onPrevious} />
       </div>
-      <div className="col-start-3 row-start-1 flex items-center justify-center" data-reading-navigation-rail="next">
+      <div className="col-start-2 row-start-2 flex items-center justify-center sm:col-start-3 sm:row-start-1" data-reading-navigation-rail="next">
         {canGoNext || readOnly ? (
           <ReadingNavigationButton direction="next" disabled={nextDisabled} label="Next" onClick={onNext} />
         ) : (
@@ -2563,7 +2564,7 @@ function ReadingQuestionNavigation({
           />
         )}
       </div>
-      {submitError ? <p className="col-start-2 row-start-2 pt-[4em] text-center text-[13em] font-semibold text-student-error">{submitError}</p> : null}
+      {submitError ? <p className="col-span-2 col-start-1 row-start-3 pt-[4em] text-center text-[13em] font-semibold text-student-error sm:col-span-1 sm:col-start-2 sm:row-start-2">{submitError}</p> : null}
     </nav>
   );
 }
@@ -2589,15 +2590,15 @@ function ReadingNavigationButton({
   return (
     <button
       aria-label={label}
-      className={`group flex h-[92px] w-[72px] flex-col items-center justify-center gap-1.5 bg-transparent focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary ${buttonTone}`}
+      className={`group flex h-[68px] w-[64px] flex-col items-center justify-center gap-1 bg-transparent focus-visible:rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary sm:h-[92px] sm:w-[72px] sm:gap-1.5 ${buttonTone}`}
       disabled={disabled}
       onClick={onClick}
       type="button"
     >
-      <span className={`flex h-[60px] w-[60px] items-center justify-center rounded-full transition-colors ${controlTone}`}>
-        <Icon aria-hidden="true" size={32} strokeWidth={2.4} />
+      <span className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors sm:h-[60px] sm:w-[60px] ${controlTone}`}>
+        <Icon aria-hidden="true" className="h-6 w-6 sm:h-8 sm:w-8" size={32} strokeWidth={2.4} />
       </span>
-      <span className="whitespace-nowrap text-[16px] font-semibold leading-none">{label}</span>
+      <span className="whitespace-nowrap text-xs font-semibold leading-none sm:text-[16px]">{label}</span>
     </button>
   );
 }
@@ -2612,7 +2613,7 @@ export function ReadingPracticeMessage({
   title: string;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
+    <main className="reading-theme flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
       <section className="w-full max-w-md rounded-2xl border border-student-border bg-white p-8 text-center shadow-sm">
         <h1 className="text-xl font-bold text-student-text">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-student-muted">{description}</p>

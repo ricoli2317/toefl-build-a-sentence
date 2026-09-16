@@ -17,7 +17,7 @@ export function WritingPracticeActions({
 }) {
   return (
     <div
-      className={`flex shrink-0 items-center justify-end gap-3 ${
+      className={`flex shrink-0 flex-wrap items-center justify-end gap-3 ${
         compact ? "px-0 py-1" : "px-4 py-4 sm:px-5"
       }`}
     >

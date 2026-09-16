@@ -425,7 +425,7 @@ export function PracticeSession({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="student-practice-workspace space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-student-border bg-white px-4 py-3">
         <div>
           <p className="text-sm font-semibold text-student-primary">

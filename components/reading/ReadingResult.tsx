@@ -67,15 +67,17 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
     : RESULT_COMPARISON_LOADING_TEXT;
 
   return (
-    <div className="grid gap-6">
-      <StudentNavigation
-        backHref={STUDENT_ROUTES.practiceHistory}
-        crumbs={[
-          { label: "学生首页", href: STUDENT_ROUTES.home },
-          { label: "练习历史", href: STUDENT_ROUTES.practiceHistory },
-          { label: "查看结果" }
-        ]}
-      />
+    <div className="student-result-overview-layout">
+      <div className="student-result-overview-navigation">
+        <StudentNavigation
+          backHref={STUDENT_ROUTES.practiceHistory}
+          crumbs={[
+            { label: "学生首页", href: STUDENT_ROUTES.home },
+            { label: "练习历史", href: STUDENT_ROUTES.practiceHistory },
+            { label: "查看结果" }
+          ]}
+        />
+      </div>
       <PracticeResultSummary
         correctPoints={attempt.correctPoints}
         elapsedSeconds={attempt.elapsedSeconds}

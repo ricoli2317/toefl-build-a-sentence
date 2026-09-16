@@ -20,6 +20,14 @@
   --student-error-border: #ffd6c9;
 }
 
+/* Reading keeps the shared student component hierarchy while using its own hue. */
+.reading-theme {
+  --student-primary: #347fdc;
+  --student-primary-hover: #2d70c5;
+  --student-primary-soft: #eff6ff;
+  --student-primary-border: #bfdbfe;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -284,11 +292,35 @@ select {
   }
 
   .student-page {
-    @apply mx-auto grid w-full max-w-[1240px] gap-5 px-5 py-6 sm:px-7 lg:px-8 lg:py-7;
+    @apply mx-auto grid w-full gap-5;
+    max-width: 1800px;
+    padding-block: clamp(1.5rem, 2vw, 2.25rem);
+    padding-inline: clamp(1.25rem, 2.5vw, 3rem);
   }
 
   .student-dashboard-page {
-    @apply gap-2.5 py-2.5;
+    @apply gap-2.5;
+    padding-block: clamp(0.625rem, 1.2vh, 1rem);
+  }
+
+  .student-practice-workspace {
+    @apply mx-auto w-full;
+    max-width: 1440px;
+  }
+
+  .student-result-overview-layout {
+    @apply grid gap-6;
+  }
+
+  @media (min-width: 1800px) {
+    .student-result-overview-layout {
+      grid-template-columns: minmax(0, 1.7fr) minmax(28rem, 0.8fr);
+      align-items: start;
+    }
+
+    .student-result-overview-navigation {
+      grid-column: 1 / -1;
+    }
   }
 
   .student-page-title {
@@ -353,6 +385,10 @@ select {
   .login-page :where(a, button, input, select):focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(107, 92, 246, 0.16);
+  }
+
+  .student-shell .reading-theme :where(a, button, input, select):focus-visible {
+    box-shadow: 0 0 0 3px rgba(52, 127, 220, 0.16);
   }
 
   .login-page {

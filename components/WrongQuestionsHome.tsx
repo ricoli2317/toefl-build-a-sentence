@@ -1,19 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type ComponentType, type SVGProps } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
-  BookOpen,
   CalendarPlus,
   CircleCheckBig,
   ClipboardList,
-  FileText,
-  Library,
-  Puzzle,
   Target
 } from "lucide-react";
-import { CompleteTheWordsIcon } from "@/components/icons/CompleteTheWordsIcon";
+import {
+  STUDENT_PRACTICE_ICONS,
+  type StudentPracticeIcon
+} from "@/components/icons/StudentPracticeIcons";
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
@@ -35,14 +34,12 @@ import {
   type WrongQuestionTaskType
 } from "@/lib/wrongQuestions";
 
-type WrongQuestionIcon = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string }>;
-
-const WRONG_QUESTION_ICONS: Record<WrongQuestionTaskType, WrongQuestionIcon> = {
-  build_sentence: Puzzle,
-  ctw: CompleteTheWordsIcon,
-  rdl: FileText,
-  rap: BookOpen,
-  full_set: Library
+const WRONG_QUESTION_ICONS: Record<WrongQuestionTaskType, StudentPracticeIcon> = {
+  build_sentence: STUDENT_PRACTICE_ICONS.build_sentence,
+  ctw: STUDENT_PRACTICE_ICONS.ctw,
+  rdl: STUDENT_PRACTICE_ICONS.rdl,
+  rap: STUDENT_PRACTICE_ICONS.rap,
+  full_set: STUDENT_PRACTICE_ICONS.full_set
 };
 
 export function WrongQuestionsHome() {

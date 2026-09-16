@@ -381,7 +381,7 @@ export function ReadingFullSetWrongbookPractice({
   }
   if (!attempt || !current || !currentQuestion) return <Message description="正在加载错题和原题练习界面..." />;
   return (
-    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
+    <div className="reading-theme h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={elapsedSeconds}
         onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
@@ -520,7 +520,7 @@ async function loadReadingPractice(
 }
 
 function Message({ description, onBack }: { description: string; onBack?: () => void }) {
-  return <main className="flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5"><section className="student-card max-w-lg p-8 text-center"><h1 className="text-2xl font-bold">错题订正</h1><p className="mt-3 text-sm text-student-muted">{description}</p>{onBack ? <button className="student-button-primary mt-6" onClick={onBack} type="button">返回错题集</button> : null}</section></main>;
+  return <main className="reading-theme flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5"><section className="student-card max-w-lg p-8 text-center"><h1 className="text-2xl font-bold">错题订正</h1><p className="mt-3 text-sm text-student-muted">{description}</p>{onBack ? <button className="student-button-primary mt-6" onClick={onBack} type="button">返回错题集</button> : null}</section></main>;
 }
 
 function localDayRange() {

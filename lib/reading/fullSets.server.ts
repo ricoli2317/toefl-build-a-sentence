@@ -1,9 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "../supabasePagination.ts";
 import {
+  buildReadingFullSetCatalog,
   buildReadingFullSets,
   findValidReadingFullSet,
   type ReadingFullSet,
+  type ReadingFullSetCatalogAttemptRow,
+  type ReadingFullSetCatalogItem,
   type ReadingFullSetOccurrenceInput
 } from "./fullSets.ts";
 import type { ReadingModule, ReadingTestModule } from "./types.ts";
@@ -21,6 +24,89 @@ type ReadingFullSetOccurrenceRow = {
     | { module: string; scored_item_count: number }
     | Array<{ module: string; scored_item_count: number }>;
 };
+
+type ReadingFullSetCatalogAnchorRow = Pick<
+  ReadingFullSetOccurrenceRow,
+  "occurrence_id" | "occurrence_date" | "source_label"
+>;
+
+export const READING_FULL_SET_CATALOG_PAGE_SIZE = 10;
+
+export type ReadingFullSetCatalogPage = {
+  fullSets: ReadingFullSetCatalogItem[];
+  limit: typeof READING_FULL_SET_CATALOG_PAGE_SIZE;
+  page: number;
+  total: number;
+};
+
+/**
+ * Loads only the requested catalog page. A valid Full Set has exactly one M1
+ * occurrence beginning at question 1, so that row is the stable page anchor.
+ * Full validation still runs against the occurrences fetched for those anchors.
+ */
+export async function loadReadingFullSetCatalogPage(
+  db: SupabaseClient,
+  input: { page: number; studentId: string }
+): Promise<ReadingFullSetCatalogPage> {
+  const from = (input.page - 1) * READING_FULL_SET_CATALOG_PAGE_SIZE;
+  const anchorResult = await db.from("reading_source_occurrences")
+    .select("occurrence_id,occurrence_date,source_label", { count: "exact" })
+    .eq("source_module", "m1")
+    .eq("source_question_start", 1)
+    .order("occurrence_date", { ascending: false })
+    .order("source_label", { ascending: true })
+    .order("occurrence_id", { ascending: true })
+    .range(from, from + READING_FULL_SET_CATALOG_PAGE_SIZE - 1);
+  if (anchorResult.error) {
+    throw new Error(`read Reading Full Set catalog anchors: ${anchorResult.error.message}`);
+  }
+
+  const anchors = (anchorResult.data ?? []) as ReadingFullSetCatalogAnchorRow[];
+  if (anchors.length === 0) {
+    return {
+      fullSets: [],
+      limit: READING_FULL_SET_CATALOG_PAGE_SIZE,
+      page: input.page,
+      total: anchorResult.count ?? 0
+    };
+  }
+
+  const occurrenceResult = await loadReadingFullSetCatalogOccurrenceRows(db, anchors);
+  if (occurrenceResult.error) {
+    throw new Error(`read Reading Full Set catalog page: ${occurrenceResult.error.message}`);
+  }
+  const pageDefinitions = buildReadingFullSets(
+    (occurrenceResult.data ?? []).map(readingFullSetOccurrenceInput)
+  );
+  const orderedDefinitions = anchors.flatMap((anchor) => {
+    const match = pageDefinitions.find((fullSet) =>
+      fullSet.occurrenceDate === anchor.occurrence_date
+      && fullSet.sourceLabel === anchor.source_label
+    );
+    return match ? [match] : [];
+  });
+  const fullSetIds = orderedDefinitions.flatMap((fullSet) =>
+    fullSet.validation.valid && fullSet.fullSetId ? [fullSet.fullSetId] : []
+  );
+  let attempts: ReadingFullSetCatalogAttemptRow[] = [];
+  if (fullSetIds.length > 0) {
+    const attemptsResult = await db.from("reading_full_set_attempts")
+      .select("attempt_id,full_set_id,status,completed_at,created_at")
+      .eq("student_id", input.studentId)
+      .in("full_set_id", fullSetIds);
+    if (attemptsResult.error) {
+      throw new Error(`read Reading Full Set catalog attempts: ${attemptsResult.error.message}`);
+    }
+    attempts = (attemptsResult.data ?? []) as ReadingFullSetCatalogAttemptRow[];
+  }
+
+  return {
+    fullSets: buildReadingFullSetCatalog(orderedDefinitions, attempts),
+    limit: READING_FULL_SET_CATALOG_PAGE_SIZE,
+    page: input.page,
+    total: anchorResult.count ?? 0
+  };
+}
 
 export async function loadReadingFullSets(db: SupabaseClient) {
   const result = await loadReadingFullSetOccurrenceRows(db);
@@ -58,6 +144,33 @@ function loadReadingFullSetOccurrenceRows(db: SupabaseClient, occurrenceDate?: s
       error: page.error
     };
   });
+}
+
+function loadReadingFullSetCatalogOccurrenceRows(
+  db: SupabaseClient,
+  anchors: ReadingFullSetCatalogAnchorRow[]
+) {
+  const identityFilter = anchors.map((anchor) =>
+    `and(occurrence_date.eq.${catalogFilterValue(anchor.occurrence_date)},source_label.eq.${catalogFilterValue(anchor.source_label)})`
+  ).join(",");
+  return db.from("reading_source_occurrences")
+    .select(FULL_SET_OCCURRENCE_SELECT)
+    .or(identityFilter)
+    .order("occurrence_date", { ascending: false })
+    .order("source_label", { ascending: true })
+    .order("source_module", { ascending: true })
+    .order("source_order", { ascending: true })
+    .order("occurrence_id", { ascending: true }) as unknown as PromiseLike<{
+      data: ReadingFullSetOccurrenceRow[] | null;
+      error: { message: string } | null;
+    }>;
+}
+
+function catalogFilterValue(value: string) {
+  if (!/^[A-Za-z0-9.-]+$/.test(value)) {
+    throw new Error("Reading Full Set catalog identity contains an unsafe filter value");
+  }
+  return value;
 }
 
 const FULL_SET_OCCURRENCE_SELECT = [

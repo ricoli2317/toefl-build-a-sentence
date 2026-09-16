@@ -240,7 +240,7 @@ function WrongbookMessage({
   title: string;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
+    <main className="reading-theme flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
       <section className="student-card w-full max-w-lg p-8 text-center">
         <h1 className="text-2xl font-bold text-student-text">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-student-muted">{description}</p>

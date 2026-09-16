@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, Eye, FilePenLine, Play, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PracticeSetAction, PracticeSetCatalogList } from "@/components/shared/PracticeCatalog";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   studentLogicalCatalogCacheKey,
   useStudentCachedData,
@@ -140,6 +141,7 @@ function CatalogContent({
           return <LogicalItemStatus status={item.student_state.status} />;
         }}
         sets={items.map((item) => ({
+          icon: STUDENT_PRACTICE_ICONS[item.task_type],
           metadata: formatOccurrenceDates(item.occurrence_dates),
           questionCount: item.question_count,
           setId: item.item_id,

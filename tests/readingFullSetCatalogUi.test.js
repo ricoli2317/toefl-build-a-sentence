@@ -26,14 +26,23 @@ test("student Reading navigation exposes the Full Set catalog without replacing 
   assert.match(shell, /path\.startsWith\(STUDENT_ROUTES\.readingFullSets\)/);
 });
 
-test("Full Set catalog consumes the existing catalog API in its original order", () => {
-  assert.match(catalog, /fetch\("\/api\/reading\/full-sets"/);
+test("Full Set catalog consumes the paginated catalog API in its original order", () => {
+  assert.match(catalog, /fetch\(`\/api\/reading\/full-sets\?page=\$\{page\}&limit=\$\{PAGE_SIZE\}`/);
   assert.match(catalog, /state\.data\.fullSets\.map\(\(fullSet\)/);
   assert.doesNotMatch(catalog, /\.sort\(|20260602|blacklist/i);
   assert.match(catalog, /setTitle: fullSet\.title/);
   assert.doesNotMatch(catalog, /sourceLabel|occurrenceDate/);
   assert.match(catalogPage, /title="Full Set Practice"/);
   assert.doesNotMatch(catalogPage, /subtitle=/);
+});
+
+test("Full Set catalog keeps each page in a distinct StudentDataCache entry", () => {
+  assert.match(catalog, /const PAGE_SIZE = 10/);
+  assert.match(catalog, /reading:full-sets:catalog:page:\$\{page\}:limit:\$\{PAGE_SIZE\}/);
+  assert.match(catalog, /Math\.ceil\(\(state\.data\?\.total \?\? 0\) \/ PAGE_SIZE\)/);
+  assert.match(catalog, /ReadingCatalogPagination/);
+  assert.doesNotMatch(catalog, /\.slice\(/);
+  assert.doesNotMatch(catalog, /refreshOnMount/);
 });
 
 test("Full Set catalog reuses Reading list cards without Module previews", () => {

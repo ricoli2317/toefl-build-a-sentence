@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CalendarDays, type LucideIcon } from "lucide-react";
+import type { StudentPracticeIcon } from "@/components/icons/StudentPracticeIcons";
 
 export type PracticeCatalogSet = {
   setId: string;
@@ -8,6 +9,7 @@ export type PracticeCatalogSet = {
   titleSuffix?: string | null;
   questionCount: number;
   metadata?: React.ReactNode;
+  icon?: StudentPracticeIcon;
 };
 
 export function PracticeMonthCard({
@@ -58,7 +60,7 @@ export function PracticeSetCatalogList({
         >
           <div className="col-span-2 row-start-1 flex min-w-0 items-center gap-3.5 md:col-span-1">
             <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-student-primary-soft text-student-primary">
-              <CalendarDays aria-hidden="true" size={20} strokeWidth={1.9} />
+              <PracticeCatalogIcon icon={set.icon} />
             </span>
             <div className="min-w-0 flex-1">
               <h2 className="min-w-0 break-words text-base leading-5 text-student-text sm:text-[17px]">
@@ -92,6 +94,10 @@ export function PracticeSetCatalogList({
       ))}
     </div>
   );
+}
+
+function PracticeCatalogIcon({ icon: Icon = CalendarDays }: { icon?: StudentPracticeIcon }) {
+  return <Icon aria-hidden="true" size={20} strokeWidth={1.9} />;
 }
 
 export function PracticeSetAction({

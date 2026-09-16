@@ -19,6 +19,7 @@ const retakeUi = fs.readFileSync(path.join(root, "components/reading/ReadingReta
 const studentShell = fs.readFileSync(path.join(root, "components/student/StudentShell.tsx"), "utf8");
 const studentDashboard = fs.readFileSync(path.join(root, "components/student/StudentDashboard.tsx"), "utf8");
 const ctwIcon = fs.readFileSync(path.join(root, "components/icons/CompleteTheWordsIcon.tsx"), "utf8");
+const practiceIcons = fs.readFileSync(path.join(root, "components/icons/StudentPracticeIcons.ts"), "utf8");
 const studentDataCache = fs.readFileSync(path.join(root, "components/StudentDataCache.tsx"), "utf8");
 const teacherRoute = fs.readFileSync(path.join(root, "app/api/teacher/reading/statistics/route.ts"), "utf8");
 const teacherUi = fs.readFileSync(path.join(root, "components/reading/TeacherReadingStatistics.tsx"), "utf8");
@@ -252,7 +253,8 @@ test("Complete the Words uses one shared rounded four-way icon on Dashboard and 
   assert.match(ctwIcon, /export const CompleteTheWordsIcon/);
   assert.equal((ctwIcon.match(/<rect/g) || []).length, 4);
   assert.match(studentDashboard, /icon: CompleteTheWordsIcon/);
-  assert.match(studentShell, /icon: CompleteTheWordsIcon/);
+  assert.match(practiceIcons, /ctw: CompleteTheWordsIcon/);
+  assert.match(studentShell, /icon: STUDENT_PRACTICE_ICONS\.ctw/);
   assert.doesNotMatch(studentDashboard + studentShell, /BookText/);
 });
 

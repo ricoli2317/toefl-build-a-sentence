@@ -98,10 +98,27 @@ type ImagePreloadEntry = {
 
 export class ReadingFullSetImagePreloadCache {
   private readonly entries = new Map<string, ImagePreloadEntry>();
+  private readonly maxEntries: number;
+
+  constructor(maxEntries = 24) {
+    this.maxEntries = maxEntries;
+  }
 
   acquire(url: string): { promise: Promise<void>; source: "hit" | "miss" } {
     const existing = this.entries.get(url);
-    if (existing) return { promise: existing.promise, source: "hit" };
+    if (existing) {
+      this.entries.delete(url);
+      this.entries.set(url, existing);
+      return { promise: existing.promise, source: "hit" };
+    }
+
+    while (this.entries.size >= this.maxEntries) {
+      const oldestUrl = this.entries.keys().next().value as string | undefined;
+      if (!oldestUrl) break;
+      const oldest = this.entries.get(oldestUrl);
+      if (oldest?.status === "loading") oldest.controller.abort("cache_evicted");
+      this.entries.delete(oldestUrl);
+    }
 
     const controller = new AbortController();
     const promise = preloadAndDecodeImage(url, controller.signal).then(() => {
@@ -121,6 +138,10 @@ export class ReadingFullSetImagePreloadCache {
     this.entries.clear();
   }
 }
+
+// One bounded cache survives Runner -> Result -> readonly component unmounts,
+// so an RDL image already decoded in this tab remains immediately reusable.
+export const readingFullSetSessionImagePreloadCache = new ReadingFullSetImagePreloadCache();
 
 export function readingFullSetOccurrenceCacheKey(input: {
   attemptId: string;

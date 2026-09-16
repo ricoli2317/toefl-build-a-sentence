@@ -164,7 +164,7 @@ function ReadingFullSetWrongbookReviewShell({
   );
   const disclosure = review.disclosures[item.answerId];
   return (
-    <div className="min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
+    <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={onBack}

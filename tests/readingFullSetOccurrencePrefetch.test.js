@@ -95,6 +95,23 @@ test("RDL image preload decodes once and deduplicates a canonical URL", async ()
   }
 });
 
+test("session RDL decode cache is bounded", async () => {
+  const OriginalImage = global.Image;
+  global.Image = class MockImage {
+    set src(value) { if (value) queueMicrotask(() => this.onload?.()); }
+    async decode() {}
+  };
+  try {
+    const cache = new ReadingFullSetImagePreloadCache(2);
+    await cache.acquire("one.png").promise;
+    await cache.acquire("two.png").promise;
+    await cache.acquire("three.png").promise;
+    assert.equal(cache.acquire("one.png").source, "miss");
+  } finally {
+    global.Image = OriginalImage;
+  }
+});
+
 test("cache keys are attempt, module, and occurrence scoped", () => {
   assert.equal(readingFullSetOccurrenceCacheKey({
     attemptId: "attempt-a",
@@ -164,9 +181,10 @@ test("stale CAS responses drop superseded writes, merge disjoint changes, and ex
   assert.doesNotMatch(persist, /请刷新后继续/);
 });
 
-test("module transitions, submit, retry, and unmount clear runner-local prefetch state", () => {
+test("module transitions, retry, and unmount clear runner-local prefetch state while submit keeps hot data until finalization", () => {
   assert.match(runner, /previousModuleKey !== nextModuleKey\) \{[\s\S]*clearOccurrenceCaches\(\)/);
-  assert.match(runner, /submittingRef\.current = true;[\s\S]*clearOccurrenceCaches\(\)/);
+  const submit = runner.slice(runner.indexOf("const submitModule = useCallback"), runner.indexOf("useEffect(() => {", runner.indexOf("const submitModule = useCallback")));
+  assert.doesNotMatch(submit.slice(0, submit.indexOf("await fetch")), /clearOccurrenceCaches\(\)/);
   assert.match(runner, /retryOccurrence[\s\S]*clearOccurrenceCaches\(\)/);
   assert.match(runner, /useEffect\(\(\) => \(\) => \{[\s\S]*occurrenceCacheRef\.current\.clear\(\)/);
 });

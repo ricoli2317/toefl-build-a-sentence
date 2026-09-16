@@ -27,6 +27,7 @@ import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 
 const PAGE_SIZE = 10;
 
@@ -69,6 +70,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
         renderActions={(set) => <ReadingCatalogActions item={items.find((item) => item.itemId === set.setId)!} />}
         renderStatus={(set) => <ReadingCatalogStatusBadge status={items.find((item) => item.itemId === set.setId)!.status} />}
         sets={items.map((item) => ({
+          icon: STUDENT_PRACTICE_ICONS[item.taskType],
           setId: item.itemId,
           setTitle: item.title,
           titlePrefix: `${item.taskType === "ctw" ? "套题" : "题目"}${item.displayNumber}`,
@@ -121,7 +123,7 @@ function ReadingCatalogMetadata({ item }: { item: ReadingCatalogItem }) {
   return <span>{formatOccurrenceDates(item.occurrenceDates)}</span>;
 }
 
-function ReadingCatalogPagination({
+export function ReadingCatalogPagination({
   onChange,
   page,
   totalItems,

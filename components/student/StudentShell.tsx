@@ -4,21 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  BookOpen,
   Clock3,
   ClipboardList,
   ClipboardX,
-  FileText,
   Home,
-  Mail,
   Menu,
-  MessageCircleMore,
-  Puzzle,
-  Rows3,
   X
 } from "lucide-react";
 import clsx from "clsx";
-import { CompleteTheWordsIcon } from "@/components/icons/CompleteTheWordsIcon";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -32,6 +26,7 @@ type NavigationItem = {
   iconClassName?: string;
   label: string;
   match?: (path: string) => boolean;
+  tone?: "reading";
 };
 
 type NavigationIcon = React.ComponentType<{
@@ -53,19 +48,19 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
     items: [
       {
         href: STUDENT_ROUTES.buildASentence,
-        icon: Puzzle,
+        icon: STUDENT_PRACTICE_ICONS.build_sentence,
         label: "Build a Sentence",
         match: (path) => path.startsWith(STUDENT_ROUTES.buildASentence) || path.startsWith("/student/practice/")
       },
       {
         href: STUDENT_ROUTES.writeEmail,
-        icon: Mail,
+        icon: STUDENT_PRACTICE_ICONS.email,
         label: "Write an Email",
         match: (path) => path.startsWith(STUDENT_ROUTES.writeEmail)
       },
       {
         href: STUDENT_ROUTES.academicDiscussion,
-        icon: MessageCircleMore,
+        icon: STUDENT_PRACTICE_ICONS.academic_discussion,
         label: "Academic Discussion",
         match: (path) => path.startsWith(STUDENT_ROUTES.academicDiscussion)
       }
@@ -77,27 +72,31 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
     items: [
       {
         href: STUDENT_ROUTES.readingCtw,
-        icon: CompleteTheWordsIcon,
+        icon: STUDENT_PRACTICE_ICONS.ctw,
         label: "Complete the Words",
-        match: (path) => path === STUDENT_ROUTES.readingCtw
+        match: (path) => path === STUDENT_ROUTES.readingCtw,
+        tone: "reading"
       },
       {
         href: STUDENT_ROUTES.readingRdl,
-        icon: FileText,
+        icon: STUDENT_PRACTICE_ICONS.rdl,
         label: "Read in Daily Life",
-        match: (path) => path === STUDENT_ROUTES.readingRdl
+        match: (path) => path === STUDENT_ROUTES.readingRdl,
+        tone: "reading"
       },
       {
         href: STUDENT_ROUTES.readingRap,
-        icon: BookOpen,
+        icon: STUDENT_PRACTICE_ICONS.rap,
         label: "Read an Academic Passage",
-        match: (path) => path === STUDENT_ROUTES.readingRap
+        match: (path) => path === STUDENT_ROUTES.readingRap,
+        tone: "reading"
       },
       {
         href: STUDENT_ROUTES.readingFullSets,
-        icon: Rows3,
+        icon: STUDENT_PRACTICE_ICONS.full_set,
         label: "Full Set Practice",
-        match: (path) => path.startsWith(STUDENT_ROUTES.readingFullSets)
+        match: (path) => path.startsWith(STUDENT_ROUTES.readingFullSets),
+        tone: "reading"
       }
     ]
   },
@@ -230,7 +229,9 @@ function StudentNavItem({
   const className = clsx(
     "relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-[13px] font-semibold transition",
     active
-      ? "bg-student-primary-soft text-student-primary"
+      ? item.tone === "reading"
+        ? "bg-blue-50 text-[#347fdc]"
+        : "bg-student-primary-soft text-student-primary"
       : "text-student-muted hover:bg-student-bg hover:text-student-text"
   );
   const content = (

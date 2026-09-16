@@ -135,6 +135,7 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   const sharedSummary = read("components/PracticeResult.tsx");
   const resultRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/route.ts");
   const reviewRoute = read("app/api/reading/full-sets/[fullSetId]/results/[attemptId]/review/route.ts");
+  const reviewServer = read("lib/reading/fullSetReviewServer.ts");
   const practice = read("components/reading/ReadingPractice.tsx");
   assert.match(resultUi, /<PracticeResultSummary/);
   assert.match(resultUi, /scoreValue=\{result\.score\.display\}/);
@@ -156,9 +157,10 @@ test("Full Set result UI is attempt-specific, grouped, scaled-only, timed, reado
   assert.match(resultRoute, /owned\.attempt\.fullSetId !== params\.fullSetId/);
   assert.match(resultRoute, /status !== "completed"/);
   assert.doesNotMatch(reviewRoute, /searchParams|get\("questionIndex"\)/);
-  assert.match(reviewRoute, /buildReadingFullSetReviewItems/);
-  assert.match(reviewRoute, /loadReadingAnswerDisclosures\(db, disclosureRows\)/);
-  assert.match(reviewRoute, /Promise\.all\(occurrenceMetadata\.map/);
+  assert.match(reviewRoute, /loadReadingFullSetFinalSnapshot/);
+  assert.match(reviewServer, /buildReadingFullSetReviewItems/);
+  assert.match(reviewServer, /loadReadingAnswerDisclosures\(db, disclosureRows\)/);
+  assert.match(reviewServer, /Promise\.all\(occurrenceMetadataToLoad\.map/);
   assert.match(practice, /data-testid="reading-review-status"/);
   assert.match(practice, /payload\.disclosures\[selectedReviewItem\.answerId\]/);
   assert.match(practice, /reviewPresentation=\{disclosure\}/);

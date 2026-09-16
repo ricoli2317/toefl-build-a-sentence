@@ -6,7 +6,9 @@ import {
   requireReadingFullSetStudent
 } from "@/lib/reading/fullSetAttemptServer";
 import { isReadingFullSetAttemptSummary } from "@/lib/reading/fullSetAttempts";
+import { loadReadingFullSetFinalSnapshot } from "@/lib/reading/fullSetReviewServer";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
+import { createServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -36,9 +38,15 @@ export async function POST(
     return respond(readingFullSetAttemptJson({ error: "无效的 Module 提交请求。" }, { status: 400 }));
   }
   const body = await request.json().catch(() => ({})) as {
+    cachedOccurrenceIds?: unknown;
     expectedAnswerRevision?: unknown;
     timeoutOnly?: unknown;
   };
+  const cachedOccurrenceIds = Array.isArray(body.cachedOccurrenceIds)
+    ? Array.from(new Set(body.cachedOccurrenceIds.filter(
+        (value): value is string => typeof value === "string" && isUuid(value)
+      ))).slice(0, 32)
+    : [];
   const expectedAnswerRevision = Number(body.expectedAnswerRevision);
   if (
     body.timeoutOnly !== true
@@ -72,16 +80,51 @@ export async function POST(
   }
   const { data, error } = submitResult;
   if (error) return respond(readingFullSetAttemptError(error, "Module 提交失败，请稍后重试。"));
-  if (isSubmitBarrierResult(data)) {
-    return respond(timing.measureSync("processing", "serialization", () =>
-      readingFullSetAttemptJson(data, { status: data.accepted ? 200 : 409 })
-    ));
-  }
-  if (!isReadingFullSetAttemptSummary(data)) {
+  const submitted = isSubmitBarrierResult(data)
+    ? data
+    : isReadingFullSetAttemptSummary(data)
+      ? { accepted: true, attempt: data }
+      : null;
+  if (!submitted) {
     return respond(readingFullSetAttemptJson({ error: "Module 提交状态返回了无效数据。" }, { status: 500 }));
   }
+  if (!submitted.accepted) {
+    return respond(timing.measureSync("processing", "serialization", () =>
+      readingFullSetAttemptJson(submitted, { status: 409 })
+    ));
+  }
+
+  let finalSnapshot = null;
+  if (submitted.attempt.status === "completed" && submitted.attempt.completedAt) {
+    try {
+      finalSnapshot = await timing.measure(
+        "database",
+        "readonly_snapshot",
+        () => loadReadingFullSetFinalSnapshot(
+          createServiceSupabase(),
+          {
+            attempt_id: submitted.attempt.attemptId,
+            full_set_id: submitted.attempt.fullSetId,
+            status: submitted.attempt.status,
+            completed_at: submitted.attempt.completedAt
+          },
+          { reuseOccurrenceIds: cachedOccurrenceIds }
+        )
+      );
+    } catch (snapshotError) {
+      // Submission is already committed. Missing hot data must degrade to the
+      // normal result/review GET fallback instead of inviting a duplicate submit.
+      console.error("Reading Full Set readonly snapshot load failed", {
+        attemptId: submitted.attempt.attemptId,
+        message: snapshotError instanceof Error ? snapshotError.message : "unknown"
+      });
+    }
+  }
   return respond(timing.measureSync("processing", "serialization", () =>
-    readingFullSetAttemptJson({ accepted: true, attempt: data })
+    readingFullSetAttemptJson({
+      ...submitted,
+      ...(finalSnapshot ?? {})
+    })
   ));
 }
 

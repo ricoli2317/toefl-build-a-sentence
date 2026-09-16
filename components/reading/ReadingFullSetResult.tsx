@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  studentReadingFullSetResultCacheKey,
   useStudentCachedData,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
@@ -27,7 +28,7 @@ export function ReadingFullSetResult({
   fullSetId: string;
 }) {
   const state = useStudentCachedData<ReadingFullSetResultPayload>(
-    `reading:full-sets:result:${attemptId}`,
+    studentReadingFullSetResultCacheKey(attemptId),
     (session) => loadResult(fullSetId, attemptId, session)
   );
   if (state.loading) return <StudentLoadingState text="正在加载套题结果..." />;
@@ -40,15 +41,17 @@ export function ReadingFullSetResult({
     (answerIndex) => `${questionHrefBase}/questions/${answerIndex}`
   );
   return (
-    <div className="grid gap-6">
-      <StudentNavigation
-        backHref={STUDENT_ROUTES.practiceHistory}
-        crumbs={[
-          { label: "学生首页", href: STUDENT_ROUTES.home },
-          { label: "练习历史", href: STUDENT_ROUTES.practiceHistory },
-          { label: result.attempt.title }
-        ]}
-      />
+    <div className="student-result-overview-layout">
+      <div className="student-result-overview-navigation">
+        <StudentNavigation
+          backHref={STUDENT_ROUTES.practiceHistory}
+          crumbs={[
+            { label: "学生首页", href: STUDENT_ROUTES.home },
+            { label: "练习历史", href: STUDENT_ROUTES.practiceHistory },
+            { label: result.attempt.title }
+          ]}
+        />
+      </div>
       <PracticeResultSummary
         correctPoints={correctPoints}
         elapsedSeconds={readingFullSetReviewTotalTime(result.answers)}

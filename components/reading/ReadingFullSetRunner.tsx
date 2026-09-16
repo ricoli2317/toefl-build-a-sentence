@@ -13,6 +13,9 @@ import { PracticeReview } from "@/components/shared/PracticeReview";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_READING_FULL_SET_CACHE_PREFIX,
+  studentReadingFullSetOccurrenceCacheKey,
+  studentReadingFullSetResultCacheKey,
+  studentReadingFullSetReviewCacheKey,
   useStudentDataCache
 } from "@/components/StudentDataCache";
 import {
@@ -68,9 +71,9 @@ import {
   type ReadingFullSetPerformanceTrace
 } from "@/lib/reading/fullSetPerformance.client";
 import {
-  ReadingFullSetImagePreloadCache,
   ReadingFullSetOccurrenceCache,
   readingFullSetOccurrenceCacheKey,
+  readingFullSetSessionImagePreloadCache,
   type ReadingFullSetCacheSource
 } from "@/lib/reading/fullSetOccurrenceCache.client";
 import {
@@ -84,6 +87,12 @@ import {
   mergeReadingFullSetAnswers,
   sameReadingFullSetAnswerValues
 } from "@/lib/reading/fullSetAnswerMerge";
+import {
+  isReadingFullSetReadonlySnapshot,
+  mergeReadingFullSetReviewWithHotOccurrences
+} from "@/lib/reading/fullSetReadonlySnapshot.client";
+import type { ReadingFullSetReviewPayload } from "@/lib/reading/fullSetReview";
+import type { ReadingFullSetResultPayload } from "@/lib/reading/fullSetResults";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
@@ -100,6 +109,8 @@ type SubmitResponse = AttemptResponse & {
   accepted?: boolean;
   answerRevision?: number;
   reason?: "stale_revision";
+  result?: ReadingFullSetResultPayload;
+  review?: ReadingFullSetReviewPayload;
 };
 type BootstrapResponse = {
   code?: string;
@@ -184,6 +195,7 @@ export function ReadingFullSetRunner({
 }) {
   const router = useRouter();
   const {
+    getEntry,
     getSession,
     invalidate,
     sessionReady,
@@ -259,7 +271,8 @@ export function ReadingFullSetRunner({
   const transitionTraceRef = useRef<ReadingFullSetPerformanceTrace | null>(null);
   const transitionLoggedPhasesRef = useRef(new Set<ReadingFullSetPerformancePhase>());
   const occurrenceCacheRef = useRef(new ReadingFullSetOccurrenceCache<ReadingFullSetOccurrencePracticePayload>());
-  const imagePreloadCacheRef = useRef(new ReadingFullSetImagePreloadCache());
+  const hotOccurrenceIdsRef = useRef(new Set<string>());
+  const imagePreloadCacheRef = useRef(readingFullSetSessionImagePreloadCache);
   const imagePreloadStatusRef = useRef(new Map<string, "failed" | "hit" | "miss" | "not_applicable">());
   const prefetchTraceRef = useRef(new Map<string, ReadingFullSetPerformanceTrace>());
   const navigationRef = useRef<OccurrenceNavigation | null>(null);
@@ -290,12 +303,23 @@ export function ReadingFullSetRunner({
 
   const clearOccurrenceCaches = useCallback(() => {
     occurrenceCacheRef.current.clear();
-    imagePreloadCacheRef.current.clear();
     imagePreloadStatusRef.current.clear();
     prefetchTraceRef.current.clear();
     navigationRef.current = null;
     setInteractiveOccurrenceId("");
   }, []);
+
+  const seedOccurrenceSnapshot = useCallback((
+    payload: ReadingFullSetOccurrencePracticePayload,
+    answers = payload.answers,
+    questionTimes = payload.questionTimes
+  ) => {
+    hotOccurrenceIdsRef.current.add(payload.occurrence.occurrenceId);
+    setCachedData(
+      studentReadingFullSetOccurrenceCacheKey(attemptId, payload.occurrence.occurrenceId),
+      { ...payload, answers, questionTimes }
+    );
+  }, [attemptId, setCachedData]);
 
   const applyRunner = useCallback((
     next: ReadingFullSetRunnerPayload,
@@ -386,6 +410,7 @@ export function ReadingFullSetRunner({
       occurrenceId
     });
     occurrenceCacheRef.current.prime(occurrenceKey, bootstrap.firstOccurrence);
+    seedOccurrenceSnapshot(bootstrap.firstOccurrence);
     const imageUrl = bootstrap.firstOccurrence.occurrence.taskType === "rdl"
       ? bootstrap.firstOccurrence.practice.material?.imageUrl
       : null;
@@ -429,7 +454,7 @@ export function ReadingFullSetRunner({
     logTransitionPhase(moduleNumber === 1 ? "m1_state_applied" : "m2_state_applied", {
       moduleNumber
     }, true);
-  }, [applyRunner, attemptId, expectedFullSetId, logTransitionPhase]);
+  }, [applyRunner, attemptId, expectedFullSetId, logTransitionPhase, seedOccurrenceSnapshot]);
 
   const loadRunner = useCallback(async (token: string) => {
     const response = await fetchReadingFullSetWithTimeout(
@@ -622,7 +647,6 @@ export function ReadingFullSetRunner({
 
   useEffect(() => () => {
     occurrenceCacheRef.current.clear();
-    imagePreloadCacheRef.current.clear();
     prefetchTraceRef.current.clear();
   }, []);
 
@@ -742,9 +766,10 @@ export function ReadingFullSetRunner({
           taskType: input.occurrence.taskType
         });
       }
+      seedOccurrenceSnapshot(completePayload);
       return completePayload;
     }, { retryError: input.retryError, timeoutMs: 15_000 });
-  }, [accessToken, attemptId]);
+  }, [accessToken, attemptId, seedOccurrenceSnapshot]);
 
   const applyOccurrencePayload = useCallback((completePayload: ReadingFullSetOccurrencePracticePayload) => {
     const occurrenceId = completePayload.occurrence.occurrenceId;
@@ -776,7 +801,8 @@ export function ReadingFullSetRunner({
         [occurrenceId]: completePayload.questionTimes
       };
     }
-  }, []);
+    seedOccurrenceSnapshot(completePayload);
+  }, [seedOccurrenceSnapshot]);
 
   useEffect(() => {
     if (
@@ -1424,8 +1450,11 @@ export function ReadingFullSetRunner({
     for (const occurrence of activeRunner.occurrences) {
       const payload = occurrencePayloads[occurrence.occurrenceId];
       if (!payload || !Object.prototype.hasOwnProperty.call(answersRef.current, occurrence.occurrenceId)) continue;
+      const answers = { ...(answersRef.current[occurrence.occurrenceId] ?? {}) };
+      const questionTimes = snapshotQuestionTimes(occurrence.occurrenceId);
+      seedOccurrenceSnapshot(payload, answers, questionTimes);
       enqueuePendingSave({
-        answers: { ...(answersRef.current[occurrence.occurrenceId] ?? {}) },
+        answers,
         moduleAttemptId: moduleAttempt.moduleAttemptId,
         moduleNumber: moduleAttempt.moduleNumber,
         occurrenceId: occurrence.occurrenceId,
@@ -1433,7 +1462,7 @@ export function ReadingFullSetRunner({
         taskType: occurrence.taskType
       }, trace);
     }
-  }, [enqueuePendingSave, occurrencePayloads]);
+  }, [enqueuePendingSave, occurrencePayloads, seedOccurrenceSnapshot, snapshotQuestionTimes]);
 
   const flushPendingSave = useCallback(async (
     moduleAttemptId?: string,
@@ -1512,28 +1541,31 @@ export function ReadingFullSetRunner({
     if (!currentOccurrence || !currentPayload || !runner || submittingRef.current) return;
     const moduleAttempt = readingFullSetActiveModuleAttempt(runner.attempt);
     if (!moduleAttempt) return;
-    setAnswersByOccurrence((current) => {
-      const occurrenceAnswers = current[currentOccurrence.occurrenceId] ?? {};
-      const nextOccurrenceAnswers = setReadingAnswer(occurrenceAnswers, questionId, answer);
-      const next = { ...current, [currentOccurrence.occurrenceId]: nextOccurrenceAnswers };
-      answersRef.current = next;
-      pendingSaveRef.current = {
-        answers: nextOccurrenceAnswers,
-        moduleAttemptId: moduleAttempt.moduleAttemptId,
-        moduleNumber: moduleAttempt.moduleNumber,
-        occurrenceId: currentOccurrence.occurrenceId,
-        practice: currentPayload.practice,
-        taskType: currentOccurrence.taskType
-      };
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-      saveTimerRef.current = setTimeout(() => {
-        const pending = pendingSaveRef.current;
-        pendingSaveRef.current = null;
-        if (pending) enqueuePendingSave(pending);
-      }, 600);
-      return next;
-    });
-  }, [currentOccurrence, currentPayload, enqueuePendingSave, runner]);
+    const occurrenceAnswers = answersRef.current[currentOccurrence.occurrenceId] ?? {};
+    const nextOccurrenceAnswers = setReadingAnswer(occurrenceAnswers, questionId, answer);
+    const next = { ...answersRef.current, [currentOccurrence.occurrenceId]: nextOccurrenceAnswers };
+    answersRef.current = next;
+    setAnswersByOccurrence(next);
+    seedOccurrenceSnapshot(
+      currentPayload,
+      nextOccurrenceAnswers,
+      snapshotQuestionTimes(currentOccurrence.occurrenceId)
+    );
+    pendingSaveRef.current = {
+      answers: nextOccurrenceAnswers,
+      moduleAttemptId: moduleAttempt.moduleAttemptId,
+      moduleNumber: moduleAttempt.moduleNumber,
+      occurrenceId: currentOccurrence.occurrenceId,
+      practice: currentPayload.practice,
+      taskType: currentOccurrence.taskType
+    };
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      const pending = pendingSaveRef.current;
+      pendingSaveRef.current = null;
+      if (pending) enqueuePendingSave(pending);
+    }, 600);
+  }, [currentOccurrence, currentPayload, enqueuePendingSave, runner, seedOccurrenceSnapshot, snapshotQuestionTimes]);
 
   const pauseActiveModule = useCallback(async (bestEffort = false) => {
     const activeRunner = runnerRef.current;
@@ -1728,7 +1760,6 @@ export function ReadingFullSetRunner({
     }
     submittingRef.current = true;
     setSubmitting(true);
-    clearOccurrenceCaches();
     setError("");
     try {
       commitActiveQuestionTime();
@@ -1772,6 +1803,7 @@ export function ReadingFullSetRunner({
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
+            cachedOccurrenceIds: Array.from(hotOccurrenceIdsRef.current),
             expectedAnswerRevision: answerRevisionRef.current,
             timeoutOnly: automatic
           })
@@ -1792,6 +1824,53 @@ export function ReadingFullSetRunner({
       }
       if (!response.ok || result.accepted === false || !result.attempt) {
         throw new Error(result.error ?? "Module 提交失败，请稍后重试。");
+      }
+      const finalResult = result.result;
+      const finalReview = result.review;
+      if (
+        result.attempt.status === "completed"
+        && finalResult
+        && finalReview
+      ) {
+        const hotOccurrences = new Map<string, ReadingFullSetOccurrencePracticePayload>();
+        const occurrenceIds = Array.from(new Set(finalResult.answers.map(
+          (answer) => answer.occurrenceId
+        )));
+        for (const occurrenceId of occurrenceIds) {
+          const entry = getEntry(studentReadingFullSetOccurrenceCacheKey(
+            result.attempt.attemptId,
+            occurrenceId
+          ));
+          if (
+            entry
+            && (entry.status === "success" || entry.status === "refreshing" || entry.status === "stale")
+          ) {
+            const payload = entry.data as ReadingFullSetOccurrencePracticePayload;
+            if (payload.occurrence?.occurrenceId === occurrenceId) {
+              hotOccurrences.set(occurrenceId, payload);
+            }
+          }
+        }
+        const completedReview = mergeReadingFullSetReviewWithHotOccurrences(
+          finalResult,
+          finalReview,
+          hotOccurrences
+        );
+        if (isReadingFullSetReadonlySnapshot({
+          attemptId: result.attempt.attemptId,
+          fullSetId: result.attempt.fullSetId,
+          result: finalResult,
+          review: completedReview
+        })) {
+          setCachedData(
+            studentReadingFullSetResultCacheKey(result.attempt.attemptId),
+            finalResult
+          );
+          setCachedData(
+            studentReadingFullSetReviewCacheKey(result.attempt.attemptId),
+            completedReview
+          );
+        }
       }
       const submittedModuleAttemptId = readingFullSetRunnerModuleKey(activeRunner.attempt);
       if (submittedModuleAttemptId) saveQueueRef.current?.clear(submittedModuleAttemptId);
@@ -1814,7 +1893,7 @@ export function ReadingFullSetRunner({
       submittingRef.current = false;
       setSubmitting(false);
     }
-  }, [accessToken, applyAttempt, applyRunner, attemptId, beginTransitionTrace, clearOccurrenceCaches, commitActiveQuestionTime, flushPendingSave, logTransitionPhase, stageModuleAnswerSnapshot]);
+  }, [accessToken, applyAttempt, applyRunner, attemptId, beginTransitionTrace, commitActiveQuestionTime, flushPendingSave, getEntry, logTransitionPhase, setCachedData, stageModuleAnswerSnapshot]);
 
   useEffect(() => {
     if (!runner) return;
@@ -2008,7 +2087,7 @@ export function ReadingFullSetRunner({
     : `Questions ${displayRange.start}–${displayRange.end} / ${moduleQuestionCount}`}`;
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
+    <div className="reading-theme h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
         onBack={() => void leavePractice()}
@@ -2122,7 +2201,7 @@ function RunnerMessage({
   title: string;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
+    <main className="reading-theme flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
       <section className="student-card w-full max-w-lg p-8 text-center">
         <h1 className="text-2xl font-bold text-student-text">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-student-muted">{description}</p>

@@ -648,7 +648,7 @@ function WritingPracticeSession({
   }
 
   return (
-    <div className="writing-practice h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text">
+    <div className="writing-practice min-h-[100dvh] bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden">
       <WritingPracticeHeader
         answerMode={answerMode}
         elapsedSeconds={elapsedSeconds}
@@ -658,8 +658,8 @@ function WritingPracticeSession({
         remainingSeconds={remainingSeconds}
         setTitle={displayName ?? question.set_title}
       />
-      <main className="mx-auto flex h-[calc(100dvh-76px)] min-h-0 max-w-[1560px] flex-col overflow-hidden px-4 py-3 sm:px-6 lg:px-8">
-        <div className="grid h-full min-h-0 grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-4 overflow-hidden">
+      <main className="mx-auto flex min-h-[calc(100dvh-76px)] w-full max-w-[1920px] flex-col px-4 py-3 sm:px-6 lg:h-[calc(100dvh-76px)] lg:min-h-0 lg:overflow-hidden lg:px-8">
+        <div className="grid min-h-0 grid-cols-1 gap-4 lg:h-full lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:overflow-hidden">
           {taskType === "email" ? (
             <EmailPrompt question={question as EmailQuestion} />
           ) : (
@@ -675,7 +675,7 @@ function WritingPracticeSession({
               question={question as AcademicDiscussionQuestion}
             />
           )}
-          <section className="h-full min-h-0 overflow-hidden">
+          <section className="min-h-[650px] overflow-hidden lg:h-full lg:min-h-0">
             {taskType === "email" ? (
               <EmailResponsePanel
                 actions={editor}
@@ -743,12 +743,12 @@ function WritingPracticeHeader({
   setTitle: string;
 }) {
   return (
-    <header className="grid h-[76px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
+    <header className="grid h-[76px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-student-border bg-white px-3 sm:gap-4 sm:px-7 lg:px-10">
       <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
         <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
-        <span>Back</span>
+        <span className="hidden sm:inline">Back</span>
       </button>
-      <span className="inline-flex min-h-11 items-center justify-self-center rounded-xl border border-student-primary-border bg-student-primary-soft px-4 text-sm font-bold text-student-primary">
+      <span className="inline-flex min-h-11 min-w-0 max-w-full items-center justify-self-center truncate rounded-xl border border-student-primary-border bg-student-primary-soft px-3 text-sm font-bold text-student-primary sm:px-4">
         {setTitle}
       </span>
       <div className="flex items-center justify-self-end gap-3">

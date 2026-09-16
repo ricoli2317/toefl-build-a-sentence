@@ -24,15 +24,17 @@ export function ReadingWrongbookResult({ attemptId }: { attemptId: string }) {
   const { answers, attempt } = state.data;
   const questionHrefBase = `/student/reading/wrongbook-results/${encodeURIComponent(attemptId)}`;
   return (
-    <div className="grid gap-6">
-      <StudentNavigation
-        backHref={STUDENT_ROUTES.wrongQuestions}
-        crumbs={[
-          { label: "学生首页", href: STUDENT_ROUTES.home },
-          { label: "错题集", href: STUDENT_ROUTES.wrongQuestions },
-          { label: "订正结果" }
-        ]}
-      />
+    <div className="student-result-overview-layout">
+      <div className="student-result-overview-navigation">
+        <StudentNavigation
+          backHref={STUDENT_ROUTES.wrongQuestions}
+          crumbs={[
+            { label: "学生首页", href: STUDENT_ROUTES.home },
+            { label: "错题集", href: STUDENT_ROUTES.wrongQuestions },
+            { label: "订正结果" }
+          ]}
+        />
+      </div>
       <PracticeResultSummary
         correctPoints={attempt.correctPoints}
         elapsedSeconds={attempt.elapsedSeconds}

@@ -16,6 +16,7 @@ import {
   StudentNavigation
 } from "@/components/student/StudentUI";
 import { PracticeSetAction, PracticeSetCatalogList } from "@/components/shared/PracticeCatalog";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   STUDENT_ROUTES,
   writingReviewResultHref,
@@ -177,6 +178,7 @@ function WritingSetCards({
         return null;
       }}
       sets={sets.map((set) => ({
+        icon: STUDENT_PRACTICE_ICONS[taskType],
         questionCount: 1,
         setId: set.set_id,
         setTitle: set.display_name ?? set.set_title

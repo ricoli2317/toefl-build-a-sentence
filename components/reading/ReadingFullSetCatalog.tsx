@@ -1,6 +1,8 @@
 "use client";
 
 import { Eye, FilePenLine, Play } from "lucide-react";
+import { useState } from "react";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   PracticeSetAction,
   PracticeSetCatalogList
@@ -17,22 +19,27 @@ import {
 } from "@/components/student/StudentUI";
 import type { ReadingFullSetCatalogItem } from "@/lib/reading/fullSets";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
-import { ReadingCatalogStatusBadge } from "./ReadingCatalog";
+import { ReadingCatalogPagination, ReadingCatalogStatusBadge } from "./ReadingCatalog";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
-const FULL_SET_CATALOG_CACHE_KEY = "reading:full-sets:catalog";
+const PAGE_SIZE = 10;
 
 type ReadingFullSetCatalogPayload = {
   fullSets: ReadingFullSetCatalogItem[];
+  limit: number;
+  page: number;
+  total: number;
 };
 
 export function ReadingFullSetCatalog() {
   const cache = useStudentDataCache();
+  const [page, setPage] = useState(1);
+  const cacheKey = readingFullSetCatalogPageCacheKey(page);
   const state = useStudentCachedData<ReadingFullSetCatalogPayload>(
-    FULL_SET_CATALOG_CACHE_KEY,
-    loadReadingFullSetCatalog,
-    { refreshOnMount: true }
+    cacheKey,
+    (session) => loadReadingFullSetCatalog(page, session)
   );
+  const totalPages = Math.ceil((state.data?.total ?? 0) / PAGE_SIZE);
 
   return (
     <div className="grid gap-5">
@@ -49,7 +56,7 @@ export function ReadingFullSetCatalog() {
           <StudentErrorState text="套题加载失败，请重试。" />
           <button
             className="student-button-secondary justify-self-start"
-            onClick={() => cache.invalidate(FULL_SET_CATALOG_CACHE_KEY)}
+            onClick={() => cache.invalidate(cacheKey)}
             type="button"
           >
             重新加载
@@ -72,10 +79,19 @@ export function ReadingFullSetCatalog() {
             />
           )}
           sets={state.data.fullSets.map((fullSet) => ({
+            icon: STUDENT_PRACTICE_ICONS.full_set,
             setId: fullSet.fullSetId,
             setTitle: fullSet.title,
             questionCount: 50
           }))}
+        />
+      ) : null}
+      {!state.loading && state.data ? (
+        <ReadingCatalogPagination
+          onChange={setPage}
+          page={page}
+          totalItems={state.data.total}
+          totalPages={totalPages}
         />
       ) : null}
     </div>
@@ -125,15 +141,26 @@ function ReadingFullSetCatalogSkeleton() {
   );
 }
 
-async function loadReadingFullSetCatalog(session: StudentCacheSession) {
-  const response = await fetch("/api/reading/full-sets", {
+export function readingFullSetCatalogPageCacheKey(page: number) {
+  return `reading:full-sets:catalog:page:${page}:limit:${PAGE_SIZE}`;
+}
+
+async function loadReadingFullSetCatalog(page: number, session: StudentCacheSession) {
+  const response = await fetch(`/api/reading/full-sets?page=${page}&limit=${PAGE_SIZE}`, {
     cache: "no-store",
     headers: { Authorization: `Bearer ${session.accessToken}` }
   });
   const payload = await response.json().catch(() => ({})) as ReadingFullSetCatalogPayload & {
     error?: string;
   };
-  if (!response.ok || payload.error || !Array.isArray(payload.fullSets)) {
+  if (
+    !response.ok
+    || payload.error
+    || !Array.isArray(payload.fullSets)
+    || payload.page !== page
+    || payload.limit !== PAGE_SIZE
+    || !Number.isSafeInteger(payload.total)
+  ) {
     throw new Error(payload.error ?? "套题加载失败，请重试。");
   }
   return payload;

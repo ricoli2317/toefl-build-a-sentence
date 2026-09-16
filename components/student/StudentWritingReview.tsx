@@ -190,8 +190,8 @@ export function StudentWritingReviewResult({
 
   return (
     <div className="min-h-[100dvh] bg-[#f8f9fc] text-student-text lg:flex lg:h-[100dvh] lg:flex-col lg:overflow-hidden">
-      <header className="shrink-0 border-b border-student-border bg-white px-4 sm:px-6">
-        <div className="flex min-h-14 flex-wrap items-center justify-between gap-x-5 gap-y-2 py-1.5 lg:h-14 lg:flex-nowrap">
+      <header className="shrink-0 border-b border-student-border bg-white">
+        <div className="mx-auto flex min-h-14 w-full max-w-[1920px] flex-wrap items-center justify-between gap-x-5 gap-y-2 px-4 py-1.5 sm:px-6 lg:h-14 lg:flex-nowrap">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               aria-label="返回"
@@ -217,7 +217,7 @@ export function StudentWritingReviewResult({
             批改完成于 {formatDateTime(review.published_at)}
           </p>
         </div>
-        <nav aria-label="批改结果视图" className="flex h-10 items-end gap-6">
+        <nav aria-label="批改结果视图" className="mx-auto flex h-10 w-full max-w-[1920px] items-end gap-6 px-4 sm:px-6">
           <ReviewViewTab active={view === "marked"} onClick={() => setView("marked")}>批改稿</ReviewViewTab>
           <ReviewViewTab active={view === "revised"} onClick={() => setView("revised")}>修改稿</ReviewViewTab>
           <ReviewViewTab active={view === "original"} onClick={() => setView("original")}>原文</ReviewViewTab>
@@ -225,7 +225,7 @@ export function StudentWritingReviewResult({
         </nav>
       </header>
 
-      <div className="grid min-w-0 flex-1 gap-2.5 p-2.5 lg:min-h-0 lg:grid-cols-[minmax(0,2fr)_minmax(340px,1fr)] lg:overflow-hidden">
+      <div className="mx-auto grid w-full max-w-[1920px] min-w-0 flex-1 gap-2.5 p-2.5 lg:min-h-0 lg:grid-cols-[minmax(0,2fr)_minmax(340px,1fr)] lg:overflow-hidden">
         <main className="grid min-w-0 gap-2.5 lg:min-h-0 lg:grid-rows-[minmax(0,1fr)_auto]">
           <section className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_12px_rgba(60,47,119,0.05)]">
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-student-border px-4 py-2.5">

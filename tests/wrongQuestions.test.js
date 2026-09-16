@@ -188,7 +188,7 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   assert.match(ui, /去订正/);
   assert.match(ui, /查看错题/);
   assert.match(ui, /useState<WrongQuestionTaskType \| "all">\("all"\)/);
-  assert.match(ui, /CompleteTheWordsIcon/);
+  assert.match(ui, /ctw: STUDENT_PRACTICE_ICONS\.ctw/);
   for (const label of ["待订正", "已订正", "本日新增", "总错题"]) assert.match(ui, new RegExp(label));
   assert.doesNotMatch(ui, /待复习|近7天|复习完成/);
   assert.match(route, /\.from\("attempts"\)/);
@@ -775,7 +775,7 @@ test("standard choice summaries continue past D using authoritative option order
   assert.deepEqual(answers[0].correctAnswer, { kind: "text", text: "F" });
 });
 
-test("RDL and RAP correction reviews mark wrong choices orange and correct choices purple", () => {
+test("RDL and RAP correction reviews keep wrong choices orange and use the Reading primary for correct choices", () => {
   const practiceUi = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
   const choiceSource = practiceUi.slice(
     practiceUi.indexOf("function ChoiceOptionList"),

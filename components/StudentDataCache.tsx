@@ -72,6 +72,21 @@ export function studentReadingResultCacheKey(attemptId: string) {
   return `${STUDENT_READING_RESULT_CACHE_PREFIX}:${attemptId}`;
 }
 
+export function studentReadingFullSetResultCacheKey(attemptId: string) {
+  return `${STUDENT_READING_FULL_SET_CACHE_PREFIX}:result:${attemptId}`;
+}
+
+export function studentReadingFullSetReviewCacheKey(attemptId: string) {
+  return `${STUDENT_READING_FULL_SET_CACHE_PREFIX}:review:${attemptId}`;
+}
+
+export function studentReadingFullSetOccurrenceCacheKey(
+  attemptId: string,
+  occurrenceId: string
+) {
+  return `${STUDENT_READING_FULL_SET_CACHE_PREFIX}:occurrence:${attemptId}:${occurrenceId}`;
+}
+
 export function studentReadingCatalogCacheKey(taskType: "ctw" | "rdl" | "rap") {
   return `${STUDENT_READING_CATALOG_CACHE_PREFIX}:${taskType}`;
 }
