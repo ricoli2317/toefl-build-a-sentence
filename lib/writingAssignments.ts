@@ -69,16 +69,30 @@ export type StudentWritingAssignmentSummary = {
   draft_writing_mode: "exam" | "practice" | null;
   due_at: string | null;
   display_name?: string;
+  title?: string;
   first_submitted_at: string | null;
   latest_submitted_attempt_id: string | null;
   published_review_attempt_id: string | null;
   question_id: string;
-  question_snapshot: WritingQuestion;
+  question_snapshot?: WritingQuestion;
   question_source: WritingAssignmentQuestionSource;
   status: WritingAssignmentLifecycleStatus;
   student_status: WritingAssignmentStudentStatus;
   submitted_attempt_count: number;
   task_type: WritingTaskType;
+};
+
+export type StudentWritingAssignmentCalendarItem = {
+  assignment_id: string;
+  assignment_date: string;
+  task_type: WritingTaskType;
+  title: string;
+};
+
+export type StudentWritingAssignmentCalendarPayload = {
+  assignments: StudentWritingAssignmentCalendarItem[];
+  month: string;
+  error?: string;
 };
 
 export type StudentWritingAssignmentsPayload = {
@@ -94,9 +108,90 @@ export type StudentWritingAssignmentDisplayStatus =
   | "overdue";
 
 export function studentWritingAssignmentTitle(
-  assignment: Pick<StudentWritingAssignmentSummary, "display_name" | "question_snapshot">
+  assignment: Pick<StudentWritingAssignmentSummary, "display_name" | "question_snapshot" | "title">
 ) {
-  return assignment.display_name?.trim() || assignment.question_snapshot.set_title;
+  return assignment.display_name?.trim()
+    || assignment.title?.trim()
+    || assignment.question_snapshot?.set_title
+    || "未命名作业";
+}
+
+const ASSIGNMENT_CALENDAR_TIME_ZONE = "Asia/Shanghai";
+
+export function isAssignmentMonthKey(value: string) {
+  if (!/^\d{4}-\d{2}$/.test(value)) return false;
+  const month = Number(value.slice(5, 7));
+  return month >= 1 && month <= 12;
+}
+
+export function isAssignmentDateKey(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return parsed.getUTCFullYear() === year
+    && parsed.getUTCMonth() === month - 1
+    && parsed.getUTCDate() === day;
+}
+
+export function assignmentMonthKey(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    month: "2-digit",
+    timeZone: ASSIGNMENT_CALENDAR_TIME_ZONE,
+    year: "numeric"
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}`;
+}
+
+export function assignmentDateKey(value: Date | string) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: ASSIGNMENT_CALENDAR_TIME_ZONE,
+    year: "numeric"
+  }).formatToParts(date);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+export function assignmentDateRange(dateKey: string) {
+  if (!isAssignmentDateKey(dateKey)) return null;
+  return {
+    endExclusive: `${shiftAssignmentDateKey(dateKey, 1)}T00:00:00+08:00`,
+    startInclusive: `${dateKey}T00:00:00+08:00`
+  };
+}
+
+export function assignmentMonthRange(monthKey: string) {
+  if (!isAssignmentMonthKey(monthKey)) return null;
+  const [year, month] = monthKey.split("-").map(Number);
+  const nextYear = month === 12 ? year + 1 : year;
+  const nextMonth = month === 12 ? 1 : month + 1;
+  return {
+    endExclusive: `${nextYear}-${String(nextMonth).padStart(2, "0")}-01T00:00:00+08:00`,
+    startInclusive: `${monthKey}-01T00:00:00+08:00`
+  };
+}
+
+export function formatAssignmentMonth(monthKey: string) {
+  if (!isAssignmentMonthKey(monthKey)) return monthKey;
+  return `${monthKey.slice(0, 4)}年${Number(monthKey.slice(5, 7))}月`;
+}
+
+export function formatAssignmentDate(dateKey: string) {
+  if (!isAssignmentDateKey(dateKey)) return dateKey;
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return `${year}年${month}月${day}日`;
+}
+
+function shiftAssignmentDateKey(dateKey: string, days: number) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + days));
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
 export function defaultWritingAssignmentTitle(input: {

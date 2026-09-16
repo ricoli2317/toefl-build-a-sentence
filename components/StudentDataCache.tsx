@@ -43,7 +43,8 @@ export const STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX =
   "writing:published-reviews";
 export const STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_KEY =
   `${STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX}:list`;
-export const STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY = "writing:assignments";
+export const STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX = "writing:assignments";
+export const STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY = STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX;
 export const STUDENT_WRITING_MODE_POLICY_CACHE_KEY = "writing:mode-policy";
 export const STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY =
   "writing:academic-discussion-avatars";
@@ -93,6 +94,22 @@ export function studentReadingCatalogCacheKey(taskType: "ctw" | "rdl" | "rap") {
 
 export function studentWritingAttemptCacheKey(attemptId: string) {
   return `${STUDENT_WRITING_CACHE_PREFIX}:attempt:${attemptId}`;
+}
+
+export function studentWritingAssignmentsCalendarCacheKey(month: string) {
+  return `${STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX}:calendar:${month}`;
+}
+
+export function studentWritingAssignmentsDayCacheKey(date: string) {
+  return `${STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX}:day:${date}`;
+}
+
+export function studentWritingAssignmentEntryCacheKey(assignmentId: string) {
+  return `${STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX}:entry:${assignmentId}`;
+}
+
+export function studentWritingAssignmentBatchCacheKey(batchId: string) {
+  return `${STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX}:batch:${batchId}`;
 }
 
 export function studentPublishedWritingReviewCacheKey(attemptId: string) {
@@ -571,7 +588,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentAssignments":
-              invalidate(STUDENT_WRITING_ASSIGNMENTS_CACHE_KEY);
+              invalidate(STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX);
               invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
           }

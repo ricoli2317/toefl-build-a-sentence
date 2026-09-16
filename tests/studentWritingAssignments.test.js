@@ -4,6 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const {
+  assignmentDateKey,
+  assignmentDateRange,
+  assignmentMonthRange,
   compareStudentWritingAssignments,
   getStudentWritingAssignmentDisplayStatus,
   getWritingAssignmentProgress,
@@ -118,15 +121,30 @@ test("student assignment titles prefer current bank display and fall back to sna
   );
 });
 
-test("student assignment API resolves current titles without mutating stored snapshots", () => {
-  const route = source("app/api/writing/assignments/route.ts");
+test("student assignment calendar reads only a database-bounded minimal month index", () => {
+  const route = source("app/api/writing/assignments/calendar/route.ts");
   const ui = source("components/student/StudentWritingAssignments.tsx");
-  assert.match(route, /loadHistoricalPracticeDisplayResolver\(service\)/);
-  assert.match(route, /assignment\.question_source === "question_bank"/);
-  assert.match(route, /display_name: display\?\.displayName \?\? assignment\.question_snapshot\.set_title/);
-  assert.doesNotMatch(route, /writing_assignments"\)\s*\.update|writing_assignments"\)\s*\.insert/);
-  assert.equal((ui.match(/studentWritingAssignmentTitle\(/g) ?? []).length, 2);
-  assert.doesNotMatch(ui, /\{(?:first|assignment)\.question_snapshot\.set_title\}/);
+  assert.match(route, /from\("writing_assignment_students"\)/);
+  assert.match(route, /\.gte\("assigned_at", range\.startInclusive\)/);
+  assert.match(route, /\.lt\("assigned_at", range\.endExclusive\)/);
+  assert.match(route, /title:question_snapshot->>set_title/);
+  assert.match(route, /assignment_date: date/);
+  assert.doesNotMatch(route, /writing_attempts|writing_reviews|response_text|question_snapshot,/);
+  assert.match(ui, /WRITING_TASK_CONFIG\[assignment\.task_type\]\.label}: \{assignment\.title\}/);
+  assert.doesNotMatch(ui, /prefetch/);
+});
+
+test("assignment calendar ranges use Shanghai boundaries and real calendar dates", () => {
+  assert.deepEqual(assignmentMonthRange("2026-12"), {
+    startInclusive: "2026-12-01T00:00:00+08:00",
+    endExclusive: "2027-01-01T00:00:00+08:00"
+  });
+  assert.deepEqual(assignmentDateRange("2026-08-17"), {
+    startInclusive: "2026-08-17T00:00:00+08:00",
+    endExclusive: "2026-08-18T00:00:00+08:00"
+  });
+  assert.equal(assignmentDateRange("2026-02-30"), null);
+  assert.equal(assignmentDateKey("2026-08-16T16:30:00Z"), "2026-08-17");
 });
 
 test("teacher assignment grouping aggregates submission and pending-review progress", () => {
@@ -198,33 +216,44 @@ test("assignment entry reuses WritingPractice and its shared mode choice", () =>
   assert.match(writingPractice, /assignmentId,/);
 });
 
-test("assignment practice stays mounted while list data refreshes silently", () => {
+test("assignment caches are split by month, day, batch, and entry and share invalidation", () => {
   const assignmentUi = source("components/student/StudentWritingAssignments.tsx");
   const cache = source("components/StudentDataCache.tsx");
   const practice = source("components/writing/WritingPractice.tsx");
-  assert.match(assignmentUi, /loading: initialLoading/);
-  assert.match(assignmentUi, /refreshing: backgroundRefreshing/);
-  assert.match(assignmentUi, /window\.addEventListener\("focus", refreshAssignments\)/);
-  assert.match(assignmentUi, /window\.setInterval\(refreshAssignments, 30_000\)/);
+  assert.match(cache, /writing:assignments/);
+  assert.match(cache, /:calendar:\$\{month\}/);
+  assert.match(cache, /:day:\$\{date\}/);
+  assert.match(cache, /:entry:\$\{assignmentId\}/);
+  assert.match(cache, /:batch:\$\{batchId\}/);
+  assert.match(cache, /invalidate\(STUDENT_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
+  assert.match(assignmentUi, /loadStudentWritingAssignmentCalendar/);
+  assert.match(assignmentUi, /loadStudentWritingAssignmentsDay/);
   assert.match(cache, /status: "refreshing"/);
   assert.match(cache, /current\.generation === generation/);
   assert.match(cache, /entry\?\.status === "success" \|\| entry\?\.status === "refreshing"/);
-  assert.doesNotMatch(assignmentUi, /返回我的作业/);
   assert.match(practice, /if \(initialAttempt\.assignment_id\) \{[\s\S]*invalidate\(STUDENT_WRITING_OVERVIEW_CACHE_KEY\)/);
 });
 
-test("student assignment endpoint only returns active non-deleted work", () => {
-  const route = source("app/api/writing/assignments/route.ts");
-  assert.match(route, /\.eq\("status", "active"\)/);
-  assert.match(route, /\.is\("deleted_at", null\)/);
-  assert.match(route, /group_id,group_position/);
+test("student day details are database-bounded before attempt and review hydration", () => {
+  const route = source("app/api/writing/assignments/day/route.ts");
+  const details = source("lib/studentWritingAssignments.server.ts");
+  assert.match(route, /\.gte\("assigned_at", range\.startInclusive\)/);
+  assert.match(route, /\.lt\("assigned_at", range\.endExclusive\)/);
+  assert.match(route, /\.eq\("writing_assignments\.status", "active"\)/);
+  assert.match(route, /\.is\("writing_assignments\.deleted_at", null\)/);
+  assert.match(details, /\.in\("assignment_id", assignmentIds\)/);
+  assert.match(details, /from\("writing_attempts"\)/);
+  assert.match(details, /from\("writing_reviews"\)/);
+  assert.doesNotMatch(route, /readAllSupabaseRows/);
+  assert.doesNotMatch(details, /response_text|question_snapshot,/);
+  assert.match(source("supabase/student_assignment_calendar_index.sql"), /student_id, assigned_at, assignment_id/);
 });
 
 test("student and teacher multi-question pages reuse existing writing and review entry points", () => {
   const studentUi = source("components/student/StudentWritingAssignments.tsx");
   const teacherUi = source("components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx");
   const teacherRoute = source("app/api/teacher/writing/assignments/batches/[batchId]/route.ts");
-  assert.match(studentUi, /groupStudentWritingAssignments/);
+  assert.match(studentUi, /loadStudentWritingAssignmentBatch/);
   assert.match(studentUi, /<StudentWritingAssignmentCard/);
   assert.match(studentUi, /<WritingPractice/);
   assert.match(teacherUi, /getWritingAssignmentReviewAction/);

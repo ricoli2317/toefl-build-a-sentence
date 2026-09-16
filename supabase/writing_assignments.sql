@@ -78,6 +78,8 @@ create index if not exists writing_assignments_teacher_lifecycle_idx
   where deleted_at is null;
 create index if not exists writing_assignment_students_student_idx
   on public.writing_assignment_students(student_id, assignment_id);
+create index if not exists writing_assignment_students_student_assigned_idx
+  on public.writing_assignment_students(student_id, assigned_at, assignment_id);
 create index if not exists writing_attempts_assignment_student_submitted_idx
   on public.writing_attempts(assignment_id, user_id, submitted_at)
   where assignment_id is not null and status = 'submitted';
