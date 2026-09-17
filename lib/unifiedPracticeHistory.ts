@@ -1,5 +1,11 @@
 import { WRITING_TASK_CONFIG, type WritingTaskType } from "./writing.ts";
-import { writingReviewResultHref } from "./studentNavigation.ts";
+import {
+  readingFullSetResultHref,
+  readingResultHref,
+  STUDENT_ROUTES,
+  writingReviewResultHref,
+  writingSubmissionResultHref
+} from "./studentNavigation.ts";
 
 export const UNIFIED_HISTORY_TASK_TYPES = [
   "build_sentence",
@@ -208,7 +214,11 @@ function buildReadingFullSetRecords(
       scaledMax: attempt.scaled_max
     },
     resultTarget: {
-      href: `/student/reading/full-sets/${encodeURIComponent(attempt.full_set_id)}/result/${encodeURIComponent(attempt.attempt_id)}`,
+      href: readingFullSetResultHref(
+        attempt.full_set_id,
+        attempt.attempt_id,
+        "practice-history"
+      ),
       label: "查看结果",
       method: "GET" as const
     },
@@ -313,7 +323,11 @@ function buildWritingRecords(
           method: "GET" as const
         }
       : {
-          href: `${config.submissionHref}/${encodeURIComponent(attemptId)}`,
+          href: writingSubmissionResultHref(
+            taskType,
+            attemptId,
+            STUDENT_ROUTES.practiceHistory
+          ),
           label: "查看提交",
           method: "GET" as const
         };
@@ -364,7 +378,7 @@ function buildReadingRecords(
       durationSeconds: duration(attempt.elapsed_seconds),
       metrics: objectiveMetrics(correct, total),
       resultTarget: {
-        href: `/student/reading/results/${encodeURIComponent(attemptId)}`,
+        href: readingResultHref(attemptId, "practice-history"),
         label: "查看结果",
         method: "GET" as const
       },

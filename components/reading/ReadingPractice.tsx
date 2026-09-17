@@ -104,6 +104,12 @@ import {
 import { readingFullSetSessionImagePreloadCache } from "@/lib/reading/fullSetOccurrenceCache.client";
 import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
 import {
+  readingFullSetResultHref,
+  readingResultHref,
+  withReadingResultSource,
+  type ReadingResultSource
+} from "@/lib/studentNavigation";
+import {
   readingWrongbookEditableSlotIds,
   selectReadingWrongbookSubmissionAnswers
 } from "@/lib/reading/wrongbook";
@@ -288,12 +294,15 @@ export function ReadingPractice({ itemId }: { itemId: string }) {
 
 export function ReadingSubmittedReview({
   attemptId,
-  initialQuestionIndex
+  initialQuestionIndex,
+  source
 }: {
   attemptId: string;
   initialQuestionIndex: number;
+  source?: ReadingResultSource;
 }) {
   const router = useRouter();
+  const resultHref = readingResultHref(attemptId, source);
   const [review, setReview] = useState<SubmittedReadingReviewPayload | null>(null);
   const [error, setError] = useState("");
 
@@ -348,7 +357,7 @@ export function ReadingSubmittedReview({
     return (
       <ReadingPracticeMessage
         description={error}
-        onLeave={() => router.push(`/student/reading/results/${encodeURIComponent(attemptId)}`)}
+        onLeave={() => router.push(resultHref)}
         title="无法打开阅读作答"
       />
     );
@@ -363,7 +372,7 @@ export function ReadingSubmittedReview({
       initialQuestionIndex={initialQuestionIndex}
       initialReviewIndex={initialQuestionIndex}
       mode="submitted_review"
-      onBack={() => router.push(`/student/reading/results/${encodeURIComponent(attemptId)}`)}
+      onBack={() => router.push(resultHref)}
       practice={review.practice}
       reviewDisclosures={review.disclosures}
       reviewItems={review.reviewItems}
@@ -374,18 +383,20 @@ export function ReadingSubmittedReview({
 export function ReadingFullSetSubmittedReview({
   attemptId,
   fullSetId,
-  questionIndex
+  questionIndex,
+  source
 }: {
   attemptId: string;
   fullSetId: string;
   questionIndex: number;
+  source?: ReadingResultSource;
 }) {
   const router = useRouter();
   const state = useStudentCachedData<ReadingFullSetReviewPayload>(
     studentReadingFullSetReviewCacheKey(attemptId),
     (session) => loadReadingFullSetReview(fullSetId, attemptId, session)
   );
-  const resultHref = `/student/reading/full-sets/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`;
+  const resultHref = readingFullSetResultHref(fullSetId, attemptId, source);
   if (state.error) return <ReadingPracticeMessage description={state.error} onLeave={() => router.push(resultHref)} title="无法打开套题作答" />;
   if (state.loading || !state.data) return <ReadingPracticeMessage description="正在加载作答内容..." title="正在准备套题作答" />;
   return (
@@ -393,6 +404,7 @@ export function ReadingFullSetSubmittedReview({
       initialSourceAnswerIndex={questionIndex}
       onBack={() => router.push(resultHref)}
       payload={state.data}
+      source={source}
     />
   );
 }
@@ -422,11 +434,13 @@ async function loadReadingFullSetReview(
 function ReadingFullSetReviewShell({
   initialSourceAnswerIndex,
   onBack,
-  payload
+  payload,
+  source
 }: {
   initialSourceAnswerIndex: number;
   onBack: () => void;
   payload: ReadingFullSetReviewPayload;
+  source?: ReadingResultSource;
 }) {
   const [activeIndex, setActiveIndex] = useState(() =>
     findReadingFullSetReviewIndex(payload.reviewItems, initialSourceAnswerIndex)
@@ -457,10 +471,13 @@ function ReadingFullSetReviewShell({
     const target = payload.reviewItems[bounded];
     if (!target) return;
     setActiveIndex(bounded);
-    if (target.href && window.location.pathname !== target.href) {
-      window.history.pushState({ readingFullSetReviewIndex: bounded }, "", target.href);
+    const targetHref = target.href
+      ? withReadingResultSource(target.href, source)
+      : undefined;
+    if (targetHref && `${window.location.pathname}${window.location.search}` !== targetHref) {
+      window.history.pushState({ readingFullSetReviewIndex: bounded }, "", targetHref);
     }
-  }, [payload.reviewItems]);
+  }, [payload.reviewItems, source]);
 
   const currentItem = payload.reviewItems[activeIndex] ?? payload.reviewItems[0];
   const currentOccurrence = currentItem

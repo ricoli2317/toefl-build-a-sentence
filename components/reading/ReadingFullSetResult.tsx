@@ -16,16 +16,23 @@ import {
   buildReadingFullSetReviewItems,
   readingFullSetReviewTotalTime
 } from "@/lib/reading/fullSetReview";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import {
+  getReadingFullSetResultNavigation,
+  readingFullSetResultHref,
+  withReadingResultSource,
+  type ReadingResultSource
+} from "@/lib/studentNavigation";
 import { ReadingFullSetQuestionNavigator } from "./ReadingFullSetQuestionNavigator";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
 export function ReadingFullSetResult({
   attemptId,
-  fullSetId
+  fullSetId,
+  source
 }: {
   attemptId: string;
   fullSetId: string;
+  source?: ReadingResultSource;
 }) {
   const state = useStudentCachedData<ReadingFullSetResultPayload>(
     studentReadingFullSetResultCacheKey(attemptId),
@@ -35,21 +42,21 @@ export function ReadingFullSetResult({
   if (state.error || !state.data) return <StudentErrorState text="没有找到套题结果或加载失败。" />;
   const result = state.data;
   const correctPoints = result.answers.filter((answer) => answer.isCorrect).length;
-  const questionHrefBase = `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`;
+  const questionHrefBase = readingFullSetResultHref(fullSetId, attemptId);
   const reviewItems = buildReadingFullSetReviewItems(
     result.answers,
-    (answerIndex) => `${questionHrefBase}/questions/${answerIndex}`
+    (answerIndex) => withReadingResultSource(
+      `${questionHrefBase}/questions/${answerIndex}`,
+      source
+    )
   );
+  const navigation = getReadingFullSetResultNavigation(result.attempt.title, source);
   return (
     <div className="student-result-overview-layout">
       <div className="student-result-overview-navigation">
         <StudentNavigation
-          backHref={STUDENT_ROUTES.practiceHistory}
-          crumbs={[
-            { label: "学生首页", href: STUDENT_ROUTES.home },
-            { label: "练习历史", href: STUDENT_ROUTES.practiceHistory },
-            { label: result.attempt.title }
-          ]}
+          backHref={navigation.backHref}
+          crumbs={navigation.crumbs}
         />
       </div>
       <PracticeResultSummary

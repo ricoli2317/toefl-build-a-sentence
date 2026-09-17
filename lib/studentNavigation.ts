@@ -23,23 +23,155 @@ export type StudentBreadcrumbItem = {
   label: string;
 };
 
+export type ReadingResultSource = "practice-history";
+
+const READING_RESULT_DESTINATIONS = {
+  ctw: { href: STUDENT_ROUTES.readingCtw, label: "Complete the Words" },
+  rdl: { href: STUDENT_ROUTES.readingRdl, label: "Read in Daily Life" },
+  rap: { href: STUDENT_ROUTES.readingRap, label: "Read an Academic Passage" }
+} as const;
+
+export function parseReadingResultSource(
+  value: string | string[] | undefined
+): ReadingResultSource | undefined {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  return candidate === "practice-history" ? candidate : undefined;
+}
+
+export function withReadingResultSource(href: string, source?: ReadingResultSource) {
+  if (!source) return href;
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}source=${encodeURIComponent(source)}`;
+}
+
+export function readingResultHref(attemptId: string, source?: ReadingResultSource) {
+  return withReadingResultSource(
+    `/student/reading/results/${encodeURIComponent(attemptId)}`,
+    source
+  );
+}
+
+export function readingFullSetResultHref(
+  fullSetId: string,
+  attemptId: string,
+  source?: ReadingResultSource
+) {
+  return withReadingResultSource(
+    `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/result/${encodeURIComponent(attemptId)}`,
+    source
+  );
+}
+
+export function getReadingResultNavigation(
+  taskType: keyof typeof READING_RESULT_DESTINATIONS,
+  source?: ReadingResultSource
+): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
+  const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
+  if (source === "practice-history") {
+    return {
+      backHref: STUDENT_ROUTES.practiceHistory,
+      crumbs: [
+        rootCrumb,
+        { label: STUDENT_UI_TEXT.practiceHistory, href: STUDENT_ROUTES.practiceHistory },
+        { label: "查看结果" }
+      ]
+    };
+  }
+  const destination = READING_RESULT_DESTINATIONS[taskType];
+  return {
+    backHref: destination.href,
+    crumbs: [
+      rootCrumb,
+      { label: destination.label, href: destination.href },
+      { label: STUDENT_UI_TEXT.result }
+    ]
+  };
+}
+
+export function getReadingFullSetResultNavigation(
+  title: string,
+  source?: ReadingResultSource
+): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
+  const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
+  if (source === "practice-history") {
+    return {
+      backHref: STUDENT_ROUTES.practiceHistory,
+      crumbs: [
+        rootCrumb,
+        { label: STUDENT_UI_TEXT.practiceHistory, href: STUDENT_ROUTES.practiceHistory },
+        { label: title }
+      ]
+    };
+  }
+  return {
+    backHref: STUDENT_ROUTES.readingFullSets,
+    crumbs: [
+      rootCrumb,
+      { label: "Full Set Practice", href: STUDENT_ROUTES.readingFullSets },
+      { label: title }
+    ]
+  };
+}
+
+export function safeStudentReturnTo(value: string | string[] | undefined) {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  if (!candidate || candidate.includes("\\")) return undefined;
+  try {
+    const base = "https://tps.local";
+    const parsed = new URL(candidate, base);
+    return parsed.origin === base && parsed.pathname.startsWith("/student/")
+      ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function writingReviewResultHref(attemptId: string, returnTo: string) {
   const params = new URLSearchParams({ returnTo: safeWritingReviewReturnTo(returnTo) });
   return `${STUDENT_ROUTES.writingReviews}/${encodeURIComponent(attemptId)}?${params}`;
 }
 
 export function safeWritingReviewReturnTo(value: string | string[] | undefined) {
-  const candidate = Array.isArray(value) ? value[0] : value;
-  if (!candidate || candidate.includes("\\")) return STUDENT_ROUTES.writingReviews;
-  try {
-    const base = "https://tps.local";
-    const parsed = new URL(candidate, base);
-    return parsed.origin === base && parsed.pathname.startsWith("/student/")
-      ? `${parsed.pathname}${parsed.search}${parsed.hash}`
-      : STUDENT_ROUTES.writingReviews;
-  } catch {
-    return STUDENT_ROUTES.writingReviews;
+  return safeStudentReturnTo(value) ?? STUDENT_ROUTES.writingReviews;
+}
+
+export function writingSubmissionResultHref(
+  taskType: "email" | "academic_discussion",
+  attemptId: string,
+  returnTo?: string
+) {
+  const section = taskType === "email" ? "write-email" : "academic-discussion";
+  const href = `/student/${section}/submission/${encodeURIComponent(attemptId)}`;
+  const safeReturnTo = safeStudentReturnTo(returnTo);
+  return safeReturnTo
+    ? `${href}?${new URLSearchParams({ returnTo: safeReturnTo })}`
+    : href;
+}
+
+export function getWritingResultNavigation(
+  taskType: "email" | "academic_discussion",
+  assignmentId?: string | null,
+  returnTo?: string
+): { backHref: string; backLabel: string } {
+  const safeReturnTo = safeStudentReturnTo(returnTo);
+  if (safeReturnTo) {
+    return {
+      backHref: safeReturnTo,
+      backLabel: safeReturnTo.startsWith(STUDENT_ROUTES.practiceHistory)
+        ? "返回练习历史"
+        : safeReturnTo.includes("/submissions/")
+          ? "返回提交记录"
+          : "返回"
+    };
   }
+  if (assignmentId) {
+    return { backHref: STUDENT_ROUTES.assignments, backLabel: "返回作业" };
+  }
+  const backHref = taskType === "email"
+    ? STUDENT_ROUTES.writeEmail
+    : STUDENT_ROUTES.academicDiscussion;
+  return { backHref, backLabel: "返回题目列表" };
 }
 
 export function writingSubmissionHistoryHref(

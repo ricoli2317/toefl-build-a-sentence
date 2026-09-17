@@ -211,7 +211,10 @@ test("writing metrics never expose accuracy or X/Y score, and published review c
   assert.equal(email.resultTarget.label, "查看批改");
   assert.match(email.resultTarget.href, /^\/student\/writing-reviews\/email-1\?returnTo=/);
   assert.equal(discussion.resultTarget.label, "查看提交");
-  assert.equal(discussion.resultTarget.href, "/student/academic-discussion/submission/discussion-1");
+  assert.equal(
+    discussion.resultTarget.href,
+    "/student/academic-discussion/submission/discussion-1?returnTo=%2Fstudent%2Fpractice-history"
+  );
 });
 
 test("objective metrics and result/retake targets reuse the existing routes", () => {
@@ -222,7 +225,7 @@ test("objective metrics and result/retake targets reuse the existing routes", ()
   assert.equal(bas.resultTarget.href, "/student/results/bas-1?source=practice-history");
   assert.equal(bas.retakeTarget.href, "/student/practice/bas-set");
   assert.deepEqual(ctw.metrics, { kind: "objective", correct: 8, total: 10, accuracy: 0.8 });
-  assert.equal(ctw.resultTarget.href, "/student/reading/results/ctw-1");
+  assert.equal(ctw.resultTarget.href, "/student/reading/results/ctw-1?source=practice-history");
   assert.deepEqual(ctw.retakeTarget, {
     href: "/api/reading/attempts/ctw-1/retake",
     label: "重新练习",
@@ -253,7 +256,10 @@ test("Full Set history preserves every completed attempt and presents scaled ran
     scaledMin: 4,
     scaledMax: 4.5
   });
-  assert.equal(fullSets[0].resultTarget.href, "/student/reading/full-sets/20260601A/result/full-b");
+  assert.equal(
+    fullSets[0].resultTarget.href,
+    "/student/reading/full-sets/20260601A/result/full-b?source=practice-history"
+  );
   assert.equal(fullSets[0].retakeTarget.label, "再次练习");
   assert.doesNotMatch(JSON.stringify(fullSets), /50/);
 });
@@ -287,12 +293,13 @@ test("unified API reads only list projections and explicitly gates submitted row
   }
 });
 
-test("legacy reading history redirects and the sidebar has only unified history", () => {
+test("legacy reading history redirects and the sidebar activates history only for explicit history results", () => {
   const redirectPage = read("app/student/reading/history/page.tsx");
   const shell = read("components/student/StudentShell.tsx");
   assert.match(redirectPage, /redirect\(STUDENT_ROUTES\.practiceHistory\)/);
   assert.equal(shell.includes('label: "阅读历史"'), false);
-  assert.match(shell, /path\.startsWith\("\/student\/reading\/results\/"\)/);
+  assert.match(shell, /isPracticeHistoryResult\(path, searchParams\)/);
+  assert.match(shell, /searchParams\.get\("source"\)\?\.startsWith\("practice-history"\)/);
 });
 
 test("history UI reuses CompleteTheWordsIcon and renders writing-specific metric language", () => {

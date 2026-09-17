@@ -59,7 +59,11 @@ import {
 } from "@/lib/writing";
 import { normalizeWritingOvertimeRanges, updateWritingOvertimeRanges } from "@/lib/writingOvertime";
 import { WritingOvertimeText } from "@/components/writing/WritingOvertimeText";
-import { writingReviewResultHref } from "@/lib/studentNavigation";
+import {
+  getWritingResultNavigation,
+  writingReviewResultHref,
+  writingSubmissionResultHref
+} from "@/lib/studentNavigation";
 import {
   applyExternalWritingPaste,
   canUseExternalWritingPaste
@@ -92,6 +96,7 @@ export function WritingPractice({
   forceNew,
   mode = "practice",
   questionId,
+  returnTo,
   taskType
 }: {
   assignmentId?: string;
@@ -99,6 +104,7 @@ export function WritingPractice({
   forceNew?: boolean;
   mode?: "practice" | "readonly";
   questionId?: string;
+  returnTo?: string;
   taskType: WritingTaskType;
 }) {
   const router = useRouter();
@@ -308,6 +314,7 @@ export function WritingPractice({
       readOnly={mode === "readonly"}
       reviewPublished={payload.has_published_review === true}
       question={payload.question}
+      returnTo={returnTo}
       taskType={taskType}
     />
   );
@@ -325,6 +332,7 @@ function WritingPracticeSession({
   readOnly: requestedReadOnly,
   reviewPublished,
   question,
+  returnTo,
   taskType
 }: {
   accessToken: string;
@@ -338,6 +346,7 @@ function WritingPracticeSession({
   readOnly: boolean;
   reviewPublished: boolean;
   question: WritingQuestion;
+  returnTo?: string;
   taskType: WritingTaskType;
 }) {
   const router = useRouter();
@@ -390,10 +399,20 @@ function WritingPracticeSession({
         question.question_id
       )}?new=1`;
   const readOnly = requestedReadOnly || attempt.status === "submitted";
+  const resultNavigation = getWritingResultNavigation(
+    taskType,
+    initialAttempt.assignment_id,
+    requestedReadOnly ? returnTo : undefined
+  );
+  const exitHref = readOnly ? resultNavigation.backHref : listHref;
   const reviewHref = reviewPublished
     ? writingReviewResultHref(
         attempt.attempt_id,
-        `${WRITING_TASK_CONFIG[taskType].submissionHref}/${encodeURIComponent(attempt.attempt_id)}`
+        writingSubmissionResultHref(
+          taskType,
+          attempt.attempt_id,
+          requestedReadOnly ? returnTo : undefined
+        )
       )
     : undefined;
 
@@ -626,12 +645,12 @@ function WritingPracticeSession({
         // pagehide will make one final best-effort sync as navigation starts.
       }
     }
-    router.push(listHref);
+    router.push(exitHref);
   }
 
   function requestExit() {
     if (readOnly) {
-      router.push(listHref);
+      router.push(exitHref);
     } else if (dirty) {
       setExitPromptOpen(true);
     } else {
@@ -680,7 +699,8 @@ function WritingPracticeSession({
               <EmailResponsePanel
                 actions={editor}
                 disabled={saving || submitting}
-                listHref={listHref}
+                backHref={resultNavigation.backHref}
+                backLabel={resultNavigation.backLabel}
                 onSave={() => void saveDraft()}
                 onSubmit={requestManualSubmit}
                 question={question as EmailQuestion}
@@ -696,7 +716,8 @@ function WritingPracticeSession({
                 avatarMapReady={avatarMapReady}
                 customAvatars={assignmentQuestionSource === "custom"}
                 disabled={saving || submitting}
-                listHref={listHref}
+                backHref={resultNavigation.backHref}
+                backLabel={resultNavigation.backLabel}
                 onSave={() => void saveDraft()}
                 onSubmit={requestManualSubmit}
                 question={question as AcademicDiscussionQuestion}
@@ -781,8 +802,9 @@ type EditorActions = ReturnType<typeof useWritingEditor>;
 
 function EmailResponsePanel({
   actions,
+  backHref,
+  backLabel,
   disabled,
-  listHref,
   onSave,
   onSubmit,
   question,
@@ -792,8 +814,9 @@ function EmailResponsePanel({
   wordCount
 }: {
   actions: EditorActions;
+  backHref: string;
+  backLabel: string;
   disabled: boolean;
-  listHref: string;
   onSave: () => void;
   onSubmit: () => void;
   question: EmailQuestion;
@@ -817,7 +840,12 @@ function EmailResponsePanel({
         wordCount={wordCount}
       />
       {readOnly ? (
-        <WritingReadonlyActions listHref={listHref} retakeHref={retakeHref} reviewHref={reviewHref} />
+        <WritingReadonlyActions
+          backHref={backHref}
+          backLabel={backLabel}
+          retakeHref={retakeHref}
+          reviewHref={reviewHref}
+        />
       ) : (
         <WritingPracticeActions compact disabled={disabled} onSave={onSave} onSubmit={onSubmit} />
       )}
@@ -829,9 +857,10 @@ function AcademicResponsePanel({
   actions,
   avatarMap,
   avatarMapReady,
+  backHref,
+  backLabel,
   customAvatars,
   disabled,
-  listHref,
   onSave,
   onSubmit,
   question,
@@ -843,9 +872,10 @@ function AcademicResponsePanel({
   actions: EditorActions;
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
+  backHref: string;
+  backLabel: string;
   customAvatars: boolean;
   disabled: boolean;
-  listHref: string;
   onSave: () => void;
   onSubmit: () => void;
   question: AcademicDiscussionQuestion;
@@ -885,7 +915,12 @@ function AcademicResponsePanel({
         wordCount={wordCount}
       />
       {readOnly ? (
-        <WritingReadonlyActions listHref={listHref} retakeHref={retakeHref} reviewHref={reviewHref} />
+        <WritingReadonlyActions
+          backHref={backHref}
+          backLabel={backLabel}
+          retakeHref={retakeHref}
+          reviewHref={reviewHref}
+        />
       ) : (
         <WritingPracticeActions compact disabled={disabled} onSave={onSave} onSubmit={onSubmit} />
       )}
@@ -1032,11 +1067,13 @@ function EditorButton({
 }
 
 function WritingReadonlyActions({
-  listHref,
+  backHref,
+  backLabel,
   retakeHref,
   reviewHref
 }: {
-  listHref: string;
+  backHref: string;
+  backLabel: string;
   retakeHref?: string;
   reviewHref?: string;
 }) {
@@ -1055,11 +1092,11 @@ function WritingReadonlyActions({
       ) : null}
       <button
         className="writing-action-secondary"
-        onClick={() => router.push(listHref)}
+        onClick={() => router.push(backHref)}
         type="button"
       >
         <List aria-hidden="true" size={19} />
-        返回题目列表
+        {backLabel}
       </button>
       {retakeHref ? (
         <button

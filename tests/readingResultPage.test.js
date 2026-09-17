@@ -56,7 +56,7 @@ test("RDL and RAP share centered circular state chips with neutral unanswered st
   assert.match(statusChipsUi, /h-10 w-10/);
   assert.match(statusChipsUi, /!answer\.isAnswered \? "unanswered"/);
   assert.match(statusChipsUi, /border-student-border bg-student-bg text-student-muted/);
-  assert.match(statusChipsUi, /href=\{`\$\{questionHrefBase\}\/questions\/\$\{reviewIndex\}`\}/);
+  assert.match(statusChipsUi, /href=\{questionHref[\s\S]*`\$\{questionHrefBase\}\/questions\/\$\{reviewIndex\}`/);
   assert.match(resultRoute, /question_time_seconds/);
 });
 

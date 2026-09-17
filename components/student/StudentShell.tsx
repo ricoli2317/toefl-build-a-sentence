@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
   Clock3,
@@ -25,7 +25,7 @@ type NavigationItem = {
   icon: NavigationIcon;
   iconClassName?: string;
   label: string;
-  match?: (path: string) => boolean;
+  match?: (path: string, searchParams: { get(name: string): string | null }) => boolean;
   tone?: "reading";
 };
 
@@ -95,7 +95,9 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
         href: STUDENT_ROUTES.readingFullSets,
         icon: STUDENT_PRACTICE_ICONS.full_set,
         label: "Full Set Practice",
-        match: (path) => path.startsWith(STUDENT_ROUTES.readingFullSets),
+        match: (path, searchParams) =>
+          path.startsWith(STUDENT_ROUTES.readingFullSets)
+          && !isPracticeHistoryResult(path, searchParams),
         tone: "reading"
       }
     ]
@@ -114,10 +116,9 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
         href: STUDENT_ROUTES.practiceHistory,
         icon: Clock3,
         label: STUDENT_UI_TEXT.practiceHistory,
-        match: (path) =>
+        match: (path, searchParams) =>
           path.startsWith(STUDENT_ROUTES.practiceHistory)
-          || path.startsWith("/student/results/")
-          || path.startsWith("/student/reading/results/")
+          || isPracticeHistoryResult(path, searchParams)
       },
       {
         href: STUDENT_ROUTES.assignments,
@@ -131,6 +132,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
 
 export function StudentShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [menuOpen, setMenuOpen] = useState(false);
   const immersive =
     pathname.startsWith("/student/write-email/practice/") ||
@@ -188,7 +190,13 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
               ) : null}
               <div className="grid gap-1">
                 {section.items.map((item) => (
-                  <StudentNavItem item={item} key={item.label} onNavigate={() => setMenuOpen(false)} pathname={pathname} />
+                  <StudentNavItem
+                    item={item}
+                    key={item.label}
+                    onNavigate={() => setMenuOpen(false)}
+                    pathname={pathname}
+                    searchParams={searchParams}
+                  />
                 ))}
               </div>
             </div>
@@ -218,14 +226,16 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
 function StudentNavItem({
   item,
   onNavigate,
-  pathname
+  pathname,
+  searchParams
 }: {
   item: NavigationItem;
   onNavigate: () => void;
   pathname: string;
+  searchParams: { get(name: string): string | null };
 }) {
   const Icon = item.icon;
-  const active = item.match?.(pathname) ?? false;
+  const active = item.match?.(pathname, searchParams) ?? false;
   const className = clsx(
     "relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-[13px] font-semibold transition",
     active
@@ -254,4 +264,14 @@ function StudentNavItem({
       {content}
     </Link>
   );
+}
+
+function isPracticeHistoryResult(
+  path: string,
+  searchParams: { get(name: string): string | null }
+) {
+  const isResult = path.startsWith("/student/results/")
+    || path.startsWith("/student/reading/results/")
+    || /^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+/.test(path);
+  return isResult && searchParams.get("source")?.startsWith("practice-history") === true;
 }

@@ -77,7 +77,7 @@ test("historical review route is owned submitted-only GET data with no mutation 
 
 test("result chip route keeps submitted attempt id plus zero-based question index", () => {
   assert.match(resultUi, /questionHrefBase=\{`\/student\/reading\/results\/\$\{encodeURIComponent\(attemptId\)\}`\}/);
-  assert.match(statusChipsUi, /href=\{`\$\{questionHrefBase\}\/questions\/\$\{reviewIndex\}`\}/);
+  assert.match(statusChipsUi, /href=\{questionHref[\s\S]*`\$\{questionHrefBase\}\/questions\/\$\{reviewIndex\}`/);
   assert.match(reviewPage, /params: \{ attemptId: string; questionIndex: string \}/);
   assert.match(reviewPage, /ReadingSubmittedReview/);
 });

@@ -24,10 +24,12 @@ export function readingAnswerStateToneClassName(state: ReadingAnswerStateName) {
 
 export function ReadingQuestionStatusChips({
   answers,
-  questionHrefBase
+  questionHrefBase,
+  questionHref
 }: {
   answers: ReadingStatusAnswer[];
   questionHrefBase: string;
+  questionHref?: (reviewIndex: number) => string;
 }) {
   return (
     <div className="mt-6 flex flex-wrap justify-center gap-3" data-testid="reading-result-question-chips">
@@ -39,7 +41,9 @@ export function ReadingQuestionStatusChips({
             aria-label={`第${answer.order}题，${state === "correct" ? "正确" : state === "incorrect" ? "错误" : "未作答"}`}
             className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold tabular-nums ${readingAnswerStateToneClassName(state)}`}
             data-answer-state={state}
-            href={`${questionHrefBase}/questions/${reviewIndex}`}
+            href={questionHref
+              ? questionHref(reviewIndex)
+              : `${questionHrefBase}/questions/${reviewIndex}`}
             key={answer.answerId}
           >
             {answer.order}

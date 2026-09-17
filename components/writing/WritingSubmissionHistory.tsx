@@ -16,6 +16,7 @@ import {
 import {
   STUDENT_ROUTES,
   writingReviewResultHref,
+  writingSubmissionResultHref,
   writingSubmissionHistoryHref
 } from "@/lib/studentNavigation";
 import {
@@ -89,7 +90,11 @@ export function WritingSubmissionHistory({
         emptyState={<StudentEmptyState text="这道题还没有已提交的写作记录。" />}
         items={attempts.map((attempt, index) => {
             const submissionNumber = attempts.length - index;
-            const submissionHref = `${config.submissionHref}/${encodeURIComponent(attempt.attempt_id)}`;
+            const submissionHref = writingSubmissionResultHref(
+              taskType,
+              attempt.attempt_id,
+              historyHref
+            );
             return {
               id: attempt.attempt_id,
               title: `提交 ${submissionNumber}`,

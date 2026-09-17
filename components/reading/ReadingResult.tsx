@@ -26,11 +26,22 @@ import {
   EMPTY_RESULT_PEER_COMPARISON,
   type ResultPeerComparison
 } from "@/lib/resultPeerComparison";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import {
+  getReadingResultNavigation,
+  readingResultHref,
+  withReadingResultSource,
+  type ReadingResultSource
+} from "@/lib/studentNavigation";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
 import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
-export function ReadingResult({ attemptId }: { attemptId: string }) {
+export function ReadingResult({
+  attemptId,
+  source
+}: {
+  attemptId: string;
+  source?: ReadingResultSource;
+}) {
   const state = useStudentCachedData<ReadingResultPayload>(
     studentReadingResultCacheKey(attemptId),
     (session) => loadReadingResult(attemptId, session)
@@ -65,17 +76,14 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
   const timeComparison = peerComparison
     ? formatTimeComparison(peerComparison)
     : RESULT_COMPARISON_LOADING_TEXT;
+  const navigation = getReadingResultNavigation(attempt.taskType, source);
 
   return (
     <div className="student-result-overview-layout">
       <div className="student-result-overview-navigation">
         <StudentNavigation
-          backHref={STUDENT_ROUTES.practiceHistory}
-          crumbs={[
-            { label: "学生首页", href: STUDENT_ROUTES.home },
-            { label: "练习历史", href: STUDENT_ROUTES.practiceHistory },
-            { label: "查看结果" }
-          ]}
+          backHref={navigation.backHref}
+          crumbs={navigation.crumbs}
         />
       </div>
       <PracticeResultSummary
@@ -89,6 +97,7 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
       <ReadingDetailCard
         answers={answers}
         attemptId={attempt.attemptId}
+        source={source}
         submittedAt={attempt.submittedAt}
       />
     </div>
@@ -98,10 +107,12 @@ export function ReadingResult({ attemptId }: { attemptId: string }) {
 function ReadingDetailCard({
   answers,
   attemptId,
+  source,
   submittedAt,
 }: {
   answers: ReadingResultAnswer[];
   attemptId: string;
+  source?: ReadingResultSource;
   submittedAt: string;
 }) {
   return (
@@ -115,6 +126,10 @@ function ReadingDetailCard({
       </div>
       <ReadingQuestionStatusChips
         answers={answers}
+        questionHref={(reviewIndex) => withReadingResultSource(
+          `${readingResultHref(attemptId)}/questions/${reviewIndex}`,
+          source
+        )}
         questionHrefBase={`/student/reading/results/${encodeURIComponent(attemptId)}`}
       />
     </section>

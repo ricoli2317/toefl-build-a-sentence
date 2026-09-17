@@ -250,7 +250,7 @@ test("History and Result UI provide Back, loading, error, empty, view, and retak
   assert.match(readingHistoryUi, /StudentEmptyState/);
   assert.match(readingHistoryUi, /查看结果/);
   assert.match(readingHistoryUi, /ReadingRetakeButton/);
-  assert.match(readingResultUi, /backHref=\{STUDENT_ROUTES\.practiceHistory\}/);
+  assert.match(readingResultUi, /getReadingResultNavigation\(attempt\.taskType, source\)/);
   assert.match(readingResultUi, /ReadingRetakeButton/);
   assert.doesNotMatch(readingHistoryUi, />\{attempt\.attemptId\}<|>\{attempt\.logicalItemId\}</);
 });
