@@ -137,8 +137,13 @@ begin
   )
   on conflict (material_id) do update set
     -- Display-title canonicalization is safe and does not alter material
-    -- identity or any frozen R2 asset binding.
-    title = excluded.title;
+    -- identity or any frozen R2 asset binding. material_type changes only
+    -- after an explicit content-review choice selects the source version.
+    title = excluded.title,
+    material_type = case
+      when v_replace_canonical_content then excluded.material_type
+      else reading_materials.material_type
+    end;
 
   insert into public.reading_logical_items (
     logical_item_id, module, title, first_seen_date, first_seen_source_label,

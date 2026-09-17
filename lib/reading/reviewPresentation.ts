@@ -61,6 +61,7 @@ export type ReadingReviewVersion = {
   title: string | null;
   material: {
     title: string | null;
+    materialType: string | null;
     source: string;
     imageUrl: string | null;
   } | null;
@@ -177,6 +178,7 @@ export function buildReadingReviewVersion(
     title: packageData.item.title,
     material: material ? {
       title: material.title,
+      materialType: material.materialType,
       source: material.source,
       imageUrl: optionalImageUrl(material.imageAssetPath)
     } : null,

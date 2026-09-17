@@ -50,6 +50,7 @@ function ReadingVersion({ title, version }: { title: string; version: ReadingRev
       {version.material ? (
         <div className="mt-3">
           <p className="text-sm font-semibold text-student-text">{version.material.title ?? "无标题素材"}</p>
+          <p className="mt-1 text-sm text-student-muted">素材类型：{version.material.materialType ?? "未提供"}</p>
           {version.material.imageUrl ? (
             <a href={version.material.imageUrl} rel="noreferrer" target="_blank" title="点击放大素材图片">
               <img alt={`${title}素材`} className="mt-2 max-h-[32rem] w-full rounded-lg bg-white object-contain" loading="lazy" src={version.material.imageUrl} />

@@ -142,6 +142,7 @@ export async function prepareReadingPackagesForImport(
     let possibleDuplicateLogicalItemIds: string[] = [];
     let contentReconciliations: PreparedReadingImportPackage["contentReconciliations"] = [];
     let historicalDuplicateLogicalItemIds: string[] = [];
+    let comparedDatabaseCanonicalContent = false;
     let preparationConflict: string | null = incoming.preparationConflicts.get(incomingPackage.item.logicalItemId) ?? null;
     // A strict CTW fingerprint match is a stable compatibility owner. Its
     // canonical text may have been corrected later without rewriting the
@@ -214,6 +215,7 @@ export async function prepareReadingPackagesForImport(
             historical,
             batchVariants
           );
+          comparedDatabaseCanonicalContent = true;
         }
         try {
           packageData = attachIncomingOccurrencesToHistoricalPackage(historical, incomingPackage);
@@ -239,6 +241,12 @@ export async function prepareReadingPackagesForImport(
       } else if (existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
         throw new Error(`Historical Reading canonical content is missing for ${existingItem.logicalItemId}`);
       }
+    }
+    if (!comparedDatabaseCanonicalContent && incomingPackage.item.module === "rdl") {
+      contentReconciliations = buildRegisteredMaterialContentReconciliations(
+        options.rdlMaterialCatalog ?? [],
+        batchVariants
+      );
     }
     return {
       packageData,
@@ -404,8 +412,40 @@ function buildDatabaseCanonicalContentReconciliations(
   return Array.from(byVariant.values());
 }
 
+function buildRegisteredMaterialContentReconciliations(
+  catalog: ReadingMaterial[],
+  incomingVariants: ReadingImportPackage[]
+): PreparedReadingImportPackage["contentReconciliations"] {
+  const registeredById = new Map(catalog.map((material) => [material.materialId, material]));
+  const byVariant = new Map<string, PreparedReadingImportPackage["contentReconciliations"][number]>();
+  for (const incomingPackage of incomingVariants) {
+    const incomingMaterial = incomingPackage.materials[0];
+    const registered = incomingMaterial ? registeredById.get(incomingMaterial.materialId) : undefined;
+    if (!incomingMaterial || !registered || registered.materialType === incomingMaterial.materialType) continue;
+    const existingPackage: ReadingImportPackage = {
+      ...incomingPackage,
+      materials: incomingPackage.materials.map((material) =>
+        material.materialId === registered.materialId
+          ? { ...material, materialType: registered.materialType }
+          : material
+      )
+    };
+    const item = buildReadingContentConflict(existingPackage, incomingPackage);
+    if (!item) continue;
+    const key = contentConflictVariantKey(item);
+    const prior = byVariant.get(key);
+    if (!prior) {
+      byVariant.set(key, { item, existingPackage, incomingPackage });
+      continue;
+    }
+    prior.item.sources = uniqueContentConflictSources([...prior.item.sources, ...item.sources]);
+  }
+  return Array.from(byVariant.values());
+}
+
 function contentConflictVariantKey(item: ReadingContentConflictItem) {
   return JSON.stringify({
+    materialConflicts: item.materialConflicts.map(({ kind, existing, incoming }) => ({ kind, existing, incoming })),
     passageConflicts: item.passageConflicts.map(({ kind, existing, incoming }) => ({ kind, existing, incoming })),
     questionConflicts: item.questionConflicts.map((conflict) => ({
       questionOrder: conflict.questionOrder,
@@ -442,7 +482,7 @@ export function assertPreparedReadingPackageCanImport(prepared: {
 }) {
   if (prepared.occurrenceConflict) throw new Error(prepared.occurrenceConflict);
   if ((prepared.unresolvedContentConflictCount ?? 0) > 0) {
-    throw Object.assign(new Error("题目内容冲突待确认；明确选择前不能导入。"), {
+    throw Object.assign(new Error("Reading 内容差异待确认；明确选择前不能导入。"), {
       code: "READING_CONTENT_CONFLICT_REQUIRED"
     });
   }

@@ -295,7 +295,7 @@ export function TeacherImportQuestions() {
       return;
     }
     if (readingHasUnresolvedContentConflicts) {
-      setError(`仍有 ${unresolvedReadingContentConflictCount} 项题目内容冲突未处理，请先逐项选择处理方式。`);
+      setError(`仍有 ${unresolvedReadingContentConflictCount} 项 Reading 内容差异未处理，请先逐项选择处理方式。`);
       setLoading(false);
       return;
     }
@@ -912,7 +912,7 @@ function localizeImportOperation(operation?: string) {
     "upsert academic discussion questions": "写入 Academic Discussion 题目",
     "validate Reading group": "校验 Reading 题组",
     "check Reading possible duplicates": "检查 Reading 可能重复内容",
-    "resolve Reading content conflicts": "处理 Reading 题目内容冲突",
+    "resolve Reading content conflicts": "处理 Reading 内容差异",
     "check RDL canonical material": "检查 RDL 题库素材",
     "preflight Reading group": "只读预检 Reading 题组",
     "prepare Reading group commit payload": "准备 Reading 题组写入数据",

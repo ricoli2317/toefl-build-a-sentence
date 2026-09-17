@@ -98,7 +98,13 @@ export function buildReadingCanonicalContentUpdate(
           const incomingMaterial = incoming.materials.find((candidate) =>
             candidate.materialId === material.materialId
           );
-          return incomingMaterial ? { ...material, title: incomingMaterial.title } : material;
+          return incomingMaterial
+            ? {
+                ...material,
+                title: incomingMaterial.title,
+                materialType: incomingMaterial.materialType
+              }
+            : material;
         })
       : incoming.materials,
     passages,

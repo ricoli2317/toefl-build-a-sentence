@@ -193,9 +193,6 @@ function buildCandidate(
     if (!isRdlMaterialType(materialType)) {
       throw new Error(`unsupported material_type ${materialType}`);
     }
-    if (material.materialType !== materialType) {
-      throw new Error(`material_type does not match canonical material ${materialId}`);
-    }
     const title = reconcileIncomingRdlTitle(
       optional(first, "title"),
       material.title,
@@ -223,7 +220,18 @@ function buildCandidate(
         }
       };
     });
-    return baseCandidate("rdl", title, [{ ...material, title }], [], questions, sourceStart, sourceEnd);
+    // Preserve the source-declared type in the incoming package. A mismatch
+    // with the registered canonical material is resolved by the explicit
+    // Reading content-review flow, not rejected during CSV adaptation.
+    return baseCandidate(
+      "rdl",
+      title,
+      [{ ...material, title, materialType }],
+      [],
+      questions,
+      sourceStart,
+      sourceEnd
+    );
   }
 
   const passageId = required(first, "passage_id");

@@ -157,7 +157,7 @@ async function importReadingCsv(
   }
   if (!dryRun && unresolvedContentConflicts.length > 0) {
     throw Object.assign(
-      new Error(`仍有 ${unresolvedContentConflicts.length} 项题目内容冲突未处理，不能正式导入。`),
+      new Error(`仍有 ${unresolvedContentConflicts.length} 项 Reading 内容差异未处理，不能正式导入。`),
       {
         code: "READING_CONTENT_CONFLICT_REQUIRED",
         operation: "resolve Reading content conflicts"

@@ -24,6 +24,7 @@ import {
 } from "./reviewPresentation.ts";
 
 export type ReadingContentDifferenceKind =
+  | "material_type"
   | "passage_title"
   | "passage"
   | "question_type"
@@ -95,6 +96,7 @@ export type ReadingContentConflictItem = {
   sourceQuestionRange: string;
   passageTitle: string | null;
   materialId: string | null;
+  materialConflicts: ReadingContentDifference[];
   passageConflicts: ReadingContentDifference[];
   questionConflicts: ReadingQuestionContentConflict[];
   existingVersion: ReadingReviewVersion;
@@ -107,10 +109,15 @@ export type ReadingContentConflictResolution = {
 };
 
 export function readingContentConflictSummary(
-  item: Pick<ReadingContentConflictItem, "passageConflicts" | "questionConflicts">
+  item: Pick<ReadingContentConflictItem, "materialConflicts" | "passageConflicts" | "questionConflicts">
 ) {
+  const hasMaterial = item.materialConflicts.length > 0;
   const hasPassage = item.passageConflicts.length > 0;
   const hasQuestions = item.questionConflicts.length > 0;
+  if (hasMaterial && !hasPassage && !hasQuestions) {
+    return "已确认复用同一素材，但素材类型存在差异。";
+  }
+  if (hasMaterial) return "已确认复用同一素材，但素材元数据和题目内容存在差异。";
   if (hasPassage && hasQuestions) return "已确认是同一题组，但文章和题目内容存在差异。";
   if (hasPassage) return "已确认是同一篇文章，但文章内容存在差异。";
   return "已确认是同一题组，但题目内容存在差异。";
@@ -124,10 +131,10 @@ export function indexReadingContentConflictResolutions(
   const result = new Map<string, ReadingContentConflictResolution>();
   for (const input of inputs) {
     if (!itemById.has(input.resolutionId)) {
-      throw contentResolutionError(`题目内容冲突 ${input.resolutionId} 不存在或已经失效。`);
+      throw contentResolutionError(`Reading 内容差异 ${input.resolutionId} 不存在或已经失效。`);
     }
     if (result.has(input.resolutionId)) {
-      throw contentResolutionError(`题目内容冲突 ${input.resolutionId} 重复提交。`);
+      throw contentResolutionError(`Reading 内容差异 ${input.resolutionId} 重复提交。`);
     }
     result.set(input.resolutionId, input);
   }
@@ -135,6 +142,7 @@ export function indexReadingContentConflictResolutions(
 }
 
 const DIFFERENCE_LABELS: Record<ReadingContentDifferenceKind, string> = {
+  material_type: "素材类型",
   passage_title: "文章标题",
   passage: "文章正文",
   question_type: "题型",
@@ -158,6 +166,9 @@ export function buildReadingContentConflict(
   if (existing.item.module !== incoming.item.module) {
     throw new Error("Reading content reconciliation requires the same module");
   }
+  const materialConflicts = existing.item.module === "rdl"
+    ? compareRdlMaterials(existing, incoming)
+    : [];
   const passageConflicts = existing.item.module === "rap"
     ? compareRapPassages(existing.passages, incoming.passages)
     : [];
@@ -189,7 +200,7 @@ export function buildReadingContentConflict(
       ctwSlotConflicts
     }];
   });
-  if (passageConflicts.length === 0 && questionConflicts.length === 0) return null;
+  if (materialConflicts.length === 0 && passageConflicts.length === 0 && questionConflicts.length === 0) return null;
   const occurrence = incoming.occurrences[0];
   const sources = incoming.occurrences.map((candidate) => ({
     sourceLabel: candidate.sourceLabel,
@@ -222,11 +233,25 @@ export function buildReadingContentConflict(
       : "",
     passageTitle: title,
     materialId: incoming.item.module === "rdl" ? incoming.materials[0]?.materialId ?? null : null,
+    materialConflicts,
     passageConflicts,
     questionConflicts,
     existingVersion: buildReadingReviewVersion(existing, existingMarkers),
     incomingVersion: buildReadingReviewVersion(incoming, incomingMarkers)
   };
+}
+
+function compareRdlMaterials(existing: ReadingImportPackage, incoming: ReadingImportPackage) {
+  const existingMaterial = existing.materials[0];
+  const incomingMaterial = incoming.materials[0];
+  if (!existingMaterial || !incomingMaterial || existingMaterial.materialId !== incomingMaterial.materialId) {
+    return [];
+  }
+  const existingType = existingMaterial.materialType ?? "未提供";
+  const incomingType = incomingMaterial.materialType ?? "未提供";
+  return existingType === incomingType
+    ? []
+    : [difference("material_type", existingType, incomingType)];
 }
 
 function compareRapPassages(existing: ReadingPassage[], incoming: ReadingPassage[]) {

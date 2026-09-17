@@ -38,8 +38,8 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
     <section className="mt-6 rounded-2xl border border-amber-300 bg-amber-50/40 p-5">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-xl font-bold text-student-text">同题内容差异待确认</h2>
-          <p className="mt-1 text-sm text-student-muted">系统已确认这是同一道题，请选择要保留的题目版本。</p>
+          <h2 className="text-xl font-bold text-student-text">Reading 内容差异待确认</h2>
+          <p className="mt-1 text-sm text-student-muted">系统已确认复用关系，请选择要保留的题库版本或来源版本。</p>
         </div>
       </div>
       <div className="mt-5 grid gap-3">
@@ -66,6 +66,9 @@ export function ReadingContentConflictList({ drafts, items, onChange }: {
               </div>
 
               <div className="mt-4 grid gap-3">
+                {item.materialConflicts.map((difference, index) => (
+                  <DifferenceCard difference={difference} key={`${difference.kind}-${index}`} />
+                ))}
                 {item.passageConflicts.map((difference, index) => (
                   <DifferenceCard difference={difference} key={`${difference.kind}-${index}`} />
                 ))}

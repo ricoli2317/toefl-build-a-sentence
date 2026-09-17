@@ -1369,6 +1369,32 @@ test("same RDL material is reused instead of becoming a possible duplicate", asy
   assert.doesNotThrow(() => assertPreparedReadingPackageCanImport(prepared));
 });
 
+test("registered RDL material_type mismatch is reviewable for a new logical item", async () => {
+  const incoming = packageFrom("read_in_daily_life", "TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
+  incoming.materials[0].materialType = "course_syllabus";
+  const [prepared] = await prepareReadingPackagesForImport(
+    historicalDatabase(),
+    [incoming],
+    {
+      enableHistoricalSemanticFallback: true,
+      rdlMaterialCatalog: [material]
+    }
+  );
+
+  assert.equal(prepared.existingItem, null);
+  assert.equal(prepared.contentReconciliations.length, 1);
+  assert.deepEqual(
+    prepared.contentReconciliations[0].item.materialConflicts.map(({ kind, existing, incoming: value }) => ({
+      kind,
+      existing,
+      incoming: value
+    })),
+    [{ kind: "material_type", existing: "flyer", incoming: "course_syllabus" }]
+  );
+  assert.equal(prepared.contentReconciliations[0].item.passageConflicts.length, 0);
+  assert.equal(prepared.contentReconciliations[0].item.questionConflicts.length, 0);
+});
+
 test("multiple same-passage candidates choose the stable survivor despite question differences", async () => {
   const base = historicalPackage("rap", "reading-rap-af2f63bf59d1743d597f47f4");
   const candidateA = contentVariant(base, (candidate) => {

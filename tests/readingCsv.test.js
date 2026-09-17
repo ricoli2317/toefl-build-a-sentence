@@ -114,14 +114,17 @@ test("Admin RDL preflight accepts a registered versioned canonical asset pair", 
   assert.equal(result.candidates[0].materials[0].imageAssetPath, versioned.imageAssetPath);
 });
 
-test("RDL CSV requires the canonical material_type and rejects a mismatch", () => {
+test("RDL CSV requires material_type but defers a registered-type mismatch to review", () => {
   const missing = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   missing.rows.forEach((row) => { row.material_type = ""; });
   assert.match(adapt("read_in_daily_life", missing).failures[0].reason, /Missing material_type/);
 
   const mismatch = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
   mismatch.rows.forEach((row) => { row.material_type = "announcement"; });
-  assert.match(adapt("read_in_daily_life", mismatch).failures[0].reason, /does not match canonical material/);
+  const result = adapt("read_in_daily_life", mismatch);
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.candidates.length, 1);
+  assert.equal(result.candidates[0].materials[0].materialType, "announcement");
 });
 
 test("RDL preflight accepts the new canonical meeting-minutes and invitation material types", () => {

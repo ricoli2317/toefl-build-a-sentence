@@ -77,12 +77,40 @@ test("RDL and RAP identical canonical content has no conflict", () => {
 });
 
 test("content review summary follows passage, question, and combined conflict scope", () => {
-  assert.equal(readingContentConflictSummary({ passageConflicts: [{}], questionConflicts: [] }),
+  assert.equal(readingContentConflictSummary({ materialConflicts: [{}], passageConflicts: [], questionConflicts: [] }),
+    "已确认复用同一素材，但素材类型存在差异。");
+  assert.equal(readingContentConflictSummary({ materialConflicts: [], passageConflicts: [{}], questionConflicts: [] }),
     "已确认是同一篇文章，但文章内容存在差异。");
-  assert.equal(readingContentConflictSummary({ passageConflicts: [], questionConflicts: [{}] }),
+  assert.equal(readingContentConflictSummary({ materialConflicts: [], passageConflicts: [], questionConflicts: [{}] }),
     "已确认是同一题组，但题目内容存在差异。");
-  assert.equal(readingContentConflictSummary({ passageConflicts: [{}], questionConflicts: [{}] }),
+  assert.equal(readingContentConflictSummary({ materialConflicts: [], passageConflicts: [{}], questionConflicts: [{}] }),
     "已确认是同一题组，但文章和题目内容存在差异。");
+  assert.equal(readingContentConflictSummary({ materialConflicts: [{}], passageConflicts: [], questionConflicts: [{}] }),
+    "已确认复用同一素材，但素材元数据和题目内容存在差异。");
+});
+
+test("RDL material_type mismatch becomes a reviewable metadata conflict", () => {
+  const existing = rdl();
+  const incoming = structuredClone(existing);
+  incoming.materials[0].materialType = "course_syllabus";
+
+  const conflict = buildReadingContentConflict(existing, incoming);
+  assert.equal(conflict.materialConflicts.length, 1);
+  assert.deepEqual(conflict.materialConflicts[0], {
+    kind: "material_type",
+    label: "素材类型",
+    substantive: true,
+    existing: "flyer",
+    incoming: "course_syllabus",
+    inlineDiff: conflict.materialConflicts[0].inlineDiff
+  });
+  assert.equal(conflict.passageConflicts.length, 0);
+  assert.equal(conflict.questionConflicts.length, 0);
+
+  const corrected = buildReadingCanonicalContentUpdate(existing, incoming);
+  assert.equal(corrected.materials[0].materialType, "course_syllabus");
+  assert.equal(corrected.materials[0].imageAssetPath, existing.materials[0].imageAssetPath);
+  assert.equal(corrected.materials[0].hitboxDataPath, existing.materials[0].hitboxDataPath);
 });
 
 test("RDL historical reuse carries the normalized display title without replacing canonical questions", () => {
@@ -715,7 +743,7 @@ test("unresolved content conflict is blocked and resolutions are explicit", () =
   assert.throws(() => assertPreparedReadingPackageCanImport({
     occurrenceConflict: null,
     unresolvedContentConflictCount: 1
-  }), /题目内容冲突待确认/);
+  }), /Reading 内容差异待确认/);
   const indexed = indexReadingContentConflictResolutions([item], [{
     resolutionId: item.resolutionId,
     action: "keep_existing"
@@ -805,6 +833,7 @@ test("atomic correction payload explicitly requests canonical replacement", asyn
   assert.match(sql, /if v_replace_canonical_content then/);
   assert.match(sql, /v_id_owner_fingerprint <> v_dedup_fingerprint[\s\S]*and not v_replace_canonical_content then/);
   assert.match(sql, /on conflict \(material_id\) do update set[\s\S]*title = excluded\.title/);
+  assert.match(sql, /material_type = case[\s\S]*when v_replace_canonical_content then excluded\.material_type[\s\S]*else reading_materials\.material_type/);
 });
 
 test("content conflict UI defaults to compact fixed-direction review with local feedback", () => {
@@ -812,8 +841,9 @@ test("content conflict UI defaults to compact fixed-direction review with local 
     projectRoot,
     "components/import/ReadingContentConflictList.tsx"
   ), "utf8");
-  assert.match(source, /同题内容差异待确认/);
-  assert.match(source, /系统已确认这是同一道题/);
+  assert.match(source, /Reading 内容差异待确认/);
+  assert.match(source, /系统已确认复用关系/);
+  assert.match(source, /item\.materialConflicts\.map/);
   assert.match(source, /第 \{slot\.slotOrder\} 空内容不同/);
   assert.match(source, /<ReadingInlineVersionValue title="题库版本" segments=\{slot\.inlineDiff\.existing\}/);
   assert.match(source, /<ReadingInlineVersionValue title="来源 CSV" segments=\{slot\.inlineDiff\.incoming\}/);
