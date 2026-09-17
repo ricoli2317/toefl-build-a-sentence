@@ -3,6 +3,7 @@ const test = require("node:test");
 
 const {
   RDL_MATERIAL_TYPE_INSTRUCTIONS,
+  isRdlMaterialType,
   rdlMaterialInstruction,
   rdlMaterialTypeFromInstruction
 } = require("../lib/reading/materialTypes.ts");
@@ -12,9 +13,17 @@ test("RDL material types preserve official source instructions", () => {
   assert.equal(rdlMaterialInstruction("instructions"), "Read some instructions.");
   assert.equal(rdlMaterialInstruction("text_message_chain"), "Read a text-message chain.");
   assert.equal(rdlMaterialInstruction("social_media_post"), "Read a social media post.");
+  assert.equal(rdlMaterialInstruction("meeting_minutes"), "Read some meeting minutes.");
+  assert.equal(rdlMaterialInstruction("invitation"), "Read an invitation.");
+  assert.equal(isRdlMaterialType("meeting_minutes"), true);
+  assert.equal(isRdlMaterialType("invitation"), true);
+  assert.equal(isRdlMaterialType("future_authoritative_type_2"), true);
+  assert.equal(isRdlMaterialType("Future_Type"), false);
+  assert.equal(isRdlMaterialType("future-type"), false);
+  assert.equal(isRdlMaterialType(" future_type "), false);
   assert.equal(rdlMaterialTypeFromInstruction(" Read an announcement. "), "announcement");
   assert.equal(rdlMaterialTypeFromInstruction("Read an invented item."), null);
-  assert.equal(Object.keys(RDL_MATERIAL_TYPE_INSTRUCTIONS).length, 31);
+  assert.equal(Object.keys(RDL_MATERIAL_TYPE_INSTRUCTIONS).length, 33);
 });
 
 test("material-index recovery uses only stable IDs and authoritative occurrence instructions", () => {

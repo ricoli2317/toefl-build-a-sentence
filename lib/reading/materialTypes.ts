@@ -12,7 +12,9 @@ export const RDL_MATERIAL_TYPE_INSTRUCTIONS = {
   following_notice: "Read the following notice.",
   form: "Read a form.",
   instructions: "Read some instructions.",
+  invitation: "Read an invitation.",
   label: "Read a label.",
+  meeting_minutes: "Read some meeting minutes.",
   message_exchange: "Read a message exchange.",
   newspaper_article: "Read a newspaper article.",
   notice: "Read a notice.",
@@ -32,25 +34,30 @@ export const RDL_MATERIAL_TYPE_INSTRUCTIONS = {
   webpage: "Read a webpage."
 } as const;
 
-export type RdlMaterialType = keyof typeof RDL_MATERIAL_TYPE_INSTRUCTIONS;
+// Reading production owns the canonical material taxonomy. TPS validates the
+// stable storage format instead of maintaining a second, closed allowlist.
+// The instruction map above remains intentionally finite because it is used
+// only to recover legacy material types from exact source instructions.
+export type KnownRdlMaterialType = keyof typeof RDL_MATERIAL_TYPE_INSTRUCTIONS;
+export type RdlMaterialType = string;
 
-const RDL_MATERIAL_TYPES = new Set<string>(Object.keys(RDL_MATERIAL_TYPE_INSTRUCTIONS));
-const RDL_MATERIAL_TYPE_BY_INSTRUCTION = new Map<string, RdlMaterialType>(
+const RDL_MATERIAL_TYPE_PATTERN = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/;
+const RDL_MATERIAL_TYPE_BY_INSTRUCTION = new Map<string, KnownRdlMaterialType>(
   Object.entries(RDL_MATERIAL_TYPE_INSTRUCTIONS).map(([materialType, instruction]) => [
     normalizeInstruction(instruction),
-    materialType as RdlMaterialType
+    materialType as KnownRdlMaterialType
   ])
 );
 
 export function isRdlMaterialType(value: unknown): value is RdlMaterialType {
-  return typeof value === "string" && RDL_MATERIAL_TYPES.has(value);
+  return typeof value === "string" && RDL_MATERIAL_TYPE_PATTERN.test(value);
 }
 
-export function rdlMaterialInstruction(materialType: RdlMaterialType): string {
+export function rdlMaterialInstruction(materialType: KnownRdlMaterialType): string {
   return RDL_MATERIAL_TYPE_INSTRUCTIONS[materialType];
 }
 
-export function rdlMaterialTypeFromInstruction(instruction: string): RdlMaterialType | null {
+export function rdlMaterialTypeFromInstruction(instruction: string): KnownRdlMaterialType | null {
   return RDL_MATERIAL_TYPE_BY_INSTRUCTION.get(normalizeInstruction(instruction)) ?? null;
 }
 

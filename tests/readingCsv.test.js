@@ -124,6 +124,37 @@ test("RDL CSV requires the canonical material_type and rejects a mismatch", () =
   assert.match(adapt("read_in_daily_life", mismatch).failures[0].reason, /does not match canonical material/);
 });
 
+test("RDL preflight accepts the new canonical meeting-minutes and invitation material types", () => {
+  for (const [materialId, materialType, title] of [
+    ["RDL-145", "meeting_minutes", "Student Council Meeting"],
+    ["RDL-155", "invitation", "Foraging Expedition"]
+  ]) {
+    const document = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");
+    document.rows.forEach((row) => {
+      row.material_id = materialId;
+      row.material_type = materialType;
+      row.title = title;
+    });
+    const registered = {
+      ...material,
+      materialId,
+      materialType,
+      title,
+      imageAssetPath: `reading/rdl/${materialId}/material_final.png`,
+      hitboxDataPath: `reading/rdl/${materialId}/selection_map.json`
+    };
+
+    const result = adapt(
+      "read_in_daily_life",
+      document,
+      new Map([[registered.materialId, registered]])
+    );
+    assert.deepEqual(result.failures, []);
+    assert.equal(result.candidates.length, 1);
+    assert.equal(result.candidates[0].materials[0].materialType, materialType);
+  }
+});
+
 test("RDL CSV replaces an overlong incoming display title with the saved canonical title", () => {
   const longTitle = "Extended Library Hours for Final Exams";
   const document = template("TOEFL_Read_in_Daily_Life_TEMPLATE.csv");

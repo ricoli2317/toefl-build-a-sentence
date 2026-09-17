@@ -9,15 +9,9 @@ alter table public.reading_materials
   drop constraint if exists reading_materials_material_type_check;
 
 alter table public.reading_materials
-  add constraint reading_materials_material_type_check check (material_type in (
-    'advertisement', 'agenda', 'announcement', 'article', 'blog_post',
-    'course_description', 'course_syllabus', 'email', 'email_exchange', 'flyer',
-    'following_notice', 'form', 'instructions', 'label', 'message_exchange',
-    'newspaper_article', 'notice', 'online_discussion', 'poster', 'review',
-    'schedule', 'sign', 'social_media_post', 'student_magazine_article',
-    'student_newspaper_article', 'syllabus', 'syllabus_excerpt', 'text_chain',
-    'text_message_chain', 'travel_flyer', 'webpage'
-  ));
+  add constraint reading_materials_material_type_check check (
+    material_type ~ '^[a-z][a-z0-9]*(_[a-z0-9]+)*$'
+  );
 
 with recovered(material_id, material_type) as (values
   ('RDL-001', 'flyer'),

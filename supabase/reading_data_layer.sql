@@ -44,15 +44,9 @@ create table if not exists public.reading_source_occurrences (
 create table if not exists public.reading_materials (
   material_id text primary key,
   title text,
-  material_type text not null check (material_type in (
-    'advertisement', 'agenda', 'announcement', 'article', 'blog_post',
-    'course_description', 'course_syllabus', 'email', 'email_exchange', 'flyer',
-    'following_notice', 'form', 'instructions', 'label', 'message_exchange',
-    'newspaper_article', 'notice', 'online_discussion', 'poster', 'review',
-    'schedule', 'sign', 'social_media_post', 'student_magazine_article',
-    'student_newspaper_article', 'syllabus', 'syllabus_excerpt', 'text_chain',
-    'text_message_chain', 'travel_flyer', 'webpage'
-  )),
+  material_type text not null check (
+    material_type ~ '^[a-z][a-z0-9]*(_[a-z0-9]+)*$'
+  ),
   source text not null,
   source_date date,
   year_month text not null check (year_month ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'),
