@@ -2040,7 +2040,7 @@ function RdlPracticeWorkspace({
       )}
       testId="rdl-workspace"
       title={material.materialType
-        ? rdlMaterialInstruction(material.materialType)
+        ? rdlMaterialInstruction(material.materialType) ?? "Read the material."
         : "Reading material instruction unavailable."}
       titleId="rdl-material-title"
     />

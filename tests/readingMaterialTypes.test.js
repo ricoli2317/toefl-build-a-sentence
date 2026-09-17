@@ -15,6 +15,7 @@ test("RDL material types preserve official source instructions", () => {
   assert.equal(rdlMaterialInstruction("social_media_post"), "Read a social media post.");
   assert.equal(rdlMaterialInstruction("meeting_minutes"), "Read some meeting minutes.");
   assert.equal(rdlMaterialInstruction("invitation"), "Read an invitation.");
+  assert.equal(rdlMaterialInstruction("future_authoritative_type_2"), null);
   assert.equal(isRdlMaterialType("meeting_minutes"), true);
   assert.equal(isRdlMaterialType("invitation"), true);
   assert.equal(isRdlMaterialType("future_authoritative_type_2"), true);

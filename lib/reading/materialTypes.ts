@@ -53,8 +53,10 @@ export function isRdlMaterialType(value: unknown): value is RdlMaterialType {
   return typeof value === "string" && RDL_MATERIAL_TYPE_PATTERN.test(value);
 }
 
-export function rdlMaterialInstruction(materialType: KnownRdlMaterialType): string {
-  return RDL_MATERIAL_TYPE_INSTRUCTIONS[materialType];
+export function rdlMaterialInstruction(materialType: RdlMaterialType): string | null {
+  return Object.prototype.hasOwnProperty.call(RDL_MATERIAL_TYPE_INSTRUCTIONS, materialType)
+    ? RDL_MATERIAL_TYPE_INSTRUCTIONS[materialType as KnownRdlMaterialType]
+    : null;
 }
 
 export function rdlMaterialTypeFromInstruction(instruction: string): KnownRdlMaterialType | null {
