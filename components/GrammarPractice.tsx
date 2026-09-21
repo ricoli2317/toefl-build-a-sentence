@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { BookOpen, Clock3, ListChecks } from "lucide-react";
+import { usePracticeHistory } from "@/components/PracticeHistory";
 import { PracticeSession } from "@/components/PracticeSession";
 import {
   StudentEmptyState,
@@ -20,6 +21,7 @@ import type { GrammarTagSummary } from "@/lib/grammarPractice";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import type { PublicQuestion } from "@/lib/types";
+import { BasGrammarAnalysis } from "@/components/WrongQuestionsHome";
 
 export type GrammarTagsPayload = {
   error?: string;
@@ -57,11 +59,16 @@ const GRAMMAR_TAG_PRIORITY: ReadonlyMap<string, number> = new Map(
 
 export function GrammarPracticeHome() {
   const { data, error, loading } = useGrammarTags();
+  const historyState = usePracticeHistory();
   const sortedTags = useMemo(() => sortGrammarTags(data?.tags ?? []), [data?.tags]);
+  const grammarPoints = historyState.data?.history.grammarPoints;
 
   return (
     <div className="grid gap-5">
       <GrammarNavigation />
+      {grammarPoints ? (
+        <BasGrammarAnalysis items={grammarPoints} showLinks={false} tone="orange" />
+      ) : null}
       <StudentInfoStrip>选择语法点开始练习，系统会使用该分类下的题目生成练习。</StudentInfoStrip>
       {loading ? <StudentLoadingState text="正在加载语法点..." /> : null}
       {error ? <StudentErrorState text="加载语法点失败，请稍后重试。" /> : null}

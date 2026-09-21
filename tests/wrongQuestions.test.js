@@ -175,8 +175,8 @@ test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only
   const ui = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
   const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
 
-  assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasGrammarAnalysis/);
-  assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasCorrectionActions \/>[\s\S]*<BasGrammarAnalysis/);
+  assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasCorrectionActions \/>/);
+  assert.doesNotMatch(ui, /<BasGrammarAnalysis/);
   assert.match(ui, /今日错题订正/);
   assert.match(ui, /历史错题订正/);
   assert.match(ui, /group\.pendingCount > 0 && group\.correctionHref/);

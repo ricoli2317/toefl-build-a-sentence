@@ -75,10 +75,7 @@ export function WrongQuestionsHome() {
         <>
           <WrongQuestionOverviewCards stats={state.data.stats} />
           {activeTab === "build_sentence" ? (
-            <>
-              <BasCorrectionActions />
-              <BasGrammarAnalysis items={state.data.grammarPoints} />
-            </>
+            <BasCorrectionActions />
           ) : null}
           {activeTab !== "all" && activeTab !== "build_sentence" && activeTab !== "full_set" ? (
             <ReadingCorrectionActions taskType={activeTab} />
@@ -177,18 +174,47 @@ function WrongQuestionOverviewCards({ stats }: { stats: WrongQuestionsOverviewPa
   );
 }
 
-function BasGrammarAnalysis({ items }: { items: Array<{ count: number; tag: string }> }) {
+type BasGrammarAnalysisTone = "orange" | "primary";
+
+const BAS_GRAMMAR_ANALYSIS_TONES = {
+  orange: {
+    action:
+      "inline-flex min-h-8 items-center justify-center gap-2 rounded-[10px] border border-orange-300 bg-white px-3 py-1 text-xs font-semibold text-orange-500 transition hover:border-orange-500 hover:bg-orange-50",
+    progress: "bg-orange-500",
+    progressTrack: "bg-orange-100",
+    rank: "bg-orange-50 text-orange-500"
+  },
+  primary: {
+    action: "student-button-secondary min-h-8 px-3 py-1 text-xs",
+    progress: "bg-student-primary",
+    progressTrack: "bg-student-primary-soft",
+    rank: "bg-student-primary-soft text-student-primary"
+  }
+} as const;
+
+export function BasGrammarAnalysis({
+  items,
+  showLinks = true,
+  tone = "primary"
+}: {
+  items: Array<{ count: number; tag: string }>;
+  showLinks?: boolean;
+  tone?: BasGrammarAnalysisTone;
+}) {
   const visibleItems = items.slice(0, 5);
   const highestCount = visibleItems[0]?.count ?? 0;
+  const toneStyles = BAS_GRAMMAR_ANALYSIS_TONES[tone];
   return (
     <section className="rounded-2xl border border-student-primary-border bg-[linear-gradient(135deg,#fff_0%,#fbfaff_55%,#f7f5ff_100%)] p-5 shadow-[0_2px_12px_rgba(60,47,119,0.04)]">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-lg font-bold text-student-text">
           <span className="text-student-primary">Build a Sentence</span> 语法分析
         </h2>
-        <Link className="inline-flex items-center gap-1.5 text-sm font-bold text-student-primary hover:underline" href={STUDENT_ROUTES.grammarPractice}>
-          按语法分类练习 <ArrowRight aria-hidden="true" size={16} />
-        </Link>
+        {showLinks ? (
+          <Link className="inline-flex items-center gap-1.5 text-sm font-bold text-student-primary hover:underline" href={STUDENT_ROUTES.grammarPractice}>
+            按语法分类练习 <ArrowRight aria-hidden="true" size={16} />
+          </Link>
+        ) : null}
       </div>
       <h3 className="mt-4 text-sm font-bold text-student-text">高频错误语法点</h3>
       {visibleItems.length === 0 ? (
@@ -197,29 +223,31 @@ function BasGrammarAnalysis({ items }: { items: Array<{ count: number; tag: stri
         <ol className="mt-2 divide-y divide-student-border">
           {visibleItems.map((item, index) => (
             <li className="grid items-center gap-3 py-2.5 sm:grid-cols-[1.75rem_minmax(10rem,1fr)_minmax(12rem,2fr)_4rem_auto]" key={item.tag}>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-student-primary-soft text-xs font-bold text-student-primary">
+              <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${toneStyles.rank}`}>
                 {index + 1}
               </span>
               <span className="min-w-0 text-sm font-semibold text-student-text">{item.tag}</span>
-              <span className="h-1.5 overflow-hidden rounded-full bg-student-primary-soft">
+              <span className={`h-1.5 overflow-hidden rounded-full ${toneStyles.progressTrack}`}>
                 <span
-                  className="block h-full rounded-full bg-student-primary"
+                  className={`block h-full rounded-full ${toneStyles.progress}`}
                   style={{ width: `${Math.max(10, highestCount > 0 ? (item.count / highestCount) * 100 : 0)}%` }}
                 />
               </span>
               <span className="text-right text-xs font-semibold tabular-nums text-student-muted">{item.count} 题</span>
-              <Link className="student-button-secondary min-h-8 px-3 py-1 text-xs" href={grammarPracticeHref(item.tag)}>
+              <Link className={toneStyles.action} href={grammarPracticeHref(item.tag)}>
                 专项练习 <ArrowRight aria-hidden="true" size={14} />
               </Link>
             </li>
           ))}
         </ol>
       )}
-      <div className="mt-2 border-t border-student-border pt-3 text-center">
-        <Link className="inline-flex items-center gap-1.5 text-sm font-bold text-student-primary hover:underline" href={STUDENT_ROUTES.grammarPractice}>
-          查看全部语法点 <ArrowRight aria-hidden="true" size={15} />
-        </Link>
-      </div>
+      {showLinks ? (
+        <div className="mt-2 border-t border-student-border pt-3 text-center">
+          <Link className="inline-flex items-center gap-1.5 text-sm font-bold text-student-primary hover:underline" href={STUDENT_ROUTES.grammarPractice}>
+            查看全部语法点 <ArrowRight aria-hidden="true" size={15} />
+          </Link>
+        </div>
+      ) : null}
     </section>
   );
 }
