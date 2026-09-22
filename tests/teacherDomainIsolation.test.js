@@ -226,9 +226,12 @@ test("reading-only teachers never load BAS question metadata through teacher sta
 test("/api/teacher/dashboard is teacher-only, lightweight, and binding-scoped", () => {
   const dashboard = read("app/api/teacher/dashboard/route.ts");
   const dashboardLib = read("lib/teacherDashboardServer.ts");
+  const scopeLib = read("lib/teacherScope.server.ts");
   assert.match(dashboard, /requireTeacherOnly\(bearerToken\(request\)\)/);
   assert.match(dashboard, /status: 403/);
-  assert.match(dashboard, /listTeacherStudentDomainBindings/);
+  assert.match(dashboard, /loadTeacherScope/);
+  assert.match(scopeLib, /from\("teacher_student_bindings"\)/);
+  assert.doesNotMatch(scopeLib, /owner_id/);
   assert.match(dashboard, /loadPendingReviewCount|loadTeacherAssignmentReminders/);
   assert.match(dashboardLib, /from\("reading_attempts"\)/);
   assert.match(dashboardLib, /from\("attempts"\)/);
@@ -241,8 +244,9 @@ test("/api/teacher/dashboard is teacher-only, lightweight, and binding-scoped", 
 test("student Reading detail API requires a reading binding and reuses Reading stats", () => {
   const route = read("app/api/teacher/students/[studentId]/practice/route.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
-  assert.match(route, /canAccessStudentDomain\([\s\S]*"reading"/);
+  assert.match(route, /loadTeacherScope/);
   assert.match(route, /loadTeacherStudentReadingPractice/);
+  assert.match(route, /boundDomains\.includes\("reading"\)/);
   assert.doesNotMatch(route, /from\("attempt_answers"\)/);
   assert.doesNotMatch(route, /listVisibleStudentIds|listTeacherStudentDomainBindings/);
 

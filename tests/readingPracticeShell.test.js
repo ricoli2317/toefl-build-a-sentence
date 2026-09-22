@@ -169,7 +169,8 @@ test("stable Reading route uses logical identity and safe error text", () => {
 
 test("Reading auth verifies signed token claims without a remote getUser round trip", () => {
   const authSource = fs.readFileSync(path.join(__dirname, "../lib/auth.ts"), "utf8");
-  assert.match(authSource, /auth\.getClaims\(token\)/);
+  assert.match(authSource, /auth\.getClaims\(token/);
+  assert.match(authSource, /getCachedSupabaseJwks/);
   assert.match(authSource, /claims\.sub/);
   assert.doesNotMatch(authSource, /auth\.getUser\(token\)/);
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarClock, ClipboardPenLine, GraduationCap, Users } from "lucide-react";
+import { CalendarClock, ChevronRight, ClipboardPenLine, GraduationCap, Users } from "lucide-react";
 import clsx from "clsx";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
@@ -18,10 +18,10 @@ import {
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
 import type {
-  TeacherDashboardAssignmentReminder,
-  TeacherDashboardAssignmentReminderStatus,
   TeacherDashboardInactiveStudent,
-  TeacherDashboardPayload
+  TeacherDashboardPayload,
+  TeacherDashboardStudentReminder,
+  TeacherDashboardAssignmentReminderStatus
 } from "@/lib/teacherDashboard";
 import { loadTeacherDashboardPayload } from "@/lib/teacherDashboardClient";
 
@@ -91,10 +91,10 @@ export function TeacherOverview() {
               <section className="mt-3">
                 <h3 className="text-sm font-semibold text-student-text">作业提醒</h3>
                 {dashboard && dashboard.assignmentReminders.length > 0 ? (
-                  <ul className="mt-1.5 divide-y divide-student-border">
+                  <ul className="mt-1">
                     {dashboard.assignmentReminders.map((reminder) => (
                       <ReminderRow
-                        key={`${reminder.assignmentId}:${reminder.studentId}`}
+                        key={`${reminder.studentId}:${reminder.status}`}
                         reminder={reminder}
                       />
                     ))}
@@ -108,10 +108,11 @@ export function TeacherOverview() {
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-sm font-semibold text-student-text">近 3 天未活跃学生</h3>
                   <Link
-                    className="text-sm font-semibold text-student-primary hover:underline"
+                    className="inline-flex items-center gap-0.5 text-sm font-semibold text-student-primary hover:underline"
                     href="/teacher/inactive-students"
                   >
                     查看全部
+                    <ChevronRight aria-hidden="true" size={16} strokeWidth={2.1} />
                   </Link>
                 </div>
                 <InactiveStudentNames students={dashboard?.inactiveStudents ?? []} />
@@ -248,9 +249,9 @@ function OverviewMetric({
   );
 }
 
-function ReminderRow({ reminder }: { reminder: TeacherDashboardAssignmentReminder }) {
+function ReminderRow({ reminder }: { reminder: TeacherDashboardStudentReminder }) {
   return (
-    <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2.5">
+    <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-1.5">
       <span className="truncate text-sm font-semibold text-student-text">
         {reminder.studentName}
       </span>
@@ -265,8 +266,7 @@ function ReminderRow({ reminder }: { reminder: TeacherDashboardAssignmentReminde
   );
 }
 
-function ReminderStatusBadge({ status }: { status: TeacherDashboardAssignmentReminderStatus }) {
-  return (
+function ReminderStatusBadge({ status }: { status: TeacherDashboardAssignmentReminderStatus }) {  return (
     <span
       className={clsx(
         "inline-flex h-7 min-w-[64px] items-center justify-center rounded-full border px-2.5 text-xs font-semibold leading-none",
@@ -284,11 +284,18 @@ function InactiveStudentNames({ students }: { students: TeacherDashboardInactive
   if (students.length === 0) {
     return <p className="mt-2 text-sm text-student-muted">近 3 天所有学生都有练习活动。</p>;
   }
+  // At most three chip rows at every width: six names on the two-column
+  // mobile grid, up to twelve on the four-column desktop grid. The standalone
+  // page lists everyone; the backend already caps the payload at ten names.
+  const visible = students.slice(0, 12);
   return (
-    <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-      {students.map((student) => (
+    <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {visible.map((student, index) => (
         <li
-          className="truncate rounded-lg border border-student-border bg-student-bg px-3 py-1.5 text-sm font-medium text-student-text"
+          className={clsx(
+            "truncate rounded-full bg-student-primary-soft px-3 py-1 text-sm font-medium text-student-text",
+            index >= 6 && "hidden sm:block"
+          )}
           key={student.studentId}
         >
           {student.studentName}

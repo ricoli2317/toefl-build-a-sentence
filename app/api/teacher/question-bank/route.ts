@@ -60,7 +60,15 @@ export async function GET(request: Request) {
       return jsonError("page must be a positive integer.", 400);
     }
 
-    return json(await getLogicalPracticeCatalog({ supabase, taskType, page }));
+    // The teacher bank reuses the student-facing task-scoped catalog directory
+    // (two parallel metadata queries plus scoped occurrences) instead of
+    // building the whole cross-task public universe for one tab.
+    return json(await getLogicalPracticeCatalog({
+      supabase,
+      taskType,
+      page,
+      useTaskScopedUniverse: true
+    }));
   } catch (error) {
     console.error("[teacher-question-bank] logical_item_load_failed", error);
     return jsonError("Could not load the teacher question bank.");

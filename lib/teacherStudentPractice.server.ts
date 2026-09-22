@@ -79,57 +79,87 @@ export async function loadTeacherReadingItemMeta(
     throw new Error(`Failed to load scoped Reading item metadata: ${visibleResult.error.message}`);
   }
   const visibleItems = visibleResult.data ?? [];
+  const ranks = await loadReadingItemDisplayRanks(db, visibleItems);
 
-  for (const readingModule of READING_MODULES) {
-    const moduleItems = visibleItems.filter((item) => item.module === readingModule);
-    if (moduleItems.length === 0) continue;
-    const dates = distinct(moduleItems.map((item) => item.first_seen_date));
-    const baseRankResult = await mapWithConcurrency(dates, 4, async (date) => {
-      const countResult = await db
-        .from("reading_logical_items")
-        .select("logical_item_id", { count: "exact", head: true })
-        .eq("module", readingModule)
-        .lt("first_seen_date", date);
-      if (countResult.error) {
-        throw new Error(`Failed to rank scoped Reading items: ${countResult.error.message}`);
-      }
-      return [date, Math.max(0, countResult.count ?? 0)] as const;
+  for (const item of visibleItems) {
+    meta.set(item.logical_item_id, {
+      logical_item_id: item.logical_item_id,
+      module: item.module,
+      displayName: readingItemDisplayName(item, ranks),
+      scoringPointCount: Math.max(0, Number(item.scored_item_count) || 0)
     });
-    const baseRankByDate = new Map(baseRankResult);
-    const siblingsResult = await readAllSupabaseRows<ReadingItemRow>((from, to) =>
-      db
-        .from("reading_logical_items")
-        .select(
-          "logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count"
-        )
-        .eq("module", readingModule)
-        .in("first_seen_date", dates)
-        .range(from, to)
-    );
-    if (siblingsResult.error) {
-      throw new Error(`Failed to load scoped Reading item ranks: ${siblingsResult.error.message}`);
-    }
-    const ranks = new Map<string, string>();
-    for (const date of dates) {
-      const sameDateItems = (siblingsResult.data ?? [])
-        .filter((item) => item.first_seen_date === date)
-        .sort(compareReadingCatalogIdentityOrder);
-      const baseRank = baseRankByDate.get(date) ?? 0;
-      sameDateItems.forEach((item, index) => {
-        ranks.set(item.logical_item_id, String(baseRank + index + 1).padStart(3, "0"));
-      });
-    }
-    for (const item of moduleItems) {
-      meta.set(item.logical_item_id, {
-        logical_item_id: item.logical_item_id,
-        module: item.module,
-        displayName: readingItemDisplayName(item, ranks),
-        scoringPointCount: Math.max(0, Number(item.scored_item_count) || 0)
-      });
-    }
   }
 
   return meta;
+}
+
+/**
+ * Module display numbers are computed in two parallel waves for every module
+ * at once (base counts by date + same-date siblings) instead of walking each
+ * module's count/sibling chain one round trip at a time. Rank semantics are
+ * unchanged: global position inside the module ordered by first-seen date and
+ * canonical identity.
+ */
+async function loadReadingItemDisplayRanks(
+  db: SupabaseClient,
+  visibleItems: ReadingItemRow[]
+): Promise<Map<string, string>> {
+  const ranks = new Map<string, string>();
+  if (visibleItems.length === 0) return ranks;
+
+  const modules = distinct(visibleItems.map((item) => item.module)).filter(
+    (module): module is (typeof READING_MODULES)[number] =>
+      (READING_MODULES as readonly string[]).includes(module)
+  );
+
+  await Promise.all(
+    modules.map(async (readingModule) => {
+      const moduleItems = visibleItems.filter((item) => item.module === readingModule);
+      if (moduleItems.length === 0) return;
+      const dates = distinct(moduleItems.map((item) => item.first_seen_date));
+
+      const [baseRankEntries, siblingsResult] = await Promise.all([
+        Promise.all(
+          dates.map(async (date) => {
+            const countResult = await db
+              .from("reading_logical_items")
+              .select("logical_item_id", { count: "exact", head: true })
+              .eq("module", readingModule)
+              .lt("first_seen_date", date);
+            if (countResult.error) {
+              throw new Error(`Failed to rank scoped Reading items: ${countResult.error.message}`);
+            }
+            return [date, Math.max(0, countResult.count ?? 0)] as const;
+          })
+        ),
+        readAllSupabaseRows<ReadingItemRow>((from, to) =>
+          db
+            .from("reading_logical_items")
+            .select(
+              "logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count"
+            )
+            .eq("module", readingModule)
+            .in("first_seen_date", dates)
+            .range(from, to)
+        )
+      ]);
+      if (siblingsResult.error) {
+        throw new Error(`Failed to load scoped Reading item ranks: ${siblingsResult.error.message}`);
+      }
+      const baseRankByDate = new Map(baseRankEntries);
+      for (const date of dates) {
+        const sameDateItems = (siblingsResult.data ?? [])
+          .filter((item) => item.first_seen_date === date)
+          .sort(compareReadingCatalogIdentityOrder);
+        const baseRank = baseRankByDate.get(date) ?? 0;
+        sameDateItems.forEach((item, index) => {
+          ranks.set(item.logical_item_id, String(baseRank + index + 1).padStart(3, "0"));
+        });
+      }
+    })
+  );
+
+  return ranks;
 }
 
 export async function loadTeacherBasSetDisplayTitles(

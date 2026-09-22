@@ -10,10 +10,72 @@ import type { AppArea, UserRole } from "@/lib/types";
 type AccountContextValue = { displayName: string; role: UserRole; userId: string };
 const AccountContext = createContext<AccountContextValue | null>(null);
 
+const ACCOUNT_CACHE_PREFIX = "tps:account:";
+const ACCOUNT_CACHE_TTL_MS = 5 * 60 * 1000;
+
+/**
+ * Account verification is not allowed to gate the first paint on every hard
+ * load: a recent verified account (same tab session, five minutes) renders the
+ * shell immediately while the server check still runs and can still redirect
+ * an account that lost access. Every teacher API re-verifies the token on the
+ * server, so the cached value is a rendering hint, never an authorization.
+ */
+function readCachedAccount(area: AppArea): AccountContextValue | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(`${ACCOUNT_CACHE_PREFIX}${area}`);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { account?: AccountContextValue; cachedAt?: number };
+    if (!parsed.account?.userId || !parsed.account.role || !parsed.cachedAt) return null;
+    if (Date.now() - parsed.cachedAt > ACCOUNT_CACHE_TTL_MS) return null;
+    return parsed.account;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedAccount(area: AppArea, account: AccountContextValue) {
+  try {
+    window.sessionStorage.setItem(
+      `${ACCOUNT_CACHE_PREFIX}${area}`,
+      JSON.stringify({ account, cachedAt: Date.now() })
+    );
+  } catch {
+    // Session storage is an optimization only.
+  }
+}
+
+function clearCachedAccount(area: AppArea) {
+  try {
+    window.sessionStorage.removeItem(`${ACCOUNT_CACHE_PREFIX}${area}`);
+  } catch {
+    // Session storage is an optimization only.
+  }
+}
+
 export function RoleGate({ area, children }: { area: AppArea; children: React.ReactNode }) {
   const router = useRouter();
   const [account, setAccount] = useState<AccountContextValue | null>(null);
   const [configurationError, setConfigurationError] = useState(false);
+
+  // Restore the last verified account right after mount (never during the
+  // hydration render, which would mismatch the server HTML), but only while it
+  // still belongs to the signed-in session user. The server check below always
+  // runs and can redirect an account that lost access.
+  useEffect(() => {
+    let cancelled = false;
+    void createBrowserSupabase().auth.getSession().then(({ data }) => {
+      if (cancelled) return;
+      const sessionUserId = data.session?.user?.id ?? null;
+      const cached = readCachedAccount(area);
+      if (cached && sessionUserId === cached.userId) {
+        setAccount((current) => current ?? cached);
+      } else if (!sessionUserId || (cached && cached.userId !== sessionUserId)) {
+        clearCachedAccount(area);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [area]);
 
   useEffect(() => {
     let cancelled = false;
@@ -21,13 +83,20 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
       const supabase = createBrowserSupabase();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        clearCachedAccount(area);
         router.replace("/login");
         return;
       }
-      const response = await fetch("/api/account/me", {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-        cache: "no-store"
-      });
+      let response: Response;
+      try {
+        response = await fetch("/api/account/me", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+          cache: "no-store"
+        });
+      } catch {
+        if (!cancelled && !readCachedAccount(area)) setConfigurationError(true);
+        return;
+      }
       const payload = await response.json().catch(() => ({})) as {
         defaultRoute?: string;
         displayName?: string;
@@ -36,17 +105,28 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
       };
       if (cancelled) return;
       if (!response.ok || !payload.role || !payload.userId) {
-        setConfigurationError(response.status === 403);
-        if (response.status !== 403) router.replace("/login");
+        clearCachedAccount(area);
+        if (response.status === 403) {
+          setConfigurationError(true);
+          return;
+        }
+        if (response.status === 401) {
+          router.replace("/login");
+          return;
+        }
+        setConfigurationError(true);
         return;
       }
       const allowed = roleCanAccess(payload.role, area);
       if (!allowed) {
+        clearCachedAccount(area);
         router.replace(payload.defaultRoute ?? "/login");
         return;
       }
       const displayName = payload.displayName?.trim() || payload.userId;
-      setAccount({ displayName, role: payload.role, userId: payload.userId });
+      const nextAccount = { displayName, role: payload.role, userId: payload.userId };
+      writeCachedAccount(area, nextAccount);
+      setAccount(nextAccount);
     }
     void verify();
     return () => { cancelled = true; };

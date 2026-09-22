@@ -3,10 +3,24 @@ import type { StudentBindingDomain } from "./studentBindings.ts";
 
 export type TeacherDashboardAssignmentReminderStatus = "overdue" | "due_soon";
 
+/**
+ * Student-level reminder shown on the teacher home. The homepage is never an
+ * assignment list: each student gets at most one overdue reminder (their most
+ * recently missed deadline) and at most one upcoming reminder (their nearest
+ * deadline inside the 24h horizon). No assignment, question, or count is
+ * exposed.
+ */
+export type TeacherDashboardStudentReminder = {
+  studentId: string;
+  studentName: string;
+  dueAt: string;
+  status: TeacherDashboardAssignmentReminderStatus;
+};
+
+/** Assignment-level row used only while aggregating student reminders. */
 export type TeacherDashboardAssignmentReminder = {
   assignmentId: string;
   studentId: string;
-  studentName: string;
   dueAt: string;
   status: TeacherDashboardAssignmentReminderStatus;
 };
@@ -31,7 +45,7 @@ export type TeacherDashboardPayload = {
   teacherDomains: StudentBindingDomain[];
   studentCount: number;
   pendingReviewCount: number;
-  assignmentReminders: TeacherDashboardAssignmentReminder[];
+  assignmentReminders: TeacherDashboardStudentReminder[];
   inactiveStudents: TeacherDashboardInactiveStudent[];
   recentActivity: TeacherDashboardActivity[];
 };
@@ -49,13 +63,6 @@ export type TeacherDashboardReadingActivityInput = {
   taskType: ReadingModule;
   itemTitle: string;
   submittedAt: string;
-};
-
-export type TeacherDashboardAssignmentReminderInput = {
-  assignmentId: string;
-  studentId: string;
-  dueAt: string;
-  status: TeacherDashboardAssignmentReminderStatus;
 };
 
 export const TEACHER_DASHBOARD_ACTIVITY_LIMIT = 6;
@@ -110,14 +117,27 @@ export function buildTeacherDashboardActivity(input: {
 
 /**
  * Homepage reminder priority: overdue work first (most recently missed first),
- * then work due within the next 24 hours (soonest first). The list is capped so
- * reminders can never stretch the homepage without limit.
+ * then work due within the next 24 hours (soonest first).
+ *
+ * The homepage is student-level, so the same student can never produce two
+ * reminders with the same status: overdue keeps the student's most recent
+ * missed deadline, due_soon keeps their nearest deadline inside the horizon.
+ * The list is capped so reminders can never stretch the homepage without limit.
  */
 export function sortTeacherDashboardReminders(
   reminders: TeacherDashboardAssignmentReminder[],
   limit = TEACHER_DASHBOARD_REMINDER_LIMIT
 ) {
-  return [...reminders]
+  const selected = new Map<string, TeacherDashboardAssignmentReminder>();
+  for (const reminder of reminders) {
+    const key = `${reminder.studentId}:${reminder.status}`;
+    const current = selected.get(key);
+    if (!current || isMoreRelevantReminder(reminder, current)) {
+      selected.set(key, reminder);
+    }
+  }
+
+  return Array.from(selected.values())
     .sort((left, right) => {
       if (left.status !== right.status) return left.status === "overdue" ? -1 : 1;
       const leftDue = activityTimestamp(left.dueAt);
@@ -127,6 +147,38 @@ export function sortTeacherDashboardReminders(
         || left.studentId.localeCompare(right.studentId);
     })
     .slice(0, Math.max(0, limit));
+}
+
+/**
+ * Student-level reminders for the homepage payload. Assignment identity is
+ * deliberately dropped here; the client only renders the student, the chosen
+ * deadline, and the status.
+ */
+export function aggregateTeacherDashboardReminders(
+  reminders: TeacherDashboardAssignmentReminder[],
+  studentNames: Map<string, string>,
+  limit = TEACHER_DASHBOARD_REMINDER_LIMIT
+): TeacherDashboardStudentReminder[] {
+  return sortTeacherDashboardReminders(reminders, limit).map((reminder) => ({
+    studentId: reminder.studentId,
+    studentName: studentNames.get(reminder.studentId) ?? "学生",
+    dueAt: reminder.dueAt,
+    status: reminder.status
+  }));
+}
+
+function isMoreRelevantReminder(
+  candidate: TeacherDashboardAssignmentReminder,
+  current: TeacherDashboardAssignmentReminder
+) {
+  const candidateDue = activityTimestamp(candidate.dueAt);
+  const currentDue = activityTimestamp(current.dueAt);
+  if (candidateDue !== currentDue) {
+    return candidate.status === "overdue"
+      ? candidateDue > currentDue
+      : candidateDue < currentDue;
+  }
+  return candidate.assignmentId.localeCompare(current.assignmentId) < 0;
 }
 
 function activityTimestamp(value: string) {

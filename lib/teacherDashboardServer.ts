@@ -3,15 +3,15 @@ import { isReadingModule } from "./reading/catalog.ts";
 import { safeReadingItemTitle } from "./reading/history.ts";
 import type { ReadingModule } from "./reading/types.ts";
 import {
+  aggregateTeacherDashboardReminders,
   buildTeacherDashboardActivity,
-  sortTeacherDashboardReminders,
   TEACHER_DASHBOARD_ACTIVITY_LIMIT,
   TEACHER_DASHBOARD_INACTIVE_LIMIT,
   type TeacherDashboardActivity,
-  type TeacherDashboardAssignmentReminder,
   type TeacherDashboardAssignmentReminderStatus,
   type TeacherDashboardInactiveStudent,
   type TeacherDashboardReadingActivityInput,
+  type TeacherDashboardStudentReminder,
   type TeacherDashboardWritingActivityInput
 } from "./teacherDashboard.ts";
 import { loadBuildSentenceHistoricalPracticeDisplayResolver } from "./historicalPracticeDisplay.ts";
@@ -154,14 +154,15 @@ async function listOwnAssignmentIds(db: SupabaseClient, teacherId: string) {
 /**
  * Assignment reminders only read what the reminder itself needs: the teacher's
  * active assignments with a deadline in the past or the next 24 hours, their
- * recipients, and the submitted/completed state of those recipients. No
- * question content, essays, or answers are loaded.
+ * recipients, and the submitted/completed state of those recipients. The result
+ * is aggregated to student-level reminders before it leaves the server.
  */
 export async function loadTeacherAssignmentReminders(
   db: SupabaseClient,
   teacherId: string,
-  now: Date
-): Promise<TeacherDashboardAssignmentReminder[]> {
+  now: Date,
+  studentNames?: Map<string, string>
+): Promise<TeacherDashboardStudentReminder[]> {
   const nowIso = now.toISOString();
   const horizonIso = new Date(now.getTime() + REMINDER_HORIZON_MS).toISOString();
   const baseQuery = () =>
@@ -227,26 +228,25 @@ export async function loadTeacherAssignmentReminders(
     (member) => !completedKeys.has(`${member.assignmentId}:${member.studentId}`)
   );
   if (incomplete.length === 0) return [];
-  const studentNames = await loadStudentNames(
-    db,
-    unique(incomplete.map((member) => member.studentId))
-  );
+  const names = studentNames
+    ?? await loadStudentNames(db, unique(incomplete.map((member) => member.studentId)));
 
-  return sortTeacherDashboardReminders(
+  return aggregateTeacherDashboardReminders(
     incomplete.map((member) => ({
       assignmentId: member.assignmentId,
       studentId: member.studentId,
-      studentName: studentNames.get(member.studentId) ?? "学生",
       dueAt: dueAtByAssignment.get(member.assignmentId) ?? "",
       status: statusByAssignment.get(member.assignmentId) ?? "due_soon"
-    }))
+    })),
+    names
   );
 }
 
 export async function loadTeacherInactiveStudents(
   db: SupabaseClient,
   visibleStudentIds: string[],
-  now: Date
+  now: Date,
+  studentNames?: Map<string, string>
 ): Promise<TeacherDashboardInactiveStudent[]> {
   const { inactiveStudentIds, lastActivityByStudent } =
     await loadInactiveStudentsWithLastActivity(db, visibleStudentIds, now);
@@ -259,10 +259,10 @@ export async function loadTeacherInactiveStudents(
     return Date.parse(leftActivity) - Date.parse(rightActivity);
   });
   const selected = ranked.slice(0, TEACHER_DASHBOARD_INACTIVE_LIMIT);
-  const studentNames = await loadStudentNames(db, selected);
+  const names = studentNames ?? await loadStudentNames(db, selected);
   return selected.map((studentId) => ({
     studentId,
-    studentName: studentNames.get(studentId) ?? "学生"
+    studentName: names.get(studentId) ?? "学生"
   }));
 }
 
@@ -273,7 +273,8 @@ export async function loadRecentActivity(
     hasWritingDomain: boolean;
     readingStudentIds: string[];
     writingStudentIds: string[];
-  }
+  },
+  studentNames?: Map<string, string>
 ): Promise<TeacherDashboardActivity[]> {
   const [writingRows, readingRows] = await Promise.all([
     scope.hasWritingDomain && scope.writingStudentIds.length > 0
@@ -319,13 +320,11 @@ export async function loadRecentActivity(
     writing,
     limit: TEACHER_DASHBOARD_ACTIVITY_LIMIT
   });
-  const studentNames = await loadStudentNames(
-    db,
-    unique(activity.map((entry) => entry.studentId))
-  );
+  const names = studentNames
+    ?? await loadStudentNames(db, unique(activity.map((entry) => entry.studentId)));
   return activity.map((entry) => ({
     ...entry,
-    studentName: studentNames.get(entry.studentId) ?? "学生"
+    studentName: names.get(entry.studentId) ?? "学生"
   }));
 }
 

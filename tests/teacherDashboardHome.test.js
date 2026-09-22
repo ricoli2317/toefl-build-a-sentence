@@ -5,6 +5,7 @@ const test = require("node:test");
 
 const { createMockSupabase } = require("./fixtures/mockSupabase.js");
 const {
+  aggregateTeacherDashboardReminders,
   sortTeacherDashboardReminders,
   TEACHER_DASHBOARD_REMINDER_LIMIT
 } = require("../lib/teacherDashboard.ts");
@@ -42,6 +43,29 @@ test("reminder list is capped so it can never stretch the homepage", () => {
   const sorted = sortTeacherDashboardReminders(reminders);
   assert.equal(sorted.length, TEACHER_DASHBOARD_REMINDER_LIMIT);
   assert.ok(sorted.every((reminder) => reminder.status === "overdue"));
+});
+
+test("homepage reminders are student-level: one per student and status, never assignment names", () => {
+  const reminders = [
+    { assignmentId: "old-overdue", studentId: "s1", dueAt: "2026-09-18T10:00:00Z", status: "overdue" },
+    { assignmentId: "new-overdue", studentId: "s1", dueAt: "2026-09-20T10:00:00Z", status: "overdue" },
+    { assignmentId: "far-soon", studentId: "s1", dueAt: "2026-09-22T23:00:00Z", status: "due_soon" },
+    { assignmentId: "near-soon", studentId: "s1", dueAt: "2026-09-22T18:00:00Z", status: "due_soon" },
+    { assignmentId: "s2-overdue", studentId: "s2", dueAt: "2026-09-19T10:00:00Z", status: "overdue" }
+  ];
+  const names = new Map([["s1", "学生一"], ["s2", "学生二"]]);
+  const aggregated = aggregateTeacherDashboardReminders(reminders, names);
+
+  assert.deepEqual(
+    aggregated.map((reminder) => [reminder.studentId, reminder.status, reminder.dueAt]),
+    [
+      ["s1", "overdue", "2026-09-20T10:00:00Z"],
+      ["s2", "overdue", "2026-09-19T10:00:00Z"],
+      ["s1", "due_soon", "2026-09-22T18:00:00Z"]
+    ]
+  );
+  assert.deepEqual(aggregated.map((reminder) => reminder.studentName), ["学生一", "学生二", "学生一"]);
+  assert.ok(aggregated.every((reminder) => !("assignmentId" in reminder)));
 });
 
 function activityTables() {

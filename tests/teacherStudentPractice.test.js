@@ -428,8 +428,9 @@ test("student detail page never calls /api/teacher/stats or the global stats hoo
 test("practice API is single-student and single-range scoped with per-domain authorization", () => {
   const route = read("app/api/teacher/students/[studentId]/practice/route.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
-  assert.match(route, /canAccessStudentDomain\(db, actor, studentId, "reading"\)/);
-  assert.match(route, /canAccessStudentDomain\(db, actor, studentId, "writing"\)/);
+  assert.match(route, /loadTeacherScope/);
+  assert.match(route, /boundDomains\.includes\("reading"\)/);
+  assert.match(route, /boundDomains\.includes\("writing"\)/);
   assert.match(route, /if \(!readingAllowed && !writingAllowed\)/);
   assert.match(route, /parseDateBoundary/);
   assert.match(route, /loadTeacherStudentReadingPractice\(db, studentId, startAt, endAt\)/);
@@ -453,11 +454,13 @@ test("practice API is single-student and single-range scoped with per-domain aut
 
 test("BAS drill-down routes are scoped to one student and one set or answer", () => {
   const setRoute = read("app/api/teacher/students/[studentId]/bas/sets/[setId]/route.ts");
-  assert.match(setRoute, /canAccessStudentDomain\(db, \{ userId: auth.userId, role: auth.role \}, studentId, "writing"\)/);
+  assert.match(setRoute, /loadTeacherScope/);
+  assert.match(setRoute, /scope\.studentDomains\.get\(studentId\)\?\.includes\("writing"\)/);
   assert.match(setRoute, /loadTeacherStudentBasSet\(db, studentId, requestedSetId\)/);
 
   const answerRoute = read("app/api/teacher/students/[studentId]/answers/[attemptAnswerId]/route.ts");
-  assert.match(answerRoute, /canAccessStudentDomain\(db, \{ userId: auth.userId, role: auth.role \}, studentId, "writing"\)/);
+  assert.match(answerRoute, /loadTeacherScope/);
+  assert.match(answerRoute, /scope\.studentDomains\.get\(studentId\)\?\.includes\("writing"\)/);
   assert.match(answerRoute, /loadTeacherStudentBasAnswerDetail\(db, studentId, attemptAnswerId\)/);
 
   const lib = read("lib/teacherStudentPractice.server.ts");

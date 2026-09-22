@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
-import { canAccessStudentDomain } from "@/lib/accountAccess";
 import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
-import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import {
+  appendSupabaseDebugMetrics,
+  instrumentSupabaseClient,
+  wantsSupabaseDebugMetrics,
+  type SupabaseQueryMetric
+} from "@/lib/supabase/debugMetrics.server";
+import { loadTeacherScope } from "@/lib/teacherScope.server";
 import {
   loadTeacherStudentReadingPractice,
   loadTeacherStudentWritingPractice
@@ -30,28 +35,19 @@ export async function GET(
     return json({ error: "无效的日期范围。" }, { status: 400 });
   }
 
+  const debugMetrics: SupabaseQueryMetric[] = [];
+  const debugEnabled = wantsSupabaseDebugMetrics(request);
+
   try {
-    const db = createServiceSupabase();
-    const actor = { userId: auth.userId, role: auth.role };
-    const profileResult = await db
-      .from("profiles")
-      .select("id,email,full_name")
-      .eq("id", studentId)
-      .eq("role", "student")
-      .eq("is_active", true)
-      .maybeSingle();
-    if (profileResult.error) throw new Error(profileResult.error.message);
-    const profile = profileResult.data as {
-      id: string;
-      email: string | null;
-      full_name: string | null;
-    } | null;
+    const baseDb = createServiceSupabase();
+    const db = debugEnabled ? instrumentSupabaseClient(baseDb, debugMetrics) : baseDb;
+    const scope = await loadTeacherScope(db, { userId: auth.userId, role: auth.role });
+    const profile = scope.studentProfiles.get(studentId);
     if (!profile) return json({ error: "未找到该学生。" }, { status: 404 });
 
-    const [readingAllowed, writingAllowed] = await Promise.all([
-      canAccessStudentDomain(db, actor, studentId, "reading"),
-      canAccessStudentDomain(db, actor, studentId, "writing")
-    ]);
+    const boundDomains = scope.studentDomains.get(studentId) ?? [];
+    const readingAllowed = boundDomains.includes("reading");
+    const writingAllowed = boundDomains.includes("writing");
     if (!readingAllowed && !writingAllowed) {
       return json({ error: "无权查看该学生的练习记录。" }, { status: 403 });
     }
@@ -69,25 +65,24 @@ export async function GET(
         : Promise.resolve(null)
     ]);
 
-    return json({
+    const response = json({
       student: {
-        studentId: profile.id,
-        displayName: getPreferredUserDisplayName({
-          email: profile.email,
-          profileFullName: profile.full_name
-        }),
-        account: profile.email?.trim() || "—",
+        studentId,
+        displayName: profile.displayName,
+        account: profile.email || "—",
         domains
       },
       range: { startAt, endAt },
       reading,
       writing
     });
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   } catch (error) {
     console.error("Teacher student practice load failed", {
       message: error instanceof Error ? error.message : String(error)
     });
-    return json({ error: "学生练习记录加载失败，请稍后重试。" }, { status: 500 });
+    const response = json({ error: "学生练习记录加载失败，请稍后重试。" }, { status: 500 });
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   }
 }
 

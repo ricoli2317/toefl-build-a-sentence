@@ -1,29 +1,25 @@
 import { NextResponse } from "next/server";
-import {
-  listTeacherStudentDomainBindings,
-  listVisibleStudentIds
-} from "@/lib/accountAccess";
 import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import {
+  appendSupabaseDebugMetrics,
+  instrumentSupabaseClient,
+  wantsSupabaseDebugMetrics,
+  type SupabaseQueryMetric
+} from "@/lib/supabase/debugMetrics.server";
+import { loadTeacherScope } from "@/lib/teacherScope.server";
 import {
   buildTeacherStudentOverviewFromSummaries,
   type TeacherStudentOverviewCandidate,
   type TeacherStudentPracticeSummaryRow
 } from "@/lib/teacherStudentOverview";
-import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
 export const dynamic = "force-dynamic";
 
 const DATABASE_BATCH_SIZE = 100;
 
 type PageError = { message: string };
-
-type ProfileRow = {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-};
 
 type SummaryRow = {
   student_id: string;
@@ -67,8 +63,9 @@ async function readRowsForStudents<Row>(
 }
 
 /**
- * Teacher student list. The summary table is maintained incrementally by
- * database triggers on practice completion, so this endpoint never reads
+ * Teacher student list. The scope (bindings + student profiles) resolves in one
+ * embedded query, and the summary table is maintained incrementally by database
+ * triggers on practice completion, so this endpoint never reads
  * reading_attempts, reading_wrongbook_attempts, attempts, writing_attempts, or
  * reading_full_set_attempts.
  */
@@ -78,46 +75,33 @@ export async function GET(request: Request) {
     return json({ error: "无权查看学生列表。" }, { status: 403 });
   }
 
+  const debugMetrics: SupabaseQueryMetric[] = [];
+  const debugEnabled = wantsSupabaseDebugMetrics(request);
+
   try {
-    const db = createServiceSupabase();
-    const actor = { userId: auth.userId, role: auth.role };
-    const visibleStudentIds = await listVisibleStudentIds(db, actor);
-    if (visibleStudentIds.length === 0) {
+    const baseDb = createServiceSupabase();
+    const db = debugEnabled ? instrumentSupabaseClient(baseDb, debugMetrics) : baseDb;
+    const scope = await loadTeacherScope(db, { userId: auth.userId, role: auth.role });
+    if (scope.visibleStudentIds.length === 0) {
       return json({ students: [] });
     }
 
-    const [domainBindings, profiles, summaries] = await Promise.all([
-      listTeacherStudentDomainBindings(db, actor),
-      readRowsForStudents<ProfileRow>(visibleStudentIds, (batch, from, to) =>
-        db
-          .from("profiles")
-          .select("id,email,full_name")
-          .in("id", batch)
-          .order("id", { ascending: true })
-          .range(from, to)
-      ),
-      readRowsForStudents<SummaryRow>(visibleStudentIds, (batch, from, to) =>
-        db
-          .from("student_practice_summary")
-          .select("student_id,total_practice_seconds,latest_practice_at")
-          .in("student_id", batch)
-          .order("student_id", { ascending: true })
-          .range(from, to)
-      )
-    ]);
-    const { studentDomains } = domainBindings;
+    const summaries = await readRowsForStudents<SummaryRow>(scope.visibleStudentIds, (batch, from, to) =>
+      db
+        .from("student_practice_summary")
+        .select("student_id,total_practice_seconds,latest_practice_at")
+        .in("student_id", batch)
+        .order("student_id", { ascending: true })
+        .range(from, to)
+    );
 
-    const profileById = new Map(profiles.map((profile) => [String(profile.id), profile]));
-    const students: TeacherStudentOverviewCandidate[] = visibleStudentIds.map((studentId) => {
-      const profile = profileById.get(studentId);
+    const students: TeacherStudentOverviewCandidate[] = scope.visibleStudentIds.map((studentId) => {
+      const profile = scope.studentProfiles.get(studentId);
       return {
         studentId,
-        studentDisplayName: getPreferredUserDisplayName({
-          email: profile?.email ?? null,
-          profileFullName: profile?.full_name ?? null
-        }),
+        studentDisplayName: profile?.displayName ?? "学生",
         studentEmail: profile?.email ?? "",
-        domains: studentDomains.get(studentId) ?? []
+        domains: scope.studentDomains.get(studentId) ?? []
       };
     });
     const summaryRows: TeacherStudentPracticeSummaryRow[] = summaries.map((row) => ({
@@ -126,11 +110,13 @@ export async function GET(request: Request) {
       latestPracticeAt: row.latest_practice_at
     }));
 
-    return json({ students: buildTeacherStudentOverviewFromSummaries({ students, summaries: summaryRows }) });
+    const response = json({ students: buildTeacherStudentOverviewFromSummaries({ students, summaries: summaryRows }) });
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   } catch (error) {
     console.error("Teacher student overview load failed", {
       message: error instanceof Error ? error.message : String(error)
     });
-    return json({ error: "学生列表加载失败，请稍后重试。" }, { status: 500 });
+    const response = json({ error: "学生列表加载失败，请稍后重试。" }, { status: 500 });
+    return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   }
 }

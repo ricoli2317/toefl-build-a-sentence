@@ -56,17 +56,17 @@ export function TeacherStudentPracticeWorkspace({ studentId }: { studentId: stri
 
   return (
     <div className="grid gap-5">
+      <TeacherBreadcrumbs crumbs={[
+        { label: "首页", href: "/teacher/dashboard" },
+        { label: "学生", href: "/teacher/students" },
+        { label: payload?.student.displayName ?? "学生详情" }
+      ]} />
       {state.loading ? (
         <>
           <TeacherLoadingRegion label="正在加载学生练习记录" />
           <TeacherStudentPracticeSkeleton />
         </>
       ) : null}
-      <TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: payload?.student.displayName ?? "学生详情" }
-      ]} />
       {state.error ? <TeacherDataError text={toPracticeErrorMessage(state.error)} /> : null}
       {!state.loading && !state.error && payload ? (
         <>

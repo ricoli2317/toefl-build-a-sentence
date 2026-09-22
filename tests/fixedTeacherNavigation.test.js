@@ -104,12 +104,13 @@ test("Phase 5 domain isolation stays in the student detail views", () => {
   assert.match(component, /DomainChip domain="writing"/);
 
   const route = read("app/api/teacher/students/[studentId]/practice/route.ts");
-  assert.match(route, /canAccessStudentDomain\(db, actor, studentId, "reading"\)/);
-  assert.match(route, /canAccessStudentDomain\(db, actor, studentId, "writing"\)/);
+  assert.match(route, /loadTeacherScope/);
+  assert.match(route, /boundDomains\.includes\("reading"\)/);
+  assert.match(route, /boundDomains\.includes\("writing"\)/);
   assert.match(route, /if \(!readingAllowed && !writingAllowed\)/);
 
   const setRoute = read("app/api/teacher/students/[studentId]/bas/sets/[setId]/route.ts");
-  assert.match(setRoute, /canAccessStudentDomain\(db, \{ userId: auth\.userId, role: auth\.role \}, studentId, "writing"\)/);
+  assert.match(setRoute, /scope\.studentDomains\.get\(studentId\)\?\.includes\("writing"\)/);
   const answerRoute = read("app/api/teacher/students/[studentId]/answers/[attemptAnswerId]/route.ts");
-  assert.match(answerRoute, /canAccessStudentDomain\(db, \{ userId: auth\.userId, role: auth\.role \}, studentId, "writing"\)/);
+  assert.match(answerRoute, /scope\.studentDomains\.get\(studentId\)\?\.includes\("writing"\)/);
 });

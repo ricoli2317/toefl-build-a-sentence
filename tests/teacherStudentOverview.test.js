@@ -184,13 +184,14 @@ test("practice duration and latest practice formatters match the product copy", 
 
 test("overview API is teacher-only, batch-scoped, and never reads practice history", () => {
   const route = read("app/api/teacher/students/overview/route.ts");
+  const scopeLib = read("lib/teacherScope.server.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
   assert.match(route, /status: 403/);
-  assert.match(route, /listVisibleStudentIds/);
-  assert.match(route, /listTeacherStudentDomainBindings/);
+  assert.match(route, /loadTeacherScope/);
+  assert.match(scopeLib, /from\("teacher_student_bindings"\)/);
+  assert.doesNotMatch(scopeLib, /owner_id/);
   assert.match(route, /readAllSupabaseRows/);
   assert.match(route, /Cache-Control[\s\S]{0,30}"no-store"/);
-  assert.match(route, /from\("profiles"\)/);
   assert.match(route, /from\("student_practice_summary"\)/);
   assert.match(route, /select\("student_id,total_practice_seconds,latest_practice_at"\)/);
   assert.match(route, /\.in\("student_id", batch\)/);
@@ -258,7 +259,7 @@ test("summary overview tolerates NULL, negative, fractional, and unknown rows", 
 
 test("Case 3: an empty roster returns an empty students array without any query", () => {
   const route = read("app/api/teacher/students/overview/route.ts");
-  assert.match(route, /if \(visibleStudentIds\.length === 0\) \{\s*return json\(\{ students: \[\] \}\);\s*\}/);
+  assert.match(route, /if \(scope\.visibleStudentIds\.length === 0\) \{\s*return json\(\{ students: \[\] \}\);\s*\}/);
 
   const list = read("components/teacher/TeacherStudentOverview.tsx");
   assert.match(list, /StudentOverviewResponse/);

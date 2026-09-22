@@ -1,4 +1,5 @@
 import { createAnonSupabase } from "@/lib/supabase/server";
+import { getCachedSupabaseJwks } from "@/lib/supabase/jwks.server";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import type { AppArea, UserRole } from "@/lib/types";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
@@ -25,11 +26,12 @@ export async function requireAuthenticatedAccount(
   if (!token) return { error: "Missing access token", userId: null, role: null, displayName: null };
 
   const anon = createAnonSupabase(token);
+  const jwks = await getCachedSupabaseJwks();
   const {
     data: claimsData,
     error: claimsError
   } = await measure(timing, "auth", performanceNames?.auth ?? "supabase_auth_get_claims", () =>
-    anon.auth.getClaims(token)
+    anon.auth.getClaims(token, jwks ? { jwks } : undefined)
   );
   const userId = typeof claimsData?.claims.sub === "string"
     ? claimsData.claims.sub

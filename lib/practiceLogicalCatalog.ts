@@ -208,6 +208,7 @@ export async function getLogicalPracticeCatalog(input: {
   supabase: SupabaseClient;
   taskType: PracticeTaskType;
   page: number;
+  useTaskScopedUniverse?: boolean;
 }): Promise<LogicalPracticeCatalog> {
   return (await loadLogicalPracticeCatalog(input)).catalog;
 }
