@@ -23,7 +23,12 @@ import {
   writingReviewAiProviderDiagnostic
 } from "@/lib/writingReviewAiLog";
 import { createServiceSupabase } from "@/lib/supabase/server";
-import { canManageWritingAttempt } from "@/lib/accountAccess";
+import {
+  assertWritingReviewTeacher,
+  loadAuthorizedWritingReviewSource,
+  loadWritingReviewWorkspace,
+  WritingReviewWorkspaceServerError
+} from "@/lib/writingReviewWorkspaceServer";
 import {
   AIReviewValidationError
 } from "@/lib/writingReviewSchema";
@@ -52,15 +57,14 @@ import {
   type WritingReviewRepository
 } from "@/lib/writingReviewGeneration";
 import {
-  readWritingAttemptForReview,
-  readWritingQuestionForReview
+  readWritingQuestionForReview,
+  type WritingReviewWorkspaceSource
 } from "@/lib/writingReviewSource";
 import type { LanguageEditOverlapNormalizationDiagnostic } from "@/lib/writingReviewLanguageEditNormalization";
 import {
   mergeRegeneratedWritingReviewItems,
   mergeRegeneratedWritingReviewTeacherState
 } from "@/lib/writingReviewFullRegeneration";
-import { loadWritingReviewWorkspace } from "@/lib/writingReviewWorkspaceServer";
 import {
   prepareWritingReviewForPersistence,
   WritingReviewDatabaseError,
@@ -82,7 +86,8 @@ function json(data: unknown, init?: ResponseInit) {
 
 function createWritingReviewRepository(
   supabase: ReturnType<typeof createServiceSupabase>,
-  overwriteTeacherContent: boolean
+  overwriteTeacherContent: boolean,
+  source: WritingReviewWorkspaceSource
 ): WritingReviewRepository {
   let reviewResponseText = "";
   let manualReview: {
@@ -94,11 +99,9 @@ function createWritingReviewRepository(
     teacher_comment: unknown;
   } | null = null;
   return {
-    async findAttempt(attemptId) {
-      const { data, error } = await readWritingAttemptForReview(supabase, attemptId);
-      throwReadError(error, "writing attempt");
-      reviewResponseText = writingReviewAttemptResponseText(data);
-      return data as ReviewableWritingAttempt | null;
+    async findAttempt() {
+      reviewResponseText = writingReviewAttemptResponseText(source.attempt);
+      return source.attempt as ReviewableWritingAttempt;
     },
 
     async findExistingReview(attemptId) {
@@ -140,7 +143,10 @@ function createWritingReviewRepository(
         supabase,
         taskType,
         questionId,
-        assignmentId
+        assignmentId,
+        assignmentId && assignmentId === source.attempt.assignment_id
+          ? { assignment: source.assignment }
+          : undefined
       );
       throwReadError(error, "original writing question");
       return data as ReviewQuestion | null;
@@ -272,9 +278,11 @@ export async function POST(
     }
 
     const supabase = createServiceSupabase();
-    if (!await canManageWritingAttempt(supabase, { userId: auth.userId, role: auth.role }, params.attemptId)) {
-      return json({ code: "ATTEMPT_NOT_FOUND", message: "未找到这条写作提交。" }, { status: 404 });
-    }
+    const source = await loadAuthorizedWritingReviewSource(
+      supabase,
+      { userId: auth.userId, role: auth.role },
+      params.attemptId
+    );
     aiLogClient = supabase;
     operationStartedAt = Date.now();
     const overwriteTeacherContent =
@@ -282,7 +290,8 @@ export async function POST(
     const generationResult = await generateAndSaveWritingReview(params.attemptId, {
       repository: createWritingReviewRepository(
         supabase,
-        overwriteTeacherContent
+        overwriteTeacherContent,
+        source
       ),
       requestAI: async (input) => {
         aiStartedAt = Date.now();
@@ -391,7 +400,9 @@ export async function POST(
     reusedExistingReview = generationResult.reusedExistingReview;
     persistenceRaceRecovered = generationResult.persistenceRaceRecovered;
 
-    const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId);
+    const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId, {
+      source
+    });
     await logPipeline();
     return json(
       {
@@ -402,6 +413,9 @@ export async function POST(
     );
   } catch (error) {
     await logPipeline(error);
+    if (error instanceof WritingReviewWorkspaceServerError) {
+      return json({ code: error.code, message: error.message }, { status: error.status });
+    }
     if (error instanceof WritingReviewGenerationError) {
       if (error.code === "AI_RESPONSE_INVALID") {
         logInvalidAIResponse(params.attemptId, error.cause);

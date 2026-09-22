@@ -3,6 +3,7 @@ import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   assertWritingReviewTeacher,
+  loadAuthorizedWritingReviewSource,
   loadWritingReviewWorkspace,
   saveWritingReviewWorkspace,
   WritingReviewWorkspaceServerError
@@ -12,7 +13,7 @@ import {
   loadWritingHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
-import { canManageWritingAttempt } from "@/lib/accountAccess";
+import type { WritingReviewWorkspaceSource } from "@/lib/writingReviewSource";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,16 @@ function json(data: unknown, init?: ResponseInit) {
   });
 }
 
+// The resolver only resolves question-bank sources; custom snapshots and a
+// missing assignment never consult the practice-item mapping.
+function resolveQuestionSource(
+  source: WritingReviewWorkspaceSource
+): "question_bank" | "custom" | null {
+  if (!source.attempt.assignment_id) return "question_bank";
+  if (!source.assignment) return null;
+  return source.assignment.question_source === "custom" ? "custom" : "question_bank";
+}
+
 export async function GET(
   request: Request,
   { params }: { params: { attemptId: string } }
@@ -31,19 +42,25 @@ export async function GET(
     const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
-    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
-      throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
-    }
-    const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId);
-    // Only this attempt's question mapping is needed; custom questions never
-    // consult the question-bank mapping at all.
-    const historicalDisplayResolver = workspace.question_source === "question_bank"
-      ? await loadWritingHistoricalPracticeDisplayResolver(
-          supabase,
-          workspace.attempt.task_type,
-          [workspace.attempt.question_id]
-        )
-      : createHistoricalPracticeDisplayResolver({ items: [], sources: [] });
+    const source = await loadAuthorizedWritingReviewSource(
+      supabase,
+      { userId: auth.userId!, role: auth.role! },
+      params.attemptId
+    );
+    // The mapping query only needs this attempt's question id, so it starts
+    // together with the workspace load instead of waiting behind it.
+    const historicalDisplayResolverPromise =
+      resolveQuestionSource(source) === "question_bank"
+        ? loadWritingHistoricalPracticeDisplayResolver(
+            supabase,
+            source.attempt.task_type,
+            [source.attempt.question_id]
+          )
+        : Promise.resolve(createHistoricalPracticeDisplayResolver({ items: [], sources: [] }));
+    const [workspace, historicalDisplayResolver] = await Promise.all([
+      loadWritingReviewWorkspace(supabase, params.attemptId, { source }),
+      historicalDisplayResolverPromise
+    ]);
     const display = historicalDisplayResolver.resolveWritingAttempt({
       assignmentId: workspace.attempt.assignment_id,
       assignmentDisplayName: workspace.question.set_title,
@@ -86,14 +103,17 @@ export async function PATCH(
     const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
-    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
-      throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
-    }
+    const source = await loadAuthorizedWritingReviewSource(
+      supabase,
+      { userId: auth.userId!, role: auth.role! },
+      params.attemptId
+    );
     const body = await request.json();
     const review = await saveWritingReviewWorkspace(
       supabase,
       params.attemptId,
-      body
+      body,
+      { source }
     );
     return json({ review });
   } catch (error) {

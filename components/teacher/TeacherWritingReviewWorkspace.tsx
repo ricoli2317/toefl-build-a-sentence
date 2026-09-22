@@ -173,8 +173,7 @@ export function TeacherWritingReviewWorkspace({
   const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<WorkspacePayload>(
     cacheKey,
-    () => loadWorkspace(attemptId),
-    { refreshOnMount: true }
+    () => loadWorkspace(attemptId)
   );
   const [draft, setDraft] = useState<WritingReviewWorkingDraft | null>(null);
   const [mode, setMode] = useState<WorkspaceMode>("workspace");

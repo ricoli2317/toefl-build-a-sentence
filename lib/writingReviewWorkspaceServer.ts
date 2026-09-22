@@ -1,8 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPreferredUserDisplayName } from "./userDisplayName.ts";
+import { canManageWritingAttempt, type AccountActor } from "./accountAccess.ts";
 import {
+  readWritingAssignmentForReview,
   readWritingAttemptForReview,
-  readWritingQuestionForReview
+  readWritingQuestionForReview,
+  writingQuestionFromAssignmentSource,
+  type WritingReviewAssignmentSource,
+  type WritingReviewWorkspaceSource
 } from "./writingReviewSource.ts";
 import {
   buildManualWritingReviewDraft,
@@ -50,10 +55,16 @@ export function assertWritingReviewTeacher(auth: {
   );
 }
 
-export async function loadWritingReviewWorkspace(
+/**
+ * Loads the attempt and its assignment once per request, then authorizes
+ * against that same row so the workspace loaders never re-read the attempt.
+ * Authorization is still evaluated server-side for every request.
+ */
+export async function loadAuthorizedWritingReviewSource(
   supabase: SupabaseClient,
+  actor: AccountActor,
   attemptId: string
-) {
+): Promise<WritingReviewWorkspaceSource> {
   const attemptResult = await readWritingAttemptForReview(supabase, attemptId);
   if (attemptResult.error) throw databaseReadError();
   const attempt = attemptResult.data;
@@ -64,6 +75,44 @@ export async function loadWritingReviewWorkspace(
       404
     );
   }
+
+  let assignment: WritingReviewAssignmentSource | null = null;
+  if (attempt.assignment_id) {
+    const assignmentResult = await readWritingAssignmentForReview(
+      supabase,
+      attempt.assignment_id
+    );
+    if (assignmentResult.error) throw databaseReadError();
+    assignment = assignmentResult.data;
+  }
+
+  const authorized = await canManageWritingAttempt(supabase, actor, attemptId, {
+    attempt: {
+      assignment_id: attempt.assignment_id ?? null,
+      user_id: attempt.user_id
+    },
+    assignmentTeacherId: attempt.assignment_id
+      ? assignment?.teacher_id ?? null
+      : undefined
+  });
+  if (!authorized) {
+    throw new WritingReviewWorkspaceServerError(
+      "ATTEMPT_NOT_FOUND",
+      "未找到这条写作提交。",
+      404
+    );
+  }
+
+  return { attempt, assignment };
+}
+
+export async function loadWritingReviewWorkspace(
+  supabase: SupabaseClient,
+  attemptId: string,
+  options?: { source?: WritingReviewWorkspaceSource }
+) {
+  const source = options?.source;
+  const attempt = source?.attempt ?? (await readWritingAttemptForWorkspace(supabase, attemptId));
   if (attempt.status !== "submitted") {
     throw new WritingReviewWorkspaceServerError(
       "ATTEMPT_NOT_SUBMITTED",
@@ -73,12 +122,16 @@ export async function loadWritingReviewWorkspace(
   }
 
   const [questionResult, profileResult, reviewResult] = await Promise.all([
-    readWritingQuestionForReview(
-      supabase,
-      attempt.task_type,
-      attempt.question_id,
-      attempt.assignment_id
-    ),
+    source && attempt.assignment_id
+      ? Promise.resolve(
+          writingQuestionFromAssignmentSource(source.assignment, attempt.task_type)
+        )
+      : readWritingQuestionForReview(
+          supabase,
+          attempt.task_type,
+          attempt.question_id,
+          attempt.assignment_id
+        ),
     supabase
       .from("profiles")
       .select("id,email,full_name")
@@ -142,9 +195,15 @@ export async function saveWritingReviewWorkspace(
   supabase: SupabaseClient,
   attemptId: string,
   body: unknown,
-  options?: { publish?: boolean; now?: () => Date }
+  options?: {
+    publish?: boolean;
+    now?: () => Date;
+    source?: WritingReviewWorkspaceSource;
+  }
 ) {
-  const loaded = await loadWritingReviewWorkspace(supabase, attemptId);
+  const loaded = await loadWritingReviewWorkspace(supabase, attemptId, {
+    source: options?.source
+  });
   const draft = normalizeRequestDraft(
     body,
     loaded.attempt.task_type,
@@ -192,7 +251,9 @@ export async function saveWritingReviewWorkspace(
     const canConfirmConcurrentResult =
       (!error && !data) || (inserting && error?.code === "23505");
     if (canConfirmConcurrentResult) {
-      const current = await loadWritingReviewWorkspace(supabase, attemptId);
+      const current = await loadWritingReviewWorkspace(supabase, attemptId, {
+        source: options?.source
+      });
       const mutationReachedServer = publish
         ? current.review.status === "published" &&
           publishedSnapshotMatchesDraft(current.review, draft)
@@ -394,6 +455,22 @@ function buildUnsavedManualReview(
     published_at: null,
     updated_at: null
   };
+}
+
+async function readWritingAttemptForWorkspace(
+  supabase: SupabaseClient,
+  attemptId: string
+) {
+  const attemptResult = await readWritingAttemptForReview(supabase, attemptId);
+  if (attemptResult.error) throw databaseReadError();
+  if (!attemptResult.data) {
+    throw new WritingReviewWorkspaceServerError(
+      "ATTEMPT_NOT_FOUND",
+      "未找到这条写作提交。",
+      404
+    );
+  }
+  return attemptResult.data;
 }
 
 function databaseReadError() {

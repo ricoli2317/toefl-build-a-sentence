@@ -26,6 +26,18 @@ export type WritingReviewSourceAttempt = Pick<
 
 export type WritingReviewSourceQuestion = EmailQuestion | AcademicDiscussionQuestion;
 
+export type WritingReviewAssignmentSource = {
+  teacher_id: string;
+  task_type: WritingTaskType;
+  question_source: string | null;
+  question_snapshot: unknown;
+};
+
+export type WritingReviewWorkspaceSource = {
+  attempt: WritingReviewSourceAttempt;
+  assignment: WritingReviewAssignmentSource | null;
+};
+
 export type WritingReviewSourceStage =
   | "writing_attempt"
   | "writing_assignment"
@@ -55,6 +67,9 @@ export class WritingReviewSourceLoadError extends Error {
 const WRITING_REVIEW_ATTEMPT_FIELDS =
   "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,writing_mode,elapsed_seconds,overtime_ranges,submitted_at";
 
+const WRITING_REVIEW_ASSIGNMENT_FIELDS =
+  "teacher_id,task_type,question_source,question_snapshot";
+
 export function writingReviewQuestionFields(taskType: WritingTaskType) {
   return taskType === "email"
     ? "question_id,set_id,set_title,year_month,source_labels,scenario,task_instruction,requirement_1,requirement_2,requirement_3,closing_instruction,recipient,subject"
@@ -74,27 +89,40 @@ export async function readWritingAttemptForReview(
   return { data: data as WritingReviewSourceAttempt | null, error };
 }
 
+export async function readWritingAssignmentForReview(
+  supabase: SupabaseClient,
+  assignmentId: string
+) {
+  const { data, error } = await supabase
+    .from("writing_assignments")
+    .select(WRITING_REVIEW_ASSIGNMENT_FIELDS)
+    .eq("assignment_id", assignmentId)
+    .maybeSingle();
+
+  return { data: data as WritingReviewAssignmentSource | null, error };
+}
+
 export async function readWritingQuestionForReview(
   supabase: SupabaseClient,
   taskType: WritingTaskType,
   questionId: string,
-  assignmentId?: string | null
+  assignmentId?: string | null,
+  options?: { assignment?: WritingReviewAssignmentSource | null }
 ) {
   if (assignmentId) {
+    if (options && "assignment" in options) {
+      return writingQuestionFromAssignmentSource(options.assignment ?? null, taskType);
+    }
     const { data, error } = await supabase
       .from("writing_assignments")
-      .select("task_type,question_source,question_snapshot")
+      .select(WRITING_REVIEW_ASSIGNMENT_FIELDS)
       .eq("assignment_id", assignmentId)
       .maybeSingle();
     if (error) return { data: null, error, questionSource: null };
-    if (data?.task_type === taskType && isWritingQuestionSnapshot(taskType, data.question_snapshot)) {
-      return {
-        data: data.question_snapshot as WritingReviewSourceQuestion,
-        error: null,
-        questionSource: data.question_source === "custom" ? "custom" as const : "question_bank" as const
-      };
-    }
-    return { data: null, error: null, questionSource: null };
+    return writingQuestionFromAssignmentSource(
+      data as WritingReviewAssignmentSource | null,
+      taskType
+    );
   }
   const table =
     taskType === "email" ? "email_questions" : "academic_discussion_questions";
@@ -109,6 +137,26 @@ export async function readWritingQuestionForReview(
     error,
     questionSource: "question_bank" as const
   };
+}
+
+export function writingQuestionFromAssignmentSource(
+  assignment: WritingReviewAssignmentSource | null,
+  taskType: WritingTaskType
+) {
+  if (
+    assignment &&
+    assignment.task_type === taskType &&
+    isWritingQuestionSnapshot(taskType, assignment.question_snapshot)
+  ) {
+    return {
+      data: assignment.question_snapshot as WritingReviewSourceQuestion,
+      error: null,
+      questionSource: assignment.question_source === "custom"
+        ? "custom" as const
+        : "question_bank" as const
+    };
+  }
+  return { data: null, error: null, questionSource: null };
 }
 
 /** Loads the read-only source shared by local comparison tooling. */

@@ -36,6 +36,7 @@ export type CacheInvalidationDomain =
   | "teacherReadingStatistics";
 
 export type CacheInvalidationEvent = {
+  eventId?: string;
   type: CacheInvalidationMutation;
   studentId?: string;
   attemptId?: string;
@@ -141,16 +142,30 @@ export function cacheDomainsForEvent(
 export function publishCacheInvalidation(event: CacheInvalidationEvent) {
   if (typeof window === "undefined") return;
 
+  const detail: CacheInvalidationEvent = {
+    ...event,
+    eventId: event.eventId ?? createCacheInvalidationEventId()
+  };
+
   window.dispatchEvent(
     new CustomEvent<CacheInvalidationEvent>(CACHE_INVALIDATION_LOCAL_EVENT, {
-      detail: event
+      detail
     })
   );
 
   if (typeof BroadcastChannel === "undefined") return;
   const channel = new BroadcastChannel(CACHE_INVALIDATION_CHANNEL);
-  channel.postMessage(event);
+  // BroadcastChannel delivers to the other channel instances in this tab too,
+  // so subscribers dedupe this echo against the local event they just handled.
+  channel.postMessage(detail);
   channel.close();
+}
+
+function createCacheInvalidationEventId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
 export function subscribeToCacheInvalidation(
@@ -158,9 +173,23 @@ export function subscribeToCacheInvalidation(
 ) {
   if (typeof window === "undefined") return () => undefined;
 
+  const locallyHandled = new Map<string, number>();
+  const rememberLocalEvent = (eventId: string | undefined) => {
+    if (!eventId) return;
+    locallyHandled.set(eventId, Date.now());
+    if (locallyHandled.size > 50) {
+      const cutoff = Date.now() - 60_000;
+      for (const [key, handledAt] of Array.from(locallyHandled)) {
+        if (handledAt < cutoff) locallyHandled.delete(key);
+      }
+    }
+  };
+
   const onLocalEvent = (event: Event) => {
     const detail = (event as CustomEvent<CacheInvalidationEvent>).detail;
-    if (detail?.type) callback(detail);
+    if (!detail?.type) return;
+    rememberLocalEvent(detail.eventId);
+    callback(detail);
   };
   window.addEventListener(CACHE_INVALIDATION_LOCAL_EVENT, onLocalEvent);
 
@@ -169,7 +198,13 @@ export function subscribeToCacheInvalidation(
       ? null
       : new BroadcastChannel(CACHE_INVALIDATION_CHANNEL);
   const onMessage = (event: MessageEvent<CacheInvalidationEvent>) => {
-    if (event.data?.type) callback(event.data);
+    const data = event.data;
+    if (!data?.type) return;
+    if (data.eventId && locallyHandled.has(data.eventId)) {
+      locallyHandled.delete(data.eventId);
+      return;
+    }
+    callback(data);
   };
   channel?.addEventListener("message", onMessage);
 

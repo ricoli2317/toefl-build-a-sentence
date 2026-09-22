@@ -4,6 +4,7 @@ import {
   isLaterWritingAssignmentSubmission,
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
+import type { WritingQuestion } from "@/lib/writing";
 import {
   chunkValues,
   prepareWritingAssignmentGroupMutation,
@@ -14,12 +15,24 @@ import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDispl
 
 export const dynamic = "force-dynamic";
 
-type AssignmentRow = Omit<WritingAssignmentSummary, "assigned_count" | "completed_count" | "published_count" | "has_attempts" | "single_student_latest_submitted_attempt_id" | "single_student_latest_review_status" | "has_overdue_students"> & {
+type AssignmentRow = Omit<
+  WritingAssignmentSummary,
+  | "assigned_count"
+  | "completed_count"
+  | "published_count"
+  | "has_attempts"
+  | "single_student_latest_submitted_attempt_id"
+  | "single_student_latest_review_status"
+  | "has_overdue_students"
+  | "question_snapshot"
+> & {
   teacher_id: string;
   updated_at: string;
+  set_title: string | null;
 };
 type AssignmentStudentRow = { assignment_id: string; student_id: string; assigned_at: string };
 type AssignmentAttemptRow = { assignment_id: string; attempt_id: string; user_id: string; status: string; submitted_at: string | null };
+type AssignmentReviewRow = { attempt_id: string; status: string; published_at: string | null };
 
 export async function GET(request: Request) {
   try {
@@ -30,7 +43,7 @@ export async function GET(request: Request) {
     const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
       auth.supabase!
         .from("writing_assignments")
-        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,question_snapshot,due_at,status,created_at,updated_at")
+        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,due_at,status,created_at,updated_at")
         .eq("teacher_id", auth.teacherId!)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
@@ -59,9 +72,12 @@ export async function GET(request: Request) {
     if (assignments.length === 0) return writingAssignmentJson({ assignments: [] });
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
-    const [members, attempts, displayNames] = await Promise.all([
+    // Members, attempts, review statuses and display names are all keyed by the
+    // assignment ids, so the whole detail set loads in one parallel wave.
+    const [members, attempts, reviewStatuses, displayNames] = await Promise.all([
       readAssignmentRows<AssignmentStudentRow>(auth.supabase, "writing_assignment_students", "assignment_id,student_id,assigned_at", assignmentIds),
       readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds),
+      readAssignmentReviewStatuses(auth.supabase, assignmentIds),
       loadWritingAssignmentDisplayNames(
         auth.supabase,
         assignments.map((assignment) => ({
@@ -92,10 +108,6 @@ export async function GET(request: Request) {
         latestSubmission.set(key, attempt);
       }
     }
-    const reviewStatusByAttemptId = await readReviewStatuses(
-      auth.supabase,
-      Array.from(latestSubmission.values(), (attempt) => attempt.attempt_id)
-    );
     const now = Date.now();
     const enrichedAssignments = assignments.map((assignment) => {
         const students = assignedByAssignment.get(assignment.assignment_id) ?? new Set();
@@ -107,7 +119,7 @@ export async function GET(request: Request) {
             completedCount += 1;
           }
           const latest = latestSubmission.get(key);
-          if (latest && reviewStatusByAttemptId.get(latest.attempt_id) === "published") {
+          if (latest && reviewStatuses.get(latest.attempt_id) === "published") {
             publishedCount += 1;
           }
         }
@@ -123,7 +135,7 @@ export async function GET(request: Request) {
           task_type: assignment.task_type,
           question_source: assignment.question_source,
           question_id: assignment.question_id,
-          question_snapshot: assignment.question_snapshot,
+          question_snapshot: { set_title: assignment.set_title ?? "" } as WritingQuestion,
           display_name: displayNames.get(assignment.assignment_id) ?? snapshotTitle,
           status: assignment.status,
           due_at: assignment.due_at,
@@ -135,7 +147,7 @@ export async function GET(request: Request) {
           single_student_latest_submitted_attempt_id:
             singleStudentSubmission?.attempt_id ?? null,
           single_student_latest_review_status: singleStudentSubmission
-            ? reviewStatusByAttemptId.get(singleStudentSubmission.attempt_id) ?? null
+            ? reviewStatuses.get(singleStudentSubmission.attempt_id) ?? null
             : null,
           has_overdue_students: Boolean(
             assignment.due_at && Date.parse(assignment.due_at) < now && completedCount < students.size
@@ -152,22 +164,19 @@ export async function GET(request: Request) {
   }
 }
 
-async function readReviewStatuses(
+async function readAssignmentReviewStatuses(
   supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
-  attemptIds: string[]
+  assignmentIds: string[]
 ) {
   const statuses = new Map<string, "reviewing" | "published">();
-  for (const batch of chunkValues(attemptIds)) {
+  for (const batch of chunkValues(assignmentIds)) {
     if (batch.length === 0) continue;
-    const result = await readAllSupabaseRows<{
-      attempt_id: string;
-      status: string;
-      published_at: string | null;
-    }>((from, to) =>
+    const result = await readAllSupabaseRows<AssignmentReviewRow>((from, to) =>
       supabase
         .from("writing_reviews")
-        .select("attempt_id,status,published_at")
-        .in("attempt_id", batch)
+        .select("attempt_id,status,published_at,attempt:writing_attempts!inner(assignment_id)")
+        .in("attempt.assignment_id", batch)
+        .order("attempt_id", { ascending: true })
         .range(from, to)
     );
     if (result.error) throw result.error;
@@ -259,9 +268,9 @@ async function readAssignmentRows<T>(
 }
 
 function assignmentSnapshotTitle(assignment: {
-  question_snapshot: { set_title?: string | null };
+  set_title: string | null;
 }) {
-  return assignment.question_snapshot.set_title?.trim() || "自定义题目";
+  return assignment.set_title?.trim() || "自定义题目";
 }
 
 function invalid(message: string) {

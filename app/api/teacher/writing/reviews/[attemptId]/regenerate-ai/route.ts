@@ -23,7 +23,6 @@ import {
   writingReviewAiProviderDiagnostic
 } from "@/lib/writingReviewAiLog";
 import { createServiceSupabase } from "@/lib/supabase/server";
-import { canManageWritingAttempt } from "@/lib/accountAccess";
 import {
   regenerateFullWritingReview,
   WritingReviewFullRegenerationError,
@@ -45,11 +44,12 @@ import {
   type WritingReviewProductionHedgeTelemetry
 } from "@/lib/writingReviewProductionHedge";
 import {
-  readWritingAttemptForReview,
-  readWritingQuestionForReview
+  readWritingQuestionForReview,
+  type WritingReviewWorkspaceSource
 } from "@/lib/writingReviewSource";
 import {
   assertWritingReviewTeacher,
+  loadAuthorizedWritingReviewSource,
   loadWritingReviewWorkspace,
   WritingReviewWorkspaceServerError
 } from "@/lib/writingReviewWorkspaceServer";
@@ -68,13 +68,12 @@ function json(data: unknown, init?: ResponseInit) {
 }
 
 function createRepository(
-  supabase: ReturnType<typeof createServiceSupabase>
+  supabase: ReturnType<typeof createServiceSupabase>,
+  source: WritingReviewWorkspaceSource
 ): WritingReviewFullRegenerationRepository {
   return {
-    async findAttempt(attemptId) {
-      const { data, error } = await readWritingAttemptForReview(supabase, attemptId);
-      if (error) throw error;
-      return data;
+    async findAttempt() {
+      return source.attempt;
     },
     async findReview(attemptId) {
       const { data, error } = await supabase
@@ -99,7 +98,10 @@ function createRepository(
         supabase,
         taskType,
         questionId,
-        assignmentId
+        assignmentId,
+        assignmentId && assignmentId === source.attempt.assignment_id
+          ? { assignment: source.assignment }
+          : undefined
       );
       if (error) throw error;
       return data;
@@ -142,15 +144,17 @@ export async function POST(
     const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
-    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
-      return json({ code: "ATTEMPT_NOT_FOUND", message: "未找到这条写作提交。" }, { status: 404 });
-    }
+    const source = await loadAuthorizedWritingReviewSource(
+      supabase,
+      { userId: auth.userId!, role: auth.role! },
+      params.attemptId
+    );
     aiLogClient = supabase;
     operationStartedAt = Date.now();
     const overwriteTeacherContent =
       new URL(request.url).searchParams.get("teacher_content") === "overwrite";
     await regenerateFullWritingReview(params.attemptId, {
-      repository: createRepository(supabase),
+      repository: createRepository(supabase, source),
       requestAI: async (input) => {
         aiStartedAt = Date.now();
         aiTaskType = input.taskType;
@@ -255,7 +259,9 @@ export async function POST(
     }, {
       preserveTeacherContent: !overwriteTeacherContent
     });
-    const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId);
+    const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId, {
+      source
+    });
     await logPipeline();
     return json({ review: workspace.review });
   } catch (error) {

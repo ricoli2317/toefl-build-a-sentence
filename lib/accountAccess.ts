@@ -187,11 +187,27 @@ export async function canManageStudent(
  * - Self-practice attempts (assignment_id IS NULL) require a writing-domain
  *   binding with the attempt's author; no profiles.owner_id fallback.
  */
+export type WritingAttemptAccessRow = {
+  assignment_id: string | null;
+  user_id: string;
+};
+
 export async function canManageWritingAttempt(
   supabase: SupabaseClient,
   actor: AccountActor,
-  attemptId: string
+  attemptId: string,
+  options?: {
+    attempt?: WritingAttemptAccessRow | null;
+    assignmentTeacherId?: string | null;
+  }
 ) {
+  if (options && "attempt" in options) {
+    if (!options.attempt) return false;
+    return canManageWritingAttemptSource(supabase, actor, options.attempt, {
+      assignmentTeacherId: options.assignmentTeacherId
+    });
+  }
+
   const { data, error } = await supabase
     .from("writing_attempts")
     .select("assignment_id,user_id")
@@ -199,15 +215,40 @@ export async function canManageWritingAttempt(
     .maybeSingle();
   if (error) throw error;
   if (!data) return false;
-  const userId = String(data.user_id);
+  return canManageWritingAttemptSource(supabase, actor, {
+    assignment_id: data.assignment_id ? String(data.assignment_id) : null,
+    user_id: String(data.user_id)
+  });
+}
+
+/**
+ * The same access rule as canManageWritingAttempt, evaluated against an
+ * attempt row the caller already loaded for this request. Passing
+ * assignmentTeacherId reuses an already loaded assignment row; passing
+ * assignmentTeacherId: null means the assignment row was loaded and did not
+ * exist. Omitting it keeps the lookup for callers without a loaded row.
+ */
+export async function canManageWritingAttemptSource(
+  supabase: SupabaseClient,
+  actor: AccountActor,
+  attempt: WritingAttemptAccessRow,
+  options?: { assignmentTeacherId?: string | null }
+) {
+  const userId = String(attempt.user_id);
 
   if (actor.role === "admin") {
     if (userId === actor.userId) return true;
     return isActiveStudent(supabase, userId);
   }
 
-  const assignmentId = data.assignment_id ? String(data.assignment_id) : null;
+  const assignmentId = attempt.assignment_id ? String(attempt.assignment_id) : null;
   if (assignmentId) {
+    if (options && "assignmentTeacherId" in options) {
+      const teacherId = options.assignmentTeacherId;
+      return teacherId !== null && teacherId !== undefined
+        ? String(teacherId) === actor.userId
+        : false;
+    }
     const { data: assignment, error: assignmentError } = await supabase
       .from("writing_assignments")
       .select("teacher_id")

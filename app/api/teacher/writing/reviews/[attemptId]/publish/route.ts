@@ -3,10 +3,10 @@ import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   assertWritingReviewTeacher,
+  loadAuthorizedWritingReviewSource,
   saveWritingReviewWorkspace,
   WritingReviewWorkspaceServerError
 } from "@/lib/writingReviewWorkspaceServer";
-import { canManageWritingAttempt } from "@/lib/accountAccess";
 
 export const dynamic = "force-dynamic";
 
@@ -25,14 +25,16 @@ export async function POST(
     const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
-    if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
-      throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
-    }
+    const source = await loadAuthorizedWritingReviewSource(
+      supabase,
+      { userId: auth.userId!, role: auth.role! },
+      params.attemptId
+    );
     const review = await saveWritingReviewWorkspace(
       supabase,
       params.attemptId,
       await request.json(),
-      { publish: true }
+      { publish: true, source }
     );
     return json({ review });
   } catch (error) {

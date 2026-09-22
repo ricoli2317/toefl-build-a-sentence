@@ -212,7 +212,7 @@ test("Teacher cache identity excludes display_number and reuses the review list 
   assert.match(cache, /teacher:writing-review-workspace:historical-display-v2/);
   assert.doesNotMatch(cache, /display_number/);
   assert.doesNotMatch(list, /refreshOnMount/);
-  assert.match(workspace, /refreshOnMount: true/);
+  assert.doesNotMatch(workspace, /refreshOnMount/);
 });
 
 test("Step 19 adds display metadata only to GET and does not alter AI/review schemas", () => {
