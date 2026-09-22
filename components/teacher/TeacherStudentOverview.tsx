@@ -18,6 +18,7 @@ import {
   TeacherTextLink
 } from "@/components/teacher/TeacherUI";
 import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
+import { TeacherStudentHeaderActions } from "@/components/teacher/TeacherStudentHeaderActions";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
@@ -51,7 +52,11 @@ const DOMAIN_LABELS: Record<StudentBindingDomain, string> = {
  * (总时间 / 最近练习) and never loads accuracy, writing scores, or question
  * details; those stay on the domain-scoped student detail pages.
  */
-export function TeacherStudentOverviewList() {
+export function TeacherStudentOverviewList({
+  showManageActions = false
+}: {
+  showManageActions?: boolean;
+} = {}) {
   const [query, setQuery] = useState("");
   const sectionRefs = useRef(new Map<string, HTMLTableRowElement>());
   const cache = useTeacherDataCache();
@@ -80,43 +85,47 @@ export function TeacherStudentOverviewList() {
   return (
     <div className="grid gap-6">
       {loading ? <TeacherLoadingRegion label="正在加载学生列表" /> : null}
-      <TeacherCard className="p-5 sm:p-6">
-        <div className="flex flex-wrap items-end justify-between gap-5">
-          <div className="w-full max-w-[560px]">
-            <label className="relative block">
-              <Search
-                aria-hidden="true"
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
-                size={20}
-                strokeWidth={1.9}
-              />
-              <input
-                className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="搜索学生姓名 / 拼音"
-                type="search"
-                value={query}
-              />
-            </label>
-            <p className="mt-3 text-sm text-student-muted">
-              支持中文精确搜索，例如：张三；支持拼音模糊搜索，例如：zhang / san
-            </p>
-          </div>
-          <p className="text-sm font-medium text-student-text">按姓氏首字母排序</p>
+      <TeacherCard className="p-0">
+        <div className="px-6 pt-6">
+          <TeacherSectionTitle>学生列表</TeacherSectionTitle>
         </div>
-      </TeacherCard>
-
-      <div className="flex items-start gap-3">
-        <TeacherCard className="min-w-0 flex-1 overflow-hidden p-0">
-          <div className="px-6 pt-6">
-            <TeacherSectionTitle>学生列表</TeacherSectionTitle>
+        <div className="px-6 pt-4">
+          <div className="flex flex-wrap items-end justify-between gap-x-5 gap-y-4">
+            <div className="w-full max-w-[560px]">
+              <label className="relative block">
+                <Search
+                  aria-hidden="true"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
+                  size={20}
+                  strokeWidth={1.9}
+                />
+                <input
+                  className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="搜索学生姓名 / 拼音"
+                  type="search"
+                  value={query}
+                />
+              </label>
+              <p className="mt-3 text-sm text-student-muted">
+                支持中文精确搜索，例如：张三；支持拼音模糊搜索，例如：zhang / san
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-3">
+              {showManageActions ? <TeacherStudentHeaderActions /> : null}
+              <p className="text-sm font-medium text-student-text">按姓氏首字母排序</p>
+            </div>
           </div>
+        </div>
+
+        <div className="flex">
+          <div className="min-w-0 flex-1">
           {loading ? (
             <StudentTableSkeleton />
           ) : error ? (
             <StudentTableError text={toStudentOverviewErrorMessage(error)} />
           ) : filtered.length === 0 ? (
-            <div className="p-6">
+            <div className="px-6 pb-6 pt-4">
               <TeacherEmptyState text={query.trim() ? "没有找到匹配的学生。" : "暂无学生。"} />
             </div>
           ) : (
@@ -128,7 +137,7 @@ export function TeacherStudentOverviewList() {
                     <th className="px-3 py-3 font-medium">学科</th>
                     <th className="px-3 py-3 font-medium">练习总时间</th>
                     <th className="px-3 py-3 font-medium">最近练习</th>
-                    <th className="px-3 py-3 font-medium">操作</th>
+                    <th className="w-px whitespace-nowrap px-3 py-3 font-medium">操作</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -188,8 +197,8 @@ export function TeacherStudentOverviewList() {
                         <td className="px-3 py-3 tabular-nums text-student-text">
                           {formatLatestPracticeAt(entry.student.latestPracticeAt)}
                         </td>
-                        <td className="px-3 py-3">
-                          <div className="flex flex-wrap items-center gap-2">
+                        <td className="w-px whitespace-nowrap px-3 py-3 text-right">
+                          <div className="flex flex-nowrap items-center justify-end gap-2">
                             <Link
                               className="teacher-button-secondary"
                               href={`/teacher/writing/assignments?studentId=${encodeURIComponent(entry.student.studentId)}`}
@@ -200,7 +209,7 @@ export function TeacherStudentOverviewList() {
                               className="teacher-button-secondary"
                               href={`/teacher/students/${encodeURIComponent(entry.student.studentId)}`}
                             >
-                              查看
+                              查看详情
                             </Link>
                           </div>
                         </td>
@@ -211,9 +220,9 @@ export function TeacherStudentOverviewList() {
               </table>
             </div>
           )}
-        </TeacherCard>
+          </div>
 
-        <nav aria-label="学生姓氏首字母索引" className="sticky top-[96px] hidden w-7 shrink-0 flex-col items-center gap-0.5 py-1 xl:flex">
+          <nav aria-label="学生姓氏首字母索引" className="sticky top-[96px] hidden w-7 shrink-0 flex-col items-center gap-0.5 self-start pr-6 pt-4 xl:flex">
           {ALPHABET.map((letter) => {
             const available = availableLetters.has(letter);
             return (
@@ -233,8 +242,9 @@ export function TeacherStudentOverviewList() {
               </button>
             );
           })}
-        </nav>
-      </div>
+          </nav>
+        </div>
+      </TeacherCard>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Network, Plus } from "lucide-react";
 import { useCurrentAccount } from "@/components/RoleGate";
 
 export function TeacherStudentHeaderActions() {
@@ -9,8 +9,9 @@ export function TeacherStudentHeaderActions() {
   return (
     <div className="flex flex-wrap gap-3">
       {role === "teacher" ? (
-        <Link className="teacher-button-secondary" href="/teacher/students/bind">
+        <Link className="teacher-button-secondary bg-student-primary-soft" href="/teacher/students/bind">
           绑定学生
+          <Network aria-hidden="true" size={17} strokeWidth={2} />
         </Link>
       ) : null}
       <Link className="teacher-button-secondary bg-student-primary-soft" href="/teacher/students/new">

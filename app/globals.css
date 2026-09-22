@@ -176,6 +176,12 @@ select {
     @apply mx-auto grid w-full max-w-[1380px] gap-5 px-5 py-7 sm:px-7 lg:px-10 lg:py-9;
   }
 
+  /* Teacher pages have no sidebar, so the released horizontal space widens the
+     page a step further without letting 2K/4K stretch it indefinitely. */
+  .teacher-shell--no-sidebar .teacher-page {
+    max-width: 1560px;
+  }
+
   .teacher-page-title {
     @apply text-[2rem] font-bold leading-tight tracking-[-0.025em] text-student-text sm:text-[2.25rem];
   }

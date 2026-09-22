@@ -172,15 +172,20 @@ test("Reading question bank uses the canonical inventory and never student attem
   assert.match(tabs, /STUDENT_PRACTICE_ICONS\[item\.task_type\]/);
 });
 
-test("teacher home and inactive page fetch only the lightweight dashboard endpoints", () => {
+test("teacher home makes no dashboard aggregation request and only reuses the student list", () => {
   const home = read("components/teacher/TeacherHomeDashboard.tsx");
-  const client = read("lib/teacherDashboardClient.ts");
-  assert.match(home, /loadTeacherDashboardPayload/);
-  assert.match(client, /\/api\/teacher\/dashboard/);
-  assert.match(home, /\/api\/teacher\/inactive-students/);
-  assert.doesNotMatch(home, /\/api\/teacher\/stats/);
-  assert.doesNotMatch(home, /\/api\/teacher\/reading\/statistics/);
+  const workHome = home.match(/export function TeacherWorkHome[\s\S]*?\n\}/)?.[0] ?? "";
+  assert.ok(workHome.length > 0, "TeacherWorkHome must exist");
+  assert.match(workHome, /TeacherStudentOverviewList/);
+  assert.doesNotMatch(workHome, /loadTeacherDashboardPayload|TEACHER_DASHBOARD_CACHE_KEY/);
+  assert.doesNotMatch(workHome, /fetch\(|\/api\/teacher\/dashboard|\/api\/teacher\/stats|\/api\/teacher\/reading\/statistics/);
 
+  const list = read("components/teacher/TeacherStudentOverview.tsx");
+  assert.match(list, /\/api\/teacher\/students\/overview/);
+  assert.match(list, /TEACHER_STUDENT_OVERVIEW_CACHE_KEY/);
+
+  // The inactive list is still served by its own page and endpoint.
+  assert.match(home, /\/api\/teacher\/inactive-students/);
   const inactiveRoute = read("app/api/teacher/inactive-students/route.ts");
   assert.match(inactiveRoute, /requireTeacherOnly/);
   assert.match(inactiveRoute, /loadInactiveStudentsWithLastActivity/);

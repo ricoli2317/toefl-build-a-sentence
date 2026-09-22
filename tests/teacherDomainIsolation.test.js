@@ -274,21 +274,19 @@ test("Phase 6: navigation never hides Teacher entries by binding domain", () => 
   assert.doesNotMatch(shell, /profile\.role/);
 });
 
-test("Phase 6: teacher home is a work overview without management entry cards", () => {
+test("Phase 6: teacher home hosts the three work entries and the shared student list", () => {
   const home = read("components/teacher/TeacherHomeDashboard.tsx");
-  assert.match(home, /TEACHER_DASHBOARD_CACHE_KEY/);
-  assert.match(home, /loadTeacherDashboardPayload/);
-  assert.match(home, /总学生数/);
-  assert.match(home, /待批改/);
-  assert.match(home, /作业提醒/);
-  assert.match(home, /近 3 天未活跃学生/);
-  assert.match(home, /href="\/teacher\/inactive-students"/);
-  assert.match(home, /近期动态/);
+  // The dashboard aggregation layer was retired from the home.
+  assert.doesNotMatch(home, /TEACHER_DASHBOARD_CACHE_KEY/);
+  assert.doesNotMatch(home, /loadTeacherDashboardPayload/);
+  assert.doesNotMatch(home, /总学生数|待批改|作业提醒|近期动态|近 3 天未活跃学生/);
+  // The three work entries are the only navigation the home adds.
+  assert.match(home, /href="\/teacher\/writing\/assignments"/);
+  assert.match(home, /href="\/teacher\/writing\/reviews"/);
+  assert.match(home, /href="\/teacher\/question-bank"/);
   assert.doesNotMatch(home, /href="\/teacher\/sets"/);
   assert.doesNotMatch(home, /href="\/teacher\/reading\/statistics"/);
-  assert.doesNotMatch(home, /href="\/teacher\/writing\/assignments"/);
-  assert.doesNotMatch(home, /href="\/teacher\/writing\/reviews"/);
-  assert.doesNotMatch(home, /href="\/teacher\/question-bank"/);
+  assert.match(home, /<TeacherStudentOverviewList showManageActions \/>/);
 
   const dashboard = read("components/TeacherDashboard.tsx");
   assert.doesNotMatch(dashboard, /TeacherFeatureCard[\s\S]{0,600}学生[\s\S]{0,200}套题统计/);

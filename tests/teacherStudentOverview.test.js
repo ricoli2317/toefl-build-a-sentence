@@ -278,7 +278,7 @@ test("student list UI only renders the lightweight overview surface", () => {
   assert.match(list, /支持中文精确搜索，例如：张三；支持拼音模糊搜索，例如：zhang \/ san/);
   assert.match(list, /\/teacher\/writing\/assignments\?studentId=\$\{encodeURIComponent\(entry\.student\.studentId\)\}/);
   assert.match(list, /\/teacher\/students\/\$\{encodeURIComponent\(entry\.student\.studentId\)\}/);
-  assert.match(list, /查看\n\s*<\/Link>/);
+  assert.match(list, /查看详情\n\s*<\/Link>/);
   assert.doesNotMatch(list, /写作平均正确率|写作完成套题数|写作练习次数|CTW 平均正确率|RDL 平均正确率|RAP 平均正确率|邮件平均分|学术讨论平均分/);
   assert.doesNotMatch(list, /DomainChip/);
   assert.doesNotMatch(list, /useTeacherStats|TEACHER_STATS_CACHE_KEY/);

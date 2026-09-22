@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight, type LucideIcon } from "lucide-react";
 import clsx from "clsx";
 import type { StudentPracticeIcon } from "@/components/icons/StudentPracticeIcons";
 
@@ -73,6 +73,51 @@ export function TeacherMetricCard({
         ) : null}
       </div>
     </div>
+  );
+}
+
+/**
+ * Shared TPS feature entry card. Admin platform navigation and the Teacher
+ * home work entries use the same card; the optional badge is a static label,
+ * never a live count.
+ */
+export function TeacherFeatureCard({
+  description,
+  href,
+  icon,
+  metric,
+  title
+}: {
+  description: string;
+  href: string;
+  icon: StudentPracticeIcon;
+  metric?: React.ReactNode;
+  title: string;
+}) {
+  return (
+    <Link
+      className="group flex min-h-[142px] items-center gap-5 rounded-2xl border border-student-primary-border bg-gradient-to-br from-white to-student-primary-soft/65 p-5 shadow-[0_2px_10px_rgba(88,65,170,0.05)] transition hover:-translate-y-px hover:shadow-[0_10px_28px_rgba(88,65,170,0.09)]"
+      href={href}
+    >
+      <TeacherIconTile icon={icon} />
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <h3 className="text-xl font-bold text-student-text">{title}</h3>
+          {metric ? (
+            <span className="rounded-full border border-student-primary-border bg-white/70 px-3 py-1 text-xs font-semibold text-student-primary">
+              {metric}
+            </span>
+          ) : null}
+        </div>
+        <p className="mt-2 text-sm leading-6 text-student-muted">{description}</p>
+      </div>
+      <ArrowRight
+        aria-hidden="true"
+        className="shrink-0 text-student-primary transition group-hover:translate-x-1"
+        size={21}
+        strokeWidth={2}
+      />
+    </Link>
   );
 }
 

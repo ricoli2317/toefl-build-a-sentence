@@ -29,6 +29,10 @@ export type TeacherCrumb = { href?: string; label: string };
  * detailed student data access stays binding-scoped on the pages themselves.
  * Whole-student statistics (套题统计, 阅读统计) are platform-wide reporting and
  * stay with Admin only.
+ *
+ * Teachers work without a sidebar: the teacher home hosts the three work
+ * entries and the student list, so this navigation array is rendered only for
+ * Admin (platform management), which keeps its existing IA.
  */
 const navigation: Array<{
   href: string;
@@ -112,6 +116,9 @@ export function TeacherAppShell({
 }) {
   const pathname = usePathname();
   const { displayName, role } = useCurrentAccount();
+  // Teachers navigate through the home work entries and pages' own
+  // breadcrumbs; Admin keeps the management sidebar exactly as before.
+  const showSidebar = role === "admin";
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerOverlayOpen, setHeaderOverlayOpen] = useState(false);
   const [sidebarOverlayOpen, setSidebarOverlayOpen] = useState(false);
@@ -147,7 +154,13 @@ export function TeacherAppShell({
   }
 
   return (
-    <div className={clsx("teacher-shell", workspace ? "h-dvh overflow-hidden" : "min-h-screen")}>
+    <div
+      className={clsx(
+        "teacher-shell",
+        !showSidebar && "teacher-shell--no-sidebar",
+        workspace ? "h-dvh overflow-hidden" : "min-h-screen"
+      )}
+    >
       {workspace ? (
         <div
           aria-hidden="true"
@@ -171,14 +184,16 @@ export function TeacherAppShell({
       >
         <div className="flex h-full items-center justify-between gap-4 px-5 sm:px-7 lg:px-8">
           <div className="flex items-center gap-3">
-            <button
-              aria-label={menuOpen ? "关闭导航" : "打开导航"}
-              className="teacher-button-secondary h-10 w-10 p-0 lg:hidden"
-              onClick={() => setMenuOpen((open) => !open)}
-              type="button"
-            >
-              {menuOpen ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
-            </button>
+            {showSidebar ? (
+              <button
+                aria-label={menuOpen ? "关闭导航" : "打开导航"}
+                className="teacher-button-secondary h-10 w-10 p-0 lg:hidden"
+                onClick={() => setMenuOpen((open) => !open)}
+                type="button"
+              >
+                {menuOpen ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
+              </button>
+            ) : null}
             <Link href="/teacher/dashboard"><StudentBrand compact /></Link>
           </div>
           <div className="flex items-center gap-3">
@@ -200,7 +215,7 @@ export function TeacherAppShell({
       </header>
 
       <div className={clsx("flex", workspace ? "h-dvh" : "min-h-[calc(100vh-74px)]")}>
-        {menuOpen ? (
+        {showSidebar && menuOpen ? (
           <button
             aria-label="关闭导航"
             className="fixed inset-0 top-[74px] z-30 bg-student-text/20 lg:hidden"
@@ -208,7 +223,7 @@ export function TeacherAppShell({
             type="button"
           />
         ) : null}
-        {workspace ? (
+        {showSidebar && workspace ? (
           <div
             aria-hidden="true"
             className="fixed inset-y-0 left-0 z-[65] w-3"
@@ -217,6 +232,7 @@ export function TeacherAppShell({
             onMouseLeave={hideSidebarOverlaySoon}
           />
         ) : null}
+        {showSidebar ? (
         <aside
           className={clsx(
             "fixed bottom-0 left-0 z-[68] w-[252px] border-r border-student-border bg-white px-5 py-7 transition-transform duration-200",
@@ -258,12 +274,13 @@ export function TeacherAppShell({
                   onClick={() => setMenuOpen(false)}
                 >
                   <Icon aria-hidden="true" size={22} strokeWidth={1.9} />
-                  <span>{role === "teacher" && item.href === "/teacher/students" ? "学生" : item.label}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
           </nav>
         </aside>
+        ) : null}
 
         <main className="min-w-0 flex-1">
           <div className={clsx("teacher-page", wide && "!max-w-none", workspace && "!max-w-none !gap-0 !p-3")}>
