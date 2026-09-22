@@ -1,10 +1,12 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
 import type { WritingQuestion, WritingTaskType } from "@/lib/writing";
 import {
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  writingAssignmentTitle,
   type WritingAssignmentCollectionDetail,
   type WritingAssignmentLifecycleStatus,
   type WritingAssignmentQuestionSource,
@@ -66,7 +68,7 @@ export async function GET(
     if (assignments.length < 2) return notFound();
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
 
-    const [membersResult, attemptsResult] = await Promise.all([
+    const [membersResult, attemptsResult, displayNames] = await Promise.all([
       readAllSupabaseRows<MemberRow>((from, to) =>
         auth.supabase!
           .from("writing_assignment_students")
@@ -84,6 +86,16 @@ export async function GET(
           .order("submitted_at", { ascending: true, nullsFirst: false })
           .order("attempt_id", { ascending: true })
           .range(from, to)
+      ),
+      loadWritingAssignmentDisplayNames(
+        auth.supabase,
+        assignments.map((assignment) => ({
+          assignmentId: assignment.assignment_id,
+          fallbackDisplayName: writingAssignmentTitle(assignment.question_snapshot),
+          questionId: assignment.question_id,
+          questionSource: assignment.question_source,
+          taskType: assignment.task_type
+        }))
       )
     ]);
     if (membersResult.error || attemptsResult.error) {
@@ -167,6 +179,9 @@ export async function GET(
         question_source: assignment.question_source,
         question_id: assignment.question_id,
         question_snapshot: assignment.question_snapshot,
+        display_name:
+          displayNames.get(assignment.assignment_id)
+          ?? writingAssignmentTitle(assignment.question_snapshot),
         status: assignment.status,
         due_at: assignment.due_at,
         created_at: assignment.created_at,

@@ -1,10 +1,12 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
 import {
   buildCustomWritingQuestionSnapshot,
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  writingAssignmentTitle,
   type WritingAssignmentDetail
 } from "@/lib/writingAssignments";
 import {
@@ -43,15 +45,25 @@ export async function GET(
     if (assignmentError) throw assignmentError;
     if (!assignment) return notFound();
 
-    const membersResult = await readAllSupabaseRows<MemberRow>((from, to) =>
-      auth.supabase!
-        .from("writing_assignment_students")
-        .select("student_id,assigned_at")
-        .eq("assignment_id", params.assignmentId)
-        .order("assigned_at", { ascending: true })
-        .order("student_id", { ascending: true })
-        .range(from, to)
-    );
+    const snapshotTitle = writingAssignmentTitle(assignment.question_snapshot);
+    const [membersResult, displayNames] = await Promise.all([
+      readAllSupabaseRows<MemberRow>((from, to) =>
+        auth.supabase!
+          .from("writing_assignment_students")
+          .select("student_id,assigned_at")
+          .eq("assignment_id", params.assignmentId)
+          .order("assigned_at", { ascending: true })
+          .order("student_id", { ascending: true })
+          .range(from, to)
+      ),
+      loadWritingAssignmentDisplayNames(auth.supabase, [{
+        assignmentId: String(assignment.assignment_id),
+        fallbackDisplayName: snapshotTitle,
+        questionId: assignment.question_id,
+        questionSource: assignment.question_source,
+        taskType: assignment.task_type
+      }])
+    ]);
     if (membersResult.error) throw membersResult.error;
     const members = membersResult.data ?? [];
     const studentIds = members.map((member) => member.student_id);
@@ -148,6 +160,7 @@ export async function GET(
       question_source: assignment.question_source,
       question_id: assignment.question_id,
       question_snapshot: assignment.question_snapshot,
+      display_name: displayNames.get(String(assignment.assignment_id)) ?? snapshotTitle,
       status: assignment.status,
       due_at: assignment.due_at,
       created_at: assignment.created_at,

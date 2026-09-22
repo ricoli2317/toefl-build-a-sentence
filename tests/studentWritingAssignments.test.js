@@ -134,6 +134,27 @@ test("student assignment calendar reads only a database-bounded minimal month in
   assert.doesNotMatch(ui, /prefetch/);
 });
 
+test("student assignment calendar resolves bank titles through the shared logical display resolver", () => {
+  const route = source("app/api/writing/assignments/calendar/route.ts");
+  assert.match(route, /loadWritingAssignmentDisplayNames/);
+  assert.match(route, /title: displayNames\.get\(assignmentId\) \?\? fallbackDisplayName/);
+  assert.doesNotMatch(route, /title: assignment\.title/);
+});
+
+test("student day and batch details resolve bank titles without bypassing the server helper", () => {
+  const details = source("lib/studentWritingAssignments.server.ts");
+  assert.match(details, /loadWritingAssignmentDisplayNames/);
+  assert.match(details, /display_name: displayNames\.get\(assignment\.assignment_id\) \?\? assignment\.title/);
+  assert.match(details, /title: assignment\.title,/);
+  assert.doesNotMatch(details, /display_name: assignment\.title,/);
+  for (const relativePath of [
+    "app/api/writing/assignments/day/route.ts",
+    "app/api/writing/assignments/batch/route.ts"
+  ]) {
+    assert.match(source(relativePath), /loadStudentAssignmentDetails/);
+  }
+});
+
 test("desktop assignment calendar keeps fixed cells and summarizes overflow", () => {
   const ui = source("components/student/StudentWritingAssignments.tsx");
   assert.match(ui, /DESKTOP_CALENDAR_VISIBLE_ASSIGNMENTS = 2/);

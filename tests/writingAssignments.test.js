@@ -245,6 +245,39 @@ test("custom assignment title comes only from snapshot set_title", () => {
   assert.match(detailSource, /writingAssignmentTitle\(assignment\.question_snapshot\)/);
 });
 
+test("teacher assignment pages resolve bank titles through the shared logical display resolver", () => {
+  const detailRoute = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/[assignmentId]/route.ts"),
+    "utf8"
+  );
+  const batchRoute = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/batches/[batchId]/route.ts"),
+    "utf8"
+  );
+  const listRoute = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/route.ts"),
+    "utf8"
+  );
+  const detailUi = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailView.tsx"),
+    "utf8"
+  );
+  const batchUi = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx"),
+    "utf8"
+  );
+  assert.match(listRoute, /display_name: display\?\.displayName \?\? snapshotTitle/);
+  assert.match(detailRoute, /loadWritingAssignmentDisplayNames/);
+  assert.match(detailRoute, /display_name:[\s\S]{0,80}displayNames\.get\(String\(assignment\.assignment_id\)\)/);
+  assert.match(batchRoute, /loadWritingAssignmentDisplayNames/);
+  assert.match(batchRoute, /display_name:[\s\S]{0,120}displayNames\.get\(assignment\.assignment_id\)/);
+  assert.equal(
+    (batchUi.match(/assignment\.display_name \|\| writingAssignmentTitle\(assignment\.question_snapshot\)/g) ?? []).length,
+    2
+  );
+  assert.match(detailUi, /assignment\.display_name \|\| writingAssignmentTitle\(assignment\.question_snapshot\)/);
+});
+
 test("custom Email form exposes one three-requirement textarea and normalizes on blur", () => {
   const source = fs.readFileSync(
     path.join(projectRoot, "components/teacher/TeacherWritingAssignmentForm.tsx"),

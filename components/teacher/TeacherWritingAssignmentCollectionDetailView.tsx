@@ -115,7 +115,7 @@ export function TeacherWritingAssignmentCollectionDetailView({
                 </span>
               </div>
               <p className="mt-2 line-clamp-2 font-bold text-student-text">
-                {writingAssignmentTitle(assignment.question_snapshot)}
+                {assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}
               </p>
               <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-student-muted">
                 <CalendarClock aria-hidden="true" size={14} />
@@ -160,7 +160,7 @@ export function TeacherWritingAssignmentCollectionDetailView({
                             第 {index + 1} 篇 · {WRITING_TASK_CONFIG[assignment.task_type].label}
                           </span>
                           <span className="mt-1 block font-semibold text-student-text">
-                            {writingAssignmentTitle(assignment.question_snapshot)}
+                            {assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-student-muted">

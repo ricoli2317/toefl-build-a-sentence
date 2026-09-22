@@ -93,7 +93,7 @@ export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmen
               <span className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-muted">{assignment.question_source === "custom" ? "自定义题目" : "题库题目"}</span>
               <span className={`rounded-full px-3 py-1 text-xs font-bold ${assignmentProgress.progress === "completed" ? "bg-emerald-50 text-emerald-700" : assignmentProgress.progress === "withdrawn" ? "bg-slate-100 text-slate-600" : assignmentProgress.progress === "ongoing" ? "bg-student-primary-soft text-student-primary" : "bg-amber-50 text-amber-700"}`}>{assignmentProgress.label}</span>
             </div>
-            <h2 className="mt-3 text-xl font-bold text-student-text">{writingAssignmentTitle(assignment.question_snapshot)}</h2>
+            <h2 className="mt-3 text-xl font-bold text-student-text">{assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}</h2>
             <p className="mt-2 text-sm text-student-muted">布置：{formatDate(assignment.created_at)} · 截止：{assignment.due_at ? formatDate(assignment.due_at) : "无"} · {assignment.completed_count}/{assignment.assigned_count} 已提交 · {assignment.published_count}/{assignment.assigned_count} 已发布</p>
           </div>
           <div className="flex flex-wrap justify-end gap-2">

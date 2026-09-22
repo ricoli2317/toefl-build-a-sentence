@@ -72,6 +72,14 @@ export type HistoricalPracticeDisplayResolver = {
   resolveWritingAttempt(input: HistoricalWritingDisplayInput): HistoricalPracticeDisplay;
 };
 
+export type WritingAssignmentDisplayInput = {
+  assignmentId: string;
+  taskType: "email" | "academic_discussion";
+  questionSource: "question_bank" | "custom";
+  questionId: string | null;
+  fallbackDisplayName: string;
+};
+
 export function createHistoricalPracticeDisplayResolver(input: {
   items: HistoricalPracticeItemRow[];
   sources: HistoricalPracticeSourceRow[];
@@ -365,6 +373,66 @@ export async function loadWritingHistoricalPracticeDisplayResolver(
   return timing
     ? timing.measureSync("processing", "build_writing_display_resolver", buildResolver)
     : buildResolver();
+}
+
+export async function loadWritingAssignmentDisplayNames(
+  supabase: SupabaseClient,
+  assignments: WritingAssignmentDisplayInput[],
+  timing?: StudentPerformanceTrace
+): Promise<Map<string, string>> {
+  const displayNames = new Map<string, string>();
+  const bankAssignments: Array<WritingAssignmentDisplayInput & { questionId: string }> = [];
+  for (const assignment of assignments) {
+    const rawQuestionId = assignment.questionId?.trim() ?? "";
+    if (assignment.questionSource === "question_bank" && rawQuestionId) {
+      bankAssignments.push({ ...assignment, questionId: rawQuestionId });
+    } else {
+      displayNames.set(assignment.assignmentId, assignment.fallbackDisplayName);
+    }
+  }
+  if (bankAssignments.length === 0) return displayNames;
+
+  const resolvers = new Map<"email" | "academic_discussion", HistoricalPracticeDisplayResolver>();
+  await Promise.all(
+    (["email", "academic_discussion"] as const).map(async (taskType) => {
+      const rawQuestionIds = distinct(
+        bankAssignments
+          .filter((assignment) => assignment.taskType === taskType)
+          .map((assignment) => assignment.questionId)
+      );
+      if (rawQuestionIds.length === 0) return;
+      resolvers.set(
+        taskType,
+        await loadWritingHistoricalPracticeDisplayResolver(
+          supabase,
+          taskType,
+          rawQuestionIds,
+          timing
+        )
+      );
+    })
+  );
+
+  const resolvedDisplays: HistoricalPracticeDisplay[] = [];
+  for (const assignment of bankAssignments) {
+    const resolver = resolvers.get(assignment.taskType);
+    if (!resolver) {
+      displayNames.set(assignment.assignmentId, assignment.fallbackDisplayName);
+      continue;
+    }
+    const display = resolver.resolveWritingAttempt({
+      assignmentId: assignment.assignmentId,
+      assignmentDisplayName: assignment.fallbackDisplayName,
+      fallbackDisplayName: assignment.fallbackDisplayName,
+      questionSource: assignment.questionSource,
+      rawQuestionId: assignment.questionId,
+      taskType: assignment.taskType
+    });
+    resolvedDisplays.push(display);
+    displayNames.set(assignment.assignmentId, display.displayName);
+  }
+  logHistoricalPracticeDisplayWarnings(resolvedDisplays);
+  return displayNames;
 }
 
 function measureDatabase<T>(

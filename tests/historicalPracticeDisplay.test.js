@@ -4,7 +4,8 @@ const path = require("node:path");
 const test = require("node:test");
 const {
   createHistoricalPracticeDisplayResolver,
-  enrichBuildSentenceHistoricalAttempts
+  enrichBuildSentenceHistoricalAttempts,
+  loadWritingAssignmentDisplayNames
 } = require("../lib/historicalPracticeDisplay.ts");
 const { buildPracticeHistoryPayload } = require("../lib/practiceHistory.ts");
 const { buildWritingSubmissionHistory } = require("../lib/writingSubmissionHistory.ts");
@@ -256,4 +257,114 @@ test("historical resolver loads items and sources in two batched table reads, no
   assert.ok((helper.match(/\.from\("practice_items"\)/g) ?? []).length <= 2);
   assert.ok((helper.match(/\.from\("practice_item_sources"\)/g) ?? []).length <= 3);
   assert.doesNotMatch(helper, /for \([^)]*(attempt|submission)[^)]*\)[\s\S]{0,200}\.from\(/i);
+});
+
+function itemWithSource(item, source) {
+  return { ...source, item };
+}
+
+function fakeSupabase(tables, calls) {
+  return {
+    from(table) {
+      calls.push(table);
+      const filters = [];
+      const builder = {
+        select: () => builder,
+        eq: (column, value) => {
+          filters.push([column, value]);
+          return builder;
+        },
+        in: (column, values) => {
+          filters.push([column, values]);
+          return builder;
+        },
+        order: () => builder,
+        range: (from, to) => Promise.resolve({
+          data: (tables[table] ?? [])
+            .filter((row) => filters.every(([column, value]) =>
+              Array.isArray(value) ? value.includes(row[column]) : row[column] === value
+            ))
+            .slice(from, to + 1),
+          error: null
+        })
+      };
+      return builder;
+    }
+  };
+}
+
+test("assignment display names resolve bank titles, keep custom titles, and fall back unmapped", async () => {
+  const calls = [];
+  const emailItem = item("email-item", "email", "021", "Request for Schedule Change");
+  const supabase = fakeSupabase({
+    practice_item_sources: [
+      itemWithSource(emailItem, {
+        source_id: "email-a-source",
+        item_id: emailItem.item_id,
+        task_type: "email",
+        source_set_id: null,
+        source_question_id: "email-a"
+      })
+    ]
+  }, calls);
+  const originalWarn = console.warn;
+  console.warn = () => {};
+  try {
+    const displayNames = await loadWritingAssignmentDisplayNames(supabase, [
+      {
+        assignmentId: "bank-email",
+        fallbackDisplayName: "8.8A old raw title",
+        questionId: "email-a",
+        questionSource: "question_bank",
+        taskType: "email"
+      },
+      {
+        assignmentId: "custom-email",
+        fallbackDisplayName: "Teacher Custom Prompt",
+        questionId: "custom:custom-email",
+        questionSource: "custom",
+        taskType: "email"
+      },
+      {
+        assignmentId: "orphan-ad",
+        fallbackDisplayName: "Legacy AD Raw Title",
+        questionId: "orphan-ad-raw",
+        questionSource: "question_bank",
+        taskType: "academic_discussion"
+      }
+    ]);
+    assert.equal(displayNames.get("bank-email"), "题目021 Request for Schedule Change");
+    assert.equal(displayNames.get("custom-email"), "Teacher Custom Prompt");
+    assert.equal(displayNames.get("orphan-ad"), "Legacy AD Raw Title");
+  } finally {
+    console.warn = originalWarn;
+  }
+  assert.deepEqual(calls, ["practice_item_sources", "practice_item_sources"]);
+});
+
+test("custom-only assignment display loads no practice item mapping table", async () => {
+  const calls = [];
+  const supabase = fakeSupabase({ practice_item_sources: [] }, calls);
+  const displayNames = await loadWritingAssignmentDisplayNames(supabase, [
+    {
+      assignmentId: "custom-only",
+      fallbackDisplayName: "Teacher Custom Prompt",
+      questionId: "custom:custom-only",
+      questionSource: "custom",
+      taskType: "email"
+    }
+  ]);
+  assert.equal(displayNames.get("custom-only"), "Teacher Custom Prompt");
+  assert.deepEqual(calls, []);
+});
+
+test("assignment display resolver reuses the scoped logical mapping loader instead of full table reads", () => {
+  const helper = fs.readFileSync(path.join(projectRoot, "lib/historicalPracticeDisplay.ts"), "utf8");
+  const helperBody = helper.slice(
+    helper.indexOf("export async function loadWritingAssignmentDisplayNames")
+  );
+  assert.match(helperBody, /loadWritingHistoricalPracticeDisplayResolver\(/);
+  assert.match(helperBody, /Promise\.all\(/);
+  assert.match(helperBody, /logHistoricalPracticeDisplayWarnings/);
+  assert.doesNotMatch(helperBody, /from\("practice_items"\)|from\("practice_item_sources"\)/);
 });

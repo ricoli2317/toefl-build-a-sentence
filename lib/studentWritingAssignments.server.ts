@@ -1,4 +1,5 @@
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import type { WritingAttempt, WritingMode, WritingTaskType } from "@/lib/writing";
 import {
@@ -74,24 +75,37 @@ export async function loadStudentAssignmentDetails(input: {
   if (rows.length === 0) return { assignments: [] as StudentWritingAssignmentSummary[] };
 
   const assignmentIds = rows.map(({ assignment }) => assignment.assignment_id);
-  const attemptResult = await measureDatabase(input.timing, "assignment_day_attempts_and_reviews", () =>
-    createServiceSupabase()
-      .from("writing_attempts")
-      .select(`
-        assignment_id,
-        attempt_id,
-        status,
-        writing_mode,
-        submitted_at,
-        created_at,
-        updated_at,
-        writing_reviews(status,published_at)
-      `)
-      .eq("user_id", input.userId)
-      .in("assignment_id", assignmentIds)
-      .order("updated_at", { ascending: false })
-      .limit(5000)
-  );
+  const [attemptResult, displayNames] = await Promise.all([
+    measureDatabase(input.timing, "assignment_day_attempts_and_reviews", () =>
+      createServiceSupabase()
+        .from("writing_attempts")
+        .select(`
+          assignment_id,
+          attempt_id,
+          status,
+          writing_mode,
+          submitted_at,
+          created_at,
+          updated_at,
+          writing_reviews(status,published_at)
+        `)
+        .eq("user_id", input.userId)
+        .in("assignment_id", assignmentIds)
+        .order("updated_at", { ascending: false })
+        .limit(5000)
+    ),
+    loadWritingAssignmentDisplayNames(
+      createServiceSupabase(),
+      rows.map(({ assignment }) => ({
+        assignmentId: assignment.assignment_id,
+        fallbackDisplayName: assignment.title?.trim() || "未命名作业",
+        questionId: assignment.question_id,
+        questionSource: assignment.question_source,
+        taskType: assignment.task_type
+      })),
+      input.timing
+    )
+  ]);
   if (attemptResult.error) return { assignments: null, error: attemptResult.error };
 
   const attempts = (attemptResult.data ?? []) as AttemptRow[];
@@ -133,7 +147,7 @@ export async function loadStudentAssignmentDetails(input: {
       draft_attempt_id: draft?.attempt_id ?? null,
       draft_writing_mode: normalizeWritingMode(draft?.writing_mode),
       due_at: assignment.due_at,
-      display_name: assignment.title,
+      display_name: displayNames.get(assignment.assignment_id) ?? assignment.title,
       title: assignment.title,
       first_submitted_at: firstSubmittedAt,
       latest_submitted_attempt_id: submitted[0]?.attempt_id ?? null,
