@@ -1,10 +1,11 @@
-import type {
-  AcademicDiscussionQuestion,
-  AcademicDiscussionProfessorAvatarType,
-  AcademicDiscussionStudentAvatarType,
-  EmailQuestion,
-  WritingQuestion,
-  WritingTaskType
+import {
+  WRITING_TASK_CONFIG,
+  type AcademicDiscussionQuestion,
+  type AcademicDiscussionProfessorAvatarType,
+  type AcademicDiscussionStudentAvatarType,
+  type EmailQuestion,
+  type WritingQuestion,
+  type WritingTaskType
 } from "./writing.ts";
 import {
   isProfessorAvatarType,
@@ -20,6 +21,10 @@ export type WritingAssignmentPracticeResolution = {
   publicMappingAvailable: boolean;
 };
 export type WritingAssignmentLifecycleStatus = "active" | "withdrawn";
+export type WritingAssignmentRecipient = {
+  student_id: string;
+  student_name: string;
+};
 export type WritingAssignmentStudentStatus =
   | "pending"
   | "completed"
@@ -30,6 +35,8 @@ export type WritingAssignmentSummary = {
   assignment_id: string;
   group_id: string | null;
   group_position: number | null;
+  /** Persisted Assignment Group title. Historical groups may still be null. */
+  group_title?: string | null;
   task_type: WritingTaskType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
@@ -45,6 +52,8 @@ export type WritingAssignmentSummary = {
   single_student_latest_submitted_attempt_id: string | null;
   single_student_latest_review_status: "reviewing" | "published" | null;
   has_overdue_students: boolean;
+  /** Recipients in assigned_at/student_id order; first item is the card name. */
+  recipients?: WritingAssignmentRecipient[];
 };
 
 export type WritingAssignmentStudentDetail = {
@@ -63,6 +72,8 @@ export type StudentWritingAssignmentSummary = {
   assignment_id: string;
   group_id: string | null;
   group_position: number | null;
+  /** Persisted Assignment Group title. Historical groups may still be null. */
+  group_title?: string | null;
   assigned_at: string;
   created_at: string;
   draft_attempt_id: string | null;
@@ -107,13 +118,129 @@ export type StudentWritingAssignmentDisplayStatus =
   | "completed"
   | "overdue";
 
+/**
+ * The official Assignment Group title, if it has already been persisted.
+ * Both the teacher and the student list read the same saved value.
+ */
+export function writingAssignmentGroupTitle(
+  assignment: Pick<WritingAssignmentSummary | StudentWritingAssignmentSummary, "group_title">
+) {
+  return assignment.group_title?.trim() || "";
+}
+
 export function studentWritingAssignmentTitle(
-  assignment: Pick<StudentWritingAssignmentSummary, "display_name" | "question_snapshot" | "title">
+  assignment: Pick<
+    StudentWritingAssignmentSummary,
+    "display_name" | "group_title" | "question_snapshot" | "title"
+  >
+) {
+  return assignment.group_title?.trim()
+    || writingAssignmentQuestionDisplayTitle(assignment);
+}
+
+/**
+ * Per-question title used inside assignment detail, practice, submission and
+ * review pages. The Assignment Group title never replaces the question's own
+ * number and subtitle there.
+ */
+export function writingAssignmentQuestionDisplayTitle(
+  assignment: Pick<
+    StudentWritingAssignmentSummary,
+    "display_name" | "question_snapshot" | "title"
+  >
 ) {
   return assignment.display_name?.trim()
     || assignment.title?.trim()
     || assignment.question_snapshot?.set_title
     || "未命名作业";
+}
+
+/**
+ * Parses the auto-title sequence a persisted title occupies for one base auto
+ * title: the bare base title is sequence 1 and `base (n)` is sequence n.
+ * Anything else (teacher-written variants, `(0)`, `(1)`, text after the
+ * parenthesis) is not an auto number and returns null.
+ */
+export function writingAssignmentAutoTitleSequence(
+  title: string,
+  baseTitle: string
+): number | null {
+  const normalizedTitle = normalizeAssignmentText(title);
+  const normalizedBase = normalizeAssignmentText(baseTitle);
+  if (!normalizedBase || normalizedTitle.length < normalizedBase.length) return null;
+  if (normalizedTitle.slice(0, normalizedBase.length) !== normalizedBase) return null;
+  if (normalizedTitle === normalizedBase) return 1;
+  const match = /^ \((\d+)\)$/.exec(normalizedTitle.slice(normalizedBase.length));
+  if (!match) return null;
+  const sequence = Number(match[1]);
+  return Number.isInteger(sequence) && sequence >= 2 ? sequence : null;
+}
+
+/**
+ * The candidate auto title shown before saving: the base title when no visible
+ * group uses it, otherwise the smallest free `(n)` suffix. The RPC recomputes
+ * this authoritatively inside the create transaction, so this helper only
+ * drives the form's live preview.
+ */
+export function nextWritingAssignmentAutoTitle(
+  baseTitle: string,
+  existingTitles: ReadonlyArray<string | null | undefined>
+): string {
+  const base = normalizeAssignmentText(baseTitle);
+  if (!base) return "";
+  const used = new Set<number>();
+  for (const value of existingTitles) {
+    if (typeof value !== "string") continue;
+    const sequence = writingAssignmentAutoTitleSequence(value, base);
+    if (sequence !== null) used.add(sequence);
+  }
+  if (!used.has(1)) return base;
+  let next = 2;
+  while (used.has(next)) next += 1;
+  return `${base} (${next})`;
+}
+
+/**
+ * One shared task-type badge rule for both ends. Every contained task type is
+ * its own badge, and only counts above one get an `×N` suffix. Mixed groups
+ * therefore render two independent badges (`Write an Email` and
+ * `Academic Discussion`) instead of one concatenated label.
+ */
+export function writingAssignmentTaskTypeBadges(
+  taskTypes: ReadonlyArray<WritingTaskType>
+): string[] {
+  return (["email", "academic_discussion"] as const).flatMap((taskType) => {
+    const count = taskTypes.filter((value) => value === taskType).length;
+    if (count === 0) return [];
+    const label = WRITING_TASK_CONFIG[taskType].label;
+    return [count > 1 ? `${label} ×${count}` : label];
+  });
+}
+
+export function collectWritingAssignmentRecipients<
+  T extends { recipients?: WritingAssignmentRecipient[] }
+>(assignments: ReadonlyArray<T>): WritingAssignmentRecipient[] {
+  const recipients = new Map<string, WritingAssignmentRecipient>();
+  for (const assignment of assignments) {
+    for (const recipient of assignment.recipients ?? []) {
+      if (!recipients.has(recipient.student_id)) {
+        recipients.set(recipient.student_id, recipient);
+      }
+    }
+  }
+  return Array.from(recipients.values());
+}
+
+export function filterWritingAssignmentsByStudent<
+  T extends { recipients?: WritingAssignmentRecipient[] }
+>(assignments: ReadonlyArray<T>, studentId: string): T[] {
+  const normalized = studentId.trim();
+  if (!normalized) return Array.from(assignments);
+  return assignments.filter((assignment) =>
+    (assignment.recipients ?? []).some(
+      (recipient) => recipient.student_id === normalized
+    )
+  );
 }
 
 const ASSIGNMENT_CALENDAR_TIME_ZONE = "Asia/Shanghai";
@@ -194,6 +321,12 @@ function shiftAssignmentDateKey(dateKey: string, days: number) {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
+/**
+ * Default Assignment Group title: `学生姓名 YYYY-MM-DD` for one recipient and
+ * `第一位学生等 YYYY-MM-DD` for several. The date reuses the shared assignment
+ * date rule (Asia/Shanghai) so the title can never drift a day away from the
+ * date the list shows for the same timestamp.
+ */
 export function defaultWritingAssignmentTitle(input: {
   assignedAt: Date | string;
   firstStudentName: string;
@@ -203,19 +336,11 @@ export function defaultWritingAssignmentTitle(input: {
     ? input.assignedAt
     : new Date(input.assignedAt);
   if (Number.isNaN(date.getTime())) throw new Error("作业布置日期无效。");
-  const dateParts = new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: "Asia/Shanghai",
-    year: "2-digit"
-  }).formatToParts(date);
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    dateParts.find((item) => item.type === type)?.value ?? "";
+  const dateKey = assignmentDateKey(date);
+  if (!dateKey) throw new Error("作业布置日期无效。");
   const studentName = normalizeAssignmentText(input.firstStudentName);
   if (!studentName) throw new Error("请选择学生后再确认作业标题。");
-  return `${part("year")}${part("month")}${part("day")}-${studentName}${
-    input.studentCount > 1 ? "等" : ""
-  }`;
+  return `${studentName}${input.studentCount > 1 ? "等" : ""} ${dateKey}`;
 }
 
 export type StudentWritingAssignmentListEntry =
@@ -226,6 +351,7 @@ export type StudentWritingAssignmentListEntry =
   | {
       kind: "collection";
       collection_id: string;
+      title: string;
       assignments: StudentWritingAssignmentSummary[];
     };
 
@@ -237,6 +363,8 @@ export type TeacherWritingAssignmentListEntry =
   | {
       kind: "collection";
       collection_id: string;
+      title: string;
+      recipients: WritingAssignmentRecipient[];
       assignments: WritingAssignmentSummary[];
       assigned_count: number;
       completed_count: number;
@@ -249,6 +377,8 @@ export type TeacherWritingAssignmentListEntry =
 
 export type WritingAssignmentCollectionDetail = {
   collection_id: string;
+  /** Persisted Assignment Group title; empty for historical groups. */
+  title: string;
   assignments: Array<WritingAssignmentDetail & {
     group_position: number;
   }>;
@@ -644,6 +774,7 @@ export function groupStudentWritingAssignments(
     entries.push({
       kind: "collection",
       collection_id: assignment.group_id,
+      title: writingAssignmentGroupTitle(collection[0]),
       assignments: collection
     });
   }
@@ -681,6 +812,8 @@ export function groupTeacherWritingAssignments(
     entries.push({
       kind: "collection",
       collection_id: assignment.group_id,
+      title: writingAssignmentGroupTitle(collection[0]),
+      recipients: collectWritingAssignmentRecipients(collection),
       assignments: collection,
       assigned_count: assignedCount,
       completed_count: completedCount,

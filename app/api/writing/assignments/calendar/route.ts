@@ -8,6 +8,7 @@ import {
 } from "@/lib/writingAssignments";
 import { embeddedAssignment } from "@/lib/studentWritingAssignments.server";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import { loadWritingStudentData, writingJson } from "@/lib/writingServer";
@@ -16,6 +17,7 @@ export const dynamic = "force-dynamic";
 
 type CalendarAssignmentRow = {
   assignment_id: string;
+  group_id: string | null;
   task_type: WritingTaskType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
@@ -45,6 +47,7 @@ export async function GET(request: Request) {
             assigned_at,
             writing_assignments!inner(
               assignment_id,
+              group_id,
               task_type,
               question_source,
               question_id:question_snapshot->>question_id,
@@ -89,6 +92,10 @@ export async function GET(request: Request) {
       })),
       timing
     );
+    const groupTitles = await loadWritingAssignmentGroupTitles(
+      createServiceSupabase(),
+      entries.map(({ assignment }) => assignment.group_id)
+    );
     const assignments = timing.measureSync("processing", "calendar_payload", () =>
       entries.map(({ assignment, date, fallbackDisplayName }): StudentWritingAssignmentCalendarItem => {
         const assignmentId = String(assignment.assignment_id);
@@ -96,7 +103,9 @@ export async function GET(request: Request) {
           assignment_id: assignmentId,
           assignment_date: date,
           task_type: assignment.task_type,
-          title: displayNames.get(assignmentId) ?? fallbackDisplayName
+          title: (assignment.group_id ? groupTitles.get(assignment.group_id) : null)
+            ?? displayNames.get(assignmentId)
+            ?? fallbackDisplayName
         };
       })
     );

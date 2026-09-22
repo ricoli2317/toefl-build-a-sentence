@@ -1,5 +1,6 @@
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import type { WritingAttempt, WritingMode, WritingTaskType } from "@/lib/writing";
 import {
@@ -75,7 +76,7 @@ export async function loadStudentAssignmentDetails(input: {
   if (rows.length === 0) return { assignments: [] as StudentWritingAssignmentSummary[] };
 
   const assignmentIds = rows.map(({ assignment }) => assignment.assignment_id);
-  const [attemptResult, displayNames] = await Promise.all([
+  const [attemptResult, displayNames, groupTitles] = await Promise.all([
     measureDatabase(input.timing, "assignment_day_attempts_and_reviews", () =>
       createServiceSupabase()
         .from("writing_attempts")
@@ -104,6 +105,10 @@ export async function loadStudentAssignmentDetails(input: {
         taskType: assignment.task_type
       })),
       input.timing
+    ),
+    loadWritingAssignmentGroupTitles(
+      createServiceSupabase(),
+      rows.map(({ assignment }) => assignment.group_id)
     )
   ]);
   if (attemptResult.error) return { assignments: null, error: attemptResult.error };
@@ -142,6 +147,9 @@ export async function loadStudentAssignmentDetails(input: {
       assignment_id: assignment.assignment_id,
       group_id: assignment.group_id,
       group_position: assignment.group_position,
+      group_title: assignment.group_id
+        ? groupTitles.get(assignment.group_id) ?? null
+        : null,
       assigned_at: membership.assigned_at,
       created_at: assignment.created_at,
       draft_attempt_id: draft?.attempt_id ?? null,

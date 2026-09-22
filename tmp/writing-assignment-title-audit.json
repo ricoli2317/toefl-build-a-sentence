@@ -1,0 +1,434 @@
+[
+  {
+    "group_id": "02df5d72-2e19-4612-ad4c-9250224acab7",
+    "created_at": "2026-09-18T08:35:20.021834+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "陈俊伊"
+    ],
+    "legacy_auto_guess": "260918-陈俊伊",
+    "proposed_new_title": "陈俊伊 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "2e9367ef-eda4-4999-8502-beb984962909",
+    "created_at": "2026-08-28T08:40:27.634021+00:00",
+    "item_count": 3,
+    "bank_count": 3,
+    "custom_count": 0,
+    "students": [
+      "李梓瑜"
+    ],
+    "legacy_auto_guess": "260828-李梓瑜",
+    "proposed_new_title": "李梓瑜 2026-08-28",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "32fbecd0-a421-4a1b-a565-86f6fad0b39b",
+    "created_at": "2026-09-18T10:04:17.687776+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "陈俊伊"
+    ],
+    "legacy_auto_guess": "260918-陈俊伊",
+    "proposed_new_title": "陈俊伊 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "35363727-ca3d-4848-a70b-11204508fa2c",
+    "created_at": "2026-09-18T10:05:11.241375+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "陈俊伊"
+    ],
+    "legacy_auto_guess": "260918-陈俊伊",
+    "proposed_new_title": "陈俊伊 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "38c1c92e-dc7b-4263-b48f-68c1d4776f0d",
+    "created_at": "2026-09-18T10:13:11.059086+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "彭钰杰"
+    ],
+    "legacy_auto_guess": "260918-彭钰杰",
+    "proposed_new_title": "彭钰杰 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "3cc85ba4-8c5f-4519-ba39-4bd439a9aef4",
+    "created_at": "2026-09-18T10:11:35.825789+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "彭钰杰"
+    ],
+    "legacy_auto_guess": "260918-彭钰杰",
+    "proposed_new_title": "彭钰杰 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "456e91b2-1e29-4c7f-9763-64e64c06c87f",
+    "created_at": "2026-09-18T08:04:23.907917+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "蒋卓成"
+    ],
+    "legacy_auto_guess": "260918-蒋卓成",
+    "proposed_new_title": "蒋卓成 2026-09-18",
+    "custom_titles": [],
+    "classification": "deleted-items",
+    "statuses": [
+      "withdrawn"
+    ]
+  },
+  {
+    "group_id": "479cf2cd-cf62-4214-8bcb-108337857d25",
+    "created_at": "2026-08-21T06:00:36.527689+00:00",
+    "item_count": 3,
+    "bank_count": 3,
+    "custom_count": 0,
+    "students": [
+      "陈俊伊"
+    ],
+    "legacy_auto_guess": "260821-陈俊伊",
+    "proposed_new_title": "陈俊伊 2026-08-21",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "4acbaf65-3136-49ce-a1b5-69a479466577",
+    "created_at": "2026-08-27T03:53:19.260532+00:00",
+    "item_count": 1,
+    "bank_count": 0,
+    "custom_count": 1,
+    "students": [
+      "admin"
+    ],
+    "legacy_auto_guess": "260827-admin",
+    "proposed_new_title": "admin 2026-08-27",
+    "custom_titles": [
+      "E2E Admin Self 2026-08-27"
+    ],
+    "classification": "custom-manual-or-unknown",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "611de9a1-2e94-4e2b-a715-2ce5a328d802",
+    "created_at": "2026-08-21T02:57:02.545773+00:00",
+    "item_count": 2,
+    "bank_count": 0,
+    "custom_count": 2,
+    "students": [
+      "张宸皓"
+    ],
+    "legacy_auto_guess": "260821-张宸皓",
+    "proposed_new_title": "张宸皓 2026-08-21",
+    "custom_titles": [
+      "260821-张宸皓",
+      "260821-张宸皓"
+    ],
+    "classification": "custom-auto-legacy",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "66402360-aed9-40eb-a48e-a20945eb55de",
+    "created_at": "2026-09-22T07:52:21.741683+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "彭钰杰"
+    ],
+    "legacy_auto_guess": "260922-彭钰杰",
+    "proposed_new_title": "彭钰杰 2026-09-22",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "6800a6be-ad82-4e8e-b32f-4c572f987e24",
+    "created_at": "2026-08-29T08:22:28.473038+00:00",
+    "item_count": 1,
+    "bank_count": 0,
+    "custom_count": 1,
+    "students": [
+      "张童予"
+    ],
+    "legacy_auto_guess": "260829-张童予",
+    "proposed_new_title": "张童予 2026-08-29",
+    "custom_titles": [
+      "260829-张童予"
+    ],
+    "classification": "custom-auto-legacy",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "7345a079-18f0-453a-aeaa-53f742fe0cd0",
+    "created_at": "2026-09-18T08:16:06.123617+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "蒋卓成"
+    ],
+    "legacy_auto_guess": "260918-蒋卓成",
+    "proposed_new_title": "蒋卓成 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "8f37a079-4071-4795-aa40-443ccd5f8cc5",
+    "created_at": "2026-09-17T14:22:48.539145+00:00",
+    "item_count": 4,
+    "bank_count": 4,
+    "custom_count": 0,
+    "students": [
+      "李梓瑜"
+    ],
+    "legacy_auto_guess": "260917-李梓瑜",
+    "proposed_new_title": "李梓瑜 2026-09-17",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "913f7fc7-ca4d-4562-b901-90b0a44e845f",
+    "created_at": "2026-09-18T08:03:47.196028+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "蒋卓成"
+    ],
+    "legacy_auto_guess": "260918-蒋卓成",
+    "proposed_new_title": "蒋卓成 2026-09-18",
+    "custom_titles": [],
+    "classification": "deleted-items",
+    "statuses": [
+      "withdrawn"
+    ]
+  },
+  {
+    "group_id": "97e18f23-7ebf-4a69-b48b-005137141b25",
+    "created_at": "2026-09-22T07:51:25.683932+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "彭钰杰"
+    ],
+    "legacy_auto_guess": "260922-彭钰杰",
+    "proposed_new_title": "彭钰杰 2026-09-22",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "ac380b11-5c3d-4595-b767-291957475cc0",
+    "created_at": "2026-09-19T04:02:02.357767+00:00",
+    "item_count": 2,
+    "bank_count": 2,
+    "custom_count": 0,
+    "students": [
+      "冉阳"
+    ],
+    "legacy_auto_guess": "260919-冉阳",
+    "proposed_new_title": "冉阳 2026-09-19",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "acf1121f-f060-4d07-8794-804ba944c0cc",
+    "created_at": "2026-09-15T14:05:49.520774+00:00",
+    "item_count": 2,
+    "bank_count": 2,
+    "custom_count": 0,
+    "students": [
+      "王思颖"
+    ],
+    "legacy_auto_guess": "260915-王思颖",
+    "proposed_new_title": "王思颖 2026-09-15",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "c1d7f3ba-68cd-44f4-949f-011fcf3a9219",
+    "created_at": "2026-08-23T09:29:45.39782+00:00",
+    "item_count": 2,
+    "bank_count": 2,
+    "custom_count": 0,
+    "students": [
+      "张欣允"
+    ],
+    "legacy_auto_guess": "260823-张欣允",
+    "proposed_new_title": "张欣允 2026-08-23",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "c225cbac-26a8-45de-aa1b-6d5201184745",
+    "created_at": "2026-09-16T08:14:59.19178+00:00",
+    "item_count": 4,
+    "bank_count": 4,
+    "custom_count": 0,
+    "students": [
+      "金韵雅"
+    ],
+    "legacy_auto_guess": "260916-金韵雅",
+    "proposed_new_title": "金韵雅 2026-09-16",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "cad07437-6414-4e92-b1f7-fd266d913580",
+    "created_at": "2026-09-16T08:12:53.344429+00:00",
+    "item_count": 4,
+    "bank_count": 4,
+    "custom_count": 0,
+    "students": [
+      "金韵雅"
+    ],
+    "legacy_auto_guess": "260916-金韵雅",
+    "proposed_new_title": "金韵雅 2026-09-16",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "cfb12449-398f-45d8-8035-a50e408f6336",
+    "created_at": "2026-08-25T09:14:15.504118+00:00",
+    "item_count": 4,
+    "bank_count": 4,
+    "custom_count": 0,
+    "students": [
+      "蔡沂熹"
+    ],
+    "legacy_auto_guess": "260825-蔡沂熹",
+    "proposed_new_title": "蔡沂熹 2026-08-25",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "cfe469ad-963e-4947-98c5-68171f591a84",
+    "created_at": "2026-09-15T14:09:55.813294+00:00",
+    "item_count": 2,
+    "bank_count": 2,
+    "custom_count": 0,
+    "students": [
+      "陈乐阳"
+    ],
+    "legacy_auto_guess": "260915-陈乐阳",
+    "proposed_new_title": "陈乐阳 2026-09-15",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "eb1e73d5-7f9c-42bc-a5f8-256d40a34753",
+    "created_at": "2026-08-21T03:56:13.848629+00:00",
+    "item_count": 2,
+    "bank_count": 2,
+    "custom_count": 0,
+    "students": [
+      "张宸皓"
+    ],
+    "legacy_auto_guess": "260821-张宸皓",
+    "proposed_new_title": "张宸皓 2026-08-21",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  },
+  {
+    "group_id": "f2a3eedc-ab9f-4b1c-a04d-efe27d248e3b",
+    "created_at": "2026-09-18T08:16:52.959285+00:00",
+    "item_count": 1,
+    "bank_count": 1,
+    "custom_count": 0,
+    "students": [
+      "蒋卓成"
+    ],
+    "legacy_auto_guess": "260918-蒋卓成",
+    "proposed_new_title": "蒋卓成 2026-09-18",
+    "custom_titles": [],
+    "classification": "bank",
+    "statuses": [
+      "active"
+    ]
+  }
+]

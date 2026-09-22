@@ -1,7 +1,9 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  type WritingAssignmentRecipient,
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
 import type { WritingQuestion } from "@/lib/writing";
@@ -12,6 +14,10 @@ import {
   writingAssignmentJson
 } from "@/lib/writingAssignmentsServer";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import {
+  loadWritingAssignmentGroupTitles,
+  loadWritingAssignmentRecipientOrders
+} from "@/lib/writingAssignmentsGroupTitles.server";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +31,15 @@ type AssignmentRow = Omit<
   | "single_student_latest_review_status"
   | "has_overdue_students"
   | "question_snapshot"
+  | "group_title"
+  | "recipients"
 > & {
   teacher_id: string;
   updated_at: string;
   set_title: string | null;
 };
 type AssignmentStudentRow = { assignment_id: string; student_id: string; assigned_at: string };
+type ProfileRow = { id: string; email: string | null; full_name: string | null };
 type AssignmentAttemptRow = { assignment_id: string; attempt_id: string; user_id: string; status: string; submitted_at: string | null };
 type AssignmentReviewRow = { attempt_id: string; status: string; published_at: string | null };
 
@@ -39,7 +48,6 @@ export async function GET(request: Request) {
     const auth = await requireWritingAssignmentTeacher(request);
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.teacherId) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
-    const studentId = new URL(request.url).searchParams.get("studentId")?.trim() ?? "";
     const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
       auth.supabase!
         .from("writing_assignments")
@@ -51,30 +59,16 @@ export async function GET(request: Request) {
         .range(from, to)
     );
     if (assignmentsResult.error) throw assignmentsResult.error;
-    let assignments = assignmentsResult.data ?? [];
-    if (studentId) {
-      const membershipResult = await readAllSupabaseRows<{ assignment_id: string }>((from, to) =>
-        auth.supabase!
-          .from("writing_assignment_students")
-          .select("assignment_id")
-          .eq("student_id", studentId)
-          .order("assignment_id", { ascending: true })
-          .range(from, to)
-      );
-      if (membershipResult.error) throw membershipResult.error;
-      const studentAssignmentIds = new Set(
-        (membershipResult.data ?? []).map((row) => String(row.assignment_id))
-      );
-      assignments = assignments.filter((assignment) =>
-        studentAssignmentIds.has(assignment.assignment_id)
-      );
-    }
+    const assignments = assignmentsResult.data ?? [];
     if (assignments.length === 0) return writingAssignmentJson({ assignments: [] });
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
-    // Members, attempts, review statuses and display names are all keyed by the
+    // Members, attempts, review statuses, display names, the persisted group
+    // titles and the creation-time recipient order are all keyed by the
     // assignment ids, so the whole detail set loads in one parallel wave.
-    const [members, attempts, reviewStatuses, displayNames] = await Promise.all([
+    // Recipient names let the list filter and label cards without any further
+    // request.
+    const [members, attempts, reviewStatuses, displayNames, groupTitles, recipientOrders] = await Promise.all([
       readAssignmentRows<AssignmentStudentRow>(auth.supabase, "writing_assignment_students", "assignment_id,student_id,assigned_at", assignmentIds),
       readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds),
       readAssignmentReviewStatuses(auth.supabase, assignmentIds),
@@ -87,13 +81,51 @@ export async function GET(request: Request) {
           questionId: assignment.question_id,
           fallbackDisplayName: assignmentSnapshotTitle(assignment)
         }))
-      )
+      ),
+      loadWritingAssignmentGroupTitles(
+        auth.supabase,
+        assignments.map((assignment) => assignment.group_id)
+      ),
+      loadWritingAssignmentRecipientOrders(auth.supabase, assignmentIds)
     ]);
+    const profiles = await readProfiles(
+      auth.supabase,
+      Array.from(new Set(members.map((member) => member.student_id)))
+    );
+    const profileById = new Map(profiles.map((profile) => [profile.id, profile]));
+    const recipientName = (studentId: string) => {
+      const profile = profileById.get(studentId);
+      return getPreferredUserDisplayName({
+        email: profile?.email,
+        profileFullName: profile?.full_name
+      });
+    };
     const assignedByAssignment = new Map<string, Set<string>>();
+    const recipientRowsByAssignment = new Map<string, AssignmentStudentRow[]>();
     for (const member of members) {
       const values = assignedByAssignment.get(member.assignment_id) ?? new Set<string>();
       values.add(member.student_id);
       assignedByAssignment.set(member.assignment_id, values);
+      recipientRowsByAssignment.set(
+        member.assignment_id,
+        [...(recipientRowsByAssignment.get(member.assignment_id) ?? []), member]
+      );
+    }
+    const recipientRows = new Map<string, WritingAssignmentRecipient[]>();
+    for (const [assignmentId, rows] of Array.from(recipientRowsByAssignment.entries())) {
+      rows.sort((left, right) =>
+        (recipientOrders.get(`${assignmentId}:${left.student_id}`) ?? Number.MAX_SAFE_INTEGER) -
+          (recipientOrders.get(`${assignmentId}:${right.student_id}`) ?? Number.MAX_SAFE_INTEGER)
+        || left.assigned_at.localeCompare(right.assigned_at)
+        || left.student_id.localeCompare(right.student_id)
+      );
+      recipientRows.set(
+        assignmentId,
+        rows.map((row) => ({
+          student_id: row.student_id,
+          student_name: recipientName(row.student_id)
+        }))
+      );
     }
     const submissions = new Map<string, string[]>();
     const latestSubmission = new Map<string, AssignmentAttemptRow>();
@@ -132,11 +164,13 @@ export async function GET(request: Request) {
           assignment_id: assignment.assignment_id,
           group_id: assignment.group_id,
           group_position: assignment.group_position,
+          group_title: groupTitles.get(assignment.group_id ?? "") ?? null,
           task_type: assignment.task_type,
           question_source: assignment.question_source,
           question_id: assignment.question_id,
           question_snapshot: { set_title: assignment.set_title ?? "" } as WritingQuestion,
           display_name: displayNames.get(assignment.assignment_id) ?? snapshotTitle,
+          recipients: recipientRows.get(assignment.assignment_id) ?? [],
           status: assignment.status,
           due_at: assignment.due_at,
           created_at: assignment.created_at,
@@ -205,6 +239,14 @@ export async function POST(request: Request) {
       canonicalizeQuestionBank: true,
       actor: auth.actor ?? undefined
     });
+    // The final Assignment title is part of the same atomic RPC as the group,
+    // the items and the recipients. Automatic titles are numbered by the RPC
+    // itself (same teacher + same base title), so concurrent creates cannot
+    // both receive the same sequence. A missing title is a client error; there
+    // is no post-create patch step that could leave an untitled card behind.
+    const groupTitle = normalizeAssignmentGroupTitle(body.title);
+    if (!groupTitle) return invalid("请填写作业标题。");
+    const titleIsAutomatic = body.titleIsAutomatic === true;
     const { data, error } = await auth.supabase.rpc("create_writing_assignment_group", {
       p_teacher_id: auth.teacherId,
       p_assignments: prepared.assignments.map((assignment) => ({
@@ -214,7 +256,9 @@ export async function POST(request: Request) {
         question_source: assignment.questionSource,
         task_type: assignment.taskType
       })),
-      p_student_ids: prepared.studentIds
+      p_student_ids: prepared.studentIds,
+      p_title: groupTitle,
+      p_title_is_automatic: titleIsAutomatic
     });
     if (error) {
       logWritingAssignmentCreateFailure(error, {
@@ -232,9 +276,15 @@ export async function POST(request: Request) {
     if (assignmentIds.length !== prepared.assignments.length) {
       throw new Error("Assignment group RPC returned an incomplete result");
     }
+    const finalizedTitle = isRecord(data)
+      && typeof data.title === "string"
+      && data.title.trim()
+      ? data.title.trim()
+      : groupTitle;
     return writingAssignmentJson({
       assignmentId: assignmentIds[0],
-      assignmentIds
+      assignmentIds,
+      title: finalizedTitle
     }, { status: 201 });
   } catch (error) {
     if (error instanceof Error && isAssignmentInputError(error.message)) return invalid(error.message);
@@ -267,6 +317,34 @@ async function readAssignmentRows<T>(
   return rows;
 }
 
+async function readProfiles(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  studentIds: string[]
+) {
+  const rows: ProfileRow[] = [];
+  for (const batch of chunkValues(studentIds)) {
+    if (batch.length === 0) continue;
+    const result = await readAllSupabaseRows<ProfileRow>((from, to) =>
+      supabase
+        .from("profiles")
+        .select("id,email,full_name")
+        .in("id", batch)
+        .order("id", { ascending: true })
+        .range(from, to)
+    );
+    if (result.error) throw result.error;
+    rows.push(...(result.data ?? []));
+  }
+  return rows;
+}
+
+function normalizeAssignmentGroupTitle(value: unknown) {
+  if (typeof value !== "string") return "";
+  const title = value.replace(/\s+/g, " ").trim();
+  if (title.length > 120) throw new Error("作业标题不能超过 120 个字。");
+  return title;
+}
+
 function assignmentSnapshotTitle(assignment: {
   set_title: string | null;
 }) {
@@ -278,7 +356,7 @@ function invalid(message: string) {
 }
 
 function isAssignmentInputError(message: string) {
-  return /^(请选择|请至少|请完整|请填写|请输入|所选|截止|一次最多)/.test(message);
+  return /^(请选择|请至少|请完整|请填写|请输入|所选|截止|一次最多|作业标题)/.test(message);
 }
 
 /**
@@ -294,7 +372,8 @@ const WRITING_ASSIGNMENT_RPC_INPUT_ERROR_MESSAGES: Record<string, string> = {
   "Invalid question source": "请选择有效的题目来源。",
   "Question snapshot must be an object": "请完整填写每道题目。",
   "Question bank assignment requires question_id": "请选择一道题库题目。",
-  "Custom assignment cannot include question_id": "请完整填写每道题目。"
+  "Custom assignment cannot include question_id": "请完整填写每道题目。",
+  "Assignment title is too long": "作业标题不能超过 120 个字。"
 };
 
 function writingAssignmentRpcInputErrorMessage(message: string) {

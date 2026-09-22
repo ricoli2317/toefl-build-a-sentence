@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Plus, Search, Trash2, UserRound } from "lucide-react";
 import {
+  TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX,
   TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY,
   useTeacherCachedData,
@@ -33,6 +34,7 @@ import {
 import {
   buildCustomWritingQuestionSnapshot,
   defaultWritingAssignmentTitle,
+  nextWritingAssignmentAutoTitle,
   normalizeAssignmentText,
   normalizeEmailRequirementsInput,
   parseCustomEmailPrompt,
@@ -40,7 +42,8 @@ import {
   suggestAcademicDiscussionAvatarType,
   toggleWritingAssignmentQuestionSelection,
   type WritingAssignmentDetail,
-  type WritingAssignmentQuestionSource
+  type WritingAssignmentQuestionSource,
+  type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
 import type { LogicalWritingQuestionSearchResult } from "@/lib/writingAssignmentLogicalSearch";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
@@ -55,9 +58,12 @@ type CustomQuestionDraft = {
   parsedRequirementCount: number;
   rawPrompt: string;
   requirementsManuallyEdited: boolean;
+  taskType: WritingTaskType;
   titleManuallyEdited: boolean;
   toManuallyEdited: boolean;
 };
+
+const EMPTY_QUESTION_SELECTION = new Map<string, LogicalWritingQuestionSearchResult>();
 
 const EMAIL_CUSTOM_FIELDS = [
   ["title", "作业标题"],
@@ -100,8 +106,15 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
   const [source, setSource] = useState<WritingAssignmentQuestionSource | null>(null);
   const [query, setQuery] = useState("");
   const [questionResult, setQuestionResult] = useState<QuestionSearchPayload | null>(null);
-  const [selectedQuestions, setSelectedQuestions] = useState<Map<string, LogicalWritingQuestionSearchResult>>(new Map());
+  // Write an Email and Academic Discussion keep independent selections. The
+  // active tab only switches the visible question bank; it never clears the
+  // other task type's selected questions.
+  const [selectedQuestionsByType, setSelectedQuestionsByType] = useState<
+    Record<WritingTaskType, Map<string, LogicalWritingQuestionSearchResult>>
+  >(() => ({ email: new Map(), academic_discussion: new Map() }));
   const [customQuestions, setCustomQuestions] = useState<CustomQuestionDraft[]>([]);
+  const [assignmentTitle, setAssignmentTitle] = useState("");
+  const [assignmentTitleManuallyEdited, setAssignmentTitleManuallyEdited] = useState(false);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [studentQuery, setStudentQuery] = useState("");
@@ -156,28 +169,80 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
       studentCount: selectedStudents.length
     });
   }, [selectedStudents, studentsState.data]);
-  const selectedBankQuestions = useMemo(() => Array.from(selectedQuestions.values()), [selectedQuestions]);
-  const previewQuestions = useMemo(() => {
-    if (!taskType || !source) return [];
-    if (source === "question_bank") return selectedBankQuestions;
-    return customQuestions.flatMap((draft) => {
+  useEffect(() => {
+    if (assignmentTitleManuallyEdited) return;
+    setAssignmentTitle(generatedAssignmentTitle);
+  }, [assignmentTitleManuallyEdited, generatedAssignmentTitle]);
+  // Live candidate only: the cached teacher list (already loaded for the
+  // 作业管理 page) tells us which base titles exist, without any new request.
+  // The RPC still resolves the final number authoritatively at creation time.
+  const cachedListEntry = cache.getEntry(TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY);
+  const existingGroupTitles = cachedListEntry?.status === "success"
+    || cachedListEntry?.status === "refreshing"
+    ? ((cachedListEntry.data as { assignments?: WritingAssignmentSummary[] }).assignments ?? [])
+        .flatMap((assignment) =>
+          assignment.group_id && assignment.group_title?.trim()
+            ? [assignment.group_title]
+            : []
+        )
+    : [];
+  const candidateAssignmentTitle = assignmentTitleManuallyEdited
+    ? assignmentTitle
+    : nextWritingAssignmentAutoTitle(generatedAssignmentTitle, existingGroupTitles);
+  const selectedQuestions = taskType
+    ? selectedQuestionsByType[taskType]
+    : EMPTY_QUESTION_SELECTION;
+  const selectedBankEntries = useMemo(
+    () =>
+      (["email", "academic_discussion"] as const).flatMap((type) =>
+        Array.from(selectedQuestionsByType[type].values()).map((question) => ({
+          question,
+          taskType: type
+        }))
+      ),
+    [selectedQuestionsByType]
+  );
+  const visibleCustomQuestions = useMemo(
+    () =>
+      taskType
+        ? customQuestions.filter((draft) => draft.taskType === taskType)
+        : [],
+    [customQuestions, taskType]
+  );
+  const previewItems = useMemo(() => {
+    const bankItems = selectedBankEntries.map(({ question, taskType: entryTaskType }) => ({
+      key: question.question_id,
+      question,
+      questionSource: "question_bank" as const,
+      taskType: entryTaskType
+    }));
+    const customItems = customQuestions.flatMap((draft) => {
       try {
-        return [buildCustomWritingQuestionSnapshot({ taskType, fields: draft.fields, id: draft.clientId })];
+        return [{
+          key: draft.clientId,
+          question: buildCustomWritingQuestionSnapshot({
+            taskType: draft.taskType,
+            fields: draft.fields,
+            id: draft.clientId
+          }),
+          questionSource: "custom" as const,
+          taskType: draft.taskType
+        }];
       } catch {
         return [];
       }
     });
-  }, [customQuestions, selectedBankQuestions, source, taskType]);
-  const assignmentCount = source === "question_bank" ? selectedQuestions.size : customQuestions.length;
+    return [...bankItems, ...customItems];
+  }, [customQuestions, selectedBankEntries]);
+  const assignmentCount = selectedBankEntries.length + customQuestions.length;
 
   function chooseTaskType(next: WritingTaskType) {
     if (taskType === next) return;
+    // Switching the browsed task type must not clear the other bank's
+    // selections, so only the search view resets.
     setTaskType(next);
-    setSelectedQuestions(new Map());
     setQuestionResult(null);
     setQuery("");
-    setCustomQuestions(source === "custom" ? [createCustomQuestionDraft(next, generatedAssignmentTitle)] : []);
-    setIndividualDueAt({});
     setSearchError("");
     setSubmitError("");
   }
@@ -185,10 +250,8 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
   function chooseSource(next: WritingAssignmentQuestionSource) {
     if (!taskType || source === next) return;
     setSource(next);
-    setSelectedQuestions(new Map());
     setQuestionResult(null);
-    setCustomQuestions(next === "custom" ? [createCustomQuestionDraft(taskType, generatedAssignmentTitle)] : []);
-    setIndividualDueAt({});
+    setQuery("");
     setSearchError("");
     setSubmitError("");
   }
@@ -208,7 +271,18 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
   }
 
   function toggleQuestion(question: LogicalWritingQuestionSearchResult) {
-    setSelectedQuestions((current) => toggleWritingAssignmentQuestionSelection(current, question));
+    if (!taskType) return;
+    removeBankQuestion(taskType, question);
+  }
+
+  function removeBankQuestion(
+    type: WritingTaskType,
+    question: LogicalWritingQuestionSearchResult
+  ) {
+    setSelectedQuestionsByType((current) => ({
+      ...current,
+      [type]: toggleWritingAssignmentQuestionSelection(current[type], question)
+    }));
   }
 
   function updateCustomQuestion(clientId: string, updater: (draft: CustomQuestionDraft) => CustomQuestionDraft) {
@@ -294,42 +368,50 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
     setSubmitError("");
     if (!taskType) return setSubmitError("请先选择题型。");
     if (!source) return setSubmitError("请选择题目来源。");
-    if (assignmentCount < 1) return setSubmitError(source === "question_bank" ? "请至少选择一道题库题目。" : "请至少添加一道自定义题目。");
+    if (assignmentCount < 1) return setSubmitError("请至少选择或添加一道题目。");
     if (!selectedStudents.length) return setSubmitError("请至少选择一名学生。");
 
     let assignments: Array<Record<string, unknown>>;
     try {
-      if (source === "question_bank") {
-        assignments = selectedBankQuestions.map((question) => ({
+      assignments = [
+        ...selectedBankEntries.map(({ question, taskType: entryTaskType }) => ({
           dueAt: dueAtFor(question.question_id),
           questionId: question.question_id,
-          questionSource: source,
-          taskType
-        }));
-      } else {
-        assignments = customQuestions.map((draft) => {
-          if (taskType === "email" && customEmailRequirementCount(draft) !== 3) {
+          questionSource: "question_bank" as const,
+          taskType: entryTaskType
+        })),
+        ...customQuestions.map((draft) => {
+          if (draft.taskType === "email" && customEmailRequirementCount(draft) !== 3) {
             throw new Error("每篇 Email 必须准确识别或补充 3 条要求。");
           }
-          buildCustomWritingQuestionSnapshot({ taskType, fields: draft.fields, id: "validation" });
+          buildCustomWritingQuestionSnapshot({
+            taskType: draft.taskType,
+            fields: draft.fields,
+            id: "validation"
+          });
           return {
             customQuestion: draft.fields,
             dueAt: dueAtFor(draft.clientId),
             questionId: null,
-            questionSource: source,
-            taskType
+            questionSource: "custom" as const,
+            taskType: draft.taskType
           };
-        });
-      }
+        })
+      ];
     } catch (error) {
       return setSubmitError(error instanceof Error ? error.message : "请完整填写每道题目。");
     }
 
+    // Automatic titles submit the base title; the RPC resolves the final
+    // sequence and the form never patches the title after creation.
+    const title = assignmentTitle.trim() || generatedAssignmentTitle;
+    if (!title) return setSubmitError("请填写作业标题。");
+
     setSubmitting(true);
     try {
-      const payload = await teacherApiFetch<{ assignmentId: string; assignmentIds: string[] }>(
+      const payload = await teacherApiFetch<{ assignmentId: string; assignmentIds: string[]; title?: string }>(
         "/api/teacher/writing/assignments",
-        { method: "POST", body: JSON.stringify({ assignments, studentIds: selectedStudents }) }
+        { method: "POST", body: JSON.stringify({ assignments, studentIds: selectedStudents, title, titleIsAutomatic: !assignmentTitleManuallyEdited }) }
       );
       cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
       for (const assignmentId of payload.assignmentIds) {
@@ -347,14 +429,15 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
     }
   }
 
-  const assignmentKeys = source === "question_bank"
-    ? selectedBankQuestions.map((question) => ({ key: question.question_id, label: question.logical_display_name }))
-    : customQuestions.map((draft, index) => ({ key: draft.clientId, label: String(draft.fields.title ?? "").trim() || `第 ${index + 1} 篇` }));
+  const assignmentKeys = [
+    ...selectedBankEntries.map(({ question }) => ({ key: question.question_id, label: question.logical_display_name })),
+    ...customQuestions.map((draft, index) => ({ key: draft.clientId, label: String(draft.fields.title ?? "").trim() || `第 ${index + 1} 篇` }))
+  ];
 
   return (
     <div className="grid gap-5">
       <StepCard number="1" title="选择题型">
-        <div className="grid gap-3 sm:grid-cols-2">{(["email", "academic_discussion"] as const).map((type) => <ChoiceButton active={taskType === type} key={type} label={WRITING_TASK_CONFIG[type].label} onClick={() => chooseTaskType(type)} />)}</div>
+        <div className="grid gap-3 sm:grid-cols-2">{(["email", "academic_discussion"] as const).map((type) => <ChoiceButton active={taskType === type} key={type} label={selectedQuestionsByType[type].size ? `${WRITING_TASK_CONFIG[type].label} · 已选 ${selectedQuestionsByType[type].size} 篇` : WRITING_TASK_CONFIG[type].label} onClick={() => chooseTaskType(type)} />)}</div>
       </StepCard>
 
       <StepCard number="2" title="选择题目来源">
@@ -364,13 +447,13 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
       <StepCard number="3" title={source === "custom" ? "填写自定义题" : "选择题目"}>
         {!taskType || !source ? <p className="text-sm text-student-muted">请先选择题型和题目来源。</p> : source === "question_bank" ? (
           <div className="grid gap-4">
-            <div className="flex flex-wrap items-center justify-between gap-3"><span className="text-sm font-bold text-student-primary">已选择 {selectedQuestions.size} 篇</span>{selectedBankQuestions.length ? <div className="flex flex-wrap gap-2">{selectedBankQuestions.map((question) => <button className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-text" key={question.question_id} onClick={() => toggleQuestion(question)} type="button">{question.logical_display_name} ×</button>)}</div> : null}</div>
+            <div className="flex flex-wrap items-center justify-between gap-3"><span className="text-sm font-bold text-student-primary">已选择 {selectedQuestions.size} 篇{assignmentCount > selectedQuestions.size ? `（本次共 ${assignmentCount} 篇）` : ""}</span>{selectedBankEntries.length ? <div className="flex flex-wrap gap-2">{selectedBankEntries.map(({ question, taskType: entryTaskType }) => <button className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-text" key={question.question_id} onClick={() => removeBankQuestion(entryTaskType, question)} type="button">{entryTaskType === "academic_discussion" ? "AD" : "Email"} · {question.logical_display_name} ×</button>)}</div> : null}</div>
             <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); void searchQuestions(1); }}><input className="teacher-input min-w-0 flex-1" onChange={(event) => setQuery(event.target.value)} placeholder="搜索套题名称或题目关键词" value={query} /><button className="teacher-button-primary" disabled={searching} type="submit"><Search aria-hidden="true" size={16} />{searching ? "搜索中" : "搜索题目"}</button></form>
             {searchError ? <TeacherDataError text={searchError} /> : null}
-            {questionResult ? <MultiQuestionResults onPage={(page) => void searchQuestions(page)} onToggle={toggleQuestion} payload={questionResult} selectedIds={new Set(selectedQuestions.keys())} taskType={taskType} /> : <p className="text-sm text-student-muted">输入关键词后搜索；切换搜索或翻页不会清除已选题目。</p>}
+            {questionResult ? <MultiQuestionResults onPage={(page) => void searchQuestions(page)} onToggle={toggleQuestion} payload={questionResult} selectedIds={new Set(selectedQuestions.keys())} taskType={taskType} /> : <p className="text-sm text-student-muted">输入关键词后搜索；切换搜索或翻页不会清除已选题目，切换题型也会保留另一种题型已选中的题目。</p>}
           </div>
         ) : (
-          <div className="grid gap-4">{customQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(taskType, generatedAssignmentTitle)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
+          <div className="grid gap-4">{visibleCustomQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={draft.taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(taskType, generatedAssignmentTitle)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
         )}
       </StepCard>
 
@@ -380,15 +463,21 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
         </div>
       </StepCard>
 
-      <StepCard number="5" title="截止时间">
+      <StepCard number="5" title="作业标题">
+        <div className="grid gap-2"><input className="teacher-input max-w-xl" onChange={(event) => { setAssignmentTitleManuallyEdited(true); setAssignmentTitle(event.target.value); }} placeholder="选择学生后自动生成" value={candidateAssignmentTitle} />
+          <p className="text-xs text-student-muted">默认格式：学生姓名 YYYY-MM-DD（多学生为“第一位学生等 YYYY-MM-DD”）。第一位学生来自本次已选择的学生；同一教师下同名自动标题会依次追加 (2)、(3)；手动修改后不再自动编号或覆盖，最终以服务端保存结果为准。</p>
+        </div>
+      </StepCard>
+
+      <StepCard number="6" title="截止时间">
         <div className="grid gap-3"><div className="flex flex-wrap gap-5"><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "uniform"} name="deadline-mode" onChange={() => setDeadlineMode("uniform")} type="radio" />统一截止时间</label><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "individual"} name="deadline-mode" onChange={() => setDeadlineMode("individual")} type="radio" />分别设置</label></div>{deadlineMode === "uniform" ? <label className="grid max-w-sm gap-2 text-sm font-semibold text-student-text">截止时间（可不填）<input className="teacher-input" onChange={(event) => setUniformDueAt(event.target.value)} type="datetime-local" value={uniformDueAt} /></label> : <div className="grid gap-3">{assignmentKeys.map((item) => <label className="grid gap-2 text-sm font-semibold text-student-text sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)] sm:items-center" key={item.key}><span className="truncate">{item.label}</span><input className="teacher-input" onChange={(event) => setIndividualDueAt((current) => ({ ...current, [item.key]: event.target.value }))} type="datetime-local" value={individualDueAt[item.key] ?? ""} /></label>)}</div>}<p className="text-xs text-student-muted">留空表示不设置截止时间；截止时间不会禁止提交。</p></div>
       </StepCard>
 
-      <StepCard number="6" title="题目预览">
-        {previewQuestions.length ? <div className="grid gap-5">{previewQuestions.map((question, index) => <div className="grid gap-2" key={question.question_id}><p className="text-sm font-bold text-student-text">第 {index + 1} 篇</p><WritingAssignmentQuestionPreview question={question} questionSource={source!} taskType={taskType!} /></div>)}</div> : <p className="text-sm text-student-muted">完成题目选择或填写后，这里会显示学生看到的完整题目。</p>}
+      <StepCard number="7" title="题目预览">
+        {previewItems.length ? <div className="grid gap-5">{previewItems.map((item, index) => <div className="grid gap-2" key={item.key}><p className="text-sm font-bold text-student-text">第 {index + 1} 篇 · {WRITING_TASK_CONFIG[item.taskType].label}</p><WritingAssignmentQuestionPreview question={item.question} questionSource={item.questionSource} taskType={item.taskType} /></div>)}</div> : <p className="text-sm text-student-muted">完成题目选择或填写后，这里会显示学生看到的完整题目。</p>}
       </StepCard>
 
-      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">确认布置</p><p className="mt-1 text-sm text-student-muted">将 {assignmentCount} 篇题目布置给已选择的 {selectedStudents.length} 名学生。</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit()} type="button">{submitting ? "正在布置…" : "布置"}</button></div></TeacherCard>
+      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">确认布置</p><p className="mt-1 text-sm text-student-muted">将 {assignmentCount} 篇题目布置给已选择的 {selectedStudents.length} 名学生，并保存同一个作业组。</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit()} type="button">{submitting ? "正在布置…" : "布置"}</button></div></TeacherCard>
     </div>
   );
 }
@@ -704,6 +793,7 @@ function createCustomQuestionDraft(
     parsedRequirementCount: 0,
     rawPrompt: "",
     requirementsManuallyEdited: false,
+    taskType,
     titleManuallyEdited: false,
     toManuallyEdited: false
   };

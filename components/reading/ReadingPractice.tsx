@@ -431,7 +431,7 @@ async function loadReadingFullSetReview(
   return result as ReadingFullSetReviewPayload;
 }
 
-function ReadingFullSetReviewShell({
+export function ReadingFullSetReviewShell({
   initialSourceAnswerIndex,
   onBack,
   payload,

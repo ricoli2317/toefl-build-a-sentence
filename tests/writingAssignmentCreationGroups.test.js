@@ -169,18 +169,27 @@ test("recipient recognition defaults To while a manual To change leaves the orig
   );
 });
 
-test("custom assignment title defaults use assignment date and first selected student", () => {
+test("assignment title defaults use the assignment date and the first selected student", () => {
   const assignedAt = new Date("2026-08-20T04:00:00.000Z");
   assert.equal(defaultWritingAssignmentTitle({
     assignedAt,
     firstStudentName: "张三",
     studentCount: 1
-  }), "260820-张三");
+  }), "张三 2026-08-20");
   assert.equal(defaultWritingAssignmentTitle({
     assignedAt,
     firstStudentName: "张三",
     studentCount: 3
-  }), "260820-张三等");
+  }), "张三等 2026-08-20");
+});
+
+test("assignment title date reuses the Shanghai assignment date rule", () => {
+  // 16:30 UTC is already the next day in Asia/Shanghai, same as the list date.
+  assert.equal(defaultWritingAssignmentTitle({
+    assignedAt: new Date("2026-08-16T16:30:00.000Z"),
+    firstStudentName: "李四",
+    studentCount: 1
+  }), "李四 2026-08-17");
 });
 
 test("question-bank multi-selection survives replacing the visible search results", () => {

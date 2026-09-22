@@ -9,6 +9,7 @@ import {
   Eye,
   FileCheck2,
   FilePenLine,
+  Files,
   Mail,
   MessageCircleMore,
   Play,
@@ -45,9 +46,13 @@ import {
   formatAssignmentDate,
   formatAssignmentMonth,
   getStudentWritingAssignmentDisplayStatus,
+  groupStudentWritingAssignments,
   isAssignmentMonthKey,
   studentWritingAssignmentTitle,
-  studentWritingAssignmentDisplayStatusLabel
+  studentWritingAssignmentDisplayStatusLabel,
+  writingAssignmentQuestionDisplayTitle,
+  writingAssignmentTaskTypeBadges,
+  type StudentWritingAssignmentDisplayStatus
 } from "@/lib/writingAssignments";
 
 export function StudentWritingAssignmentCalendar({
@@ -159,13 +164,21 @@ export function StudentWritingAssignmentDayDetail({ date }: { date: string }) {
         <StudentEmptyState text="这一天没有写作作业。" />
       ) : (
         <div className="grid gap-3">
-          {state.data.assignments.map((assignment) => (
-            <StudentWritingAssignmentCard
-              assignment={assignment}
-              key={assignment.assignment_id}
-              returnTo={`${STUDENT_ROUTES.assignments}/day/${date}`}
-            />
-          ))}
+          {groupStudentWritingAssignments(state.data.assignments).map((entry) =>
+            entry.kind === "collection" ? (
+              <StudentWritingAssignmentGroupCard
+                assignments={entry.assignments}
+                key={entry.collection_id}
+                title={entry.title}
+              />
+            ) : (
+              <StudentWritingAssignmentCard
+                assignment={entry.assignment}
+                key={entry.assignment.assignment_id}
+                returnTo={`${STUDENT_ROUTES.assignments}/day/${date}`}
+              />
+            )
+          )}
         </div>
       )}
     </div>
@@ -198,6 +211,7 @@ export function StudentWritingAssignmentCollectionDetail({
   const completedCount = assignments.filter(
     (assignment) => assignment.published_review_attempt_id
   ).length;
+  const collectionTitle = assignments[0]?.group_title?.trim() || `共 ${assignments.length} 篇写作`;
 
   return (
     <div className="grid gap-5" aria-busy={state.refreshing}>
@@ -210,9 +224,13 @@ export function StudentWritingAssignmentCollectionDetail({
       />
       <section className="student-card flex flex-wrap items-center justify-between gap-4 p-5">
         <div>
-          <p className="text-xs font-bold text-student-primary">写作作业</p>
+          <div className="flex flex-wrap items-center gap-2">
+            {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
+              <span className="text-xs font-bold text-student-primary" key={label}>{label}</span>
+            ))}
+          </div>
           <h1 className="mt-1 text-xl font-bold text-student-text">
-            共 {assignments.length} 篇写作
+            {collectionTitle}
           </h1>
           <p className="mt-2 text-sm text-student-muted">
             {submittedCount} / {assignments.length} 已提交
@@ -228,11 +246,98 @@ export function StudentWritingAssignmentCollectionDetail({
           <StudentWritingAssignmentCard
             assignment={assignment}
             key={assignment.assignment_id}
+            questionTitleOnly
           />
         ))}
       </div>
     </div>
   );
+}
+
+function StudentWritingAssignmentGroupCard({
+  assignments,
+  title
+}: {
+  assignments: StudentWritingAssignmentSummary[];
+  title: string;
+}) {
+  const first = assignments[0];
+  const batchHref = `${STUDENT_ROUTES.assignments}/batches/${encodeURIComponent(
+    first.group_id ?? ""
+  )}`;
+  const submittedCount = assignments.filter(
+    (assignment) => assignment.latest_submitted_attempt_id
+  ).length;
+  const completedCount = assignments.filter(
+    (assignment) => assignment.published_review_attempt_id
+  ).length;
+  const status = studentGroupDisplayStatus(assignments);
+  const dueAt = assignments
+    .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
+    .sort((left, right) => Date.parse(left) - Date.parse(right))[0] ?? null;
+
+  return (
+    <article className="student-card grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5">
+      <div className="flex min-w-0 items-start gap-3.5">
+        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-student-primary-soft text-student-primary">
+          <Files aria-hidden="true" size={22} />
+        </span>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
+              <span className="text-xs font-bold text-student-primary" key={label}>{label}</span>
+            ))}
+            <span
+              className={clsx(
+                "rounded-full px-2.5 py-1 text-[11px] font-bold",
+                status === "overdue"
+                  ? "bg-student-error-soft text-student-error"
+                  : status === "completed"
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "bg-amber-50 text-amber-700"
+              )}
+            >
+              {studentWritingAssignmentDisplayStatusLabel(status)}
+            </span>
+            <span className="rounded-full bg-student-bg px-2.5 py-1 text-[11px] font-bold text-student-muted">
+              共 {assignments.length} 篇
+            </span>
+          </div>
+          <h2 className="mt-1.5 truncate text-lg font-bold text-student-text">
+            {title || `${studentWritingAssignmentTitle(first)} 等 ${assignments.length} 篇`}
+          </h2>
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-student-muted">
+            <span>
+              {submittedCount} / {assignments.length} 已提交
+              {completedCount ? ` · ${completedCount} 篇已完成批改` : ""}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarClock aria-hidden="true" size={14} />
+              {dueAt ? `最近截止 ${formatDateTime(dueAt)}` : "无截止时间"}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
+        <AssignmentAction href={batchHref} icon={Play} label="查看作业" primary />
+      </div>
+    </article>
+  );
+}
+
+function studentGroupDisplayStatus(
+  assignments: StudentWritingAssignmentSummary[]
+): StudentWritingAssignmentDisplayStatus {
+  const rank: Record<StudentWritingAssignmentDisplayStatus, number> = {
+    overdue: 0,
+    not_started: 1,
+    in_progress: 2,
+    submitted: 3,
+    completed: 4
+  };
+  return assignments
+    .map((assignment) => getStudentWritingAssignmentDisplayStatus(assignment))
+    .sort((left, right) => rank[left] - rank[right])[0] ?? "not_started";
 }
 
 export function StudentWritingAssignmentEntry({
@@ -444,9 +549,11 @@ function CalendarNavigationButton({
 
 function StudentWritingAssignmentCard({
   assignment,
+  questionTitleOnly = false,
   returnTo = STUDENT_ROUTES.assignments
 }: {
   assignment: StudentWritingAssignmentSummary;
+  questionTitleOnly?: boolean;
   returnTo?: string;
 }) {
   const config = WRITING_TASK_CONFIG[assignment.task_type];
@@ -476,7 +583,9 @@ function StudentWritingAssignmentCard({
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-student-primary">{config.label}</span>
+            {writingAssignmentTaskTypeBadges([assignment.task_type]).map((label) => (
+              <span className="text-xs font-bold text-student-primary" key={label}>{label}</span>
+            ))}
             <AssignmentStatusChip assignment={assignment} />
             {assignment.status === "withdrawn" ? (
               <span className="rounded-full bg-student-bg px-2.5 py-1 text-[11px] font-bold text-student-muted">
@@ -485,7 +594,9 @@ function StudentWritingAssignmentCard({
             ) : null}
           </div>
           <h2 className="mt-1.5 truncate text-lg font-bold text-student-text">
-            {studentWritingAssignmentTitle(assignment)}
+            {questionTitleOnly
+              ? writingAssignmentQuestionDisplayTitle(assignment)
+              : studentWritingAssignmentTitle(assignment)}
           </h2>
           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-student-muted">
             <span>布置于 {formatDateTime(assignment.assigned_at)}</span>

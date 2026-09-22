@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { AlertTriangle, ArrowRight, CalendarClock, Files, Pencil, RotateCcw, Trash2, Undo2, Users } from "lucide-react";
+import { AlertTriangle, ArrowRight, CalendarClock, ChevronDown, Files, Pencil, RotateCcw, Trash2, Undo2, Users } from "lucide-react";
 import {
-  TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX,
-  useTeacherCachedData,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import {
@@ -16,14 +14,16 @@ import {
   TeacherLoadingRegion,
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
+import { TeacherPopover } from "@/components/teacher/TeacherPopover";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
-import { WRITING_TASK_CONFIG } from "@/lib/writing";
 import {
   getWritingAssignmentReviewAction,
   getWritingAssignmentProgress,
   groupTeacherWritingAssignments,
+  writingAssignmentTaskTypeBadges,
   writingAssignmentTitle,
   type TeacherWritingAssignmentListEntry,
+  type WritingAssignmentRecipient,
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
@@ -32,22 +32,27 @@ import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 const WITHDRAW_CONFIRM = "确认撤回这项作业？\n\n撤回后，学生将不能再通过该作业开始或继续未提交的练习。\n已经提交的作业和批改记录不会受到影响。";
 const DELETE_CONFIRM = "确认删除这项作业？\n\n删除后，该作业将不再显示在正常作业列表中。\n学生已有提交和批改记录不会被删除。";
 
-export function TeacherWritingAssignmentList({ studentId }: { studentId?: string } = {}) {
+/**
+ * Purely presentational list: the page loads the full assignment set once and
+ * performs the student filtering locally, so switching the filter never asks
+ * the server for anything.
+ */
+export function TeacherWritingAssignmentList({
+  assignments,
+  error,
+  filterStudent,
+  loading,
+  onClearFilter
+}: {
+  assignments: WritingAssignmentSummary[];
+  error: string;
+  filterStudent: WritingAssignmentRecipient | null;
+  loading: boolean;
+  onClearFilter: () => void;
+}) {
   const cache = useTeacherDataCache();
   const [pendingId, setPendingId] = useState("");
   const [mutationError, setMutationError] = useState("");
-  const filterStudentId = studentId?.trim() ?? "";
-  const cacheKey = filterStudentId
-    ? `${TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY}:${filterStudentId}`
-    : TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY;
-  const { data, error, loading } = useTeacherCachedData<{ assignments: WritingAssignmentSummary[] }>(
-    cacheKey,
-    () => teacherApiFetch(
-      filterStudentId
-        ? `/api/teacher/writing/assignments?studentId=${encodeURIComponent(filterStudentId)}`
-        : "/api/teacher/writing/assignments"
-    )
-  );
 
   async function mutate(assignmentId: string, action: "withdraw" | "reactivate" | "soft_delete") {
     if (action === "withdraw" && !window.confirm(WITHDRAW_CONFIRM)) return;
@@ -68,10 +73,14 @@ export function TeacherWritingAssignmentList({ studentId }: { studentId?: string
     }
   }
 
-  const studentFilterBanner = filterStudentId ? (
+  const studentFilterBanner = filterStudent ? (
     <TeacherCard className="flex flex-wrap items-center justify-between gap-3 p-4">
-      <p className="text-sm text-student-muted">当前仅显示该学生的写作作业。</p>
-      <Link className="teacher-button-secondary" href="/teacher/writing/assignments">查看全部作业</Link>
+      <p className="text-sm text-student-muted">
+        当前仅显示 {filterStudent.student_name} 的写作作业。
+      </p>
+      <button className="teacher-button-secondary" onClick={onClearFilter} type="button">
+        查看全部作业
+      </button>
     </TeacherCard>
   ) : null;
 
@@ -79,17 +88,17 @@ export function TeacherWritingAssignmentList({ studentId }: { studentId?: string
     return <div className="grid gap-3" aria-busy="true">{studentFilterBanner}<TeacherLoadingRegion label="正在加载作业列表" />{[1, 2, 3].map((item) => <TeacherSkeleton className="h-32 w-full rounded-2xl" key={item} />)}</div>;
   }
   if (error) return <div className="grid gap-3">{studentFilterBanner}<TeacherDataError text={error} /></div>;
-  if (!data?.assignments.length) {
+  if (!assignments.length) {
     return (
       <div className="grid gap-3">
         {studentFilterBanner}
         <TeacherCard className="p-5">
-          <TeacherEmptyState text={filterStudentId ? "该学生还没有写作作业。" : "还没有写作作业。点击右上角“布置作业”开始。"} />
+          <TeacherEmptyState text={filterStudent ? "该学生还没有写作作业。" : "还没有写作作业。点击右上角“布置作业”开始。"} />
         </TeacherCard>
       </div>
     );
   }
-  const entries = groupTeacherWritingAssignments(data.assignments);
+  const entries = groupTeacherWritingAssignments(assignments);
 
   return (
     <div className="grid gap-3">
@@ -111,20 +120,23 @@ export function TeacherWritingAssignmentList({ studentId }: { studentId?: string
           : null;
         return (
           <article className="teacher-card flex flex-wrap items-center gap-5 p-5" key={assignment.assignment_id}>
-            <Link className="group min-w-0 flex-1" href={detailHref}>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[assignment.task_type].label}</span>
-                <span className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-muted">{assignment.question_source === "custom" ? "自定义" : "题库"}</span>
-                <AssignmentProgressBadge assignment={assignment} />
-                {assignment.has_overdue_students ? <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error"><AlertTriangle aria-hidden="true" size={13} />存在逾期未完成</span> : null}
-              </div>
-              <h2 className="mt-3 truncate text-lg font-bold text-student-text">{assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}</h2>
-              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
-                <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} />{assignment.assigned_count} 名学生 · {assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
+            <div className="min-w-0 flex-1">
+              <Link className="group block" href={detailHref}>
+                <div className="flex flex-wrap items-center gap-2">
+                  {writingAssignmentTaskTypeBadges([assignment.task_type]).map((label) => <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>{label}</span>)}
+                  <span className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-muted">{assignment.question_source === "custom" ? "自定义" : "题库"}</span>
+                  <AssignmentProgressBadge assignment={assignment} />
+                  {assignment.has_overdue_students ? <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error"><AlertTriangle aria-hidden="true" size={13} />存在逾期未完成</span> : null}
+                </div>
+                <h2 className="mt-3 truncate text-lg font-bold text-student-text">{assignment.group_title?.trim() || assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}</h2>
+              </Link>
+              <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-student-muted">
+                <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} /><AssignmentRecipientNames recipients={assignment.recipients ?? []} /></span>
+                <span>{assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
                 <span className="inline-flex items-center gap-2"><CalendarClock aria-hidden="true" size={16} />截止：{formatDateTime(assignment.due_at, "无")}</span>
                 <span>布置：{formatDateTime(assignment.created_at, "—")}</span>
               </div>
-            </Link>
+            </div>
             <div className="flex flex-wrap items-center justify-end gap-2">
               {reviewAction ? (
                 <Link
@@ -162,12 +174,43 @@ export function TeacherWritingAssignmentList({ studentId }: { studentId?: string
   );
 }
 
+export function AssignmentRecipientNames({
+  recipients
+}: {
+  recipients: WritingAssignmentRecipient[];
+}) {
+  if (!recipients.length) return <span>未指定学生</span>;
+  const first = recipients[0];
+  if (recipients.length === 1) {
+    return <span className="font-semibold text-student-text">{first.student_name}</span>;
+  }
+  return (
+    <>
+      <span className="font-semibold text-student-text">{first.student_name}等</span>
+      <TeacherPopover
+        buttonClassName="inline-flex min-h-7 items-center gap-1 rounded-full border border-student-primary-border bg-white px-2.5 text-xs font-semibold text-student-primary transition hover:border-student-primary hover:bg-student-primary-soft"
+        buttonContent={<>更多<ChevronDown aria-hidden="true" size={13} /></>}
+        menuClassName="min-w-[13rem]"
+      >
+        {() => (
+          <ul className="grid max-h-64 gap-0.5 overflow-y-auto">
+            {recipients.map((recipient) => (
+              <li className="truncate rounded-lg px-3 py-1.5 text-sm font-medium text-student-text" key={recipient.student_id}>
+                {recipient.student_name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </TeacherPopover>
+    </>
+  );
+}
+
 function TeacherWritingAssignmentCollectionCard({
   entry
 }: {
   entry: Extract<TeacherWritingAssignmentListEntry, { kind: "collection" }>;
 }) {
-  const first = entry.assignments[0];
   const detailHref = `/teacher/writing/assignments/batches/${entry.collection_id}`;
   const progress = entry.published_count >= entry.total_count
     ? "已完成"
@@ -179,29 +222,37 @@ function TeacherWritingAssignmentCollectionCard({
   const dueDates = entry.assignments
     .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
     .sort((left, right) => Date.parse(left) - Date.parse(right));
+  const taskTypeBadges = writingAssignmentTaskTypeBadges(
+    entry.assignments.map((assignment) => assignment.task_type)
+  );
+  const fallbackTitle = `${entry.assignments[0].display_name || writingAssignmentTitle(entry.assignments[0].question_snapshot)} 等 ${entry.assignments.length} 篇写作`;
 
   return (
     <article className="teacher-card flex flex-wrap items-center gap-5 p-5">
-      <Link className="group min-w-0 flex-1" href={detailHref}>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary">
-            <Files aria-hidden="true" size={13} />写作作业 · {entry.assignments.length} 篇
-          </span>
-          <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
-            {progress}
-          </span>
-          {entry.has_overdue_students ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error">
-              <AlertTriangle aria-hidden="true" size={13} />存在逾期未完成
+      <div className="min-w-0 flex-1">
+        <Link className="group block" href={detailHref}>
+          <div className="flex flex-wrap items-center gap-2">
+            {taskTypeBadges.map((label, index) => (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>
+                {index === 0 ? <Files aria-hidden="true" size={13} /> : null}{label}
+              </span>
+            ))}
+            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+              {progress}
             </span>
-          ) : null}
-        </div>
-        <h2 className="mt-3 truncate text-lg font-bold text-student-text">
-          {first.display_name || writingAssignmentTitle(first.question_snapshot)} 等 {entry.assignments.length} 篇写作
-        </h2>
-        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
+            {entry.has_overdue_students ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error">
+                <AlertTriangle aria-hidden="true" size={13} />存在逾期未完成
+              </span>
+            ) : null}
+          </div>
+          <h2 className="mt-3 truncate text-lg font-bold text-student-text">
+            {entry.title || fallbackTitle}
+          </h2>
+        </Link>
+        <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-student-muted">
           <span className="inline-flex items-center gap-2">
-            <Users aria-hidden="true" size={16} />{entry.assigned_count} 名学生
+            <Users aria-hidden="true" size={16} /><AssignmentRecipientNames recipients={entry.recipients} />
           </span>
           <span className="font-semibold text-student-text">
             {entry.completed_count} / {entry.total_count} 已提交
@@ -214,7 +265,7 @@ function TeacherWritingAssignmentCollectionCard({
           </span>
           <span>布置：{formatDateTime(entry.created_at, "—")}</span>
         </div>
-      </Link>
+      </div>
       <Link className="teacher-button-secondary" href={detailHref}>
         查看进度<ArrowRight aria-hidden="true" size={18} />
       </Link>

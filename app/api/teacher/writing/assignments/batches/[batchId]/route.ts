@@ -1,6 +1,7 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import type { WritingQuestion, WritingTaskType } from "@/lib/writing";
 import {
   calculateWritingAssignmentStudentStatus,
@@ -68,7 +69,7 @@ export async function GET(
     if (assignments.length < 2) return notFound();
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
 
-    const [membersResult, attemptsResult, displayNames] = await Promise.all([
+    const [membersResult, attemptsResult, displayNames, groupTitles] = await Promise.all([
       readAllSupabaseRows<MemberRow>((from, to) =>
         auth.supabase!
           .from("writing_assignment_students")
@@ -96,7 +97,8 @@ export async function GET(
           questionSource: assignment.question_source,
           taskType: assignment.task_type
         }))
-      )
+      ),
+      loadWritingAssignmentGroupTitles(auth.supabase, [params.batchId])
     ]);
     if (membersResult.error || attemptsResult.error) {
       throw membersResult.error ?? attemptsResult.error;
@@ -197,6 +199,7 @@ export async function GET(
     const assignedCount = Math.max(0, ...details.map((detail) => detail.assigned_count));
     const collection: WritingAssignmentCollectionDetail = {
       collection_id: params.batchId,
+      title: groupTitles.get(params.batchId) ?? "",
       assignments: details,
       assigned_count: assignedCount,
       completed_count: completedCount,

@@ -134,10 +134,12 @@ test("student assignment calendar reads only a database-bounded minimal month in
   assert.doesNotMatch(ui, /prefetch/);
 });
 
-test("student assignment calendar resolves bank titles through the shared logical display resolver", () => {
+test("student assignment calendar resolves persisted group titles before bank display names", () => {
   const route = source("app/api/writing/assignments/calendar/route.ts");
   assert.match(route, /loadWritingAssignmentDisplayNames/);
-  assert.match(route, /title: displayNames\.get\(assignmentId\) \?\? fallbackDisplayName/);
+  assert.match(route, /loadWritingAssignmentGroupTitles/);
+  assert.match(route, /groupTitles\.get\(assignment\.group_id\)/);
+  assert.match(route, /displayNames\.get\(assignmentId\)/);
   assert.doesNotMatch(route, /title: assignment\.title/);
 });
 

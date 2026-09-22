@@ -1,4 +1,8 @@
 import type { HistoricalPracticeDisplayResolver } from "./historicalPracticeDisplay.ts";
+import type { ReadingCorrectionAnswerPresentation } from "./reading/correctionResult.ts";
+import type { ReadingAnswerState } from "./reading/practiceState.ts";
+import type { SubmittedReadingReviewItem } from "./reading/review.ts";
+import type { StudentReadingPracticePayload } from "./reading/studentPractice.ts";
 import type { ReadingModule } from "./reading/types.ts";
 
 export const TEACHER_PRACTICE_TASK_TYPES = [
@@ -76,6 +80,44 @@ export type TeacherStudentReadingPractice = {
   tasks: Record<ReadingModule, TeacherReadingTaskSummary>;
   records: TeacherPracticeRecord[];
 };
+
+/**
+ * On-demand teacher payload for one submitted Reading attempt. It is only
+ * requested after a teacher opens a record; the student detail list never
+ * includes practice content, answers, or scoring detail.
+ */
+export type TeacherReadingAttemptReviewPayload = {
+  attempt: {
+    attemptId: string;
+    logicalItemId: string;
+    taskType: ReadingModule;
+    submittedAt: string;
+  };
+  answers: ReadingAnswerState;
+  disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
+  practice: StudentReadingPracticePayload;
+  reviewItems: SubmittedReadingReviewItem[];
+};
+
+/**
+ * Teacher detail routes are keyed by the attempt id alone so repeated practices
+ * of one item always open the exact attempt the teacher clicked.
+ */
+export function teacherReadingAttemptHref(input: {
+  studentId?: string;
+  kind: TeacherPracticeRecordKind;
+  attemptId: string;
+}) {
+  if (!input.studentId) return null;
+  const base = `/teacher/students/${encodeURIComponent(input.studentId)}/reading`;
+  if (input.kind === "full_set") {
+    return `${base}/full-set-attempts/${encodeURIComponent(input.attemptId)}`;
+  }
+  if (input.kind === "wrongbook") {
+    return `${base}/wrongbook-attempts/${encodeURIComponent(input.attemptId)}`;
+  }
+  return `${base}/attempts/${encodeURIComponent(input.attemptId)}`;
+}
 
 export type TeacherStudentWritingPractice = {
   tasks: {
@@ -199,6 +241,7 @@ export function buildTeacherStudentReadingPractice(input: {
   fullSetModules?: TeacherFullSetModuleRow[];
   fullSetAnswers?: TeacherFullSetAnswerRow[];
   itemMeta: Map<string, TeacherReadingItemMeta>;
+  studentId?: string;
 }): TeacherStudentReadingPractice {
   const tasks: Record<ReadingModule, TeacherReadingTaskSummary> = {
     ctw: emptyReadingTask(),
@@ -225,7 +268,11 @@ export function buildTeacherStudentReadingPractice(input: {
       durationSeconds: nonNegativeInteger(attempt.elapsed_seconds),
       metric: { kind: "objective", correct: correctPoints, total: totalPoints, accuracy },
       scope: null,
-      href: null
+      href: teacherReadingAttemptHref({
+        studentId: input.studentId,
+        kind: "practice",
+        attemptId: String(attempt.attempt_id)
+      })
     });
   }
 
@@ -250,7 +297,13 @@ export function buildTeacherStudentReadingPractice(input: {
         accuracy: ratio(correctPoints, totalPoints)
       },
       scope: attempt.scope,
-      href: null
+      href: isReadingModuleValue(attempt.task_type)
+        ? teacherReadingAttemptHref({
+            studentId: input.studentId,
+            kind: "wrongbook",
+            attemptId: String(attempt.attempt_id)
+          })
+        : null
     });
   }
 
@@ -406,6 +459,7 @@ function buildFullSetReadingPractice(input: {
   fullSetModules?: TeacherFullSetModuleRow[];
   fullSetAnswers?: TeacherFullSetAnswerRow[];
   itemMeta: Map<string, TeacherReadingItemMeta>;
+  studentId?: string;
 }): {
   tasks: Record<ReadingModule, TeacherReadingTaskSummary>;
   records: TeacherPracticeRecord[];
@@ -486,7 +540,11 @@ function buildFullSetReadingPractice(input: {
           accuracy: ratio(summary.correct, summary.total)
         },
         scope: null,
-        href: null
+        href: teacherReadingAttemptHref({
+          studentId: input.studentId,
+          kind: "full_set",
+          attemptId: String(attempt.attempt_id)
+        })
       });
     }
   }
@@ -516,6 +574,10 @@ function readingRecordTitle(
 ) {
   return itemMeta.get(String(logicalItemId))?.displayName?.trim()
     || TEACHER_PRACTICE_TASK_LABELS[taskType];
+}
+
+function isReadingModuleValue(value: string) {
+  return value === "ctw" || value === "rdl" || value === "rap";
 }
 
 function groupBy<T>(items: T[], getKey: (item: T) => string) {

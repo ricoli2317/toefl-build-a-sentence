@@ -18,6 +18,7 @@ import { teacherApiFetch } from "@/lib/teacherClientApi";
 import { WRITING_TASK_CONFIG } from "@/lib/writing";
 import {
   getWritingAssignmentReviewAction,
+  writingAssignmentTaskTypeBadges,
   writingAssignmentTitle,
   type WritingAssignmentCollectionDetail,
   type WritingAssignmentDetail,
@@ -69,15 +70,17 @@ export function TeacherWritingAssignmentCollectionDetailView({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary">
-                写作作业 · {collection.assignments.length} 篇
-              </span>
+              {writingAssignmentTaskTypeBadges(collection.assignments.map((assignment) => assignment.task_type)).map((label) => (
+                <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>
+                  {label}
+                </span>
+              ))}
               <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
                 {overallLabel}
               </span>
             </div>
             <h2 className="mt-3 text-xl font-bold text-student-text">
-              {collection.assigned_count} 名学生的写作进度
+              {collection.title || `${collection.assigned_count} 名学生的写作进度`}
             </h2>
             <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
               <span className="font-semibold text-student-text">
