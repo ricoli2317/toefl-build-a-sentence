@@ -6,6 +6,7 @@ const test = require("node:test");
 const {
   aggregateTeacherStudentPracticeSummaries,
   buildTeacherStudentOverview,
+  buildTeacherStudentOverviewFromSummaries,
   formatLatestPracticeAt,
   formatPracticeDuration
 } = require("../lib/teacherStudentOverview.ts");
@@ -181,7 +182,7 @@ test("practice duration and latest practice formatters match the product copy", 
   assert.equal(formatLatestPracticeAt("not-a-date"), "—");
 });
 
-test("overview API is teacher-only, batched, and never reads answers or review content", () => {
+test("overview API is teacher-only, batch-scoped, and never reads practice history", () => {
   const route = read("app/api/teacher/students/overview/route.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
   assert.match(route, /status: 403/);
@@ -189,20 +190,70 @@ test("overview API is teacher-only, batched, and never reads answers or review c
   assert.match(route, /listTeacherStudentDomainBindings/);
   assert.match(route, /readAllSupabaseRows/);
   assert.match(route, /Cache-Control[\s\S]{0,30}"no-store"/);
-  assert.match(route, /from\("reading_attempts"\)/);
-  assert.match(route, /from\("reading_wrongbook_attempts"\)/);
-  assert.match(route, /from\("attempts"\)/);
-  assert.match(route, /from\("writing_attempts"\)/);
-  assert.match(route, /from\("reading_full_set_attempts"\)/);
+  assert.match(route, /from\("profiles"\)/);
+  assert.match(route, /from\("student_practice_summary"\)/);
+  assert.match(route, /select\("student_id,total_practice_seconds,latest_practice_at"\)/);
+  assert.match(route, /\.in\("student_id", batch\)/);
+  assert.match(route, /buildTeacherStudentOverviewFromSummaries/);
+  assert.doesNotMatch(route, /from\("reading_attempts"\)/);
+  assert.doesNotMatch(route, /from\("reading_wrongbook_attempts"\)/);
+  assert.doesNotMatch(route, /from\("attempts"\)/);
+  assert.doesNotMatch(route, /from\("writing_attempts"\)/);
+  assert.doesNotMatch(route, /from\("reading_full_set_attempts"\)/);
+  assert.doesNotMatch(route, /TeacherStudentPracticeRow|practiceRow\(/);
   assert.doesNotMatch(
     route,
     /reading_attempt_answers|reading_full_set_answers|reading_wrongbook_attempt_answers|from\("attempt_answers"\)|writing_reviews|response_text|question_snapshot|official_score/
   );
-  // Full Set has no persisted duration column: only its completed_at is read.
-  assert.doesNotMatch(route, /from\("reading_full_set_module_attempts"\)/);
-  assert.match(route, /reading-full-set[\s\S]{0,80}null/);
   // No N students -> N requests: no query is issued inside a per-student loop.
   assert.doesNotMatch(route, /for\s*\([^)]*studentId[^)]*\)[\s\S]{0,300}\.from\(/);
+});
+
+test("summary overview maps rows, defaults missing students, and keeps students isolated", () => {
+  const students = [
+    { studentId: "student-a", studentDisplayName: "甲", studentEmail: "a@example.com", domains: ["writing", "reading"] },
+    { studentId: "student-b", studentDisplayName: "乙", studentEmail: "b@example.com", domains: ["reading"] },
+    { studentId: "student-c", studentDisplayName: "丙", studentEmail: "c@example.com", domains: [] }
+  ];
+  const overview = buildTeacherStudentOverviewFromSummaries({
+    students,
+    summaries: [
+      { studentId: "student-a", totalPracticeSeconds: 610, latestPracticeAt: "2026-09-22T10:00:00Z" },
+      { studentId: "student-b", totalPracticeSeconds: 0, latestPracticeAt: "2026-09-21T08:30:00Z" }
+    ]
+  });
+
+  assert.deepEqual(overview.map((entry) => entry.studentId), ["student-a", "student-b", "student-c"]);
+  assert.equal(overview[0].totalPracticeSeconds, 610);
+  assert.equal(overview[0].latestPracticeAt, "2026-09-22T10:00:00Z");
+  assert.deepEqual(overview[0].domains, ["reading", "writing"]);
+  assert.equal(overview[1].totalPracticeSeconds, 0);
+  assert.equal(overview[1].latestPracticeAt, "2026-09-21T08:30:00Z");
+  assert.equal(overview[2].totalPracticeSeconds, 0);
+  assert.equal(overview[2].latestPracticeAt, null);
+});
+
+test("summary overview tolerates NULL, negative, fractional, and unknown rows", () => {
+  const overview = buildTeacherStudentOverviewFromSummaries({
+    students: [
+      { studentId: "student-a", studentDisplayName: "甲", studentEmail: "", domains: ["reading"] },
+      { studentId: "student-b", studentDisplayName: "乙", studentEmail: "", domains: ["writing"] },
+      { studentId: "student-c", studentDisplayName: "丙", studentEmail: "", domains: ["reading"] }
+    ],
+    summaries: [
+      { studentId: "student-a", totalPracticeSeconds: null, latestPracticeAt: null },
+      { studentId: "student-b", totalPracticeSeconds: -50, latestPracticeAt: "not-a-date" },
+      { studentId: "  ", totalPracticeSeconds: 999, latestPracticeAt: "2026-09-22T10:00:00Z" },
+      { studentId: "student-c", totalPracticeSeconds: 12.6, latestPracticeAt: "2026-09-22T10:00:00Z" }
+    ]
+  });
+
+  assert.equal(overview[0].totalPracticeSeconds, 0);
+  assert.equal(overview[0].latestPracticeAt, null);
+  assert.equal(overview[1].totalPracticeSeconds, 0);
+  assert.equal(overview[1].latestPracticeAt, null);
+  assert.equal(overview[2].totalPracticeSeconds, 13);
+  assert.equal(overview[2].latestPracticeAt, "2026-09-22T10:00:00Z");
 });
 
 test("Case 3: an empty roster returns an empty students array without any query", () => {

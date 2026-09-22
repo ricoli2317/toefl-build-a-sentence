@@ -47,22 +47,54 @@ export type TeacherStudentPracticeRow = {
   completedAt: string | null;
 };
 
+/**
+ * One persisted `student_practice_summary` row. The teacher student list reads
+ * these directly instead of scanning practice history.
+ */
+export type TeacherStudentPracticeSummaryRow = {
+  studentId: string;
+  totalPracticeSeconds: number | null;
+  latestPracticeAt: string | null;
+};
+
 export function buildTeacherStudentOverview(input: {
   students: TeacherStudentOverviewCandidate[];
   practiceRows: TeacherStudentPracticeRow[];
 }): TeacherStudentOverviewEntry[] {
   const summaries = aggregateTeacherStudentPracticeSummaries(input.practiceRows);
-  return input.students.map((student) => {
-    const summary = summaries.get(student.studentId);
-    return {
-      studentId: student.studentId,
-      studentDisplayName: student.studentDisplayName,
-      studentEmail: student.studentEmail,
-      domains: STUDENT_BINDING_DOMAINS.filter((domain) => student.domains.includes(domain)),
-      totalPracticeSeconds: summary?.totalPracticeSeconds ?? 0,
-      latestPracticeAt: summary?.latestPracticeAt ?? null
-    };
-  });
+  return input.students.map((student) => toOverviewEntry(student, summaries.get(student.studentId)));
+}
+
+export function buildTeacherStudentOverviewFromSummaries(input: {
+  students: TeacherStudentOverviewCandidate[];
+  summaries: TeacherStudentPracticeSummaryRow[];
+}): TeacherStudentOverviewEntry[] {
+  const summaryByStudentId = new Map<string, TeacherStudentPracticeSummary>();
+  for (const row of input.summaries) {
+    const studentId = typeof row.studentId === "string" ? row.studentId.trim() : "";
+    if (!studentId) continue;
+    summaryByStudentId.set(studentId, {
+      totalPracticeSeconds: practiceDurationSeconds(row.totalPracticeSeconds),
+      latestPracticeAt: canonicalCompletedAt(row.latestPracticeAt)
+    });
+  }
+  return input.students.map((student) =>
+    toOverviewEntry(student, summaryByStudentId.get(student.studentId))
+  );
+}
+
+function toOverviewEntry(
+  student: TeacherStudentOverviewCandidate,
+  summary: TeacherStudentPracticeSummary | undefined
+): TeacherStudentOverviewEntry {
+  return {
+    studentId: student.studentId,
+    studentDisplayName: student.studentDisplayName,
+    studentEmail: student.studentEmail,
+    domains: STUDENT_BINDING_DOMAINS.filter((domain) => student.domains.includes(domain)),
+    totalPracticeSeconds: summary?.totalPracticeSeconds ?? 0,
+    latestPracticeAt: summary?.latestPracticeAt ?? null
+  };
 }
 
 export function aggregateTeacherStudentPracticeSummaries(

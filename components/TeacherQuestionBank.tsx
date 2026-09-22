@@ -35,10 +35,8 @@ import type { AcademicDiscussionAvatarMap } from "@/lib/academicDiscussionAvatar
 import type { Question } from "@/lib/types";
 import type { WritingQuestion } from "@/lib/writing";
 import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
-import {
-  TeacherReadingQuestionBankCatalog,
-  TeacherReadingQuestionBankItemViewer
-} from "@/components/teacher/TeacherReadingQuestionBank";
+import { TeacherReadingQuestionBankCatalog } from "@/components/teacher/TeacherReadingQuestionBank";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   isReadingModuleTaskType,
   type TeacherQuestionBankTaskType
@@ -158,6 +156,7 @@ function TeacherWritingQuestionBankCatalog({
               />
             )}
             sets={data.items.map((item) => ({
+              icon: STUDENT_PRACTICE_ICONS[item.task_type],
               metadata: formatOccurrenceDates(item.occurrence_dates),
               questionCount: item.question_count,
               setId: item.item_id,
@@ -179,35 +178,6 @@ function TeacherWritingQuestionBankCatalog({
 }
 
 export function TeacherQuestionBankItemViewer({
-  itemId,
-  returnPage,
-  returnTaskType
-}: {
-  itemId: string;
-  returnPage: number;
-  returnTaskType: TeacherQuestionBankTaskType;
-}) {
-  const isReadingItem = itemId.startsWith("reading-");
-  if (isReadingItem || isReadingModuleTaskType(returnTaskType)) {
-    return (
-      <TeacherReadingQuestionBankItemViewer
-        itemId={itemId}
-        returnModule={isReadingModuleTaskType(returnTaskType) ? returnTaskType : "ctw"}
-        returnPage={returnPage}
-      />
-    );
-  }
-
-  return (
-    <TeacherWritingQuestionBankItemViewer
-      itemId={itemId}
-      returnPage={returnPage}
-      returnTaskType={returnTaskType}
-    />
-  );
-}
-
-function TeacherWritingQuestionBankItemViewer({
   itemId,
   returnPage,
   returnTaskType

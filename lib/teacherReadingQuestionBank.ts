@@ -1,4 +1,8 @@
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
+import type { ReadingCorrectionAnswerPresentation } from "./reading/correctionResult.ts";
+import type { ReadingAnswer, ReadingAnswerState } from "./reading/practiceState.ts";
+import type { SubmittedReadingReviewItem } from "./reading/review.ts";
+import type { StudentReadingPracticePayload } from "./reading/studentPractice.ts";
 import type { ReadingModule } from "./reading/types.ts";
 import { READING_PRODUCT_NAMES } from "./reading/product.ts";
 import { assertCanonicalRdlTitle } from "./reading/rdlTitles.ts";
@@ -27,67 +31,73 @@ export type TeacherReadingBankCatalog = {
   items: TeacherReadingBankCatalogItem[];
 };
 
-export type TeacherReadingBankOption = {
-  optionId: string;
-  optionOrder: number;
-  text: string;
-  isCorrect: boolean;
+export type TeacherReadingBankAnswerKeyEntry = {
+  answerId: string;
+  questionId: string;
+  slotId: string | null;
+  order: number;
+  /**
+   * Answer-key value for the shared read-only workspace: CTW fills the blank
+   * characters, single-answer questions mark the correct option / anchor /
+   * sentence.
+   */
+  answer: ReadingAnswer | null;
+  ctwCharacters: string[] | null;
 };
 
-export type TeacherReadingBankCtwSegment =
-  | { kind: "text"; text: string }
-  | { kind: "blank"; slotId: string; displayText: string; answer: string };
-
-export type TeacherReadingBankQuestion = {
-  questionId: string;
-  questionOrder: number;
-  questionType:
-    | "ctw"
-    | "rdl"
-    | "rap_multiple_choice"
-    | "rap_sentence_insertion"
-    | "rap_sentence_selection";
-  stem: string;
-  options: TeacherReadingBankOption[];
-  ctwParagraphs: Array<{
-    paragraphId: string;
-    paragraphOrder: number;
-    segments: TeacherReadingBankCtwSegment[];
-  }>;
-  insertSentence: string | null;
-  correctAnchorId: string | null;
-  anchors: Array<{
-    anchorId: string;
-    anchorOrder: number;
-    paragraphId: string;
-    boundaryIndex: number;
-    afterSentenceText: string | null;
-  }>;
-  targetParagraphId: string | null;
-  correctSentenceId: string | null;
-  correctSentenceText: string | null;
+export type TeacherReadingBankAnswerKey = {
+  entries: TeacherReadingBankAnswerKeyEntry[];
+  presentations: Record<string, ReadingCorrectionAnswerPresentation>;
 };
 
 export type TeacherReadingBankItemDetail = {
-  item: TeacherReadingBankCatalogItem;
-  material: {
-    materialId: string;
-    title: string;
-    materialType: string | null;
-    imageUrl: string | null;
-  } | null;
-  passage: {
-    passageId: string;
-    title: string;
-    paragraphs: Array<{
-      paragraphId: string;
-      paragraphOrder: number;
-      text: string;
-      sentences: Array<{ sentenceId: string; sentenceOrder: number; text: string }>;
-    }>;
-  } | null;
-  questions: TeacherReadingBankQuestion[];
+  /** Canonical student-safe question content, identical to the student practice payload. */
+  practice: StudentReadingPracticePayload;
+  /** Correct answers only; never a student attempt or attempt answer row. */
+  answerKey: TeacherReadingBankAnswerKey | null;
 };
+
+/**
+ * Adapts a teacher answer key to the shared read-only renderer props. The
+ * correct answers fill the same answer state a fully-correct student response
+ * would, and the answer-key context hides student-answer rows.
+ */
+export function buildTeacherReadingAnswerKeyView(
+  answerKey: TeacherReadingBankAnswerKey | null
+): {
+  answers: ReadingAnswerState;
+  disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
+  reviewItems: SubmittedReadingReviewItem[];
+} {
+  const answers: ReadingAnswerState = {};
+  const disclosures: Record<string, ReadingCorrectionAnswerPresentation> = {};
+  const reviewItems: SubmittedReadingReviewItem[] = [];
+
+  for (const entry of answerKey?.entries ?? []) {
+    const presentation = answerKey?.presentations[entry.answerId];
+    if (presentation) disclosures[entry.answerId] = presentation;
+    reviewItems.push({
+      answerId: entry.answerId,
+      order: entry.order,
+      isAnswered: true,
+      isCorrect: true,
+      questionId: entry.questionId,
+      slotId: entry.slotId,
+      questionTimeSeconds: null
+    });
+
+    if (entry.ctwCharacters && entry.slotId) {
+      const current = answers[entry.questionId];
+      const slots = current?.kind === "ctw" ? { ...current.slots } : {};
+      slots[entry.slotId] = entry.ctwCharacters;
+      answers[entry.questionId] = { kind: "ctw", slots };
+      continue;
+    }
+    if (entry.answer) answers[entry.questionId] = entry.answer;
+  }
+
+  return { answers, disclosures, reviewItems };
+}
 
 export function isReadingModuleTaskType(
   value: unknown

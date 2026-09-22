@@ -140,6 +140,11 @@ export type StudentReadingPracticeLoadOptions = {
   ctwDisplayTitle?: string;
   /** Optional caller-scoped policy. The default keeps the existing full-byte runtime verification. */
   rdlAssetLoader?: StudentRdlAssetLoader;
+  /**
+   * Teacher question-bank browsing: material image only, without the runtime
+   * selection-map download and image checksum verification.
+   */
+  skipRdlAssetVerification?: boolean;
 };
 
 export class StudentReadingLoadError extends Error {
@@ -435,27 +440,31 @@ export async function loadStudentReadingPractice(
     }
     const imageUrl = resolveReadingAssetUrl(String(material.image_asset_path), assetBaseUrl);
     const selectionMapUrl = resolveReadingAssetUrl(String(material.hitbox_data_path), assetBaseUrl);
-    const fetchAssets = options.rdlAssetLoader
-      ? () => options.rdlAssetLoader!({
-          assetVersion: String(material.updated_at),
-          imageObjectKey: String(material.image_asset_path),
-          imageUrl,
-          materialId,
-          profile,
-          selectionMapObjectKey: String(material.hitbox_data_path),
-          selectionMapUrl
-        })
-      : () => loadVerifiedRdlSelectionMap(
-          imageUrl,
-          selectionMapUrl,
-          String(material.image_asset_path)
-        ).catch((error) => {
-          console.error("RDL runtime selection binding verification failed", { error, materialId });
-          return null;
-        });
-    const verifiedSelection = profile
-      ? await profile.measure("practice RDL asset fetch / verify", ["practice_asset_metadata"], fetchAssets)
-      : await fetchAssets();
+    const fetchAssets = options.skipRdlAssetVerification
+      ? null
+      : options.rdlAssetLoader
+        ? () => options.rdlAssetLoader!({
+            assetVersion: String(material.updated_at),
+            imageObjectKey: String(material.image_asset_path),
+            imageUrl,
+            materialId,
+            profile,
+            selectionMapObjectKey: String(material.hitbox_data_path),
+            selectionMapUrl
+          })
+        : () => loadVerifiedRdlSelectionMap(
+            imageUrl,
+            selectionMapUrl,
+            String(material.image_asset_path)
+          ).catch((error) => {
+            console.error("RDL runtime selection binding verification failed", { error, materialId });
+            return null;
+          });
+    const verifiedSelection = fetchAssets
+      ? profile
+        ? await profile.measure("practice RDL asset fetch / verify", ["practice_asset_metadata"], fetchAssets)
+        : await fetchAssets()
+      : null;
     const materialType = isRdlMaterialType(material.material_type) ? material.material_type : null;
     if (!materialType && process.env.NODE_ENV !== "production") {
       console.error("RDL material type is missing or invalid", { materialId });

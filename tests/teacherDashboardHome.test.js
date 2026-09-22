@@ -112,16 +112,32 @@ test("assignment reminders only read assignment, recipient, and completion field
 
 test("Reading question bank uses the canonical inventory and never student attempts or statistics", () => {
   const route = read("app/api/teacher/question-bank/reading/route.ts");
+  const answerKey = read("lib/teacherReadingAnswerKey.server.ts");
   assert.match(route, /from\("reading_logical_items"\)/);
-  assert.match(route, /from\("reading_questions"\)/);
+  assert.match(route, /loadStudentReadingPractice/);
+  assert.match(route, /skipRdlAssetVerification: true/);
+  assert.match(route, /buildTeacherReadingAnswerKey/);
   assert.match(route, /readingCatalogDisplayNumbers/);
   assert.match(route, /readAllSupabaseRows/);
   assert.match(route, /order\("first_seen_date"/);
   assert.match(route, /order\("logical_item_id"/);
-  assert.doesNotMatch(route, /reading_attempts|reading_full_set|teacher\/reading\/statistics|is_correct|student_answer/);
+  assert.doesNotMatch(
+    route + answerKey,
+    /reading_attempts|reading_full_set|teacher\/reading\/statistics|student_answer|attempt_answer_id/
+  );
+  assert.match(answerKey, /from\("reading_questions"\)/);
+  assert.match(answerKey, /from\("reading_ctw_slots"\)/);
+  assert.match(answerKey, /buildReadingAnswerKeyPresentations/);
 
   const ui = read("components/teacher/TeacherReadingQuestionBank.tsx");
   assert.match(ui, /PracticeSetCatalogList/);
+  assert.match(ui, /ReadingCatalogPagination/);
+  assert.match(ui, /STUDENT_PRACTICE_ICONS\[item\.module\]/);
+  assert.match(ui, /formatOccurrenceDates/);
+  assert.match(ui, /ReadingReadonlyReviewShell/);
+  assert.match(ui, /answerKeyOnly/);
+  assert.match(ui, /buildTeacherReadingAnswerKeyView/);
+  assert.doesNotMatch(ui, /ReadingCatalogStatusBadge|ReadingRetakeButton|开始练习|继续练习|查看结果/);
   assert.match(ui, /reading:.*\$\{module\}/);
 
   const tabs = read("components/TeacherQuestionBank.tsx");
@@ -129,6 +145,7 @@ test("Reading question bank uses the canonical inventory and never student attem
     assert.match(tabs, new RegExp(`READING_PRODUCT_NAMES\\.${module}`), `${module} tab must render`);
   }
   assert.match(tabs, /TeacherReadingQuestionBankCatalog/);
+  assert.match(tabs, /STUDENT_PRACTICE_ICONS\[item\.task_type\]/);
 });
 
 test("teacher home and inactive page fetch only the lightweight dashboard endpoints", () => {

@@ -81,6 +81,106 @@ type ReadingCorrectionAnswerData = {
   sentences?: ReadingCorrectionSentenceRow[];
 };
 
+export type ReadingAnswerKeyPresentationInput = {
+  questions: ReadingCorrectionQuestionRow[];
+  options?: ReadingCorrectionOptionRow[];
+  ctwSlots?: ReadingCorrectionCtwSlotRow[];
+  anchors?: ReadingCorrectionAnchorRow[];
+  sentences?: ReadingCorrectionSentenceRow[];
+};
+
+/**
+ * Canonical correct-answer presentations for a read-only question bank. No
+ * student answer exists, so only the correct answer and its review state are
+ * filled. Keys are `question_id` for single-answer questions and
+ * `question_id:slot_id` for CTW slots.
+ */
+export function buildReadingAnswerKeyPresentations(
+  input: ReadingAnswerKeyPresentationInput
+): Record<string, ReadingCorrectionAnswerPresentation> {
+  const optionsByQuestion = groupBy(input.options ?? [], (option) => option.question_id);
+  const anchorsByQuestion = groupBy(input.anchors ?? [], (anchor) => anchor.question_id);
+  const sentenceById = new Map(
+    (input.sentences ?? []).map((sentence) => [sentence.sentence_id, sentence])
+  );
+  const presentations: Record<string, ReadingCorrectionAnswerPresentation> = {};
+
+  for (const question of input.questions) {
+    if (question.question_type === "ctw") {
+      for (const slot of input.ctwSlots ?? []) {
+        if (slot.question_id !== question.question_id) continue;
+        presentations[`${slot.question_id}:${slot.slot_id}`] = {
+          correctAnswer: { kind: "ctw_word", parts: buildCtwCorrectAnswerParts(slot) },
+          reviewState: undefined,
+          studentAnswer: ""
+        };
+      }
+      continue;
+    }
+    if (question.question_type === "rdl" || question.question_type === "rap_multiple_choice") {
+      if (!question.correct_option_id) throw new Error("READING_ANSWER_KEY_OPTION_MISSING");
+      presentations[question.question_id] = {
+        correctAnswer: {
+          kind: "text",
+          text: formatChoiceAnswer(
+            optionsByQuestion.get(question.question_id) ?? [],
+            question.correct_option_id
+          )
+        },
+        reviewState: {
+          correctAnswerId: question.correct_option_id,
+          kind: "choice",
+          studentAnswerId: null
+        },
+        studentAnswer: ""
+      };
+      continue;
+    }
+    if (question.question_type === "rap_sentence_insertion") {
+      if (!question.correct_anchor_id) throw new Error("READING_ANSWER_KEY_ANCHOR_MISSING");
+      presentations[question.question_id] = {
+        correctAnswer: {
+          kind: "text",
+          text: formatInsertionAnswer(
+            anchorsByQuestion.get(question.question_id) ?? [],
+            question.correct_anchor_id
+          )
+        },
+        reviewState: {
+          correctAnswerId: question.correct_anchor_id,
+          kind: "insertion",
+          studentAnswerId: null
+        },
+        studentAnswer: ""
+      };
+      continue;
+    }
+    if (question.question_type === "rap_sentence_selection") {
+      if (!question.correct_sentence_id) throw new Error("READING_ANSWER_KEY_SENTENCE_MISSING");
+      presentations[question.question_id] = {
+        correctAnswer: {
+          kind: "text",
+          text: formatSentenceAnswer(
+            sentenceById,
+            question.correct_sentence_id,
+            "READING_ANSWER_KEY_CORRECT_SENTENCE_MISSING"
+          )
+        },
+        reviewState: {
+          correctAnswerId: question.correct_sentence_id,
+          kind: "sentence_selection",
+          studentAnswerId: null
+        },
+        studentAnswer: ""
+      };
+      continue;
+    }
+    throw new Error("READING_ANSWER_KEY_QUESTION_TYPE_INVALID");
+  }
+
+  return presentations;
+}
+
 export function buildReadingCorrectionAnswerPresentations(
   input: ReadingCorrectionAnswerData
 ): Record<string, ReadingCorrectionAnswerPresentation> {

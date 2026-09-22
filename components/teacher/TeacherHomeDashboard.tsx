@@ -49,35 +49,38 @@ export function TeacherOverview() {
     <div className="grid gap-4">
       {loading ? <TeacherLoadingRegion label="正在加载教师首页数据" /> : null}
 
-      <TeacherCard className="flex flex-wrap items-center gap-x-10 gap-y-4 px-5 py-4 sm:px-6">
-        <OverviewMetric
-          icon={Users}
-          label="总学生数"
-          value={
-            loading
-              ? <TeacherSkeleton className="h-8 w-12" />
-              : error
-                ? "—"
-                : String(dashboard?.studentCount ?? 0)
-          }
-        />
-        <span aria-hidden="true" className="hidden h-12 w-px bg-student-border sm:block" />
-        <OverviewMetric
-          icon={ClipboardPenLine}
-          label="待批改"
-          tone={!loading && !error && (dashboard?.pendingReviewCount ?? 0) > 0 ? "warning" : "default"}
-          value={
-            loading
-              ? <TeacherSkeleton className="h-8 w-12" />
-              : error
-                ? "—"
-                : String(dashboard?.pendingReviewCount ?? 0)
-          }
-        />
+      <TeacherCard className="grid grid-cols-2 p-0">
+        <div className="flex items-center justify-center px-4 py-3.5 sm:px-6">
+          <OverviewMetric
+            icon={Users}
+            label="总学生数"
+            value={
+              loading
+                ? <TeacherSkeleton className="h-8 w-12" />
+                : error
+                  ? "—"
+                  : String(dashboard?.studentCount ?? 0)
+            }
+          />
+        </div>
+        <div className="flex items-center justify-center border-l border-student-border px-4 py-3.5 sm:px-6">
+          <OverviewMetric
+            icon={ClipboardPenLine}
+            label="待批改"
+            tone={!loading && !error && (dashboard?.pendingReviewCount ?? 0) > 0 ? "warning" : "default"}
+            value={
+              loading
+                ? <TeacherSkeleton className="h-8 w-12" />
+                : error
+                  ? "—"
+                  : String(dashboard?.pendingReviewCount ?? 0)
+            }
+          />
+        </div>
       </TeacherCard>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-        <TeacherCard className="p-5 sm:p-6">
+      <div className="grid gap-4 xl:grid-cols-2">
+        <TeacherCard className="flex flex-col p-5 sm:p-6">
           <TeacherSectionTitle>需要关注</TeacherSectionTitle>
           {error ? (
             <div className="mt-4"><TeacherDataError text={toTeacherErrorMessage(error)} /></div>
@@ -85,10 +88,10 @@ export function TeacherOverview() {
             <AttentionSkeleton />
           ) : (
             <>
-              <section className="mt-4">
+              <section className="mt-3">
                 <h3 className="text-sm font-semibold text-student-text">作业提醒</h3>
                 {dashboard && dashboard.assignmentReminders.length > 0 ? (
-                  <ul className="mt-2 divide-y divide-student-border">
+                  <ul className="mt-1.5 divide-y divide-student-border">
                     {dashboard.assignmentReminders.map((reminder) => (
                       <ReminderRow
                         key={`${reminder.assignmentId}:${reminder.studentId}`}
@@ -101,7 +104,7 @@ export function TeacherOverview() {
                 )}
               </section>
 
-              <section className="mt-5 border-t border-student-border pt-4">
+              <section className="mt-5 flex-1 border-t border-student-border pt-4">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-sm font-semibold text-student-text">近 3 天未活跃学生</h3>
                   <Link
@@ -124,15 +127,15 @@ export function TeacherOverview() {
           ) : loading ? (
             <RecentActivitySkeleton />
           ) : dashboard && dashboard.recentActivity.length > 0 ? (
-            <div className="mt-3 divide-y divide-student-border">
+            <div className="mt-2 divide-y divide-student-border">
               {dashboard.recentActivity.map((activity) => (
                 <div
-                  className="flex items-center justify-between gap-4 py-3 first:pt-1 last:pb-0"
+                  className="flex items-center justify-between gap-4 py-2.5 first:pt-1.5 last:pb-0"
                   key={activity.activityId}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
-                      <GraduationCap aria-hidden="true" size={19} strokeWidth={1.9} />
+                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
+                      <GraduationCap aria-hidden="true" size={17} strokeWidth={1.9} />
                     </span>
                     <p className="truncate text-sm text-student-text">
                       <span className="font-semibold">{activity.studentName}</span>
@@ -282,14 +285,16 @@ function InactiveStudentNames({ students }: { students: TeacherDashboardInactive
     return <p className="mt-2 text-sm text-student-muted">近 3 天所有学生都有练习活动。</p>;
   }
   return (
-    <p className="mt-2 text-sm leading-7 text-student-text">
-      {students.map((student, index) => (
-        <span key={student.studentId}>
-          {index > 0 ? <span aria-hidden="true" className="mx-1.5 text-student-muted">·</span> : null}
-          <span className="font-medium">{student.studentName}</span>
-        </span>
+    <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+      {students.map((student) => (
+        <li
+          className="truncate rounded-lg border border-student-border bg-student-bg px-3 py-1.5 text-sm font-medium text-student-text"
+          key={student.studentId}
+        >
+          {student.studentName}
+        </li>
       ))}
-    </p>
+    </ul>
   );
 }
 

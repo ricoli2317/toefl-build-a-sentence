@@ -15,7 +15,7 @@ export default function TeacherQuestionBankPage({
 
   return (
     <TeacherAppShell
-      subtitle="浏览 Build a Sentence、Write an Email、Academic Discussion 以及 Reading 公共题库"
+      subtitle="浏览阅读/写作题库"
       title="教师题库"
     >
       <TeacherQuestionBankCatalog page={page} taskType={taskType} />

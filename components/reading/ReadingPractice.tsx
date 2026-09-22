@@ -613,13 +613,6 @@ export function ReadingPracticeShell({
       currentIndex: Math.max(0, Math.min(created.workspaceCount - 1, initialQuestionIndex))
     };
   });
-  const [reviewIndex, setReviewIndex] = useState(() =>
-    Math.max(0, Math.min(reviewItems.length - 1, initialReviewIndex))
-  );
-  const reviewNavigationTargets = useMemo(
-    () => readingQuestionNavigationTargets(reviewItems.map((item) => item.questionId), reviewIndex),
-    [reviewIndex, reviewItems]
-  );
   const questionTimesRef = useRef<Record<string, number>>({});
   const activeQuestionIdRef = useRef(practice.questions[navigation.currentIndex]?.questionId ?? "");
   const questionStartedAtRef = useRef(Date.now());
@@ -642,19 +635,10 @@ export function ReadingPracticeShell({
     router.replace(`/student/reading/results/${encodeURIComponent(attempt.attemptId)}`);
   }, [attempt.attemptId, attempt.status, readOnly, router]);
 
-  const currentReviewItem = reviewItems[reviewIndex] ?? null;
-  const reviewQuestionIndex = currentReviewItem
-    ? practice.questions.findIndex((question) => question.questionId === currentReviewItem.questionId)
-    : -1;
-  const effectiveQuestionIndex = readOnly && reviewQuestionIndex >= 0
-    ? reviewQuestionIndex
-    : navigation.currentIndex;
-  const currentQuestion = practice.questions[effectiveQuestionIndex] ?? practice.questions[0];
-  const progressLabel = readOnly && currentReviewItem
-    ? `Question ${currentReviewItem.order} / ${reviewItems.length}`
-    : practice.item.module === "ctw"
-      ? `Questions 1–${navigation.scoringPointCount} / ${navigation.scoringPointCount}`
-      : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
+  const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
+  const progressLabel = practice.item.module === "ctw"
+    ? `Questions 1–${navigation.scoringPointCount} / ${navigation.scoringPointCount}`
+    : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
   const captureCurrentQuestionTime = useCallback(() => {
     const questionId = activeQuestionIdRef.current;
     const elapsed = Math.max(0, Math.round((Date.now() - questionStartedAtRef.current) / 1000));
@@ -667,23 +651,8 @@ export function ReadingPracticeShell({
     questionStartedAtRef.current = Date.now();
     return questionTimesRef.current;
   }, []);
-  const selectReviewItem = (index: number) => {
-    const target = reviewItems[index];
-    if (target?.href) {
-      router.push(target.href);
-      return;
-    }
-    setReviewIndex(index);
-  };
   const move = (direction: -1 | 1) => {
-    if (readOnly && reviewItems.length) {
-      const targetIndex = direction === -1
-        ? reviewNavigationTargets.previousIndex
-        : reviewNavigationTargets.nextIndex;
-      if (targetIndex !== null) selectReviewItem(targetIndex);
-      return;
-    }
-    if (!readOnly) captureCurrentQuestionTime();
+    captureCurrentQuestionTime();
     setNavigation((current) => {
       const next = moveReadingNavigation(current, direction);
       activeQuestionIdRef.current = practice.questions[next.currentIndex]?.questionId ?? "";
@@ -754,7 +723,22 @@ export function ReadingPracticeShell({
     }
   }, [answers, attempt, captureCurrentQuestionTime, elapsedSeconds, invalidate, practice, readOnly, router, submitting, wrongbook]);
 
-  if (!readOnly && attempt.status === "submitted") {
+  if (readOnly) {
+    return (
+      <ReadingReadonlyReviewShell
+        answers={answers}
+        initialReviewIndex={initialReviewIndex}
+        lookupEnabled={lookupEnabled}
+        onBack={onBack}
+        practice={practice}
+        reviewDisclosures={reviewDisclosures}
+        reviewItems={reviewItems}
+        title={reviewTitle ?? practice.item.title}
+      />
+    );
+  }
+
+  if (attempt.status === "submitted") {
     return <ReadingPracticeMessage description="正在打开已提交的练习结果..." title="正在打开练习结果" />;
   }
 
@@ -771,16 +755,9 @@ export function ReadingPracticeShell({
         className={`mx-auto ${readOnly ? "min-h-[calc(100dvh-var(--reading-header-height))]" : "h-[calc(100dvh-var(--reading-header-height))] min-h-0"}`}
         style={readingTwoColumnScaleStyle}
       >
-        {readOnly && currentReviewItem ? (
-          <ReadingReviewStatusBar
-            currentIndex={reviewIndex}
-            items={reviewItems}
-            onSelect={selectReviewItem}
-          />
-        ) : null}
         <ReadingQuestionViewport
-          canGoNext={readOnly ? reviewNavigationTargets.nextIndex !== null : navigation.currentIndex < navigation.workspaceCount - 1}
-          canGoPrevious={readOnly ? reviewNavigationTargets.previousIndex !== null : navigation.currentIndex > 0}
+          canGoNext={navigation.currentIndex < navigation.workspaceCount - 1}
+          canGoPrevious={navigation.currentIndex > 0}
           module={practice.item.module}
           onNext={() => move(1)}
           onPrevious={() => move(-1)}
@@ -797,12 +774,6 @@ export function ReadingPracticeShell({
             onAnswerChange={updateAnswer}
             practice={practice}
             readOnly={readOnly}
-            reviewPresentation={readOnly && currentReviewItem
-              ? reviewDisclosures[currentReviewItem.answerId]
-              : undefined}
-            reviewPresentations={readOnly ? reviewDisclosures : undefined}
-            reviewItems={reviewItems.filter((item) => item.questionId === currentQuestion.questionId)}
-            selectedReviewItem={currentReviewItem}
           />
         </ReadingQuestionViewport>
       </main>
@@ -921,6 +892,7 @@ export function ReadingPracticeHeader({
 }
 
 export function ReadingWorkspaceRouter({
+  answerKeyOnly = false,
   answers,
   currentQuestion,
   editableSlotIds,
@@ -936,6 +908,7 @@ export function ReadingWorkspaceRouter({
   reviewItems = [],
   selectedReviewItem = null
 }: {
+  answerKeyOnly?: boolean;
   answers: ReadingAnswerState;
   currentQuestion: StudentReadingPracticePayload["questions"][number];
   editableSlotIds?: ReadonlySet<string>;
@@ -955,6 +928,7 @@ export function ReadingWorkspaceRouter({
     return (
       <CtwPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
+        answerKeyOnly={answerKeyOnly}
         editableSlotIds={editableSlotIds}
         focusedSlotId={focusedCtwSlotId}
         lookupEnabled={lookupEnabled}
@@ -972,6 +946,7 @@ export function ReadingWorkspaceRouter({
     return (
       <RdlPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
+        answerKeyOnly={answerKeyOnly}
         lookupEnabled={lookupEnabled}
         naturalFlow={layoutMode === "natural"}
         material={practice.material}
@@ -988,6 +963,7 @@ export function ReadingWorkspaceRouter({
     return (
       <RapPracticeWorkspace
         answer={answers[currentQuestion.questionId]}
+        answerKeyOnly={answerKeyOnly}
         lookupEnabled={lookupEnabled}
         naturalFlow={layoutMode === "natural"}
         onAnswerChange={onAnswerChange}
@@ -1107,6 +1083,7 @@ function DomTextLookupRegion({ children, enabled }: { children: ReactNode; enabl
 
 function CtwPracticeWorkspace({
   answer,
+  answerKeyOnly,
   editableSlotIds,
   focusedSlotId,
   lookupEnabled,
@@ -1119,6 +1096,7 @@ function CtwPracticeWorkspace({
   selectedReviewItem
 }: {
   answer: ReadingAnswer | undefined;
+  answerKeyOnly: boolean;
   editableSlotIds?: ReadonlySet<string>;
   focusedSlotId?: string;
   lookupEnabled: boolean;
@@ -1322,6 +1300,7 @@ function CtwPracticeWorkspace({
       </div>
       {readOnly && reviewPresentations && reviewItems.length ? (
         <CtwReadonlyAnswerZone
+          answerKeyOnly={answerKeyOnly}
           question={question}
           reviewItems={reviewItems}
           reviewPresentations={reviewPresentations}
@@ -1415,10 +1394,12 @@ function CtwBlankWord({
 }
 
 function CtwReadonlyAnswerZone({
+  answerKeyOnly,
   question,
   reviewItems,
   reviewPresentations
 }: {
+  answerKeyOnly: boolean;
   question: StudentCtwQuestion;
   reviewItems: SubmittedReadingReviewItem[];
   reviewPresentations: Record<string, ReadingCorrectionAnswerPresentation>;
@@ -1444,19 +1425,21 @@ function CtwReadonlyAnswerZone({
         data-testid="ctw-readonly-answer-card"
         style={readingQuestionTextStyle}
       >
-        <div
-          className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
-          data-testid="ctw-readonly-student-answer-group"
-        >
-          <span className="whitespace-nowrap font-semibold text-student-text">你的回答</span>
-          <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]">
-            {entries.map(({ presentation, reviewItem, slot }) => (
-              <span className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={slot.slotId}>
-                <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
-              </span>
-            ))}
+        {answerKeyOnly ? null : (
+          <div
+            className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
+            data-testid="ctw-readonly-student-answer-group"
+          >
+            <span className="whitespace-nowrap font-semibold text-student-text">你的回答</span>
+            <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]">
+              {entries.map(({ presentation, reviewItem, slot }) => (
+                <span className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={slot.slotId}>
+                  <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div
           className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
           data-testid="ctw-readonly-correct-answer-group"
@@ -1648,9 +1631,11 @@ function ReadingQuestionColumn({
 }
 
 function ReadingReadonlyChoiceAnswerZone({
+  answerKeyOnly,
   presentation,
   reviewItem
 }: {
+  answerKeyOnly: boolean;
   presentation: ReadingCorrectionAnswerPresentation;
   reviewItem: SubmittedReadingReviewItem;
 }) {
@@ -1670,16 +1655,20 @@ function ReadingReadonlyChoiceAnswerZone({
         data-testid="reading-readonly-answer-block"
         style={{ ...readingQuestionTextStyle, columnGap: "24px", gridTemplateColumns: "max-content minmax(0, 1fr)", rowGap: "10px" }}
       >
-        <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
-        <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
-          !reviewItem.isAnswered
-            ? "unanswered"
-            : reviewItem.isCorrect
-              ? "correct"
-              : "incorrect"
-        }>
-          {presentation.studentAnswer}
-        </dd>
+        {answerKeyOnly ? null : (
+          <>
+            <dt className="whitespace-nowrap font-semibold text-student-text">你的回答</dt>
+            <dd className={`font-semibold ${studentTone}`} data-student-answer-state={
+              !reviewItem.isAnswered
+                ? "unanswered"
+                : reviewItem.isCorrect
+                  ? "correct"
+                  : "incorrect"
+            }>
+              {presentation.studentAnswer}
+            </dd>
+          </>
+        )}
         <dt className="whitespace-nowrap font-semibold text-student-text">正确答案</dt>
         <dd className="font-medium text-student-text">
           <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
@@ -1691,6 +1680,7 @@ function ReadingReadonlyChoiceAnswerZone({
 
 function RdlPracticeWorkspace({
   answer,
+  answerKeyOnly,
   lookupEnabled,
   naturalFlow,
   material,
@@ -1702,6 +1692,7 @@ function RdlPracticeWorkspace({
   reviewPresentation
 }: {
   answer: ReadingAnswer | undefined;
+  answerKeyOnly: boolean;
   lookupEnabled: boolean;
   naturalFlow: boolean;
   material: NonNullable<StudentReadingPracticePayload["material"]>;
@@ -1766,9 +1757,10 @@ function RdlPracticeWorkspace({
       }
       setSelectionMap(parsedMap);
     } catch (selectionError) {
-      console.error("RDL selection map load failed", selectionError);
+      // Read-only answer-key browsing has no selection and needs no binding.
+      if (lookupEnabled) console.error("RDL selection map load failed", selectionError);
     }
-  }, [material.imageSha256, material.imageUrl, material.selectionMap, material.selectionMapUrl]);
+  }, [lookupEnabled, material.imageSha256, material.imageUrl, material.selectionMap, material.selectionMapUrl]);
 
   useEffect(() => {
     setSelectionRange(null);
@@ -2037,7 +2029,7 @@ function RdlPracticeWorkspace({
       right={(
       <ReadingQuestionColumn
         answerZone={readOnly && reviewPresentation && reviewItem
-          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} reviewItem={reviewItem} />
+          ? <ReadingReadonlyChoiceAnswerZone answerKeyOnly={answerKeyOnly} presentation={reviewPresentation} reviewItem={reviewItem} />
           : undefined}
         labelledBy="rdl-question-stem"
         naturalFlow={naturalFlow}
@@ -2081,6 +2073,7 @@ function assetFileName(assetUrl: string) {
 
 function RapPracticeWorkspace({
   answer,
+  answerKeyOnly,
   lookupEnabled,
   naturalFlow,
   onAnswerChange,
@@ -2092,6 +2085,7 @@ function RapPracticeWorkspace({
   reviewPresentation
 }: {
   answer: ReadingAnswer | undefined;
+  answerKeyOnly: boolean;
   lookupEnabled: boolean;
   naturalFlow: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
@@ -2331,7 +2325,7 @@ function RapPracticeWorkspace({
       right={(
       <ReadingQuestionColumn
         answerZone={readOnly && reviewPresentation && reviewItem
-          ? <ReadingReadonlyChoiceAnswerZone presentation={reviewPresentation} reviewItem={reviewItem} />
+          ? <ReadingReadonlyChoiceAnswerZone answerKeyOnly={answerKeyOnly} presentation={reviewPresentation} reviewItem={reviewItem} />
           : undefined}
         labelledBy="rap-question-stem"
         naturalFlow={naturalFlow}
@@ -2622,10 +2616,12 @@ function ReadingNavigationButton({
 
 export function ReadingPracticeMessage({
   description,
+  leaveLabel = "返回学生首页",
   onLeave,
   title
 }: {
   description: string;
+  leaveLabel?: string;
   onLeave?: () => void;
   title: string;
 }) {
@@ -2634,8 +2630,117 @@ export function ReadingPracticeMessage({
       <section className="w-full max-w-md rounded-2xl border border-student-border bg-white p-8 text-center shadow-sm">
         <h1 className="text-xl font-bold text-student-text">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-student-muted">{description}</p>
-        {onLeave ? <button className="student-button-primary mt-6" onClick={onLeave} type="button">返回学生首页</button> : null}
+        {onLeave ? <button className="student-button-primary mt-6" onClick={onLeave} type="button">{leaveLabel}</button> : null}
       </section>
     </main>
+  );
+}
+
+/**
+ * Canonical read-only question workspace shared by the student submitted
+ * review and the teacher question bank answer-key view. It reuses the same
+ * header, viewport, question renderer, and correction displays, without any
+ * attempt, timer, submission, or answer mutation. The answer-key context only
+ * hides the student-answer rows.
+ */
+export function ReadingReadonlyReviewShell({
+  answerKeyOnly = false,
+  answers = {},
+  initialReviewIndex = 0,
+  lookupEnabled,
+  onBack,
+  practice,
+  reviewDisclosures = {},
+  reviewItems,
+  title
+}: {
+  answerKeyOnly?: boolean;
+  answers?: ReadingAnswerState;
+  initialReviewIndex?: number;
+  lookupEnabled: boolean;
+  onBack: () => void;
+  practice: StudentReadingPracticePayload;
+  reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
+  reviewItems: SubmittedReadingReviewItem[];
+  title?: string;
+}) {
+  const router = useRouter();
+  const [reviewIndex, setReviewIndex] = useState(() =>
+    Math.max(0, Math.min(reviewItems.length - 1, initialReviewIndex))
+  );
+  const reviewNavigationTargets = useMemo(
+    () => readingQuestionNavigationTargets(reviewItems.map((item) => item.questionId), reviewIndex),
+    [reviewIndex, reviewItems]
+  );
+  const currentReviewItem = reviewItems[reviewIndex] ?? null;
+  const reviewQuestionIndex = currentReviewItem
+    ? practice.questions.findIndex((question) => question.questionId === currentReviewItem.questionId)
+    : -1;
+  const currentQuestion = practice.questions[reviewQuestionIndex >= 0 ? reviewQuestionIndex : 0]
+    ?? practice.questions[0];
+  const progressLabel = currentReviewItem
+    ? `Question ${currentReviewItem.order} / ${reviewItems.length}`
+    : undefined;
+  const selectReviewItem = (index: number) => {
+    const target = reviewItems[index];
+    if (target?.href) {
+      router.push(target.href);
+      return;
+    }
+    setReviewIndex(index);
+  };
+  const move = (direction: -1 | 1) => {
+    const targetIndex = direction === -1
+      ? reviewNavigationTargets.previousIndex
+      : reviewNavigationTargets.nextIndex;
+    if (targetIndex !== null) selectReviewItem(targetIndex);
+  };
+
+  return (
+    <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
+      <ReadingPracticeHeader
+        elapsedSeconds={0}
+        onBack={onBack}
+        progressLabel={progressLabel}
+        showElapsed={false}
+        title={title ?? practice.item.title}
+      />
+      <main
+        className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]"
+        style={readingTwoColumnScaleStyle}
+      >
+        {!answerKeyOnly && currentReviewItem ? (
+          <ReadingReviewStatusBar
+            currentIndex={reviewIndex}
+            items={reviewItems}
+            onSelect={selectReviewItem}
+          />
+        ) : null}
+        <ReadingQuestionViewport
+          canGoNext={reviewNavigationTargets.nextIndex !== null}
+          canGoPrevious={reviewNavigationTargets.previousIndex !== null}
+          module={practice.item.module}
+          onNext={() => move(1)}
+          onPrevious={() => move(-1)}
+          readOnly
+        >
+          <ReadingWorkspaceRouter
+            answerKeyOnly={answerKeyOnly}
+            answers={answers}
+            currentQuestion={currentQuestion}
+            lookupEnabled={lookupEnabled}
+            onAnswerChange={() => undefined}
+            practice={practice}
+            readOnly
+            reviewPresentation={currentReviewItem
+              ? reviewDisclosures[currentReviewItem.answerId]
+              : undefined}
+            reviewPresentations={reviewDisclosures}
+            reviewItems={reviewItems.filter((item) => item.questionId === currentQuestion.questionId)}
+            selectedReviewItem={currentReviewItem}
+          />
+        </ReadingQuestionViewport>
+      </main>
+    </div>
   );
 }

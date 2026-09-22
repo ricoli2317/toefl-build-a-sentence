@@ -7,10 +7,9 @@ import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
-  buildTeacherStudentOverview,
+  buildTeacherStudentOverviewFromSummaries,
   type TeacherStudentOverviewCandidate,
-  type TeacherStudentPracticeRow,
-  type TeacherStudentPracticeSource
+  type TeacherStudentPracticeSummaryRow
 } from "@/lib/teacherStudentOverview";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
@@ -26,31 +25,10 @@ type ProfileRow = {
   full_name: string | null;
 };
 
-type ReadingPracticeRow = {
-  attempt_id: string;
+type SummaryRow = {
   student_id: string;
-  elapsed_seconds: number | null;
-  submitted_at: string | null;
-};
-
-type BasPracticeRow = {
-  attempt_id: string;
-  student_id: string;
-  time_spent_seconds: number | null;
-  submitted_at: string | null;
-};
-
-type WritingPracticeRow = {
-  attempt_id: string;
-  user_id: string;
-  elapsed_seconds: number | null;
-  submitted_at: string | null;
-};
-
-type ReadingFullSetRow = {
-  attempt_id: string;
-  student_id: string;
-  completed_at: string | null;
+  total_practice_seconds: number | null;
+  latest_practice_at: string | null;
 };
 
 function json(data: unknown, init?: ResponseInit) {
@@ -68,9 +46,8 @@ function batchesOf(values: string[]) {
 }
 
 /**
- * Reads only ids, stored durations, and canonical completion timestamps in
- * batches of visible students. One query per table per batch; never one query
- * per student and never answers, prompts, responses, or review payloads.
+ * Reads a per-student table in batches of visible students. One query per
+ * batch; never one query per student and never any practice history table.
  */
 async function readRowsForStudents<Row>(
   studentIds: string[],
@@ -89,15 +66,12 @@ async function readRowsForStudents<Row>(
   return rows;
 }
 
-function practiceRow(
-  studentId: string,
-  source: TeacherStudentPracticeSource,
-  durationSeconds: number | null,
-  completedAt: string | null
-): TeacherStudentPracticeRow {
-  return { studentId, source, durationSeconds, completedAt };
-}
-
+/**
+ * Teacher student list. The summary table is maintained incrementally by
+ * database triggers on practice completion, so this endpoint never reads
+ * reading_attempts, reading_wrongbook_attempts, attempts, writing_attempts, or
+ * reading_full_set_attempts.
+ */
 export async function GET(request: Request) {
   const auth = await requireTeacherOnly(bearerToken(request));
   if (auth.error || !auth.userId || !auth.role) {
@@ -112,15 +86,8 @@ export async function GET(request: Request) {
       return json({ students: [] });
     }
 
-    const { studentDomains } = await listTeacherStudentDomainBindings(db, actor);
-    const [
-      profiles,
-      readingAttempts,
-      readingWrongbookAttempts,
-      basAttempts,
-      writingAttempts,
-      readingFullSetAttempts
-    ] = await Promise.all([
+    const [domainBindings, profiles, summaries] = await Promise.all([
+      listTeacherStudentDomainBindings(db, actor),
       readRowsForStudents<ProfileRow>(visibleStudentIds, (batch, from, to) =>
         db
           .from("profiles")
@@ -129,79 +96,16 @@ export async function GET(request: Request) {
           .order("id", { ascending: true })
           .range(from, to)
       ),
-      readRowsForStudents<ReadingPracticeRow>(visibleStudentIds, (batch, from, to) =>
+      readRowsForStudents<SummaryRow>(visibleStudentIds, (batch, from, to) =>
         db
-          .from("reading_attempts")
-          .select("attempt_id,student_id,elapsed_seconds,submitted_at")
-          .eq("status", "submitted")
-          .not("submitted_at", "is", null)
+          .from("student_practice_summary")
+          .select("student_id,total_practice_seconds,latest_practice_at")
           .in("student_id", batch)
           .order("student_id", { ascending: true })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      ),
-      readRowsForStudents<ReadingPracticeRow>(visibleStudentIds, (batch, from, to) =>
-        db
-          .from("reading_wrongbook_attempts")
-          .select("attempt_id,student_id,elapsed_seconds,submitted_at")
-          .eq("status", "submitted")
-          .not("submitted_at", "is", null)
-          .in("student_id", batch)
-          .order("student_id", { ascending: true })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      ),
-      readRowsForStudents<BasPracticeRow>(visibleStudentIds, (batch, from, to) =>
-        db
-          .from("attempts")
-          .select("attempt_id,student_id,time_spent_seconds,submitted_at")
-          .not("submitted_at", "is", null)
-          .in("student_id", batch)
-          .order("student_id", { ascending: true })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      ),
-      readRowsForStudents<WritingPracticeRow>(visibleStudentIds, (batch, from, to) =>
-        db
-          .from("writing_attempts")
-          .select("attempt_id,user_id,elapsed_seconds,submitted_at")
-          .eq("status", "submitted")
-          .not("submitted_at", "is", null)
-          .in("user_id", batch)
-          .order("user_id", { ascending: true })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      ),
-      readRowsForStudents<ReadingFullSetRow>(visibleStudentIds, (batch, from, to) =>
-        db
-          .from("reading_full_set_attempts")
-          .select("attempt_id,student_id,completed_at")
-          .eq("status", "completed")
-          .not("completed_at", "is", null)
-          .in("student_id", batch)
-          .order("student_id", { ascending: true })
-          .order("attempt_id", { ascending: true })
           .range(from, to)
       )
     ]);
-
-    const practiceRows: TeacherStudentPracticeRow[] = [
-      ...readingAttempts.map((row) =>
-        practiceRow(String(row.student_id), "reading", row.elapsed_seconds, row.submitted_at)
-      ),
-      ...readingWrongbookAttempts.map((row) =>
-        practiceRow(String(row.student_id), "reading-wrongbook", row.elapsed_seconds, row.submitted_at)
-      ),
-      ...basAttempts.map((row) =>
-        practiceRow(String(row.student_id), "build-sentence", row.time_spent_seconds, row.submitted_at)
-      ),
-      ...writingAttempts.map((row) =>
-        practiceRow(String(row.user_id), "writing", row.elapsed_seconds, row.submitted_at)
-      ),
-      ...readingFullSetAttempts.map((row) =>
-        practiceRow(String(row.student_id), "reading-full-set", null, row.completed_at)
-      )
-    ];
+    const { studentDomains } = domainBindings;
 
     const profileById = new Map(profiles.map((profile) => [String(profile.id), profile]));
     const students: TeacherStudentOverviewCandidate[] = visibleStudentIds.map((studentId) => {
@@ -216,8 +120,13 @@ export async function GET(request: Request) {
         domains: studentDomains.get(studentId) ?? []
       };
     });
+    const summaryRows: TeacherStudentPracticeSummaryRow[] = summaries.map((row) => ({
+      studentId: String(row.student_id),
+      totalPracticeSeconds: row.total_practice_seconds,
+      latestPracticeAt: row.latest_practice_at
+    }));
 
-    return json({ students: buildTeacherStudentOverview({ practiceRows, students }) });
+    return json({ students: buildTeacherStudentOverviewFromSummaries({ students, summaries: summaryRows }) });
   } catch (error) {
     console.error("Teacher student overview load failed", {
       message: error instanceof Error ? error.message : String(error)
