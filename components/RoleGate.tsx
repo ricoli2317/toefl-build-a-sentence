@@ -6,7 +6,7 @@ import Link from "next/link";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import type { AppArea, UserRole } from "@/lib/types";
 
-type AccountContextValue = { role: UserRole; userId: string };
+type AccountContextValue = { displayName: string; role: UserRole; userId: string };
 const AccountContext = createContext<AccountContextValue | null>(null);
 
 export function RoleGate({ area, children }: { area: AppArea; children: React.ReactNode }) {
@@ -29,6 +29,7 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
       });
       const payload = await response.json().catch(() => ({})) as {
         defaultRoute?: string;
+        displayName?: string;
         role?: UserRole;
         userId?: string;
       };
@@ -43,7 +44,8 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
         router.replace(payload.defaultRoute ?? "/login");
         return;
       }
-      setAccount({ role: payload.role, userId: payload.userId });
+      const displayName = payload.displayName?.trim() || payload.userId;
+      setAccount({ displayName, role: payload.role, userId: payload.userId });
     }
     void verify();
     return () => { cancelled = true; };

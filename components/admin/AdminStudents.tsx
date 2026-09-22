@@ -7,6 +7,8 @@ import { useCurrentAccount } from "@/components/RoleGate";
 import { TeacherCard, TeacherEmptyState, TeacherSectionTitle } from "@/components/teacher/TeacherUI";
 import { AccountTabs } from "@/components/teacher/TeacherAccounts";
 import { TeacherStudentOverviewList } from "@/components/teacher/TeacherStudentOverview";
+import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 type StudentAccount = {
@@ -53,6 +55,24 @@ export function AdminStudentsList() {
   }, []);
   useEffect(() => { void load(); }, [load]);
 
+  async function renameStudent(studentId: string, fullName: string) {
+    const res = await authorizedFetch(`/api/admin/students/${encodeURIComponent(studentId)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ fullName })
+    });
+    const payload = await res.json().catch(() => ({})) as {
+      error?: string;
+      message?: string;
+      student?: { displayName?: string };
+    };
+    if (!res.ok) {
+      throw new Error(payload.message ?? payload.error ?? "学生姓名更新失败，请稍后重试。");
+    }
+    await load();
+    publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED" });
+    return payload.student?.displayName ?? fullName;
+  }
+
   return (
     <TeacherCard className="overflow-hidden p-0">
       <div className="px-6 pt-6">
@@ -79,10 +99,13 @@ export function AdminStudentsList() {
               {students.map((student) => (
                 <tr className="border-b border-student-border last:border-0" key={student.id}>
                   <td className="px-3 py-4">
-                    <span className="flex items-center gap-3 font-semibold text-student-text">
+                    <div className="flex items-center gap-3">
                       <UserRound size={20} className="text-student-muted" />
-                      {formatManagedAccountName(student.displayName, student.email)}
-                    </span>
+                      <InlineStudentNameEditor
+                        displayName={formatManagedAccountName(student.displayName, student.email)}
+                        onSave={(fullName) => renameStudent(student.id, fullName)}
+                      />
+                    </div>
                   </td>
                   <td className="px-3 py-4 text-student-muted">账号：{formatAccountForDisplay(student.email)}</td>
                   <td className="px-3 py-4 font-semibold">

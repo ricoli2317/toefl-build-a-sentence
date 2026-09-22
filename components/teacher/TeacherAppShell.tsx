@@ -19,10 +19,7 @@ import {
 import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
-import { useTeacherCachedData } from "@/components/TeacherDataCache";
-import { createBrowserSupabase } from "@/lib/supabase/client";
 import { AdminAreaSwitch, useCurrentAccount } from "@/components/RoleGate";
-import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 
 export type TeacherCrumb = { href?: string; label: string };
 
@@ -110,16 +107,12 @@ export function TeacherAppShell({
   workspace?: boolean;
 }) {
   const pathname = usePathname();
-  const { role } = useCurrentAccount();
+  const { displayName, role } = useCurrentAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerOverlayOpen, setHeaderOverlayOpen] = useState(false);
   const [sidebarOverlayOpen, setSidebarOverlayOpen] = useState(false);
   const headerCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sidebarCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { data: teacherEmail } = useTeacherCachedData<string>(
-    "teacher:current-user-email",
-    loadTeacherEmail
-  );
 
   useEffect(
     () => () => {
@@ -186,12 +179,12 @@ export function TeacherAppShell({
           </div>
           <div className="flex items-center gap-3">
             <AdminAreaSwitch current="teacher" />
-            {teacherEmail ? (
-              <span className="hidden text-sm font-medium text-student-text md:inline">
-                {formatAccountForDisplay(teacherEmail)}
+            {displayName ? (
+              <span className="hidden max-w-[180px] truncate text-sm font-medium text-student-text md:inline">
+                {displayName}
               </span>
             ) : null}
-            <SignOutButton locale="zh-CN" showIdentity={false} variant="student" />
+            <SignOutButton locale="zh-CN" variant="student" />
             {role === "admin" ? (
               <Link className="teacher-button-primary" href="/teacher/import">
                 <CloudUpload aria-hidden="true" size={17} strokeWidth={2} />
@@ -305,12 +298,4 @@ export function TeacherBreadcrumbs({ crumbs }: { crumbs: TeacherCrumb[] }) {
       </ol>
     </nav>
   );
-}
-
-async function loadTeacherEmail() {
-  const supabase = createBrowserSupabase();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  return user?.email ?? "";
 }

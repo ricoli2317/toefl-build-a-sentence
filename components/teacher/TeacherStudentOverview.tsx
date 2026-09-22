@@ -5,7 +5,8 @@ import { useRef, useState } from "react";
 import { Search, UserRound } from "lucide-react";
 import {
   TEACHER_STUDENT_OVERVIEW_CACHE_KEY,
-  useTeacherCachedData
+  useTeacherCachedData,
+  useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import {
   TeacherCard,
@@ -16,6 +17,8 @@ import {
   TeacherSkeleton,
   TeacherTextLink
 } from "@/components/teacher/TeacherUI";
+import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
   compareStudentSearchGroups,
@@ -51,6 +54,7 @@ const DOMAIN_LABELS: Record<StudentBindingDomain, string> = {
 export function TeacherStudentOverviewList() {
   const [query, setQuery] = useState("");
   const sectionRefs = useRef(new Map<string, HTMLTableRowElement>());
+  const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<StudentOverviewResponse>(
     TEACHER_STUDENT_OVERVIEW_CACHE_KEY,
     () => teacherApiFetch("/api/teacher/students/overview")
@@ -60,6 +64,18 @@ export function TeacherStudentOverviewList() {
   const filtered = filterStudentEntries(entries, query);
   const sections = groupStudentEntries(filtered);
   const availableLetters = new Set(sections.map(([letter]) => letter));
+
+  async function renameStudent(studentId: string, fullName: string) {
+    const result = await teacherApiFetch<{ student?: { displayName?: string } }>(
+      `/api/teacher/students/${encodeURIComponent(studentId)}`,
+      { method: "PATCH", body: JSON.stringify({ fullName }) }
+    );
+    // Names feed search metadata, sorting, and surname-letter grouping, so the
+    // overview cache must be regenerated instead of patching the row in place.
+    cache.invalidate(TEACHER_STUDENT_OVERVIEW_CACHE_KEY);
+    publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED" });
+    return result.student?.displayName ?? fullName;
+  }
 
   return (
     <div className="grid gap-6">
@@ -140,9 +156,19 @@ export function TeacherStudentOverviewList() {
                             <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
                               <UserRound aria-hidden="true" size={20} strokeWidth={1.9} />
                             </span>
-                            <TeacherTextLink href={`/teacher/students/${encodeURIComponent(entry.student.studentId)}`}>
-                              {entry.student.studentDisplayName}
-                            </TeacherTextLink>
+                            <InlineStudentNameEditor
+                              displayName={entry.student.studentDisplayName}
+                              onSave={(fullName) =>
+                                renameStudent(entry.student.studentId, fullName)
+                              }
+                              renderName={(name) => (
+                                <TeacherTextLink
+                                  href={`/teacher/students/${encodeURIComponent(entry.student.studentId)}`}
+                                >
+                                  {name}
+                                </TeacherTextLink>
+                              )}
+                            />
                           </div>
                         </td>
                         <td className="px-3 py-3">

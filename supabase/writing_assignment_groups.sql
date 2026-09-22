@@ -1,5 +1,7 @@
 -- Run after supabase/writing_assignments.sql in the Supabase SQL Editor.
 -- Existing assignments remain valid with a null group_id.
+-- Recipient validation follows the Phase 7 teacher_student_bindings model:
+-- a Teacher may only assign to an active Student holding a writing binding.
 
 create extension if not exists pgcrypto;
 
@@ -95,7 +97,7 @@ declare
 begin
   if not exists (
     select 1 from public.profiles
-    where id = p_teacher_id and role = 'teacher'
+    where id = p_teacher_id and role = 'teacher' and is_active = true
   ) then
     raise exception 'Invalid teacher';
   end if;
@@ -112,9 +114,18 @@ begin
     raise exception 'At least one student is required';
   end if;
 
+  -- Recipients are active Students bound to this Teacher for the writing
+  -- domain. Legacy profiles.owner_id is never used as an assignment fallback.
   select count(*) into valid_student_count
-  from public.profiles
-  where id in (select distinct unnest(p_student_ids)) and role = 'student';
+  from (select distinct unnest(p_student_ids) as id) students
+  join public.profiles student
+    on student.id = students.id
+   and student.role = 'student'
+   and student.is_active = true
+  join public.teacher_student_bindings binding
+    on binding.teacher_id = p_teacher_id
+   and binding.student_id = students.id
+   and binding.domain = 'writing';
   if valid_student_count <> requested_student_count then
     raise exception 'One or more students are invalid';
   end if;

@@ -1,6 +1,7 @@
 import { createAnonSupabase } from "@/lib/supabase/server";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import type { AppArea, UserRole } from "@/lib/types";
+import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
   defaultRouteForRole,
   isUserRole,
@@ -13,6 +14,7 @@ export type AuthenticatedAccount = {
   error: string | null;
   userId: string | null;
   role: UserRole | null;
+  displayName: string | null;
 };
 
 export async function requireAuthenticatedAccount(
@@ -20,7 +22,7 @@ export async function requireAuthenticatedAccount(
   timing?: StudentPerformanceTrace,
   performanceNames?: { auth?: string; profile?: string }
 ): Promise<AuthenticatedAccount> {
-  if (!token) return { error: "Missing access token", userId: null, role: null };
+  if (!token) return { error: "Missing access token", userId: null, role: null, displayName: null };
 
   const anon = createAnonSupabase(token);
   const {
@@ -33,19 +35,27 @@ export async function requireAuthenticatedAccount(
     ? claimsData.claims.sub
     : null;
   if (claimsError || !userId) {
-    return { error: "Invalid session", userId: null, role: null };
+    return { error: "Invalid session", userId: null, role: null, displayName: null };
   }
 
   const { data: profile, error: profileError } = await measure(
     timing,
     "database",
     performanceNames?.profile ?? "profiles_role",
-    () => anon.from("profiles").select("role,is_active").eq("id", userId).single()
+    () => anon.from("profiles").select("role,is_active,full_name,email").eq("id", userId).single()
   );
   if (profileError || !profile || profile.is_active === false || !isUserRole(profile.role)) {
-    return { error: "Account configuration error", userId: null, role: null };
+    return { error: "Account configuration error", userId: null, role: null, displayName: null };
   }
-  return { error: null, userId, role: profile.role };
+  return {
+    error: null,
+    userId,
+    role: profile.role,
+    displayName: getPreferredUserDisplayName({
+      email: profile.email,
+      profileFullName: profile.full_name
+    })
+  };
 }
 
 export async function requireUserWithRole(
@@ -57,7 +67,7 @@ export async function requireUserWithRole(
   const account = await requireAuthenticatedAccount(token, timing, performanceNames);
   if (account.error || !account.userId || !account.role) return account;
   if (!roleCanAccess(account.role, role)) {
-    return { error: "Unauthorized", userId: null, role: account.role };
+    return { error: "Unauthorized", userId: null, role: account.role, displayName: null };
   }
   return account;
 }
@@ -75,7 +85,7 @@ export async function requireTeacherOnly(
   const account = await requireAuthenticatedAccount(token, timing, performanceNames);
   if (account.error || !account.userId || !account.role) return account;
   if (account.role !== "teacher") {
-    return { error: "Forbidden", userId: null, role: account.role };
+    return { error: "Forbidden", userId: null, role: account.role, displayName: null };
   }
   return account;
 }
@@ -83,7 +93,7 @@ export async function requireTeacherOnly(
 export async function requireAdmin(token: string | null) {
   const account = await requireAuthenticatedAccount(token);
   if (account.error || account.role !== "admin") {
-    return { error: account.error ?? "Unauthorized", userId: null, role: account.role };
+    return { error: account.error ?? "Unauthorized", userId: null, role: account.role, displayName: null };
   }
   return account;
 }

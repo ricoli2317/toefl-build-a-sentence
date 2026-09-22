@@ -15,6 +15,7 @@ export async function GET(request: Request) {
     {
       userId: account.userId,
       role: account.role,
+      displayName: account.displayName ?? "",
       defaultRoute: defaultRouteForRole(account.role)
     },
     { headers: { "Cache-Control": "no-store" } }

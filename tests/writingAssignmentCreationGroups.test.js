@@ -270,3 +270,97 @@ test("single and multi-question POST requests use the same group RPC and reject 
   assert.match(route, /assignmentIds\.length !== prepared\.assignments\.length/);
   assert.doesNotMatch(route, /\.from\("writing_attempts"\)/);
 });
+
+test("group RPC recipient validation follows the writing binding model, never owner_id", () => {
+  const sources = [
+    "supabase/writing_assignment_groups.sql",
+    "supabase/admin_self_assignment.sql",
+    "supabase/writing_assignment_binding_hotfix.sql"
+  ];
+  for (const file of sources) {
+    const sql = fs.readFileSync(path.join(projectRoot, file), "utf8");
+    const rpc = sql.match(
+      /create or replace function public\.create_writing_assignment_group[\s\S]*?\n\$\$;/
+    )?.[0] ?? "";
+    assert.ok(rpc.length > 0, `${file} must define the group RPC`);
+    assert.match(rpc, /where id = p_teacher_id and role = 'teacher' and is_active = true/);
+    assert.match(rpc, /student\.role = 'student'/);
+    assert.match(rpc, /student\.is_active = true/);
+    assert.match(rpc, /join public\.teacher_student_bindings binding/);
+    assert.match(rpc, /binding\.domain = 'writing'/);
+    assert.match(rpc, /valid_student_count <> requested_student_count/);
+    const rpcCode = rpc.replace(/--[^\n]*/g, "");
+    assert.doesNotMatch(rpcCode, /owner_id/);
+    assert.doesNotMatch(rpcCode, /can_assign_student_as/);
+    assert.match(
+      sql,
+      /grant execute on function public\.create_writing_assignment_group\(uuid, jsonb, uuid\[\]\)[\s\S]{0,60}to service_role/
+    );
+  }
+});
+
+test("withdrawn assignment RPC keeps binding recipients, atomicity, and edit restrictions", () => {
+  const sources = [
+    "supabase/writing_assignments.sql",
+    "supabase/admin_self_assignment.sql",
+    "supabase/writing_assignment_binding_hotfix.sql"
+  ];
+  for (const file of sources) {
+    const sql = fs.readFileSync(path.join(projectRoot, file), "utf8");
+    const rpc = sql.match(
+      /create or replace function public\.update_withdrawn_writing_assignment[\s\S]*?\n\$\$;/
+    )?.[0] ?? "";
+    assert.ok(rpc.length > 0, `${file} must define the withdrawn RPC`);
+    assert.match(rpc, /for update/);
+    assert.match(rpc, /student\.role = 'student'/);
+    assert.match(rpc, /student\.is_active = true/);
+    assert.match(rpc, /join public\.teacher_student_bindings binding/);
+    assert.match(rpc, /binding\.domain = 'writing'/);
+    assert.match(rpc, /valid_student_count <> requested_student_count/);
+    assert.match(rpc, /QUESTION_LOCKED_AFTER_SUBMISSION/);
+    assert.match(rpc, /STUDENT_HAS_ATTEMPT/);
+    const rpcCode = rpc.replace(/--[^\n]*/g, "");
+    assert.doesNotMatch(rpcCode, /owner_id/);
+    assert.doesNotMatch(rpcCode, /can_assign_student_as/);
+    assert.match(
+      sql,
+      /grant execute on function public\.update_withdrawn_writing_assignment\(uuid, uuid, text, text, text, jsonb, timestamptz, uuid\[\], boolean\)[\s\S]{0,60}to service_role/
+    );
+  }
+});
+
+test("the production hotfix replaces both group and withdrawn RPCs in one file", () => {
+  const sql = fs.readFileSync(
+    path.join(projectRoot, "supabase/writing_assignment_binding_hotfix.sql"),
+    "utf8"
+  );
+  assert.match(sql, /create or replace function public\.create_writing_assignment_group/);
+  assert.match(sql, /create or replace function public\.update_withdrawn_writing_assignment/);
+  assert.equal(
+    (sql.match(/grant execute on function public\.create_writing_assignment_group/g) ?? []).length,
+    1
+  );
+  assert.equal(
+    (sql.match(/grant execute on function public\.update_withdrawn_writing_assignment/g) ?? []).length,
+    1
+  );
+  assert.doesNotMatch(sql.replace(/--[^\n]*/g, ""), /can_assign_student_as/);
+});
+
+test("group RPC failures keep Supabase diagnostics server-side and map known input errors to 400", () => {
+  const route = fs.readFileSync(
+    path.join(projectRoot, "app/api/teacher/writing/assignments/route.ts"),
+    "utf8"
+  );
+  assert.match(route, /logWritingAssignmentCreateFailure\(error/);
+  assert.match(route, /code: typeof rpcError\.code === "string"/);
+  assert.match(route, /details: rpcError\.details \?\? null/);
+  assert.match(route, /hint: rpcError\.hint \?\? null/);
+  assert.match(route, /teacherId: context\.teacherId/);
+  assert.match(route, /studentCount: context\.studentCount/);
+  assert.match(route, /assignmentCount: context\.assignmentCount/);
+  assert.match(route, /writingAssignmentRpcInputErrorMessage\(error\.message\)/);
+  assert.match(route, /return invalid\(inputMessage\)/);
+  assert.match(route, /"One or more students are invalid": "所选学生中包含无效账号。"/);
+  assert.match(route, /ASSIGNMENT_CREATE_FAILED/);
+});

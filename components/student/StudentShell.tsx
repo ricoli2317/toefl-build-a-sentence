@@ -19,7 +19,7 @@ import { StudentBrand } from "@/components/student/StudentBrand";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { beginStudentNavigationTrace } from "@/lib/studentPerformance.client";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
-import { AdminAreaSwitch } from "@/components/RoleGate";
+import { AdminAreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 
 type NavigationItem = {
   href: string;
@@ -140,6 +140,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
 export function StudentShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { displayName } = useCurrentAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const immersive =
     pathname.startsWith("/student/write-email/practice/") ||
@@ -221,6 +222,11 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex items-center gap-2">
             <AdminAreaSwitch current="student" />
+            {displayName ? (
+              <span className="hidden max-w-[160px] truncate text-sm font-medium text-student-muted sm:inline">
+                {displayName}
+              </span>
+            ) : null}
             <SignOutButton locale="zh-CN" variant="student" />
           </div>
         </header>

@@ -213,7 +213,16 @@ export async function POST(request: Request) {
       })),
       p_student_ids: prepared.studentIds
     });
-    if (error) throw error;
+    if (error) {
+      logWritingAssignmentCreateFailure(error, {
+        teacherId: auth.teacherId,
+        studentCount: prepared.studentIds.length,
+        assignmentCount: prepared.assignments.length
+      });
+      const inputMessage = writingAssignmentRpcInputErrorMessage(error.message);
+      if (inputMessage) return invalid(inputMessage);
+      throw error;
+    }
     const assignmentIds = isRecord(data) && Array.isArray(data.assignment_ids)
       ? data.assignment_ids.map(String)
       : [];
@@ -261,6 +270,42 @@ function invalid(message: string) {
 
 function isAssignmentInputError(message: string) {
   return /^(请选择|请至少|请完整|请填写|请输入|所选|截止|一次最多)/.test(message);
+}
+
+/**
+ * The RPC raises English validation errors before any insert. They stay 400
+ * responses; unknown Supabase failures stay 500. Database internals are only
+ * ever logged server-side, never returned to the client.
+ */
+const WRITING_ASSIGNMENT_RPC_INPUT_ERROR_MESSAGES: Record<string, string> = {
+  "Assignments must contain between 1 and 50 items": "请至少添加一道题目，且一次最多布置 50 道题目。",
+  "At least one student is required": "请至少选择一名学生。",
+  "One or more students are invalid": "所选学生中包含无效账号。",
+  "Invalid writing task type": "请选择有效的写作题型。",
+  "Invalid question source": "请选择有效的题目来源。",
+  "Question snapshot must be an object": "请完整填写每道题目。",
+  "Question bank assignment requires question_id": "请选择一道题库题目。",
+  "Custom assignment cannot include question_id": "请完整填写每道题目。"
+};
+
+function writingAssignmentRpcInputErrorMessage(message: string) {
+  return WRITING_ASSIGNMENT_RPC_INPUT_ERROR_MESSAGES[message] ?? null;
+}
+
+function logWritingAssignmentCreateFailure(
+  error: unknown,
+  context: { teacherId: string; studentCount: number; assignmentCount: number }
+) {
+  const rpcError = isRecord(error) ? error : {};
+  console.error("[writing-assignments] rpc_create_failed", {
+    code: typeof rpcError.code === "string" ? rpcError.code : null,
+    message: error instanceof Error ? error.message : String(rpcError.message ?? error),
+    details: rpcError.details ?? null,
+    hint: rpcError.hint ?? null,
+    teacherId: context.teacherId,
+    studentCount: context.studentCount,
+    assignmentCount: context.assignmentCount
+  });
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

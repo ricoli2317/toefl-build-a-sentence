@@ -3,7 +3,7 @@
  *
  * Supported surface:
  * - select/eq/in/is/ilike/not/order/limit/range/maybeSingle/single
- * - insert/delete with the same filters and a thenable builder
+ * - insert/update/delete with the same filters and a thenable builder
  *
  * Pass options.rpc to stub Supabase RPC calls:
  *   createMockSupabase(tables, { rpc: (fn, args, tables) => ({ data, error }) })
@@ -43,6 +43,17 @@ export function createMockSupabase(tables, options = {}) {
           table.push(...inserted);
           return { data: selectRequested ? inserted : null, error: null };
         }
+        if (operation.type === "update") {
+          const table = tables[tableName] ?? [];
+          const matches = (row) => filters.every((filter) => filter(row));
+          const updated = [];
+          for (const row of table) {
+            if (!matches(row)) continue;
+            Object.assign(row, operation.values);
+            updated.push({ ...row });
+          }
+          return { data: selectRequested ? updated : null, error: null };
+        }
         if (operation.type === "delete") {
           const table = tables[tableName] ?? [];
           const matches = (row) => filters.every((filter) => filter(row));
@@ -60,6 +71,10 @@ export function createMockSupabase(tables, options = {}) {
         },
         insert(rows) {
           operation = { type: "insert", rows: Array.isArray(rows) ? rows : [rows] };
+          return builder;
+        },
+        update(values) {
+          operation = { type: "update", values: { ...values } };
           return builder;
         },
         delete() {
@@ -116,13 +131,17 @@ export function createMockSupabase(tables, options = {}) {
           return builder;
         },
         async maybeSingle() {
-          const result = selectRows();
-          return { data: result[0] ?? null, error: null };
+          const result = run();
+          if (result.error) return { data: null, error: result.error };
+          const rows = result.data ?? [];
+          return { data: rows[0] ?? null, error: null };
         },
         async single() {
-          const result = selectRows();
-          return result[0]
-            ? { data: result[0], error: null }
+          const result = run();
+          if (result.error) return { data: null, error: result.error };
+          const rows = result.data ?? [];
+          return rows[0]
+            ? { data: rows[0], error: null }
             : { data: null, error: { message: "No rows found" } };
         },
         then(onFulfilled, onRejected) {

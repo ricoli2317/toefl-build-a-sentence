@@ -1,6 +1,27 @@
--- Enables one UID with role=admin to act as both assignment creator and recipient.
--- Run after account_roles_and_ownership.sql and the existing writing assignment migrations.
--- No ownership row is created and no quota is consumed.
+-- Final production hotfix for teacher-side Writing Assignment recipient checks.
+--
+-- Problem: the deployed create_writing_assignment_group and
+-- update_withdrawn_writing_assignment validated recipients through the legacy
+-- profiles.owner_id path (public.can_assign_student_as). Phase 7 recipients are
+-- bound through teacher_student_bindings, so every binding-based assignment
+-- creation and withdrawn-assignment edit failed with
+-- "One or more students are invalid" / "INVALID_STUDENT".
+--
+-- Run once in the Supabase SQL Editor after the existing writing assignment
+-- migrations. Only the two function definitions change; no table data is
+-- touched, and re-running this file is safe.
+--
+-- Kept rules:
+--   * Only an active role='teacher' profile can create a group.
+--   * Assignment owner (teacher_id on assignments, group.teacher_id) stays the
+--     current Teacher; historical ownership is untouched.
+--   * Every recipient must be an active Student with a writing-domain
+--     teacher_student_bindings row for this Teacher. owner_id is never a
+--     fallback, so owner_id=teacher without a writing binding still fails.
+--   * Both RPCs stay a single atomic transaction with the existing
+--     withdrawn-edit restrictions (QUESTION_LOCKED_AFTER_SUBMISSION,
+--     STUDENT_HAS_ATTEMPT) unchanged.
+--   * EXECUTE stays granted to service_role only.
 
 create or replace function public.create_writing_assignment_group(
   p_teacher_id uuid,
@@ -112,59 +133,6 @@ $$;
 revoke all on function public.create_writing_assignment_group(uuid, jsonb, uuid[])
   from public, anon, authenticated;
 grant execute on function public.create_writing_assignment_group(uuid, jsonb, uuid[])
-  to service_role;
-
-create or replace function public.create_writing_assignment(
-  p_teacher_id uuid,
-  p_task_type text,
-  p_question_source text,
-  p_question_id text,
-  p_question_snapshot jsonb,
-  p_due_at timestamptz,
-  p_student_ids uuid[]
-)
-returns uuid
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  created_assignment_id uuid;
-  requested_student_count integer;
-  valid_student_count integer;
-begin
-  if p_task_type not in ('email', 'academic_discussion') then raise exception 'Invalid writing task type'; end if;
-  if p_question_source not in ('question_bank', 'custom') then raise exception 'Invalid question source'; end if;
-  if jsonb_typeof(p_question_snapshot) is distinct from 'object' then raise exception 'Question snapshot must be an object'; end if;
-  if not exists (
-    select 1 from public.profiles
-    where id = p_teacher_id and role in ('teacher', 'admin') and is_active = true
-  ) then raise exception 'Invalid teacher'; end if;
-
-  select count(*) into requested_student_count
-  from (select distinct unnest(coalesce(p_student_ids, array[]::uuid[])) as id) students;
-  if requested_student_count < 1 then raise exception 'At least one student is required'; end if;
-  select count(*) into valid_student_count
-  from (select distinct unnest(p_student_ids) as id) students
-  where public.can_assign_student_as(p_teacher_id, students.id);
-  if valid_student_count <> requested_student_count then raise exception 'One or more students are invalid'; end if;
-
-  insert into public.writing_assignments (
-    teacher_id, task_type, question_source, question_id, question_snapshot, due_at
-  ) values (
-    p_teacher_id, p_task_type, p_question_source, p_question_id, p_question_snapshot, p_due_at
-  ) returning assignment_id into created_assignment_id;
-
-  insert into public.writing_assignment_students (assignment_id, student_id)
-  select created_assignment_id, id
-  from (select distinct unnest(p_student_ids) as id) students;
-  return created_assignment_id;
-end;
-$$;
-
-revoke all on function public.create_writing_assignment(uuid, text, text, text, jsonb, timestamptz, uuid[])
-  from public, anon, authenticated;
-grant execute on function public.create_writing_assignment(uuid, text, text, text, jsonb, timestamptz, uuid[])
   to service_role;
 
 create or replace function public.update_withdrawn_writing_assignment(

@@ -419,8 +419,15 @@ begin
   end if;
 
   select count(*) into valid_student_count
-  from public.profiles
-  where id in (select distinct unnest(p_student_ids)) and role = 'student';
+  from (select distinct unnest(p_student_ids) as id) students
+  join public.profiles student
+    on student.id = students.id
+   and student.role = 'student'
+   and student.is_active = true
+  join public.teacher_student_bindings binding
+    on binding.teacher_id = p_teacher_id
+   and binding.student_id = students.id
+   and binding.domain = 'writing';
   if valid_student_count <> requested_student_count then
     raise exception 'INVALID_STUDENT';
   end if;
