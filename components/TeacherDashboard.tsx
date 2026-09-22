@@ -15,9 +15,7 @@ import {
   Network,
   Target,
   TrendingUp,
-  UserRound,
-  Users,
-  type LucideIcon
+  Users
 } from "lucide-react";
 import {
   buildSentenceDisplay,
@@ -27,7 +25,6 @@ import {
   splitTextItems
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 import { useCurrentAccount } from "@/components/RoleGate";
 import {
   TEACHER_DASHBOARD_CACHE_KEY,
@@ -39,9 +36,8 @@ import type { TeacherDashboardPayload } from "@/lib/teacherDashboard";
 import { loadTeacherDashboardPayload } from "@/lib/teacherDashboardClient";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
 import { PracticeResultView, type ResultPayload } from "@/components/PracticeResult";
-import { PracticeHistoryCompactList } from "@/components/shared/PracticeHistoryCards";
 import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
-import { DomainChip, TeacherStudentReadingSection } from "@/components/teacher/TeacherStudentReading";
+import { TeacherStudentPracticeWorkspace } from "@/components/teacher/TeacherStudentPracticeSection";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
 import {
   TeacherAccuracyBar,
@@ -371,146 +367,35 @@ export function AdminPlatformHome() {
 }
 
 export function TeacherStudentSummary({ studentId }: { studentId: string }) {
-  const { error, loading, stats } = useTeacherStats();
-  const student = stats?.students.find((item) => item.studentId === studentId);
-  const domains = student?.domains ?? [];
-  const hasReading = domains.includes("reading");
-  const hasWriting = domains.includes("writing");
-  // BAS history only exists for writing-bound students; Reading-only students
-  // never see BAS attempts, answers, or BAS summary numbers.
-  const attempts = (stats?.attempts ?? []).filter(
-    (attempt) => hasWriting && attempt.studentId === studentId
-  );
-  const attemptsBySet = groupBy(attempts, getAttemptGroupId);
-  const setGroups = Array.from(attemptsBySet.entries())
-    .map(([groupId, setAttempts], stableIndex) => {
-      const latestAttempt = setAttempts
-        .map((attempt, index) => ({
-          attempt,
-          index,
-          timestamp: completedAttemptTimestamp(attempt.submittedAt)
-        }))
-        .sort((left, right) => {
-          if (left.timestamp === null && right.timestamp === null) return left.index - right.index;
-          if (left.timestamp === null) return 1;
-          if (right.timestamp === null) return -1;
-          return right.timestamp - left.timestamp || left.index - right.index;
-        })[0]?.attempt;
-
-      return {
-        bestAccuracy: Math.max(...setAttempts.map((attempt) => attempt.accuracy)),
-        groupId,
-        latestAttempt,
-        latestTimestamp: completedAttemptTimestamp(latestAttempt?.submittedAt ?? null),
-        setAttempts,
-        stableIndex
-      };
-    })
-    .sort((left, right) => {
-      if (left.latestTimestamp === null && right.latestTimestamp === null) {
-        return left.stableIndex - right.stableIndex;
-      }
-      if (left.latestTimestamp === null) return 1;
-      if (right.latestTimestamp === null) return -1;
-      return right.latestTimestamp - left.latestTimestamp || left.stableIndex - right.stableIndex;
-    });
-
-  return (
-    <div className="grid gap-5">
-      {loading ? <TeacherLoadingRegion label="正在加载学生概览" /> : null}
-      <TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: student?.studentDisplayName ?? "学生详情" }
-      ]} />
-      {error ? <TeacherDataError text={toTeacherErrorMessage(error)} /> : null}
-      {!loading && !error && !student ? <EmptyState text="未找到学生。" /> : (
-        <>
-          <TeacherCard className="flex min-h-[96px] items-center p-5">
-            <div className="flex min-w-0 items-center gap-4">
-              <TeacherIconTile icon={UserRound} />
-              <div className="min-w-0">
-                {loading ? <TeacherSkeleton className="h-7 w-36" /> : <h2 className="truncate text-2xl font-bold text-student-text">{student?.studentDisplayName ?? "学生详情"}</h2>}
-                {loading ? <TeacherSkeleton className="mt-2 h-4 w-52" /> : <p className="mt-1 truncate text-sm text-student-muted">账号：{formatAccountForDisplay(student?.studentEmail) || "学生数据暂时无法显示"}</p>}
-              </div>
-              {!loading && domains.length > 0 ? (
-                <div className="ml-auto flex flex-wrap gap-1.5">
-                  {domains.map((domain) => <DomainChip domain={domain} key={domain} />)}
-                </div>
-              ) : null}
-            </div>
-          </TeacherCard>
-          {loading ? (
-            <>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <StudentOverviewMetricCard icon={BookOpenCheck} label="完成套题数" value={<TeacherSkeleton className="h-8 w-12" />} />
-                <StudentOverviewMetricCard icon={Clock3} label="总练习次数" value={<TeacherSkeleton className="h-8 w-12" />} />
-                <StudentOverviewMetricCard icon={Target} label="平均正确率" value={<TeacherSkeleton className="h-8 w-16" />} />
-                <StudentOverviewMetricCard icon={FileText} label="答题数" value={<TeacherSkeleton className="h-8 w-12" />} />
-              </div>
-              <PracticeHistorySkeleton />
-            </>
-          ) : error ? (
-            <PracticeHistoryError />
-          ) : (
-            <>
-              {hasReading ? <TeacherStudentReadingSection studentId={studentId} /> : null}
-              {hasWriting ? (
-                <section className="grid gap-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <TeacherSectionTitle>Writing 练习</TeacherSectionTitle>
-                    <DomainChip domain="writing" />
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    <StudentOverviewMetricCard icon={BookOpenCheck} label="完成套题数" value={String(student?.completedSetCount ?? 0)} />
-                    <StudentOverviewMetricCard icon={Clock3} label="总练习次数" value={String(student?.totalAttemptCount ?? 0)} />
-                    <StudentOverviewMetricCard icon={Target} label="平均正确率" value={formatPercent(student?.averageAccuracy ?? 0)} />
-                    <StudentOverviewMetricCard icon={FileText} label="答题数" value={String(student?.answeredQuestionCount ?? 0)} />
-                  </div>
-                  <PracticeHistoryCompactList
-                    emptyState={<TeacherEmptyState text="该学生还没有完成练习。" />}
-                    items={setGroups.map(({ bestAccuracy, groupId, latestAttempt, setAttempts }) => ({
-                      attemptCount: setAttempts.length,
-                      bestAccuracy: formatPercent(bestAccuracy),
-                      href: `/teacher/students/${studentId}/details/${encodeURIComponent(groupId)}`,
-                      latestAccuracy: formatPercent(latestAttempt?.accuracy ?? 0),
-                      latestCompleted: formatCompactDateTime(latestAttempt?.submittedAt ?? null),
-                      setId: groupId,
-                      setTitle: getAttemptGroupTitle(groupId, latestAttempt?.setTitle ?? groupId)
-                    }))}
-                  />
-                </section>
-              ) : null}
-              {!hasReading && !hasWriting ? <TeacherEmptyState text="该学生尚未绑定教学领域。" /> : null}
-            </>
-          )}
-        </>
-      )}
-    </div>
-  );
+  return <TeacherStudentPracticeWorkspace studentId={studentId} />;
 }
 
-function StudentOverviewMetricCard({
-  icon: Icon,
-  label,
-  value
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: React.ReactNode;
-}) {
-  return (
-    <div className="teacher-card flex min-h-[94px] items-center gap-4 p-5">
-      <span className="inline-flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] bg-student-primary-soft text-student-primary">
-        <Icon aria-hidden="true" size={28} strokeWidth={1.9} />
-      </span>
-      <div className="min-w-0">
-        <p className="text-[2rem] font-bold leading-none tracking-tight tabular-nums text-student-primary">{value}</p>
-        <p className="mt-2 truncate text-sm font-medium text-student-muted">{label}</p>
-      </div>
-    </div>
-  );
-}
+type TeacherStudentSetDetailsPayload = {
+  student: {
+    studentId: string;
+    displayName: string;
+    account: string;
+  };
+  setId: string;
+  setTitle: string;
+  attempts: Array<{
+    attemptId: string;
+    correctCount: number;
+    totalQuestions: number;
+    accuracy: number;
+    timeSpentSeconds: number;
+    submittedAt: string | null;
+  }>;
+  answers: Array<{
+    attemptAnswerId: string;
+    attemptId: string;
+    questionId: string;
+    questionOrder: number;
+    isCorrect: boolean;
+    questionTimeSeconds: number | null;
+  }>;
+  missingAnswerAttemptIds: string[];
+};
 
 export function TeacherStudentSetDetails({
   setId,
@@ -519,60 +404,78 @@ export function TeacherStudentSetDetails({
   setId: string;
   studentId: string;
 }) {
-  const { error, loading, stats } = useTeacherStats();
-  const student = stats?.students.find((item) => item.studentId === studentId);
-  // BAS detail is writing-domain only. A reading-bound student reached through
-  // a direct URL resolves to no BAS attempts and gets an explicit message.
-  const hasWritingDomain = Boolean(student?.domains.includes("writing"));
   const groupId = normalizeAttemptGroupId(setId);
-  const attempts = (stats?.attempts ?? [])
-    .filter(
-      (attempt) =>
-        attempt.studentId === studentId && getAttemptGroupId(attempt) === groupId
-    )
-    .sort((a, b) => compareDatesDesc(a.submittedAt, b.submittedAt));
-  const setTitle = getAttemptGroupTitle(
-    groupId,
-    attempts[0]?.setTitle ??
-      stats?.rawSets.find((set) => set.setId === groupId)?.setTitle ??
-      groupId
+  const state = useTeacherCachedData<TeacherStudentSetDetailsPayload>(
+    `teacher:student-bas-set:v1:${studentId}:${groupId}`,
+    () => loadTeacherStudentSetDetails(studentId, groupId)
   );
-  const attemptIds = new Set(attempts.map((attempt) => attempt.attemptId));
+  const detail = state.data;
 
   return (
     <div className="grid gap-5">
-      {loading ? <TeacherLoadingRegion label="正在加载套题练习记录" /> : null}
+      {state.loading ? <TeacherLoadingRegion label="正在加载套题练习记录" /> : null}
       <TeacherBreadcrumbs crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
         { label: "学生", href: "/teacher/students" },
-        { label: student?.studentDisplayName ?? "学生详情", href: `/teacher/students/${studentId}` },
+        { label: detail?.student.displayName ?? "学生详情", href: `/teacher/students/${studentId}` },
         { label: "练习记录", href: `/teacher/students/${studentId}` },
-        { label: loading ? "套题练习记录" : setTitle }
+        { label: state.loading ? "套题练习记录" : detail?.setTitle ?? groupId }
       ]} />
-      {error ? <TeacherDataError text={toTeacherErrorMessage(error)} /> : null}
-      {!loading && !error && !student ? <EmptyState text="未找到学生。" /> : !loading && !error && !hasWritingDomain ? (
-        <TeacherEmptyState text="该学生不在你的写作教学范围内，无法查看 BAS 练习记录。" />
-      ) : (
+      {state.error ? <TeacherDataError text={toTeacherErrorMessage(state.error)} /> : null}
+      {!state.loading && !state.error && detail ? (
         <>
           <TeacherCard className="p-5">
-            {loading ? <TeacherSkeleton className="h-6 w-40" /> : <h2 className="text-xl font-bold text-student-text">{setTitle}</h2>}
-            <p className="mt-1 text-sm text-student-muted">{groupId}</p>
+            <h2 className="text-xl font-bold text-student-text">{detail.setTitle}</h2>
+            <p className="mt-1 text-sm text-student-muted">{detail.setId}</p>
           </TeacherCard>
-          {loading ? <AttemptHistorySkeleton /> : (
-            <AttemptHistoryList
-              answers={(stats?.answers ?? []).filter((answer) => attemptIds.has(answer.attemptId))}
-              attempts={attempts}
-              getAnswerHref={(answer) => `/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`}
-              locale="zh-CN"
-              missingAnswerAttemptIds={stats?.missingAnswerAttemptIds ?? []}
-              variant="student"
-            />
-          )}
+          <AttemptHistoryList
+            answers={detail.answers}
+            attempts={detail.attempts}
+            getAnswerHref={(answer) =>
+              `/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`
+            }
+            locale="zh-CN"
+            missingAnswerAttemptIds={detail.missingAnswerAttemptIds}
+            variant="student"
+          />
         </>
-      )}
+      ) : null}
     </div>
   );
 }
+
+type TeacherStudentAnswerDetailPayload = {
+  student: {
+    studentId: string;
+    displayName: string;
+    account: string;
+  };
+  attempt: {
+    attemptId: string;
+    setId: string;
+    setTitle: string;
+    correctCount: number;
+    totalQuestions: number;
+    accuracy: number;
+    timeSpentSeconds: number;
+    submittedAt: string;
+  };
+  initialQuestionId: string;
+  answers: Array<{
+    attemptAnswerId: string;
+    questionId: string;
+    questionOrder: number;
+    prompt: string;
+    submittedOrderText: string;
+    displaySubmittedOrderText: string;
+    correctOrderText: string;
+    sentenceTemplate: string;
+    optionsText: string;
+    finalSentence: string;
+    isCorrect: boolean;
+    questionTimeSeconds: number | null;
+  }>;
+};
 
 export function TeacherStudentQuestionDetail({
   attemptAnswerId,
@@ -581,65 +484,44 @@ export function TeacherStudentQuestionDetail({
   attemptAnswerId: string;
   studentId: string;
 }) {
-  const { error, loading, stats } = useTeacherStats();
-  const student = stats?.students.find((item) => item.studentId === studentId);
-  const hasWritingDomain = Boolean(student?.domains.includes("writing"));
+  const state = useTeacherCachedData<TeacherStudentAnswerDetailPayload>(
+    `teacher:student-bas-answer:v1:${studentId}:${attemptAnswerId}`,
+    () => loadTeacherStudentAnswerDetail(studentId, attemptAnswerId)
+  );
+  const detail = state.data;
 
   return (
     <div className="grid gap-5">
-      {loading ? <TeacherLoadingRegion label="正在加载答题详情" /> : null}
-      {loading ? <QuestionDetailSkeleton /> : error ? (
-        <QuestionDetailError text={toTeacherErrorMessage(error)} />
-      ) : !hasWritingDomain ? (
-        <TeacherEmptyState text="该学生不在你的写作教学范围内，无法查看 BAS 答题记录。" />
-      ) : stats ? (
-        <TeacherStudentQuestionDetailContent
-          initialAttemptAnswerId={attemptAnswerId}
-          stats={stats}
-        />
+      {state.loading ? <TeacherLoadingRegion label="正在加载答题详情" /> : null}
+      {state.loading ? <QuestionDetailSkeleton /> : state.error ? (
+        <QuestionDetailError text={toTeacherErrorMessage(state.error)} />
+      ) : detail ? (
+        <TeacherStudentQuestionDetailContent detail={detail} />
       ) : <TeacherEmptyState text="暂无答题数据。" />}
     </div>
   );
 }
 
 function TeacherStudentQuestionDetailContent({
-  initialAttemptAnswerId,
-  stats
+  detail
 }: {
-  initialAttemptAnswerId: string;
-  stats: TeacherStatsPayload;
+  detail: TeacherStudentAnswerDetailPayload;
 }) {
-  const initialAnswer = stats.answers.find(
-    (item) => item.attemptAnswerId === initialAttemptAnswerId
-  );
-  if (!initialAnswer) return <TeacherEmptyState text="未找到答题记录。" />;
-  const attempt = stats.attempts.find((item) => item.attemptId === initialAnswer.attemptId);
-  if (!attempt) return <TeacherEmptyState text="未找到对应的练习结果。" />;
-  const attemptAnswers = stats.answers
-    .filter((item) => item.studentId === initialAnswer.studentId && item.attemptId === initialAnswer.attemptId)
-    .sort((a, b) => a.questionOrder - b.questionOrder);
-  const groupId = getAttemptGroupId(attempt);
-  const groupTitle = getAttemptGroupTitle(
-    groupId,
-    attempt.setTitle || initialAnswer.setTitle
-  );
-  const student = stats.students.find((item) => item.studentId === initialAnswer.studentId);
-  const studentLabel = student?.studentDisplayName ?? "学生";
   const payload: ResultPayload = {
     attempt: {
-      attempt_id: attempt.attemptId,
-      set_id: attempt.setId,
-      set_title: groupTitle,
-      correct_count: attempt.correctCount,
-      total_questions: attempt.totalQuestions,
-      accuracy: attempt.accuracy,
-      time_spent_seconds: attempt.timeSpentSeconds,
-      submitted_at: attempt.submittedAt ?? ""
+      attempt_id: detail.attempt.attemptId,
+      set_id: detail.attempt.setId,
+      set_title: detail.attempt.setTitle,
+      correct_count: detail.attempt.correctCount,
+      total_questions: detail.attempt.totalQuestions,
+      accuracy: detail.attempt.accuracy,
+      time_spent_seconds: detail.attempt.timeSpentSeconds,
+      submitted_at: detail.attempt.submittedAt
     },
-    total_count: attempt.totalQuestions,
-    correct_count: attempt.correctCount,
-    accuracy: attempt.accuracy,
-    answers: attemptAnswers.map((answer) => ({
+    total_count: detail.attempt.totalQuestions,
+    correct_count: detail.attempt.correctCount,
+    accuracy: detail.attempt.accuracy,
+    answers: detail.answers.map((answer) => ({
       attempt_answer_id: answer.attemptAnswerId,
       question_id: answer.questionId,
       question_order: answer.questionOrder,
@@ -654,19 +536,22 @@ function TeacherStudentQuestionDetailContent({
       question_time_seconds: answer.questionTimeSeconds
     }))
   };
+  const initialAnswer = detail.answers.find(
+    (answer) => answer.questionId === detail.initialQuestionId
+  ) ?? detail.answers[0];
 
   return (
     <PracticeResultView
       answerLabel="学生答案"
       correctAnswerVisibility="always"
-      initialQuestionId={initialAnswer.questionId}
+      initialQuestionId={initialAnswer?.questionId}
       navigation={<TeacherBreadcrumbs crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
         { label: "学生", href: "/teacher/students" },
-        { label: studentLabel, href: `/teacher/students/${initialAnswer.studentId}` },
-        { label: "练习记录", href: `/teacher/students/${initialAnswer.studentId}` },
-        { label: groupTitle, href: `/teacher/students/${initialAnswer.studentId}/details/${encodeURIComponent(groupId)}` },
-        { label: `第 ${initialAnswer.questionOrder} 题` }
+        { label: detail.student.displayName, href: `/teacher/students/${detail.student.studentId}` },
+        { label: "练习记录", href: `/teacher/students/${detail.student.studentId}` },
+        { label: detail.attempt.setTitle, href: `/teacher/students/${detail.student.studentId}/details/${encodeURIComponent(detail.attempt.setId)}` },
+        { label: `第 ${initialAnswer?.questionOrder ?? 1} 题` }
       ]} />}
       payload={payload}
       showQuestionTime
@@ -966,6 +851,39 @@ function useTeacherDashboard() {
   return { dashboard: data, error, loading };
 }
 
+async function loadTeacherStudentSetDetails(studentId: string, groupId: string) {
+  return fetchTeacherStudentJson<TeacherStudentSetDetailsPayload>(
+    `/api/teacher/students/${encodeURIComponent(studentId)}/bas/sets/${encodeURIComponent(groupId)}`,
+    "套题练习记录加载失败。"
+  );
+}
+
+async function loadTeacherStudentAnswerDetail(studentId: string, attemptAnswerId: string) {
+  return fetchTeacherStudentJson<TeacherStudentAnswerDetailPayload>(
+    `/api/teacher/students/${encodeURIComponent(studentId)}/answers/${encodeURIComponent(attemptAnswerId)}`,
+    "答题详情加载失败。"
+  );
+}
+
+async function fetchTeacherStudentJson<T>(path: string, fallbackMessage: string): Promise<T> {
+  const supabase = createBrowserSupabase();
+  const {
+    data: { session }
+  } = await supabase.auth.getSession();
+  const response = await fetch(path, {
+    cache: "no-store",
+    headers: { Authorization: `Bearer ${session?.access_token ?? ""}` }
+  });
+  const payload = (await response.json().catch(() => ({}))) as T & {
+    error?: string;
+    message?: string;
+  };
+  if (!response.ok || "error" in payload) {
+    throw new Error(payload.error || payload.message || fallbackMessage);
+  }
+  return payload as T;
+}
+
 async function loadTeacherStats(): Promise<TeacherStatsPayload> {
   const supabase = createBrowserSupabase();
   const {
@@ -1088,43 +1006,8 @@ function formatLogicalDate(value: string) {
   return `${match[1]}年${Number(match[2])}月${Number(match[3])}日`;
 }
 
-function completedAttemptTimestamp(value: string | null) {
-  if (!value) return null;
-  const date = new Date(value);
-  const timestamp = date.getTime();
-  return Number.isFinite(timestamp) ? timestamp : null;
-}
-
-function formatCompactDateTime(value: string | null) {
-  if (!value) return "时间未知";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "时间未知";
-
-  const now = new Date();
-  const dateLabel = date.getFullYear() === now.getFullYear()
-    ? `${date.getMonth() + 1}月${date.getDate()}日`
-    : `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-  const timeLabel = date.toLocaleTimeString("zh-CN", {
-    hour: "2-digit",
-    hour12: false,
-    minute: "2-digit"
-  });
-
-  return `${dateLabel} ${timeLabel}`;
-}
-
-function compareDatesDesc(a: string | null, b: string | null) {
-  return new Date(b ?? 0).getTime() - new Date(a ?? 0).getTime();
-}
-
 const WRONGBOOK_TODAY_GROUP_ID = "wrongbook-today";
 const WRONGBOOK_HISTORY_GROUP_ID = "wrongbook-history";
-
-function getAttemptGroupId(attempt: AttemptSummary) {
-  if (attempt.practiceType === "wrongbook-today") return WRONGBOOK_TODAY_GROUP_ID;
-  if (attempt.practiceType === "wrongbook-history") return WRONGBOOK_HISTORY_GROUP_ID;
-  return attempt.setId;
-}
 
 function normalizeAttemptGroupId(setId: string) {
   if (setId === WRONGBOOK_TODAY_GROUP_ID || setId.startsWith("wrongbook-today-")) {
@@ -1138,12 +1021,6 @@ function normalizeAttemptGroupId(setId: string) {
     return WRONGBOOK_HISTORY_GROUP_ID;
   }
   return setId;
-}
-
-function getAttemptGroupTitle(groupId: string, fallback: string) {
-  if (groupId === WRONGBOOK_TODAY_GROUP_ID) return "今日错题";
-  if (groupId === WRONGBOOK_HISTORY_GROUP_ID) return "历史错题";
-  return fallback;
 }
 
 function toTeacherErrorMessage(message: string) {
@@ -1167,26 +1044,6 @@ function SetTableSkeleton() {
         </tr>
       ))}
     </tbody>
-  );
-}
-
-function PracticeHistorySkeleton() {
-  return (
-    <section className="rounded-2xl border border-student-border bg-white p-4 shadow-[0_2px_12px_rgba(60,47,119,0.045)] sm:p-5">
-      <h2 className="text-xl font-bold text-student-text">练习记录</h2>
-      <div className="mt-4 grid gap-2">
-        {Array.from({ length: 3 }, (_, index) => <TeacherSkeleton className="h-[68px] w-full rounded-xl" key={index} />)}
-      </div>
-    </section>
-  );
-}
-
-function PracticeHistoryError() {
-  return (
-    <section className="rounded-2xl border border-student-border bg-white p-4 shadow-[0_2px_12px_rgba(60,47,119,0.045)] sm:p-5">
-      <h2 className="text-xl font-bold text-student-text">练习记录</h2>
-      <p className="mt-4 text-sm text-student-muted">练习记录暂时无法显示。</p>
-    </section>
   );
 }
 

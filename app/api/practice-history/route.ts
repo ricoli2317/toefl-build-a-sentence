@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { bearerToken } from "@/lib/auth";
+import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import {
   buildPracticeHistoryPayload,
   isOfficialPracticeSetId,
@@ -102,7 +102,7 @@ export async function GET(request: Request) {
       "profiles_role",
       () => authClient.from("profiles").select("role,is_active").eq("id", user.id).single()
     );
-    if (profileError || profile?.is_active === false || !["student", "admin"].includes(profile?.role ?? "")) {
+    if (profileError || profile?.is_active === false || !isUserRole(profile?.role) || !roleCanAccess(profile.role, "student")) {
       return respondError(profileError?.message ?? "Unauthorized", 401);
     }
 

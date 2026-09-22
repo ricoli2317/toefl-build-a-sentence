@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { canSwitchArea, roleCanAccess } from "@/lib/accountPermissions";
 import type { AppArea, UserRole } from "@/lib/types";
 
 type AccountContextValue = { displayName: string; role: UserRole; userId: string };
@@ -39,7 +40,7 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
         if (response.status !== 403) router.replace("/login");
         return;
       }
-      const allowed = payload.role === "admin" || payload.role === area;
+      const allowed = roleCanAccess(payload.role, area);
       if (!allowed) {
         router.replace(payload.defaultRoute ?? "/login");
         return;
@@ -71,9 +72,13 @@ export function useCurrentAccount() {
   return value;
 }
 
-export function AdminAreaSwitch({ current }: { current: AppArea }) {
+/**
+ * Teacher/Student interface switcher. Admin and Teacher may move between the
+ * two areas through this single shared entry; Student never sees it.
+ */
+export function AreaSwitch({ current }: { current: AppArea }) {
   const account = useCurrentAccount();
-  if (account.role !== "admin") return null;
+  if (!canSwitchArea(account.role)) return null;
   const target = current === "teacher" ? "/student" : "/teacher/dashboard";
   return (
     <Link className="student-button-secondary whitespace-nowrap" href={target}>

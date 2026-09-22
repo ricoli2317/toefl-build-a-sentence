@@ -19,7 +19,7 @@ import {
 import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
-import { AdminAreaSwitch, useCurrentAccount } from "@/components/RoleGate";
+import { AreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 
 export type TeacherCrumb = { href?: string; label: string };
 
@@ -178,7 +178,7 @@ export function TeacherAppShell({
             <Link href="/teacher/dashboard"><StudentBrand compact /></Link>
           </div>
           <div className="flex items-center gap-3">
-            <AdminAreaSwitch current="teacher" />
+            <AreaSwitch current="teacher" />
             {displayName ? (
               <span className="hidden max-w-[180px] truncate text-sm font-medium text-student-text md:inline">
                 {displayName}

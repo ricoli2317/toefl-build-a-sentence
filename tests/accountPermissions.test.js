@@ -5,11 +5,11 @@ import { canAssignRecipient } from "../lib/accountAccess.ts";
 import { defaultRouteForRole, roleCanAccess } from "../lib/accountPermissions.ts";
 import { createMockSupabase } from "./fixtures/mockSupabase.js";
 
-test("role capabilities allow Admin in both areas without widening Teacher or Student", () => {
+test("role capabilities allow Admin and Teacher in both areas without widening Student", () => {
   assert.equal(roleCanAccess("admin", "teacher"), true);
   assert.equal(roleCanAccess("admin", "student"), true);
   assert.equal(roleCanAccess("teacher", "teacher"), true);
-  assert.equal(roleCanAccess("teacher", "student"), false);
+  assert.equal(roleCanAccess("teacher", "student"), true);
   assert.equal(roleCanAccess("student", "student"), true);
   assert.equal(roleCanAccess("student", "teacher"), false);
   assert.equal(defaultRouteForRole("admin"), "/teacher/dashboard");

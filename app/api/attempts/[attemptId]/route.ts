@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { bearerToken } from "@/lib/auth";
+import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import {
   loadHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
@@ -93,7 +93,7 @@ export async function GET(
       .eq("id", user.id)
       .single();
 
-    if (profileError || profile?.is_active === false || !["student", "admin"].includes(profile?.role ?? "")) {
+    if (profileError || profile?.is_active === false || !isUserRole(profile?.role) || !roleCanAccess(profile.role, "student")) {
       return jsonError(profileError?.message ?? "Unauthorized", 401);
     }
 

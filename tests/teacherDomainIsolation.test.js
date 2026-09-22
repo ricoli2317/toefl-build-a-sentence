@@ -4,9 +4,6 @@ const path = require("node:path");
 const test = require("node:test");
 
 const { listTeacherStudentDomainBindings } = require("../lib/accountAccess.ts");
-const {
-  buildTeacherStudentReadingDetail
-} = require("../lib/reading/teacherStats.ts");
 const { buildTeacherDashboardActivity } = require("../lib/teacherDashboard.ts");
 const { createMockSupabase } = require("./fixtures/mockSupabase.js");
 
@@ -70,20 +67,6 @@ test("Case 7: Admin has no teacher binding domains", async () => {
   assert.equal(admin.studentDomains.size, 0);
 });
 
-function readingItem(overrides) {
-  return {
-    logical_item_id: "ctw-a",
-    module: "ctw",
-    title: null,
-    first_seen_date: "2026-05-01",
-    first_seen_source_label: "May",
-    first_seen_source_order: 1,
-    question_count: 1,
-    scored_item_count: 2,
-    ...overrides
-  };
-}
-
 function readingAttempt(overrides) {
   return {
     attempt_id: "attempt-1",
@@ -99,21 +82,21 @@ function readingAttempt(overrides) {
   };
 }
 
-test("Case 1: Reading student detail reuses teacher Reading stats and marks wrongbook entries", () => {
-  const profile = { id: "student-a", email: "a@example.com", full_name: "Alpha" };
-  const items = [
-    readingItem({ logical_item_id: "ctw-a", first_seen_date: "2026-05-01" }),
-    readingItem({ logical_item_id: "ctw-b", first_seen_date: "2026-05-02" }),
-    readingItem({
+test("Case 1: Reading student detail reuses scoped Reading practice records and marks wrongbook entries", () => {
+  const {
+    buildTeacherStudentReadingPractice
+  } = require("../lib/teacherStudentPractice.ts");
+  const itemMeta = new Map([
+    ["ctw-a", { logical_item_id: "ctw-a", module: "ctw", displayName: "套题001", scoringPointCount: 2 }],
+    ["ctw-b", { logical_item_id: "ctw-b", module: "ctw", displayName: "套题002", scoringPointCount: 2 }],
+    ["rdl-a", {
       logical_item_id: "rdl-a",
       module: "rdl",
-      title: "Library Notice",
-      first_seen_date: "2026-05-03"
-    })
-  ];
-  const detail = buildTeacherStudentReadingDetail({
-    profile,
-    items,
+      displayName: "题目001 · Library Notice",
+      scoringPointCount: 1
+    }]
+  ]);
+  const practice = buildTeacherStudentReadingPractice({
     attempts: [
       readingAttempt({
         attempt_id: "a-ctw-b",
@@ -150,22 +133,29 @@ test("Case 1: Reading student detail reuses teacher Reading stats and marks wron
         correct_points: 1,
         submitted_at: "2026-06-03T01:00:00Z"
       }
-    ]
+    ],
+    itemMeta
   });
 
-  assert.equal(detail.student.displayName, "Alpha");
-  assert.equal(detail.summary.completedAttempts, 2);
-  assert.equal(detail.summary.correctPoints, 3);
-  assert.equal(detail.summary.totalPoints, 4);
-  assert.equal(detail.summary.accuracy, 0.75);
-  assert.equal(detail.summary.totalPracticeSeconds, 180);
-  assert.equal(detail.summary.byTask.ctw.completedAttempts, 2);
-  assert.equal(detail.summary.byTask.rdl.completedAttempts, 0);
-  assert.deepEqual(detail.attempts.map((attempt) => attempt.attemptId), ["w-rdl", "a-ctw-a", "a-ctw-b"]);
-  assert.equal(detail.attempts[0].kind, "wrongbook");
-  assert.equal(detail.attempts[0].scope, "today");
-  assert.equal(detail.attempts.find((attempt) => attempt.attemptId === "a-ctw-a").itemDisplayName, "套题001");
-  assert.equal(detail.attempts.find((attempt) => attempt.attemptId === "a-ctw-b").itemDisplayName, "套题002");
+  assert.equal(practice.tasks.ctw.attempts, 2);
+  assert.equal(practice.tasks.ctw.correctPoints, 3);
+  assert.equal(practice.tasks.ctw.totalPoints, 4);
+  assert.equal(practice.tasks.ctw.accuracy, 0.75);
+  assert.equal(practice.tasks.rdl.attempts, 0);
+  assert.deepEqual(
+    practice.records.map((record) => record.attemptId),
+    ["w-rdl", "a-ctw-a", "a-ctw-b"]
+  );
+  assert.equal(practice.records[0].kind, "wrongbook");
+  assert.equal(practice.records[0].scope, "today");
+  assert.equal(
+    practice.records.find((record) => record.attemptId === "a-ctw-a").title,
+    "套题001"
+  );
+  assert.equal(
+    practice.records.find((record) => record.attemptId === "a-ctw-b").title,
+    "套题002"
+  );
 });
 
 test("dashboard activity merges Reading and Writing newest-first with domain labels", () => {
@@ -245,18 +235,22 @@ test("/api/teacher/dashboard is teacher-only, lightweight, and binding-scoped", 
 });
 
 test("student Reading detail API requires a reading binding and reuses Reading stats", () => {
-  const route = read("app/api/teacher/students/[studentId]/reading/route.ts");
+  const route = read("app/api/teacher/students/[studentId]/practice/route.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
   assert.match(route, /canAccessStudentDomain\([\s\S]*"reading"/);
-  assert.match(route, /buildTeacherStudentReadingDetail/);
-  assert.match(route, /from\("reading_attempts"\)/);
-  assert.match(route, /from\("reading_wrongbook_attempts"\)/);
-  assert.doesNotMatch(route, /from\("attempts"\)|from\("attempt_answers"\)/);
-  assert.doesNotMatch(route, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text|student_answer/);
+  assert.match(route, /loadTeacherStudentReadingPractice/);
+  assert.doesNotMatch(route, /from\("attempt_answers"\)/);
+  assert.doesNotMatch(route, /listVisibleStudentIds|listTeacherStudentDomainBindings/);
 
-  const lib = read("lib/reading/teacherStats.ts");
-  assert.match(lib, /buildTeacherReadingStats\(/);
-  assert.match(lib, /buildReadingHistoryPayload\(/);
+  const lib = read("lib/teacherStudentPractice.server.ts");
+  assert.match(lib, /from\("reading_attempts"\)/);
+  assert.match(lib, /from\("reading_wrongbook_attempts"\)/);
+  assert.match(lib, /from\("reading_full_set_attempts"\)/);
+  assert.doesNotMatch(lib, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text/);
+
+  const statsLib = read("lib/reading/teacherStats.ts");
+  assert.match(statsLib, /buildTeacherReadingStats\(/);
+  assert.match(statsLib, /export function readingItemDisplayName\(/);
 });
 
 test("Phase 6: navigation never hides Teacher entries by binding domain", () => {
@@ -281,26 +275,31 @@ test("Phase 6: teacher dashboard renders the fixed management entries for every 
   assert.match(dashboard, /href="\/teacher\/writing\/reviews"/);
   assert.match(dashboard, /href="\/teacher\/reading\/statistics"/);
   assert.match(dashboard, /href="\/teacher\/sets"/);
-  assert.match(dashboard, /TeacherStudentReadingSection/);
-  assert.match(dashboard, /该学生不在你的写作教学范围内，无法查看 BAS 练习记录。/);
-  assert.match(dashboard, /该学生不在你的写作教学范围内，无法查看 BAS 答题记录。/);
-  assert.match(dashboard, /const hasWritingDomain = Boolean\(student\?\.domains\.includes\("writing"\)\)/);
+  assert.match(dashboard, /TeacherStudentPracticeWorkspace/);
+  assert.doesNotMatch(dashboard, /TeacherStudentReadingSection/);
 });
 
-test("student summary gates BAS metrics and history behind the writing binding", () => {
+test("student summary uses the scoped student practice endpoint instead of global stats", () => {
   const dashboard = read("components/TeacherDashboard.tsx");
-  assert.match(dashboard, /const hasWriting = domains\.includes\("writing"\)/);
-  assert.match(dashboard, /const attempts = \(stats\?\.attempts \?\? \[\]\)\.filter\(\n\s*\(attempt\) => hasWriting && attempt\.studentId === studentId\n\s*\)/);
-  assert.match(dashboard, /hasWriting \? \(\n\s*<section className="grid gap-4">/);
+  const summaryRegion = dashboard.match(
+    /export function TeacherStudentSummary[\s\S]*?export function TeacherSetsList/
+  )?.[0] ?? "";
+  assert.match(summaryRegion, /TeacherStudentPracticeWorkspace/);
+  assert.doesNotMatch(summaryRegion, /useTeacherStats/);
+  assert.doesNotMatch(summaryRegion, /stats\?\.attempts/);
+
+  const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
+  assert.match(component, /TEACHER_STUDENT_PRACTICE_CACHE_PREFIX/);
+  assert.match(component, /\/practice\?\$\{params\.toString\(\)\}/);
 });
 
-test("Reading student detail UI reuses the shared Reading statistics payloads", () => {
-  const component = read("components/teacher/TeacherStudentReading.tsx");
-  assert.match(component, /TeacherStudentReadingDetailPayload/);
-  assert.match(component, /\/api\/teacher\/students\/\$\{encodeURIComponent\(studentId\)\}\/reading/);
+test("Reading and Writing student detail UI share one scoped practice workspace", () => {
+  const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
   assert.match(component, /TeacherMetricCard/);
   assert.match(component, /TeacherAccuracyBar/);
   assert.match(component, /错题订正/);
+  assert.match(component, /该日期暂无 Reading 练习记录。/);
+  assert.match(component, /该日期暂无 Writing 练习记录。/);
   assert.doesNotMatch(component, /sentence_template|correct_order_text|submitted_order_text/);
 });
 
@@ -314,9 +313,10 @@ test("binding updates invalidate dashboard, student overview, and student Readin
   assert.match(cache, /TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v1"/);
   assert.match(cache, /TEACHER_STUDENT_OVERVIEW_CACHE_KEY = "teacher:student-overview:v1"/);
   assert.match(cache, /TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading"/);
+  assert.match(cache, /TEACHER_STUDENT_PRACTICE_CACHE_PREFIX = "teacher:student-practice"/);
   assert.match(cache, /case "teacherDashboard":[\s\S]*TEACHER_DASHBOARD_CACHE_KEY/);
   assert.match(cache, /case "teacherStudentOverview":[\s\S]*TEACHER_STUDENT_OVERVIEW_CACHE_KEY/);
-  assert.match(cache, /case "teacherReadingStatistics":[\s\S]*TEACHER_STUDENT_READING_CACHE_PREFIX/);
+  assert.match(cache, /case "teacherReadingStatistics":[\s\S]*TEACHER_STUDENT_PRACTICE_CACHE_PREFIX/);
   assert.match(cache, /TEACHER_STATS_CACHE_SCHEMA_VERSION = 3/);
 });
 

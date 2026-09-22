@@ -21,6 +21,8 @@ export function createMockSupabase(tables, options = {}) {
       const transforms = [];
       let operation = { type: "select" };
       let selectRequested = false;
+      let countRequested = false;
+      let headRequested = false;
 
       function selectRows() {
         let rows = snapshot(tables[tableName]);
@@ -61,12 +63,19 @@ export function createMockSupabase(tables, options = {}) {
           tables[tableName] = table.filter((row) => !matches(row));
           return { data: deleted, error: null };
         }
-        return { data: selectRows(), error: null };
+        const rows = selectRows();
+        return {
+          data: selectRequested && !headRequested ? rows : null,
+          error: null,
+          count: countRequested ? rows.length : null
+        };
       }
 
       const builder = {
-        select() {
+        select(_columns, options) {
           selectRequested = true;
+          countRequested = Boolean(options?.count);
+          headRequested = Boolean(options?.head);
           return builder;
         },
         insert(rows) {
@@ -83,6 +92,45 @@ export function createMockSupabase(tables, options = {}) {
         },
         eq(column, value) {
           filters.push((row) => row[column] === value);
+          return builder;
+        },
+        lt(column, value) {
+          filters.push((row) => row[column] < value);
+          return builder;
+        },
+        lte(column, value) {
+          filters.push((row) => row[column] <= value);
+          return builder;
+        },
+        gt(column, value) {
+          filters.push((row) => row[column] > value);
+          return builder;
+        },
+        gte(column, value) {
+          filters.push((row) => row[column] >= value);
+          return builder;
+        },
+        like(column, pattern) {
+          const regex = likePatternToRegex(pattern);
+          filters.push((row) => regex.test(String(row[column] ?? "")));
+          return builder;
+        },
+        or(expression) {
+          const clauses = String(expression)
+            .split(",")
+            .map((clause) => clause.trim())
+            .filter(Boolean);
+          const parsed = clauses.map((clause) => {
+            const match = /^([a-z_]+)\.like\.(.+)$/.exec(clause);
+            return match
+              ? { column: match[1], regex: likePatternToRegex(match[2]) }
+              : null;
+          });
+          filters.push((row) =>
+            parsed.some((clause) =>
+              clause ? clause.regex.test(String(row[clause.column] ?? "")) : false
+            )
+          );
           return builder;
         },
         in(column, values) {

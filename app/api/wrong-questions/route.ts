@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { bearerToken } from "@/lib/auth";
+import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import { parseGrammarTags } from "@/lib/grammarPractice";
 import {
   isOfficialPracticeSetId,
@@ -208,7 +208,7 @@ export async function GET(request: Request) {
       )
     );
 
-    if (profileError || studentProfile?.is_active === false || !["student", "admin"].includes(studentProfile?.role ?? "")) {
+    if (profileError || studentProfile?.is_active === false || !isUserRole(studentProfile?.role) || !roleCanAccess(studentProfile.role, "student")) {
       return jsonError(profileError?.message ?? "Unauthorized", 401);
     }
 

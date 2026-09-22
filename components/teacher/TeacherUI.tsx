@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import clsx from "clsx";
+import type { StudentPracticeIcon } from "@/components/icons/StudentPracticeIcons";
+
+export type TeacherMetricTone = "primary" | "warning" | "reading";
 
 export function TeacherCard({
   children,
@@ -20,16 +23,16 @@ export function TeacherIconTile({
   icon: Icon,
   tone = "primary"
 }: {
-  icon: LucideIcon;
-  tone?: "primary" | "warning";
+  icon: StudentPracticeIcon;
+  tone?: TeacherMetricTone;
 }) {
   return (
     <span
       className={clsx(
         "inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl",
-        tone === "warning"
-          ? "bg-student-error-soft text-student-error"
-          : "bg-student-primary-soft text-student-primary"
+        tone === "warning" && "bg-student-error-soft text-student-error",
+        tone === "reading" && "bg-[#eef6ff] text-[#347fdc]",
+        tone === "primary" && "bg-student-primary-soft text-student-primary"
       )}
     >
       <Icon aria-hidden="true" size={28} strokeWidth={1.9} />
@@ -40,12 +43,14 @@ export function TeacherIconTile({
 export function TeacherMetricCard({
   icon,
   label,
+  secondary,
   tone = "primary",
   value
 }: {
-  icon: LucideIcon;
+  icon: StudentPracticeIcon;
   label: string;
-  tone?: "primary" | "warning";
+  secondary?: React.ReactNode;
+  tone?: TeacherMetricTone;
   value: React.ReactNode;
 }) {
   return (
@@ -56,11 +61,16 @@ export function TeacherMetricCard({
         <p
           className={clsx(
             "mt-1 text-[2rem] font-bold leading-none tracking-tight",
-            tone === "warning" ? "text-student-error" : "text-student-text"
+            tone === "warning" && "text-student-error",
+            tone === "reading" && "text-[#347fdc]",
+            tone === "primary" && "text-student-text"
           )}
         >
           {value}
         </p>
+        {secondary ? (
+          <p className="mt-2 text-sm font-medium text-student-muted">{secondary}</p>
+        ) : null}
       </div>
     </div>
   );

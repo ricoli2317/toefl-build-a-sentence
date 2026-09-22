@@ -2,7 +2,6 @@ import {
   compareReadingCatalogIdentityOrder,
   type ReadingCatalogItemRow
 } from "./catalog.ts";
-import { buildReadingHistoryPayload } from "./history.ts";
 import { READING_PRODUCT_NAMES } from "./product.ts";
 import type { ReadingModule } from "./types.ts";
 
@@ -93,50 +92,6 @@ export type TeacherReadingStatsPayload = {
     correctCount: number;
     accuracy: number;
   }>;
-};
-
-export type ReadingStatsWrongbookAttemptRow = {
-  attempt_id: string;
-  student_id: string;
-  logical_item_id: string;
-  task_type: ReadingModule;
-  scope: "today" | "history";
-  status: "draft" | "submitted";
-  elapsed_seconds: number;
-  total_points: number;
-  correct_points: number;
-  submitted_at: string | null;
-};
-
-export type TeacherStudentReadingHistoryEntry = {
-  attemptId: string;
-  kind: "catalog" | "wrongbook";
-  taskType: ReadingModule;
-  taskName: string;
-  itemDisplayName: string;
-  correctPoints: number;
-  totalPoints: number;
-  accuracy: number;
-  elapsedSeconds: number;
-  submittedAt: string;
-  scope: "today" | "history" | null;
-};
-
-export type TeacherStudentReadingDetailPayload = {
-  student: {
-    studentId: string;
-    displayName: string;
-    account: string;
-  };
-  summary: {
-    completedAttempts: number;
-    correctPoints: number;
-    totalPoints: number;
-    accuracy: number;
-    totalPracticeSeconds: number;
-    byTask: Record<ReadingModule, ReadingTaskPerformance>;
-  };
-  attempts: TeacherStudentReadingHistoryEntry[];
 };
 
 const TASKS: ReadingModule[] = ["ctw", "rdl", "rap"];
@@ -257,111 +212,6 @@ function buildQuestionStats(input: {
   );
 }
 
-/**
- * Student Reading detail for the teacher UI. Catalog attempts drive the summary
- * exactly like /api/teacher/reading/statistics; wrongbook correction attempts
- * are listed as history entries without changing the summary numbers.
- */
-export function buildTeacherStudentReadingDetail(input: {
-  profile: ReadingStatsProfileRow;
-  items: ReadingCatalogItemRow[];
-  attempts: ReadingStatsAttemptRow[];
-  wrongbookAttempts?: ReadingStatsWrongbookAttemptRow[];
-}): TeacherStudentReadingDetailPayload {
-  const stats = buildTeacherReadingStats({
-    profiles: [input.profile],
-    items: input.items,
-    attempts: input.attempts,
-    answers: [],
-    questions: [],
-    slots: []
-  });
-  const student = stats.students[0];
-  const submittedAttempts = input.attempts.filter(
-    (attempt): attempt is ReadingStatsAttemptRow & { submitted_at: string } =>
-      attempt.status === "submitted" && Boolean(attempt.submitted_at)
-  );
-  const points = sumPoints(submittedAttempts);
-  const displayNames = buildTeacherReadingItemDisplayNames(input.items);
-  const catalogEntries = buildReadingHistoryPayload(input.attempts, input.items).attempts.map(
-    (attempt): TeacherStudentReadingHistoryEntry => ({
-      attemptId: attempt.attemptId,
-      kind: "catalog",
-      taskType: attempt.taskType,
-      taskName: attempt.taskName,
-      itemDisplayName: displayNames.get(attempt.logicalItemId) ?? attempt.itemTitle,
-      correctPoints: attempt.correctPoints,
-      totalPoints: attempt.totalPoints,
-      accuracy: attempt.accuracy,
-      elapsedSeconds: attempt.elapsedSeconds,
-      submittedAt: attempt.submittedAt,
-      scope: null
-    })
-  );
-  const wrongbookEntries = (input.wrongbookAttempts ?? [])
-    .filter(
-      (attempt): attempt is ReadingStatsWrongbookAttemptRow & { submitted_at: string } =>
-        attempt.status === "submitted" && Boolean(attempt.submitted_at)
-    )
-    .map((attempt): TeacherStudentReadingHistoryEntry => {
-      const totalPoints = Math.max(0, safeNumber(attempt.total_points));
-      return {
-        attemptId: attempt.attempt_id,
-        kind: "wrongbook",
-        taskType: attempt.task_type,
-        taskName: READING_PRODUCT_NAMES[attempt.task_type],
-        itemDisplayName:
-          displayNames.get(attempt.logical_item_id) ??
-          READING_PRODUCT_NAMES[attempt.task_type],
-        correctPoints: safeNumber(attempt.correct_points),
-        totalPoints,
-        accuracy: ratio(safeNumber(attempt.correct_points), totalPoints),
-        elapsedSeconds: safeNumber(attempt.elapsed_seconds),
-        submittedAt: attempt.submitted_at,
-        scope: attempt.scope
-      };
-    });
-
-  return {
-    student: student
-      ? {
-          studentId: student.studentId,
-          displayName: student.displayName,
-          account: student.account
-        }
-      : {
-          studentId: input.profile.id,
-          displayName: input.profile.full_name?.trim() || input.profile.email?.trim() || "学生",
-          account: input.profile.email?.trim() || "—"
-        },
-    summary: {
-      completedAttempts: submittedAttempts.length,
-      correctPoints: points.correct,
-      totalPoints: points.total,
-      accuracy: ratio(points.correct, points.total),
-      totalPracticeSeconds: submittedAttempts.reduce(
-        (sum, attempt) => sum + safeNumber(attempt.elapsed_seconds),
-        0
-      ),
-      byTask: Object.fromEntries(TASKS.map((taskType) => [
-        taskType,
-        taskPerformance(submittedAttempts.filter((attempt) => attempt.task_type === taskType))
-      ])) as Record<ReadingModule, ReadingTaskPerformance>
-    },
-    attempts: [...catalogEntries, ...wrongbookEntries].sort((left, right) =>
-      Date.parse(right.submittedAt) - Date.parse(left.submittedAt)
-      || left.attemptId.localeCompare(right.attemptId)
-    )
-  };
-}
-
-export function buildTeacherReadingItemDisplayNames(items: ReadingCatalogItemRow[]) {
-  const ranks = buildDisplayRanks(items);
-  return new Map(
-    items.map((item) => [item.logical_item_id, readingItemDisplayName(item, ranks)])
-  );
-}
-
 function buildDisplayRanks(items: ReadingCatalogItemRow[]) {
   const ranks = new Map<string, string>();
   for (const taskType of TASKS) {
@@ -372,7 +222,7 @@ function buildDisplayRanks(items: ReadingCatalogItemRow[]) {
   return ranks;
 }
 
-function readingItemDisplayName(item: ReadingCatalogItemRow, ranks: Map<string, string>) {
+export function readingItemDisplayName(item: ReadingCatalogItemRow, ranks: Map<string, string>) {
   const prefix = `${item.module === "ctw" ? "套题" : "题目"}${ranks.get(item.logical_item_id) ?? "—"}`;
   return item.module === "ctw" ? prefix : `${prefix} · ${item.title?.trim() || READING_PRODUCT_NAMES[item.module]}`;
 }

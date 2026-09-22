@@ -95,8 +95,22 @@ test("Admin navigation rules stay unchanged from Phase 3/4", () => {
 
 test("Phase 5 domain isolation stays in the student detail views", () => {
   const dashboard = read("components/TeacherDashboard.tsx");
-  assert.match(dashboard, /const hasWriting = domains\.includes\("writing"\)/);
-  assert.match(dashboard, /hasWriting \? \(\n\s*<section className="grid gap-4">/);
-  assert.match(dashboard, /该学生不在你的写作教学范围内，无法查看 BAS 练习记录。/);
-  assert.match(dashboard, /该学生不在你的写作教学范围内，无法查看 BAS 答题记录。/);
+  assert.match(dashboard, /TeacherStudentPracticeWorkspace/);
+  assert.doesNotMatch(dashboard, /该学生不在你的写作教学范围内/);
+
+  const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
+  assert.match(component, /payload\.reading \? \(/);
+  assert.match(component, /payload\.writing \? \(/);
+  assert.match(component, /DomainChip domain="reading"/);
+  assert.match(component, /DomainChip domain="writing"/);
+
+  const route = read("app/api/teacher/students/[studentId]/practice/route.ts");
+  assert.match(route, /canAccessStudentDomain\(db, actor, studentId, "reading"\)/);
+  assert.match(route, /canAccessStudentDomain\(db, actor, studentId, "writing"\)/);
+  assert.match(route, /if \(!readingAllowed && !writingAllowed\)/);
+
+  const setRoute = read("app/api/teacher/students/[studentId]/bas/sets/[setId]/route.ts");
+  assert.match(setRoute, /canAccessStudentDomain\(db, \{ userId: auth\.userId, role: auth\.role \}, studentId, "writing"\)/);
+  const answerRoute = read("app/api/teacher/students/[studentId]/answers/[attemptAnswerId]/route.ts");
+  assert.match(answerRoute, /canAccessStudentDomain\(db, \{ userId: auth\.userId, role: auth\.role \}, studentId, "writing"\)/);
 });

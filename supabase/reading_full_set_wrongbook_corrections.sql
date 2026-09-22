@@ -98,7 +98,7 @@ declare
 begin
   if v_user_id is null or not exists (
     select 1 from public.profiles profile
-    where profile.id = v_user_id and profile.is_active and profile.role::text in ('student', 'admin')
+    where profile.id = v_user_id and profile.is_active and profile.role::text in ('student', 'admin', 'teacher')
   ) then
     raise exception using errcode = '42501', message = 'READING_STUDENT_REQUIRED';
   end if;

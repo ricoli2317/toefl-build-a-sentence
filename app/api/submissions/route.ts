@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { bearerToken } from "@/lib/auth";
+import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
 import {
   createStudentPerformanceTrace,
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
       () => authClient.from("profiles").select("role,is_active").eq("id", user.id).single()
     );
 
-    if (profileError || profile?.is_active === false || !["student", "admin"].includes(profile?.role ?? "")) {
+    if (profileError || profile?.is_active === false || !isUserRole(profile?.role) || !roleCanAccess(profile.role, "student")) {
       return fail(profileError?.message ?? "Unauthorized", 401);
     }
 
