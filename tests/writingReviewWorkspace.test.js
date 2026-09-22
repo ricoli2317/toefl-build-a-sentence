@@ -1123,7 +1123,7 @@ test("legacy teacher overall feedback loads into the single final overall field"
 
 test("non-teacher access is rejected before workspace data is read", () => {
   assert.throws(
-    () => assertWritingReviewTeacher({ error: "Unauthorized", userId: "student-1" }),
+    () => assertWritingReviewTeacher({ error: "Forbidden", userId: "admin-1" }),
     (error) =>
       error.code === "UNAUTHORIZED" &&
       error.status === 403 &&

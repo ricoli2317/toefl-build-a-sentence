@@ -1,4 +1,5 @@
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { TeacherOnly } from "@/components/RoleGate";
 import { TeacherWritingAssignmentEditForm } from "@/components/teacher/TeacherWritingAssignmentEditForm";
 
 export default function EditTeacherWritingAssignmentPage({
@@ -7,6 +8,7 @@ export default function EditTeacherWritingAssignmentPage({
   params: { assignmentId: string };
 }) {
   return (
+    <TeacherOnly>
     <TeacherAppShell
       crumbs={[
         { href: "/teacher/writing/assignments", label: "作业管理" },
@@ -18,5 +20,6 @@ export default function EditTeacherWritingAssignmentPage({
     >
       <TeacherWritingAssignmentEditForm assignmentId={params.assignmentId} />
     </TeacherAppShell>
+    </TeacherOnly>
   );
 }

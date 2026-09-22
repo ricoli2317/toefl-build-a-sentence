@@ -1,10 +1,12 @@
 import { TeacherSetSummary } from "@/components/TeacherDashboard";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { TeacherOnly } from "@/components/RoleGate";
 
 export default function TeacherSetPage({ params }: { params: { setId: string } }) {
   const setId = decodeURIComponent(params.setId);
 
   return (
+    <TeacherOnly>
     <TeacherAppShell
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
@@ -15,5 +17,6 @@ export default function TeacherSetPage({ params }: { params: { setId: string } }
     >
       <TeacherSetSummary setId={setId} />
     </TeacherAppShell>
+    </TeacherOnly>
   );
 }

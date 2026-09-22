@@ -1,5 +1,6 @@
 import { TeacherWritingAssignmentCollectionDetailView } from "@/components/teacher/TeacherWritingAssignmentCollectionDetailView";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { TeacherOnly } from "@/components/RoleGate";
 
 export default function TeacherWritingAssignmentCollectionPage({
   params
@@ -7,6 +8,7 @@ export default function TeacherWritingAssignmentCollectionPage({
   params: { batchId: string };
 }) {
   return (
+    <TeacherOnly>
     <TeacherAppShell
       crumbs={[
         { href: "/teacher/writing/assignments", label: "作业管理" },
@@ -17,5 +19,6 @@ export default function TeacherWritingAssignmentCollectionPage({
     >
       <TeacherWritingAssignmentCollectionDetailView collectionId={params.batchId} />
     </TeacherAppShell>
+    </TeacherOnly>
   );
 }

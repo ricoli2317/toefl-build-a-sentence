@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { TeacherOnly } from "@/components/RoleGate";
 import { TeacherWritingReviewList } from "@/components/teacher/TeacherWritingReviewList";
 
 export default function TeacherWritingReviewsPage() {
   return (
+    <TeacherOnly>
     <TeacherAppShell
       action={
         <Link className="teacher-button-secondary" href="/teacher/writing/reviews/logs">
@@ -19,5 +21,6 @@ export default function TeacherWritingReviewsPage() {
     >
       <TeacherWritingReviewList />
     </TeacherAppShell>
+    </TeacherOnly>
   );
 }

@@ -7,9 +7,11 @@ import {
   BarChart3,
   BookOpenCheck,
   CircleX,
+  CloudUpload,
   Clock3,
   FileText,
   GraduationCap,
+  Network,
   Search,
   Target,
   TrendingUp,
@@ -26,6 +28,7 @@ import {
 } from "@/lib/questionText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
+import { useCurrentAccount } from "@/components/RoleGate";
 import {
   compareStudentSearchGroups,
   compareStudentSearchMetadata,
@@ -287,6 +290,69 @@ export function TeacherDashboard() {
         ) : (
           <div className="mt-4"><TeacherEmptyState text="暂无近期动态。" /></div>
         )}
+      </TeacherCard>
+    </div>
+  );
+}
+
+export function TeacherHome() {
+  const { role } = useCurrentAccount();
+  return role === "admin" ? <AdminPlatformHome /> : <TeacherDashboard />;
+}
+
+export function AdminPlatformHome() {
+  return (
+    <div className="grid gap-8">
+      <section>
+        <TeacherSectionTitle>平台管理</TeacherSectionTitle>
+        <div className="mt-4 grid gap-5 md:grid-cols-3">
+          <TeacherFeatureCard
+            description="管理学生账号与教师账号"
+            href="/teacher/students"
+            icon={Users}
+            metric="学生"
+            title="账号"
+          />
+          <TeacherFeatureCard
+            description="创建教师账号并调整学生额度"
+            href="/teacher/accounts/teachers"
+            icon={BarChart3}
+            metric="教师"
+            title="教师账号"
+          />
+          <TeacherFeatureCard
+            description="分配 Reading / Writing 教师权限"
+            href="/admin/student-bindings"
+            icon={Network}
+            metric="绑定"
+            title="Teacher Bindings"
+          />
+        </div>
+      </section>
+      <section>
+        <TeacherSectionTitle>内容浏览</TeacherSectionTitle>
+        <div className="mt-4 grid gap-5 md:grid-cols-3">
+          <TeacherFeatureCard
+            description="浏览与管理所有题库内容"
+            href="/teacher/question-bank"
+            icon={FileText}
+            metric="题库"
+            title="查看所有套题"
+          />
+          <TeacherFeatureCard
+            description="从 CSV 批量导入题目内容"
+            href="/teacher/import"
+            icon={CloudUpload}
+            metric="导入"
+            title="导入 CSV"
+          />
+        </div>
+      </section>
+      <TeacherCard className="p-5 sm:p-6">
+        <TeacherSectionTitle>角色说明</TeacherSectionTitle>
+        <p className="mt-3 text-sm text-student-muted">
+          Admin 是平台管理员，负责账号与权限管理。作业管理、写作批改、阅读统计等教学工作流仅对普通教师开放。
+        </p>
       </TeacherCard>
     </div>
   );

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { standardizeOrderTextCasing } from "@/lib/questionText";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
@@ -53,7 +53,6 @@ type ProfileRow = {
   email: string | null;
   full_name: string | null;
   role: string | null;
-  owner_id: string | null;
   is_active: boolean | null;
 };
 
@@ -212,8 +211,10 @@ export async function GET(request: Request) {
       return jsonError(userError?.message ?? "Invalid session", 401);
     }
 
-    const auth = await requireUserWithRole(token, "teacher");
-    if (auth.error || !auth.userId || !auth.role) return jsonError(auth.error ?? "Unauthorized", 401);
+    const auth = await requireTeacherOnly(token);
+    if (auth.error || !auth.userId || !auth.role) {
+      return jsonError(auth.error ?? "Unauthorized", auth.error === "Forbidden" ? 403 : 401);
+    }
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
@@ -261,7 +262,7 @@ export async function GET(request: Request) {
       fetchRowsForStudentIds<ProfileRow>(scopedStudentIds, (batch, from, to) =>
         db
           .from("profiles")
-          .select("id,email,full_name,role,owner_id,is_active")
+          .select("id,email,full_name,role,is_active")
           .in("id", batch)
           .order("id", { ascending: true })
           .range(from, to)
@@ -334,16 +335,7 @@ export async function GET(request: Request) {
       ...profile,
       id: String(profile.id)
     }));
-    const visibleStudentIds = new Set(
-      profileRows
-        .filter((profile) =>
-          profile.role === "student" &&
-          profile.is_active !== false &&
-          (auth.role === "admin" || profile.owner_id === auth.userId)
-        )
-        .map((profile) => profile.id)
-    );
-    if (auth.role === "admin") visibleStudentIds.add(auth.userId);
+    const visibleStudentIds = new Set(scopedStudentIds);
     const attemptRows = rawAttemptRows.filter((attempt) => visibleStudentIds.has(attempt.student_id));
     const answerRows = rawAnswerRows.filter((answer) => visibleStudentIds.has(answer.student_id));
     const questionRows = ((questions ?? []) as QuestionRow[]).map((question) => ({

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   isWritingTaskType,
@@ -13,7 +13,7 @@ import {
   isWritingQuestionSnapshot,
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
-import type { AccountActor } from "@/lib/accountAccess";
+import { listVisibleStudentIds, type AccountActor } from "@/lib/accountAccess";
 
 export const WRITING_ASSIGNMENT_QUERY_FIELDS = {
   email:
@@ -51,12 +51,12 @@ export function writingAssignmentJson(data: unknown, init?: ResponseInit) {
 }
 
 export async function requireWritingAssignmentTeacher(request: Request) {
-  const auth = await requireUserWithRole(bearerToken(request), "teacher");
+  const auth = await requireTeacherOnly(bearerToken(request));
   if (auth.error || !auth.userId || !auth.role) {
     return {
       error: writingAssignmentJson(
         { code: "UNAUTHORIZED", message: "无权访问教师端作业数据。" },
-        { status: auth.error === "Unauthorized" ? 403 : 401 }
+        { status: auth.error === "Forbidden" ? 403 : 401 }
       ),
       supabase: null,
       teacherId: null,
@@ -230,24 +230,32 @@ async function assertWritingAssignmentStudentIds(
   studentIds: string[],
   actor?: AccountActor
 ) {
-  let count = 0;
-  for (const batch of chunkValues(studentIds)) {
-    let query = supabase
-      .from("profiles")
-      .select("id")
-      .eq("is_active", true)
-      .in("id", batch);
-    if (actor?.role === "admin") {
-      query = query.or(`role.eq.student,id.eq.${actor.userId}`);
-    } else {
-      query = query.eq("role", "student");
-      if (actor) query = query.eq("owner_id", actor.userId);
+  if (actor?.role === "admin") {
+    let count = 0;
+    for (const batch of chunkValues(studentIds)) {
+      let query = supabase
+        .from("profiles")
+        .select("id")
+        .eq("is_active", true)
+        .in("id", batch);
+      if (actor) query = query.or(`role.eq.student,id.eq.${actor.userId}`);
+      const { data, error } = await query;
+      if (error) throw error;
+      count += data?.length ?? 0;
     }
-    const { data, error } = await query;
-    if (error) throw error;
-    count += data?.length ?? 0;
+    if (count !== studentIds.length) throw new Error("所选学生中包含无效账号。");
+    return;
   }
-  if (count !== studentIds.length) throw new Error("所选学生中包含无效账号。");
+  const eligible = new Set(
+    await listVisibleStudentIds(
+      supabase,
+      actor ?? { userId: "", role: "teacher" },
+      "writing"
+    )
+  );
+  for (const studentId of studentIds) {
+    if (!eligible.has(studentId)) throw new Error("所选学生中包含无效账号。");
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Check, Plus, Search, Trash2, UserRound, X } from "lucide-react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { TeacherCard, TeacherEmptyState, TeacherSectionTitle } from "@/components/teacher/TeacherUI";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 import {
@@ -137,6 +138,7 @@ export function StudentBindingsAdmin() {
                         return { ok: false as const, message: data.message ?? "绑定新增失败。" };
                       }
                       await load();
+                      publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED" });
                       return { ok: true as const, message: "" };
                     }}
                     onDelete={async (binding) => {
@@ -152,6 +154,7 @@ export function StudentBindingsAdmin() {
                       setError("");
                       setNotice(`已删除${binding.teacherName || "该教师"}的 ${label} 绑定。`);
                       await load();
+                      publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED" });
                     }}
                     onToggleManage={() => {
                       setNotice("");

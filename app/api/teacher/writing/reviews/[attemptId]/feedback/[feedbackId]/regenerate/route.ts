@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import {
   EMPTY_OPENROUTER_USAGE,
   type OpenRouterTokenUsage,
@@ -110,7 +110,7 @@ export async function POST(
   let costObservability: Record<string, unknown> | null = null;
   let aiLogClient: ReturnType<typeof createServiceSupabase> | null = null;
   try {
-    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
     if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {

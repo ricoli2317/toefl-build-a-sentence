@@ -46,7 +46,7 @@ export function assertWritingReviewTeacher(auth: {
   throw new WritingReviewWorkspaceServerError(
     "UNAUTHORIZED",
     "无权访问教师端批改数据。",
-    auth.error === "Unauthorized" ? 403 : 401
+    auth.error === "Forbidden" ? 403 : 401
   );
 }
 

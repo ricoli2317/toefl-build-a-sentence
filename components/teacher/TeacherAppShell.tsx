@@ -31,6 +31,7 @@ const navigation: Array<{
   icon: import("lucide-react").LucideIcon;
   label: string;
   adminOnly?: boolean;
+  teacherOnly?: boolean;
   match: (path: string) => boolean;
 }> = [
   {
@@ -49,24 +50,28 @@ const navigation: Array<{
     href: "/teacher/sets",
     icon: BarChart3,
     label: "套题统计",
+    teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/sets")
   },
   {
     href: "/teacher/reading/statistics",
     icon: BookOpenCheck,
     label: "阅读统计",
+    teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/reading")
   },
   {
     href: "/teacher/writing/assignments",
     icon: ClipboardList,
     label: "作业管理",
+    teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/writing/assignments")
   },
   {
     href: "/teacher/writing/reviews",
     icon: ClipboardPenLine,
     label: "写作批改",
+    teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/writing/reviews")
   },
   {
@@ -230,7 +235,10 @@ export function TeacherAppShell({
         >
           <nav aria-label="教师端主导航" className="grid gap-2">
             {navigation
-              .filter((item) => role === "admin" || !item.adminOnly)
+              .filter((item) => {
+                if (role === "admin") return !item.teacherOnly;
+                return !item.adminOnly;
+              })
               .map((item) => {
               const active = item.match(pathname);
               const Icon = item.icon;

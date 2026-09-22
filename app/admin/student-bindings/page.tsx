@@ -13,7 +13,7 @@ export default function AdminStudentBindingsPage() {
               { label: "首页", href: "/teacher/dashboard" },
               { label: "教师绑定" }
             ]}
-            subtitle="配置每个学生的 Reading / Writing 教师绑定。本轮绑定不影响现有教师端权限。"
+            subtitle="管理学生与教师之间的 Reading / Writing 教学绑定。绑定关系将决定教师可访问的学生及对应教学数据。"
             title="教师绑定"
           >
             <StudentBindingsAdmin />

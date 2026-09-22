@@ -1,5 +1,6 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import { listVisibleStudentIds } from "@/lib/accountAccess";
 import {
   requireWritingAssignmentTeacher,
   writingAssignmentJson
@@ -14,22 +15,23 @@ export async function GET(request: Request) {
     const auth = await requireWritingAssignmentTeacher(request);
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.actor) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
-    const result = await readAllSupabaseRows<StudentRow>((from, to) => {
-      let query = auth.supabase!
+    const studentIds = await listVisibleStudentIds(
+      auth.supabase,
+      auth.actor,
+      auth.actor.role === "admin" ? undefined : "writing"
+    );
+    if (studentIds.length === 0) return writingAssignmentJson({ students: [] });
+    const result = await readAllSupabaseRows<StudentRow>((from, to) =>
+      auth.supabase!
         .from("profiles")
         .select("id,email,full_name")
-        .eq("is_active", true);
-      if (auth.actor!.role === "admin") {
-        query = query.or(`role.eq.student,id.eq.${auth.actor!.userId}`);
-      } else {
-        query = query.eq("role", "student").eq("owner_id", auth.actor!.userId);
-      }
-      return query
+        .eq("is_active", true)
+        .in("id", studentIds)
         .order("full_name", { ascending: true, nullsFirst: false })
         .order("email", { ascending: true, nullsFirst: false })
         .order("id", { ascending: true })
-        .range(from, to);
-    });
+        .range(from, to)
+    );
     if (result.error) throw result.error;
     return writingAssignmentJson({
       students: (result.data ?? []).map((student) => ({

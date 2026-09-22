@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { TeacherStudentsList } from "@/components/TeacherDashboard";
+import { StudentsAccountHome } from "@/components/admin/AdminStudents";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
-import { AccountTabs } from "@/components/teacher/TeacherAccounts";
 
 export default function TeacherStudentsPage() {
   return (
@@ -20,10 +19,7 @@ export default function TeacherStudentsPage() {
       subtitle="管理学生与教师账号"
       title="账号"
     >
-      <div className="grid gap-6">
-        <AccountTabs active="students" />
-        <TeacherStudentsList />
-      </div>
+      <StudentsAccountHome />
     </TeacherAppShell>
   );
 }

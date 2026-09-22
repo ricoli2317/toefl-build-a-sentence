@@ -12,7 +12,8 @@ export type CacheInvalidationMutation =
   | "WRITING_REVIEW_UPDATED"
   | "WRITING_REVIEW_PUBLISHED"
   | "ASSIGNMENT_UPDATED"
-  | "TEACHER_STATS_UPDATED";
+  | "TEACHER_STATS_UPDATED"
+  | "TEACHER_BINDING_UPDATED";
 
 export type CacheInvalidationDomain =
   | "studentPracticeCatalog"
@@ -29,7 +30,8 @@ export type CacheInvalidationDomain =
   | "teacherQuestionBank"
   | "teacherWritingReviews"
   | "teacherWritingReviewWorkspace"
-  | "teacherAssignments";
+  | "teacherAssignments"
+  | "teacherReadingStatistics";
 
 export type CacheInvalidationEvent = {
   type: CacheInvalidationMutation;
@@ -91,7 +93,14 @@ const BASE_INVALIDATION_MATRIX: Record<
     "studentWritingOverview",
     "teacherAssignments"
   ],
-  TEACHER_STATS_UPDATED: ["teacherStats"]
+  TEACHER_STATS_UPDATED: ["teacherStats"],
+  TEACHER_BINDING_UPDATED: [
+    "teacherStats",
+    "teacherReadingStatistics",
+    "teacherWritingReviews",
+    "teacherWritingReviewWorkspace",
+    "teacherAssignments"
+  ]
 };
 
 export function cacheDomainsForEvent(

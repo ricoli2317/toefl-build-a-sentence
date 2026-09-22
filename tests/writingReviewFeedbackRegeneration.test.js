@@ -439,7 +439,7 @@ test("published review keeps its old published snapshot after local regeneration
 
 test("non-teacher is rejected", () => {
   assert.throws(
-    () => assertWritingReviewTeacher({ error: "Unauthorized", userId: "student-1" }),
+    () => assertWritingReviewTeacher({ error: "Forbidden", userId: "admin-1" }),
     (error) => error.code === "UNAUTHORIZED" && error.status === 403
   );
 });

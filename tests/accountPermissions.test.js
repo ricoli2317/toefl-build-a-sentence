@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { canAssignRecipient } from "../lib/accountAccess.ts";
 import { defaultRouteForRole, roleCanAccess } from "../lib/accountPermissions.ts";
+import { createMockSupabase } from "./fixtures/mockSupabase.js";
 
 test("role capabilities allow Admin in both areas without widening Teacher or Student", () => {
   assert.equal(roleCanAccess("admin", "teacher"), true);
@@ -16,14 +17,39 @@ test("role capabilities allow Admin in both areas without widening Teacher or St
   assert.equal(defaultRouteForRole("student"), "/student");
 });
 
-test("only Admin can self-assign; Teacher remains limited to owned students", () => {
+test("only Admin can self-assign; Teacher assigns through a writing-domain binding", async () => {
   const admin = { userId: "admin-1", role: "admin" };
   const teacher = { userId: "teacher-1", role: "teacher" };
-  assert.equal(canAssignRecipient(admin, { id: "admin-1", role: "admin", ownerId: null, isActive: true }), true);
-  assert.equal(canAssignRecipient(teacher, { id: "teacher-1", role: "teacher", ownerId: null, isActive: true }), false);
-  assert.equal(canAssignRecipient(teacher, { id: "student-1", role: "student", ownerId: "teacher-1", isActive: true }), true);
-  assert.equal(canAssignRecipient(teacher, { id: "student-2", role: "student", ownerId: "teacher-2", isActive: true }), false);
-  assert.equal(canAssignRecipient(teacher, { id: "admin-1", role: "admin", ownerId: null, isActive: true }), false);
+  const supabase = createMockSupabase({
+    teacher_student_bindings: [
+      { binding_id: "b-w", teacher_id: "teacher-1", student_id: "student-1", domain: "writing" },
+      { binding_id: "b-r", teacher_id: "teacher-1", student_id: "student-2", domain: "reading" }
+    ]
+  });
+  assert.equal(
+    await canAssignRecipient(supabase, admin, { id: "admin-1", role: "admin", isActive: true }),
+    true
+  );
+  assert.equal(
+    await canAssignRecipient(supabase, teacher, { id: "teacher-1", role: "teacher", isActive: true }),
+    false
+  );
+  assert.equal(
+    await canAssignRecipient(supabase, teacher, { id: "student-1", role: "student", isActive: true }),
+    true
+  );
+  assert.equal(
+    await canAssignRecipient(supabase, teacher, { id: "student-2", role: "student", isActive: true }),
+    false
+  );
+  assert.equal(
+    await canAssignRecipient(supabase, teacher, { id: "admin-1", role: "admin", isActive: true }),
+    false
+  );
+  assert.equal(
+    await canAssignRecipient(supabase, teacher, { id: "student-1", role: "student", isActive: false }),
+    false
+  );
 });
 
 test("login is unified and resolves role through the protected account endpoint", async () => {

@@ -188,8 +188,8 @@ test("teacher log API enforces teacher auth, all filters, DESC pagination, and d
   const list = read("app/api/teacher/writing/reviews/ai-logs/route.ts");
   const detail = read("app/api/teacher/writing/reviews/ai-logs/[logId]/route.ts");
   for (const source of [list, detail]) {
-    assert.match(source, /requireUserWithRole\(bearerToken\(request\), "teacher"\)/);
-    assert.match(source, /auth\.error === "Unauthorized" \? 403 : 401/);
+    assert.match(source, /requireTeacherOnly\(bearerToken\(request\)\)/);
+    assert.match(source, /auth\.error === "Forbidden" \? 403 : 401/);
     assert.match(source, /Cache-Control": "no-store"/);
   }
   for (const filter of [

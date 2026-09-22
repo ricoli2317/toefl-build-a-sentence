@@ -1,4 +1,5 @@
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { TeacherOnly } from "@/components/RoleGate";
 import { TeacherWritingAiLogs } from "@/components/teacher/TeacherWritingAiLogs";
 
 export default function TeacherWritingAiLogsPage({
@@ -7,6 +8,7 @@ export default function TeacherWritingAiLogsPage({
   searchParams: { attempt_id?: string };
 }) {
   return (
+    <TeacherOnly>
     <TeacherAppShell
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
@@ -18,5 +20,6 @@ export default function TeacherWritingAiLogsPage({
     >
       <TeacherWritingAiLogs initialAttemptId={searchParams.attempt_id ?? ""} />
     </TeacherAppShell>
+    </TeacherOnly>
   );
 }

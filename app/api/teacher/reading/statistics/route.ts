@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { listVisibleStudentIds } from "@/lib/accountAccess";
 import type { ReadingCatalogItemRow } from "@/lib/reading/catalog";
 import {
@@ -18,17 +18,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const token = bearerToken(request);
-  const auth = await requireUserWithRole(token, "teacher");
+  const auth = await requireTeacherOnly(token);
   if (auth.error || !auth.userId || !auth.role) {
     return json({ error: "无权查看阅读统计。" }, { status: 403 });
   }
 
   try {
     const db = createServiceSupabase();
-    const studentIds = await listVisibleStudentIds(db, {
-      userId: auth.userId,
-      role: auth.role
-    });
+    const studentIds = await listVisibleStudentIds(
+      db,
+      { userId: auth.userId, role: auth.role },
+      "reading"
+    );
     const [profiles, items, attempts, questions, slots] = await Promise.all([
       fetchForIds<ReadingStatsProfileRow>(db, "profiles", "id,email,full_name", "id", studentIds),
       readAllSupabaseRows<ReadingCatalogItemRow>((from, to) =>

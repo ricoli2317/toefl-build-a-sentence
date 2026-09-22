@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
@@ -60,9 +60,9 @@ function json(data: unknown, init?: ResponseInit) {
 
 export async function GET(request: Request) {
   try {
-    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    const auth = await requireTeacherOnly(bearerToken(request));
     if (auth.error || !auth.userId) {
-      const status = auth.error === "Unauthorized" ? 403 : 401;
+      const status = auth.error === "Forbidden" ? 403 : 401;
       return json(
         { code: "UNAUTHORIZED", message: auth.error ?? "Unauthorized" },
         { status }
@@ -71,24 +71,20 @@ export async function GET(request: Request) {
 
     const requestedAttemptId = new URL(request.url).searchParams.get("attemptId")?.trim();
     const supabase = createServiceSupabase();
-    const visibleStudentIds = await listVisibleStudentIds(supabase, {
-      userId: auth.userId,
-      role: auth.role!
-    });
-    if (visibleStudentIds.length === 0) return json({ attempts: [] });
-    const attemptsResult = await readAllSupabaseRows<AttemptRow>((from, to) => {
-      let query = supabase
-        .from("writing_attempts")
-        .select(
-          "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
-        )
-        .eq("status", "submitted")
-        .in("user_id", visibleStudentIds);
-      if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
-      return query
-        .order("submitted_at", { ascending: false, nullsFirst: false })
-        .order("attempt_id", { ascending: false })
-        .range(from, to);
+    const writingStudentIds = await listVisibleStudentIds(
+      supabase,
+      { userId: auth.userId, role: auth.role! },
+      "writing"
+    );
+    const ownAssignmentIds =
+      auth.role === "admin"
+        ? null
+        : await listOwnAssignmentIds(supabase, auth.userId);
+    const attemptsResult = await loadReviewableAttempts(supabase, {
+      admin: auth.role === "admin",
+      ownAssignmentIds,
+      requestedAttemptId,
+      writingStudentIds
     });
 
     if (attemptsResult.error) {
@@ -98,8 +94,12 @@ export async function GET(request: Request) {
       );
     }
 
-    const attempts = (attemptsResult.data ?? []).filter((attempt) =>
-      isWritingTaskType(attempt.task_type)
+    const attempts = Array.from(
+      new Map(
+        (attemptsResult.data ?? [])
+          .filter((attempt) => isWritingTaskType(attempt.task_type))
+          .map((attempt) => [String(attempt.attempt_id), attempt])
+      ).values()
     );
     if (attempts.length === 0) return json({ attempts: [] });
 
@@ -298,4 +298,75 @@ async function readRowsByIds<T>(
 
 function unique(values: string[]) {
   return Array.from(new Set(values));
+}
+
+async function listOwnAssignmentIds(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  teacherId: string
+) {
+  const result = await readAllSupabaseRows<{ assignment_id: string }>((from, to) =>
+    supabase
+      .from("writing_assignments")
+      .select("assignment_id")
+      .eq("teacher_id", teacherId)
+      .order("created_at", { ascending: false })
+      .range(from, to)
+  );
+  if (result.error) throw result.error;
+  return (result.data ?? []).map((row) => String(row.assignment_id));
+}
+
+async function loadReviewableAttempts(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  options: {
+    admin: boolean;
+    ownAssignmentIds: string[] | null;
+    requestedAttemptId: string | undefined;
+    writingStudentIds: string[];
+  }
+): Promise<{ data: AttemptRow[] | null; error: PageError | null }> {
+  const { admin, ownAssignmentIds, requestedAttemptId, writingStudentIds } = options;
+  const rows: AttemptRow[] = [];
+
+  if (writingStudentIds.length > 0) {
+    const selfResult = await readAllSupabaseRows<AttemptRow>((from, to) => {
+      let query = supabase
+        .from("writing_attempts")
+        .select(
+          "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
+        )
+        .eq("status", "submitted")
+        .in("user_id", writingStudentIds)
+        .is("assignment_id", null);
+      if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
+      return query
+        .order("submitted_at", { ascending: false, nullsFirst: false })
+        .order("attempt_id", { ascending: false })
+        .range(from, to);
+    });
+    if (selfResult.error) return selfResult;
+    rows.push(...(selfResult.data ?? []));
+  }
+
+  if (admin || (ownAssignmentIds !== null && ownAssignmentIds.length > 0)) {
+    const assignmentResult = await readAllSupabaseRows<AttemptRow>((from, to) => {
+      let query = supabase
+        .from("writing_attempts")
+        .select(
+          "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
+        )
+        .eq("status", "submitted");
+      if (admin) query = query.not("assignment_id", "is", null);
+      else query = query.in("assignment_id", ownAssignmentIds!);
+      if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
+      return query
+        .order("submitted_at", { ascending: false, nullsFirst: false })
+        .order("attempt_id", { ascending: false })
+        .range(from, to);
+    });
+    if (assignmentResult.error) return assignmentResult;
+    rows.push(...(assignmentResult.data ?? []));
+  }
+
+  return { data: rows, error: null };
 }

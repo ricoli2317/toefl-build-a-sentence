@@ -206,6 +206,9 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
             case "teacherStats":
               invalidate(TEACHER_STATS_CACHE_KEY);
               break;
+            case "teacherReadingStatistics":
+              invalidate(TEACHER_READING_STATS_CACHE_KEY);
+              break;
             case "teacherQuestionBank":
               invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
               break;

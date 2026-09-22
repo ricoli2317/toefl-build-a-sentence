@@ -1,4 +1,5 @@
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import { TeacherOnly } from "@/components/RoleGate";
 import { TeacherWritingReviewWorkspace } from "@/components/teacher/TeacherWritingReviewWorkspace";
 import { safeWritingReviewReturnTo } from "@/lib/teacherWritingReviewNavigation";
 
@@ -13,6 +14,7 @@ export default function TeacherWritingReviewWorkspacePage({
     Array.isArray(searchParams.returnTo) ? searchParams.returnTo[0] : searchParams.returnTo
   );
   return (
+    <TeacherOnly>
     <TeacherAppShell
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
@@ -24,5 +26,6 @@ export default function TeacherWritingReviewWorkspacePage({
     >
       <TeacherWritingReviewWorkspace attemptId={params.attemptId} returnTo={returnTo} />
     </TeacherAppShell>
+    </TeacherOnly>
   );
 }

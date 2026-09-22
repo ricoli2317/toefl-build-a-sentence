@@ -88,3 +88,17 @@ export function AdminOnly({ children }: { children: React.ReactNode }) {
   }, [account.role, router]);
   return account.role === "admin" ? children : null;
 }
+
+/**
+ * Teacher personal teaching workstations (assignments, reviews, reading
+ * statistics, teaching detail pages) are for actual teachers only. Admin is a
+ * platform manager and is redirected to the admin home instead.
+ */
+export function TeacherOnly({ children }: { children: React.ReactNode }) {
+  const account = useCurrentAccount();
+  const router = useRouter();
+  useEffect(() => {
+    if (account.role !== "teacher") router.replace("/teacher/dashboard");
+  }, [account.role, router]);
+  return account.role === "teacher" ? children : null;
+}

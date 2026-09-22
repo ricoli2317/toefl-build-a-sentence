@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   projectWritingReviewAiLog,
@@ -13,11 +13,11 @@ export async function GET(
   request: Request,
   { params }: { params: { logId: string } }
 ) {
-  const auth = await requireUserWithRole(bearerToken(request), "teacher");
+  const auth = await requireTeacherOnly(bearerToken(request));
   if (auth.error || !auth.userId || !auth.role) {
     return json(
       { code: "UNAUTHORIZED", message: auth.error ?? "Unauthorized" },
-      auth.error === "Unauthorized" ? 403 : 401
+      auth.error === "Forbidden" ? 403 : 401
     );
   }
   const supabase = createServiceSupabase();

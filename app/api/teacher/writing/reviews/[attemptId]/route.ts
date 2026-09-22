@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   assertWritingReviewTeacher,
@@ -27,7 +27,7 @@ export async function GET(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
     if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
@@ -76,7 +76,7 @@ export async function PATCH(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    const auth = await requireUserWithRole(bearerToken(request), "teacher");
+    const auth = await requireTeacherOnly(bearerToken(request));
     assertWritingReviewTeacher(auth);
     const supabase = createServiceSupabase();
     if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {

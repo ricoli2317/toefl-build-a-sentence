@@ -62,6 +62,24 @@ export async function requireUserWithRole(
   return account;
 }
 
+/**
+ * Teacher operational endpoints must be used by actual teachers only.
+ * Admin is a platform manager and must not act through Teacher teaching
+ * operations, so Admin (and Student) receive "Forbidden" here.
+ */
+export async function requireTeacherOnly(
+  token: string | null,
+  timing?: StudentPerformanceTrace,
+  performanceNames?: { auth?: string; profile?: string }
+) {
+  const account = await requireAuthenticatedAccount(token, timing, performanceNames);
+  if (account.error || !account.userId || !account.role) return account;
+  if (account.role !== "teacher") {
+    return { error: "Forbidden", userId: null, role: account.role };
+  }
+  return account;
+}
+
 export async function requireAdmin(token: string | null) {
   const account = await requireAuthenticatedAccount(token);
   if (account.error || account.role !== "admin") {

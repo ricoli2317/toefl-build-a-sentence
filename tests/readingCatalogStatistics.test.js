@@ -226,7 +226,7 @@ test("RAP multiple choice, insertion, and sentence selection remain separate sta
 });
 
 test("Teacher statistics enforce owned-student scope and never select answer keys", () => {
-  assert.match(teacherRoute, /requireUserWithRole\(token, "teacher"\)/);
+  assert.match(teacherRoute, /requireTeacherOnly\(token\)/);
   assert.match(teacherRoute, /listVisibleStudentIds/);
   assert.match(teacherRoute, /studentIds/);
   assert.doesNotMatch(teacherRoute, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text|student_answer/);

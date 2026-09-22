@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
   projectWritingReviewAiLog,
   WRITING_REVIEW_AI_LOG_SAFE_COLUMNS
 } from "@/lib/writingReviewAiLogProjection";
-import { listVisibleStudentIds } from "@/lib/accountAccess";
+import { listVisibleWritingAttemptIds } from "@/lib/accountAccess";
 
 export const dynamic = "force-dynamic";
 
@@ -16,11 +16,11 @@ type AttemptRow = { attempt_id: string; user_id: string };
 type ProfileRow = { id: string; email: string | null; full_name: string | null };
 
 export async function GET(request: Request) {
-  const auth = await requireUserWithRole(bearerToken(request), "teacher");
+  const auth = await requireTeacherOnly(bearerToken(request));
   if (auth.error || !auth.userId || !auth.role) {
     return response(
       { code: "UNAUTHORIZED", message: auth.error ?? "Unauthorized" },
-      auth.error === "Unauthorized" ? 403 : 401
+      auth.error === "Forbidden" ? 403 : 401
     );
   }
 
@@ -32,12 +32,10 @@ export async function GET(request: Request) {
   );
   const from = (page - 1) * pageSize;
   const supabase = createServiceSupabase();
-  const visibleStudentIds = await listVisibleStudentIds(supabase, { userId: auth.userId, role: auth.role });
-  if (visibleStudentIds.length === 0) return response({ logs: [], pagination: { page, page_size: pageSize, total: 0, total_pages: 0 } });
-  const { data: visibleAttempts, error: visibleAttemptsError } = await supabase
-    .from("writing_attempts").select("attempt_id").in("user_id", visibleStudentIds);
-  if (visibleAttemptsError) return response({ code: "WRITING_AI_LOGS_LOAD_FAILED", message: "无法加载 AI 调用日志。" }, 500);
-  const visibleAttemptIds = (visibleAttempts ?? []).map((attempt) => String(attempt.attempt_id));
+  const visibleAttemptIds = await listVisibleWritingAttemptIds(supabase, {
+    userId: auth.userId,
+    role: auth.role
+  });
   if (visibleAttemptIds.length === 0) return response({ logs: [], pagination: { page, page_size: pageSize, total: 0, total_pages: 0 } });
   let query = supabase
     .from("writing_review_ai_logs")

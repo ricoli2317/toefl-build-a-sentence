@@ -1,13 +1,13 @@
-import { TeacherDashboard } from "@/components/TeacherDashboard";
+import { TeacherHome } from "@/components/TeacherDashboard";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 
 export default function TeacherDashboardPage() {
   return (
     <TeacherAppShell
-      subtitle="查看学生情况、分析套题表现、管理题库"
-      title="教师首页"
+      subtitle="平台管理与学生教学入口"
+      title="教师端首页"
     >
-      <TeacherDashboard />
+      <TeacherHome />
     </TeacherAppShell>
   );
 }
