@@ -33,7 +33,6 @@ test("Case 1/2/3: every ordinary Teacher sees the same complete navigation", () 
     assert.match(block, /teacherOnly: true/, `${href} must stay teacherOnly`);
   }
   assert.match(shell, /href: "\/admin\/student-bindings"/);
-  assert.match(shell, /href: "\/admin\/writing-assignment-transfer"/);
   assert.match(shell, /adminOnly: true/);
 });
 
@@ -90,7 +89,7 @@ test("Admin navigation rules stay unchanged from Phase 3/4", () => {
   const dashboard = read("components/TeacherDashboard.tsx");
   assert.match(dashboard, /export function AdminPlatformHome/);
   assert.match(dashboard, /title="教师绑定"/);
-  assert.match(dashboard, /title="历史作业转移"/);
+  assert.doesNotMatch(dashboard, /历史作业转移/);
   assert.match(dashboard, /作业管理、写作批改、阅读统计等教学工作流仅对普通教师开放。/);
 });
 

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowRightLeft,
   BarChart3,
   BookOpenCheck,
   CircleX,
@@ -339,13 +338,6 @@ export function AdminPlatformHome() {
             icon={Network}
             metric="绑定"
             title="教师绑定"
-          />
-          <TeacherFeatureCard
-            description="将 Admin 历史 Writing 作业转给普通教师"
-            href="/admin/writing-assignment-transfer"
-            icon={ArrowRightLeft}
-            metric="转移"
-            title="历史作业转移"
           />
         </div>
       </section>

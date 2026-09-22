@@ -1,7 +1,9 @@
 /**
  * Minimal in-memory Supabase PostgREST-style builder used by permission tests.
- * Supports the query surface exercised by lib/accountAccess.ts:
- * select/eq/in/is/not/order/range/maybeSingle.
+ *
+ * Supported surface:
+ * - select/eq/in/is/ilike/not/order/limit/range/maybeSingle/single
+ * - insert/delete with the same filters and a thenable builder
  *
  * Pass options.rpc to stub Supabase RPC calls:
  *   createMockSupabase(tables, { rpc: (fn, args, tables) => ({ data, error }) })
@@ -15,33 +17,80 @@ export function createMockSupabase(tables, options = {}) {
       return options.rpc(fn, args, tables);
     },
     from(tableName) {
-      const plan = [];
+      const filters = [];
+      const transforms = [];
+      let operation = { type: "select" };
+      let selectRequested = false;
+
+      function selectRows() {
+        let rows = snapshot(tables[tableName]);
+        for (const filter of filters) rows = rows.filter(filter);
+        for (const transform of transforms) rows = transform(rows);
+        return rows;
+      }
+
+      function run() {
+        if (operation.type === "insert") {
+          const table = tables[tableName] ?? (tables[tableName] = []);
+          const inserted = operation.rows.map((row) => {
+            const next = { ...row };
+            if (tableName === "teacher_student_bindings") {
+              next.binding_id = next.binding_id ?? `mock-binding-${table.length + 1}`;
+              next.created_at = next.created_at ?? new Date().toISOString();
+            }
+            return next;
+          });
+          table.push(...inserted);
+          return { data: selectRequested ? inserted : null, error: null };
+        }
+        if (operation.type === "delete") {
+          const table = tables[tableName] ?? [];
+          const matches = (row) => filters.every((filter) => filter(row));
+          const deleted = table.filter(matches);
+          tables[tableName] = table.filter((row) => !matches(row));
+          return { data: deleted, error: null };
+        }
+        return { data: selectRows(), error: null };
+      }
+
       const builder = {
         select() {
+          selectRequested = true;
+          return builder;
+        },
+        insert(rows) {
+          operation = { type: "insert", rows: Array.isArray(rows) ? rows : [rows] };
+          return builder;
+        },
+        delete() {
+          operation = { type: "delete" };
           return builder;
         },
         eq(column, value) {
-          plan.push((rows) => rows.filter((row) => row[column] === value));
+          filters.push((row) => row[column] === value);
           return builder;
         },
         in(column, values) {
-          plan.push((rows) => rows.filter((row) => values.includes(row[column])));
+          filters.push((row) => values.includes(row[column]));
           return builder;
         },
         is(column, value) {
-          plan.push((rows) => rows.filter((row) => row[column] === value));
+          filters.push((row) => row[column] === value);
           return builder;
         },
-        not(column, operation, value) {
-          plan.push((rows) =>
-            rows.filter((row) =>
-              value === null ? row[column] !== null : row[column] !== value
-            )
+        ilike(column, pattern) {
+          const regex = likePatternToRegex(pattern);
+          filters.push((row) => regex.test(String(row[column] ?? "")));
+          return builder;
+        },
+        not(column, operator, value) {
+          filters.push((row) =>
+            value === null ? row[column] !== null : row[column] !== value
           );
           return builder;
         },
         order(column, { ascending = true, nullsFirst = false } = {}) {
-          plan.push((rows) =>
+          transforms.push((rows) =>
             rows.slice().sort((left, right) => {
               const a = left[column];
               const b = right[column];
@@ -58,13 +107,26 @@ export function createMockSupabase(tables, options = {}) {
           );
           return builder;
         },
+        limit(count) {
+          transforms.push((rows) => rows.slice(0, count));
+          return builder;
+        },
+        range(from, to) {
+          transforms.push((rows) => rows.slice(from, to + 1));
+          return builder;
+        },
         async maybeSingle() {
-          const result = plan.reduce((rows, apply) => apply(rows), snapshot(tables[tableName]));
+          const result = selectRows();
           return { data: result[0] ?? null, error: null };
         },
-        async range(from, to) {
-          const result = plan.reduce((rows, apply) => apply(rows), snapshot(tables[tableName]));
-          return { data: result.slice(from, to + 1), error: null };
+        async single() {
+          const result = selectRows();
+          return result[0]
+            ? { data: result[0], error: null }
+            : { data: null, error: { message: "No rows found" } };
+        },
+        then(onFulfilled, onRejected) {
+          return Promise.resolve(run()).then(onFulfilled, onRejected);
         }
       };
       return builder;
@@ -74,4 +136,12 @@ export function createMockSupabase(tables, options = {}) {
 
 function snapshot(rows) {
   return (rows ?? []).map((row) => ({ ...row }));
+}
+
+function likePatternToRegex(pattern) {
+  const source = String(pattern)
+    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/%/g, ".*")
+    .replace(/_/g, ".");
+  return new RegExp(`^${source}$`, "is");
 }

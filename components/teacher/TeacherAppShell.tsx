@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
-  ArrowRightLeft,
   BarChart3,
   BookOpenCheck,
   ClipboardPenLine,
@@ -92,13 +91,6 @@ const navigation: Array<{
     label: "教师绑定",
     adminOnly: true,
     match: (path: string) => path.startsWith("/admin/student-bindings")
-  },
-  {
-    href: "/admin/writing-assignment-transfer",
-    icon: ArrowRightLeft,
-    label: "历史作业转移",
-    adminOnly: true,
-    match: (path: string) => path.startsWith("/admin/writing-assignment-transfer")
   }
 ];
 

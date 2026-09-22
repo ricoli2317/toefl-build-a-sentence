@@ -3,6 +3,13 @@ import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { prepareNewAccount } from "@/lib/accountIdentifier";
+import { validateBindingDomains, type StudentBindingDomain } from "@/lib/studentBindings";
+import {
+  buildStudentBindingCandidates,
+  createTeacherStudentBindings,
+  findActiveStudentsByName,
+  rollbackCreatedStudentAccount
+} from "@/lib/teacherStudentBindings";
 
 function jsonError(message: string, status = 500) {
   return NextResponse.json({ error: message }, { status });
@@ -45,6 +52,8 @@ export async function POST(request: Request) {
       account?: string;
       password?: string;
       studentName?: string;
+      domains?: unknown;
+      confirmDuplicateName?: boolean;
     };
     const preparedAccount = prepareNewAccount(body.account ?? "");
     const password = body.password ?? "";
@@ -57,13 +66,52 @@ export async function POST(request: Request) {
       return jsonError("Password must be at least 6 characters.", 400);
     }
 
+    // Ordinary teachers must pick at least one teaching subject so the new
+    // student always gains a real teaching binding. Admin keeps the unchanged
+    // account-management flow and never receives a teaching binding.
+    const isTeacher = auth.role === "teacher";
+    let domains: StudentBindingDomain[] = [];
+    if (isTeacher) {
+      const checkedDomains = validateBindingDomains(body.domains);
+      if (!checkedDomains.ok) return jsonError(checkedDomains.error, 400);
+      domains = checkedDomains.domains;
+    }
+
     const supabase = createServiceSupabase();
     const { account, authEmail } = preparedAccount;
     const { data: existingProfile, error: existingProfileError } = await supabase.from("profiles")
-      .select("id").ilike("email", authEmail).maybeSingle();
+      .select("id,full_name").ilike("email", authEmail).maybeSingle();
     if (existingProfileError) throw existingProfileError;
-    if (existingProfile) return jsonError("该账号已存在。", 409);
-    if (auth.role === "teacher") {
+    if (existingProfile) {
+      const sameName = typeof existingProfile.full_name === "string"
+        && existingProfile.full_name.trim() === studentName;
+      return NextResponse.json(
+        {
+          code: sameName ? "ACCOUNT_EXISTS_SAME_NAME" : "ACCOUNT_EXISTS",
+          error: sameName
+            ? "该学生账号已存在，请使用“绑定学生”。"
+            : "该账号已存在。"
+        },
+        { status: 409 }
+      );
+    }
+
+    if (isTeacher && !body.confirmDuplicateName) {
+      const sameNameStudents = await findActiveStudentsByName(supabase, studentName);
+      if (sameNameStudents.length > 0) {
+        const candidates = await buildStudentBindingCandidates(supabase, sameNameStudents);
+        return NextResponse.json(
+          {
+            code: "DUPLICATE_NAME",
+            error: "已存在同名学生，请选择绑定已有学生或继续新增。",
+            candidates
+          },
+          { status: 409 }
+        );
+      }
+    }
+
+    if (isTeacher) {
       const [{ data: profile, error: profileError }, { count, error: countError }] = await Promise.all([
         supabase.from("profiles").select("student_account_limit").eq("id", auth.userId).single(),
         supabase.from("profiles").select("id", { count: "exact", head: true })
@@ -111,6 +159,21 @@ export async function POST(request: Request) {
       return jsonError(`Student auth user created, but profile save failed: ${profileError.message}`);
     }
 
+    if (isTeacher) {
+      const bindings = await createTeacherStudentBindings(supabase, {
+        teacherId: auth.userId,
+        studentId: data.user.id,
+        domains
+      });
+      if (!bindings.ok) {
+        await rollbackCreatedStudentAccount(supabase, {
+          userId: data.user.id,
+          deleteAuthUser: (userId) => supabase.auth.admin.deleteUser(userId)
+        });
+        return jsonError("学生账号创建失败，请稍后重试。");
+      }
+    }
+
     return NextResponse.json({
       student: {
         id: data.user.id,
@@ -118,7 +181,8 @@ export async function POST(request: Request) {
         displayName: getPreferredUserDisplayName({
           email: authEmail,
           metadata: data.user.user_metadata
-        })
+        }),
+        domains
       }
     });
   } catch (error) {
