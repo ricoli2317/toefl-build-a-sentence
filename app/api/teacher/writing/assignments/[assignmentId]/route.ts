@@ -10,6 +10,7 @@ import {
   type WritingAssignmentDetail
 } from "@/lib/writingAssignments";
 import {
+  assertLockedWritingAssignmentQuestionInput,
   chunkValues,
   prepareWritingAssignmentMembership,
   prepareWritingAssignmentMutation,
@@ -250,12 +251,26 @@ export async function PATCH(
     }
     if (action === "reactivate") {
       if (assignment.status !== "withdrawn") return invalidState("只有已撤回的作业可以重新布置。");
+      if (assignment.group_id) {
+        return await reactivateWritingAssignmentGroup(
+          auth.supabase,
+          assignment.group_id,
+          auth.teacherId
+        );
+      }
       return await updateLifecycle(auth.supabase, params.assignmentId, auth.teacherId, "withdrawn", {
         status: "active"
       });
     }
     if (action === "soft_delete") {
       if (assignment.status !== "withdrawn") return invalidState("请先撤回作业，再进行删除。");
+      if (assignment.group_id) {
+        return await softDeleteWritingAssignmentGroup(
+          auth.supabase,
+          assignment.group_id,
+          auth.teacherId
+        );
+      }
       return await updateLifecycle(auth.supabase, params.assignmentId, auth.teacherId, "withdrawn", {
         deleted_at: new Date().toISOString()
       });
@@ -276,7 +291,7 @@ export async function PATCH(
       .maybeSingle();
     if (attemptError) throw attemptError;
 
-    if (submittedAttempt) assertLockedQuestionInput(body, assignment);
+    if (submittedAttempt) assertLockedWritingAssignmentQuestionInput(body, assignment);
     const prepared = submittedAttempt
       ? {
           ...(await prepareWritingAssignmentMembership(auth.supabase, body, auth.actor ?? undefined)),
@@ -327,44 +342,6 @@ export async function PATCH(
   }
 }
 
-function assertLockedQuestionInput(
-  body: Record<string, unknown>,
-  assignment: {
-    task_type: "email" | "academic_discussion";
-    question_source: "question_bank" | "custom";
-    question_id: string | null;
-    question_snapshot: Record<string, unknown>;
-  }
-) {
-  if (body.taskType !== assignment.task_type || body.questionSource !== assignment.question_source) {
-    throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
-  }
-  if (assignment.question_source === "question_bank") {
-    if (body.questionId !== assignment.question_id) throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
-    return;
-  }
-  try {
-    const candidate = buildCustomWritingQuestionSnapshot({
-      taskType: assignment.task_type,
-      fields: isRecord(body.customQuestion) ? body.customQuestion : {},
-      id: "locked-comparison"
-    });
-    const fields = assignment.task_type === "email"
-      ? ["set_title", "scenario", "task_instruction", "requirement_1", "requirement_2", "requirement_3", "closing_instruction", "recipient", "subject"]
-      : [
-          "set_title", "professor_name", "professor_prompt", "student_1_name",
-          "student_1_response", "student_2_name", "student_2_response",
-          ...["professor_avatar_type", "student_1_avatar_type", "student_2_avatar_type"]
-            .filter((field) => assignment.question_snapshot[field] !== undefined)
-        ];
-    if (fields.some((field) => candidate[field as keyof typeof candidate] !== assignment.question_snapshot[field])) {
-      throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
-    }
-  } catch {
-    throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
-  }
-}
-
 async function withdrawSingleWritingAssignment(
   supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
   assignmentId: string,
@@ -383,6 +360,63 @@ async function withdrawSingleWritingAssignment(
     return { errorResponse: invalidState("作业状态已经发生变化，请刷新后重试。") };
   }
   throw error;
+}
+
+async function reactivateWritingAssignmentGroup(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  groupId: string,
+  teacherId: string
+) {
+  // One statement reactivates every withdrawn member of the group: the group is
+  // one business object and can never be split into separately reactivated
+  // items.
+  const { data, error } = await supabase
+    .from("writing_assignments")
+    .update({ status: "active" })
+    .eq("group_id", groupId)
+    .eq("teacher_id", teacherId)
+    .eq("status", "withdrawn")
+    .is("deleted_at", null)
+    .select("assignment_id");
+  if (error) throw error;
+  const assignmentIds = (data ?? []).map((row) => row.assignment_id);
+  if (assignmentIds.length === 0) {
+    return invalidState("作业状态已经发生变化，请刷新后重试。");
+  }
+  return writingAssignmentJson({ groupId, status: "active", assignmentIds });
+}
+
+async function softDeleteWritingAssignmentGroup(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  groupId: string,
+  teacherId: string
+) {
+  const { data: members, error: memberError } = await supabase
+    .from("writing_assignments")
+    .select("assignment_id,status")
+    .eq("group_id", groupId)
+    .eq("teacher_id", teacherId)
+    .is("deleted_at", null);
+  if (memberError) throw memberError;
+  // Deleting keeps the historical "withdraw first" rule for the whole group.
+  if (!members?.length || members.some((item) => item.status !== "withdrawn")) {
+    return invalidState("作业状态已经发生变化，请刷新后重试。");
+  }
+  // Soft-delete every member in one statement so the collection card cannot
+  // disappear while another item of the same group remains visible.
+  const { data, error } = await supabase
+    .from("writing_assignments")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("group_id", groupId)
+    .eq("teacher_id", teacherId)
+    .eq("status", "withdrawn")
+    .is("deleted_at", null)
+    .select("assignment_id");
+  if (error) throw error;
+  if ((data ?? []).length !== members.length) {
+    return invalidState("作业状态已经发生变化，请刷新后重试。");
+  }
+  return writingAssignmentJson({ groupId, status: "withdrawn", assignmentIds: members.map((item) => item.assignment_id) });
 }
 
 function errorMessage(error: unknown) {

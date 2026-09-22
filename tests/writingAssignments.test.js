@@ -442,7 +442,7 @@ test("teacher assignment lifecycle API soft deletes and enforces withdrawn editi
   assert.match(route, /deleted_at: new Date\(\)\.toISOString\(\)/);
   assert.match(route, /assignment\.status !== "withdrawn"/);
   assert.match(route, /prepareWritingAssignmentMembership/);
-  assert.match(route, /assertLockedQuestionInput/);
+  assert.match(route, /assertLockedWritingAssignmentQuestionInput/);
   assert.match(route, /\.eq\("status", "submitted"\)/);
   assert.doesNotMatch(route, /\.from\("writing_assignments"\)\s*\.delete\(/);
 
@@ -468,8 +468,16 @@ test("assignment list and detail hide withdrawal as soon as any attempt exists",
   );
   assert.match(listRoute, /assignmentsWithAttempts\.add\(attempt\.assignment_id\)/);
   assert.match(listRoute, /has_attempts: assignmentsWithAttempts\.has/);
+  // The list reads the same rule through the shared action matrix; the detail
+  // view keeps its inline active + no-attempts gate.
+  assert.match(list, /teacherWritingAssignmentCardActions\(\{\s*\n\s*status: assignment\.status,\s*\n\s*hasAttempts: assignment\.has_attempts/);
+  assert.match(detail, /assignment\.status === "active"[\s\S]{0,120}!assignment\.has_attempts/);
+  const assignmentLib = fs.readFileSync(
+    path.join(projectRoot, "lib/writingAssignments.ts"),
+    "utf8"
+  );
+  assert.match(assignmentLib, /canWithdraw: !input\.hasAttempts/);
   for (const source of [list, detail]) {
-    assert.match(source, /assignment\.status === "active"[\s\S]{0,120}!assignment\.has_attempts/);
     assert.doesNotMatch(source, /withdrawBlockedMessage|不能撤回<\/span>/);
   }
 });

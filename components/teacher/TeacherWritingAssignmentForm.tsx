@@ -49,7 +49,7 @@ import type { LogicalWritingQuestionSearchResult } from "@/lib/writingAssignment
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 type StudentOption = { id: string; displayName: string; email: string };
-type QuestionSearchPayload = { questions: LogicalWritingQuestionSearchResult[]; page: number; pageSize: number; total: number };
+export type QuestionSearchPayload = { questions: LogicalWritingQuestionSearchResult[]; page: number; pageSize: number; total: number };
 type CustomQuestionDraft = {
   clientId: string;
   expanded: boolean;
@@ -65,14 +65,14 @@ type CustomQuestionDraft = {
 
 const EMPTY_QUESTION_SELECTION = new Map<string, LogicalWritingQuestionSearchResult>();
 
-const EMAIL_CUSTOM_FIELDS = [
+export const EMAIL_CUSTOM_FIELDS = [
   ["title", "作业标题"],
   ["scenario", "Scenario"],
   ["requirements", "三个要点"],
   ["recipient", "To"],
   ["subject", "Subject"]
 ] as const;
-const DISCUSSION_CUSTOM_FIELDS = [
+export const DISCUSSION_CUSTOM_FIELDS = [
   ["title", "作业标题"],
   ["professor_name", "Professor Name"],
   ["professor_prompt", "Professor Prompt"],
@@ -81,7 +81,7 @@ const DISCUSSION_CUSTOM_FIELDS = [
   ["student_2_name", "Student 2 Name"],
   ["student_2_response", "Student 2 Response"]
 ] as const;
-const AVATAR_FIELD_BY_NAME = {
+export const AVATAR_FIELD_BY_NAME = {
   professor_name: "professor_avatar_type",
   student_1_name: "student_1_avatar_type",
   student_2_name: "student_2_avatar_type"
@@ -805,28 +805,28 @@ function customEmailRequirementCount(draft: CustomQuestionDraft) {
   return [1, 2, 3].filter((number) => values[`requirement_${number}`]?.trim()).length;
 }
 
-function stringDraftFields(fields: Record<string, string | boolean>) {
+export function stringDraftFields(fields: Record<string, string | boolean>) {
   return Object.fromEntries(
     Object.entries(fields).filter((entry): entry is [string, string] => typeof entry[1] === "string")
   );
 }
 
-function StepCard({ children, number, title }: { children: React.ReactNode; number: string; title: string }) {
+export function StepCard({ children, number, title }: { children: React.ReactNode; number: string; title: string }) {
   return <TeacherCard className="grid gap-4 p-5"><div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-student-primary text-sm font-bold text-white">{number}</span><TeacherSectionTitle>{title}</TeacherSectionTitle></div>{children}</TeacherCard>;
 }
 
-function ChoiceButton({ active, disabled, label, onClick }: { active: boolean; disabled?: boolean; label: string; onClick: () => void }) {
+export function ChoiceButton({ active, disabled, label, onClick }: { active: boolean; disabled?: boolean; label: string; onClick: () => void }) {
   return <button className={`flex min-h-14 items-center justify-between rounded-xl border px-4 text-left font-semibold transition ${active ? "border-student-primary bg-student-primary-soft text-student-primary" : "border-student-border bg-white text-student-text hover:border-student-primary-border"}`} disabled={disabled} onClick={onClick} type="button"><span>{label}</span>{active ? <Check aria-hidden="true" size={18} /> : null}</button>;
 }
 
-function CustomQuestionFields({ disabled, fields, onAvatarChange, onBlur, onChange, values }: { disabled?: boolean; fields: ReadonlyArray<readonly [string, string]>; onAvatarChange: (field: string, value: string) => void; onBlur: (field: string) => void; onChange: (field: string, value: string) => void; values: Record<string, string> }) {
+export function CustomQuestionFields({ disabled, fields, onAvatarChange, onBlur, onChange, values }: { disabled?: boolean; fields: ReadonlyArray<readonly [string, string]>; onAvatarChange: (field: string, value: string) => void; onBlur: (field: string) => void; onChange: (field: string, value: string) => void; values: Record<string, string> }) {
   return <div className="grid gap-4">{fields.map(([field, label]) => {
     const avatarField = AVATAR_FIELD_BY_NAME[field as keyof typeof AVATAR_FIELD_BY_NAME];
     return <div className="grid gap-2" key={field}><label className="grid gap-2 text-sm font-semibold text-student-text">{label}{field === "requirements" ? <><span className="text-xs font-normal text-student-muted">每个要点一行</span><textarea className="teacher-input min-h-36 resize-y" disabled={disabled} onBlur={() => onBlur(field)} onChange={(event) => onChange(field, event.target.value)} placeholder={"Explain why...\nAsk for...\nMention..."} value={values[field] ?? ""} /></> : field.includes("name") || field === "title" || field === "recipient" || field === "subject" ? <input className="teacher-input" disabled={disabled} onBlur={() => onBlur(field)} onChange={(event) => onChange(field, event.target.value)} value={values[field] ?? ""} /> : <textarea className="teacher-input min-h-24 resize-y" disabled={disabled} onBlur={() => onBlur(field)} onChange={(event) => onChange(field, event.target.value)} value={values[field] ?? ""} />}</label>{avatarField ? <CustomAvatarPicker avatarField={avatarField} disabled={disabled} onChange={onAvatarChange} value={values[avatarField] ?? ""} /> : null}</div>;
   })}</div>;
 }
 
-function CustomAvatarPicker({ avatarField, disabled, onChange, value }: { avatarField: (typeof AVATAR_FIELD_BY_NAME)[keyof typeof AVATAR_FIELD_BY_NAME]; disabled?: boolean; onChange: (field: string, value: string) => void; value: string }) {
+export function CustomAvatarPicker({ avatarField, disabled, onChange, value }: { avatarField: (typeof AVATAR_FIELD_BY_NAME)[keyof typeof AVATAR_FIELD_BY_NAME]; disabled?: boolean; onChange: (field: string, value: string) => void; value: string }) {
   const professor = avatarField === "professor_avatar_type";
   const options = professor
     ? ([
@@ -843,12 +843,12 @@ function CustomAvatarPicker({ avatarField, disabled, onChange, value }: { avatar
   })}</div>;
 }
 
-function QuestionResults({ onPage, onSelect, payload, selectedId, taskType }: { onPage: (page: number) => void; onSelect: (question: WritingQuestion) => void; payload: QuestionSearchPayload; selectedId: string | null; taskType: WritingTaskType }) {
+export function QuestionResults({ onPage, onSelect, payload, selectedId, taskType }: { onPage: (page: number) => void; onSelect: (question: WritingQuestion) => void; payload: QuestionSearchPayload; selectedId: string | null; taskType: WritingTaskType }) {
   const totalPages = Math.max(1, Math.ceil(payload.total / payload.pageSize));
   return <div className="grid gap-3"><div className="grid gap-2">{payload.questions.map((question) => { const selected = question.question_id === selectedId; return <button className={`rounded-xl border p-4 text-left transition ${selected ? "border-student-primary bg-student-primary-soft" : "border-student-border hover:border-student-primary-border"}`} key={question.logical_item_id} onClick={() => onSelect(question)} type="button"><div className="flex items-center justify-between gap-3"><div><p className="text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[taskType].label}</p><p className="mt-1 font-bold text-student-text">{question.logical_display_name}</p></div>{selected ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</div><p className="mt-2 line-clamp-2 text-sm text-student-muted">{"scenario" in question ? `${question.scenario} ${question.requirement_1}` : `Professor ${question.professor_name}: ${question.professor_prompt}`}</p>{"professor_prompt" in question ? <p className="mt-1 line-clamp-1 text-xs text-student-muted">{question.student_1_name}: {question.student_1_response} · {question.student_2_name}: {question.student_2_response}</p> : null}</button>; })}{!payload.questions.length ? <p className="py-6 text-center text-sm text-student-muted">没有找到匹配题目。</p> : null}</div><div className="flex items-center justify-between text-sm text-student-muted"><span>共 {payload.total} 道 · 第 {payload.page}/{totalPages} 页</span><div className="flex gap-2"><button className="teacher-button-secondary h-9 px-3" disabled={payload.page <= 1} onClick={() => onPage(payload.page - 1)} type="button"><ChevronLeft aria-hidden="true" size={15} />上一页</button><button className="teacher-button-secondary h-9 px-3" disabled={payload.page >= totalPages} onClick={() => onPage(payload.page + 1)} type="button">下一页<ChevronRight aria-hidden="true" size={15} /></button></div></div></div>;
 }
 
-function customFieldsFromSnapshot(question: WritingQuestion): Record<string, string> {
+export function customFieldsFromSnapshot(question: WritingQuestion): Record<string, string> {
   if ("scenario" in question) {
     return {
       title: question.set_title,
@@ -879,7 +879,7 @@ function customFieldsFromSnapshot(question: WritingQuestion): Record<string, str
   };
 }
 
-function defaultAcademicDiscussionAvatarFields(): Record<string, string> {
+export function defaultAcademicDiscussionAvatarFields(): Record<string, string> {
   return {
     professor_avatar_type: "male_professor",
     student_1_avatar_type: "male_student",
@@ -887,7 +887,7 @@ function defaultAcademicDiscussionAvatarFields(): Record<string, string> {
   };
 }
 
-function formatLocalDateTime(value: string) {
+export function formatLocalDateTime(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);

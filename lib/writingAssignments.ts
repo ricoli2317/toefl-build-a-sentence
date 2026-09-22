@@ -201,6 +201,32 @@ export function nextWritingAssignmentAutoTitle(
 }
 
 /**
+ * One shared card action rule for a withdrawn-capable Writing Assignment card.
+ * A legacy single assignment and a new Assignment Group pass the same
+ * lifecycle status + has-attempts aggregate, so both render the same buttons
+ * for the same business state.
+ */
+export function teacherWritingAssignmentCardActions(input: {
+  status: WritingAssignmentLifecycleStatus;
+  hasAttempts: boolean;
+}) {
+  if (input.status === "withdrawn") {
+    return {
+      canWithdraw: false,
+      canEdit: true,
+      canReactivate: true,
+      canSoftDelete: true
+    };
+  }
+  return {
+    canWithdraw: !input.hasAttempts,
+    canEdit: false,
+    canReactivate: false,
+    canSoftDelete: false
+  };
+}
+
+/**
  * One shared task-type badge rule for both ends. Every contained task type is
  * its own badge, and only counts above one get an `×N` suffix. Mixed groups
  * therefore render two independent badges (`Write an Email` and

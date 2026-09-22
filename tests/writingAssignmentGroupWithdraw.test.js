@@ -17,9 +17,11 @@ test("group withdrawal uses the transactional RPC; legacy single keeps the origi
   assert.match(route, /if \(assignment\.group_id\)/);
   // Historical assignments without a group still use withdraw_writing_assignment.
   assert.equal((route.match(/rpc\("withdraw_writing_assignment"/g) ?? []).length, 1);
-  // No second HTTP endpoint for group withdrawal.
+  // The batch PATCH endpoint is the group edit API; withdrawal still has no
+  // dedicated group HTTP endpoint.
   const batchesRoute = source("app/api/teacher/writing/assignments/batches/[batchId]/route.ts");
-  assert.doesNotMatch(batchesRoute, /export async function PATCH/);
+  assert.match(batchesRoute, /body\.action !== "edit"/);
+  assert.doesNotMatch(batchesRoute, /action === "withdraw"/);
 });
 
 test("route no longer contains application-level compensation", () => {
@@ -27,7 +29,7 @@ test("route no longer contains application-level compensation", () => {
   assert.doesNotMatch(route, /restoreWithdrawnAssignments/);
   assert.doesNotMatch(route, /group_withdraw_rollback_failed/);
   assert.doesNotMatch(route, /withdrawWritingAssignmentGroup/);
-  assert.doesNotMatch(route, /\.update\(\{\s*status: "active"/);
+  assert.doesNotMatch(route, /\.in\("assignment_id", withdrawnIds\)/);
   // No per-item loop over a group's assignments.
   assert.doesNotMatch(route, /for \(const assignmentId of assignmentIds\)/);
 });
@@ -73,11 +75,11 @@ test("group withdraw RPC is one transaction with locks, checks and a single upda
   assert.match(sql, /grant execute on function public\.withdraw_writing_assignment_group\(uuid, uuid\)[\s\S]{0,40}to service_role/);
 });
 
-test("collection card renders 撤回 left of 查看进度 under the original rule", () => {
+test("collection card renders 撤回 left of 查看进度 under the shared action rule", () => {
   const list = source("components/teacher/TeacherWritingAssignmentList.tsx");
   const card = list.slice(list.indexOf("function TeacherWritingAssignmentCollectionCard"));
-  assert.match(card, /assignment\.status === "active" && !assignment\.has_attempts/);
-  assert.match(card, /onWithdraw\(entry\.assignments\[0\]\.assignment_id\)/);
+  assert.match(card, /teacherWritingAssignmentCardActions\(/);
+  assert.match(card, /onWithdraw\(actionAssignmentId\)/);
   const withdrawIndex = card.indexOf("撤回</button>");
   const progressIndex = card.indexOf("查看进度");
   assert.ok(withdrawIndex > -1 && progressIndex > -1 && withdrawIndex < progressIndex);
@@ -89,7 +91,6 @@ test("collection card renders 撤回 left of 查看进度 under the original rul
 test("the single card withdrawal action is unchanged", () => {
   const list = source("components/teacher/TeacherWritingAssignmentList.tsx");
   const singleCard = list.slice(0, list.indexOf("function TeacherWritingAssignmentCollectionCard"));
-  assert.match(singleCard, /assignment\.status === "active"/);
-  assert.match(singleCard, /!assignment\.has_attempts/);
+  assert.match(singleCard, /teacherWritingAssignmentCardActions\(/);
   assert.match(singleCard, /mutate\(assignment\.assignment_id, "withdraw"\)/);
 });

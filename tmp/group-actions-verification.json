@@ -1,0 +1,30 @@
+{
+  "emailGroup": {
+    "group_id": "f7a6e284-bd80-436e-a959-3d1aca6177e3",
+    "assignmentIds": [
+      "38126239-c6d6-4d5f-b2fb-e2d32b874c17",
+      "200c0298-812b-4ef6-b262-9d6f71d3df95"
+    ]
+  },
+  "adGroup": {
+    "group_id": "a962e7bf-4a13-4b77-ae04-cbabd985bff5",
+    "assignmentIds": [
+      "8eb01716-2c22-4f72-9aec-0c407665ff8d",
+      "9893dc60-ba5f-4987-8704-ff2515f3cfc4"
+    ]
+  },
+  "mixedGroup": {
+    "group_id": "5ba2529f-a07f-4111-9733-366ed043e958",
+    "assignmentIds": [
+      "dde3d2ce-fd6b-4b42-a763-3d7185f6d55c",
+      "1866cda7-921c-4bf3-84ee-59c009d947da"
+    ]
+  },
+  "legacy": {
+    "assignmentIds": [
+      "da201f2b-57a9-4dce-b04d-d2ceab86a806"
+    ]
+  },
+  "peng": "97db7f19-622a-47f1-b10e-8bdfcfdbcb98",
+  "ran": "09fe3caf-cc2a-4951-88ec-d3dcde68df76"
+}

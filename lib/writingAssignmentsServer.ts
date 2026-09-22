@@ -134,6 +134,76 @@ export async function prepareWritingAssignmentGroupMutation(
   return { assignments, studentIds: membership.studentIds };
 }
 
+/**
+ * Group edit never adds or removes items: every prepared item carries the
+ * assignment_id it replaces, so the RPC can require an exact one-to-one match
+ * with the withdrawn group.
+ */
+export async function prepareWritingAssignmentGroupEditMutation(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  body: Record<string, unknown>,
+  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
+) {
+  if (!Array.isArray(body.items) || body.items.length === 0) {
+    throw new Error("请至少添加一道题目。");
+  }
+  if (body.items.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const membership = await prepareWritingAssignmentMembership(supabase, body, options.actor);
+  const items = [];
+  for (const value of body.items) {
+    if (!isRecord(value)) throw new Error("请完整填写每道题目。");
+    const assignmentId = typeof value.assignmentId === "string" ? value.assignmentId.trim() : "";
+    if (!assignmentId) throw new Error("请完整填写每道题目。");
+    items.push({
+      assignmentId,
+      ...(await prepareWritingAssignmentQuestion(supabase, value, options))
+    });
+  }
+  return { dueAt: membership.dueAt, items, studentIds: membership.studentIds };
+}
+
+/**
+ * The withdrawn-edit lock: once an item has a submitted attempt its question
+ * content is frozen. Shared by the single edit route and the group edit route.
+ */
+export function assertLockedWritingAssignmentQuestionInput(
+  body: Record<string, unknown>,
+  assignment: {
+    task_type: "email" | "academic_discussion";
+    question_source: "question_bank" | "custom";
+    question_id: string | null;
+    question_snapshot: Record<string, unknown>;
+  }
+) {
+  if (body.taskType !== assignment.task_type || body.questionSource !== assignment.question_source) {
+    throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+  }
+  if (assignment.question_source === "question_bank") {
+    if (body.questionId !== assignment.question_id) throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+    return;
+  }
+  try {
+    const candidate = buildCustomWritingQuestionSnapshot({
+      taskType: assignment.task_type,
+      fields: isRecord(body.customQuestion) ? body.customQuestion : {},
+      id: "locked-comparison"
+    });
+    const fields = assignment.task_type === "email"
+      ? ["set_title", "scenario", "task_instruction", "requirement_1", "requirement_2", "requirement_3", "closing_instruction", "recipient", "subject"]
+      : [
+          "set_title", "professor_name", "professor_prompt", "student_1_name",
+          "student_1_response", "student_2_name", "student_2_response",
+          ...["professor_avatar_type", "student_1_avatar_type", "student_2_avatar_type"]
+            .filter((field) => assignment.question_snapshot[field] !== undefined)
+        ];
+    if (fields.some((field) => candidate[field as keyof typeof candidate] !== assignment.question_snapshot[field])) {
+      throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+    }
+  } catch {
+    throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+  }
+}
+
 async function prepareWritingAssignmentQuestion(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,

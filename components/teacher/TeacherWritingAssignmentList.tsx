@@ -20,6 +20,7 @@ import {
   getWritingAssignmentReviewAction,
   getWritingAssignmentProgress,
   groupTeacherWritingAssignments,
+  teacherWritingAssignmentCardActions,
   writingAssignmentTaskTypeBadges,
   writingAssignmentTitle,
   type TeacherWritingAssignmentListEntry,
@@ -110,6 +111,8 @@ export function TeacherWritingAssignmentList({
             <TeacherWritingAssignmentCollectionCard
               entry={entry}
               key={entry.collection_id}
+              onReactivate={(assignmentId) => void mutate(assignmentId, "reactivate")}
+              onSoftDelete={(assignmentId) => void mutate(assignmentId, "soft_delete")}
               onWithdraw={(assignmentId) => void mutate(assignmentId, "withdraw")}
               pending={pendingId === entry.assignments[0].assignment_id}
             />
@@ -125,6 +128,10 @@ export function TeacherWritingAssignmentList({
               latestReviewStatus: assignment.single_student_latest_review_status
             })
           : null;
+        const actions = teacherWritingAssignmentCardActions({
+          status: assignment.status,
+          hasAttempts: assignment.has_attempts
+        });
         return (
           <article className="teacher-card flex flex-wrap items-center gap-5 p-5" key={assignment.assignment_id}>
             <div className="min-w-0 flex-1">
@@ -156,22 +163,23 @@ export function TeacherWritingAssignmentList({
                   {reviewAction.label}
                 </Link>
               ) : null}
-              {assignment.status === "active" ? (
-                !assignment.has_attempts ? (
-                  <button
-                    className="teacher-button-secondary"
-                    disabled={pending}
-                    onClick={() => void mutate(assignment.assignment_id, "withdraw")}
-                    type="button"
-                  ><Undo2 aria-hidden="true" size={16} />撤回</button>
-                ) : null
-              ) : (
-                <>
-                  <Link className="teacher-button-secondary" href={`${detailHref}/edit`}><Pencil aria-hidden="true" size={16} />编辑作业</Link>
-                  <button className="teacher-button-primary" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "reactivate")} type="button"><RotateCcw aria-hidden="true" size={16} />重新布置</button>
-                  <button className="teacher-button-secondary text-student-error" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "soft_delete")} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button>
-                </>
-              )}
+              {actions.canWithdraw ? (
+                <button
+                  className="teacher-button-secondary"
+                  disabled={pending}
+                  onClick={() => void mutate(assignment.assignment_id, "withdraw")}
+                  type="button"
+                ><Undo2 aria-hidden="true" size={16} />撤回</button>
+              ) : null}
+              {actions.canEdit ? (
+                <Link className="teacher-button-secondary" href={`${detailHref}/edit`}><Pencil aria-hidden="true" size={16} />编辑作业</Link>
+              ) : null}
+              {actions.canReactivate ? (
+                <button className="teacher-button-primary" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "reactivate")} type="button"><RotateCcw aria-hidden="true" size={16} />重新布置</button>
+              ) : null}
+              {actions.canSoftDelete ? (
+                <button className="teacher-button-secondary text-student-error" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "soft_delete")} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button>
+              ) : null}
               <Link aria-label="查看作业详情" className="teacher-button-secondary px-3" href={detailHref}><ArrowRight aria-hidden="true" size={18} /></Link>
             </div>
           </article>
@@ -215,22 +223,29 @@ export function AssignmentRecipientNames({
 
 function TeacherWritingAssignmentCollectionCard({
   entry,
+  onReactivate,
+  onSoftDelete,
   onWithdraw,
   pending
 }: {
   entry: Extract<TeacherWritingAssignmentListEntry, { kind: "collection" }>;
+  onReactivate: (assignmentId: string) => void;
+  onSoftDelete: (assignmentId: string) => void;
   onWithdraw: (assignmentId: string) => void;
   pending: boolean;
 }) {
   const detailHref = `/teacher/writing/assignments/batches/${entry.collection_id}`;
-  // Same withdrawal rule as a single card, applied to every member so the
-  // group is only offered when it can be withdrawn as one unit.
+  const editHref = `${detailHref}/edit`;
+  // Same action rule as a legacy single card, aggregated over the group: the
+  // whole group is one business object.
   const allWithdrawn = entry.assignments.every(
     (assignment) => assignment.status === "withdrawn"
   );
-  const canWithdraw = entry.assignments.every(
-    (assignment) => assignment.status === "active" && !assignment.has_attempts
-  );
+  const actions = teacherWritingAssignmentCardActions({
+    status: allWithdrawn ? "withdrawn" : "active",
+    hasAttempts: entry.assignments.some((assignment) => assignment.has_attempts)
+  });
+  const actionAssignmentId = entry.assignments[0].assignment_id;
   const progress = allWithdrawn
     ? "已撤回"
     : entry.published_count >= entry.total_count
@@ -291,17 +306,30 @@ function TeacherWritingAssignmentCollectionCard({
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-end gap-2">
-        {canWithdraw ? (
+        {actions.canWithdraw ? (
           <button
             className="teacher-button-secondary"
             disabled={pending}
-            onClick={() => onWithdraw(entry.assignments[0].assignment_id)}
+            onClick={() => onWithdraw(actionAssignmentId)}
             type="button"
           ><Undo2 aria-hidden="true" size={16} />撤回</button>
         ) : null}
-        <Link className="teacher-button-secondary" href={detailHref}>
-          查看进度<ArrowRight aria-hidden="true" size={18} />
-        </Link>
+        {actions.canEdit ? (
+          <Link className="teacher-button-secondary" href={editHref}><Pencil aria-hidden="true" size={16} />编辑作业</Link>
+        ) : null}
+        {actions.canReactivate ? (
+          <button className="teacher-button-primary" disabled={pending} onClick={() => onReactivate(actionAssignmentId)} type="button"><RotateCcw aria-hidden="true" size={16} />重新布置</button>
+        ) : null}
+        {actions.canSoftDelete ? (
+          <button className="teacher-button-secondary text-student-error" disabled={pending} onClick={() => onSoftDelete(actionAssignmentId)} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button>
+        ) : null}
+        {actions.canEdit ? (
+          <Link aria-label="查看作业详情" className="teacher-button-secondary px-3" href={detailHref}><ArrowRight aria-hidden="true" size={18} /></Link>
+        ) : (
+          <Link className="teacher-button-secondary" href={detailHref}>
+            查看进度<ArrowRight aria-hidden="true" size={18} />
+          </Link>
+        )}
       </div>
     </article>
   );
