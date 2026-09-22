@@ -206,23 +206,43 @@ export async function PATCH(
 
     if (action === "withdraw") {
       if (assignment.status !== "active") return invalidState("只有进行中的作业可以撤回。");
-      const { error: withdrawError } = await auth.supabase.rpc(
-        "withdraw_writing_assignment",
-        {
-          p_assignment_id: params.assignmentId,
-          p_teacher_id: auth.teacherId
+      if (assignment.group_id) {
+        // The whole group is withdrawn in one database transaction: locks,
+        // "all active" and "no attempt" checks and the update share the same
+        // transaction, so no half-withdrawn group and no application-level
+        // restore step exist.
+        const { error: groupWithdrawError } = await auth.supabase.rpc(
+          "withdraw_writing_assignment_group",
+          {
+            p_teacher_id: auth.teacherId,
+            p_group_id: assignment.group_id
+          }
+        );
+        if (groupWithdrawError) {
+          const groupWithdrawMessage = errorMessage(groupWithdrawError);
+          if (groupWithdrawMessage.includes("ASSIGNMENT_GROUP_HAS_ATTEMPT")) {
+            return invalidState("已有学生开始作答，该作业不能撤回。");
+          }
+          if (groupWithdrawMessage.includes("ASSIGNMENT_GROUP_NOT_ACTIVE")) {
+            return invalidState("作业状态已经发生变化，请刷新后重试。");
+          }
+          if (groupWithdrawMessage.includes("ASSIGNMENT_GROUP_NOT_FOUND")) {
+            return notFound();
+          }
+          throw groupWithdrawError;
         }
-      );
-      if (withdrawError) {
-        const withdrawMessage = errorMessage(withdrawError);
-        if (withdrawMessage.includes("ASSIGNMENT_HAS_ATTEMPT")) {
-          return invalidState("已有学生开始作答，该作业不能撤回。");
-        }
-        if (withdrawMessage.includes("ASSIGNMENT_NOT_ACTIVE")) {
-          return invalidState("作业状态已经发生变化，请刷新后重试。");
-        }
-        throw withdrawError;
+        return writingAssignmentJson({
+          assignmentId: params.assignmentId,
+          status: "withdrawn"
+        });
       }
+      // Historical assignments without a group keep the original per-item RPC.
+      const withdrawResult = await withdrawSingleWritingAssignment(
+        auth.supabase,
+        params.assignmentId,
+        auth.teacherId
+      );
+      if (withdrawResult.errorResponse) return withdrawResult.errorResponse;
       return writingAssignmentJson({
         assignmentId: params.assignmentId,
         status: "withdrawn"
@@ -343,6 +363,26 @@ function assertLockedQuestionInput(
   } catch {
     throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
   }
+}
+
+async function withdrawSingleWritingAssignment(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  assignmentId: string,
+  teacherId: string
+): Promise<{ errorResponse?: Response }> {
+  const { error } = await supabase.rpc("withdraw_writing_assignment", {
+    p_assignment_id: assignmentId,
+    p_teacher_id: teacherId
+  });
+  if (!error) return {};
+  const message = errorMessage(error);
+  if (message.includes("ASSIGNMENT_HAS_ATTEMPT")) {
+    return { errorResponse: invalidState("已有学生开始作答，该作业不能撤回。") };
+  }
+  if (message.includes("ASSIGNMENT_NOT_ACTIVE")) {
+    return { errorResponse: invalidState("作业状态已经发生变化，请刷新后重试。") };
+  }
+  throw error;
 }
 
 function errorMessage(error: unknown) {

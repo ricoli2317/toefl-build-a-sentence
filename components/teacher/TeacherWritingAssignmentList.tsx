@@ -106,7 +106,14 @@ export function TeacherWritingAssignmentList({
       {mutationError ? <TeacherDataError text={mutationError} /> : null}
       {entries.map((entry) => {
         if (entry.kind === "collection") {
-          return <TeacherWritingAssignmentCollectionCard entry={entry} key={entry.collection_id} />;
+          return (
+            <TeacherWritingAssignmentCollectionCard
+              entry={entry}
+              key={entry.collection_id}
+              onWithdraw={(assignmentId) => void mutate(assignmentId, "withdraw")}
+              pending={pendingId === entry.assignments[0].assignment_id}
+            />
+          );
         }
         const assignment = entry.assignment;
         const pending = pendingId === assignment.assignment_id;
@@ -207,18 +214,35 @@ export function AssignmentRecipientNames({
 }
 
 function TeacherWritingAssignmentCollectionCard({
-  entry
+  entry,
+  onWithdraw,
+  pending
 }: {
   entry: Extract<TeacherWritingAssignmentListEntry, { kind: "collection" }>;
+  onWithdraw: (assignmentId: string) => void;
+  pending: boolean;
 }) {
   const detailHref = `/teacher/writing/assignments/batches/${entry.collection_id}`;
-  const progress = entry.published_count >= entry.total_count
-    ? "已完成"
-    : entry.completed_count >= entry.total_count
-      ? "全部已提交"
-      : entry.completed_count > 0
-        ? "部分已提交"
-        : "进行中";
+  // Same withdrawal rule as a single card, applied to every member so the
+  // group is only offered when it can be withdrawn as one unit.
+  const allWithdrawn = entry.assignments.every(
+    (assignment) => assignment.status === "withdrawn"
+  );
+  const canWithdraw = entry.assignments.every(
+    (assignment) => assignment.status === "active" && !assignment.has_attempts
+  );
+  const progress = allWithdrawn
+    ? "已撤回"
+    : entry.published_count >= entry.total_count
+      ? "已完成"
+      : entry.completed_count >= entry.total_count
+        ? "全部已提交"
+        : entry.completed_count > 0
+          ? "部分已提交"
+          : "进行中";
+  const progressClassName = allWithdrawn
+    ? "bg-slate-100 text-slate-600"
+    : "bg-amber-50 text-amber-700";
   const dueDates = entry.assignments
     .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
     .sort((left, right) => Date.parse(left) - Date.parse(right));
@@ -237,7 +261,7 @@ function TeacherWritingAssignmentCollectionCard({
                 {index === 0 ? <Files aria-hidden="true" size={13} /> : null}{label}
               </span>
             ))}
-            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+            <span className={`rounded-full px-3 py-1 text-xs font-bold ${progressClassName}`}>
               {progress}
             </span>
             {entry.has_overdue_students ? (
@@ -266,9 +290,19 @@ function TeacherWritingAssignmentCollectionCard({
           <span>布置：{formatDateTime(entry.created_at, "—")}</span>
         </div>
       </div>
-      <Link className="teacher-button-secondary" href={detailHref}>
-        查看进度<ArrowRight aria-hidden="true" size={18} />
-      </Link>
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        {canWithdraw ? (
+          <button
+            className="teacher-button-secondary"
+            disabled={pending}
+            onClick={() => onWithdraw(entry.assignments[0].assignment_id)}
+            type="button"
+          ><Undo2 aria-hidden="true" size={16} />撤回</button>
+        ) : null}
+        <Link className="teacher-button-secondary" href={detailHref}>
+          查看进度<ArrowRight aria-hidden="true" size={18} />
+        </Link>
+      </div>
     </article>
   );
 }

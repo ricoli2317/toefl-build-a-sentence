@@ -1,0 +1,31 @@
+{
+  "singleType": {
+    "group_id": "abd34e94-1054-4128-a6c2-7d4d64091421",
+    "assignmentIds": [
+      "83e119fc-8a0a-434b-95a7-389fb23ff128",
+      "4fc3d860-75b3-46dd-8d54-7fd05405bef0"
+    ]
+  },
+  "mixed": {
+    "group_id": "3fc343e9-e1f2-4153-87a7-1e4bbf402d9f",
+    "assignmentIds": [
+      "c2f3b05f-3516-418e-b13e-843bd4876d75",
+      "8e1a701b-a681-42e3-a334-c5edfa7dfe73"
+    ]
+  },
+  "singleItem": {
+    "group_id": "6b1236ee-2902-4fe8-9ae0-a25520c1be81",
+    "assignmentIds": [
+      "134370ff-7ed4-4ea2-8b3b-dd9ce3552e29"
+    ]
+  },
+  "blocked": {
+    "group_id": "aee073ff-004d-4a69-be7e-f3d1dae4b974",
+    "assignmentIds": [
+      "d23059dc-3f46-402f-bb33-284fb530511b",
+      "fe010495-fa45-439b-b126-d872472249d4"
+    ]
+  },
+  "peng": "97db7f19-622a-47f1-b10e-8bdfcfdbcb98",
+  "ran": "09fe3caf-cc2a-4951-88ec-d3dcde68df76"
+}
