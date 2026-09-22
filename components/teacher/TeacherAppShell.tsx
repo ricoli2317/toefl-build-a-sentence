@@ -12,6 +12,7 @@ import {
   FileText,
   Home,
   Menu,
+  Network,
   Users,
   X
 } from "lucide-react";
@@ -25,7 +26,13 @@ import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 
 export type TeacherCrumb = { href?: string; label: string };
 
-const navigation = [
+const navigation: Array<{
+  href: string;
+  icon: import("lucide-react").LucideIcon;
+  label: string;
+  adminOnly?: boolean;
+  match: (path: string) => boolean;
+}> = [
   {
     href: "/teacher/dashboard",
     icon: Home,
@@ -67,6 +74,13 @@ const navigation = [
     icon: FileText,
     label: "查看所有套题",
     match: (path: string) => path.startsWith("/teacher/question-bank")
+  },
+  {
+    href: "/admin/student-bindings",
+    icon: Network,
+    label: "Teacher Bindings",
+    adminOnly: true,
+    match: (path: string) => path.startsWith("/admin/student-bindings")
   }
 ];
 
@@ -215,7 +229,9 @@ export function TeacherAppShell({
           onMouseLeave={workspace ? hideSidebarOverlaySoon : undefined}
         >
           <nav aria-label="教师端主导航" className="grid gap-2">
-            {navigation.map((item) => {
+            {navigation
+              .filter((item) => role === "admin" || !item.adminOnly)
+              .map((item) => {
               const active = item.match(pathname);
               const Icon = item.icon;
               return (
