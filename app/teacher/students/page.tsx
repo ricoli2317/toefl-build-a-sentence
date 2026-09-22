@@ -14,10 +14,10 @@ export default function TeacherStudentsPage() {
       }
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
-        { label: "账号" }
+        { label: "学生" }
       ]}
-      subtitle="管理学生与教师账号"
-      title="账号"
+      subtitle="查看和管理学生"
+      title="学生"
     >
       <StudentsAccountHome />
     </TeacherAppShell>

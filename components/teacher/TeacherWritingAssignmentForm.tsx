@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Plus, Search, Trash2, UserRound } from "lucide-react";
@@ -82,16 +82,18 @@ const AVATAR_FIELD_BY_NAME = {
 } as const;
 
 export function TeacherWritingAssignmentForm({
-  initialAssignment
+  initialAssignment,
+  initialStudentId
 }: {
   initialAssignment?: WritingAssignmentDetail;
+  initialStudentId?: string;
 }) {
   return initialAssignment
     ? <TeacherWritingAssignmentEditForm initialAssignment={initialAssignment} />
-    : <TeacherWritingAssignmentCreateForm />;
+    : <TeacherWritingAssignmentCreateForm initialStudentId={initialStudentId} />;
 }
 
-function TeacherWritingAssignmentCreateForm() {
+function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStudentId?: string }) {
   const router = useRouter();
   const cache = useTeacherDataCache();
   const [taskType, setTaskType] = useState<WritingTaskType | null>(null);
@@ -103,7 +105,9 @@ function TeacherWritingAssignmentCreateForm() {
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [studentQuery, setStudentQuery] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>(
+    initialStudentId ? [initialStudentId] : []
+  );
   const [deadlineMode, setDeadlineMode] = useState<"uniform" | "individual">("uniform");
   const [uniformDueAt, setUniformDueAt] = useState("");
   const [individualDueAt, setIndividualDueAt] = useState<Record<string, string>>({});
@@ -120,6 +124,18 @@ function TeacherWritingAssignmentCreateForm() {
     id: student.id,
     student
   })), [studentsState.data]);
+  // The studentId query only preselects an eligible writing recipient. A
+  // Reading-only (or inactive) student never appears in this list and is
+  // dropped here; the server still re-validates every recipient.
+  useEffect(() => {
+    if (!studentsState.data) return;
+    const eligible = new Set(studentsState.data.students.map((student) => student.id));
+    setSelectedStudents((current) =>
+      current.every((studentId) => eligible.has(studentId))
+        ? current
+        : current.filter((studentId) => eligible.has(studentId))
+    );
+  }, [studentsState.data]);
   const filteredStudents = useMemo(() => studentEntries
     .map((entry) => {
       const nameRank = studentSearchRank(entry, entry.displayName, studentQuery);

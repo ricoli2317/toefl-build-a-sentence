@@ -259,22 +259,28 @@ test("student Reading detail API requires a reading binding and reuses Reading s
   assert.match(lib, /buildReadingHistoryPayload\(/);
 });
 
-test("navigation hides Writing entries for Reading-only teachers and vice versa", () => {
+test("Phase 6: navigation never hides Teacher entries by binding domain", () => {
   const shell = read("components/teacher/TeacherAppShell.tsx");
-  assert.match(shell, /domain: "writing"/);
-  assert.match(shell, /domain: "reading"/);
-  assert.match(shell, /if \(item\.domain && !teacherDomains\.includes\(item\.domain\)\) return false;/);
-  assert.match(shell, /TEACHER_DASHBOARD_CACHE_KEY/);
+  assert.doesNotMatch(shell, /teacherDomains/);
+  assert.doesNotMatch(shell, /item\.domain/);
+  assert.match(shell, /if \(role === "admin"\) return !item\.teacherOnly;/);
+  assert.match(shell, /return !item\.adminOnly;/);
+  assert.match(shell, /href: "\/teacher\/reading\/statistics"/);
+  assert.match(shell, /href: "\/teacher\/writing\/assignments"/);
+  assert.match(shell, /href: "\/teacher\/writing\/reviews"/);
   assert.doesNotMatch(shell, /reading_teacher/);
   assert.doesNotMatch(shell, /profile\.role/);
 });
 
-test("teacher dashboard renders only the teacher's binding domains", () => {
+test("Phase 6: teacher dashboard renders the fixed management entries for every teacher", () => {
   const dashboard = read("components/TeacherDashboard.tsx");
   assert.match(dashboard, /TEACHER_DASHBOARD_CACHE_KEY/);
   assert.match(dashboard, /loadTeacherDashboardPayload/);
-  assert.match(dashboard, /const hasReading = teacherDomains\.includes\("reading"\)/);
-  assert.match(dashboard, /const hasWriting = teacherDomains\.includes\("writing"\)/);
+  assert.doesNotMatch(dashboard, /teacherDomains\.includes/);
+  assert.match(dashboard, /href="\/teacher\/writing\/assignments"/);
+  assert.match(dashboard, /href="\/teacher\/writing\/reviews"/);
+  assert.match(dashboard, /href="\/teacher\/reading\/statistics"/);
+  assert.match(dashboard, /href="\/teacher\/sets"/);
   assert.match(dashboard, /TeacherStudentReadingSection/);
   assert.match(dashboard, /该学生不在你的写作教学范围内，无法查看 BAS 练习记录。/);
   assert.match(dashboard, /该学生不在你的写作教学范围内，无法查看 BAS 答题记录。/);
@@ -298,15 +304,18 @@ test("Reading student detail UI reuses the shared Reading statistics payloads", 
   assert.doesNotMatch(component, /sentence_template|correct_order_text|submitted_order_text/);
 });
 
-test("binding updates invalidate dashboard and student Reading caches", () => {
+test("binding updates invalidate dashboard, student overview, and student Reading caches", () => {
   const matrix = read("lib/cacheInvalidation.ts");
   assert.match(matrix, /TEACHER_BINDING_UPDATED:[\s\S]*teacherDashboard/);
+  assert.match(matrix, /TEACHER_BINDING_UPDATED:[\s\S]*teacherStudentOverview/);
   assert.match(matrix, /TEACHER_BINDING_UPDATED:[\s\S]*teacherReadingStatistics/);
 
   const cache = read("components/TeacherDataCache.tsx");
   assert.match(cache, /TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v1"/);
+  assert.match(cache, /TEACHER_STUDENT_OVERVIEW_CACHE_KEY = "teacher:student-overview:v1"/);
   assert.match(cache, /TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading"/);
   assert.match(cache, /case "teacherDashboard":[\s\S]*TEACHER_DASHBOARD_CACHE_KEY/);
+  assert.match(cache, /case "teacherStudentOverview":[\s\S]*TEACHER_STUDENT_OVERVIEW_CACHE_KEY/);
   assert.match(cache, /case "teacherReadingStatistics":[\s\S]*TEACHER_STUDENT_READING_CACHE_PREFIX/);
   assert.match(cache, /TEACHER_STATS_CACHE_SCHEMA_VERSION = 3/);
 });

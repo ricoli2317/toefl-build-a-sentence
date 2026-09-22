@@ -20,22 +20,23 @@ import {
 import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
-import { TEACHER_DASHBOARD_CACHE_KEY, useTeacherCachedData } from "@/components/TeacherDataCache";
+import { useTeacherCachedData } from "@/components/TeacherDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import type { StudentBindingDomain } from "@/lib/studentBindings";
-import type { TeacherDashboardPayload } from "@/lib/teacherDashboard";
-import { loadTeacherDashboardPayload } from "@/lib/teacherDashboardClient";
 import { AdminAreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 
 export type TeacherCrumb = { href?: string; label: string };
 
+/**
+ * Teacher feature entry points are identical for every ordinary teacher and
+ * depend only on `role === teacher`. Binding domains never hide navigation;
+ * detailed student data access stays binding-scoped on the pages themselves.
+ */
 const navigation: Array<{
   href: string;
   icon: import("lucide-react").LucideIcon;
   label: string;
   adminOnly?: boolean;
-  domain?: StudentBindingDomain;
   teacherOnly?: boolean;
   match: (path: string) => boolean;
 }> = [
@@ -55,7 +56,6 @@ const navigation: Array<{
     href: "/teacher/sets",
     icon: BarChart3,
     label: "套题统计",
-    domain: "writing",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/sets")
   },
@@ -63,7 +63,6 @@ const navigation: Array<{
     href: "/teacher/reading/statistics",
     icon: BookOpenCheck,
     label: "阅读统计",
-    domain: "reading",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/reading")
   },
@@ -71,7 +70,6 @@ const navigation: Array<{
     href: "/teacher/writing/assignments",
     icon: ClipboardList,
     label: "作业管理",
-    domain: "writing",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/writing/assignments")
   },
@@ -79,7 +77,6 @@ const navigation: Array<{
     href: "/teacher/writing/reviews",
     icon: ClipboardPenLine,
     label: "写作批改",
-    domain: "writing",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/writing/reviews")
   },
@@ -131,13 +128,6 @@ export function TeacherAppShell({
     "teacher:current-user-email",
     loadTeacherEmail
   );
-  // Domain entries are binding-based. Until the capability payload arrives the
-  // domain-specific entries stay hidden rather than guessing from role.
-  const { data: dashboard } = useTeacherCachedData<TeacherDashboardPayload | null>(
-    TEACHER_DASHBOARD_CACHE_KEY,
-    async () => (role === "teacher" ? loadTeacherDashboardPayload() : null)
-  );
-  const teacherDomains = dashboard?.teacherDomains ?? [];
 
   useEffect(
     () => () => {
@@ -260,7 +250,6 @@ export function TeacherAppShell({
             {navigation
               .filter((item) => {
                 if (role === "admin") return !item.teacherOnly;
-                if (item.domain && !teacherDomains.includes(item.domain)) return false;
                 return !item.adminOnly;
               })
               .map((item) => {

@@ -2,7 +2,18 @@ import { TeacherWritingAssignmentForm } from "@/components/teacher/TeacherWritin
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 import { TeacherOnly } from "@/components/RoleGate";
 
-export default function NewTeacherWritingAssignmentPage() {
+function firstSearchParam(value: string | string[] | undefined) {
+  if (Array.isArray(value)) return value[0]?.trim() ?? "";
+  return value?.trim() ?? "";
+}
+
+export default function NewTeacherWritingAssignmentPage({
+  searchParams
+}: {
+  searchParams?: { studentId?: string | string[] };
+}) {
+  const studentId = firstSearchParam(searchParams?.studentId);
+
   return (
     <TeacherOnly>
     <TeacherAppShell
@@ -10,7 +21,7 @@ export default function NewTeacherWritingAssignmentPage() {
       subtitle="选择题目和学生，创建一项新的写作作业。"
       title="布置作业"
     >
-      <TeacherWritingAssignmentForm />
+      <TeacherWritingAssignmentForm initialStudentId={studentId} />
     </TeacherAppShell>
     </TeacherOnly>
   );

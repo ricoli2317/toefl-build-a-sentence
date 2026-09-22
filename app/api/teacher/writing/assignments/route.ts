@@ -30,6 +30,7 @@ export async function GET(request: Request) {
     const auth = await requireWritingAssignmentTeacher(request);
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.teacherId) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
+    const studentId = new URL(request.url).searchParams.get("studentId")?.trim() ?? "";
     const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
       auth.supabase!
         .from("writing_assignments")
@@ -41,7 +42,24 @@ export async function GET(request: Request) {
         .range(from, to)
     );
     if (assignmentsResult.error) throw assignmentsResult.error;
-    const assignments = assignmentsResult.data ?? [];
+    let assignments = assignmentsResult.data ?? [];
+    if (studentId) {
+      const membershipResult = await readAllSupabaseRows<{ assignment_id: string }>((from, to) =>
+        auth.supabase!
+          .from("writing_assignment_students")
+          .select("assignment_id")
+          .eq("student_id", studentId)
+          .order("assignment_id", { ascending: true })
+          .range(from, to)
+      );
+      if (membershipResult.error) throw membershipResult.error;
+      const studentAssignmentIds = new Set(
+        (membershipResult.data ?? []).map((row) => String(row.assignment_id))
+      );
+      assignments = assignments.filter((assignment) =>
+        studentAssignmentIds.has(assignment.assignment_id)
+      );
+    }
     if (assignments.length === 0) return writingAssignmentJson({ assignments: [] });
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);

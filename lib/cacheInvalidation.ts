@@ -28,6 +28,7 @@ export type CacheInvalidationDomain =
   | "studentAssignments"
   | "teacherStats"
   | "teacherDashboard"
+  | "teacherStudentOverview"
   | "teacherQuestionBank"
   | "teacherWritingReviews"
   | "teacherWritingReviewWorkspace"
@@ -99,6 +100,7 @@ const BASE_INVALIDATION_MATRIX: Record<
   TEACHER_BINDING_UPDATED: [
     "teacherStats",
     "teacherDashboard",
+    "teacherStudentOverview",
     "teacherReadingStatistics",
     "teacherWritingReviews",
     "teacherWritingReviewWorkspace",

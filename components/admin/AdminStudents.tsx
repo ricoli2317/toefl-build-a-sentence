@@ -6,7 +6,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import { useCurrentAccount } from "@/components/RoleGate";
 import { TeacherCard, TeacherEmptyState, TeacherSectionTitle } from "@/components/teacher/TeacherUI";
 import { AccountTabs } from "@/components/teacher/TeacherAccounts";
-import { TeacherStudentsList } from "@/components/TeacherDashboard";
+import { TeacherStudentOverviewList } from "@/components/teacher/TeacherStudentOverview";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 type StudentAccount = {
@@ -29,7 +29,7 @@ async function authorizedFetch(input: string, init?: RequestInit) {
 
 export function StudentsAccountHome() {
   const { role } = useCurrentAccount();
-  if (role === "teacher") return <TeacherStudentsList />;
+  if (role === "teacher") return <TeacherStudentOverviewList />;
   return (
     <div className="grid gap-6">
       <AccountTabs active="students" />

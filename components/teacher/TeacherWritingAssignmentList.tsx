@@ -32,13 +32,21 @@ import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 const WITHDRAW_CONFIRM = "确认撤回这项作业？\n\n撤回后，学生将不能再通过该作业开始或继续未提交的练习。\n已经提交的作业和批改记录不会受到影响。";
 const DELETE_CONFIRM = "确认删除这项作业？\n\n删除后，该作业将不再显示在正常作业列表中。\n学生已有提交和批改记录不会被删除。";
 
-export function TeacherWritingAssignmentList() {
+export function TeacherWritingAssignmentList({ studentId }: { studentId?: string } = {}) {
   const cache = useTeacherDataCache();
   const [pendingId, setPendingId] = useState("");
   const [mutationError, setMutationError] = useState("");
+  const filterStudentId = studentId?.trim() ?? "";
+  const cacheKey = filterStudentId
+    ? `${TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY}:${filterStudentId}`
+    : TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY;
   const { data, error, loading } = useTeacherCachedData<{ assignments: WritingAssignmentSummary[] }>(
-    TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
-    () => teacherApiFetch("/api/teacher/writing/assignments")
+    cacheKey,
+    () => teacherApiFetch(
+      filterStudentId
+        ? `/api/teacher/writing/assignments?studentId=${encodeURIComponent(filterStudentId)}`
+        : "/api/teacher/writing/assignments"
+    )
   );
 
   async function mutate(assignmentId: string, action: "withdraw" | "reactivate" | "soft_delete") {
@@ -60,17 +68,32 @@ export function TeacherWritingAssignmentList() {
     }
   }
 
+  const studentFilterBanner = filterStudentId ? (
+    <TeacherCard className="flex flex-wrap items-center justify-between gap-3 p-4">
+      <p className="text-sm text-student-muted">当前仅显示该学生的写作作业。</p>
+      <Link className="teacher-button-secondary" href="/teacher/writing/assignments">查看全部作业</Link>
+    </TeacherCard>
+  ) : null;
+
   if (loading) {
-    return <div className="grid gap-3" aria-busy="true"><TeacherLoadingRegion label="正在加载作业列表" />{[1, 2, 3].map((item) => <TeacherSkeleton className="h-32 w-full rounded-2xl" key={item} />)}</div>;
+    return <div className="grid gap-3" aria-busy="true">{studentFilterBanner}<TeacherLoadingRegion label="正在加载作业列表" />{[1, 2, 3].map((item) => <TeacherSkeleton className="h-32 w-full rounded-2xl" key={item} />)}</div>;
   }
-  if (error) return <TeacherDataError text={error} />;
+  if (error) return <div className="grid gap-3">{studentFilterBanner}<TeacherDataError text={error} /></div>;
   if (!data?.assignments.length) {
-    return <TeacherCard className="p-5"><TeacherEmptyState text="还没有写作作业。点击右上角“布置作业”开始。" /></TeacherCard>;
+    return (
+      <div className="grid gap-3">
+        {studentFilterBanner}
+        <TeacherCard className="p-5">
+          <TeacherEmptyState text={filterStudentId ? "该学生还没有写作作业。" : "还没有写作作业。点击右上角“布置作业”开始。"} />
+        </TeacherCard>
+      </div>
+    );
   }
   const entries = groupTeacherWritingAssignments(data.assignments);
 
   return (
     <div className="grid gap-3">
+      {studentFilterBanner}
       {mutationError ? <TeacherDataError text={mutationError} /> : null}
       {entries.map((entry) => {
         if (entry.kind === "collection") {

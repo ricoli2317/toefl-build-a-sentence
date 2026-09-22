@@ -22,6 +22,7 @@ export const TEACHER_STATS_CACHE_KEY =
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
 export const TEACHER_READING_STATS_CACHE_KEY = "teacher:reading-statistics:v1";
 export const TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v1";
+export const TEACHER_STUDENT_OVERVIEW_CACHE_KEY = "teacher:student-overview:v1";
 export const TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading";
 export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";
@@ -210,6 +211,9 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "teacherDashboard":
               invalidate(TEACHER_DASHBOARD_CACHE_KEY);
+              break;
+            case "teacherStudentOverview":
+              invalidate(TEACHER_STUDENT_OVERVIEW_CACHE_KEY);
               break;
             case "teacherReadingStatistics":
               invalidate(TEACHER_READING_STATS_CACHE_KEY);

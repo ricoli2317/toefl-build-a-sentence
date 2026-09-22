@@ -1,19 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowRightLeft,
   BarChart3,
   BookOpenCheck,
   CircleX,
+  ClipboardList,
+  ClipboardPenLine,
   CloudUpload,
   Clock3,
   FileText,
   GraduationCap,
   Network,
-  Search,
   Target,
   TrendingUp,
   UserRound,
@@ -30,12 +30,6 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 import { useCurrentAccount } from "@/components/RoleGate";
-import {
-  compareStudentSearchGroups,
-  compareStudentSearchMetadata,
-  createStudentSearchMetadata,
-  studentSearchRank
-} from "@/lib/studentSearch";
 import {
   TEACHER_DASHBOARD_CACHE_KEY,
   TEACHER_STATS_CACHE_KEY,
@@ -198,57 +192,58 @@ type QuestionSummary = {
   accuracy: number;
 };
 
-type StudentSearchEntry = {
-  compactPinyin: string;
-  directText: string;
-  fullPinyin: string;
-  group: string;
-  initials: string;
-  student: StudentSummary;
-  surnamePinyin: string;
-};
-
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const LOW_ACCURACY_THRESHOLD = 0.5;
 
 export function TeacherDashboard() {
   const { dashboard, error, loading } = useTeacherDashboard();
-  const teacherDomains = dashboard?.teacherDomains ?? [];
-  const hasReading = teacherDomains.includes("reading");
-  const hasWriting = teacherDomains.includes("writing");
   const recentActivity = dashboard?.recentActivity ?? [];
 
   return (
     <div className="grid gap-8">
       {loading ? <TeacherLoadingRegion label="正在加载教师首页数据" /> : null}
+      {/*
+        Management entries are fixed for every ordinary teacher. Missing data
+        renders zero or a normal empty state; entries are never removed because
+        the teacher has no Reading or no Writing students.
+      */}
       <section>
         <TeacherSectionTitle>管理入口</TeacherSectionTitle>
         <div className="mt-4 grid gap-5 md:grid-cols-3">
           <TeacherFeatureCard
-            description="管理学生账号与学习情况"
+            description="查看学生练习情况与学习记录"
             href="/teacher/students"
             icon={Users}
             metric={loading ? <TeacherSkeleton className="h-4 w-14" /> : error ? "—" : `${dashboard?.studentCount ?? 0} 名学生`}
             title="学生"
           />
-          {hasWriting ? (
-            <TeacherFeatureCard
-              description="查看学生 BAS 表现与套题分析"
-              href="/teacher/sets"
-              icon={BarChart3}
-              metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.writing?.setCount ?? 0} 套`}
-              title="套题统计"
-            />
-          ) : null}
-          {hasReading ? (
-            <TeacherFeatureCard
-              description="查看学生阅读表现与练习统计"
-              href="/teacher/reading/statistics"
-              icon={BookOpenCheck}
-              metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.reading?.completedAttemptCount ?? 0} 次`}
-              title="阅读统计"
-            />
-          ) : null}
+          <TeacherFeatureCard
+            description="查看学生 BAS 表现与套题分析"
+            href="/teacher/sets"
+            icon={BarChart3}
+            metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.writing?.setCount ?? 0} 套`}
+            title="套题统计"
+          />
+          <TeacherFeatureCard
+            description="查看学生阅读表现与练习统计"
+            href="/teacher/reading/statistics"
+            icon={BookOpenCheck}
+            metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.reading?.completedAttemptCount ?? 0} 次`}
+            title="阅读统计"
+          />
+          <TeacherFeatureCard
+            description="布置写作任务并查看完成状态"
+            href="/teacher/writing/assignments"
+            icon={ClipboardList}
+            metric="作业"
+            title="作业管理"
+          />
+          <TeacherFeatureCard
+            description="批改学生写作并发布反馈"
+            href="/teacher/writing/reviews"
+            icon={ClipboardPenLine}
+            metric="批改"
+            title="写作批改"
+          />
           <TeacherFeatureCard
             description="浏览与管理所有题库内容"
             href="/teacher/question-bank"
@@ -263,19 +258,11 @@ export function TeacherDashboard() {
         <TeacherSectionTitle>数据概览</TeacherSectionTitle>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <TeacherMetricCard icon={Users} label="总学生数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(dashboard?.studentCount ?? 0)} />
-          {hasWriting ? (
-            <>
-              <TeacherMetricCard icon={BookOpenCheck} label="总套题数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.setCount ?? 0)} />
-              <TeacherMetricCard icon={FileText} label="总题目数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.questionCount ?? 0)} />
-              <TeacherMetricCard icon={TrendingUp} label="今日新增练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.todayAttemptCount ?? 0)} />
-            </>
-          ) : null}
-          {hasReading ? (
-            <>
-              <TeacherMetricCard icon={BookOpenCheck} label="已完成阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.completedAttemptCount ?? 0)} />
-              <TeacherMetricCard icon={Clock3} label="今日新增阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.todayAttemptCount ?? 0)} />
-            </>
-          ) : null}
+          <TeacherMetricCard icon={BookOpenCheck} label="总套题数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.setCount ?? 0)} />
+          <TeacherMetricCard icon={FileText} label="总题目数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.questionCount ?? 0)} />
+          <TeacherMetricCard icon={TrendingUp} label="今日新增练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.todayAttemptCount ?? 0)} />
+          <TeacherMetricCard icon={BookOpenCheck} label="已完成阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.completedAttemptCount ?? 0)} />
+          <TeacherMetricCard icon={Clock3} label="今日新增阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.todayAttemptCount ?? 0)} />
         </div>
         {error ? <div className="mt-4"><TeacherDataError text={toTeacherErrorMessage(error)} /></div> : null}
       </section>
@@ -387,153 +374,6 @@ export function AdminPlatformHome() {
           Admin 是平台管理员，负责账号与权限管理。作业管理、写作批改、阅读统计等教学工作流仅对普通教师开放。
         </p>
       </TeacherCard>
-    </div>
-  );
-}
-
-export function TeacherStudentsList() {
-  const [query, setQuery] = useState("");
-  const sectionRefs = useRef(new Map<string, HTMLTableRowElement>());
-  const { error, loading, stats } = useTeacherStats();
-  const entries = (stats?.students ?? []).map(createStudentSearchEntry);
-  const filtered = filterStudentEntries(entries, query);
-  const sections = groupStudentEntries(filtered);
-  const availableLetters = new Set(sections.map(([letter]) => letter));
-
-  return (
-    <div className="grid gap-6">
-      {loading ? <TeacherLoadingRegion label="正在加载学生列表" /> : null}
-            <TeacherCard className="p-5 sm:p-6">
-              <div className="flex flex-wrap items-end justify-between gap-5">
-                <div className="w-full max-w-[560px]">
-                  <label className="relative block">
-                    <Search
-                      aria-hidden="true"
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
-                      size={20}
-                      strokeWidth={1.9}
-                    />
-                    <input
-                      className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
-                      onChange={(event) => setQuery(event.target.value)}
-                      placeholder="搜索学生姓名 / 拼音"
-                      type="search"
-                      value={query}
-                    />
-                  </label>
-                  <p className="mt-3 text-sm text-student-muted">
-                    支持中文精确搜索，例如：丁煊航；支持拼音模糊搜索，例如：ding / zhang
-                  </p>
-                </div>
-                <p className="text-sm font-medium text-student-text">按姓氏首字母排序</p>
-              </div>
-            </TeacherCard>
-
-            <div className="flex items-start gap-3">
-              <TeacherCard className="min-w-0 flex-1 overflow-hidden p-0">
-                <div className="px-6 pt-6">
-                  <TeacherSectionTitle>学生列表</TeacherSectionTitle>
-                </div>
-                {loading ? (
-                  <StudentTableSkeleton />
-                ) : error ? (
-                  <StudentTableError text={toTeacherErrorMessage(error)} />
-                ) : filtered.length === 0 ? (
-                  <div className="p-6">
-                    <TeacherEmptyState text={query.trim() ? "没有找到匹配的学生。" : "暂无学生。"} />
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto px-6 pb-6 pt-4">
-                    <table className="w-full min-w-[860px] border-collapse text-left text-sm">
-                      <thead>
-                        <tr className="border-b border-student-border text-student-muted">
-                          <th className="px-3 py-3 font-medium">学生</th>
-                          <th className="px-3 py-3 font-medium">领域</th>
-                          <th className="px-3 py-3 font-medium">写作完成套题数</th>
-                          <th className="px-3 py-3 font-medium">写作练习次数</th>
-                          <th className="px-3 py-3 font-medium">写作平均正确率</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sections.flatMap(([letter, students]) => [
-                          <tr
-                            className="scroll-mt-28"
-                            id={`student-letter-${letter}`}
-                            key={`group-${letter}`}
-                            ref={(node) => {
-                              if (node) sectionRefs.current.set(letter, node);
-                              else sectionRefs.current.delete(letter);
-                            }}
-                          >
-                            <td className="bg-student-primary-soft px-3 py-2 font-bold text-student-primary" colSpan={5}>
-                              {letter}
-                            </td>
-                          </tr>,
-                          ...students.map((entry) => {
-                            const hasWritingDomain = entry.student.domains.includes("writing");
-                            return (
-                            <tr
-                              className="border-b border-student-border transition last:border-b-0 hover:bg-student-primary-soft/45"
-                              key={entry.student.studentId}
-                            >
-                              <td className="px-3 py-3">
-                                <div className="flex items-center gap-3">
-                                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
-                                    <UserRound aria-hidden="true" size={20} strokeWidth={1.9} />
-                                  </span>
-                                  <TeacherTextLink href={`/teacher/students/${entry.student.studentId}`}>
-                                    {entry.student.studentDisplayName}
-                                  </TeacherTextLink>
-                                </div>
-                              </td>
-                              <td className="px-3 py-3">
-                                <div className="flex flex-wrap gap-1.5">
-                                  {entry.student.domains.map((domain) => (
-                                    <DomainChip domain={domain} key={domain} />
-                                  ))}
-                                </div>
-                              </td>
-                              <td className="px-3 py-3 tabular-nums">{hasWritingDomain ? entry.student.completedSetCount : "—"}</td>
-                              <td className="px-3 py-3 tabular-nums">{hasWritingDomain ? entry.student.totalAttemptCount : "—"}</td>
-                              <td className="px-3 py-3">
-                                {hasWritingDomain ? (
-                                  <TeacherAccuracyBar value={entry.student.averageAccuracy} />
-                                ) : (
-                                  <span className="text-student-muted">—</span>
-                                )}
-                              </td>
-                            </tr>
-                            );
-                          })
-                        ])}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </TeacherCard>
-
-              <nav aria-label="学生姓氏首字母索引" className="sticky top-[96px] hidden w-7 shrink-0 flex-col items-center gap-0.5 py-1 xl:flex">
-                {ALPHABET.map((letter) => {
-                  const available = availableLetters.has(letter);
-                  return (
-                    <button
-                      aria-label={`跳转到 ${letter} 组`}
-                      className={`h-[22px] w-7 rounded-md text-[11px] font-semibold transition ${
-                        available
-                          ? "text-student-primary hover:bg-student-primary hover:text-white"
-                          : "cursor-default text-student-muted/35"
-                      }`}
-                      disabled={!available}
-                      key={letter}
-                      onClick={() => sectionRefs.current.get(letter)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                      type="button"
-                    >
-                      {letter}
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
     </div>
   );
 }
@@ -1202,47 +1042,6 @@ function TeacherFeatureCard({
   );
 }
 
-function createStudentSearchEntry(student: StudentSummary): StudentSearchEntry {
-  const displayName = student.studentDisplayName.trim();
-  return {
-    ...createStudentSearchMetadata(displayName),
-    student,
-  };
-}
-
-function filterStudentEntries(entries: StudentSearchEntry[], query: string) {
-  const sorted = [...entries].sort(compareStudentEntries);
-  if (!query.trim()) return sorted;
-
-  return sorted
-    .map((entry) => ({
-      entry,
-      rank: studentSearchRank(entry, entry.student.studentDisplayName, query)
-    }))
-    .filter((item) => Number.isFinite(item.rank))
-    .sort((left, right) => left.rank - right.rank || compareStudentEntries(left.entry, right.entry))
-    .map((item) => item.entry);
-}
-
-function groupStudentEntries(entries: StudentSearchEntry[]) {
-  const groups = new Map<string, StudentSearchEntry[]>();
-  for (const entry of entries) {
-    groups.set(entry.group, [...(groups.get(entry.group) ?? []), entry]);
-  }
-  return Array.from(groups.entries()).sort(([left], [right]) => compareStudentGroups(left, right));
-}
-
-function compareStudentEntries(left: StudentSearchEntry, right: StudentSearchEntry) {
-  return compareStudentSearchMetadata(
-    { ...left, displayName: left.student.studentDisplayName, id: left.student.studentId },
-    { ...right, displayName: right.student.studentDisplayName, id: right.student.studentId }
-  );
-}
-
-function compareStudentGroups(left: string, right: string) {
-  return compareStudentSearchGroups(left, right);
-}
-
 function isToday(value: string | null) {
   if (!value) return false;
   const date = new Date(value);
@@ -1361,54 +1160,6 @@ function toTeacherErrorMessage(message: string) {
   if (/empty response/i.test(message)) return "数据服务返回了空响应，请稍后重试。";
   if (/invalid json/i.test(message)) return "数据服务返回的数据格式无效，请稍后重试。";
   return /[\u3400-\u9fff]/.test(message) ? message : "数据加载失败，请稍后重试。";
-}
-
-function StudentTableSkeleton() {
-  return (
-    <div className="overflow-x-auto px-6 pb-6 pt-4">
-      <table className="w-full min-w-[860px] border-collapse text-left text-sm">
-        <thead>
-          <tr className="border-b border-student-border text-student-muted">
-            <th className="px-3 py-3 font-medium">学生</th>
-            <th className="px-3 py-3 font-medium">领域</th>
-            <th className="px-3 py-3 font-medium">写作完成套题数</th>
-            <th className="px-3 py-3 font-medium">写作练习次数</th>
-            <th className="px-3 py-3 font-medium">写作平均正确率</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: 5 }, (_, index) => (
-            <tr className="border-b border-student-border" key={index}>
-              <td className="px-3 py-3"><TeacherSkeleton className="h-10 w-40" /></td>
-              <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-16" /></td>
-              <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-12" /></td>
-              <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-12" /></td>
-              <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-40" /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function StudentTableError({ text }: { text: string }) {
-  return (
-    <div className="overflow-x-auto px-6 pb-6 pt-4">
-      <table className="w-full min-w-[860px] border-collapse text-left text-sm">
-        <thead>
-          <tr className="border-b border-student-border text-student-muted">
-            <th className="px-3 py-3 font-medium">学生</th>
-            <th className="px-3 py-3 font-medium">领域</th>
-            <th className="px-3 py-3 font-medium">写作完成套题数</th>
-            <th className="px-3 py-3 font-medium">写作练习次数</th>
-            <th className="px-3 py-3 font-medium">写作平均正确率</th>
-          </tr>
-        </thead>
-      </table>
-      <div className="mt-4"><TeacherDataError text={text} /></div>
-    </div>
-  );
 }
 
 function SetTableSkeleton() {
