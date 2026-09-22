@@ -534,9 +534,11 @@ export function TeacherWritingReviewWorkspace({
         attemptId,
         assignmentId: data.attempt.assignment_id
       });
-      cache.set(cacheKey, nextPayload);
-      updateCachedListStatus(cache, attemptId, review.status);
-      const regeneratedDraft = toDraft(review);
+        cache.set(cacheKey, nextPayload);
+        updateCachedListStatus(cache, attemptId, review.status, {
+          invalidateAssignments: review.status === "published"
+        });
+        const regeneratedDraft = toDraft(review);
       const nextDraft = teacherContentMode === "preserve"
         ? mergeRegeneratedDraftPreservingTeacherItems(
             data.attempt.response_text,
@@ -612,7 +614,9 @@ export function TeacherWritingReviewWorkspace({
         assignmentId: data.attempt.assignment_id
       });
       cache.set(cacheKey, nextPayload);
-      updateCachedListStatus(cache, attemptId, review.status);
+      updateCachedListStatus(cache, attemptId, review.status, {
+        invalidateAssignments: publish
+      });
       setDraft(toDraft(review));
       setDirty(false);
       setMessage(publish ? "已发布" : "已保存");
@@ -2496,9 +2500,14 @@ function normalizeTeacherContentFeedbackCategory(
 function updateCachedListStatus(
   cache: ReturnType<typeof useTeacherDataCache>,
   attemptId: string,
-  reviewStatus: WorkspaceReview["status"]
+  reviewStatus: WorkspaceReview["status"],
+  options?: { invalidateAssignments?: boolean }
 ) {
-  cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+  // Assignment progress only changes when a review is published; saving or
+  // regenerating must not drop every cached assignment page.
+  if (options?.invalidateAssignments) {
+    cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+  }
   const entry = cache.getEntry(TEACHER_WRITING_REVIEWS_CACHE_KEY);
   if (entry?.status !== "success") {
     cache.invalidate(TEACHER_WRITING_REVIEWS_CACHE_KEY);

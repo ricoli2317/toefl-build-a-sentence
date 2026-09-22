@@ -57,8 +57,7 @@ const STATUS_FILTERS: Array<{ value: StatusFilter; label: string }> = [
 export function TeacherWritingReviewList() {
   const { data, error, loading } = useTeacherCachedData<WritingReviewListPayload>(
     TEACHER_WRITING_REVIEWS_CACHE_KEY,
-    () => loadWritingReviews(),
-    { refreshOnMount: true }
+    () => loadWritingReviews()
   );
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [taskFilter, setTaskFilter] = useState<TaskFilter>("all");

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { bearerToken, requireTeacherOnly } from "@/lib/auth";
+import { bearerToken, requireAdmin } from "@/lib/auth";
 import { standardizeOrderTextCasing } from "@/lib/questionText";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
@@ -211,9 +211,9 @@ export async function GET(request: Request) {
       return jsonError(userError?.message ?? "Invalid session", 401);
     }
 
-    const auth = await requireTeacherOnly(token);
-    if (auth.error || !auth.userId || !auth.role) {
-      return jsonError(auth.error ?? "Unauthorized", auth.error === "Forbidden" ? 403 : 401);
+    const auth = await requireAdmin(token);
+    if (auth.error || !auth.userId || auth.role !== "admin") {
+      return jsonError(auth.error ?? "Unauthorized", auth.role ? 403 : 401);
     }
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -225,14 +225,16 @@ export async function GET(request: Request) {
       }
     });
     const actor = { userId: auth.userId, role: auth.role };
-    // Student roster scope: any reading OR writing binding (active students only).
+    const isAdmin = auth.role === "admin";
+    // Admin reporting covers every visible student; Teacher scope stays binding-based.
     const scopedStudentIds = await listVisibleStudentIds(db, actor);
-    // Teaching data scope: bindings decide domains. BAS belongs to writing only.
     const { teacherDomains, studentDomains } = await listTeacherStudentDomainBindings(db, actor);
-    const hasWritingDomain = teacherDomains.includes("writing");
-    const writingStudentIds = hasWritingDomain
-      ? scopedStudentIds.filter((studentId) => studentDomains.get(studentId)?.includes("writing"))
-      : [];
+    const hasWritingDomain = isAdmin || teacherDomains.includes("writing");
+    const writingStudentIds = !hasWritingDomain
+      ? []
+      : isAdmin
+        ? scopedStudentIds
+        : scopedStudentIds.filter((studentId) => studentDomains.get(studentId)?.includes("writing"));
 
     const [profilesResult, basResults] = await Promise.all([
       fetchRowsForStudentIds<ProfileRow>(scopedStudentIds, (batch, from, to) =>
@@ -353,7 +355,8 @@ export async function GET(request: Request) {
     }));
     const visibleStudentIds = new Set(scopedStudentIds);
     const writingStudentIdSet = new Set(writingStudentIds);
-    // BAS attempts belong to writing-bound students only, never to every visible student.
+    // BAS attempts belong to the writing scope: bound students for a Teacher,
+    // all visible students for Admin platform reporting.
     const attemptRows = rawAttemptRows.filter((attempt) => writingStudentIdSet.has(attempt.student_id));
     const answerRows = rawAnswerRows.filter((answer) => writingStudentIdSet.has(answer.student_id));
     const questionRows = ((questions ?? []) as QuestionRow[]).map((question) => ({

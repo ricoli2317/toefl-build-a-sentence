@@ -129,9 +129,9 @@ test("new bank assignments snapshot the canonical raw question and list with log
   assert.match(route, /canonicalizeQuestionBank: true/);
   assert.match(mutation, /practice_item_sources[\s\S]*is_canonical/);
   assert.match(mutation, /questionId = await resolveCanonicalWritingAssignmentQuestionId/);
-  assert.match(route, /display_name: display\?\.displayName \?\? snapshotTitle/);
+  assert.match(route, /display_name: displayNames\.get\(assignment\.assignment_id\) \?\? snapshotTitle/);
+  assert.match(route, /loadWritingAssignmentDisplayNames/);
   assert.match(list, /assignment\.display_name \|\| writingAssignmentTitle/);
-  assert.match(route, /assignment\.question_source === "question_bank"/);
 });
 
 test("frequent wrong JSON arrays render readably while the source field stays unchanged", () => {

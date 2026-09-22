@@ -1,15 +1,19 @@
 import type { ReadingModule } from "./reading/types.ts";
 import type { StudentBindingDomain } from "./studentBindings.ts";
 
-export type TeacherDashboardWritingOverview = {
-  setCount: number;
-  questionCount: number;
-  todayAttemptCount: number;
+export type TeacherDashboardAssignmentReminderStatus = "overdue" | "due_soon";
+
+export type TeacherDashboardAssignmentReminder = {
+  assignmentId: string;
+  studentId: string;
+  studentName: string;
+  dueAt: string;
+  status: TeacherDashboardAssignmentReminderStatus;
 };
 
-export type TeacherDashboardReadingOverview = {
-  completedAttemptCount: number;
-  todayAttemptCount: number;
+export type TeacherDashboardInactiveStudent = {
+  studentId: string;
+  studentName: string;
 };
 
 export type TeacherDashboardActivity = {
@@ -26,8 +30,9 @@ export type TeacherDashboardActivity = {
 export type TeacherDashboardPayload = {
   teacherDomains: StudentBindingDomain[];
   studentCount: number;
-  writing: TeacherDashboardWritingOverview | null;
-  reading: TeacherDashboardReadingOverview | null;
+  pendingReviewCount: number;
+  assignmentReminders: TeacherDashboardAssignmentReminder[];
+  inactiveStudents: TeacherDashboardInactiveStudent[];
   recentActivity: TeacherDashboardActivity[];
 };
 
@@ -46,6 +51,17 @@ export type TeacherDashboardReadingActivityInput = {
   submittedAt: string;
 };
 
+export type TeacherDashboardAssignmentReminderInput = {
+  assignmentId: string;
+  studentId: string;
+  dueAt: string;
+  status: TeacherDashboardAssignmentReminderStatus;
+};
+
+export const TEACHER_DASHBOARD_ACTIVITY_LIMIT = 6;
+export const TEACHER_DASHBOARD_REMINDER_LIMIT = 6;
+export const TEACHER_DASHBOARD_INACTIVE_LIMIT = 10;
+
 const READING_TASK_LABELS: Record<ReadingModule, string> = {
   ctw: "CTW",
   rdl: "RDL",
@@ -62,7 +78,7 @@ export function buildTeacherDashboardActivity(input: {
   studentNames: Map<string, string>;
   limit?: number;
 }) {
-  const limited = input.limit ?? 4;
+  const limited = input.limit ?? TEACHER_DASHBOARD_ACTIVITY_LIMIT;
   const writing = input.writing.map((attempt): TeacherDashboardActivity => ({
     activityId: attempt.attemptId,
     domain: "writing",
@@ -90,6 +106,27 @@ export function buildTeacherDashboardActivity(input: {
       || left.activityId.localeCompare(right.activityId)
     )
     .slice(0, Math.max(0, limited));
+}
+
+/**
+ * Homepage reminder priority: overdue work first (most recently missed first),
+ * then work due within the next 24 hours (soonest first). The list is capped so
+ * reminders can never stretch the homepage without limit.
+ */
+export function sortTeacherDashboardReminders(
+  reminders: TeacherDashboardAssignmentReminder[],
+  limit = TEACHER_DASHBOARD_REMINDER_LIMIT
+) {
+  return [...reminders]
+    .sort((left, right) => {
+      if (left.status !== right.status) return left.status === "overdue" ? -1 : 1;
+      const leftDue = activityTimestamp(left.dueAt);
+      const rightDue = activityTimestamp(right.dueAt);
+      return left.status === "overdue" ? rightDue - leftDue : leftDue - rightDue
+        || left.assignmentId.localeCompare(right.assignmentId)
+        || left.studentId.localeCompare(right.studentId);
+    })
+    .slice(0, Math.max(0, limit));
 }
 
 function activityTimestamp(value: string) {

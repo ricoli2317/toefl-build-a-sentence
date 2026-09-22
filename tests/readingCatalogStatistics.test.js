@@ -225,8 +225,9 @@ test("RAP multiple choice, insertion, and sentence selection remain separate sta
   assert.deepEqual(new Set(rap.map((row) => row.typeName)), new Set(["Multiple Choice", "Sentence Insertion", "Sentence Selection"]));
 });
 
-test("Teacher statistics enforce owned-student scope and never select answer keys", () => {
-  assert.match(teacherRoute, /requireTeacherOnly\(token\)/);
+test("Admin Reading statistics enforce visible-student scope and never select answer keys", () => {
+  assert.match(teacherRoute, /requireAdmin\(token\)/);
+  assert.doesNotMatch(teacherRoute, /requireTeacherOnly/);
   assert.match(teacherRoute, /listVisibleStudentIds/);
   assert.match(teacherRoute, /studentIds/);
   assert.doesNotMatch(teacherRoute, /correct_option_id|correct_anchor_id|correct_sentence_id|missing_text|student_answer/);

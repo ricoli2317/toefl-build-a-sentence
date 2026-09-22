@@ -57,16 +57,18 @@ test("Phase 3 case 3-4: writing review and AI APIs are teacher-only and 403 for 
   }
 });
 
-test("Phase 3 case 5: reading statistics and teacher stats are teacher-only and 403 for Admin", () => {
+test("Phase 3 case 5: whole-student statistics are Admin-only and closed to Teacher", () => {
   const reading = read("app/api/teacher/reading/statistics/route.ts");
-  assert.match(reading, /requireTeacherOnly\(token\)/);
-  assert.match(reading, /status: 403/);
+  assert.match(reading, /requireAdmin\(token\)/);
+  assert.doesNotMatch(reading, /requireTeacherOnly/);
+  assert.match(reading, /status: auth\.role \? 403 : 401/);
   assert.match(reading, /listVisibleStudentIds/);
   assert.match(reading, /"reading"/);
 
   const stats = read("app/api/teacher/stats/route.ts");
-  assert.match(stats, /requireTeacherOnly\(token\)/);
-  assert.match(stats, /auth\.error === "Forbidden" \? 403 : 401/);
+  assert.match(stats, /requireAdmin\(token\)/);
+  assert.doesNotMatch(stats, /requireTeacherOnly/);
+  assert.match(stats, /auth\.role \? 403 : 401/);
 });
 
 test("Phase 3 case 6: admin platform management stays available to Admin", () => {
@@ -105,10 +107,7 @@ test("Phase 3 case 8: teacher operational pages render only for actual teachers"
     "app/teacher/writing/reviews/page.tsx",
     "app/teacher/writing/reviews/logs/page.tsx",
     "app/teacher/writing/reviews/[attemptId]/page.tsx",
-    "app/teacher/reading/statistics/page.tsx",
-    "app/teacher/sets/page.tsx",
-    "app/teacher/sets/[setId]/page.tsx",
-    "app/teacher/sets/[setId]/questions/[questionId]/page.tsx",
+    "app/teacher/inactive-students/page.tsx",
     "app/teacher/students/[studentId]/page.tsx",
     "app/teacher/students/[studentId]/details/[setId]/page.tsx",
     "app/teacher/students/[studentId]/answers/[attemptAnswerId]/page.tsx"
@@ -119,8 +118,22 @@ test("Phase 3 case 8: teacher operational pages render only for actual teachers"
     assert.match(source, /<\/TeacherOnly>/, `${pagePath} must close TeacherOnly`);
   }
 
+  // Whole-student statistics pages stay open to Admin and blocked for Teacher.
+  for (const pagePath of [
+    "app/teacher/reading/statistics/page.tsx",
+    "app/teacher/sets/page.tsx",
+    "app/teacher/sets/[setId]/page.tsx",
+    "app/teacher/sets/[setId]/questions/[questionId]/page.tsx"
+  ]) {
+    const source = read(pagePath);
+    assert.match(source, /<AdminOnly>/, `${pagePath} must be wrapped in AdminOnly`);
+    assert.match(source, /<\/AdminOnly>/, `${pagePath} must close AdminOnly`);
+    assert.doesNotMatch(source, /TeacherOnly/, `${pagePath} must not stay TeacherOnly`);
+  }
+
   const shell = read("components/teacher/TeacherAppShell.tsx");
   assert.match(shell, /teacherOnly/, "nav items must carry teacherOnly flag");
+  assert.match(shell, /adminOnly/, "admin reporting entries must carry adminOnly flag");
   assert.match(shell, /!item\.teacherOnly/, "shell must hide teaching entries for Admin");
   assert.match(shell, /!item\.adminOnly/, "shell must keep admin-only entries for Admin");
 });

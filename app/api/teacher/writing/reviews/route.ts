@@ -5,9 +5,10 @@ import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { isWritingTaskType, type WritingTaskType } from "@/lib/writing";
 import {
-  loadHistoricalPracticeDisplayResolver,
+  loadWritingHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings,
-  type HistoricalPracticeDisplay
+  type HistoricalPracticeDisplay,
+  type HistoricalPracticeDisplayResolver
 } from "@/lib/historicalPracticeDisplay";
 import { listVisibleStudentIds } from "@/lib/accountAccess";
 
@@ -125,7 +126,8 @@ export async function GET(request: Request) {
       discussionQuestions,
       reviews,
       assignments,
-      historicalDisplayResolver
+      emailDisplayResolver,
+      discussionDisplayResolver
     ] = await Promise.all([
       readRowsByIds<ProfileRow>(userIds, (batch, from, to) =>
         supabase
@@ -167,7 +169,12 @@ export async function GET(request: Request) {
           .order("assignment_id", { ascending: true })
           .range(from, to)
       ),
-      loadHistoricalPracticeDisplayResolver(supabase)
+      loadWritingHistoricalPracticeDisplayResolver(supabase, "email", emailQuestionIds),
+      loadWritingHistoricalPracticeDisplayResolver(
+        supabase,
+        "academic_discussion",
+        discussionQuestionIds
+      )
     ]);
 
     const relatedError =
@@ -198,6 +205,10 @@ export async function GET(request: Request) {
       (assignments.data ?? []).map((assignment) => [String(assignment.assignment_id), assignment])
     );
 
+    const displayResolverByTaskType: Record<WritingTaskType, HistoricalPracticeDisplayResolver> = {
+      email: emailDisplayResolver,
+      academic_discussion: discussionDisplayResolver
+    };
     const resolvedDisplays: HistoricalPracticeDisplay[] = [];
     const enrichedAttempts = attempts.map((attempt) => {
       const taskType = attempt.task_type as WritingTaskType;
@@ -210,6 +221,7 @@ export async function GET(request: Request) {
       const assignment = attempt.assignment_id
         ? assignmentById.get(String(attempt.assignment_id))
         : undefined;
+      const historicalDisplayResolver = displayResolverByTaskType[taskType];
       const assignmentTitle = typeof assignment?.question_snapshot?.set_title === "string"
         ? assignment.question_snapshot.set_title.trim()
         : "";

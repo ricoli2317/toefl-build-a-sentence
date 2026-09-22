@@ -8,7 +8,8 @@ import {
   WritingReviewWorkspaceServerError
 } from "@/lib/writingReviewWorkspaceServer";
 import {
-  loadHistoricalPracticeDisplayResolver,
+  createHistoricalPracticeDisplayResolver,
+  loadWritingHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
 import { canManageWritingAttempt } from "@/lib/accountAccess";
@@ -33,10 +34,16 @@ export async function GET(
     if (!await canManageWritingAttempt(supabase, { userId: auth.userId!, role: auth.role! }, params.attemptId)) {
       throw new WritingReviewWorkspaceServerError("ATTEMPT_NOT_FOUND", "未找到这条写作提交。", 404);
     }
-    const [workspace, historicalDisplayResolver] = await Promise.all([
-      loadWritingReviewWorkspace(supabase, params.attemptId),
-      loadHistoricalPracticeDisplayResolver(supabase)
-    ]);
+    const workspace = await loadWritingReviewWorkspace(supabase, params.attemptId);
+    // Only this attempt's question mapping is needed; custom questions never
+    // consult the question-bank mapping at all.
+    const historicalDisplayResolver = workspace.question_source === "question_bank"
+      ? await loadWritingHistoricalPracticeDisplayResolver(
+          supabase,
+          workspace.attempt.task_type,
+          [workspace.attempt.question_id]
+        )
+      : createHistoricalPracticeDisplayResolver({ items: [], sources: [] });
     const display = historicalDisplayResolver.resolveWritingAttempt({
       assignmentId: workspace.attempt.assignment_id,
       assignmentDisplayName: workspace.question.set_title,

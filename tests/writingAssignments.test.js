@@ -266,7 +266,9 @@ test("teacher assignment pages resolve bank titles through the shared logical di
     path.join(projectRoot, "components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx"),
     "utf8"
   );
-  assert.match(listRoute, /display_name: display\?\.displayName \?\? snapshotTitle/);
+  assert.match(listRoute, /display_name: displayNames\.get\(assignment\.assignment_id\) \?\? snapshotTitle/);
+  assert.match(listRoute, /loadWritingAssignmentDisplayNames/);
+  assert.doesNotMatch(listRoute, /loadHistoricalPracticeDisplayResolver/);
   assert.match(detailRoute, /loadWritingAssignmentDisplayNames/);
   assert.match(detailRoute, /display_name:[\s\S]{0,80}displayNames\.get\(String\(assignment\.assignment_id\)\)/);
   assert.match(batchRoute, /loadWritingAssignmentDisplayNames/);

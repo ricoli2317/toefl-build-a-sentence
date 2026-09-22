@@ -10,11 +10,7 @@ import {
   requireWritingAssignmentTeacher,
   writingAssignmentJson
 } from "@/lib/writingAssignmentsServer";
-import {
-  loadHistoricalPracticeDisplayResolver,
-  logHistoricalPracticeDisplayWarnings,
-  type HistoricalPracticeDisplay
-} from "@/lib/historicalPracticeDisplay";
+import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
 
 export const dynamic = "force-dynamic";
 
@@ -63,10 +59,19 @@ export async function GET(request: Request) {
     if (assignments.length === 0) return writingAssignmentJson({ assignments: [] });
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
-    const [members, attempts, historicalDisplayResolver] = await Promise.all([
+    const [members, attempts, displayNames] = await Promise.all([
       readAssignmentRows<AssignmentStudentRow>(auth.supabase, "writing_assignment_students", "assignment_id,student_id,assigned_at", assignmentIds),
       readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds),
-      loadHistoricalPracticeDisplayResolver(auth.supabase)
+      loadWritingAssignmentDisplayNames(
+        auth.supabase,
+        assignments.map((assignment) => ({
+          assignmentId: assignment.assignment_id,
+          taskType: assignment.task_type,
+          questionSource: assignment.question_source,
+          questionId: assignment.question_id,
+          fallbackDisplayName: assignmentSnapshotTitle(assignment)
+        }))
+      )
     ]);
     const assignedByAssignment = new Map<string, Set<string>>();
     for (const member of members) {
@@ -92,7 +97,6 @@ export async function GET(request: Request) {
       Array.from(latestSubmission.values(), (attempt) => attempt.attempt_id)
     );
     const now = Date.now();
-    const resolvedDisplays: HistoricalPracticeDisplay[] = [];
     const enrichedAssignments = assignments.map((assignment) => {
         const students = assignedByAssignment.get(assignment.assignment_id) ?? new Set();
         let completedCount = 0;
@@ -111,16 +115,7 @@ export async function GET(request: Request) {
         const singleStudentSubmission = singleStudentId
           ? latestSubmission.get(`${assignment.assignment_id}:${singleStudentId}`)
           : undefined;
-        const snapshotTitle = assignment.question_snapshot.set_title?.trim() || "自定义题目";
-        const display = assignment.question_source === "question_bank" && assignment.question_id
-          ? historicalDisplayResolver.resolveWritingAttempt({
-              assignmentId: null,
-              fallbackDisplayName: snapshotTitle,
-              rawQuestionId: assignment.question_id,
-              taskType: assignment.task_type
-            })
-          : null;
-        if (display) resolvedDisplays.push(display);
+        const snapshotTitle = assignmentSnapshotTitle(assignment);
         return {
           assignment_id: assignment.assignment_id,
           group_id: assignment.group_id,
@@ -129,7 +124,7 @@ export async function GET(request: Request) {
           question_source: assignment.question_source,
           question_id: assignment.question_id,
           question_snapshot: assignment.question_snapshot,
-          display_name: display?.displayName ?? snapshotTitle,
+          display_name: displayNames.get(assignment.assignment_id) ?? snapshotTitle,
           status: assignment.status,
           due_at: assignment.due_at,
           created_at: assignment.created_at,
@@ -147,7 +142,6 @@ export async function GET(request: Request) {
           )
         } satisfies WritingAssignmentSummary;
     });
-    logHistoricalPracticeDisplayWarnings(resolvedDisplays);
     return writingAssignmentJson({ assignments: enrichedAssignments });
   } catch (error) {
     console.error("[writing-assignments] list_load_failed", error);
@@ -262,6 +256,12 @@ async function readAssignmentRows<T>(
     rows.push(...(result.data ?? []));
   }
   return rows;
+}
+
+function assignmentSnapshotTitle(assignment: {
+  question_snapshot: { set_title?: string | null };
+}) {
+  return assignment.question_snapshot.set_title?.trim() || "自定义题目";
 }
 
 function invalid(message: string) {

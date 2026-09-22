@@ -198,12 +198,13 @@ test("dashboard activity respects the recent limit without mixing domains", () =
   assert.deepEqual(activity.map((item) => item.activityId), ["r-4", "r-3"]);
 });
 
-test("/api/teacher/stats splits roster scope from writing/BAS scope", () => {
+test("/api/teacher/stats splits Admin roster scope from Teacher binding scope", () => {
   const stats = read("app/api/teacher/stats/route.ts");
+  assert.match(stats, /const isAdmin = auth\.role === "admin"/);
   assert.match(stats, /const scopedStudentIds = await listVisibleStudentIds\(db, actor\)/);
   assert.match(stats, /listTeacherStudentDomainBindings\(db, actor\)/);
-  assert.match(stats, /const hasWritingDomain = teacherDomains\.includes\("writing"\)/);
-  assert.match(stats, /const writingStudentIds = hasWritingDomain/);
+  assert.match(stats, /const hasWritingDomain = isAdmin \|\| teacherDomains\.includes\("writing"\)/);
+  assert.match(stats, /const writingStudentIds = !hasWritingDomain/);
   assert.match(stats, /fetchRowsForStudentIds<ProfileRow>\(scopedStudentIds/);
   assert.match(stats, /fetchRowsForStudentIds<AttemptRow>\(writingStudentIds/);
   assert.match(stats, /fetchRowsForStudentIds<AnswerRow>\(writingStudentIds/);
@@ -224,14 +225,17 @@ test("reading-only teachers never load BAS question metadata through teacher sta
 
 test("/api/teacher/dashboard is teacher-only, lightweight, and binding-scoped", () => {
   const dashboard = read("app/api/teacher/dashboard/route.ts");
+  const dashboardLib = read("lib/teacherDashboardServer.ts");
   assert.match(dashboard, /requireTeacherOnly\(bearerToken\(request\)\)/);
   assert.match(dashboard, /status: 403/);
   assert.match(dashboard, /listTeacherStudentDomainBindings/);
-  assert.match(dashboard, /from\("reading_attempts"\)/);
-  assert.match(dashboard, /from\("attempts"\)/);
-  assert.match(dashboard, /buildTeacherDashboardActivity/);
+  assert.match(dashboard, /loadPendingReviewCount|loadTeacherAssignmentReminders/);
+  assert.match(dashboardLib, /from\("reading_attempts"\)/);
+  assert.match(dashboardLib, /from\("attempts"\)/);
+  assert.match(dashboardLib, /buildTeacherDashboardActivity/);
   assert.match(dashboard, /"Cache-Control": "no-store"|Cache-Control[\s\S]{0,30}"no-store"/);
-  assert.doesNotMatch(dashboard, /attempt_answers|reading_attempt_answers|reading_full_set/);
+  assert.doesNotMatch(dashboard + dashboardLib, /attempt_answers|reading_attempt_answers|reading_full_set/);
+  assert.doesNotMatch(dashboard + dashboardLib, /from\("questions"\)|from\("practice_items"\)/);
 });
 
 test("student Reading detail API requires a reading binding and reuses Reading stats", () => {
@@ -266,15 +270,24 @@ test("Phase 6: navigation never hides Teacher entries by binding domain", () => 
   assert.doesNotMatch(shell, /profile\.role/);
 });
 
-test("Phase 6: teacher dashboard renders the fixed management entries for every teacher", () => {
+test("Phase 6: teacher home is a work overview without management entry cards", () => {
+  const home = read("components/teacher/TeacherHomeDashboard.tsx");
+  assert.match(home, /TEACHER_DASHBOARD_CACHE_KEY/);
+  assert.match(home, /loadTeacherDashboardPayload/);
+  assert.match(home, /总学生数/);
+  assert.match(home, /待批改/);
+  assert.match(home, /作业提醒/);
+  assert.match(home, /近 3 天未活跃学生/);
+  assert.match(home, /href="\/teacher\/inactive-students"/);
+  assert.match(home, /近期动态/);
+  assert.doesNotMatch(home, /href="\/teacher\/sets"/);
+  assert.doesNotMatch(home, /href="\/teacher\/reading\/statistics"/);
+  assert.doesNotMatch(home, /href="\/teacher\/writing\/assignments"/);
+  assert.doesNotMatch(home, /href="\/teacher\/writing\/reviews"/);
+  assert.doesNotMatch(home, /href="\/teacher\/question-bank"/);
+
   const dashboard = read("components/TeacherDashboard.tsx");
-  assert.match(dashboard, /TEACHER_DASHBOARD_CACHE_KEY/);
-  assert.match(dashboard, /loadTeacherDashboardPayload/);
-  assert.doesNotMatch(dashboard, /teacherDomains\.includes/);
-  assert.match(dashboard, /href="\/teacher\/writing\/assignments"/);
-  assert.match(dashboard, /href="\/teacher\/writing\/reviews"/);
-  assert.match(dashboard, /href="\/teacher\/reading\/statistics"/);
-  assert.match(dashboard, /href="\/teacher\/sets"/);
+  assert.doesNotMatch(dashboard, /TeacherFeatureCard[\s\S]{0,600}学生[\s\S]{0,200}套题统计/);
   assert.match(dashboard, /TeacherStudentPracticeWorkspace/);
   assert.doesNotMatch(dashboard, /TeacherStudentReadingSection/);
 });
@@ -310,7 +323,7 @@ test("binding updates invalidate dashboard, student overview, and student Readin
   assert.match(matrix, /TEACHER_BINDING_UPDATED:[\s\S]*teacherReadingStatistics/);
 
   const cache = read("components/TeacherDataCache.tsx");
-  assert.match(cache, /TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v1"/);
+  assert.match(cache, /TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v2"/);
   assert.match(cache, /TEACHER_STUDENT_OVERVIEW_CACHE_KEY = "teacher:student-overview:v1"/);
   assert.match(cache, /TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading"/);
   assert.match(cache, /TEACHER_STUDENT_PRACTICE_CACHE_PREFIX = "teacher:student-practice"/);
@@ -328,7 +341,8 @@ test("Phase 2/3 permissions stay intact for assignment and admin boundaries", ()
   assert.match(accountAccess, /listTeacherStudentDomainBindings/);
 
   const readingRoute = read("app/api/teacher/reading/statistics/route.ts");
-  assert.match(readingRoute, /requireTeacherOnly\(token\)/);
+  assert.match(readingRoute, /requireAdmin\(token\)/);
+  assert.doesNotMatch(readingRoute, /requireTeacherOnly/);
   assert.match(readingRoute, /listVisibleStudentIds\([\s\S]*"reading"/);
 
   const adminBindings = read("app/api/admin/student-bindings/route.ts");

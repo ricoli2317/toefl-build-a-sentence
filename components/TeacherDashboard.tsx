@@ -6,12 +6,8 @@ import {
   BarChart3,
   BookOpenCheck,
   CircleX,
-  ClipboardList,
-  ClipboardPenLine,
   CloudUpload,
-  Clock3,
   FileText,
-  GraduationCap,
   Network,
   Target,
   TrendingUp,
@@ -27,13 +23,11 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { useCurrentAccount } from "@/components/RoleGate";
 import {
-  TEACHER_DASHBOARD_CACHE_KEY,
   TEACHER_STATS_CACHE_KEY,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
-import type { TeacherDashboardPayload } from "@/lib/teacherDashboard";
-import { loadTeacherDashboardPayload } from "@/lib/teacherDashboardClient";
+import { TeacherOverview } from "@/components/teacher/TeacherHomeDashboard";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
 import { PracticeResultView, type ResultPayload } from "@/components/PracticeResult";
 import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
@@ -189,128 +183,14 @@ type QuestionSummary = {
 
 const LOW_ACCURACY_THRESHOLD = 0.5;
 
-export function TeacherDashboard() {
-  const { dashboard, error, loading } = useTeacherDashboard();
-  const recentActivity = dashboard?.recentActivity ?? [];
-
-  return (
-    <div className="grid gap-8">
-      {loading ? <TeacherLoadingRegion label="正在加载教师首页数据" /> : null}
-      {/*
-        Management entries are fixed for every ordinary teacher. Missing data
-        renders zero or a normal empty state; entries are never removed because
-        the teacher has no Reading or no Writing students.
-      */}
-      <section>
-        <TeacherSectionTitle>管理入口</TeacherSectionTitle>
-        <div className="mt-4 grid gap-5 md:grid-cols-3">
-          <TeacherFeatureCard
-            description="查看学生练习情况与学习记录"
-            href="/teacher/students"
-            icon={Users}
-            metric={loading ? <TeacherSkeleton className="h-4 w-14" /> : error ? "—" : `${dashboard?.studentCount ?? 0} 名学生`}
-            title="学生"
-          />
-          <TeacherFeatureCard
-            description="查看学生 BAS 表现与套题分析"
-            href="/teacher/sets"
-            icon={BarChart3}
-            metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.writing?.setCount ?? 0} 套`}
-            title="套题统计"
-          />
-          <TeacherFeatureCard
-            description="查看学生阅读表现与练习统计"
-            href="/teacher/reading/statistics"
-            icon={BookOpenCheck}
-            metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.reading?.completedAttemptCount ?? 0} 次`}
-            title="阅读统计"
-          />
-          <TeacherFeatureCard
-            description="布置写作任务并查看完成状态"
-            href="/teacher/writing/assignments"
-            icon={ClipboardList}
-            metric="作业"
-            title="作业管理"
-          />
-          <TeacherFeatureCard
-            description="批改学生写作并发布反馈"
-            href="/teacher/writing/reviews"
-            icon={ClipboardPenLine}
-            metric="批改"
-            title="写作批改"
-          />
-          <TeacherFeatureCard
-            description="浏览与管理所有题库内容"
-            href="/teacher/question-bank"
-            icon={FileText}
-            metric="题库"
-            title="查看所有套题"
-          />
-        </div>
-      </section>
-
-      <section>
-        <TeacherSectionTitle>数据概览</TeacherSectionTitle>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <TeacherMetricCard icon={Users} label="总学生数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(dashboard?.studentCount ?? 0)} />
-          <TeacherMetricCard icon={BookOpenCheck} label="总套题数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.setCount ?? 0)} />
-          <TeacherMetricCard icon={FileText} label="总题目数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.questionCount ?? 0)} />
-          <TeacherMetricCard icon={TrendingUp} label="今日新增练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.todayAttemptCount ?? 0)} />
-          <TeacherMetricCard icon={BookOpenCheck} label="已完成阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.completedAttemptCount ?? 0)} />
-          <TeacherMetricCard icon={Clock3} label="今日新增阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.todayAttemptCount ?? 0)} />
-        </div>
-        {error ? <div className="mt-4"><TeacherDataError text={toTeacherErrorMessage(error)} /></div> : null}
-      </section>
-
-      <TeacherCard className="p-5 sm:p-6">
-        <TeacherSectionTitle>近期动态</TeacherSectionTitle>
-        {loading ? (
-          <div className="mt-4 grid gap-3">
-            {Array.from({ length: 3 }, (_, index) => (
-              <div className="flex items-center gap-3 py-1" key={index}>
-                <TeacherSkeleton className="h-9 w-9 shrink-0 rounded-full" />
-                <TeacherSkeleton className="h-4 flex-1" />
-                <TeacherSkeleton className="h-4 w-20 shrink-0" />
-              </div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="mt-4"><TeacherDataError text={toTeacherErrorMessage(error)} /></div>
-        ) : recentActivity.length > 0 ? (
-          <div className="mt-4 divide-y divide-student-border">
-            {recentActivity.map((activity) => (
-              <div className="flex items-center justify-between gap-4 py-3 first:pt-1 last:pb-0" key={activity.activityId}>
-                <div className="flex min-w-0 items-center gap-3">
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
-                    <GraduationCap aria-hidden="true" size={19} strokeWidth={1.9} />
-                  </span>
-                  <p className="truncate text-sm text-student-text">
-                    <span className="font-semibold">{activity.studentName}</span>
-                    {" 完成了 "}
-                    <span className="font-medium">{activity.domainLabel} · {activity.taskLabel}</span>
-                    <span className="text-student-muted"> {activity.title}</span>
-                  </p>
-                </div>
-                <time className="shrink-0 text-xs text-student-muted">{formatActivityTime(activity.submittedAt)}</time>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-4"><TeacherEmptyState text="暂无近期动态。" /></div>
-        )}
-      </TeacherCard>
-    </div>
-  );
-}
-
 export function TeacherHome() {
   const { role } = useCurrentAccount();
-  return role === "admin" ? <AdminPlatformHome /> : <TeacherDashboard />;
+  return role === "admin" ? <AdminPlatformHome /> : <TeacherOverview />;
 }
 
 export function AdminPlatformHome() {
   return (
-    <div className="grid gap-8">
+    <div className="mx-auto grid w-full max-w-[1380px] gap-8">
       <section>
         <TeacherSectionTitle>平台管理</TeacherSectionTitle>
         <div className="mt-4 grid gap-5 md:grid-cols-3">
@@ -842,15 +722,6 @@ function useTeacherStats() {
   return { error, loading, stats };
 }
 
-function useTeacherDashboard() {
-  const { data, error, loading } = useTeacherCachedData<TeacherDashboardPayload | null>(
-    TEACHER_DASHBOARD_CACHE_KEY,
-    loadTeacherDashboardPayload
-  );
-
-  return { dashboard: data, error, loading };
-}
-
 async function loadTeacherStudentSetDetails(studentId: string, groupId: string) {
   return fetchTeacherStudentJson<TeacherStudentSetDetailsPayload>(
     `/api/teacher/students/${encodeURIComponent(studentId)}/bas/sets/${encodeURIComponent(groupId)}`,
@@ -950,42 +821,6 @@ function TeacherFeatureCard({
       />
     </Link>
   );
-}
-
-function isToday(value: string | null) {
-  if (!value) return false;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return false;
-  const now = new Date();
-  return (
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate()
-  );
-}
-
-function formatActivityTime(value: string | null) {
-  if (!value) return "时间未知";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "时间未知";
-  const now = new Date();
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-  const time = date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
-  if (isToday(value)) return `今天 ${time}`;
-  if (
-    date.getFullYear() === yesterday.getFullYear() &&
-    date.getMonth() === yesterday.getMonth() &&
-    date.getDate() === yesterday.getDate()
-  ) {
-    return `昨天 ${time}`;
-  }
-  return date.toLocaleString("zh-CN", {
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
 }
 
 function EmptyState({ text }: { text: string }) {

@@ -29,16 +29,41 @@ import {
   type LogicalPracticeCatalog,
   type LogicalPracticeListItem
 } from "@/lib/practiceLogicalCatalog";
+import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 import type { AcademicDiscussionAvatarMap } from "@/lib/academicDiscussionAvatars";
 import type { Question } from "@/lib/types";
 import type { WritingQuestion } from "@/lib/writing";
 import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
+import {
+  TeacherReadingQuestionBankCatalog,
+  TeacherReadingQuestionBankItemViewer
+} from "@/components/teacher/TeacherReadingQuestionBank";
+import {
+  isReadingModuleTaskType,
+  type TeacherQuestionBankTaskType
+} from "@/lib/teacherReadingQuestionBank";
 
-const TASK_TABS: Array<{ label: string; taskType: PracticeTaskType }> = [
-  { label: "Build a Sentence", taskType: "build_sentence" },
-  { label: "Write an Email", taskType: "email" },
-  { label: "Academic Discussion", taskType: "academic_discussion" }
+const QUESTION_BANK_TASK_GROUPS: Array<{
+  label: string;
+  tabs: Array<{ label: string; taskType: TeacherQuestionBankTaskType }>;
+}> = [
+  {
+    label: "写作",
+    tabs: [
+      { label: "Build a Sentence", taskType: "build_sentence" },
+      { label: "Write an Email", taskType: "email" },
+      { label: "Academic Discussion", taskType: "academic_discussion" }
+    ]
+  },
+  {
+    label: "阅读",
+    tabs: [
+      { label: READING_PRODUCT_NAMES.ctw, taskType: "ctw" },
+      { label: READING_PRODUCT_NAMES.rdl, taskType: "rdl" },
+      { label: READING_PRODUCT_NAMES.rap, taskType: "rap" }
+    ]
+  }
 ];
 
 type TeacherLogicalItem = Pick<
@@ -59,35 +84,63 @@ export function TeacherQuestionBankCatalog({
   taskType
 }: {
   page: number;
-  taskType: PracticeTaskType;
+  taskType: TeacherQuestionBankTaskType;
 }) {
-  const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:catalog:${taskType}:${page}`;
-  const { data, error, loading } = useTeacherCachedData<LogicalPracticeCatalog>(
-    cacheKey,
-    () => loadQuestionBankCatalog(taskType, page),
-    { refreshOnMount: true }
-  );
-
   return (
     <div className="grid gap-5">
       <TeacherBreadcrumbs
         crumbs={[{ label: "首页", href: "/teacher/dashboard" }, { label: "教师题库" }]}
       />
-      <nav aria-label="题目类型" className="flex flex-wrap gap-2">
-        {TASK_TABS.map((tab) => {
-          const active = tab.taskType === taskType;
-          return (
-            <Link
-              aria-current={active ? "page" : undefined}
-              className={active ? "student-button-primary min-h-10 px-4" : "student-button-secondary min-h-10 px-4"}
-              href={`/teacher/question-bank?taskType=${tab.taskType}`}
-              key={tab.taskType}
-            >
-              {tab.label}
-            </Link>
-          );
-        })}
-      </nav>
+      <QuestionBankTaskTabs taskType={taskType} />
+      {isReadingModuleTaskType(taskType) ? (
+        <TeacherReadingQuestionBankCatalog module={taskType} page={page} />
+      ) : (
+        <TeacherWritingQuestionBankCatalog page={page} taskType={taskType} />
+      )}
+    </div>
+  );
+}
+
+function QuestionBankTaskTabs({ taskType }: { taskType: TeacherQuestionBankTaskType }) {
+  return (
+    <nav aria-label="题目类型" className="grid gap-2">
+      {QUESTION_BANK_TASK_GROUPS.map((group) => (
+        <div className="flex flex-wrap items-center gap-2" key={group.label}>
+          <span className="w-8 text-xs font-semibold text-student-muted">{group.label}</span>
+          {group.tabs.map((tab) => {
+            const active = tab.taskType === taskType;
+            return (
+              <Link
+                aria-current={active ? "page" : undefined}
+                className={active ? "student-button-primary min-h-10 px-4" : "student-button-secondary min-h-10 px-4"}
+                href={`/teacher/question-bank?taskType=${tab.taskType}`}
+                key={tab.taskType}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+function TeacherWritingQuestionBankCatalog({
+  page,
+  taskType
+}: {
+  page: number;
+  taskType: PracticeTaskType;
+}) {
+  const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:catalog:${taskType}:${page}`;
+  const { data, error, loading } = useTeacherCachedData<LogicalPracticeCatalog>(
+    cacheKey,
+    () => loadQuestionBankCatalog(taskType, page)
+  );
+
+  return (
+    <div className="grid gap-5">
       {loading ? <TeacherLoadingRegion label="正在加载题目" /> : null}
       {loading ? (
         <LogicalItemListSkeleton />
@@ -132,13 +185,41 @@ export function TeacherQuestionBankItemViewer({
 }: {
   itemId: string;
   returnPage: number;
+  returnTaskType: TeacherQuestionBankTaskType;
+}) {
+  const isReadingItem = itemId.startsWith("reading-");
+  if (isReadingItem || isReadingModuleTaskType(returnTaskType)) {
+    return (
+      <TeacherReadingQuestionBankItemViewer
+        itemId={itemId}
+        returnModule={isReadingModuleTaskType(returnTaskType) ? returnTaskType : "ctw"}
+        returnPage={returnPage}
+      />
+    );
+  }
+
+  return (
+    <TeacherWritingQuestionBankItemViewer
+      itemId={itemId}
+      returnPage={returnPage}
+      returnTaskType={returnTaskType}
+    />
+  );
+}
+
+function TeacherWritingQuestionBankItemViewer({
+  itemId,
+  returnPage,
+  returnTaskType
+}: {
+  itemId: string;
+  returnPage: number;
   returnTaskType: PracticeTaskType;
 }) {
   const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:item:${itemId}`;
   const { data, error, loading } = useTeacherCachedData<LogicalItemDetail>(
     cacheKey,
-    () => loadQuestionBankItem(itemId),
-    { refreshOnMount: true }
+    () => loadQuestionBankItem(itemId)
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const item = data?.item;

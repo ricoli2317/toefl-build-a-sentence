@@ -76,17 +76,20 @@ const BASE_INVALIDATION_MATRIX: Record<
     "studentWritingOverview",
     "studentWritingHistory",
     "studentPracticeHistory",
-    "teacherWritingReviews"
+    "teacherWritingReviews",
+    "teacherDashboard"
   ],
+  // Saving or regenerating a review does not change publish state or
+  // assignment progress, so only the review caches are affected.
   WRITING_REVIEW_UPDATED: [
     "teacherWritingReviews",
-    "teacherWritingReviewWorkspace",
-    "teacherAssignments"
+    "teacherWritingReviewWorkspace"
   ],
   WRITING_REVIEW_PUBLISHED: [
     "teacherWritingReviews",
     "teacherWritingReviewWorkspace",
     "teacherAssignments",
+    "teacherDashboard",
     "studentWritingOverview",
     "studentPracticeHistory",
     "studentPublishedReviews"
@@ -94,7 +97,8 @@ const BASE_INVALIDATION_MATRIX: Record<
   ASSIGNMENT_UPDATED: [
     "studentAssignments",
     "studentWritingOverview",
-    "teacherAssignments"
+    "teacherAssignments",
+    "teacherDashboard"
   ],
   TEACHER_STATS_UPDATED: ["teacherStats"],
   TEACHER_BINDING_UPDATED: [

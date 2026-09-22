@@ -1,10 +1,10 @@
 import { TeacherSetsList } from "@/components/TeacherDashboard";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
-import { TeacherOnly } from "@/components/RoleGate";
+import { AdminOnly } from "@/components/RoleGate";
 
 export default function TeacherSetsPage() {
   return (
-    <TeacherOnly>
+    <AdminOnly>
     <TeacherAppShell
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
@@ -15,6 +15,6 @@ export default function TeacherSetsPage() {
     >
       <TeacherSetsList />
     </TeacherAppShell>
-    </TeacherOnly>
+    </AdminOnly>
   );
 }

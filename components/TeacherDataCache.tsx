@@ -21,7 +21,8 @@ export const TEACHER_STATS_CACHE_KEY =
   `teacher:stats:logical-schema-${TEACHER_STATS_CACHE_SCHEMA_VERSION}`;
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
 export const TEACHER_READING_STATS_CACHE_KEY = "teacher:reading-statistics:v1";
-export const TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v1";
+export const TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v2";
+export const TEACHER_INACTIVE_STUDENTS_CACHE_KEY = "teacher:inactive-students:v1";
 export const TEACHER_STUDENT_OVERVIEW_CACHE_KEY = "teacher:student-overview:v1";
 export const TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading";
 export const TEACHER_STUDENT_PRACTICE_CACHE_PREFIX = "teacher:student-practice";
@@ -213,6 +214,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "teacherDashboard":
               invalidate(TEACHER_DASHBOARD_CACHE_KEY);
+              invalidate(TEACHER_INACTIVE_STUDENTS_CACHE_KEY);
               break;
             case "teacherStudentOverview":
               invalidate(TEACHER_STUDENT_OVERVIEW_CACHE_KEY);
@@ -230,7 +232,14 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(TEACHER_STUDENT_PRACTICE_CACHE_PREFIX);
               break;
             case "teacherWritingReviewWorkspace":
-              invalidate(TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX);
+              // A review mutation only affects its own attempt workspace.
+              if (event.attemptId) {
+                invalidate(
+                  `${TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX}:${event.attemptId}`
+                );
+              } else {
+                invalidate(TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX);
+              }
               break;
             case "teacherAssignments":
               invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);

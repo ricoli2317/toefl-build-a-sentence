@@ -194,23 +194,24 @@ test("generate, save, publish, and AI logs retain attempt/review identity, never
   }
 });
 
-test("Teacher list performs one batched historical resolver load outside per-row enrichment", () => {
+test("Teacher list loads only task-scoped display resolvers outside per-row enrichment", () => {
   const route = read("app/api/teacher/writing/reviews/route.ts");
-  assert.equal((route.match(/loadHistoricalPracticeDisplayResolver\(supabase\)/g) ?? []).length, 1);
+  assert.equal((route.match(/loadWritingHistoricalPracticeDisplayResolver\(/g) ?? []).length, 2);
+  assert.doesNotMatch(route, /loadHistoricalPracticeDisplayResolver\(supabase\)/);
   const mapStart = route.indexOf("const enrichedAttempts = attempts.map");
   const mapEnd = route.indexOf("logHistoricalPracticeDisplayWarnings", mapStart);
   assert.ok(mapStart >= 0 && mapEnd > mapStart);
-  assert.doesNotMatch(route.slice(mapStart, mapEnd), /\.from\(|loadHistoricalPracticeDisplayResolver/);
+  assert.doesNotMatch(route.slice(mapStart, mapEnd), /\.from\(|loadWritingHistoricalPracticeDisplayResolver/);
 });
 
-test("Teacher cache identity excludes display_number and refreshes current naming on mount", () => {
+test("Teacher cache identity excludes display_number and reuses the review list cache on mount", () => {
   const cache = read("components/TeacherDataCache.tsx");
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
   const workspace = read("components/teacher/TeacherWritingReviewWorkspace.tsx");
   assert.match(cache, /teacher:writing-reviews:historical-display-v2/);
   assert.match(cache, /teacher:writing-review-workspace:historical-display-v2/);
   assert.doesNotMatch(cache, /display_number/);
-  assert.match(list, /refreshOnMount: true/);
+  assert.doesNotMatch(list, /refreshOnMount/);
   assert.match(workspace, /refreshOnMount: true/);
 });
 

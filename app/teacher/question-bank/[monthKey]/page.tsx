@@ -1,10 +1,8 @@
 import { redirect } from "next/navigation";
 import { TeacherQuestionBankItemViewer } from "@/components/TeacherQuestionBank";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
-import {
-  isLogicalPracticeTaskType,
-  parseLogicalPracticePage
-} from "@/lib/practiceLogicalCatalog";
+import { parseLogicalPracticePage } from "@/lib/practiceLogicalCatalog";
+import { isTeacherQuestionBankTaskType } from "@/lib/teacherReadingQuestionBank";
 
 export default function TeacherQuestionBankItemPage({
   params,
@@ -16,7 +14,7 @@ export default function TeacherQuestionBankItemPage({
   const itemId = decodeURIComponent(params.monthKey);
   if (/^\d{6}$/.test(itemId)) redirect("/teacher/question-bank");
 
-  const returnTaskType = isLogicalPracticeTaskType(searchParams.taskType)
+  const returnTaskType = isTeacherQuestionBankTaskType(searchParams.taskType)
     ? searchParams.taskType
     : "build_sentence";
   const returnPage = parseLogicalPracticePage(searchParams.page ?? null) ?? 1;

@@ -27,6 +27,8 @@ export type TeacherCrumb = { href?: string; label: string };
  * Teacher feature entry points are identical for every ordinary teacher and
  * depend only on `role === teacher`. Binding domains never hide navigation;
  * detailed student data access stays binding-scoped on the pages themselves.
+ * Whole-student statistics (套题统计, 阅读统计) are platform-wide reporting and
+ * stay with Admin only.
  */
 const navigation: Array<{
   href: string;
@@ -52,14 +54,14 @@ const navigation: Array<{
     href: "/teacher/sets",
     icon: BarChart3,
     label: "套题统计",
-    teacherOnly: true,
+    adminOnly: true,
     match: (path: string) => path.startsWith("/teacher/sets")
   },
   {
     href: "/teacher/reading/statistics",
     icon: BookOpenCheck,
     label: "阅读统计",
-    teacherOnly: true,
+    adminOnly: true,
     match: (path: string) => path.startsWith("/teacher/reading")
   },
   {
@@ -97,6 +99,7 @@ export function TeacherAppShell({
   crumbs,
   subtitle,
   title,
+  wide = false,
   workspace = false
 }: {
   action?: React.ReactNode;
@@ -104,6 +107,7 @@ export function TeacherAppShell({
   crumbs?: TeacherCrumb[];
   subtitle?: string;
   title: string;
+  wide?: boolean;
   workspace?: boolean;
 }) {
   const pathname = usePathname();
@@ -262,7 +266,7 @@ export function TeacherAppShell({
         </aside>
 
         <main className="min-w-0 flex-1">
-          <div className={clsx("teacher-page", workspace && "!max-w-none !gap-0 !p-3")}>
+          <div className={clsx("teacher-page", wide && "!max-w-none", workspace && "!max-w-none !gap-0 !p-3")}>
             <header className={clsx("flex flex-wrap items-end justify-between gap-4", workspace && "sr-only")}>
               <div>
                 <h1 className="teacher-page-title">{title}</h1>

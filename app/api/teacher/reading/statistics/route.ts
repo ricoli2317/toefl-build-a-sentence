@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { bearerToken, requireTeacherOnly } from "@/lib/auth";
+import { bearerToken, requireAdmin } from "@/lib/auth";
 import { listVisibleStudentIds } from "@/lib/accountAccess";
 import type { ReadingCatalogItemRow } from "@/lib/reading/catalog";
 import {
@@ -18,9 +18,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const token = bearerToken(request);
-  const auth = await requireTeacherOnly(token);
-  if (auth.error || !auth.userId || !auth.role) {
-    return json({ error: "无权查看阅读统计。" }, { status: 403 });
+  const auth = await requireAdmin(token);
+  if (auth.error || !auth.userId || auth.role !== "admin") {
+    return json({ error: "无权查看阅读统计。" }, { status: auth.role ? 403 : 401 });
   }
 
   try {
