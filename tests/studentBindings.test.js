@@ -185,14 +185,15 @@ test("API requires the Admin role and touches only teacher_student_bindings", as
   assert.doesNotMatch(main + single, /writing_assignments|writing_attempts|writing_review|\/attempts\/|reviews/);
 });
 
-test("Admin page exists at /admin/student-bindings with a Teacher Bindings nav entry", async () => {
+test("Admin page exists at /admin/student-bindings with a 教师绑定 nav entry", async () => {
   const page = await readFile(new URL("../app/admin/student-bindings/page.tsx", import.meta.url), "utf8");
   const shell = await readFile(new URL("../components/teacher/TeacherAppShell.tsx", import.meta.url), "utf8");
   const component = await readFile(new URL("../components/admin/StudentBindingsAdmin.tsx", import.meta.url), "utf8");
   assert.match(page, /AdminOnly/);
   assert.match(page, /StudentBindingsAdmin/);
   assert.match(shell, /href: "\/admin\/student-bindings"/);
-  assert.match(shell, /label: "Teacher Bindings"/);
+  assert.match(shell, /label: "教师绑定"/);
+  assert.doesNotMatch(shell, /Teacher Bindings/);
   assert.match(shell, /adminOnly: true/);
   assert.match(component, /Reading 教师/);
   assert.match(component, /Writing 教师/);

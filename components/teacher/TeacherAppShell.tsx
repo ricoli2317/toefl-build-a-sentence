@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
+  ArrowRightLeft,
   BarChart3,
   BookOpenCheck,
   ClipboardPenLine,
@@ -19,8 +20,11 @@ import {
 import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
 import { StudentBrand } from "@/components/student/StudentBrand";
-import { useTeacherCachedData } from "@/components/TeacherDataCache";
+import { TEACHER_DASHBOARD_CACHE_KEY, useTeacherCachedData } from "@/components/TeacherDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import type { StudentBindingDomain } from "@/lib/studentBindings";
+import type { TeacherDashboardPayload } from "@/lib/teacherDashboard";
+import { loadTeacherDashboardPayload } from "@/lib/teacherDashboardClient";
 import { AdminAreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 
@@ -31,6 +35,7 @@ const navigation: Array<{
   icon: import("lucide-react").LucideIcon;
   label: string;
   adminOnly?: boolean;
+  domain?: StudentBindingDomain;
   teacherOnly?: boolean;
   match: (path: string) => boolean;
 }> = [
@@ -50,6 +55,7 @@ const navigation: Array<{
     href: "/teacher/sets",
     icon: BarChart3,
     label: "套题统计",
+    domain: "writing",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/sets")
   },
@@ -57,6 +63,7 @@ const navigation: Array<{
     href: "/teacher/reading/statistics",
     icon: BookOpenCheck,
     label: "阅读统计",
+    domain: "reading",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/reading")
   },
@@ -64,6 +71,7 @@ const navigation: Array<{
     href: "/teacher/writing/assignments",
     icon: ClipboardList,
     label: "作业管理",
+    domain: "writing",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/writing/assignments")
   },
@@ -71,6 +79,7 @@ const navigation: Array<{
     href: "/teacher/writing/reviews",
     icon: ClipboardPenLine,
     label: "写作批改",
+    domain: "writing",
     teacherOnly: true,
     match: (path: string) => path.startsWith("/teacher/writing/reviews")
   },
@@ -83,9 +92,16 @@ const navigation: Array<{
   {
     href: "/admin/student-bindings",
     icon: Network,
-    label: "Teacher Bindings",
+    label: "教师绑定",
     adminOnly: true,
     match: (path: string) => path.startsWith("/admin/student-bindings")
+  },
+  {
+    href: "/admin/writing-assignment-transfer",
+    icon: ArrowRightLeft,
+    label: "历史作业转移",
+    adminOnly: true,
+    match: (path: string) => path.startsWith("/admin/writing-assignment-transfer")
   }
 ];
 
@@ -115,6 +131,13 @@ export function TeacherAppShell({
     "teacher:current-user-email",
     loadTeacherEmail
   );
+  // Domain entries are binding-based. Until the capability payload arrives the
+  // domain-specific entries stay hidden rather than guessing from role.
+  const { data: dashboard } = useTeacherCachedData<TeacherDashboardPayload | null>(
+    TEACHER_DASHBOARD_CACHE_KEY,
+    async () => (role === "teacher" ? loadTeacherDashboardPayload() : null)
+  );
+  const teacherDomains = dashboard?.teacherDomains ?? [];
 
   useEffect(
     () => () => {
@@ -237,6 +260,7 @@ export function TeacherAppShell({
             {navigation
               .filter((item) => {
                 if (role === "admin") return !item.teacherOnly;
+                if (item.domain && !teacherDomains.includes(item.domain)) return false;
                 return !item.adminOnly;
               })
               .map((item) => {

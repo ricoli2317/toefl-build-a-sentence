@@ -16,11 +16,13 @@ import {
 } from "@/lib/cacheInvalidation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 
-export const TEACHER_STATS_CACHE_SCHEMA_VERSION = 2;
+export const TEACHER_STATS_CACHE_SCHEMA_VERSION = 3;
 export const TEACHER_STATS_CACHE_KEY =
   `teacher:stats:logical-schema-${TEACHER_STATS_CACHE_SCHEMA_VERSION}`;
 export const TEACHER_QUESTION_BANK_CACHE_PREFIX = "teacher:question-bank";
 export const TEACHER_READING_STATS_CACHE_KEY = "teacher:reading-statistics:v1";
+export const TEACHER_DASHBOARD_CACHE_KEY = "teacher:dashboard:v1";
+export const TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading";
 export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";
 export const TEACHER_WRITING_REVIEWS_CACHE_KEY =
@@ -206,8 +208,12 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
             case "teacherStats":
               invalidate(TEACHER_STATS_CACHE_KEY);
               break;
+            case "teacherDashboard":
+              invalidate(TEACHER_DASHBOARD_CACHE_KEY);
+              break;
             case "teacherReadingStatistics":
               invalidate(TEACHER_READING_STATS_CACHE_KEY);
+              invalidate(TEACHER_STUDENT_READING_CACHE_PREFIX);
               break;
             case "teacherQuestionBank":
               invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);

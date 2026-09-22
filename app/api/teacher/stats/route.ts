@@ -17,7 +17,7 @@ import {
   createHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
 } from "@/lib/historicalPracticeDisplay";
-import { listVisibleStudentIds } from "@/lib/accountAccess";
+import { listTeacherStudentDomainBindings, listVisibleStudentIds } from "@/lib/accountAccess";
 import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 export const dynamic = "force-dynamic";
@@ -224,41 +224,17 @@ export async function GET(request: Request) {
         fetch: createSupabaseFetch()
       }
     });
-    const scopedStudentIds = await listVisibleStudentIds(db, {
-      userId: auth.userId,
-      role: auth.role
-    });
+    const actor = { userId: auth.userId, role: auth.role };
+    // Student roster scope: any reading OR writing binding (active students only).
+    const scopedStudentIds = await listVisibleStudentIds(db, actor);
+    // Teaching data scope: bindings decide domains. BAS belongs to writing only.
+    const { teacherDomains, studentDomains } = await listTeacherStudentDomainBindings(db, actor);
+    const hasWritingDomain = teacherDomains.includes("writing");
+    const writingStudentIds = hasWritingDomain
+      ? scopedStudentIds.filter((studentId) => studentDomains.get(studentId)?.includes("writing"))
+      : [];
 
-    const [
-      { data: attempts, error: attemptsError },
-      { data: answers, error: answersError },
-      { data: profiles, error: profilesError },
-      { data: questions, error: questionsError },
-      { data: logicalItems, error: logicalItemsError },
-      { data: logicalSources, error: logicalSourcesError },
-      { data: logicalOccurrences, error: logicalOccurrencesError },
-      { data: logicalQuestionMaps, error: logicalQuestionMapsError }
-    ] = await Promise.all([
-      fetchRowsForStudentIds<AttemptRow>(scopedStudentIds, (batch, from, to) =>
-        db
-          .from("attempts")
-          .select(
-            "attempt_id,student_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
-          )
-          .in("student_id", batch)
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      ),
-      fetchRowsForStudentIds<AnswerRow>(scopedStudentIds, (batch, from, to) =>
-        db
-          .from("attempt_answers")
-          .select(
-            "attempt_answer_id,attempt_id,question_id,student_id,set_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,question_time_seconds"
-          )
-          .in("student_id", batch)
-          .order("attempt_answer_id", { ascending: true })
-          .range(from, to)
-      ),
+    const [profilesResult, basResults] = await Promise.all([
       fetchRowsForStudentIds<ProfileRow>(scopedStudentIds, (batch, from, to) =>
         db
           .from("profiles")
@@ -267,49 +243,89 @@ export async function GET(request: Request) {
           .order("id", { ascending: true })
           .range(from, to)
       ),
-      fetchAllRows<QuestionRow>((from, to) =>
-        db
-          .from("questions")
-          .select(
-            "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence"
-          )
-          .order("question_id", { ascending: true })
-          .range(from, to)
-      ),
-      fetchAllRows<TeacherLogicalPracticeItemRow>((from, to) =>
-        db
-          .from("practice_items")
-          .select("item_id,task_type,display_number,first_seen_date,is_active")
-          .eq("task_type", "build_sentence")
-          .order("item_id", { ascending: true })
-          .range(from, to)
-      ),
-      fetchAllRows<TeacherLogicalPracticeSourceRow>((from, to) =>
-        db
-          .from("practice_item_sources")
-          .select("source_id,item_id,task_type,source_set_id,is_canonical")
-          .eq("task_type", "build_sentence")
-          .not("source_set_id", "is", null)
-          .order("source_id", { ascending: true })
-          .range(from, to)
-      ),
-      fetchAllRows<TeacherLogicalPracticeOccurrenceRow>((from, to) =>
-        db
-          .from("practice_item_occurrences")
-          .select("source_id,occurred_on")
-          .order("source_id", { ascending: true })
-          .order("occurred_on", { ascending: false })
-          .range(from, to)
-      ),
-      fetchAllRows<TeacherLogicalQuestionMapRow>((from, to) =>
-        db
-          .from("practice_item_question_map")
-          .select("source_id,source_question_id,source_question_order,logical_question_order")
-          .order("source_id", { ascending: true })
-          .order("logical_question_order", { ascending: true })
-          .range(from, to)
-      )
+      hasWritingDomain
+        ? Promise.all([
+            fetchRowsForStudentIds<AttemptRow>(writingStudentIds, (batch, from, to) =>
+              db
+                .from("attempts")
+                .select(
+                  "attempt_id,student_id,set_id,set_title,correct_count,total_questions,time_spent_seconds,submitted_at,created_at"
+                )
+                .in("student_id", batch)
+                .order("attempt_id", { ascending: true })
+                .range(from, to)
+            ),
+            fetchRowsForStudentIds<AnswerRow>(writingStudentIds, (batch, from, to) =>
+              db
+                .from("attempt_answers")
+                .select(
+                  "attempt_answer_id,attempt_id,question_id,student_id,set_id,question_order,prompt,submitted_order_text,correct_order_text,is_correct,question_time_seconds"
+                )
+                .in("student_id", batch)
+                .order("attempt_answer_id", { ascending: true })
+                .range(from, to)
+            ),
+            fetchAllRows<QuestionRow>((from, to) =>
+              db
+                .from("questions")
+                .select(
+                  "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence"
+                )
+                .order("question_id", { ascending: true })
+                .range(from, to)
+            ),
+            fetchAllRows<TeacherLogicalPracticeItemRow>((from, to) =>
+              db
+                .from("practice_items")
+                .select("item_id,task_type,display_number,first_seen_date,is_active")
+                .eq("task_type", "build_sentence")
+                .order("item_id", { ascending: true })
+                .range(from, to)
+            ),
+            fetchAllRows<TeacherLogicalPracticeSourceRow>((from, to) =>
+              db
+                .from("practice_item_sources")
+                .select("source_id,item_id,task_type,source_set_id,is_canonical")
+                .eq("task_type", "build_sentence")
+                .not("source_set_id", "is", null)
+                .order("source_id", { ascending: true })
+                .range(from, to)
+            ),
+            fetchAllRows<TeacherLogicalPracticeOccurrenceRow>((from, to) =>
+              db
+                .from("practice_item_occurrences")
+                .select("source_id,occurred_on")
+                .order("source_id", { ascending: true })
+                .order("occurred_on", { ascending: false })
+                .range(from, to)
+            ),
+            fetchAllRows<TeacherLogicalQuestionMapRow>((from, to) =>
+              db
+                .from("practice_item_question_map")
+                .select("source_id,source_question_id,source_question_order,logical_question_order")
+                .order("source_id", { ascending: true })
+                .order("logical_question_order", { ascending: true })
+                .range(from, to)
+            )
+          ])
+        : null
     ]);
+
+    const { data: profiles, error: profilesError } = profilesResult;
+    const attempts = basResults?.[0].data ?? null;
+    const answers = basResults?.[1].data ?? null;
+    const questions = basResults?.[2].data ?? null;
+    const logicalItems = basResults?.[3].data ?? null;
+    const logicalSources = basResults?.[4].data ?? null;
+    const logicalOccurrences = basResults?.[5].data ?? null;
+    const logicalQuestionMaps = basResults?.[6].data ?? null;
+    const attemptsError = basResults?.[0].error ?? null;
+    const answersError = basResults?.[1].error ?? null;
+    const questionsError = basResults?.[2].error ?? null;
+    const logicalItemsError = basResults?.[3].error ?? null;
+    const logicalSourcesError = basResults?.[4].error ?? null;
+    const logicalOccurrencesError = basResults?.[5].error ?? null;
+    const logicalQuestionMapsError = basResults?.[6].error ?? null;
 
     const queryError = attemptsError ?? answersError ?? profilesError ?? questionsError ??
       logicalItemsError ?? logicalSourcesError ?? logicalOccurrencesError ?? logicalQuestionMapsError;
@@ -336,8 +352,10 @@ export async function GET(request: Request) {
       id: String(profile.id)
     }));
     const visibleStudentIds = new Set(scopedStudentIds);
-    const attemptRows = rawAttemptRows.filter((attempt) => visibleStudentIds.has(attempt.student_id));
-    const answerRows = rawAnswerRows.filter((answer) => visibleStudentIds.has(answer.student_id));
+    const writingStudentIdSet = new Set(writingStudentIds);
+    // BAS attempts belong to writing-bound students only, never to every visible student.
+    const attemptRows = rawAttemptRows.filter((attempt) => writingStudentIdSet.has(attempt.student_id));
+    const answerRows = rawAnswerRows.filter((answer) => writingStudentIdSet.has(answer.student_id));
     const questionRows = ((questions ?? []) as QuestionRow[]).map((question) => ({
       ...question,
       question_id: String(question.question_id),
@@ -428,6 +446,7 @@ export async function GET(request: Request) {
         studentEmail: studentEmail ?? "Unknown email",
         studentName: studentDisplayName,
         studentDisplayName,
+        domains: studentDomains.get(studentId) ?? [],
         completedSetCount: completedSets.size,
         totalAttemptCount: studentAttempts.length,
         answeredQuestionCount: uniqueAnsweredQuestions.size,
@@ -543,6 +562,7 @@ export async function GET(request: Request) {
     );
 
     return teacherStatsJson({
+      teacherDomains,
       overview: {
         studentCount: studentSummaries.length,
         totalAttemptCount: attemptRows.length,

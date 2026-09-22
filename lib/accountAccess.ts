@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
-import type { StudentBindingDomain } from "./studentBindings.ts";
+import { STUDENT_BINDING_DOMAINS, type StudentBindingDomain } from "./studentBindings.ts";
 import type { UserRole } from "./types.ts";
 
 export type AccountActor = { userId: string; role: UserRole };
@@ -108,6 +108,55 @@ export async function listVisibleStudentIds(
   );
   if (profilesResult.error) throw profilesResult.error;
   return (profilesResult.data ?? []).map((row) => String(row.id));
+}
+
+/**
+ * Domain capabilities for the Teacher UI are binding-based, never role-based.
+ * Returns the domains the teacher holds at least one binding for plus the
+ * per-student domain list. Admin has no teaching bindings and gets empty data.
+ */
+export async function listTeacherStudentDomainBindings(
+  supabase: SupabaseClient,
+  actor: AccountActor
+): Promise<{
+  teacherDomains: StudentBindingDomain[];
+  studentDomains: Map<string, StudentBindingDomain[]>;
+}> {
+  if (actor.role !== "teacher") {
+    return { teacherDomains: [], studentDomains: new Map() };
+  }
+
+  const result = await readAllSupabaseRows<{ student_id: string; domain: string }>((from, to) =>
+    supabase
+      .from("teacher_student_bindings")
+      .select("student_id,domain")
+      .eq("teacher_id", actor.userId)
+      .order("student_id", { ascending: true })
+      .range(from, to)
+  );
+  if (result.error) throw result.error;
+
+  const teacherDomainSet = new Set<StudentBindingDomain>();
+  const studentDomainSets = new Map<string, Set<StudentBindingDomain>>();
+  for (const row of result.data ?? []) {
+    const domain = String(row.domain);
+    if (domain !== "reading" && domain !== "writing") continue;
+    teacherDomainSet.add(domain);
+    const studentId = String(row.student_id);
+    const domains = studentDomainSets.get(studentId) ?? new Set<StudentBindingDomain>();
+    domains.add(domain);
+    studentDomainSets.set(studentId, domains);
+  }
+
+  const sortDomains = (domains: Iterable<StudentBindingDomain>) => {
+    const values = Array.from(domains);
+    return STUDENT_BINDING_DOMAINS.filter((domain) => values.includes(domain));
+  };
+  const teacherDomains = sortDomains(teacherDomainSet);
+  const studentDomains = new Map<string, StudentBindingDomain[]>(
+    Array.from(studentDomainSets, ([studentId, domains]) => [studentId, sortDomains(domains)])
+  );
+  return { teacherDomains, studentDomains };
 }
 
 export async function canManageStudent(

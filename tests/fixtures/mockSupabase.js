@@ -2,9 +2,18 @@
  * Minimal in-memory Supabase PostgREST-style builder used by permission tests.
  * Supports the query surface exercised by lib/accountAccess.ts:
  * select/eq/in/is/not/order/range/maybeSingle.
+ *
+ * Pass options.rpc to stub Supabase RPC calls:
+ *   createMockSupabase(tables, { rpc: (fn, args, tables) => ({ data, error }) })
  */
-export function createMockSupabase(tables) {
+export function createMockSupabase(tables, options = {}) {
   return {
+    async rpc(fn, args) {
+      if (typeof options.rpc !== "function") {
+        return { data: null, error: { message: `rpc ${fn} is not stubbed` } };
+      }
+      return options.rpc(fn, args, tables);
+    },
     from(tableName) {
       const plan = [];
       const builder = {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import {
   ArrowRight,
+  ArrowRightLeft,
   BarChart3,
   BookOpenCheck,
   CircleX,
@@ -36,13 +37,18 @@ import {
   studentSearchRank
 } from "@/lib/studentSearch";
 import {
+  TEACHER_DASHBOARD_CACHE_KEY,
   TEACHER_STATS_CACHE_KEY,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
+import type { StudentBindingDomain } from "@/lib/studentBindings";
+import type { TeacherDashboardPayload } from "@/lib/teacherDashboard";
+import { loadTeacherDashboardPayload } from "@/lib/teacherDashboardClient";
 import { AttemptHistoryList } from "@/components/AttemptHistoryList";
 import { PracticeResultView, type ResultPayload } from "@/components/PracticeResult";
 import { PracticeHistoryCompactList } from "@/components/shared/PracticeHistoryCards";
 import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
+import { DomainChip, TeacherStudentReadingSection } from "@/components/teacher/TeacherStudentReading";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
 import {
   TeacherAccuracyBar,
@@ -58,6 +64,7 @@ import {
 } from "@/components/teacher/TeacherUI";
 
 type TeacherStatsPayload = {
+  teacherDomains: StudentBindingDomain[];
   overview: {
     studentCount: number;
     totalAttemptCount: number;
@@ -79,6 +86,7 @@ type StudentSummary = {
   studentEmail: string;
   studentName: string;
   studentDisplayName: string;
+  domains: StudentBindingDomain[];
   completedSetCount: number;
   totalAttemptCount: number;
   answeredQuestionCount: number;
@@ -204,12 +212,11 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const LOW_ACCURACY_THRESHOLD = 0.5;
 
 export function TeacherDashboard() {
-  const { error, loading, stats } = useTeacherStats();
-  const todayAttempts = stats?.attempts.filter((attempt) => isToday(attempt.submittedAt)) ?? [];
-  const recentAttempts = [...(stats?.attempts ?? [])]
-    .filter((attempt) => attempt.submittedAt)
-    .sort((left, right) => compareDatesDesc(left.submittedAt, right.submittedAt))
-    .slice(0, 4);
+  const { dashboard, error, loading } = useTeacherDashboard();
+  const teacherDomains = dashboard?.teacherDomains ?? [];
+  const hasReading = teacherDomains.includes("reading");
+  const hasWriting = teacherDomains.includes("writing");
+  const recentActivity = dashboard?.recentActivity ?? [];
 
   return (
     <div className="grid gap-8">
@@ -221,21 +228,32 @@ export function TeacherDashboard() {
             description="管理学生账号与学习情况"
             href="/teacher/students"
             icon={Users}
-            metric={loading ? <TeacherSkeleton className="h-4 w-14" /> : error ? "—" : `${stats?.students.length ?? 0} 名学生`}
+            metric={loading ? <TeacherSkeleton className="h-4 w-14" /> : error ? "—" : `${dashboard?.studentCount ?? 0} 名学生`}
             title="学生"
           />
-          <TeacherFeatureCard
-            description="查看学生表现与套题分析"
-            href="/teacher/sets"
-            icon={BarChart3}
-            metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : error ? "—" : `${stats?.sets.length ?? 0} 套`}
-            title="套题统计"
-          />
+          {hasWriting ? (
+            <TeacherFeatureCard
+              description="查看学生 BAS 表现与套题分析"
+              href="/teacher/sets"
+              icon={BarChart3}
+              metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.writing?.setCount ?? 0} 套`}
+              title="套题统计"
+            />
+          ) : null}
+          {hasReading ? (
+            <TeacherFeatureCard
+              description="查看学生阅读表现与练习统计"
+              href="/teacher/reading/statistics"
+              icon={BookOpenCheck}
+              metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : `${dashboard?.reading?.completedAttemptCount ?? 0} 次`}
+              title="阅读统计"
+            />
+          ) : null}
           <TeacherFeatureCard
             description="浏览与管理所有题库内容"
             href="/teacher/question-bank"
             icon={FileText}
-            metric={loading ? <TeacherSkeleton className="h-4 w-10" /> : error ? "—" : `${stats?.questions.length ?? 0} 题`}
+            metric="题库"
             title="查看所有套题"
           />
         </div>
@@ -244,10 +262,20 @@ export function TeacherDashboard() {
       <section>
         <TeacherSectionTitle>数据概览</TeacherSectionTitle>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <TeacherMetricCard icon={Users} label="总学生数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(stats?.students.length ?? 0)} />
-          <TeacherMetricCard icon={BookOpenCheck} label="总套题数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(stats?.sets.length ?? 0)} />
-          <TeacherMetricCard icon={FileText} label="总题目数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(stats?.questions.length ?? 0)} />
-          <TeacherMetricCard icon={TrendingUp} label="今日新增练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(todayAttempts.length)} />
+          <TeacherMetricCard icon={Users} label="总学生数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : error ? "—" : String(dashboard?.studentCount ?? 0)} />
+          {hasWriting ? (
+            <>
+              <TeacherMetricCard icon={BookOpenCheck} label="总套题数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.setCount ?? 0)} />
+              <TeacherMetricCard icon={FileText} label="总题目数" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.questionCount ?? 0)} />
+              <TeacherMetricCard icon={TrendingUp} label="今日新增练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.writing?.todayAttemptCount ?? 0)} />
+            </>
+          ) : null}
+          {hasReading ? (
+            <>
+              <TeacherMetricCard icon={BookOpenCheck} label="已完成阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.completedAttemptCount ?? 0)} />
+              <TeacherMetricCard icon={Clock3} label="今日新增阅读练习" value={loading ? <TeacherSkeleton className="h-8 w-14" /> : String(dashboard?.reading?.todayAttemptCount ?? 0)} />
+            </>
+          ) : null}
         </div>
         {error ? <div className="mt-4"><TeacherDataError text={toTeacherErrorMessage(error)} /></div> : null}
       </section>
@@ -266,26 +294,24 @@ export function TeacherDashboard() {
           </div>
         ) : error ? (
           <div className="mt-4"><TeacherDataError text={toTeacherErrorMessage(error)} /></div>
-        ) : recentAttempts.length > 0 ? (
+        ) : recentActivity.length > 0 ? (
           <div className="mt-4 divide-y divide-student-border">
-            {recentAttempts.map((attempt) => {
-              const student = stats?.students.find((item) => item.studentId === attempt.studentId);
-              return (
-                <div className="flex items-center justify-between gap-4 py-3 first:pt-1 last:pb-0" key={attempt.attemptId}>
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
-                      <GraduationCap aria-hidden="true" size={19} strokeWidth={1.9} />
-                    </span>
-                    <p className="truncate text-sm text-student-text">
-                      <span className="font-semibold">{student?.studentDisplayName ?? "学生"}</span>
-                      {" 完成了 "}
-                      <span className="font-medium">{attempt.setTitle}</span>
-                    </p>
-                  </div>
-                  <time className="shrink-0 text-xs text-student-muted">{formatActivityTime(attempt.submittedAt)}</time>
+            {recentActivity.map((activity) => (
+              <div className="flex items-center justify-between gap-4 py-3 first:pt-1 last:pb-0" key={activity.activityId}>
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
+                    <GraduationCap aria-hidden="true" size={19} strokeWidth={1.9} />
+                  </span>
+                  <p className="truncate text-sm text-student-text">
+                    <span className="font-semibold">{activity.studentName}</span>
+                    {" 完成了 "}
+                    <span className="font-medium">{activity.domainLabel} · {activity.taskLabel}</span>
+                    <span className="text-student-muted"> {activity.title}</span>
+                  </p>
                 </div>
-              );
-            })}
+                <time className="shrink-0 text-xs text-student-muted">{formatActivityTime(activity.submittedAt)}</time>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="mt-4"><TeacherEmptyState text="暂无近期动态。" /></div>
@@ -325,7 +351,14 @@ export function AdminPlatformHome() {
             href="/admin/student-bindings"
             icon={Network}
             metric="绑定"
-            title="Teacher Bindings"
+            title="教师绑定"
+          />
+          <TeacherFeatureCard
+            description="将 Admin 历史 Writing 作业转给普通教师"
+            href="/admin/writing-assignment-transfer"
+            icon={ArrowRightLeft}
+            metric="转移"
+            title="历史作业转移"
           />
         </div>
       </section>
@@ -411,13 +444,14 @@ export function TeacherStudentsList() {
                   </div>
                 ) : (
                   <div className="overflow-x-auto px-6 pb-6 pt-4">
-                    <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+                    <table className="w-full min-w-[860px] border-collapse text-left text-sm">
                       <thead>
                         <tr className="border-b border-student-border text-student-muted">
                           <th className="px-3 py-3 font-medium">学生</th>
-                          <th className="px-3 py-3 font-medium">完成套题数</th>
-                          <th className="px-3 py-3 font-medium">总练习次数</th>
-                          <th className="px-3 py-3 font-medium">平均正确率</th>
+                          <th className="px-3 py-3 font-medium">领域</th>
+                          <th className="px-3 py-3 font-medium">写作完成套题数</th>
+                          <th className="px-3 py-3 font-medium">写作练习次数</th>
+                          <th className="px-3 py-3 font-medium">写作平均正确率</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -431,11 +465,13 @@ export function TeacherStudentsList() {
                               else sectionRefs.current.delete(letter);
                             }}
                           >
-                            <td className="bg-student-primary-soft px-3 py-2 font-bold text-student-primary" colSpan={4}>
+                            <td className="bg-student-primary-soft px-3 py-2 font-bold text-student-primary" colSpan={5}>
                               {letter}
                             </td>
                           </tr>,
-                          ...students.map((entry) => (
+                          ...students.map((entry) => {
+                            const hasWritingDomain = entry.student.domains.includes("writing");
+                            return (
                             <tr
                               className="border-b border-student-border transition last:border-b-0 hover:bg-student-primary-soft/45"
                               key={entry.student.studentId}
@@ -450,13 +486,25 @@ export function TeacherStudentsList() {
                                   </TeacherTextLink>
                                 </div>
                               </td>
-                              <td className="px-3 py-3 tabular-nums">{entry.student.completedSetCount}</td>
-                              <td className="px-3 py-3 tabular-nums">{entry.student.totalAttemptCount}</td>
                               <td className="px-3 py-3">
-                                <TeacherAccuracyBar value={entry.student.averageAccuracy} />
+                                <div className="flex flex-wrap gap-1.5">
+                                  {entry.student.domains.map((domain) => (
+                                    <DomainChip domain={domain} key={domain} />
+                                  ))}
+                                </div>
+                              </td>
+                              <td className="px-3 py-3 tabular-nums">{hasWritingDomain ? entry.student.completedSetCount : "—"}</td>
+                              <td className="px-3 py-3 tabular-nums">{hasWritingDomain ? entry.student.totalAttemptCount : "—"}</td>
+                              <td className="px-3 py-3">
+                                {hasWritingDomain ? (
+                                  <TeacherAccuracyBar value={entry.student.averageAccuracy} />
+                                ) : (
+                                  <span className="text-student-muted">—</span>
+                                )}
                               </td>
                             </tr>
-                          ))
+                            );
+                          })
                         ])}
                       </tbody>
                     </table>
@@ -493,7 +541,14 @@ export function TeacherStudentsList() {
 export function TeacherStudentSummary({ studentId }: { studentId: string }) {
   const { error, loading, stats } = useTeacherStats();
   const student = stats?.students.find((item) => item.studentId === studentId);
-  const attempts = stats?.attempts.filter((attempt) => attempt.studentId === studentId) ?? [];
+  const domains = student?.domains ?? [];
+  const hasReading = domains.includes("reading");
+  const hasWriting = domains.includes("writing");
+  // BAS history only exists for writing-bound students; Reading-only students
+  // never see BAS attempts, answers, or BAS summary numbers.
+  const attempts = (stats?.attempts ?? []).filter(
+    (attempt) => hasWriting && attempt.studentId === studentId
+  );
   const attemptsBySet = groupBy(attempts, getAttemptGroupId);
   const setGroups = Array.from(attemptsBySet.entries())
     .map(([groupId, setAttempts], stableIndex) => {
@@ -546,27 +601,56 @@ export function TeacherStudentSummary({ studentId }: { studentId: string }) {
                 {loading ? <TeacherSkeleton className="h-7 w-36" /> : <h2 className="truncate text-2xl font-bold text-student-text">{student?.studentDisplayName ?? "学生详情"}</h2>}
                 {loading ? <TeacherSkeleton className="mt-2 h-4 w-52" /> : <p className="mt-1 truncate text-sm text-student-muted">账号：{formatAccountForDisplay(student?.studentEmail) || "学生数据暂时无法显示"}</p>}
               </div>
+              {!loading && domains.length > 0 ? (
+                <div className="ml-auto flex flex-wrap gap-1.5">
+                  {domains.map((domain) => <DomainChip domain={domain} key={domain} />)}
+                </div>
+              ) : null}
             </div>
           </TeacherCard>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <StudentOverviewMetricCard icon={BookOpenCheck} label="完成套题数" value={loading ? <TeacherSkeleton className="h-8 w-12" /> : error ? "—" : String(student?.completedSetCount ?? 0)} />
-            <StudentOverviewMetricCard icon={Clock3} label="总练习次数" value={loading ? <TeacherSkeleton className="h-8 w-12" /> : error ? "—" : String(student?.totalAttemptCount ?? 0)} />
-            <StudentOverviewMetricCard icon={Target} label="平均正确率" value={loading ? <TeacherSkeleton className="h-8 w-16" /> : error ? "—" : formatPercent(student?.averageAccuracy ?? 0)} />
-            <StudentOverviewMetricCard icon={FileText} label="答题数" value={loading ? <TeacherSkeleton className="h-8 w-12" /> : error ? "—" : String(student?.answeredQuestionCount ?? 0)} />
-          </div>
-          {loading ? <PracticeHistorySkeleton /> : error ? <PracticeHistoryError /> : (
-            <PracticeHistoryCompactList
-              emptyState={<TeacherEmptyState text="该学生还没有完成练习。" />}
-              items={setGroups.map(({ bestAccuracy, groupId, latestAttempt, setAttempts }) => ({
-                attemptCount: setAttempts.length,
-                bestAccuracy: formatPercent(bestAccuracy),
-                href: `/teacher/students/${studentId}/details/${encodeURIComponent(groupId)}`,
-                latestAccuracy: formatPercent(latestAttempt?.accuracy ?? 0),
-                latestCompleted: formatCompactDateTime(latestAttempt?.submittedAt ?? null),
-                setId: groupId,
-                setTitle: getAttemptGroupTitle(groupId, latestAttempt?.setTitle ?? groupId)
-              }))}
-            />
+          {loading ? (
+            <>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <StudentOverviewMetricCard icon={BookOpenCheck} label="完成套题数" value={<TeacherSkeleton className="h-8 w-12" />} />
+                <StudentOverviewMetricCard icon={Clock3} label="总练习次数" value={<TeacherSkeleton className="h-8 w-12" />} />
+                <StudentOverviewMetricCard icon={Target} label="平均正确率" value={<TeacherSkeleton className="h-8 w-16" />} />
+                <StudentOverviewMetricCard icon={FileText} label="答题数" value={<TeacherSkeleton className="h-8 w-12" />} />
+              </div>
+              <PracticeHistorySkeleton />
+            </>
+          ) : error ? (
+            <PracticeHistoryError />
+          ) : (
+            <>
+              {hasReading ? <TeacherStudentReadingSection studentId={studentId} /> : null}
+              {hasWriting ? (
+                <section className="grid gap-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <TeacherSectionTitle>Writing 练习</TeacherSectionTitle>
+                    <DomainChip domain="writing" />
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <StudentOverviewMetricCard icon={BookOpenCheck} label="完成套题数" value={String(student?.completedSetCount ?? 0)} />
+                    <StudentOverviewMetricCard icon={Clock3} label="总练习次数" value={String(student?.totalAttemptCount ?? 0)} />
+                    <StudentOverviewMetricCard icon={Target} label="平均正确率" value={formatPercent(student?.averageAccuracy ?? 0)} />
+                    <StudentOverviewMetricCard icon={FileText} label="答题数" value={String(student?.answeredQuestionCount ?? 0)} />
+                  </div>
+                  <PracticeHistoryCompactList
+                    emptyState={<TeacherEmptyState text="该学生还没有完成练习。" />}
+                    items={setGroups.map(({ bestAccuracy, groupId, latestAttempt, setAttempts }) => ({
+                      attemptCount: setAttempts.length,
+                      bestAccuracy: formatPercent(bestAccuracy),
+                      href: `/teacher/students/${studentId}/details/${encodeURIComponent(groupId)}`,
+                      latestAccuracy: formatPercent(latestAttempt?.accuracy ?? 0),
+                      latestCompleted: formatCompactDateTime(latestAttempt?.submittedAt ?? null),
+                      setId: groupId,
+                      setTitle: getAttemptGroupTitle(groupId, latestAttempt?.setTitle ?? groupId)
+                    }))}
+                  />
+                </section>
+              ) : null}
+              {!hasReading && !hasWriting ? <TeacherEmptyState text="该学生尚未绑定教学领域。" /> : null}
+            </>
           )}
         </>
       )}
@@ -605,6 +689,9 @@ export function TeacherStudentSetDetails({
 }) {
   const { error, loading, stats } = useTeacherStats();
   const student = stats?.students.find((item) => item.studentId === studentId);
+  // BAS detail is writing-domain only. A reading-bound student reached through
+  // a direct URL resolves to no BAS attempts and gets an explicit message.
+  const hasWritingDomain = Boolean(student?.domains.includes("writing"));
   const groupId = normalizeAttemptGroupId(setId);
   const attempts = (stats?.attempts ?? [])
     .filter(
@@ -631,7 +718,9 @@ export function TeacherStudentSetDetails({
         { label: loading ? "套题练习记录" : setTitle }
       ]} />
       {error ? <TeacherDataError text={toTeacherErrorMessage(error)} /> : null}
-      {!loading && !error && !student ? <EmptyState text="未找到学生。" /> : (
+      {!loading && !error && !student ? <EmptyState text="未找到学生。" /> : !loading && !error && !hasWritingDomain ? (
+        <TeacherEmptyState text="该学生不在你的写作教学范围内，无法查看 BAS 练习记录。" />
+      ) : (
         <>
           <TeacherCard className="p-5">
             {loading ? <TeacherSkeleton className="h-6 w-40" /> : <h2 className="text-xl font-bold text-student-text">{setTitle}</h2>}
@@ -653,14 +742,24 @@ export function TeacherStudentSetDetails({
   );
 }
 
-export function TeacherStudentQuestionDetail({ attemptAnswerId }: { attemptAnswerId: string }) {
+export function TeacherStudentQuestionDetail({
+  attemptAnswerId,
+  studentId
+}: {
+  attemptAnswerId: string;
+  studentId: string;
+}) {
   const { error, loading, stats } = useTeacherStats();
+  const student = stats?.students.find((item) => item.studentId === studentId);
+  const hasWritingDomain = Boolean(student?.domains.includes("writing"));
 
   return (
     <div className="grid gap-5">
       {loading ? <TeacherLoadingRegion label="正在加载答题详情" /> : null}
       {loading ? <QuestionDetailSkeleton /> : error ? (
         <QuestionDetailError text={toTeacherErrorMessage(error)} />
+      ) : !hasWritingDomain ? (
+        <TeacherEmptyState text="该学生不在你的写作教学范围内，无法查看 BAS 答题记录。" />
       ) : stats ? (
         <TeacherStudentQuestionDetailContent
           initialAttemptAnswerId={attemptAnswerId}
@@ -1026,6 +1125,15 @@ function useTeacherStats() {
   return { error, loading, stats };
 }
 
+function useTeacherDashboard() {
+  const { data, error, loading } = useTeacherCachedData<TeacherDashboardPayload | null>(
+    TEACHER_DASHBOARD_CACHE_KEY,
+    loadTeacherDashboardPayload
+  );
+
+  return { dashboard: data, error, loading };
+}
+
 async function loadTeacherStats(): Promise<TeacherStatsPayload> {
   const supabase = createBrowserSupabase();
   const {
@@ -1258,19 +1366,21 @@ function toTeacherErrorMessage(message: string) {
 function StudentTableSkeleton() {
   return (
     <div className="overflow-x-auto px-6 pb-6 pt-4">
-      <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+      <table className="w-full min-w-[860px] border-collapse text-left text-sm">
         <thead>
           <tr className="border-b border-student-border text-student-muted">
             <th className="px-3 py-3 font-medium">学生</th>
-            <th className="px-3 py-3 font-medium">完成套题数</th>
-            <th className="px-3 py-3 font-medium">总练习次数</th>
-            <th className="px-3 py-3 font-medium">平均正确率</th>
+            <th className="px-3 py-3 font-medium">领域</th>
+            <th className="px-3 py-3 font-medium">写作完成套题数</th>
+            <th className="px-3 py-3 font-medium">写作练习次数</th>
+            <th className="px-3 py-3 font-medium">写作平均正确率</th>
           </tr>
         </thead>
         <tbody>
           {Array.from({ length: 5 }, (_, index) => (
             <tr className="border-b border-student-border" key={index}>
               <td className="px-3 py-3"><TeacherSkeleton className="h-10 w-40" /></td>
+              <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-16" /></td>
               <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-12" /></td>
               <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-12" /></td>
               <td className="px-3 py-3"><TeacherSkeleton className="h-5 w-40" /></td>
@@ -1285,13 +1395,14 @@ function StudentTableSkeleton() {
 function StudentTableError({ text }: { text: string }) {
   return (
     <div className="overflow-x-auto px-6 pb-6 pt-4">
-      <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+      <table className="w-full min-w-[860px] border-collapse text-left text-sm">
         <thead>
           <tr className="border-b border-student-border text-student-muted">
             <th className="px-3 py-3 font-medium">学生</th>
-            <th className="px-3 py-3 font-medium">完成套题数</th>
-            <th className="px-3 py-3 font-medium">总练习次数</th>
-            <th className="px-3 py-3 font-medium">平均正确率</th>
+            <th className="px-3 py-3 font-medium">领域</th>
+            <th className="px-3 py-3 font-medium">写作完成套题数</th>
+            <th className="px-3 py-3 font-medium">写作练习次数</th>
+            <th className="px-3 py-3 font-medium">写作平均正确率</th>
           </tr>
         </thead>
       </table>

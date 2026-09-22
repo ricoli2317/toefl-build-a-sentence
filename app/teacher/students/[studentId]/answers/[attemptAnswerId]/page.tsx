@@ -13,7 +13,10 @@ export default function TeacherStudentQuestionDetailPage({
       subtitle="查看学生本次完成结果并定位到指定题目"
       title="练习结果"
     >
-      <TeacherStudentQuestionDetail attemptAnswerId={params.attemptAnswerId} />
+      <TeacherStudentQuestionDetail
+        attemptAnswerId={params.attemptAnswerId}
+        studentId={params.studentId}
+      />
     </TeacherAppShell>
     </TeacherOnly>
   );
