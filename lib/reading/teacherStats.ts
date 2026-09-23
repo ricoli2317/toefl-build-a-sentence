@@ -223,7 +223,7 @@ function buildDisplayRanks(items: ReadingCatalogItemRow[]) {
 }
 
 export function readingItemDisplayName(item: ReadingCatalogItemRow, ranks: Map<string, string>) {
-  const prefix = `${item.module === "ctw" ? "套题" : "题目"}${ranks.get(item.logical_item_id) ?? "—"}`;
+  const prefix = `题目${ranks.get(item.logical_item_id) ?? "—"}`;
   return item.module === "ctw" ? prefix : `${prefix} · ${item.title?.trim() || READING_PRODUCT_NAMES[item.module]}`;
 }
 

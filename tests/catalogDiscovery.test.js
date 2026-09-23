@@ -26,7 +26,7 @@ const defaults = {
   query: "",
   status: "all",
   months: [],
-  category: "",
+  categories: [],
   sortKey: "default",
   sortDirection: "desc"
 };
@@ -43,10 +43,11 @@ test("search combines continuous and light fuzzy matching without a mode switch"
   assert.equal(catalogSearchMatches("protect the environment", "astronomy"), false);
 });
 
-test("months are OR while search, status, and category combine with AND", () => {
+test("months and categories are OR internally while dimensions combine with AND", () => {
   const items = [
-    item({ id: "match" }),
-    item({ id: "wrong-category", category: "科技" }),
+    item({ id: "match-environment", occurrenceDates: ["2026-07-01"] }),
+    item({ id: "match-technology", category: "科技", occurrenceDates: ["2026-09-02"] }),
+    item({ id: "wrong-category", category: "人文" }),
     item({ id: "wrong-status", status: "unstarted" }),
     item({ id: "wrong-month", occurrenceDates: ["2026-06-01"] })
   ];
@@ -55,9 +56,9 @@ test("months are OR while search, status, and category combine with AND", () => 
     query: "environment",
     status: "completed",
     months: ["2026-07", "2026-09"],
-    category: "生态环境"
+    categories: ["生态环境", "科技"]
   });
-  assert.deepEqual(result.map(({ id }) => id), ["match"]);
+  assert.deepEqual(result.map(({ id }) => id), ["match-environment", "match-technology"]);
 });
 
 test("default order is preserved and non-default sorts use stable item-id ties", () => {

@@ -175,7 +175,7 @@ export function toStudentReadingPracticePayload(
       module: taskType,
       productName: READING_PRODUCT_NAMES[taskType],
       title: taskType === "ctw"
-        ? "套题001"
+        ? "题目001"
         : taskType === "rdl"
           ? canonicalRdlTitle!
           : packageData.item.title ?? READING_PRODUCT_NAMES[taskType],
@@ -323,7 +323,7 @@ export async function loadStudentReadingPractice(
     module: taskType,
     productName: READING_PRODUCT_NAMES[taskType],
     title: taskType === "ctw"
-      ? options.ctwDisplayTitle ?? `套题${ctwDisplayNumber}`
+      ? options.ctwDisplayTitle ?? `题目${ctwDisplayNumber}`
       : taskType === "rdl"
         ? ""
         : String(item.title || READING_PRODUCT_NAMES[taskType]),

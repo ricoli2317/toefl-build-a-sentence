@@ -8,6 +8,7 @@ const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 const catalog = read("components/LogicalPracticeCatalog.tsx");
 const catalogHelper = read("lib/practiceLogicalCatalog.ts");
 const shared = read("components/shared/PracticeCatalog.tsx");
+const discoveryControls = read("components/shared/CatalogDiscoveryControls.tsx");
 const basPage = read("app/student/practice-sets/page.tsx");
 const emailPage = read("app/student/write-email/page.tsx");
 const discussionPage = read("app/student/academic-discussion/page.tsx");
@@ -45,7 +46,17 @@ test("occurrence date converts 2026-07-14 to 260714", () => {
 
 test("multiple occurrence dates use a Chinese enumeration comma", () => {
   assert.match(catalog, /\.join\("、"\)/);
-  assert.match(catalog, /metadata: `重复 \$\{item\.occurrence_count\} 次 · \$\{formatOccurrenceDates\(item\.occurrence_dates\)\}`/);
+  assert.match(catalog, /metadata: formatOccurrenceDates\(item\.occurrence_dates\)/);
+  assert.doesNotMatch(catalog, /重复.*occurrence_count|occurrence_count.*次/);
+});
+
+test("discovery controls use compact custom dropdowns with multi-select topics", () => {
+  assert.doesNotMatch(discoveryControls, /<select|<details|可组合搜索与筛选/);
+  assert.match(discoveryControls, /categories: string\[\]/);
+  assert.match(discoveryControls, /已选 \$\{value\.categories\.length\} 个主题/);
+  assert.match(discoveryControls, /mousedown/);
+  assert.match(discoveryControls, /event\.key === "Escape"/);
+  assert.match(catalog, /const categories = taskType === "build_sentence" \? null : Array\.from/);
 });
 
 test("canonical roots contain no month grouping UI", () => {

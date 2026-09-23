@@ -16,7 +16,7 @@ function readingItem(overrides) {
   return {
     logical_item_id: "ctw-a",
     module: "ctw",
-    displayName: "套题001",
+    displayName: "题目001",
     scoringPointCount: 10,
     ...overrides
   };

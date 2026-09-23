@@ -5,6 +5,7 @@ import type { SubmittedReadingReviewItem } from "./reading/review.ts";
 import type { StudentReadingPracticePayload } from "./reading/studentPractice.ts";
 import type { ReadingModule } from "./reading/types.ts";
 import { READING_PRODUCT_NAMES } from "./reading/product.ts";
+import { assertCanonicalCtwTitle } from "./reading/ctwTitles.ts";
 import { assertCanonicalRdlTitle } from "./reading/rdlTitles.ts";
 
 export const TEACHER_READING_BANK_PAGE_SIZE = 10;
@@ -119,7 +120,12 @@ export function readingBankItemTitle(input: {
   title: string | null;
   displayNumber: string;
 }) {
-  if (input.module === "ctw") return `套题${input.displayNumber}`;
+  if (input.module === "ctw") {
+    return assertCanonicalCtwTitle(
+      input.title ?? "",
+      `CTW title for ${input.displayNumber}`
+    );
+  }
   if (input.module === "rdl") {
     return assertCanonicalRdlTitle(
       input.title ?? "",

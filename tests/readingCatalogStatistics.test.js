@@ -89,7 +89,7 @@ test("CTW catalog keeps the dynamic suite number separate from the canonical tit
     displayNumber: "023",
     title: "Tiger Territorial Behavior"
   }), {
-    prefix: "套题023",
+    prefix: "题目023",
     suffix: "Tiger Territorial Behavior"
   });
   assert.match(catalogUi, /titlePrefix: title\.prefix/);
@@ -169,6 +169,7 @@ test("Reading Catalog exposes every occurrence date newest-first without changin
 test("Reading Catalog metadata omits first-seen and recent score/date summaries", () => {
   assert.doesNotMatch(catalogUi, /首次出现|formatDateTime|Math\.round\(submitted\.accuracy/);
   assert.match(catalogUi, /function ReadingCatalogMetadata[\s\S]*formatOccurrenceDates\(item\.occurrenceDates\)/);
+  assert.doesNotMatch(catalogUi, /重复.*occurrenceCount|occurrenceCount.*次/);
 });
 
 test("Catalog payload and query omit Reading content, answers, assets, and N+1 loops", () => {

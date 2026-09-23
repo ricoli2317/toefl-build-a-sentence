@@ -19,7 +19,7 @@ export type CatalogDiscoveryFilters = {
   query: string;
   status: CatalogStatusFilter;
   months: string[];
-  category: string;
+  categories: string[];
   sortKey: CatalogSortKey;
   sortDirection: CatalogSortDirection;
 };
@@ -51,6 +51,7 @@ export function filterAndSortCatalogItems<T extends CatalogDiscoveryItem>(
   filters: CatalogDiscoveryFilters
 ) {
   const selectedMonths = new Set(filters.months);
+  const selectedCategories = new Set(filters.categories);
   const filtered = items.filter((item) => {
     if (!catalogSearchMatches(`${item.title} ${item.searchText}`, filters.query)) return false;
     if (filters.status !== "all" && item.status !== filters.status) return false;
@@ -58,7 +59,7 @@ export function filterAndSortCatalogItems<T extends CatalogDiscoveryItem>(
       selectedMonths.size > 0
       && !item.occurrenceDates.some((date) => selectedMonths.has(date.slice(0, 7)))
     ) return false;
-    if (filters.category && item.category !== filters.category) return false;
+    if (selectedCategories.size > 0 && (!item.category || !selectedCategories.has(item.category))) return false;
     return true;
   });
 

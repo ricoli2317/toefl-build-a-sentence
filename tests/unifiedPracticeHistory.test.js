@@ -88,7 +88,7 @@ function fixture(overrides = {}) {
       }
     ],
     readingTitles: new Map([
-      ["ctw-item", "套题 097"],
+      ["ctw-item", "题目 097"],
       ["rdl-item", "BRIDGEFORD UNIVERSITY MUSIC & CULTURE NIGHT"],
       ["rap-item", "Optical Astronomy’s Adaptive Revolution"]
     ]),

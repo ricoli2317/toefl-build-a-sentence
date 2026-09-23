@@ -132,7 +132,7 @@ test("wrong-question overview reuses BAS dedupe/correction and aggregates all fo
       { attemptId: "rap-today", isCorrect: false, questionId: "rap-q", slotId: null }
     ],
     readingTitles: new Map([
-      ["ctw-096", "套题096"],
+      ["ctw-096", "题目096"],
       ["rdl-music", "Bridgeford University Music & Culture Night"],
       ["rap-stars", "Optical Astronomy's Adaptive Revolution"]
     ]),
@@ -302,7 +302,7 @@ test("Reading canonical identities drive pending queues and correction answers u
       { attemptId: "correction-rdl", isCorrect: false, questionId: "unrelated-q", slotId: null }
     ],
     readingTitles: new Map([
-      ["ctw-item", "套题001"],
+      ["ctw-item", "题目001"],
       ["rdl-item", "RDL material"],
       ["rap-item", "RAP passage"]
     ]),
@@ -634,7 +634,7 @@ test("CTW correction restores genuine correct slot text while leaving correction
       productName: "Complete the Words",
       questionCount: 1,
       scoringPointCount: 2,
-      title: "套题001"
+      title: "题目001"
     },
     material: null,
     passage: null,

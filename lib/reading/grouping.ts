@@ -107,7 +107,7 @@ export function computeReadingDisplayRanks(items: ReadingLogicalItem[]) {
       const rank = index + 1;
       result.set(item.logicalItemId, {
         rank,
-        label: `${readingModule === "ctw" ? "套题" : "题目"}${String(rank).padStart(3, "0")}`
+        label: `题目${String(rank).padStart(3, "0")}`
       });
     });
   }

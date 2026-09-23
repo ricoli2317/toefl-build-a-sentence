@@ -407,7 +407,7 @@ function buildReadingTitles(items: ReadingItemRow[]) {
   return new Map(items.map((item) => {
     const number = item.display_number
       ?? readingCatalogDisplayNumber(byModule.get(item.module) ?? [], item.logical_item_id);
-    const fallback = `${item.module === "ctw" ? "套题" : "题目"}${number ?? ""}`;
+    const fallback = `题目${number ?? ""}`;
     return [item.logical_item_id, item.module === "ctw" ? fallback : item.title?.trim() || fallback];
   }));
 }

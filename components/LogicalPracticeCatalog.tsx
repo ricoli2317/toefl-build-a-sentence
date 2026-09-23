@@ -72,7 +72,7 @@ export function LogicalPracticeCatalog({
     controls.query,
     controls.status,
     controls.months,
-    controls.category,
+    controls.categories,
     controls.sortKey,
     controls.sortDirection
   ]);
@@ -208,7 +208,7 @@ function CatalogContent({
         }}
         sets={items.map((item) => ({
           icon: STUDENT_PRACTICE_ICONS[item.task_type],
-          metadata: `重复 ${item.occurrence_count} 次 · ${formatOccurrenceDates(item.occurrence_dates)}`,
+          metadata: formatOccurrenceDates(item.occurrence_dates),
           questionCount: item.question_count,
           setId: item.item_id,
           setTitle: logicalPracticeItemTitle(item),
@@ -231,7 +231,7 @@ function defaultControls(): CatalogDiscoveryControlValue {
     query: "",
     status: "all",
     months: [],
-    category: "",
+    categories: [],
     sortKey: "default",
     sortDirection: "desc"
   };

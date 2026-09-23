@@ -7,7 +7,8 @@ const {
   buildReadingAnswerKeyPresentations
 } = require("../lib/reading/correctionResult.ts");
 const {
-  buildTeacherReadingAnswerKeyView
+  buildTeacherReadingAnswerKeyView,
+  readingBankItemTitle
 } = require("../lib/teacherReadingQuestionBank.ts");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -103,6 +104,22 @@ test("teacher Reading detail renders the immersive shared shell without practice
   assert.match(page, /itemId\.startsWith\("reading-"\)/);
   assert.match(page, /TeacherReadingQuestionBankItemViewer/);
   assert.match(page, /<TeacherAppShell title="题目详情">/);
+});
+
+test("teacher CTW catalog and detail preserve canonical titles in the existing title slots", () => {
+  assert.equal(readingBankItemTitle({
+    module: "ctw",
+    title: "Tiger Territorial Behavior",
+    displayNumber: "023"
+  }), "Tiger Territorial Behavior");
+
+  const ui = read("components/teacher/TeacherReadingQuestionBank.tsx");
+  assert.match(ui, /titlePrefix: `题目\$\{item\.displayNumber\}`/);
+  assert.match(ui, /titleSuffix: item\.title/);
+
+  const route = read("app/api/teacher/question-bank/reading/route.ts");
+  assert.match(route, /\.select\("logical_item_id,module,title"\)/);
+  assert.match(route, /ctwDisplayTitle:[\s\S]{0,200}assertCanonicalCtwTitle/);
 });
 
 test("Teacher Reading data reuses the canonical student loader and never touches attempts", () => {

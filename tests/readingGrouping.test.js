@@ -92,9 +92,9 @@ test("dynamic ranks shift after inserting historical content without changing st
   ];
   const before = computeReadingDisplayRanks(items);
   const after = computeReadingDisplayRanks([...items, logical("item-515", "2026-05-15", "5.15A", 1)]);
-  assert.equal(before.get("item-518").label, "套题003");
-  assert.equal(after.get("item-515").label, "套题003");
-  assert.equal(after.get("item-518").label, "套题004");
+  assert.equal(before.get("item-518").label, "题目003");
+  assert.equal(after.get("item-515").label, "题目003");
+  assert.equal(after.get("item-518").label, "题目004");
   assert.deepEqual(items.map((item) => item.logicalItemId), ["item-53", "item-510", "item-518"]);
 });
 

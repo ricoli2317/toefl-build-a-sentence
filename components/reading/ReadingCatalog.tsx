@@ -61,7 +61,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     controls.query,
     controls.status,
     controls.months,
-    controls.category,
+    controls.categories,
     controls.sortKey,
     controls.sortDirection
   ]);
@@ -180,7 +180,7 @@ export function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogIt
 }
 
 function ReadingCatalogMetadata({ item }: { item: ReadingCatalogItem }) {
-  return <span>重复 {item.occurrenceCount} 次 · {formatOccurrenceDates(item.occurrenceDates)}</span>;
+  return <span>{formatOccurrenceDates(item.occurrenceDates)}</span>;
 }
 
 function defaultControls(): CatalogDiscoveryControlValue {
@@ -188,7 +188,7 @@ function defaultControls(): CatalogDiscoveryControlValue {
     query: "",
     status: "all",
     months: [],
-    category: "",
+    categories: [],
     sortKey: "default",
     sortDirection: "desc"
   };

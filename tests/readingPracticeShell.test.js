@@ -52,7 +52,7 @@ test("student-safe CTW keeps blank rendering metadata without answers", () => {
   const full = packageFor("ctw");
   const payload = toStudentReadingPracticePayload(full);
   assert.equal(payload.questions[0].questionType, "ctw");
-  assert.equal(payload.item.title, "套题001");
+  assert.equal(payload.item.title, "题目001");
   assert.equal(payload.questions[0].slots[0].prefix, "popul");
   assert.equal(payload.questions[0].slots[0].missingLength, 5);
   assert.deepEqual(forbiddenKeys(payload), []);

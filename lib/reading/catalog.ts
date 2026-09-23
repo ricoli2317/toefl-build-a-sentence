@@ -72,7 +72,7 @@ export function readingCatalogTitleParts(
   item: Pick<ReadingCatalogItem, "taskType" | "displayNumber" | "title">
 ) {
   return {
-    prefix: `${item.taskType === "ctw" ? "套题" : "题目"}${item.displayNumber}`,
+    prefix: `题目${item.displayNumber}`,
     suffix: item.title
   };
 }

@@ -69,8 +69,8 @@ export function TeacherReadingQuestionBankCatalog({
               questionCount: item.module === "ctw" ? item.scoringPointCount : item.questionCount,
               setId: item.itemId,
               setTitle: item.title,
-              titlePrefix: `${item.module === "ctw" ? "套题" : "题目"}${item.displayNumber}`,
-              titleSuffix: item.module === "ctw" ? null : item.title
+              titlePrefix: `题目${item.displayNumber}`,
+              titleSuffix: item.title
             }))}
           />
           <ReadingCatalogPagination

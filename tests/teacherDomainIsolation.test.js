@@ -87,8 +87,8 @@ test("Case 1: Reading student detail reuses scoped Reading practice records and 
     buildTeacherStudentReadingPractice
   } = require("../lib/teacherStudentPractice.ts");
   const itemMeta = new Map([
-    ["ctw-a", { logical_item_id: "ctw-a", module: "ctw", displayName: "套题001", scoringPointCount: 2 }],
-    ["ctw-b", { logical_item_id: "ctw-b", module: "ctw", displayName: "套题002", scoringPointCount: 2 }],
+    ["ctw-a", { logical_item_id: "ctw-a", module: "ctw", displayName: "题目001", scoringPointCount: 2 }],
+    ["ctw-b", { logical_item_id: "ctw-b", module: "ctw", displayName: "题目002", scoringPointCount: 2 }],
     ["rdl-a", {
       logical_item_id: "rdl-a",
       module: "rdl",
@@ -150,11 +150,11 @@ test("Case 1: Reading student detail reuses scoped Reading practice records and 
   assert.equal(practice.records[0].scope, "today");
   assert.equal(
     practice.records.find((record) => record.attemptId === "a-ctw-a").title,
-    "套题001"
+    "题目001"
   );
   assert.equal(
     practice.records.find((record) => record.attemptId === "a-ctw-b").title,
-    "套题002"
+    "题目002"
   );
 });
 
@@ -165,7 +165,7 @@ test("dashboard activity merges Reading and Writing newest-first with domain lab
     ],
     reading: [
       { attemptId: "r-1", studentId: "student-1", taskType: "rdl", itemTitle: "题目001 · Library Notice", submittedAt: "2026-06-02T10:00:00Z" },
-      { attemptId: "r-2", studentId: "student-2", taskType: "ctw", itemTitle: "套题001", submittedAt: "2026-05-31T10:00:00Z" }
+      { attemptId: "r-2", studentId: "student-2", taskType: "ctw", itemTitle: "题目001", submittedAt: "2026-05-31T10:00:00Z" }
     ],
     studentNames: new Map([["student-1", "陈笑语"], ["student-2", "李四"]])
   });
@@ -186,7 +186,7 @@ test("dashboard activity respects the recent limit without mixing domains", () =
     attemptId: `r-${index}`,
     studentId: "student-1",
     taskType: "ctw",
-    itemTitle: `套题00${index}`,
+    itemTitle: `题目00${index}`,
     submittedAt: `2026-06-0${index + 1}T10:00:00Z`
   }));
   const activity = buildTeacherDashboardActivity({

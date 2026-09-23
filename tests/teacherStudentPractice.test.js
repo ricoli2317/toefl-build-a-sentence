@@ -22,7 +22,7 @@ function readingItem(overrides) {
   return {
     logical_item_id: "ctw-a",
     module: "ctw",
-    displayName: "套题001",
+    displayName: "题目001",
     scoringPointCount: 10,
     ...overrides
   };
@@ -59,7 +59,7 @@ function readingAttempt(overrides) {
 
 const ITEM_META = new Map([
   ["ctw-a", readingItem()],
-  ["ctw-b", readingItem({ logical_item_id: "ctw-b", displayName: "套题002" })],
+  ["ctw-b", readingItem({ logical_item_id: "ctw-b", displayName: "题目002" })],
   ["rdl-a", readingItem({
     logical_item_id: "rdl-a",
     module: "rdl",
@@ -378,8 +378,8 @@ test("scoped Reading metadata keeps the global display numbers without loading t
   const meta = await loadTeacherReadingItemMeta(db, ["ctw-b", "ctw-d"]);
 
   assert.equal(meta.size, 2);
-  assert.equal(meta.get("ctw-b").displayName, "套题002");
-  assert.equal(meta.get("ctw-d").displayName, "套题004");
+  assert.equal(meta.get("ctw-b").displayName, "题目002");
+  assert.equal(meta.get("ctw-d").displayName, "题目004");
   assert.equal(meta.get("ctw-d").scoringPointCount, 10);
 });
 

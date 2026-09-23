@@ -5,6 +5,7 @@ import {
   readingCatalogDisplayNumbers,
   type ReadingCatalogIdentityRow
 } from "@/lib/reading/catalog";
+import { assertCanonicalCtwTitle } from "@/lib/reading/ctwTitles";
 import { loadStudentReadingPractice } from "@/lib/reading/studentPractice";
 import type { ReadingModule } from "@/lib/reading/types";
 import { createServiceSupabase } from "@/lib/supabase/server";
@@ -145,13 +146,16 @@ async function loadReadingItemDetail(
 ): Promise<TeacherReadingBankItemDetail | null> {
   const itemResult = await db
     .from("reading_logical_items")
-    .select("logical_item_id,module")
+    .select("logical_item_id,module,title")
     .eq("logical_item_id", itemId)
     .maybeSingle();
   if (itemResult.error) throw new Error(itemResult.error.message);
   if (!itemResult.data) return null;
 
   const practice = await loadStudentReadingPractice(db, itemId, undefined, {
+    ctwDisplayTitle: itemResult.data.module === "ctw"
+      ? assertCanonicalCtwTitle(String(itemResult.data.title ?? ""), `CTW title for ${itemId}`)
+      : undefined,
     skipRdlAssetVerification: true
   });
   const answerKey = await buildTeacherReadingAnswerKey(db, practice);
