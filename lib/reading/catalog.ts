@@ -2,6 +2,7 @@ import type { ReadingModule } from "./types.ts";
 import { READING_PRODUCT_NAMES } from "./product.ts";
 import { assertCanonicalRdlTitle } from "./rdlTitles.ts";
 import { assertCanonicalCtwTitle } from "./ctwTitles.ts";
+import { countOccurrenceDates, type OccurrenceDateCount } from "../catalogOccurrenceDates.ts";
 
 export type ReadingCatalogItemRow = {
   logical_item_id: string;
@@ -45,6 +46,7 @@ export type ReadingCatalogItem = {
   firstSeenDate: string;
   latestSeenDate: string;
   occurrenceDates: string[];
+  occurrenceDateCounts: OccurrenceDateCount[];
   occurrenceCount: number;
   category: string;
   searchText: string;
@@ -139,7 +141,11 @@ export function buildReadingCatalogPayload(input: {
         )
       );
       const totalPoints = submitted ? Math.max(0, submitted.total_points) : 0;
-      const occurrenceDates = readingOccurrenceDates(item);
+      const occurrenceDateCounts = countOccurrenceDates(
+        item.reading_source_occurrences?.map((occurrence) => occurrence.occurrence_date)
+          ?? [item.first_seen_date]
+      );
+      const occurrenceDates = occurrenceDateCounts.map(({ date }) => date);
       const title = item.module === "ctw"
         ? assertCanonicalCtwTitle(item.title ?? "", `CTW catalog title for ${item.logical_item_id}`)
         : item.module === "rdl"
@@ -153,6 +159,7 @@ export function buildReadingCatalogPayload(input: {
         firstSeenDate: item.first_seen_date,
         latestSeenDate: occurrenceDates[0] ?? item.first_seen_date,
         occurrenceDates,
+        occurrenceDateCounts,
         occurrenceCount: item.reading_source_occurrences?.length ?? 0,
         category: item.catalog_category?.trim() ?? "",
         searchText: item.catalog_search_text ?? "",
@@ -173,12 +180,6 @@ export function buildReadingCatalogPayload(input: {
       };
     })
   };
-}
-
-function readingOccurrenceDates(item: ReadingCatalogItemRow) {
-  const dates = item.reading_source_occurrences?.map((occurrence) => occurrence.occurrence_date)
-    ?? [item.first_seen_date];
-  return Array.from(new Set(dates)).sort((left, right) => right.localeCompare(left));
 }
 
 function latestAttempt<T extends ReadingCatalogAttemptRow>(attempts: T[]): T | null {

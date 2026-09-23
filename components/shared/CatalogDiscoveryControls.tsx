@@ -8,6 +8,7 @@ import type {
   CatalogSortKey,
   CatalogStatusFilter
 } from "@/lib/catalogDiscovery";
+import type { ReadingLengthFilter } from "@/lib/reading/catalogDiscovery";
 
 export type CatalogDiscoveryControlValue = {
   query: string;
@@ -18,7 +19,7 @@ export type CatalogDiscoveryControlValue = {
   sortDirection: CatalogSortDirection;
 };
 
-type OpenMenu = "sort" | "status" | "months" | "categories" | null;
+type OpenMenu = "sort" | "status" | "months" | "categories" | "length" | null;
 
 const SORT_OPTIONS: Array<{ label: string; value: CatalogSortKey }> = [
   { label: "默认排序", value: "default" },
@@ -34,17 +35,30 @@ const STATUS_OPTIONS: Array<{ label: string; value: CatalogStatusFilter }> = [
   { label: "已完成", value: "completed" }
 ];
 
+const LENGTH_OPTIONS: Array<{ label: string; value: ReadingLengthFilter }> = [
+  { label: "全部篇幅", value: "all" },
+  { label: "短篇", value: "short" },
+  { label: "长篇", value: "long" }
+];
+
 export function CatalogDiscoveryControls({
   categories,
   months,
   onChange,
   onClear,
+  rdlLengthFilter,
+  layoutVariant = "default",
   value
 }: {
   categories: string[] | null;
   months: string[];
   onChange: (value: CatalogDiscoveryControlValue) => void;
   onClear: () => void;
+  rdlLengthFilter?: {
+    onChange: (value: ReadingLengthFilter) => void;
+    value: ReadingLengthFilter;
+  };
+  layoutVariant?: "default" | "rdl";
   value: CatalogDiscoveryControlValue;
 }) {
   const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
@@ -53,7 +67,8 @@ export function CatalogDiscoveryControls({
     + Number(value.status !== "all")
     + value.months.length
     + value.categories.length
-    + Number(value.sortKey !== "default");
+    + Number(value.sortKey !== "default")
+    + Number(rdlLengthFilter?.value !== undefined && rdlLengthFilter.value !== "all");
   const update = (patch: Partial<CatalogDiscoveryControlValue>) => onChange({ ...value, ...patch });
 
   useEffect(() => {
@@ -75,7 +90,11 @@ export function CatalogDiscoveryControls({
   }, [openMenu]);
 
   let gridClass: string;
-  if (categories) {
+  if (layoutVariant === "rdl" && rdlLengthFilter) {
+    gridClass = activeCount
+      ? "xl:grid-cols-[minmax(13rem,1.7fr)_repeat(5,minmax(0,1fr))_2.25rem]"
+      : "xl:grid-cols-[minmax(13rem,1.7fr)_repeat(5,minmax(0,1fr))]";
+  } else if (categories) {
     gridClass = activeCount
       ? "lg:grid-cols-[minmax(14rem,1.7fr)_minmax(10rem,.9fr)_minmax(8rem,.7fr)_minmax(8rem,.75fr)_minmax(8rem,.75fr)_2.25rem]"
       : "lg:grid-cols-[minmax(14rem,1.7fr)_minmax(10rem,.9fr)_minmax(8rem,.7fr)_minmax(8rem,.75fr)_minmax(8rem,.75fr)]";
@@ -92,7 +111,7 @@ export function CatalogDiscoveryControls({
       ref={rootRef}
     >
       <div className={`grid grid-cols-1 gap-1.5 sm:grid-cols-2 ${gridClass}`}>
-        <label className="relative min-w-0 sm:col-span-2 lg:col-span-1">
+        <label className={`relative min-w-0 sm:col-span-2 ${layoutVariant === "rdl" ? "xl:col-span-1" : "lg:col-span-1"}`}>
           <span className="sr-only">搜索题目</span>
           <Search aria-hidden="true" className="absolute left-2.5 top-1/2 -translate-y-1/2 text-student-muted" size={14} />
           <input
@@ -165,6 +184,21 @@ export function CatalogDiscoveryControls({
             open={openMenu === "categories"}
             options={categories.map((category) => ({ label: category, value: category }))}
             selected={value.categories}
+          />
+        ) : null}
+
+        {rdlLengthFilter ? (
+          <SingleSelect
+            label={LENGTH_OPTIONS.find((option) => option.value === rdlLengthFilter.value)?.label ?? "全部篇幅"}
+            menu="length"
+            onOpenChange={setOpenMenu}
+            onSelect={(length) => {
+              rdlLengthFilter.onChange(length);
+              setOpenMenu(null);
+            }}
+            open={openMenu === "length"}
+            options={LENGTH_OPTIONS}
+            value={rdlLengthFilter.value}
           />
         ) : null}
 

@@ -38,6 +38,7 @@ import {
   catalogMonths,
   filterAndSortCatalogItems
 } from "@/lib/catalogDiscovery";
+import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
 
 const TASK_LABELS: Record<PracticeTaskType, string> = {
   build_sentence: "Build a Sentence",
@@ -208,7 +209,7 @@ function CatalogContent({
         }}
         sets={items.map((item) => ({
           icon: STUDENT_PRACTICE_ICONS[item.task_type],
-          metadata: formatOccurrenceDates(item.occurrence_dates),
+          metadata: formatOccurrenceDates(item.occurrence_date_counts),
           questionCount: item.question_count,
           setId: item.item_id,
           setTitle: logicalPracticeItemTitle(item),
@@ -349,13 +350,6 @@ function LogicalItemStatus({
     );
   }
   return null;
-}
-
-export function formatOccurrenceDates(dates: string[]) {
-  return dates.map((date) => {
-    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
-    return match ? `${match[1].slice(-2)}${match[2]}${match[3]}` : date;
-  }).join("、");
 }
 
 function emptyStateText(taskType: PracticeTaskType) {

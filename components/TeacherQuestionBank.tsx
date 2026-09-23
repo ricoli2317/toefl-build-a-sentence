@@ -34,7 +34,7 @@ import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 import type { AcademicDiscussionAvatarMap } from "@/lib/academicDiscussionAvatars";
 import type { Question } from "@/lib/types";
 import type { WritingQuestion } from "@/lib/writing";
-import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
+import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
 import { TeacherReadingQuestionBankCatalog } from "@/components/teacher/TeacherReadingQuestionBank";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {

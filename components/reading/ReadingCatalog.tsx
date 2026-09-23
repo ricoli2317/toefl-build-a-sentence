@@ -26,7 +26,6 @@ import {
 import type { ReadingModule } from "@/lib/reading/types";
 import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
-import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
@@ -34,7 +33,12 @@ import {
   CatalogFilteredEmptyState,
   type CatalogDiscoveryControlValue
 } from "@/components/shared/CatalogDiscoveryControls";
+import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
 import { catalogMonths, filterAndSortCatalogItems } from "@/lib/catalogDiscovery";
+import {
+  filterReadingCatalogByLength,
+  type ReadingLengthFilter
+} from "@/lib/reading/catalogDiscovery";
 
 const PAGE_SIZE = 10;
 
@@ -43,6 +47,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   const cacheKey = studentReadingCatalogCacheKey(taskType);
   const [page, setPage] = useState(1);
   const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultControls);
+  const [lengthFilter, setLengthFilter] = useState<ReadingLengthFilter>("all");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const state = useStudentCachedData<ReadingCatalogPayload>(
     cacheKey,
@@ -51,6 +56,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   useEffect(() => {
     setPage(1);
     setControls(defaultControls());
+    setLengthFilter("all");
     setDebouncedQuery("");
   }, [taskType]);
   useEffect(() => {
@@ -63,7 +69,8 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     controls.months,
     controls.categories,
     controls.sortKey,
-    controls.sortDirection
+    controls.sortDirection,
+    lengthFilter
   ]);
 
   if (state.loading) return <StudentLoadingState text="正在加载阅读练习..." />;
@@ -93,7 +100,10 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
       defaultIndex
     };
   });
-  const filteredItems = filterAndSortCatalogItems(discoveryItems, {
+  const filteredItems = filterAndSortCatalogItems(filterReadingCatalogByLength(
+    discoveryItems,
+    taskType === "rdl" ? lengthFilter : "all"
+  ), {
     ...controls,
     query: debouncedQuery
   });
@@ -103,7 +113,10 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   const categories = Array.from(new Set(
     state.data.items.map((item) => item.category).filter(Boolean)
   )).sort((left, right) => left.localeCompare(right, "zh-CN"));
-  const clearControls = () => setControls(defaultControls());
+  const clearControls = () => {
+    setControls(defaultControls());
+    setLengthFilter("all");
+  };
   return (
     <div className="grid gap-5">
       <StudentNavigation
@@ -118,6 +131,8 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
         months={catalogMonths(discoveryItems)}
         onChange={setControls}
         onClear={clearControls}
+        layoutVariant={taskType === "rdl" ? "rdl" : "default"}
+        rdlLengthFilter={taskType === "rdl" ? { onChange: setLengthFilter, value: lengthFilter } : undefined}
         value={controls}
       />
       <PracticeSetCatalogList
@@ -180,7 +195,7 @@ export function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogIt
 }
 
 function ReadingCatalogMetadata({ item }: { item: ReadingCatalogItem }) {
-  return <span>{formatOccurrenceDates(item.occurrenceDates)}</span>;
+  return <span>{formatOccurrenceDates(item.occurrenceDateCounts)}</span>;
 }
 
 function defaultControls(): CatalogDiscoveryControlValue {

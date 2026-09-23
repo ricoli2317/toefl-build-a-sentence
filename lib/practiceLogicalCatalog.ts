@@ -16,6 +16,7 @@ import {
 } from "./practiceLogicalState.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
+import { countOccurrenceDates, type OccurrenceDateCount } from "./catalogOccurrenceDates.ts";
 
 export const LOGICAL_PRACTICE_PAGE_SIZE = 10;
 
@@ -29,6 +30,7 @@ export type LogicalPracticeListItem = {
   first_seen_date: string;
   latest_seen_date: string;
   occurrence_dates: string[];
+  occurrence_date_counts: OccurrenceDateCount[];
   occurrence_count: number;
   canonical: {
     source_id: string;
@@ -94,13 +96,13 @@ export function buildLogicalPracticeCatalog(input: {
     throw new Error("Logical practice catalog page must be a positive integer.");
   }
 
-  const occurrenceDatesByItem = new Map<string, Set<string>>();
+  const occurrenceDatesByItem = new Map<string, string[]>();
   const occurrenceCountByItem = new Map<string, number>();
   for (const occurrence of input.occurrences) {
     const itemId = input.universe.resolveSourceToPracticeItemId(occurrence.source_id);
     if (!itemId) continue;
-    const dates = occurrenceDatesByItem.get(itemId) ?? new Set<string>();
-    dates.add(occurrence.occurred_on);
+    const dates = occurrenceDatesByItem.get(itemId) ?? [];
+    dates.push(occurrence.occurred_on);
     occurrenceDatesByItem.set(itemId, dates);
     occurrenceCountByItem.set(itemId, (occurrenceCountByItem.get(itemId) ?? 0) + 1);
   }
@@ -108,8 +110,8 @@ export function buildLogicalPracticeCatalog(input: {
   const allItems = input.universe.publicItems
     .filter((item) => item.taskType === input.taskType)
     .map((item): LogicalPracticeListItem => {
-      const occurrenceDates = Array.from(occurrenceDatesByItem.get(item.itemId) ?? [])
-        .sort((left, right) => right.localeCompare(left));
+      const occurrenceDateCounts = countOccurrenceDates(occurrenceDatesByItem.get(item.itemId) ?? []);
+      const occurrenceDates = occurrenceDateCounts.map(({ date }) => date);
       return {
         item_id: item.itemId,
         task_type: item.taskType,
@@ -120,6 +122,7 @@ export function buildLogicalPracticeCatalog(input: {
         first_seen_date: item.firstSeenDate,
         latest_seen_date: occurrenceDates[0] ?? item.firstSeenDate,
         occurrence_dates: occurrenceDates,
+        occurrence_date_counts: occurrenceDateCounts,
         occurrence_count: occurrenceCountByItem.get(item.itemId) ?? 0,
         canonical: {
           source_id: item.sourceId,

@@ -9,6 +9,7 @@ const catalog = read("components/LogicalPracticeCatalog.tsx");
 const catalogHelper = read("lib/practiceLogicalCatalog.ts");
 const shared = read("components/shared/PracticeCatalog.tsx");
 const discoveryControls = read("components/shared/CatalogDiscoveryControls.tsx");
+const occurrenceDates = read("lib/catalogOccurrenceDates.ts");
 const basPage = read("app/student/practice-sets/page.tsx");
 const emailPage = read("app/student/write-email/page.tsx");
 const discussionPage = read("app/student/academic-discussion/page.tsx");
@@ -40,13 +41,13 @@ test("Email and AD render API question_count as 1题 without client constants", 
 });
 
 test("occurrence date converts 2026-07-14 to 260714", () => {
-  assert.match(catalog, /\^\(\\d\{4\}\)-\(\\d\{2\}\)-\(\\d\{2\}\)\$/);
-  assert.match(catalog, /match\[1\]\.slice\(-2\).*match\[2\].*match\[3\]/s);
+  assert.match(occurrenceDates, /\^\(\\d\{4\}\)-\(\\d\{2\}\)-\(\\d\{2\}\)\$/);
+  assert.match(occurrenceDates, /match\[1\]\.slice\(-2\).*match\[2\].*match\[3\]/s);
 });
 
 test("multiple occurrence dates use a Chinese enumeration comma", () => {
-  assert.match(catalog, /\.join\("、"\)/);
-  assert.match(catalog, /metadata: formatOccurrenceDates\(item\.occurrence_dates\)/);
+  assert.match(occurrenceDates, /\.join\("、"\)/);
+  assert.match(catalog, /metadata: formatOccurrenceDates\(item\.occurrence_date_counts\)/);
   assert.doesNotMatch(catalog, /重复.*occurrence_count|occurrence_count.*次/);
 });
 

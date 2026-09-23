@@ -5,6 +5,9 @@ const {
   filterAndSortCatalogItems,
   normalizeCatalogSearchText
 } = require("../lib/catalogDiscovery.ts");
+const {
+  filterReadingCatalogByLength
+} = require("../lib/reading/catalogDiscovery.ts");
 
 function item(overrides) {
   return {
@@ -73,4 +76,30 @@ test("default order is preserved and non-default sorts use stable item-id ties",
     sortKey: "occurrence_count",
     sortDirection: "desc"
   }).map(({ id }) => id), ["c", "a", "b"]);
+});
+
+test("RDL length filter maps short to two questions and long to three questions", () => {
+  const items = [
+    item({ id: "short-a", questionCount: 2 }),
+    item({ id: "long-a", questionCount: 3 }),
+    item({ id: "short-b", questionCount: 2 })
+  ];
+  assert.equal(filterReadingCatalogByLength(items, "all").length, 3);
+  assert.deepEqual(filterReadingCatalogByLength(items, "short").map(({ id }) => id), ["short-a", "short-b"]);
+  assert.deepEqual(filterReadingCatalogByLength(items, "long").map(({ id }) => id), ["long-a"]);
+});
+
+test("RDL length combines with existing discovery dimensions using AND", () => {
+  const items = [
+    item({ id: "matching-long", questionCount: 3, occurrenceDates: ["2026-07-01"] }),
+    item({ id: "wrong-length", questionCount: 2, occurrenceDates: ["2026-07-01"] }),
+    item({ id: "wrong-month", questionCount: 3, occurrenceDates: ["2026-06-01"] })
+  ];
+  const result = filterAndSortCatalogItems(filterReadingCatalogByLength(items, "long"), {
+    ...defaults,
+    status: "completed",
+    months: ["2026-07"],
+    categories: ["生态环境"]
+  });
+  assert.deepEqual(result.map(({ id }) => id), ["matching-long"]);
 });

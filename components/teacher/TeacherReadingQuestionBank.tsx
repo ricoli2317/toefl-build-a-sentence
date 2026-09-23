@@ -29,7 +29,7 @@ import {
   type TeacherReadingBankCatalog,
   type TeacherReadingBankItemDetail
 } from "@/lib/teacherReadingQuestionBank";
-import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
+import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
 
 export function TeacherReadingQuestionBankCatalog({
   module,

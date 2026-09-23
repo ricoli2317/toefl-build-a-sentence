@@ -220,6 +220,11 @@ test("occurrence dates aggregate every source, deduplicate same-day variants, an
     "2026-05-06",
     "2026-01-01"
   ]);
+  assert.deepEqual(catalog(fixture, "email").items[0].occurrence_date_counts, [
+    { date: "2026-06-07", count: 1 },
+    { date: "2026-05-06", count: 2 },
+    { date: "2026-01-01", count: 1 }
+  ]);
   assert.equal(catalog(fixture, "email").items[0].occurrence_count, 4);
   assert.equal(catalog(fixture, "email").items[0].latest_seen_date, "2026-06-07");
 });
@@ -346,6 +351,7 @@ test("contract contains canonical metadata and no Step 13 student status fields"
     "first_seen_date",
     "latest_seen_date",
     "occurrence_dates",
+    "occurrence_date_counts",
     "occurrence_count",
     "canonical",
     "question_count"

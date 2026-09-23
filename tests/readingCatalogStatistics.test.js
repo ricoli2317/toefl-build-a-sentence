@@ -160,15 +160,19 @@ test("Reading Catalog exposes every occurrence date newest-first without changin
   const payload = buildReadingCatalogPayload({ taskType: "rdl", items: [repeated], attempts: [] });
   assert.equal(payload.items[0].itemId, "rdl-repeat");
   assert.deepEqual(payload.items[0].occurrenceDates, ["2026-08-11", "2026-08-09"]);
+  assert.deepEqual(payload.items[0].occurrenceDateCounts, [
+    { date: "2026-08-11", count: 1 },
+    { date: "2026-08-09", count: 2 }
+  ]);
   assert.equal(payload.items[0].occurrenceCount, 3);
   assert.equal(payload.items[0].latestSeenDate, "2026-08-11");
   assert.match(catalogRoute, /reading_source_occurrences\(occurrence_id,occurrence_date\)/);
-  assert.match(catalogUi, /formatOccurrenceDates\(item\.occurrenceDates\)/);
+  assert.match(catalogUi, /formatOccurrenceDates\(item\.occurrenceDateCounts\)/);
 });
 
 test("Reading Catalog metadata omits first-seen and recent score/date summaries", () => {
   assert.doesNotMatch(catalogUi, /首次出现|formatDateTime|Math\.round\(submitted\.accuracy/);
-  assert.match(catalogUi, /function ReadingCatalogMetadata[\s\S]*formatOccurrenceDates\(item\.occurrenceDates\)/);
+  assert.match(catalogUi, /function ReadingCatalogMetadata[\s\S]*formatOccurrenceDates\(item\.occurrenceDateCounts\)/);
   assert.doesNotMatch(catalogUi, /重复.*occurrenceCount|occurrenceCount.*次/);
 });
 
