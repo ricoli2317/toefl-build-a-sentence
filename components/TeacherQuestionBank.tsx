@@ -18,6 +18,11 @@ import {
   PracticeSetAction,
   PracticeSetCatalogList
 } from "@/components/shared/PracticeCatalog";
+import {
+  CatalogDiscoveryControls,
+  CatalogFilteredEmptyState,
+  type CatalogDiscoveryControlValue
+} from "@/components/shared/CatalogDiscoveryControls";
 import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
 import { WritingQuestionReview } from "@/components/writing/WritingQuestionPrompt";
 import {
@@ -35,6 +40,7 @@ import type { AcademicDiscussionAvatarMap } from "@/lib/academicDiscussionAvatar
 import type { Question } from "@/lib/types";
 import type { WritingQuestion } from "@/lib/writing";
 import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
+import { catalogMonths, filterAndSortCatalogItems } from "@/lib/catalogDiscovery";
 import { TeacherReadingQuestionBankCatalog } from "@/components/teacher/TeacherReadingQuestionBank";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
@@ -131,11 +137,30 @@ function TeacherWritingQuestionBankCatalog({
   page: number;
   taskType: PracticeTaskType;
 }) {
-  const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:catalog:${taskType}:${page}`;
+  const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:catalog:${taskType}`;
+  const [currentPage, setCurrentPage] = useState(page);
+  const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultDiscoveryControls);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const { data, error, loading } = useTeacherCachedData<LogicalPracticeCatalog>(
     cacheKey,
-    () => loadQuestionBankCatalog(taskType, page)
+    () => loadQuestionBankCatalog(taskType)
   );
+  useEffect(() => setCurrentPage(page), [page, taskType]);
+  useEffect(() => {
+    setControls(defaultDiscoveryControls());
+    setDebouncedQuery("");
+  }, [taskType]);
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedQuery(controls.query), 200);
+    return () => window.clearTimeout(timeout);
+  }, [controls.query]);
+  useEffect(() => setCurrentPage(1), [
+    controls.query,
+    controls.months,
+    controls.categories,
+    controls.sortKey,
+    controls.sortDirection
+  ]);
 
   return (
     <div className="grid gap-5">
@@ -145,35 +170,101 @@ function TeacherWritingQuestionBankCatalog({
       ) : error || !data ? (
         <TeacherDataError text={toQuestionBankErrorMessage(error || "无法加载题库。")} />
       ) : (
-        <>
-          <PracticeSetCatalogList
-            emptyState={<TeacherEmptyState text={emptyStateText(taskType)} />}
-            renderActions={(catalogSet) => (
-              <PracticeSetAction
-                href={`/teacher/question-bank/${encodeURIComponent(catalogSet.setId)}?taskType=${taskType}&page=${page}`}
-                icon={Eye}
-                label="查看题目"
-              />
-            )}
-            sets={data.items.map((item) => ({
-              icon: STUDENT_PRACTICE_ICONS[item.task_type],
-              metadata: formatOccurrenceDates(item.occurrence_dates),
-              questionCount: item.question_count,
-              setId: item.item_id,
-              setTitle: logicalPracticeItemTitle(item),
-              titlePrefix: item.task_type === "build_sentence" ? `套题${item.display_number}` : `题目${item.display_number}`,
-              titleSuffix: item.task_type === "build_sentence" ? null : item.display_title
-            }))}
-          />
-          <CatalogPagination
-            page={data.pagination.page}
-            taskType={taskType}
-            totalItems={data.pagination.total_items}
-            totalPages={data.pagination.total_pages}
-          />
-        </>
+        <TeacherLogicalCatalogContent
+          catalog={data}
+          controls={controls}
+          debouncedQuery={debouncedQuery}
+          onControlsChange={setControls}
+          onPageChange={setCurrentPage}
+          page={currentPage}
+          taskType={taskType}
+        />
       )}
     </div>
+  );
+}
+
+function TeacherLogicalCatalogContent({
+  catalog,
+  controls,
+  debouncedQuery,
+  onControlsChange,
+  onPageChange,
+  page,
+  taskType
+}: {
+  catalog: LogicalPracticeCatalog;
+  controls: CatalogDiscoveryControlValue;
+  debouncedQuery: string;
+  onControlsChange: (value: CatalogDiscoveryControlValue) => void;
+  onPageChange: (page: number) => void;
+  page: number;
+  taskType: PracticeTaskType;
+}) {
+  const discoveryItems = catalog.items.map((item, defaultIndex) => ({
+    ...item,
+    id: item.item_id,
+    title: logicalPracticeItemTitle(item),
+    searchText: item.search_text ?? "",
+    occurrenceDates: item.occurrence_dates ?? [],
+    occurrenceCount: item.occurrence_count ?? 0,
+    firstSeenDate: item.first_seen_date,
+    latestSeenDate: item.latest_seen_date ?? item.occurrence_dates?.[0] ?? item.first_seen_date,
+    category: item.catalog_category ?? null,
+    defaultIndex
+  }));
+  const filteredItems = filterAndSortCatalogItems(discoveryItems, {
+    ...controls,
+    status: "all",
+    query: debouncedQuery
+  });
+  const totalPages = Math.ceil(filteredItems.length / catalog.pagination.page_size);
+  const visiblePage = Math.min(Math.max(page, 1), Math.max(totalPages, 1));
+  const from = (visiblePage - 1) * catalog.pagination.page_size;
+  const items = filteredItems.slice(from, from + catalog.pagination.page_size);
+  const categories = taskType === "build_sentence" ? null : Array.from(new Set(
+    catalog.items.map((item) => item.catalog_category).filter((value): value is string => Boolean(value))
+  )).sort((left, right) => left.localeCompare(right, "zh-CN"));
+  const clearControls = () => onControlsChange(defaultDiscoveryControls());
+
+  return (
+    <>
+      <CatalogDiscoveryControls
+        categories={categories}
+        months={catalogMonths(discoveryItems)}
+        onChange={onControlsChange}
+        onClear={clearControls}
+        showStatus={false}
+        value={controls}
+      />
+      <PracticeSetCatalogList
+        emptyState={catalog.items.length
+          ? <CatalogFilteredEmptyState onClear={clearControls} />
+          : <TeacherEmptyState text={emptyStateText(taskType)} />}
+        renderActions={(catalogSet) => (
+          <PracticeSetAction
+            href={`/teacher/question-bank/${encodeURIComponent(catalogSet.setId)}?taskType=${taskType}&page=${visiblePage}`}
+            icon={Eye}
+            label="查看题目"
+          />
+        )}
+        sets={items.map((item) => ({
+          icon: STUDENT_PRACTICE_ICONS[item.task_type],
+          metadata: formatOccurrenceDates(item.occurrence_date_counts ?? item.occurrence_dates ?? []),
+          questionCount: item.question_count,
+          setId: item.item_id,
+          setTitle: logicalPracticeItemTitle(item),
+          titlePrefix: item.task_type === "build_sentence" ? `套题${item.display_number}` : `题目${item.display_number}`,
+          titleSuffix: item.task_type === "build_sentence" ? null : item.display_title
+        }))}
+      />
+      <CatalogPagination
+        onPageChange={onPageChange}
+        page={visiblePage}
+        totalItems={filteredItems.length}
+        totalPages={totalPages}
+      />
+    </>
   );
 }
 
@@ -287,13 +378,13 @@ function BasLogicalItemViewer({
 }
 
 function CatalogPagination({
+  onPageChange,
   page,
-  taskType,
   totalItems,
   totalPages
 }: {
+  onPageChange: (page: number) => void;
   page: number;
-  taskType: PracticeTaskType;
   totalItems: number;
   totalPages: number;
 }) {
@@ -302,39 +393,42 @@ function CatalogPagination({
     <nav aria-label="题库分页" className="flex flex-wrap items-center justify-between gap-3 text-sm text-student-muted">
       <span>共 {totalItems} 项 · 第 {page}/{visibleTotalPages} 页</span>
       <div className="flex gap-2">
-        <CatalogPageLink disabled={page <= 1} href={`/teacher/question-bank?taskType=${taskType}&page=${page - 1}`}>
+        <CatalogPageButton disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
           <ChevronLeft aria-hidden="true" size={16} />上一页
-        </CatalogPageLink>
-        <CatalogPageLink disabled={totalPages === 0 || page >= totalPages} href={`/teacher/question-bank?taskType=${taskType}&page=${page + 1}`}>
+        </CatalogPageButton>
+        <CatalogPageButton disabled={totalPages === 0 || page >= totalPages} onClick={() => onPageChange(page + 1)}>
           下一页<ChevronRight aria-hidden="true" size={16} />
-        </CatalogPageLink>
+        </CatalogPageButton>
       </div>
     </nav>
   );
 }
 
-function CatalogPageLink({
+function CatalogPageButton({
   children,
   disabled,
-  href
+  onClick
 }: {
   children: React.ReactNode;
   disabled: boolean;
-  href: string;
+  onClick: () => void;
 }) {
   const className = "student-button-secondary min-h-9 px-3 py-1.5";
-  return disabled ? (
-    <span aria-disabled="true" className={`${className} cursor-not-allowed opacity-50`}>
+  return (
+    <button
+      className={disabled ? `${className} cursor-not-allowed opacity-50` : className}
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
       {children}
-    </span>
-  ) : (
-    <Link className={className} href={href}>{children}</Link>
+    </button>
   );
 }
 
-async function loadQuestionBankCatalog(taskType: PracticeTaskType, page: number) {
+async function loadQuestionBankCatalog(taskType: PracticeTaskType) {
   return loadTeacherQuestionBankJson<LogicalPracticeCatalog>(
-    `/api/teacher/question-bank?taskType=${taskType}&page=${page}`
+    `/api/teacher/question-bank?taskType=${taskType}`
   );
 }
 
@@ -370,6 +464,17 @@ function emptyStateText(taskType: PracticeTaskType) {
   if (taskType === "build_sentence") return "暂无 Build a Sentence 题目。";
   if (taskType === "email") return "暂无 Write an Email 题目。";
   return "暂无 Academic Discussion 题目。";
+}
+
+function defaultDiscoveryControls(): CatalogDiscoveryControlValue {
+  return {
+    query: "",
+    status: "all",
+    months: [],
+    categories: [],
+    sortKey: "default",
+    sortDirection: "desc"
+  };
 }
 
 function toQuestionBankErrorMessage(message: string) {

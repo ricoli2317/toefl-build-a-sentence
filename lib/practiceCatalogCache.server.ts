@@ -6,7 +6,7 @@ import {
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 import { createServiceSupabase } from "@/lib/supabase/server";
 
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 
 export function practiceCatalogCacheTag(taskType: PracticeTaskType) {
   return `practice-catalog:${taskType}:v${CACHE_VERSION}`;

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
+import { useEffect, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { TEACHER_QUESTION_BANK_CACHE_PREFIX, useTeacherCachedData } from "@/components/TeacherDataCache";
 import {
@@ -15,6 +16,11 @@ import {
   PracticeSetCatalogList
 } from "@/components/shared/PracticeCatalog";
 import {
+  CatalogDiscoveryControls,
+  CatalogFilteredEmptyState,
+  type CatalogDiscoveryControlValue
+} from "@/components/shared/CatalogDiscoveryControls";
+import {
   ReadingCatalogPagination
 } from "@/components/reading/ReadingCatalog";
 import {
@@ -26,10 +32,16 @@ import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
 import type { ReadingModule } from "@/lib/reading/types";
 import {
   buildTeacherReadingAnswerKeyView,
+  TEACHER_READING_BANK_PAGE_SIZE,
   type TeacherReadingBankCatalog,
   type TeacherReadingBankItemDetail
 } from "@/lib/teacherReadingQuestionBank";
 import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
+import { catalogMonths, filterAndSortCatalogItems } from "@/lib/catalogDiscovery";
+import {
+  filterReadingCatalogByLength,
+  type ReadingLengthFilter
+} from "@/lib/reading/catalogDiscovery";
 
 export function TeacherReadingQuestionBankCatalog({
   module,
@@ -38,12 +50,33 @@ export function TeacherReadingQuestionBankCatalog({
   module: ReadingModule;
   page: number;
 }) {
-  const router = useRouter();
-  const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:reading:${module}:${page}`;
+  const cacheKey = `${TEACHER_QUESTION_BANK_CACHE_PREFIX}:reading:${module}`;
+  const [currentPage, setCurrentPage] = useState(page);
+  const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultDiscoveryControls);
+  const [lengthFilter, setLengthFilter] = useState<ReadingLengthFilter>("all");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const { data, error, loading } = useTeacherCachedData<TeacherReadingBankCatalog>(
     cacheKey,
-    () => loadReadingBankCatalog(module, page)
+    () => loadReadingBankCatalog(module)
   );
+  useEffect(() => setCurrentPage(page), [page, module]);
+  useEffect(() => {
+    setControls(defaultDiscoveryControls());
+    setLengthFilter("all");
+    setDebouncedQuery("");
+  }, [module]);
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedQuery(controls.query), 200);
+    return () => window.clearTimeout(timeout);
+  }, [controls.query]);
+  useEffect(() => setCurrentPage(1), [
+    controls.query,
+    controls.months,
+    controls.categories,
+    controls.sortKey,
+    controls.sortDirection,
+    lengthFilter
+  ]);
 
   return (
     <div className="grid gap-5">
@@ -53,37 +86,118 @@ export function TeacherReadingQuestionBankCatalog({
       ) : error || !data ? (
         <TeacherDataError text={toQuestionBankErrorMessage(error || "无法加载阅读题库。")} />
       ) : (
-        <>
-          <PracticeSetCatalogList
-            emptyState={<TeacherEmptyState text={`暂无 ${READING_PRODUCT_NAMES[module]} 题目。`} />}
-            renderActions={(catalogSet) => (
-              <PracticeSetAction
-                href={`/teacher/question-bank/${encodeURIComponent(catalogSet.setId)}?taskType=${module}&page=${page}`}
-                icon={Eye}
-                label="查看题目"
-              />
-            )}
-            sets={data.items.map((item) => ({
-              icon: STUDENT_PRACTICE_ICONS[item.module],
-              metadata: formatOccurrenceDates(item.occurrenceDates),
-              questionCount: item.module === "ctw" ? item.scoringPointCount : item.questionCount,
-              setId: item.itemId,
-              setTitle: item.title,
-              titlePrefix: `题目${item.displayNumber}`,
-              titleSuffix: item.title
-            }))}
-          />
-          <ReadingCatalogPagination
-            onChange={(nextPage) =>
-              router.push(`/teacher/question-bank?taskType=${module}&page=${nextPage}`)
-            }
-            page={data.page}
-            totalItems={data.totalItems}
-            totalPages={data.totalPages}
-          />
-        </>
+        <TeacherReadingCatalogContent
+          catalog={data}
+          controls={controls}
+          debouncedQuery={debouncedQuery}
+          lengthFilter={lengthFilter}
+          module={module}
+          onControlsChange={setControls}
+          onLengthFilterChange={setLengthFilter}
+          onPageChange={setCurrentPage}
+          page={currentPage}
+        />
       )}
     </div>
+  );
+}
+
+function TeacherReadingCatalogContent({
+  catalog,
+  controls,
+  debouncedQuery,
+  lengthFilter,
+  module,
+  onControlsChange,
+  onLengthFilterChange,
+  onPageChange,
+  page
+}: {
+  catalog: TeacherReadingBankCatalog;
+  controls: CatalogDiscoveryControlValue;
+  debouncedQuery: string;
+  lengthFilter: ReadingLengthFilter;
+  module: ReadingModule;
+  onControlsChange: (value: CatalogDiscoveryControlValue) => void;
+  onLengthFilterChange: (value: ReadingLengthFilter) => void;
+  onPageChange: (page: number) => void;
+  page: number;
+}) {
+  const discoveryItems = catalog.items.map((item, defaultIndex) => ({
+    ...item,
+    id: item.itemId,
+    searchText: item.searchText ?? "",
+    occurrenceDates: item.occurrenceDates ?? [],
+    occurrenceCount: item.occurrenceCount ?? 0,
+    firstSeenDate: item.firstSeenDate,
+    latestSeenDate: item.latestSeenDate ?? item.occurrenceDates?.[0] ?? item.firstSeenDate,
+    category: item.category ?? "",
+    defaultIndex
+  }));
+  const filteredItems = filterAndSortCatalogItems(filterReadingCatalogByLength(
+    discoveryItems,
+    module === "rdl" ? lengthFilter : "all"
+  ), {
+    ...controls,
+    status: "all",
+    query: debouncedQuery
+  });
+  const totalPages = Math.ceil(filteredItems.length / TEACHER_READING_BANK_PAGE_SIZE);
+  const visiblePage = Math.min(Math.max(page, 1), Math.max(totalPages, 1));
+  const items = filteredItems.slice(
+    (visiblePage - 1) * TEACHER_READING_BANK_PAGE_SIZE,
+    visiblePage * TEACHER_READING_BANK_PAGE_SIZE
+  );
+  const categories = Array.from(new Set(
+    catalog.items.map((item) => item.category).filter(Boolean)
+  )).sort((left, right) => left.localeCompare(right, "zh-CN"));
+  const clearControls = () => {
+    onControlsChange(defaultDiscoveryControls());
+    onLengthFilterChange("all");
+  };
+
+  return (
+    <>
+      <CatalogDiscoveryControls
+        categories={categories}
+        layoutVariant={module === "rdl" ? "rdl" : "default"}
+        months={catalogMonths(discoveryItems)}
+        onChange={onControlsChange}
+        onClear={clearControls}
+        rdlLengthFilter={module === "rdl"
+          ? { onChange: onLengthFilterChange, value: lengthFilter }
+          : undefined}
+        showStatus={false}
+        value={controls}
+      />
+      <PracticeSetCatalogList
+        emptyState={catalog.items.length
+          ? <CatalogFilteredEmptyState onClear={clearControls} />
+          : <TeacherEmptyState text={`暂无 ${READING_PRODUCT_NAMES[module]} 题目。`} />}
+        renderActions={(catalogSet) => (
+          <PracticeSetAction
+            href={`/teacher/question-bank/${encodeURIComponent(catalogSet.setId)}?taskType=${module}&page=${visiblePage}`}
+            icon={Eye}
+            label="查看题目"
+          />
+        )}
+        sets={items.map((item) => ({
+          icon: STUDENT_PRACTICE_ICONS[item.module],
+          metadata: formatOccurrenceDates(item.occurrenceDateCounts ?? item.occurrenceDates ?? []),
+          questionCount: item.module === "ctw" ? item.scoringPointCount : item.questionCount,
+          setId: item.itemId,
+          setTitle: item.title,
+          titlePrefix: `题目${item.displayNumber}`,
+          titleSuffix: item.title
+        }))}
+      />
+      <ReadingCatalogPagination
+        onChange={onPageChange}
+        page={visiblePage}
+        totalItems={filteredItems.length}
+        totalPages={totalPages}
+      />
+    </>
   );
 }
 
@@ -134,9 +248,9 @@ export function TeacherReadingQuestionBankItemViewer({
   );
 }
 
-async function loadReadingBankCatalog(module: ReadingModule, page: number) {
+async function loadReadingBankCatalog(module: ReadingModule) {
   return loadTeacherQuestionBankJson<TeacherReadingBankCatalog>(
-    `/api/teacher/question-bank/reading?module=${module}&page=${page}`
+    `/api/teacher/question-bank/reading?module=${module}`
   );
 }
 
@@ -173,6 +287,17 @@ function toQuestionBankErrorMessage(message: string) {
   if (/forbidden|teacher role required/i.test(message)) return "当前账号没有教师端访问权限。";
   if (/not found/i.test(message)) return "未找到该题目。";
   return /[\u3400-\u9fff]/.test(message) ? message : "题库加载失败，请稍后重试。";
+}
+
+function defaultDiscoveryControls(): CatalogDiscoveryControlValue {
+  return {
+    query: "",
+    status: "all",
+    months: [],
+    categories: [],
+    sortKey: "default",
+    sortDirection: "desc"
+  };
 }
 
 function ReadingItemListSkeleton() {

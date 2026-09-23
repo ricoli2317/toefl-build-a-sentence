@@ -64,6 +64,11 @@ test("months and categories are OR internally while dimensions combine with AND"
   assert.deepEqual(result.map(({ id }) => id), ["match-environment", "match-technology"]);
 });
 
+test("teacher discovery items do not need a student status when status filtering is disabled", () => {
+  const teacherItem = item({ status: undefined });
+  assert.deepEqual(filterAndSortCatalogItems([teacherItem], defaults).map(({ id }) => id), ["item-a"]);
+});
+
 test("default order is preserved and non-default sorts use stable item-id ties", () => {
   const items = [
     item({ id: "b", defaultIndex: 0, occurrenceCount: 2 }),

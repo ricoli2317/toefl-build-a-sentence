@@ -167,12 +167,12 @@ test("Reading Catalog exposes every occurrence date newest-first without changin
   assert.equal(payload.items[0].occurrenceCount, 3);
   assert.equal(payload.items[0].latestSeenDate, "2026-08-11");
   assert.match(catalogRoute, /reading_source_occurrences\(occurrence_id,occurrence_date\)/);
-  assert.match(catalogUi, /formatOccurrenceDates\(item\.occurrenceDateCounts\)/);
+  assert.match(catalogUi, /item\.occurrenceDateCounts[\s\S]*item\.occurrenceDates/);
 });
 
 test("Reading Catalog metadata omits first-seen and recent score/date summaries", () => {
   assert.doesNotMatch(catalogUi, /首次出现|formatDateTime|Math\.round\(submitted\.accuracy/);
-  assert.match(catalogUi, /function ReadingCatalogMetadata[\s\S]*formatOccurrenceDates\(item\.occurrenceDateCounts\)/);
+  assert.match(catalogUi, /function ReadingCatalogMetadata[\s\S]*item\.occurrenceDateCounts[\s\S]*item\.occurrenceDates/);
   assert.doesNotMatch(catalogUi, /重复.*occurrenceCount|occurrenceCount.*次/);
 });
 

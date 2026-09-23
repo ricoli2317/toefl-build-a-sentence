@@ -163,13 +163,13 @@ function CatalogContent({
     ...item,
     id: item.item_id,
     title: logicalPracticeItemTitle(item),
-    searchText: item.search_text,
+    searchText: item.search_text ?? (item as LogicalPracticeCatalogItemWithStudentState & { searchText?: string }).searchText ?? "",
     status: item.student_state.status,
-    occurrenceDates: item.occurrence_dates,
-    occurrenceCount: item.occurrence_count,
+    occurrenceDates: item.occurrence_dates ?? [],
+    occurrenceCount: item.occurrence_count ?? 0,
     firstSeenDate: item.first_seen_date,
-    latestSeenDate: item.latest_seen_date,
-    category: item.catalog_category,
+    latestSeenDate: item.latest_seen_date ?? item.occurrence_dates?.[0] ?? item.first_seen_date,
+    category: item.catalog_category ?? (item as LogicalPracticeCatalogItemWithStudentState & { category?: string | null }).category ?? null,
     defaultIndex
   }));
   const filteredItems = filterAndSortCatalogItems(discoveryItems, {
@@ -209,7 +209,11 @@ function CatalogContent({
         }}
         sets={items.map((item) => ({
           icon: STUDENT_PRACTICE_ICONS[item.task_type],
-          metadata: formatOccurrenceDates(item.occurrence_date_counts),
+          metadata: formatOccurrenceDates(
+            item.occurrence_date_counts
+              ?? (item as LogicalPracticeCatalogItemWithStudentState & { occurrenceDateCounts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrenceDateCounts
+              ?? item.occurrence_dates
+          ),
           questionCount: item.question_count,
           setId: item.item_id,
           setTitle: logicalPracticeItemTitle(item),

@@ -10,8 +10,8 @@ export function countOccurrenceDates(dates: string[]): OccurrenceDateCount[] {
     .sort((left, right) => right.date.localeCompare(left.date));
 }
 
-export function formatOccurrenceDates(dates: string[] | OccurrenceDateCount[]) {
-  return dates.map((entry) => {
+export function formatOccurrenceDates(dates?: string[] | OccurrenceDateCount[]) {
+  return (dates ?? []).map((entry) => {
     const date = typeof entry === "string" ? entry : entry.date;
     const count = typeof entry === "string" ? 1 : entry.count;
     const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);

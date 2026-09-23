@@ -91,12 +91,12 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
       ...item,
       id: item.itemId,
       title: `${title.prefix} ${title.suffix}`,
-      searchText: item.searchText,
-      occurrenceDates: item.occurrenceDates,
-      occurrenceCount: item.occurrenceCount,
+      searchText: item.searchText ?? (item as ReadingCatalogItem & { search_text?: string }).search_text ?? "",
+      occurrenceDates: item.occurrenceDates ?? [],
+      occurrenceCount: item.occurrenceCount ?? 0,
       firstSeenDate: item.firstSeenDate,
-      latestSeenDate: item.latestSeenDate,
-      category: item.category,
+      latestSeenDate: item.latestSeenDate ?? item.occurrenceDates?.[0] ?? item.firstSeenDate,
+      category: item.category ?? (item as ReadingCatalogItem & { catalog_category?: string }).catalog_category ?? "",
       defaultIndex
     };
   });
@@ -195,7 +195,11 @@ export function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogIt
 }
 
 function ReadingCatalogMetadata({ item }: { item: ReadingCatalogItem }) {
-  return <span>{formatOccurrenceDates(item.occurrenceDateCounts)}</span>;
+  return <span>{formatOccurrenceDates(
+    item.occurrenceDateCounts
+      ?? (item as ReadingCatalogItem & { occurrence_date_counts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrence_date_counts
+      ?? item.occurrenceDates
+  )}</span>;
 }
 
 function defaultControls(): CatalogDiscoveryControlValue {

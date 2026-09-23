@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import {
   getLogicalPracticeCatalog,
-  isLogicalPracticeTaskType,
-  parseLogicalPracticePage
+  isLogicalPracticeTaskType
 } from "@/lib/practiceLogicalCatalog";
 import { loadPracticePublicUniverse } from "@/lib/practicePublicUniverse";
 import { buildAcademicDiscussionAvatarMap } from "@/lib/academicDiscussionAvatars";
@@ -52,12 +51,8 @@ export async function GET(request: Request) {
     }
 
     const taskType = params.get("taskType") ?? "build_sentence";
-    const page = parseLogicalPracticePage(params.get("page"));
     if (!isLogicalPracticeTaskType(taskType)) {
       return jsonError("Invalid practice task type.", 400);
-    }
-    if (page === null) {
-      return jsonError("page must be a positive integer.", 400);
     }
 
     // The teacher bank reuses the student-facing task-scoped catalog directory
@@ -66,7 +61,7 @@ export async function GET(request: Request) {
     return json(await getLogicalPracticeCatalog({
       supabase,
       taskType,
-      page,
+      page: 1,
       useTaskScopedUniverse: true
     }));
   } catch (error) {

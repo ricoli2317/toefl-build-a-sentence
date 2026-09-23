@@ -47,7 +47,7 @@ test("occurrence date converts 2026-07-14 to 260714", () => {
 
 test("multiple occurrence dates use a Chinese enumeration comma", () => {
   assert.match(occurrenceDates, /\.join\("、"\)/);
-  assert.match(catalog, /metadata: formatOccurrenceDates\(item\.occurrence_date_counts\)/);
+  assert.match(catalog, /item\.occurrence_date_counts[\s\S]*item\.occurrence_dates/);
   assert.doesNotMatch(catalog, /重复.*occurrence_count|occurrence_count.*次/);
 });
 

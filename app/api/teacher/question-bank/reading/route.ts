@@ -5,6 +5,7 @@ import {
   readingCatalogDisplayNumbers,
   type ReadingCatalogIdentityRow
 } from "@/lib/reading/catalog";
+import { countOccurrenceDates } from "@/lib/catalogOccurrenceDates";
 import { assertCanonicalCtwTitle } from "@/lib/reading/ctwTitles";
 import { loadStudentReadingPractice } from "@/lib/reading/studentPractice";
 import type { ReadingModule } from "@/lib/reading/types";
@@ -14,7 +15,6 @@ import { buildTeacherReadingAnswerKey } from "@/lib/teacherReadingAnswerKey.serv
 import {
   isReadingModuleTaskType,
   readingBankItemTitle,
-  TEACHER_READING_BANK_PAGE_SIZE,
   type TeacherReadingBankCatalog,
   type TeacherReadingBankCatalogItem,
   type TeacherReadingBankItemDetail
@@ -29,7 +29,9 @@ type ReadingIdentityRow = ReadingCatalogIdentityRow & {
   title: string | null;
   question_count: number;
   scored_item_count: number;
-  reading_source_occurrences?: Array<{ occurrence_date: string }>;
+  catalog_category?: string | null;
+  catalog_search_text?: string | null;
+  reading_source_occurrences?: Array<{ occurrence_id?: string; occurrence_date: string }>;
 };
 
 type PageError = { message: string };
@@ -55,10 +57,7 @@ export async function GET(request: Request) {
     if (!isReadingModuleTaskType(requestedModule)) {
       return jsonError("Invalid Reading module.", 400);
     }
-    const page = parseReadingBankPage(params.get("page"));
-    if (page === null) return jsonError("page must be a positive integer.", 400);
-
-    return json(await loadReadingBankCatalog(db, requestedModule, page));
+    return json(await loadReadingBankCatalog(db, requestedModule));
   } catch (error) {
     console.error("[teacher-reading-question-bank] load_failed", error);
     return jsonError("Could not load the teacher Reading question bank.");
@@ -69,11 +68,11 @@ async function loadReadingIdentityRows(
   db: ReturnType<typeof createServiceSupabase>,
   module: ReadingModule
 ) {
-  const result = await readAllSupabaseRows<ReadingIdentityRow>((from, to) =>
+  let result = await readAllSupabaseRows<ReadingIdentityRow>((from, to) =>
     db
       .from("reading_logical_items")
       .select(
-        "logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,reading_source_occurrences(occurrence_date)"
+        "logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,catalog_search_text,reading_source_occurrences(occurrence_id,occurrence_date)"
       )
       .eq("module", module)
       .order("first_seen_date", { ascending: true })
@@ -85,6 +84,24 @@ async function loadReadingIdentityRows(
       error: PageError | null;
     }>
   );
+  if (result.error?.message.includes("catalog_search_text") && result.error.message.includes("does not exist")) {
+    result = await readAllSupabaseRows<ReadingIdentityRow>((from, to) =>
+      db
+        .from("reading_logical_items")
+        .select(
+          "logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,reading_source_occurrences(occurrence_id,occurrence_date)"
+        )
+        .eq("module", module)
+        .order("first_seen_date", { ascending: true })
+        .order("first_seen_source_label", { ascending: true })
+        .order("first_seen_source_order", { ascending: true })
+        .order("logical_item_id", { ascending: true })
+        .range(from, to) as unknown as PromiseLike<{
+        data: ReadingIdentityRow[] | null;
+        error: PageError | null;
+      }>
+    );
+  }
   if (result.error) throw new Error(result.error.message);
   return (result.data ?? []).sort(compareReadingCatalogIdentityOrder);
 }
@@ -93,13 +110,13 @@ function toCatalogItem(
   row: ReadingIdentityRow,
   displayNumber: string
 ): TeacherReadingBankCatalogItem {
-  const occurrenceDates = Array.from(
-    new Set(
-      (row.reading_source_occurrences ?? []).map((occurrence) =>
-        String(occurrence.occurrence_date)
-      )
-    )
-  ).sort((left, right) => right.localeCompare(left));
+  const rawOccurrenceDates = (row.reading_source_occurrences ?? []).map((occurrence) =>
+    String(occurrence.occurrence_date)
+  );
+  const occurrenceDateCounts = countOccurrenceDates(
+    rawOccurrenceDates.length ? rawOccurrenceDates : [row.first_seen_date]
+  );
+  const occurrenceDates = occurrenceDateCounts.map(({ date }) => date);
   return {
     itemId: row.logical_item_id,
     module: row.module,
@@ -110,7 +127,12 @@ function toCatalogItem(
       displayNumber
     }),
     firstSeenDate: row.first_seen_date,
-    occurrenceDates: occurrenceDates.length > 0 ? occurrenceDates : [row.first_seen_date],
+    latestSeenDate: occurrenceDates[0] ?? row.first_seen_date,
+    occurrenceDates,
+    occurrenceDateCounts,
+    occurrenceCount: rawOccurrenceDates.length,
+    category: row.catalog_category?.trim() ?? "",
+    searchText: row.catalog_search_text ?? "",
     questionCount: Number(row.question_count),
     scoringPointCount: Number(row.scored_item_count)
   };
@@ -118,8 +140,7 @@ function toCatalogItem(
 
 async function loadReadingBankCatalog(
   db: ReturnType<typeof createServiceSupabase>,
-  module: ReadingModule,
-  page: number
+  module: ReadingModule
 ): Promise<TeacherReadingBankCatalog> {
   const ranked = await loadReadingIdentityRows(db, module);
   const displayNumbers = readingCatalogDisplayNumbers(ranked);
@@ -127,16 +148,9 @@ async function loadReadingBankCatalog(
   const items = [...ranked].reverse().map((row) =>
     toCatalogItem(row, displayNumbers.get(row.logical_item_id) ?? "")
   );
-  const totalPages = Math.ceil(items.length / TEACHER_READING_BANK_PAGE_SIZE);
-  const from = (page - 1) * TEACHER_READING_BANK_PAGE_SIZE;
-
   return {
     module,
-    page,
-    pageSize: TEACHER_READING_BANK_PAGE_SIZE,
-    totalItems: items.length,
-    totalPages,
-    items: items.slice(from, from + TEACHER_READING_BANK_PAGE_SIZE)
+    items
   };
 }
 
@@ -160,13 +174,6 @@ async function loadReadingItemDetail(
   });
   const answerKey = await buildTeacherReadingAnswerKey(db, practice);
   return { practice, answerKey };
-}
-
-function parseReadingBankPage(value: string | null) {
-  if (value === null || value === "") return 1;
-  if (!/^[1-9]\d*$/.test(value)) return null;
-  const page = Number(value);
-  return Number.isSafeInteger(page) ? page : null;
 }
 
 function json(data: unknown, init?: ResponseInit) {

@@ -15,7 +15,7 @@ test("teacher question bank root renders Logical Items with the student shared c
   assert.match(page, /TeacherQuestionBankCatalog/);
   assert.doesNotMatch(page + component, /PracticeMonthCard|TeacherQuestionBankMonths|month\.month_key/);
   assert.match(component, /PracticeSetCatalogList/);
-  assert.match(component, /formatOccurrenceDates\(item\.occurrence_dates\)/);
+  assert.match(component, /item\.occurrence_date_counts \?\? item\.occurrence_dates/);
   assert.match(component, /logicalPracticeItemTitle\(item\)/);
   assert.match(component, /questionCount: item\.question_count/);
 });
@@ -24,8 +24,21 @@ test("BAS, Email, and AD are explicit Logical Item tabs that preserve type in de
   for (const value of ["build_sentence", "email", "academic_discussion"]) {
     assert.match(component, new RegExp(`taskType: "${value}"`));
   }
-  assert.match(component, /\?taskType=\$\{taskType\}&page=\$\{page\}/);
+  assert.match(component, /\?taskType=\$\{taskType\}&page=\$\{visiblePage\}/);
   assert.match(component, /rootHref = `\/teacher\/question-bank\?taskType=\$\{taskType\}&page=\$\{returnPage\}`/);
+});
+
+test("teacher logical catalog uses one task-scoped request and local discovery pagination", () => {
+  assert.match(component, /catalog:\$\{taskType\}`/);
+  assert.doesNotMatch(component, /catalog:\$\{taskType\}:\$\{page\}/);
+  assert.match(component, /CatalogDiscoveryControls/);
+  assert.match(component, /showStatus=\{false\}/);
+  assert.match(component, /filterAndSortCatalogItems/);
+  assert.match(component, /filteredItems\.slice\(from, from \+ catalog\.pagination\.page_size\)/);
+  assert.match(component, /setTimeout\(\(\) => setDebouncedQuery\(controls\.query\), 200\)/);
+  assert.match(component, /`\/api\/teacher\/question-bank\?taskType=\$\{taskType\}`/);
+  assert.doesNotMatch(component, /api\/teacher\/question-bank\?taskType=\$\{taskType\}&page=/);
+  assert.doesNotMatch(component, /student_state|attempts_current_catalog_page/);
 });
 
 test("teacher API reuses the logical catalog and canonical public universe", () => {

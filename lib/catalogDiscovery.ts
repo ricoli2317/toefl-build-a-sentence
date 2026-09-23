@@ -6,7 +6,7 @@ export type CatalogDiscoveryItem = {
   id: string;
   title: string;
   searchText: string;
-  status: Exclude<CatalogStatusFilter, "all">;
+  status?: Exclude<CatalogStatusFilter, "all">;
   occurrenceDates: string[];
   occurrenceCount: number;
   firstSeenDate: string;

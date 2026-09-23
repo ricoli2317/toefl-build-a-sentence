@@ -20,6 +20,13 @@ test("RDL desktop layout keeps one wider search plus five equal controls", () =>
   assert.match(controls, /全部篇幅/);
 });
 
+test("teacher RDL hides status and uses four equal non-search controls", () => {
+  const teacherReading = fs.readFileSync(path.join(root, "components/teacher/TeacherReadingQuestionBank.tsx"), "utf8");
+  assert.match(teacherReading, /showStatus=\{false\}/);
+  assert.match(controls, /repeat\(4,minmax\(0,1fr\)\)/);
+  assert.match(controls, /showStatus = true/);
+});
+
 test("length changes stay local and reset pagination without another catalog request", () => {
   assert.match(readingCatalog, /lengthFilter[\s\S]*setPage\(1\)/);
   assert.equal((readingCatalog.match(/fetch\(`/g) || []).length, 1);

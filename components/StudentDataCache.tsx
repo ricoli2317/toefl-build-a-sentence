@@ -58,7 +58,7 @@ export function studentWritingCatalogCacheKey(taskType: "email" | "academic_disc
 export function studentLogicalCatalogCacheKey(
   taskType: "build_sentence" | "email" | "academic_discussion"
 ) {
-  return `${STUDENT_LOGICAL_CATALOG_CACHE_PREFIX}:${taskType}`;
+  return `${STUDENT_LOGICAL_CATALOG_CACHE_PREFIX}:v3:${taskType}`;
 }
 
 export function studentQuestionsCacheKey(setId: string) {
@@ -89,7 +89,7 @@ export function studentReadingFullSetOccurrenceCacheKey(
 }
 
 export function studentReadingCatalogCacheKey(taskType: "ctw" | "rdl" | "rap") {
-  return `${STUDENT_READING_CATALOG_CACHE_PREFIX}:${taskType}`;
+  return `${STUDENT_READING_CATALOG_CACHE_PREFIX}:v2:${taskType}`;
 }
 
 export function studentWritingAttemptCacheKey(attemptId: string) {

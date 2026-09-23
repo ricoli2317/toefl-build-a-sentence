@@ -48,6 +48,7 @@ export function CatalogDiscoveryControls({
   onClear,
   rdlLengthFilter,
   layoutVariant = "default",
+  showStatus = true,
   value
 }: {
   categories: string[] | null;
@@ -59,12 +60,13 @@ export function CatalogDiscoveryControls({
     value: ReadingLengthFilter;
   };
   layoutVariant?: "default" | "rdl";
+  showStatus?: boolean;
   value: CatalogDiscoveryControlValue;
 }) {
   const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
   const rootRef = useRef<HTMLElement>(null);
   const activeCount = Number(Boolean(value.query.trim()))
-    + Number(value.status !== "all")
+    + Number(showStatus && value.status !== "all")
     + value.months.length
     + value.categories.length
     + Number(value.sortKey !== "default")
@@ -90,10 +92,22 @@ export function CatalogDiscoveryControls({
   }, [openMenu]);
 
   let gridClass: string;
-  if (layoutVariant === "rdl" && rdlLengthFilter) {
+  if (layoutVariant === "rdl" && rdlLengthFilter && showStatus) {
     gridClass = activeCount
       ? "xl:grid-cols-[minmax(13rem,1.7fr)_repeat(5,minmax(0,1fr))_2.25rem]"
       : "xl:grid-cols-[minmax(13rem,1.7fr)_repeat(5,minmax(0,1fr))]";
+  } else if (layoutVariant === "rdl" && rdlLengthFilter) {
+    gridClass = activeCount
+      ? "xl:grid-cols-[minmax(13rem,1.7fr)_repeat(4,minmax(0,1fr))_2.25rem]"
+      : "xl:grid-cols-[minmax(13rem,1.7fr)_repeat(4,minmax(0,1fr))]";
+  } else if (categories && !showStatus) {
+    gridClass = activeCount
+      ? "lg:grid-cols-[minmax(14rem,1.7fr)_repeat(3,minmax(0,1fr))_2.25rem]"
+      : "lg:grid-cols-[minmax(14rem,1.7fr)_repeat(3,minmax(0,1fr))]";
+  } else if (!categories && !showStatus) {
+    gridClass = activeCount
+      ? "lg:grid-cols-[minmax(16rem,1.9fr)_repeat(2,minmax(0,1fr))_2.25rem]"
+      : "lg:grid-cols-[minmax(16rem,1.9fr)_repeat(2,minmax(0,1fr))]";
   } else if (categories) {
     gridClass = activeCount
       ? "lg:grid-cols-[minmax(14rem,1.7fr)_minmax(10rem,.9fr)_minmax(8rem,.7fr)_minmax(8rem,.75fr)_minmax(8rem,.75fr)_2.25rem]"
@@ -150,18 +164,20 @@ export function CatalogDiscoveryControls({
           ) : null}
         </div>
 
-        <SingleSelect
-          label={STATUS_OPTIONS.find((option) => option.value === value.status)?.label ?? "全部状态"}
-          menu="status"
-          onOpenChange={setOpenMenu}
-          onSelect={(status) => {
-            update({ status });
-            setOpenMenu(null);
-          }}
-          open={openMenu === "status"}
-          options={STATUS_OPTIONS}
-          value={value.status}
-        />
+        {showStatus ? (
+          <SingleSelect
+            label={STATUS_OPTIONS.find((option) => option.value === value.status)?.label ?? "全部状态"}
+            menu="status"
+            onOpenChange={setOpenMenu}
+            onSelect={(status) => {
+              update({ status });
+              setOpenMenu(null);
+            }}
+            open={openMenu === "status"}
+            options={STATUS_OPTIONS}
+            value={value.status}
+          />
+        ) : null}
 
         <MultiSelect
           allLabel="全部月份"

@@ -7,6 +7,7 @@ import type { ReadingModule } from "./reading/types.ts";
 import { READING_PRODUCT_NAMES } from "./reading/product.ts";
 import { assertCanonicalCtwTitle } from "./reading/ctwTitles.ts";
 import { assertCanonicalRdlTitle } from "./reading/rdlTitles.ts";
+import type { OccurrenceDateCount } from "./catalogOccurrenceDates.ts";
 
 export const TEACHER_READING_BANK_PAGE_SIZE = 10;
 
@@ -18,17 +19,18 @@ export type TeacherReadingBankCatalogItem = {
   displayNumber: string;
   title: string;
   firstSeenDate: string;
+  latestSeenDate: string;
   occurrenceDates: string[];
+  occurrenceDateCounts: OccurrenceDateCount[];
+  occurrenceCount: number;
+  category: string;
+  searchText: string;
   questionCount: number;
   scoringPointCount: number;
 };
 
 export type TeacherReadingBankCatalog = {
   module: ReadingModule;
-  page: number;
-  pageSize: number;
-  totalItems: number;
-  totalPages: number;
   items: TeacherReadingBankCatalogItem[];
 };
 

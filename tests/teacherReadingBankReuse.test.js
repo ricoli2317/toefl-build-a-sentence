@@ -136,6 +136,27 @@ test("Teacher Reading data reuses the canonical student loader and never touches
   assert.doesNotMatch(answerKey, /reading_attempts|attempt_answers|reading_wrongbook/);
 });
 
+test("teacher Reading catalog is full, discoverable, statusless, and preserves daily occurrence counts", () => {
+  const ui = read("components/teacher/TeacherReadingQuestionBank.tsx");
+  const route = read("app/api/teacher/question-bank/reading/route.ts");
+  assert.match(ui, /reading:\$\{module\}`/);
+  assert.doesNotMatch(ui, /reading:\$\{module\}:\$\{page\}/);
+  assert.match(ui, /showStatus=\{false\}/);
+  assert.match(ui, /filterAndSortCatalogItems/);
+  assert.match(ui, /filterReadingCatalogByLength/);
+  assert.match(ui, /TEACHER_READING_BANK_PAGE_SIZE/);
+  assert.match(ui, /occurrenceDateCounts \?\? item\.occurrenceDates/);
+  assert.match(ui, /`\/api\/teacher\/question-bank\/reading\?module=\$\{module\}`/);
+  assert.doesNotMatch(ui, /api\/teacher\/question-bank\/reading\?module=\$\{module\}&page=/);
+  assert.match(route, /catalog_category,catalog_search_text/);
+  assert.match(route, /catalog_search_text.*does not exist/s);
+  assert.match(route, /countOccurrenceDates/);
+  assert.match(route, /occurrenceCount: rawOccurrenceDates\.length/);
+  assert.doesNotMatch(route, /new Set/);
+  assert.doesNotMatch(route, /items\.slice/);
+  assert.doesNotMatch(route, /reading_attempts|attempt_answers|student_state/);
+});
+
 test("RDL selection-map logging is disabled when lookup is unavailable", () => {
   const practice = read("components/reading/ReadingPractice.tsx");
   assert.match(practice, /if \(lookupEnabled\) console\.error\("RDL selection map load failed"/);
