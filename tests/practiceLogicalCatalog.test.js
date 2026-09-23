@@ -220,6 +220,8 @@ test("occurrence dates aggregate every source, deduplicate same-day variants, an
     "2026-05-06",
     "2026-01-01"
   ]);
+  assert.equal(catalog(fixture, "email").items[0].occurrence_count, 4);
+  assert.equal(catalog(fixture, "email").items[0].latest_seen_date, "2026-06-07");
 });
 
 test("logical list sorts by first_seen_date DESC with stable display-number secondary order", () => {
@@ -339,8 +341,12 @@ test("contract contains canonical metadata and no Step 13 student status fields"
     "task_type",
     "display_number",
     "display_title",
+    "catalog_category",
+    "search_text",
     "first_seen_date",
+    "latest_seen_date",
     "occurrence_dates",
+    "occurrence_count",
     "canonical",
     "question_count"
   ]);

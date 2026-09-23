@@ -5,13 +5,23 @@ export function isUserRole(value: unknown): value is UserRole {
 }
 
 /**
+ * Student Experience is a UI/practice capability, not an account identity.
+ * Attempts remain owned by the authenticated account's own user id.
+ */
+export function canUseStudentExperience(role: UserRole) {
+  return role === "student" || role === "teacher" || role === "admin";
+}
+
+/**
  * Interface-area access. Admin can use both areas, and Teacher may enter the
  * Student area through the shared area switcher (same mechanism as Admin
  * student mode). Student stays limited to the Student area; Teacher never
  * gains Admin-only capabilities from this check.
  */
 export function roleCanAccess(role: UserRole, area: AppArea) {
-  return role === "admin" || role === area || (role === "teacher" && area === "student");
+  return area === "student"
+    ? canUseStudentExperience(role)
+    : role === "teacher" || role === "admin";
 }
 
 /**

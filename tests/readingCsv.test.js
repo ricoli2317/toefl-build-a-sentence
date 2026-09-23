@@ -32,7 +32,8 @@ const material = {
   yearMonth: "2026-01",
   bindingStatus: "bound",
   imageAssetPath: "reading/rdl/RDL-001/material_final.png",
-  hitboxDataPath: "reading/rdl/RDL-001/selection_map.json"
+  hitboxDataPath: "reading/rdl/RDL-001/selection_map.json",
+  catalogSearchText: "University robotics club workshop Tuesday afternoon notebook"
 };
 
 function template(file) {

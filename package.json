@@ -27,6 +27,7 @@
     "sync:reading-r2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/sync-reading-r2-references.ts",
     "verify:reading-r2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-reading-r2-runtime.ts",
     "verify:rdl-titles": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-rdl-title-consistency.ts",
+    "backfill:reading-catalog-search": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/backfill-reading-catalog-search.ts",
     "verify:wrongbook-performance": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-wrongbook-performance.ts",
     "verify:student-practice-summary": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-student-practice-summary.ts"
   },

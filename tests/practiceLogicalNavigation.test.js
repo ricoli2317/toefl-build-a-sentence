@@ -30,12 +30,14 @@ test("BAS, Email, and AD roots render the corresponding logical practice catalog
   }
 });
 
-test("logical root UI reads one full practice-catalog and keeps server ordering", () => {
+test("logical root UI reads one full practice-catalog and paginates the locally filtered order", () => {
   const source = read("components/LogicalPracticeCatalog.tsx");
   assert.match(source, /\/api\/practice-catalog\?taskType=/);
   assert.doesNotMatch(source, /&page=/);
   assert.doesNotMatch(source, /\/api\/sets|\/api\/writing\/catalog/);
-  assert.match(source, /catalog\.items\.slice/);
+  assert.match(source, /filterAndSortCatalogItems/);
+  assert.match(source, /title: logicalPracticeItemTitle\(item\)/);
+  assert.match(source, /filteredItems\.slice/);
   assert.doesNotMatch(source, /catalog\.items\.sort/);
 });
 

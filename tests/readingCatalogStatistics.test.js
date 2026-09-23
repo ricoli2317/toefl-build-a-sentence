@@ -35,7 +35,10 @@ function item(module, id, date, label, order, title = null, occurrenceDates = [d
     first_seen_source_order: order,
     question_count: module === "ctw" ? 1 : 3,
     scored_item_count: module === "ctw" ? 2 : 3,
-    reading_source_occurrences: occurrenceDates.map((occurrence_date) => ({ occurrence_date }))
+    reading_source_occurrences: occurrenceDates.map((occurrence_date, index) => ({
+      occurrence_id: `${id}-occurrence-${index + 1}`,
+      occurrence_date
+    }))
   };
 }
 
@@ -157,7 +160,9 @@ test("Reading Catalog exposes every occurrence date newest-first without changin
   const payload = buildReadingCatalogPayload({ taskType: "rdl", items: [repeated], attempts: [] });
   assert.equal(payload.items[0].itemId, "rdl-repeat");
   assert.deepEqual(payload.items[0].occurrenceDates, ["2026-08-11", "2026-08-09"]);
-  assert.match(catalogRoute, /reading_source_occurrences\(occurrence_date\)/);
+  assert.equal(payload.items[0].occurrenceCount, 3);
+  assert.equal(payload.items[0].latestSeenDate, "2026-08-11");
+  assert.match(catalogRoute, /reading_source_occurrences\(occurrence_id,occurrence_date\)/);
   assert.match(catalogUi, /formatOccurrenceDates\(item\.occurrenceDates\)/);
 });
 
@@ -170,8 +175,19 @@ test("Catalog payload and query omit Reading content, answers, assets, and N+1 l
   const payload = buildReadingCatalogPayload({ taskType: "rdl", items: catalogItems, attempts: [] });
   assert.doesNotMatch(JSON.stringify(payload), /passage|question.*content|studentAnswer|correctAnswer|selectionMap|imageUrl/i);
   assert.doesNotMatch(catalogRoute, /reading_questions|reading_passages|reading_materials|reading_ctw_slots|reading_question_options/);
-  assert.equal((catalogRoute.match(/\.from\("reading_/g) || []).length, 2);
+  assert.equal((catalogRoute.match(/\.from\("reading_logical_items"\)/g) || []).length, 2);
+  assert.equal((catalogRoute.match(/\.from\("reading_attempts"\)/g) || []).length, 1);
   assert.match(catalogRoute, /Promise\.all/);
+});
+
+test("Reading local discovery searches the same numbered title shown on each card", () => {
+  assert.match(catalogUi, /const title = readingCatalogTitleParts\(item\)/);
+  assert.match(catalogUi, /title: `\$\{title\.prefix\} \$\{title\.suffix\}`/);
+});
+
+test("Reading catalog remains available while the search-text migration is rolling out", () => {
+  assert.match(catalogRoute, /message\.includes\("catalog_search_text"\)/);
+  assert.match(catalogRoute, /message\.includes\("does not exist"\)/);
 });
 
 test("Submit and draft/retake invalidate only the exact Reading catalog plus Reading History", () => {

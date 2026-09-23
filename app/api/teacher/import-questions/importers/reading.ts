@@ -47,6 +47,8 @@ import {
 import { buildReadingCanonicalContentUpdate } from "@/lib/reading/contentCorrection";
 import { buildRdlImportGroupDecision } from "@/lib/reading/rdlImportDecision";
 import { logImportError, serializeError } from "./common";
+import { resolveReadingAssetUrl } from "@/lib/reading/assets";
+import { parseRdlSelectionMap } from "@/lib/reading/rdlSelection";
 
 export function readingCsvImporter(type: ReadingCsvType) {
   return (context: ImporterContext) => importReadingCsv(context, type);
@@ -520,25 +522,39 @@ async function loadMaterials(
   if (ids.length === 0) return new Map<string, ReadingMaterial>();
   const { data, error } = await supabase
     .from("reading_materials")
-    .select("material_id,title,material_type,source,source_date,year_month,binding_status,image_asset_path,hitbox_data_path");
+    .select("material_id,title,material_type,source,source_date,year_month,binding_status,image_asset_path,hitbox_data_path,catalog_search_text");
   if (error) throw new Error(`read Reading materials: ${error.message}`);
-  return new Map((data ?? []).map((row) => {
+  const materials = await Promise.all((data ?? []).map(async (row) => {
     const materialType = row.material_type === null ? null : String(row.material_type);
     if (materialType !== null && !isRdlMaterialType(materialType)) {
       throw new Error(`read Reading materials: unsupported material_type for ${String(row.material_id)}`);
     }
+    const hitboxDataPath = row.hitbox_data_path === null ? null : String(row.hitbox_data_path);
+    let catalogSearchText = row.catalog_search_text === null ? "" : String(row.catalog_search_text).trim();
+    if (!catalogSearchText && row.binding_status === "bound" && hitboxDataPath) {
+      const response = await fetch(resolveReadingAssetUrl(hitboxDataPath), { cache: "force-cache" });
+      if (!response.ok) {
+        throw new Error(`read Reading material text for ${String(row.material_id)}: ${response.status}`);
+      }
+      const selectionMap = parseRdlSelectionMap(await response.json());
+      catalogSearchText = selectionMap.lines
+        .map((line) => line.words.map((word) => word.text).join(" "))
+        .join("\n");
+    }
     return [String(row.material_id), {
-    materialId: String(row.material_id),
-    title: row.title === null ? null : String(row.title),
-    materialType,
-    source: String(row.source),
-    sourceDate: row.source_date === null ? null : String(row.source_date),
-    yearMonth: String(row.year_month),
-    bindingStatus: row.binding_status as "bound" | "pending",
-    imageAssetPath: row.image_asset_path === null ? null : String(row.image_asset_path),
-    hitboxDataPath: row.hitbox_data_path === null ? null : String(row.hitbox_data_path)
+      materialId: String(row.material_id),
+      title: row.title === null ? null : String(row.title),
+      materialType,
+      source: String(row.source),
+      sourceDate: row.source_date === null ? null : String(row.source_date),
+      yearMonth: String(row.year_month),
+      bindingStatus: row.binding_status as "bound" | "pending",
+      imageAssetPath: row.image_asset_path === null ? null : String(row.image_asset_path),
+      hitboxDataPath,
+      catalogSearchText
     } satisfies ReadingMaterial] as const;
   }));
+  return new Map(materials);
 }
 
 const sourceLabelCollator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });

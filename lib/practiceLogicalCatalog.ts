@@ -24,8 +24,12 @@ export type LogicalPracticeListItem = {
   task_type: PracticeTaskType;
   display_number: string;
   display_title: string | null;
+  catalog_category: string | null;
+  search_text: string;
   first_seen_date: string;
+  latest_seen_date: string;
   occurrence_dates: string[];
+  occurrence_count: number;
   canonical: {
     source_id: string;
     source_set_id: string | null;
@@ -67,6 +71,7 @@ export type LogicalPracticeStudentAttempts = {
 };
 
 export type PracticeItemOccurrenceRow = {
+  occurrence_id?: string;
   source_id: string;
   occurred_on: string;
 };
@@ -90,31 +95,40 @@ export function buildLogicalPracticeCatalog(input: {
   }
 
   const occurrenceDatesByItem = new Map<string, Set<string>>();
+  const occurrenceCountByItem = new Map<string, number>();
   for (const occurrence of input.occurrences) {
     const itemId = input.universe.resolveSourceToPracticeItemId(occurrence.source_id);
     if (!itemId) continue;
     const dates = occurrenceDatesByItem.get(itemId) ?? new Set<string>();
     dates.add(occurrence.occurred_on);
     occurrenceDatesByItem.set(itemId, dates);
+    occurrenceCountByItem.set(itemId, (occurrenceCountByItem.get(itemId) ?? 0) + 1);
   }
 
   const allItems = input.universe.publicItems
     .filter((item) => item.taskType === input.taskType)
-    .map((item): LogicalPracticeListItem => ({
-      item_id: item.itemId,
-      task_type: item.taskType,
-      display_number: item.displayNumber,
-      display_title: item.displayTitle,
-      first_seen_date: item.firstSeenDate,
-      occurrence_dates: Array.from(occurrenceDatesByItem.get(item.itemId) ?? [])
-        .sort((left, right) => right.localeCompare(left)),
-      canonical: {
-        source_id: item.sourceId,
-        source_set_id: item.sourceSetId,
-        source_question_id: item.sourceQuestionId
-      },
-      question_count: item.taskType === "build_sentence" ? 10 : 1
-    }))
+    .map((item): LogicalPracticeListItem => {
+      const occurrenceDates = Array.from(occurrenceDatesByItem.get(item.itemId) ?? [])
+        .sort((left, right) => right.localeCompare(left));
+      return {
+        item_id: item.itemId,
+        task_type: item.taskType,
+        display_number: item.displayNumber,
+        display_title: item.displayTitle,
+        catalog_category: item.catalogCategory,
+        search_text: item.catalogSearchText,
+        first_seen_date: item.firstSeenDate,
+        latest_seen_date: occurrenceDates[0] ?? item.firstSeenDate,
+        occurrence_dates: occurrenceDates,
+        occurrence_count: occurrenceCountByItem.get(item.itemId) ?? 0,
+        canonical: {
+          source_id: item.sourceId,
+          source_set_id: item.sourceSetId,
+          source_question_id: item.sourceQuestionId
+        },
+        question_count: item.taskType === "build_sentence" ? 10 : 1
+      };
+    })
     .sort(compareLogicalPracticeItems);
 
   const totalItems = allItems.length;
@@ -229,7 +243,7 @@ async function loadLogicalPracticeCatalog(input: {
       readAllSupabaseRows<PracticeItemOccurrenceRow>((from, to) =>
         input.supabase
           .from("practice_item_occurrences")
-          .select("source_id,occurred_on")
+          .select("occurrence_id,source_id,occurred_on")
           .order("source_id", { ascending: true })
           .order("occurred_on", { ascending: false })
           .range(from, to) as unknown as PromiseLike<{

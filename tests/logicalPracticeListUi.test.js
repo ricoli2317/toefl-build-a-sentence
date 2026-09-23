@@ -45,7 +45,7 @@ test("occurrence date converts 2026-07-14 to 260714", () => {
 
 test("multiple occurrence dates use a Chinese enumeration comma", () => {
   assert.match(catalog, /\.join\("、"\)/);
-  assert.match(catalog, /metadata: formatOccurrenceDates\(item\.occurrence_dates\)/);
+  assert.match(catalog, /metadata: `重复 \$\{item\.occurrence_count\} 次 · \$\{formatOccurrenceDates\(item\.occurrence_dates\)\}`/);
 });
 
 test("canonical roots contain no month grouping UI", () => {
@@ -100,7 +100,7 @@ test("pagination slices the cached full catalog locally with no page-size select
   const serverCatalog = read("lib/practiceLogicalCatalog.ts");
   assert.match(serverCatalog, /LOGICAL_PRACTICE_PAGE_SIZE = 10/);
   assert.match(serverCatalog, /paginate: false/);
-  assert.match(catalog, /catalog\.items\.slice\(from, from \+ catalog\.pagination\.page_size\)/);
+  assert.match(catalog, /filteredItems\.slice\(from, from \+ catalog\.pagination\.page_size\)/);
   assert.match(catalog, /onClick=\{\(\) => onPageChange\(page - 1\)\}/);
   assert.match(catalog, /onClick=\{\(\) => onPageChange\(page \+ 1\)\}/);
   assert.match(catalog, /第 \{page\}\/\{visibleTotalPages\} 页/);

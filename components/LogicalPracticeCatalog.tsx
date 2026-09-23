@@ -3,6 +3,11 @@
 import { ChevronLeft, ChevronRight, Eye, FilePenLine, Play, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PracticeSetAction, PracticeSetCatalogList } from "@/components/shared/PracticeCatalog";
+import {
+  CatalogDiscoveryControls,
+  CatalogFilteredEmptyState,
+  type CatalogDiscoveryControlValue
+} from "@/components/shared/CatalogDiscoveryControls";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   studentLogicalCatalogCacheKey,
@@ -29,6 +34,10 @@ import {
   measureStudentRequest,
   useStudentPagePerformance
 } from "@/lib/studentPerformance.client";
+import {
+  catalogMonths,
+  filterAndSortCatalogItems
+} from "@/lib/catalogDiscovery";
 
 const TASK_LABELS: Record<PracticeTaskType, string> = {
   build_sentence: "Build a Sentence",
@@ -48,11 +57,29 @@ export function LogicalPracticeCatalog({
   const cache = useStudentDataCache();
   const cacheKey = studentLogicalCatalogCacheKey(taskType);
   const [currentPage, setCurrentPage] = useState(page);
+  const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultControls);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const state = useStudentCachedData<LogicalPracticeCatalogWithStudentState>(
     cacheKey,
     (session) => loadLogicalPracticeCatalog(taskType, session)
   );
   useEffect(() => setCurrentPage(page), [page, taskType]);
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedQuery(controls.query), 200);
+    return () => window.clearTimeout(timeout);
+  }, [controls.query]);
+  useEffect(() => setCurrentPage(1), [
+    controls.query,
+    controls.status,
+    controls.months,
+    controls.category,
+    controls.sortKey,
+    controls.sortDirection
+  ]);
+  useEffect(() => {
+    setControls(defaultControls());
+    setDebouncedQuery("");
+  }, [taskType]);
   useStudentPagePerformance({
     errors: [state.error],
     loading: state.loading,
@@ -78,6 +105,9 @@ export function LogicalPracticeCatalog({
       ) : (
         <CatalogContent
           catalog={state.data}
+          controls={controls}
+          debouncedQuery={debouncedQuery}
+          onControlsChange={setControls}
           onPageChange={setCurrentPage}
           page={currentPage}
           taskType={taskType}
@@ -113,25 +143,61 @@ async function loadLogicalPracticeCatalog(
 
 function CatalogContent({
   catalog,
+  controls,
+  debouncedQuery,
+  onControlsChange,
   onPageChange,
   page,
   taskType
 }: {
   catalog: LogicalPracticeCatalogWithStudentState;
+  controls: CatalogDiscoveryControlValue;
+  debouncedQuery: string;
+  onControlsChange: (value: CatalogDiscoveryControlValue) => void;
   onPageChange: (page: number) => void;
   page: number;
   taskType: PracticeTaskType;
 }) {
-  const totalPages = catalog.pagination.total_pages;
+  const discoveryItems = catalog.items.map((item, defaultIndex) => ({
+    ...item,
+    id: item.item_id,
+    title: logicalPracticeItemTitle(item),
+    searchText: item.search_text,
+    status: item.student_state.status,
+    occurrenceDates: item.occurrence_dates,
+    occurrenceCount: item.occurrence_count,
+    firstSeenDate: item.first_seen_date,
+    latestSeenDate: item.latest_seen_date,
+    category: item.catalog_category,
+    defaultIndex
+  }));
+  const filteredItems = filterAndSortCatalogItems(discoveryItems, {
+    ...controls,
+    query: debouncedQuery
+  });
+  const totalPages = Math.ceil(filteredItems.length / catalog.pagination.page_size);
   const visibleTotalPages = Math.max(totalPages, 1);
   const visiblePage = Math.min(Math.max(page, 1), visibleTotalPages);
   const from = (visiblePage - 1) * catalog.pagination.page_size;
-  const items = catalog.items.slice(from, from + catalog.pagination.page_size);
+  const items = filteredItems.slice(from, from + catalog.pagination.page_size);
+  const categories = taskType === "build_sentence" ? null : Array.from(new Set(
+    catalog.items.map((item) => item.catalog_category).filter((value): value is string => Boolean(value))
+  )).sort((left, right) => left.localeCompare(right, "zh-CN"));
+  const clearControls = () => onControlsChange(defaultControls());
 
   return (
     <>
+      <CatalogDiscoveryControls
+        categories={categories}
+        months={catalogMonths(discoveryItems)}
+        onChange={onControlsChange}
+        onClear={clearControls}
+        value={controls}
+      />
       <PracticeSetCatalogList
-        emptyState={<StudentEmptyState text={emptyStateText(taskType)} />}
+        emptyState={catalog.items.length
+          ? <CatalogFilteredEmptyState onClear={clearControls} />
+          : <StudentEmptyState text={emptyStateText(taskType)} />}
         renderActions={(catalogSet) => {
           const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
           return <LogicalItemActions item={item} taskType={taskType} />;
@@ -142,7 +208,7 @@ function CatalogContent({
         }}
         sets={items.map((item) => ({
           icon: STUDENT_PRACTICE_ICONS[item.task_type],
-          metadata: formatOccurrenceDates(item.occurrence_dates),
+          metadata: `重复 ${item.occurrence_count} 次 · ${formatOccurrenceDates(item.occurrence_dates)}`,
           questionCount: item.question_count,
           setId: item.item_id,
           setTitle: logicalPracticeItemTitle(item),
@@ -153,11 +219,22 @@ function CatalogContent({
       <CatalogPagination
         onPageChange={onPageChange}
         page={visiblePage}
-        totalItems={catalog.pagination.total_items}
+        totalItems={filteredItems.length}
         totalPages={totalPages}
       />
     </>
   );
+}
+
+function defaultControls(): CatalogDiscoveryControlValue {
+  return {
+    query: "",
+    status: "all",
+    months: [],
+    category: "",
+    sortKey: "default",
+    sortDirection: "desc"
+  };
 }
 
 function LogicalItemActions({

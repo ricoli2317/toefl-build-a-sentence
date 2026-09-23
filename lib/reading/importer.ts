@@ -23,6 +23,7 @@ import {
 } from "./contentReconciliation.ts";
 import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 import { assertCanonicalCtwTitle, assertIncomingCtwTitle } from "./ctwTitles.ts";
+import { buildReadingCatalogSearchText } from "./catalogSearchText.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -1108,6 +1109,8 @@ function buildReadingImportRowsUnchecked(
     dedup_fingerprint: packageData.item.dedupFingerprint,
     question_count: packageData.item.questionCount,
     scored_item_count: packageData.item.scoredItemCount,
+    catalog_category: packageData.item.catalogCategory ?? null,
+    catalog_search_text: buildReadingCatalogSearchText(packageData),
     is_active: packageData.item.isActive,
     ...(createdBy ? { created_by: createdBy } : {})
   };
@@ -1166,7 +1169,8 @@ function buildReadingImportRowsUnchecked(
       year_month: material.yearMonth,
       binding_status: material.bindingStatus,
       image_asset_path: material.imageAssetPath,
-      hitbox_data_path: material.hitboxDataPath
+      hitbox_data_path: material.hitboxDataPath,
+      catalog_search_text: material.catalogSearchText ?? ""
     })),
     reading_passages: packageData.passages.map((passage) => ({
       passage_id: passage.passageId,

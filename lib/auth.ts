@@ -9,7 +9,12 @@ import {
   roleCanAccess
 } from "@/lib/accountPermissions";
 
-export { defaultRouteForRole, isUserRole, roleCanAccess } from "@/lib/accountPermissions";
+export {
+  canUseStudentExperience,
+  defaultRouteForRole,
+  isUserRole,
+  roleCanAccess
+} from "@/lib/accountPermissions";
 
 export type AuthenticatedAccount = {
   error: string | null;

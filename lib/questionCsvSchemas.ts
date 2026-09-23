@@ -36,6 +36,7 @@ export const EMAIL_HEADERS = [
   "closing_instruction",
   "recipient",
   "subject",
+  "catalog_category",
   LOGICAL_WRITING_TITLE_HEADER
 ] as const;
 
@@ -51,6 +52,7 @@ export const ACADEMIC_DISCUSSION_HEADERS = [
   "student_1_response",
   "student_2_name",
   "student_2_response",
+  "catalog_category",
   LOGICAL_WRITING_TITLE_HEADER
 ] as const;
 

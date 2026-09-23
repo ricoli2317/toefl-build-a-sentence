@@ -12,7 +12,9 @@ export type ReadingCatalogItemRow = {
   first_seen_source_order: number;
   question_count: number;
   scored_item_count: number;
-  reading_source_occurrences?: Array<{ occurrence_date: string }>;
+  catalog_category?: string | null;
+  catalog_search_text?: string | null;
+  reading_source_occurrences?: Array<{ occurrence_id?: string; occurrence_date: string }>;
 };
 
 export type ReadingCatalogIdentityRow = Pick<
@@ -41,7 +43,11 @@ export type ReadingCatalogItem = {
   displayNumber: string;
   title: string;
   firstSeenDate: string;
+  latestSeenDate: string;
   occurrenceDates: string[];
+  occurrenceCount: number;
+  category: string;
+  searchText: string;
   questionCount: number;
   scoringPointCount: number;
   status: ReadingCatalogStatus;
@@ -133,6 +139,7 @@ export function buildReadingCatalogPayload(input: {
         )
       );
       const totalPoints = submitted ? Math.max(0, submitted.total_points) : 0;
+      const occurrenceDates = readingOccurrenceDates(item);
       const title = item.module === "ctw"
         ? assertCanonicalCtwTitle(item.title ?? "", `CTW catalog title for ${item.logical_item_id}`)
         : item.module === "rdl"
@@ -144,7 +151,11 @@ export function buildReadingCatalogPayload(input: {
         displayNumber: rankByItemId.get(item.logical_item_id)!,
         title,
         firstSeenDate: item.first_seen_date,
-        occurrenceDates: readingOccurrenceDates(item),
+        latestSeenDate: occurrenceDates[0] ?? item.first_seen_date,
+        occurrenceDates,
+        occurrenceCount: item.reading_source_occurrences?.length ?? 0,
+        category: item.catalog_category?.trim() ?? "",
+        searchText: item.catalog_search_text ?? "",
         questionCount: item.question_count,
         scoringPointCount: item.scored_item_count,
         status: draft ? "in_progress" : submitted ? "completed" : "unstarted",

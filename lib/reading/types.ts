@@ -23,6 +23,7 @@ export type ReadingLogicalItem = {
   questionCount: number;
   scoredItemCount: number;
   isActive: boolean;
+  catalogCategory?: string | null;
 };
 
 export type ReadingQuestionSource = {
@@ -63,6 +64,7 @@ export type ReadingMaterial = {
   bindingStatus: "bound" | "pending";
   imageAssetPath: string | null;
   hitboxDataPath: string | null;
+  catalogSearchText?: string | null;
 };
 
 export type ReadingPassageSentence = {
@@ -211,6 +213,7 @@ export type ReadingSourceOccurrenceCandidate = {
   sourceOccurrenceId: string;
   module: ReadingModule;
   title: string | null;
+  catalogCategory?: string | null;
   source: ReadingSourceDescriptor;
   materials: ReadingMaterial[];
   passages: Array<Omit<ReadingPassage, "logicalItemId">>;

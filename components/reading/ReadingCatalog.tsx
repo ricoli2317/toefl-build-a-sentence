@@ -29,6 +29,12 @@ import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { formatOccurrenceDates } from "@/components/LogicalPracticeCatalog";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
+import {
+  CatalogDiscoveryControls,
+  CatalogFilteredEmptyState,
+  type CatalogDiscoveryControlValue
+} from "@/components/shared/CatalogDiscoveryControls";
+import { catalogMonths, filterAndSortCatalogItems } from "@/lib/catalogDiscovery";
 
 const PAGE_SIZE = 10;
 
@@ -36,11 +42,29 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   const cache = useStudentDataCache();
   const cacheKey = studentReadingCatalogCacheKey(taskType);
   const [page, setPage] = useState(1);
+  const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultControls);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const state = useStudentCachedData<ReadingCatalogPayload>(
     cacheKey,
     (session) => loadReadingCatalog(taskType, session)
   );
-  useEffect(() => setPage(1), [taskType]);
+  useEffect(() => {
+    setPage(1);
+    setControls(defaultControls());
+    setDebouncedQuery("");
+  }, [taskType]);
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedQuery(controls.query), 200);
+    return () => window.clearTimeout(timeout);
+  }, [controls.query]);
+  useEffect(() => setPage(1), [
+    controls.query,
+    controls.status,
+    controls.months,
+    controls.category,
+    controls.sortKey,
+    controls.sortDirection
+  ]);
 
   if (state.loading) return <StudentLoadingState text="正在加载阅读练习..." />;
   if (state.error || !state.data) {
@@ -54,9 +78,32 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     );
   }
 
-  const totalPages = Math.ceil(state.data.items.length / PAGE_SIZE);
+  const discoveryItems = state.data.items.map((item, defaultIndex) => {
+    const title = readingCatalogTitleParts(item);
+    return {
+      ...item,
+      id: item.itemId,
+      title: `${title.prefix} ${title.suffix}`,
+      searchText: item.searchText,
+      occurrenceDates: item.occurrenceDates,
+      occurrenceCount: item.occurrenceCount,
+      firstSeenDate: item.firstSeenDate,
+      latestSeenDate: item.latestSeenDate,
+      category: item.category,
+      defaultIndex
+    };
+  });
+  const filteredItems = filterAndSortCatalogItems(discoveryItems, {
+    ...controls,
+    query: debouncedQuery
+  });
+  const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE);
   const visiblePage = Math.min(page, Math.max(totalPages, 1));
-  const items = state.data.items.slice((visiblePage - 1) * PAGE_SIZE, visiblePage * PAGE_SIZE);
+  const items = filteredItems.slice((visiblePage - 1) * PAGE_SIZE, visiblePage * PAGE_SIZE);
+  const categories = Array.from(new Set(
+    state.data.items.map((item) => item.category).filter(Boolean)
+  )).sort((left, right) => left.localeCompare(right, "zh-CN"));
+  const clearControls = () => setControls(defaultControls());
   return (
     <div className="grid gap-5">
       <StudentNavigation
@@ -66,8 +113,17 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
           { label: state.data.taskName }
         ]}
       />
+      <CatalogDiscoveryControls
+        categories={categories}
+        months={catalogMonths(discoveryItems)}
+        onChange={setControls}
+        onClear={clearControls}
+        value={controls}
+      />
       <PracticeSetCatalogList
-        emptyState={<StudentEmptyState text={`暂无可练习的 ${READING_PRODUCT_NAMES[taskType]} 题目。`} />}
+        emptyState={state.data.items.length
+          ? <CatalogFilteredEmptyState onClear={clearControls} />
+          : <StudentEmptyState text={`暂无可练习的 ${READING_PRODUCT_NAMES[taskType]} 题目。`} />}
         renderActions={(set) => <ReadingCatalogActions item={items.find((item) => item.itemId === set.setId)!} />}
         renderStatus={(set) => <ReadingCatalogStatusBadge status={items.find((item) => item.itemId === set.setId)!.status} />}
         sets={items.map((item) => {
@@ -86,7 +142,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
       <ReadingCatalogPagination
         onChange={setPage}
         page={visiblePage}
-        totalItems={state.data.items.length}
+        totalItems={filteredItems.length}
         totalPages={totalPages}
       />
     </div>
@@ -124,7 +180,18 @@ export function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogIt
 }
 
 function ReadingCatalogMetadata({ item }: { item: ReadingCatalogItem }) {
-  return <span>{formatOccurrenceDates(item.occurrenceDates)}</span>;
+  return <span>重复 {item.occurrenceCount} 次 · {formatOccurrenceDates(item.occurrenceDates)}</span>;
+}
+
+function defaultControls(): CatalogDiscoveryControlValue {
+  return {
+    query: "",
+    status: "all",
+    months: [],
+    category: "",
+    sortKey: "default",
+    sortDirection: "desc"
+  };
 }
 
 export function ReadingCatalogPagination({

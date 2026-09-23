@@ -26,10 +26,10 @@ export async function GET(request: Request) {
   // catalog read the finalized inventory without mutating its legacy release flag.
   // Attempt state remains explicitly scoped to the authenticated student.
   const db = createServiceSupabase();
-  const [itemResult, attemptResult] = await Promise.all([
+  let [itemResult, attemptResult] = await Promise.all([
     readAllSupabaseRows<ReadingCatalogItemRow>((from, to) =>
       db.from("reading_logical_items")
-        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,reading_source_occurrences(occurrence_date)")
+        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,catalog_search_text,reading_source_occurrences(occurrence_id,occurrence_date)")
         .eq("module", taskType)
         .range(from, to)
     ),
@@ -41,6 +41,14 @@ export async function GET(request: Request) {
         .range(from, to)
     )
   ]);
+  if (itemResult.error?.message.includes("catalog_search_text") && itemResult.error.message.includes("does not exist")) {
+    itemResult = await readAllSupabaseRows<ReadingCatalogItemRow>((from, to) =>
+      db.from("reading_logical_items")
+        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,reading_source_occurrences(occurrence_id,occurrence_date)")
+        .eq("module", taskType)
+        .range(from, to)
+    );
+  }
   if (itemResult.error || attemptResult.error) {
     console.error("Reading catalog load failed", {
       itemError: itemResult.error?.message,

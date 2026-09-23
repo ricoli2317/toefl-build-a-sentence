@@ -141,11 +141,15 @@ function buildCandidate(
   const validatedSourceModule: "m1" | "m2" = sourceModule;
   const sourceOrder = positiveInteger(required(first, "source_order"), "source_order");
   const sourceGroupId = required(first, "source_group_id");
+  const catalogCategory = optional(first, "catalog_category") || null;
   for (const row of rows.slice(1)) {
     for (const field of ["source_label", "occurrence_date", "year_month", "source_module", "source_order", "source_group_id"]) {
       if (required(row, field) !== required(first, field)) {
         throw new Error(`${field} conflicts within source group ${sourceGroupId}`);
       }
+    }
+    if ((optional(row, "catalog_category") || null) !== catalogCategory) {
+      throw new Error(`catalog_category conflicts within source group ${sourceGroupId}`);
     }
   }
   const occurrenceId = readingCsvOccurrenceId({ type, sourceLabel, sourceModule, sourceOrder, sourceGroupId });
@@ -329,6 +333,7 @@ function buildCandidate(
       sourceOccurrenceId: occurrenceId,
       module,
       title,
+      catalogCategory,
       source: {
         sourceKind: "reading_csv",
         sourceLabel,

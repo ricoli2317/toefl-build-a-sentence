@@ -2,10 +2,17 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { canAssignRecipient } from "../lib/accountAccess.ts";
-import { defaultRouteForRole, roleCanAccess } from "../lib/accountPermissions.ts";
+import {
+  canUseStudentExperience,
+  defaultRouteForRole,
+  roleCanAccess
+} from "../lib/accountPermissions.ts";
 import { createMockSupabase } from "./fixtures/mockSupabase.js";
 
 test("role capabilities allow Admin and Teacher in both areas without widening Student", () => {
+  assert.equal(canUseStudentExperience("admin"), true);
+  assert.equal(canUseStudentExperience("teacher"), true);
+  assert.equal(canUseStudentExperience("student"), true);
   assert.equal(roleCanAccess("admin", "teacher"), true);
   assert.equal(roleCanAccess("admin", "student"), true);
   assert.equal(roleCanAccess("teacher", "teacher"), true);

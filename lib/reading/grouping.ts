@@ -140,6 +140,7 @@ function buildLogicalPackage(
       logicalItemId,
       module: canonical.module,
       title: canonical.title,
+      catalogCategory: canonical.catalogCategory ?? null,
       firstSeenDate: canonical.source.occurrenceDate,
       firstSeenSourceLabel: canonical.source.sourceLabel,
       firstSeenSourceOrder: canonical.source.sourceOrder,

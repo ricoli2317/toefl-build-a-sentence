@@ -4,7 +4,8 @@ export const READING_SOURCE_HEADERS = [
   "year_month",
   "source_module",
   "source_order",
-  "source_group_id"
+  "source_group_id",
+  "catalog_category"
 ] as const;
 
 export const COMPLETE_THE_WORDS_HEADERS = [

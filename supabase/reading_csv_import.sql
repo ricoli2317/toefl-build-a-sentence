@@ -127,13 +127,13 @@ begin
 
   insert into public.reading_materials (
     material_id, title, material_type, source, source_date, year_month, binding_status,
-    image_asset_path, hitbox_data_path
+    image_asset_path, hitbox_data_path, catalog_search_text
   )
   select material_id, title, material_type, source, source_date, year_month, binding_status,
-    image_asset_path, hitbox_data_path
+    image_asset_path, hitbox_data_path, catalog_search_text
   from jsonb_to_recordset(coalesce(p_rows->'reading_materials', '[]'::jsonb)) as x(
     material_id text, title text, material_type text, source text, source_date date, year_month text,
-    binding_status text, image_asset_path text, hitbox_data_path text
+    binding_status text, image_asset_path text, hitbox_data_path text, catalog_search_text text
   )
   on conflict (material_id) do update set
     -- Display-title canonicalization is safe and does not alter material
@@ -143,20 +143,27 @@ begin
     material_type = case
       when v_replace_canonical_content then excluded.material_type
       else reading_materials.material_type
+    end,
+    catalog_search_text = case
+      when nullif(btrim(excluded.catalog_search_text), '') is not null then excluded.catalog_search_text
+      else reading_materials.catalog_search_text
     end;
 
   insert into public.reading_logical_items (
     logical_item_id, module, title, first_seen_date, first_seen_source_label,
     first_seen_source_order, dedup_fingerprint, question_count, scored_item_count,
+    catalog_category, catalog_search_text,
     is_active, created_by
   )
   select logical_item_id, module, title, first_seen_date, first_seen_source_label,
     first_seen_source_order, dedup_fingerprint, question_count, scored_item_count,
+    catalog_category, catalog_search_text,
     is_active, coalesce(created_by, p_created_by)
   from jsonb_to_recordset(p_rows->'reading_logical_items') as x(
     logical_item_id text, module text, title text, first_seen_date date,
     first_seen_source_label text, first_seen_source_order integer,
     dedup_fingerprint text, question_count integer, scored_item_count integer,
+    catalog_category text, catalog_search_text text,
     is_active boolean, created_by uuid
   )
   on conflict (logical_item_id) do update set
@@ -171,7 +178,15 @@ begin
     first_seen_source_order = excluded.first_seen_source_order,
     dedup_fingerprint = excluded.dedup_fingerprint,
     question_count = excluded.question_count,
-    scored_item_count = excluded.scored_item_count;
+    scored_item_count = excluded.scored_item_count,
+    catalog_category = coalesce(
+      nullif(btrim(excluded.catalog_category), ''),
+      reading_logical_items.catalog_category
+    ),
+    catalog_search_text = case
+      when nullif(btrim(excluded.catalog_search_text), '') is not null then excluded.catalog_search_text
+      else reading_logical_items.catalog_search_text
+    end;
 
   insert into public.reading_source_occurrences (
     occurrence_id, logical_item_id, source_kind, source_label, occurrence_date,
