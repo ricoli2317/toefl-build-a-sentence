@@ -9,6 +9,7 @@ export const READING_SOURCE_HEADERS = [
 
 export const COMPLETE_THE_WORDS_HEADERS = [
   ...READING_SOURCE_HEADERS,
+  "title",
   "source_question_start",
   "source_question_end",
   "question_stem",

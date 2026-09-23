@@ -160,7 +160,10 @@ begin
     is_active boolean, created_by uuid
   )
   on conflict (logical_item_id) do update set
-    title = excluded.title,
+    title = case
+      when v_module = 'ctw' and v_logical_item_existed then reading_logical_items.title
+      else excluded.title
+    end,
     -- The service supplies the earlier tuple using the same numeric source-label
     -- collation as dynamic display ranking (for example, 5.3A sorts before 5.10A).
     first_seen_date = excluded.first_seen_date,

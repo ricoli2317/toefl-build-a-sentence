@@ -1,6 +1,7 @@
 import type { ReadingModule } from "./types.ts";
 import { READING_PRODUCT_NAMES } from "./product.ts";
 import { assertCanonicalRdlTitle } from "./rdlTitles.ts";
+import { assertCanonicalCtwTitle } from "./ctwTitles.ts";
 
 export type ReadingCatalogItemRow = {
   logical_item_id: string;
@@ -60,6 +61,15 @@ export type ReadingCatalogPayload = {
   taskName: string;
   items: ReadingCatalogItem[];
 };
+
+export function readingCatalogTitleParts(
+  item: Pick<ReadingCatalogItem, "taskType" | "displayNumber" | "title">
+) {
+  return {
+    prefix: `${item.taskType === "ctw" ? "套题" : "题目"}${item.displayNumber}`,
+    suffix: item.title
+  };
+}
 
 const naturalSourceLabel = new Intl.Collator("en", {
   numeric: true,
@@ -123,9 +133,11 @@ export function buildReadingCatalogPayload(input: {
         )
       );
       const totalPoints = submitted ? Math.max(0, submitted.total_points) : 0;
-      const title = item.module === "rdl"
-        ? assertCanonicalRdlTitle(item.title ?? "", `RDL catalog title for ${item.logical_item_id}`)
-        : item.title?.trim() || READING_PRODUCT_NAMES[item.module];
+      const title = item.module === "ctw"
+        ? assertCanonicalCtwTitle(item.title ?? "", `CTW catalog title for ${item.logical_item_id}`)
+        : item.module === "rdl"
+          ? assertCanonicalRdlTitle(item.title ?? "", `RDL catalog title for ${item.logical_item_id}`)
+          : item.title?.trim() || READING_PRODUCT_NAMES[item.module];
       return {
         itemId: item.logical_item_id,
         taskType: item.module,

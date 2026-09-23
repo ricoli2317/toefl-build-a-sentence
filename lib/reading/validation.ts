@@ -44,7 +44,7 @@ export function validateReadingImportPackage(input: unknown): ReadingImportPacka
   const context = { logicalItemId };
   if (!isReadingModule(item.module)) fail("unsupported Reading module", "$.item.module", context);
   if (item.module === "ctw") {
-    if (item.title !== null) fail("CTW logical title must be null", "$.item.title", context);
+    nullableString(item.title, "$.item.title", context);
   } else {
     nonEmptyString(item.title, "$.item.title", context);
   }

@@ -63,10 +63,12 @@ function packagesFromRdlFixture(file, materialCatalog) {
 }
 
 function historicalPackage(module, logicalItemId) {
-  return JSON.parse(fs.readFileSync(path.join(
+  const packageData = JSON.parse(fs.readFileSync(path.join(
     __dirname,
     `../data/reading/import-packages/${module}/${logicalItemId}.json`
   ), "utf8"));
+  if (module === "ctw") packageData.item.title = "Historical CTW Topic";
+  return packageData;
 }
 
 function incomingVariant(historical, mutate) {

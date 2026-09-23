@@ -139,7 +139,7 @@ function buildLogicalPackage(
     item: {
       logicalItemId,
       module: canonical.module,
-      title: canonical.module === "ctw" ? null : canonical.title,
+      title: canonical.title,
       firstSeenDate: canonical.source.occurrenceDate,
       firstSeenSourceLabel: canonical.source.sourceLabel,
       firstSeenSourceOrder: canonical.source.sourceOrder,

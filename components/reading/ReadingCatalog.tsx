@@ -18,9 +18,10 @@ import {
   StudentLoadingState,
   StudentNavigation
 } from "@/components/student/StudentUI";
-import type {
-  ReadingCatalogItem,
-  ReadingCatalogPayload
+import {
+  readingCatalogTitleParts,
+  type ReadingCatalogItem,
+  type ReadingCatalogPayload
 } from "@/lib/reading/catalog";
 import type { ReadingModule } from "@/lib/reading/types";
 import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
@@ -69,15 +70,18 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
         emptyState={<StudentEmptyState text={`暂无可练习的 ${READING_PRODUCT_NAMES[taskType]} 题目。`} />}
         renderActions={(set) => <ReadingCatalogActions item={items.find((item) => item.itemId === set.setId)!} />}
         renderStatus={(set) => <ReadingCatalogStatusBadge status={items.find((item) => item.itemId === set.setId)!.status} />}
-        sets={items.map((item) => ({
-          icon: STUDENT_PRACTICE_ICONS[item.taskType],
-          setId: item.itemId,
-          setTitle: item.title,
-          titlePrefix: `${item.taskType === "ctw" ? "套题" : "题目"}${item.displayNumber}`,
-          titleSuffix: item.taskType === "ctw" ? null : item.title,
-          questionCount: item.taskType === "ctw" ? item.scoringPointCount : item.questionCount,
-          metadata: <ReadingCatalogMetadata item={item} />
-        }))}
+        sets={items.map((item) => {
+          const title = readingCatalogTitleParts(item);
+          return {
+            icon: STUDENT_PRACTICE_ICONS[item.taskType],
+            setId: item.itemId,
+            setTitle: item.title,
+            titlePrefix: title.prefix,
+            titleSuffix: title.suffix,
+            questionCount: item.taskType === "ctw" ? item.scoringPointCount : item.questionCount,
+            metadata: <ReadingCatalogMetadata item={item} />
+          };
+        })}
       />
       <ReadingCatalogPagination
         onChange={setPage}

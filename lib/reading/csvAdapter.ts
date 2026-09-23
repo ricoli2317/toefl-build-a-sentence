@@ -153,6 +153,7 @@ function buildCandidate(
 
   if (type === "complete_the_words") {
     if (rows.length !== 1) throw new Error("Complete the Words requires exactly one row per full item");
+    const title = optional(first, "title") || null;
     const start = positiveInteger(required(first, "source_question_start"), "source_question_start");
     const end = positiveInteger(required(first, "source_question_end"), "source_question_end");
     const question: ReadingSourceQuestion = {
@@ -168,7 +169,7 @@ function buildCandidate(
         slots: parseJson<CtwSlot[]>(required(first, "slots_json"), "slots_json")
       }
     };
-    return baseCandidate("ctw", null, [], [], [question], start, end);
+    return baseCandidate("ctw", title, [], [], [question], start, end);
   }
 
   const orderedRows = [...rows].sort((left, right) =>

@@ -366,6 +366,7 @@ function existingLogicalItemFromPackage(packageData: ReadingImportPackage): Exis
   return {
     logicalItemId: packageData.item.logicalItemId,
     dedupFingerprint: packageData.item.dedupFingerprint,
+    title: packageData.item.title,
     date: packageData.item.firstSeenDate,
     sourceLabel: packageData.item.firstSeenSourceLabel,
     sourceOrder: packageData.item.firstSeenSourceOrder

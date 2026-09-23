@@ -22,6 +22,7 @@ import {
   type ReadingContentConflictItem
 } from "./contentReconciliation.ts";
 import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
+import { assertCanonicalCtwTitle, assertIncomingCtwTitle } from "./ctwTitles.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -51,6 +52,7 @@ export type PreparedReadingAtomicImport = {
 export type ExistingReadingLogicalItem = {
   logicalItemId: string;
   dedupFingerprint: string;
+  title: string | null;
   date: string;
   sourceLabel: string;
   sourceOrder: number;
@@ -236,11 +238,23 @@ export async function prepareReadingPackagesForImport(
         packageData = await remapCtwPackageToExistingCanonical(
           supabase,
           incomingPackage,
-          existingItem.logicalItemId
+          existingItem
         );
       } else if (existingItem.logicalItemId !== incomingPackage.item.logicalItemId) {
         throw new Error(`Historical Reading canonical content is missing for ${existingItem.logicalItemId}`);
       }
+    }
+    if (existingItem && incomingPackage.item.module === "ctw") {
+      packageData = {
+        ...packageData,
+        item: {
+          ...packageData.item,
+          title: assertCanonicalCtwTitle(
+            existingItem.title ?? "",
+            `existing CTW title for ${existingItem.logicalItemId}`
+          )
+        }
+      };
     }
     if (!comparedDatabaseCanonicalContent && incomingPackage.item.module === "rdl") {
       contentReconciliations = buildRegisteredMaterialContentReconciliations(
@@ -506,7 +520,7 @@ async function loadExistingReadingLogicalItems(
   const logicalIds = Array.from(packageById.keys());
   const { data: idRows, error: idError } = await supabase
     .from("reading_logical_items")
-    .select("logical_item_id,module,dedup_fingerprint,first_seen_date,first_seen_source_label,first_seen_source_order")
+    .select("logical_item_id,module,title,dedup_fingerprint,first_seen_date,first_seen_source_label,first_seen_source_order")
     .in("logical_item_id", logicalIds);
   if (idError) throw new Error(`read existing reading_logical_items: ${idError.message}`);
 
@@ -533,7 +547,7 @@ async function loadExistingReadingLogicalItems(
   );
   const { data: fingerprintRows, error: fingerprintError } = await supabase
     .from("reading_logical_items")
-    .select("logical_item_id,module,dedup_fingerprint,first_seen_date,first_seen_source_label,first_seen_source_order")
+    .select("logical_item_id,module,title,dedup_fingerprint,first_seen_date,first_seen_source_label,first_seen_source_order")
     .in("dedup_fingerprint", Array.from(packageByFingerprint.keys()));
   if (fingerprintError) {
     throw new Error(`read existing reading_logical_items by fingerprint: ${fingerprintError.message}`);
@@ -554,6 +568,7 @@ function existingLogicalItemFromPackage(packageData: ReadingImportPackage): Exis
   return {
     logicalItemId: packageData.item.logicalItemId,
     dedupFingerprint: packageData.item.dedupFingerprint,
+    title: packageData.item.title,
     date: packageData.item.firstSeenDate,
     sourceLabel: packageData.item.firstSeenSourceLabel,
     sourceOrder: packageData.item.firstSeenSourceOrder
@@ -653,6 +668,7 @@ function existingLogicalItem(row: Record<string, unknown>): ExistingReadingLogic
   return {
     logicalItemId: String(row.logical_item_id),
     dedupFingerprint: String(row.dedup_fingerprint),
+    title: row.title === null || row.title === undefined ? null : String(row.title),
     date: String(row.first_seen_date),
     sourceLabel: String(row.first_seen_source_label),
     sourceOrder: Number(row.first_seen_source_order)
@@ -662,8 +678,9 @@ function existingLogicalItem(row: Record<string, unknown>): ExistingReadingLogic
 async function remapCtwPackageToExistingCanonical(
   supabase: SupabaseClient,
   packageData: ReadingImportPackage,
-  logicalItemId: string
+  existingItem: ExistingReadingLogicalItem
 ): Promise<ReadingImportPackage> {
+  const logicalItemId = existingItem.logicalItemId;
   if (packageData.item.module !== "ctw" || packageData.questions.length !== 1) {
     throw new Error("Legacy logical ID remapping is supported only for one complete CTW item");
   }
@@ -766,7 +783,7 @@ async function remapCtwPackageToExistingCanonical(
   };
   const remapped: ReadingImportPackage = {
     ...packageData,
-    item: { ...packageData.item, logicalItemId },
+    item: { ...packageData.item, logicalItemId, title: existingItem.title },
     questions: [remappedQuestion],
     occurrences: packageData.occurrences.map((occurrence) => ({
       ...occurrence,
@@ -995,7 +1012,7 @@ export function prepareReadingPackageAtomicImport(
   } = {}
 ): PreparedReadingAtomicImport {
   const packageData = validateReadingImportPackage(input);
-  validateCanonicalRdlTitles(packageData);
+  validateCanonicalImportTitles(packageData, options.expectedLogicalItemAction);
   const rows = buildReadingImportRowsUnchecked(packageData, options.createdBy);
   if (options.firstSeen) {
     rows.reading_logical_items[0].first_seen_date = options.firstSeen.date;
@@ -1043,6 +1060,26 @@ export async function executePreparedReadingPackageAtomic(
     updatedQuestionCount: Number(result.updated_question_count ?? 0),
     pendingMaterialIds: []
   };
+}
+
+function validateCanonicalImportTitles(
+  packageData: ReadingImportPackage,
+  expectedAction?: ReadingLogicalItemAction
+) {
+  if (packageData.item.module === "ctw") {
+    const context = expectedAction === "create_new" ? "new CTW title" : "CTW canonical title";
+    const title = expectedAction === "create_new"
+      ? assertIncomingCtwTitle({
+          title: packageData.item.title ?? "",
+          sourceLabels: packageData.occurrences.map((occurrence) => occurrence.sourceLabel),
+          occurrenceDates: packageData.occurrences.map((occurrence) => occurrence.occurrenceDate),
+          yearMonths: packageData.occurrences.map((occurrence) => occurrence.yearMonth)
+        }, context)
+      : assertCanonicalCtwTitle(packageData.item.title ?? "", context);
+    packageData.item.title = title;
+    return;
+  }
+  validateCanonicalRdlTitles(packageData);
 }
 
 function validateCanonicalRdlTitles(packageData: ReadingImportPackage) {

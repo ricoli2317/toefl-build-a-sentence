@@ -5,7 +5,8 @@ const test = require("node:test");
 
 const {
   buildReadingCatalogPayload,
-  readingCatalogDisplayNumber
+  readingCatalogDisplayNumber,
+  readingCatalogTitleParts
 } = require("../lib/reading/catalog.ts");
 const {
   buildTeacherReadingStats
@@ -55,8 +56,8 @@ function attempt(overrides) {
 }
 
 const catalogItems = [
-  item("ctw", "ctw-b", "2026-05-02", "May 10", 1),
-  item("ctw", "ctw-a", "2026-05-02", "May 2", 1),
+  item("ctw", "ctw-b", "2026-05-02", "May 10", 1, "Tiger Territorial Behavior"),
+  item("ctw", "ctw-a", "2026-05-02", "May 2", 1, "Standard Time and Railroads"),
   item("rdl", "rdl-a", "2026-05-01", "May", 1, "Library Notice"),
   item("rap", "rap-a", "2026-05-01", "May", 1, "Volcanoes")
 ];
@@ -79,11 +80,37 @@ test("practice header can derive the same zero-padded CTW suite number as the ca
   assert.equal(readingCatalogDisplayNumber(catalogItems.filter((row) => row.module === "ctw"), "missing"), null);
 });
 
+test("CTW catalog keeps the dynamic suite number separate from the canonical title", () => {
+  assert.deepEqual(readingCatalogTitleParts({
+    taskType: "ctw",
+    displayNumber: "023",
+    title: "Tiger Territorial Behavior"
+  }), {
+    prefix: "套题023",
+    suffix: "Tiger Territorial Behavior"
+  });
+  assert.match(catalogUi, /titlePrefix: title\.prefix/);
+  assert.match(catalogUi, /titleSuffix: title\.suffix/);
+});
+
+test("CTW catalog rejects a missing canonical title while RDL and RAP retain their titles", () => {
+  assert.throws(
+    () => buildReadingCatalogPayload({
+      taskType: "ctw",
+      items: [item("ctw", "ctw-missing", "2026-05-03", "May 3", 1)],
+      attempts: []
+    }),
+    /CTW catalog title.*must not be empty/
+  );
+  assert.equal(buildReadingCatalogPayload({ taskType: "rdl", items: catalogItems, attempts: [] }).items[0].title, "Library Notice");
+  assert.equal(buildReadingCatalogPayload({ taskType: "rap", items: catalogItems, attempts: [] }).items[0].title, "Volcanoes");
+});
+
 test("an earlier first-seen item can reflow numbers without changing identities", () => {
   const before = buildReadingCatalogPayload({ taskType: "ctw", items: catalogItems, attempts: [] });
   const after = buildReadingCatalogPayload({
     taskType: "ctw",
-    items: [...catalogItems, item("ctw", "ctw-earlier", "2026-04-01", "April", 1)],
+    items: [...catalogItems, item("ctw", "ctw-earlier", "2026-04-01", "April", 1, "Earlier Reading Topic")],
     attempts: []
   });
   assert.equal(before.items.find((row) => row.itemId === "ctw-a").displayNumber, "001");

@@ -65,8 +65,50 @@ test("CTW template reconstructs multiple paragraphs and slots as one item", () =
   const result = adapt("complete_the_words", template("TOEFL_Complete_the_Words_TEMPLATE.csv"));
   assert.deepEqual(result.failures, []);
   assert.equal(result.candidates.length, 1);
+  assert.equal(result.candidates[0].title, "Scientists Study Natural Patterns");
   assert.equal(result.candidates[0].questions[0].payload.paragraphs.length, 2);
   assert.equal(result.candidates[0].questions[0].payload.slots.length, 2);
+});
+
+test("CTW create_new requires a valid title with at most five words", () => {
+  const valid = groupReadingSourceOccurrences(
+    adapt("complete_the_words", template("TOEFL_Complete_the_Words_TEMPLATE.csv")).candidates
+  ).packages[0];
+  assert.doesNotThrow(() => prepareReadingPackageAtomicImport(valid, {
+    expectedLogicalItemAction: "create_new"
+  }));
+
+  const missingDocument = template("TOEFL_Complete_the_Words_TEMPLATE.csv");
+  missingDocument.rows[0].title = "";
+  const missing = groupReadingSourceOccurrences(adapt("complete_the_words", missingDocument).candidates).packages[0];
+  assert.throws(
+    () => prepareReadingPackageAtomicImport(missing, { expectedLogicalItemAction: "create_new" }),
+    /new CTW title must not be empty/
+  );
+
+  const longDocument = template("TOEFL_Complete_the_Words_TEMPLATE.csv");
+  longDocument.rows[0].title = "One Two Three Four Five Six";
+  const overlong = groupReadingSourceOccurrences(adapt("complete_the_words", longDocument).candidates).packages[0];
+  assert.throws(
+    () => prepareReadingPackageAtomicImport(overlong, { expectedLogicalItemAction: "create_new" }),
+    /at most 5 whitespace-separated words/
+  );
+});
+
+test("CTW title does not affect fingerprint, duplicate candidates, or logical item ID", () => {
+  const firstDocument = template("TOEFL_Complete_the_Words_TEMPLATE.csv");
+  const secondDocument = template("TOEFL_Complete_the_Words_TEMPLATE.csv");
+  secondDocument.rows[0].title = "Different Reviewed Topic";
+  const firstCandidate = adapt("complete_the_words", firstDocument).candidates[0];
+  const secondCandidate = adapt("complete_the_words", secondDocument).candidates[0];
+  const first = groupReadingSourceOccurrences([firstCandidate]);
+  const second = groupReadingSourceOccurrences([secondCandidate]);
+  const together = groupReadingSourceOccurrences([firstCandidate, secondCandidate]);
+  assert.equal(first.packages[0].item.dedupFingerprint, second.packages[0].item.dedupFingerprint);
+  assert.equal(first.packages[0].item.logicalItemId, second.packages[0].item.logicalItemId);
+  assert.deepEqual(first.report.possibleDuplicates, second.report.possibleDuplicates);
+  assert.equal(together.packages.length, 1);
+  assert.deepEqual(together.report.possibleDuplicates, []);
 });
 
 test("CTW invalid slot reference rejects the complete occurrence", () => {
@@ -439,6 +481,7 @@ test("atomic importer sends one complete package to one RPC", async () => {
       calls += 1;
       assert.equal(name, "import_reading_package_atomic");
       assert.equal(args.p_rows.reading_logical_items.length, 1);
+      assert.equal(args.p_rows.reading_logical_items[0].title, "Scientists Study Natural Patterns");
       assert.equal(args.p_rows.reading_ctw_slots.length, 2);
       assert.equal(args.p_rows.expected_logical_item_action, "create_new");
       return {
@@ -581,8 +624,9 @@ test("legacy CTW logical ID with the same fingerprint reuses all canonical ident
 
 test("standard existing CTW logical item accepts a new occurrence without creating a logical item", async () => {
   const incoming = ctwPackageAt({ label: "260305B", date: "2026-03-05", groupId: "ctw-260305b-m1" });
+  incoming.item.title = "Incoming Replacement Title";
   const database = readingImportDatabase({
-    logicalItems: [logicalRow(incoming, incoming.item.logicalItemId, "2026-01-21", "260121A")],
+    logicalItems: [logicalRow(incoming, incoming.item.logicalItemId, "2026-01-21", "260121A", "Existing Canonical Title")],
     questions: [{
       logical_item_id: incoming.item.logicalItemId,
       question_id: incoming.questions[0].questionId,
@@ -594,6 +638,7 @@ test("standard existing CTW logical item accepts a new occurrence without creati
     enableCtwFingerprintFallback: true
   });
   assert.equal(prepared.existingItem.logicalItemId, incoming.item.logicalItemId);
+  assert.equal(prepared.packageData.item.title, "Existing Canonical Title");
   assert.equal(prepared.addedOccurrenceCount, 1);
   assert.equal(prepared.occurrenceConflict, null);
   assert.deepEqual(preparedMetrics(prepared), {
@@ -601,9 +646,37 @@ test("standard existing CTW logical item accepts a new occurrence without creati
     logicalAutoMergeCount: 1,
     occurrenceInsertedCount: 1
   });
-  const result = await importReadingPackageAtomic(database, prepared.packageData);
+  const atomic = prepareReadingPackageAtomicImport(prepared.packageData, {
+    expectedLogicalItemAction: "reuse_existing"
+  });
+  assert.equal(atomic.rows.reading_logical_items[0].title, "Existing Canonical Title");
+  const result = await executePreparedReadingPackageAtomic(database, atomic);
   assert.equal(result.insertedQuestionCount, 0);
   assert.equal(database.rpcCalls.length, 1);
+});
+
+test("existing CTW canonical title wins when the incoming CSV title is missing", async () => {
+  const incoming = ctwPackageAt({ label: "260306A", date: "2026-03-06", groupId: "ctw-260306a-m1" });
+  incoming.item.title = null;
+  const database = readingImportDatabase({
+    logicalItems: [logicalRow(incoming, incoming.item.logicalItemId, "2026-01-21", "260121A", "Existing Canonical Title")],
+    questions: [{
+      logical_item_id: incoming.item.logicalItemId,
+      question_id: incoming.questions[0].questionId,
+      question_order: 1,
+      question_type: "ctw"
+    }]
+  });
+  const [prepared] = await prepareReadingPackagesForImport(database, [incoming], {
+    enableCtwFingerprintFallback: true
+  });
+  assert.equal(prepared.packageData.item.title, "Existing Canonical Title");
+  assert.equal(
+    prepareReadingPackageAtomicImport(prepared.packageData, {
+      expectedLogicalItemAction: "reuse_existing"
+    }).rows.reading_logical_items[0].title,
+    "Existing Canonical Title"
+  );
 });
 
 test("reimporting the identical CTW occurrence is idempotent", async () => {
@@ -714,6 +787,7 @@ test("atomic migration is idempotent and preserves the earlier first-seen tuple"
   assert.match(sql, /inserted_occurrence_count/);
   assert.match(sql, /existing_occurrence_count/);
   assert.match(sql, /on conflict \(logical_item_id\) do update/);
+  assert.match(sql, /when v_module = 'ctw' and v_logical_item_existed then reading_logical_items\.title/);
   assert.match(sql, /reading-dedup:/);
   assert.match(sql, /READING_DEDUP_FINGERPRINT_IDENTITY_INCONSISTENCY/);
   assert.match(sql, /expected_logical_item_action/);
@@ -774,10 +848,11 @@ function ctwPackageAt(input) {
   return groupReadingSourceOccurrences([ctwCandidateAt(input)]).packages[0];
 }
 
-function logicalRow(packageData, logicalItemId, firstSeenDate, firstSeenSourceLabel) {
+function logicalRow(packageData, logicalItemId, firstSeenDate, firstSeenSourceLabel, title = packageData.item.title) {
   return {
     logical_item_id: logicalItemId,
     module: "ctw",
+    title,
     dedup_fingerprint: packageData.item.dedupFingerprint,
     first_seen_date: firstSeenDate,
     first_seen_source_label: firstSeenSourceLabel,

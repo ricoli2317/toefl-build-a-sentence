@@ -19,10 +19,11 @@ TPS deterministically hashes CSV type + `source_label` + `source_module` + `sour
 
 Fixed header:
 
-`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,source_question_start,source_question_end,question_stem,raw_display_text,passage_json,slots_json`
+`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,title,source_question_start,source_question_end,question_stem,raw_display_text,passage_json,slots_json`
 
-One row is one complete passage plus all blanks. CTW has no title.
+One row is one complete passage plus all blanks.
 
+- `title`: reviewed English logical-item title with at most five whitespace-separated words. It describes the full passage and must not contain CTW, a question/display number, a source label, or a source date. TPS validates and consumes this title; it does not generate one from the passage.
 - `source_question_start/end`: inclusive original blank-number range.
 - `passage_json`: array of `{paragraphId,paragraphOrder,rawText,segments}`; each segment is `{kind:"text",text}` or `{kind:"blank",slotId}`.
 - `slots_json`: array of `{slotId,slotOrder,paragraphId,answer,prefix,displayText,missingText,missingLength}`.

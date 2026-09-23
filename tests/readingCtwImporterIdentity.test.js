@@ -15,7 +15,9 @@ const historicalPath = path.join(
 );
 
 function historicalAccessPackage() {
-  return JSON.parse(fs.readFileSync(historicalPath, "utf8"));
+  const packageData = JSON.parse(fs.readFileSync(historicalPath, "utf8"));
+  packageData.item.title = "Resource Access Policies";
+  return packageData;
 }
 
 function packageToCandidate(packageData, { label, date, sourceOrder = 8, mutate = () => {} }) {
