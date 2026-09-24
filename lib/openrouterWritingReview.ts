@@ -26,6 +26,7 @@ export type OpenRouterWritingReviewOptions = {
   signal?: AbortSignal;
   timeoutMs?: number;
   timeoutMessage?: string;
+  maxTokens?: number;
 };
 
 export type OpenRouterReasoningEffort = "max" | "high" | "medium" | "low";
@@ -433,6 +434,7 @@ export async function requestOpenRouterStructuredOutput(
         ...(options.reasoningEffort
           ? { reasoning: { effort: options.reasoningEffort } }
           : {}),
+        ...(options.maxTokens ? { max_tokens: options.maxTokens } : {}),
         response_format: {
           type: "json_schema",
           json_schema: {

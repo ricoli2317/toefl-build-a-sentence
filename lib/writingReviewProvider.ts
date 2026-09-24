@@ -135,6 +135,7 @@ export async function requestWritingReviewStructuredOutput(
     signal?: AbortSignal;
     timeoutMs?: number;
     timeoutMessage?: string;
+    maxTokens?: number;
   }
 ) {
   if (config.provider === "moonshot") {
