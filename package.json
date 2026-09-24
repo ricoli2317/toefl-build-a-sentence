@@ -29,7 +29,19 @@
     "verify:rdl-titles": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-rdl-title-consistency.ts",
     "backfill:reading-catalog-search": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/backfill-reading-catalog-search.ts",
     "verify:wrongbook-performance": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-wrongbook-performance.ts",
-    "verify:student-practice-summary": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-student-practice-summary.ts"
+    "verify:student-practice-summary": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-student-practice-summary.ts",
+    "generate:lexical-v1": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/generate-lexical-v1.ts",
+    "lexical:quarantine-semantic": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/quarantine-lexical-semantic-cache.ts",
+    "lexical:agent-next": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-agent-next.ts",
+    "lexical:agent-accept": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-agent-accept.ts",
+    "lexical:agent-abort": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-agent-abort.ts",
+    "lexical:agent-repack-v2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/repack-lexical-agent-v2.ts",
+    "lexical:agent-finalize": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-agent-finalize.ts",
+    "lexical:parallel-build": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-parallel.ts build",
+    "lexical:parallel-audit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-parallel.ts audit",
+    "lexical:parallel-status": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-parallel.ts status",
+    "lexical:parallel-verify": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-parallel.ts verify",
+    "lexical:parallel-merge": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-parallel.ts merge"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

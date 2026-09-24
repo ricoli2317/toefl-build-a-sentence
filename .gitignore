@@ -34,6 +34,7 @@ pnpm-debug.log*
 /tmp/writing-review-production-export/
 /tmp/writing-review-prompt-benchmark/
 /tmp/writing-review-c3-production/
+/tmp/lexical-v1/
 
 # Reading assets are prepared outside TPS; production runtime reads them from R2
 /public/reading/rdl/
