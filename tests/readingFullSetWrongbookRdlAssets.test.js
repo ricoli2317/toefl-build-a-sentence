@@ -14,6 +14,8 @@ function selectionMap(imageSha256 = "a".repeat(64)) {
     canvas_width: 1200,
     canvas_height: 800,
     coordinate_space: "normalized_top_left_xywh_0_1",
+    // Legacy R2 selection maps predate `break_after`; keep this fixture
+    // legacy-shaped so the runtime backward-compatibility contract stays covered.
     lines: [{
       line_index: 0,
       text: "A",

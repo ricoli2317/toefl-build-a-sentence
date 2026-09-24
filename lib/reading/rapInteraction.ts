@@ -98,6 +98,9 @@ export function isRapSentenceSelectable(
 }
 
 const SENTENCE_SELECTION_INSTRUCTION = "Select the sentence to make your choice.";
+export const RAP_INSERTION_MARKER_TEXT = "■";
+export const RAP_INSERTION_INTRODUCTION = `There are four locations ${RAP_INSERTION_MARKER_TEXT} in the passage that indicate where the following sentence could be added.`;
+export const RAP_INSERTION_SELECTION_PROMPT = `Where would the sentence best fit? Select a location ${RAP_INSERTION_MARKER_TEXT} to add the sentence to the passage.`;
 
 export function rapSentenceSelectionStem(stem: string) {
   return stem
@@ -115,4 +118,8 @@ export function rapVisibleHighlightRanges<T>(
 
 export function rapSentenceSelectionInstruction() {
   return SENTENCE_SELECTION_INSTRUCTION;
+}
+
+export function rapSentenceInsertionInstruction() {
+  return `${RAP_INSERTION_INTRODUCTION}\n\n${RAP_INSERTION_SELECTION_PROMPT}`;
 }

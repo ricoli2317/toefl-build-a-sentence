@@ -13,6 +13,7 @@ export type RdlSelectionCharacter = {
   charIndex: number;
   globalIndex: number;
   char: string;
+  needsReview: boolean;
   bbox: RdlNormalizedRect;
 };
 
@@ -21,13 +22,20 @@ export type RdlSelectionWord = {
   lineIndex: number;
   wordIndex: number;
   text: string;
+  needsReview: boolean;
   bbox: RdlNormalizedRect;
   characters: RdlSelectionCharacter[];
 };
 
+// Newer selection maps carry an explicit line boundary. Legacy maps predate the
+// field, so the runtime reports the boundary as "unknown" instead of inventing
+// one; lexical canonical extraction resolves legacy maps separately.
+export type RdlLineBreakAfter = "space" | "paragraph" | "end" | "unknown";
+
 export type RdlSelectionLine = {
   lineIndex: number;
   text: string;
+  breakAfter: RdlLineBreakAfter;
   bbox: RdlNormalizedRect;
   words: RdlSelectionWord[];
 };
@@ -97,6 +105,7 @@ export function parseRdlSelectionMap(input: unknown): RdlSelectionMap {
           charIndex,
           globalIndex: nonNegativeInteger(character.global_index, "global_index"),
           char,
+          needsReview: character.needs_review === true,
           bbox: normalizedRect(character.bbox, "character.bbox")
         };
       });
@@ -108,6 +117,7 @@ export function parseRdlSelectionMap(input: unknown): RdlSelectionMap {
         lineIndex,
         wordIndex,
         text: wordText,
+        needsReview: word.needs_review === true,
         bbox: normalizedRect(word.bbox, "word.bbox"),
         characters
       };
@@ -115,6 +125,7 @@ export function parseRdlSelectionMap(input: unknown): RdlSelectionMap {
     return {
       lineIndex,
       text: nonEmptyString(line.text, "line.text"),
+      breakAfter: lineBreakAfter(line.break_after, `lines[${lineIndex}].break_after`),
       bbox: normalizedRect(line.bbox, "line.bbox"),
       words
     };
@@ -301,4 +312,10 @@ function nonNegativeInteger(input: unknown, label: string): number {
   const value = finiteNumber(input, label);
   if (!Number.isInteger(value) || value < 0) throw new Error(`${label} must be a non-negative integer`);
   return value;
+}
+
+function lineBreakAfter(input: unknown, label: string): RdlLineBreakAfter {
+  if (input == null) return "unknown";
+  if (input === "space" || input === "paragraph" || input === "end") return input;
+  throw new Error(`${label} must be space, paragraph, end, or absent`);
 }

@@ -148,9 +148,9 @@ test("sentence insertion right column has only the official three-paragraph hier
   );
 
   assert.match(instructionSource, /<p className="font-bold" id="rap-question-stem">/);
-  assert.match(instructionSource, /There are four locations <RapInsertionMarker bracketed \/> in the passage that indicate where the following sentence could be added\./);
+  assert.match(instructionSource, /RAP_INSERTION_INTRODUCTION\.split\("■"\)/);
   assert.match(instructionSource, /<p data-testid="rap-insertion-prompt"/);
-  assert.match(instructionSource, /Where would the sentence best fit\? Select a location <RapInsertionMarker bracketed \/> to add the sentence to the passage\./);
+  assert.match(instructionSource, /RAP_INSERTION_SELECTION_PROMPT\.split\("■"\)/);
   assert.equal((instructionSource.match(/<p(?:\s|>)/g) ?? []).length, 3);
   assert.doesNotMatch(instructionSource, /Sentence to insert|Choose one of the four markers|border-y|<hr/i);
 });

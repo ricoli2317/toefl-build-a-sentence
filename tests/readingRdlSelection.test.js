@@ -18,8 +18,9 @@ const IMAGE_SHA = "a".repeat(64);
 
 function selectionMapSource() {
   let globalIndex = 0;
-  const line = (lineIndex, y, words) => ({
+  const line = (lineIndex, y, words, breakAfter = "end") => ({
     line_index: lineIndex,
+    break_after: breakAfter,
     text: words.map((word) => word.text).join(" "),
     bbox: { x: 0.1, y, width: 0.7, height: 0.08 },
     words: words.map((word, wordIndex) => {
@@ -53,7 +54,7 @@ function selectionMapSource() {
       line(0, 0.2, [
         { text: "making", x: 0.1, width: 0.18 },
         { text: "friends", x: 0.34, width: 0.21 }
-      ]),
+      ], "space"),
       line(1, 0.4, [{ text: "across", x: 0.1, width: 0.18 }])
     ]
   };
@@ -158,6 +159,26 @@ test("selection map parser fails safely on unsupported coordinates or malformed 
   const wrongText = selectionMapSource();
   wrongText.lines[0].words[0].chars[0].char = "X";
   assert.throws(() => parseRdlSelectionMap(wrongText), /does not match/);
+});
+
+test("explicit break_after values are preserved for complete selection maps", () => {
+  const map = selectionMap();
+  assert.deepEqual(map.lines.map((line) => line.breakAfter), ["space", "end"]);
+});
+
+test("legacy selection maps without break_after stay loadable and report an unknown boundary", () => {
+  const legacy = selectionMapSource();
+  legacy.lines[0].break_after = null;
+  delete legacy.lines[1].break_after;
+  const map = parseRdlSelectionMap(legacy);
+  assert.deepEqual(map.lines.map((line) => line.breakAfter), ["unknown", "unknown"]);
+  assert.equal(rdlSelectedText(map, normalizeRdlSelectionRange(6, 18)), "friends across");
+});
+
+test("selection map parser rejects an invalid break_after instead of inventing a boundary", () => {
+  const invalid = selectionMapSource();
+  invalid.lines[0].break_after = "newline";
+  assert.throws(() => parseRdlSelectionMap(invalid), /break_after must be space, paragraph, end, or absent/);
 });
 
 test("RDL component uses pointer capture, mapped highlights, resize observation, and no OCR fallback", () => {

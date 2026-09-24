@@ -76,6 +76,8 @@ import {
   type RdlSelectionRange
 } from "@/lib/reading/rdlSelection";
 import {
+  RAP_INSERTION_INTRODUCTION,
+  RAP_INSERTION_SELECTION_PROMPT,
   insertionAnchorAtBoundary,
   isRapSentenceSelectable,
   rapSentenceSelectionInstruction,
@@ -2347,13 +2349,13 @@ function RapPracticeWorkspace({
         ) : question.questionType === "rap_sentence_insertion" && insertionValidation?.valid ? (
           <div className="font-normal text-student-text" data-testid="rap-insertion-instructions" style={readingQuestionTextStyle}>
             <p className="font-bold" id="rap-question-stem">
-              There are four locations <RapInsertionMarker bracketed /> in the passage that indicate where the following sentence could be added.
+              {RAP_INSERTION_INTRODUCTION.split("■")[0]}<RapInsertionMarker bracketed />{RAP_INSERTION_INTRODUCTION.split("■")[1]}
             </p>
             <p data-testid="rap-insertion-prompt" style={{ marginTop: "1.75em" }}>
               {question.insertSentence}
             </p>
             <p style={{ marginTop: "1.75em" }}>
-              Where would the sentence best fit? Select a location <RapInsertionMarker bracketed /> to add the sentence to the passage.
+              {RAP_INSERTION_SELECTION_PROMPT.split("■")[0]}<RapInsertionMarker bracketed />{RAP_INSERTION_SELECTION_PROMPT.split("■")[1]}
             </p>
           </div>
         ) : question.questionType === "rap_sentence_selection" && sentenceTargetValidation?.valid ? (
