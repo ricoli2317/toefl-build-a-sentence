@@ -186,9 +186,11 @@ test("Catalog payload and query omit Reading content, answers, assets, and N+1 l
   assert.match(catalogRoute, /Promise\.all/);
 });
 
-test("Reading local discovery searches the same numbered title shown on each card", () => {
-  assert.match(catalogUi, /const title = readingCatalogTitleParts\(item\)/);
-  assert.match(catalogUi, /title: `\$\{title\.prefix\} \$\{title\.suffix\}`/);
+test("Reading local discovery keeps the dynamic number searchable without writing it into the canonical title", () => {
+  assert.match(catalogUi, /searchText: readingCatalogDiscoverySearchText\(item, searchText\)/);
+  assert.match(catalogUi, /titlePrefix: title\.prefix/);
+  assert.match(catalogUi, /titleSuffix: title\.suffix/);
+  assert.doesNotMatch(catalogUi, /title: `\$\{title\.prefix\}/);
 });
 
 test("Reading catalog remains available while the search-text migration is rolling out", () => {

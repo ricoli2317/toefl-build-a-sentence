@@ -47,6 +47,7 @@ import {
 } from "@/lib/catalogDiscovery";
 import {
   filterReadingCatalogByLength,
+  readingCatalogDiscoverySearchText,
   type ReadingLengthFilter
 } from "@/lib/reading/catalogDiscovery";
 
@@ -105,15 +106,16 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
 
   const searchTextByItemId = readingCatalogSearchTextMap(searchIndexState.data);
   const discoveryItems = state.data.items.map((item, defaultIndex) => {
-    const title = readingCatalogTitleParts(item);
+    const searchText = searchTextByItemId.get(item.itemId)
+      ?? item.searchText
+      ?? (item as ReadingCatalogItem & { search_text?: string }).search_text
+      ?? "";
     return {
       ...item,
       id: item.itemId,
-      title: `${title.prefix} ${title.suffix}`,
-      searchText: searchTextByItemId.get(item.itemId)
-        ?? item.searchText
-        ?? (item as ReadingCatalogItem & { search_text?: string }).search_text
-        ?? "",
+      // item.title stays canonical: the dynamic number is display-only and is
+      // rendered from readingCatalogTitleParts() via titlePrefix/titleSuffix.
+      searchText: readingCatalogDiscoverySearchText(item, searchText),
       occurrenceDates: item.occurrenceDates ?? [],
       occurrenceCount: item.occurrenceCount ?? 0,
       firstSeenDate: item.firstSeenDate,
