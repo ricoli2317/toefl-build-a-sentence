@@ -11,12 +11,15 @@ import {
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   studentLogicalCatalogCacheKey,
+  studentLogicalCatalogSearchIndexCacheKey,
   useStudentCachedData,
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import {
   StudentEmptyState,
+  StudentErrorState,
+  StudentLoadingState,
   StudentNavigation
 } from "@/components/student/StudentUI";
 import {
@@ -25,10 +28,15 @@ import {
   type LogicalPracticeActionName
 } from "@/lib/practiceLogicalNavigation";
 import type {
-  LogicalPracticeCatalogItemWithStudentState,
-  LogicalPracticeCatalogWithStudentState
+  LogicalPracticeCatalogItemLightweight,
+  LogicalPracticeCatalogLightweight
 } from "@/lib/practiceLogicalCatalog";
 import { logicalPracticeItemTitle } from "@/lib/practiceLogicalCatalog";
+import {
+  loadLogicalPracticeCatalogSearchIndex,
+  logicalPracticeCatalogSearchTextMap,
+  type LogicalPracticeCatalogSearchIndexPayload
+} from "@/lib/practiceLogicalCatalogSearchIndex";
 import type { PracticeTaskType } from "@/lib/practiceImporter/types";
 import {
   measureStudentRequest,
@@ -36,7 +44,8 @@ import {
 } from "@/lib/studentPerformance.client";
 import {
   catalogMonths,
-  filterAndSortCatalogItems
+  filterAndSortCatalogItems,
+  normalizeCatalogSearchText
 } from "@/lib/catalogDiscovery";
 import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
 
@@ -57,12 +66,20 @@ export function LogicalPracticeCatalog({
   const rootHref = LOGICAL_PRACTICE_ROOTS[taskType];
   const cache = useStudentDataCache();
   const cacheKey = studentLogicalCatalogCacheKey(taskType);
+  const searchIndexKey = studentLogicalCatalogSearchIndexCacheKey(taskType);
   const [currentPage, setCurrentPage] = useState(page);
   const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultControls);
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const state = useStudentCachedData<LogicalPracticeCatalogWithStudentState>(
+  const state = useStudentCachedData<LogicalPracticeCatalogLightweight>(
     cacheKey,
     (session) => loadLogicalPracticeCatalog(taskType, session)
+  );
+  // The lightweight catalog renders first, then the per-task search index is
+  // pulled in the background and merged back by item_id, exactly like Reading.
+  const searchIndexState = useStudentCachedData<LogicalPracticeCatalogSearchIndexPayload>(
+    searchIndexKey,
+    (session) => loadLogicalPracticeCatalogSearchIndex(taskType, session),
+    { enabled: Boolean(state.data) }
   );
   useEffect(() => setCurrentPage(page), [page, taskType]);
   useEffect(() => {
@@ -110,7 +127,10 @@ export function LogicalPracticeCatalog({
           debouncedQuery={debouncedQuery}
           onControlsChange={setControls}
           onPageChange={setCurrentPage}
+          onRetrySearchIndex={() => cache.invalidate(searchIndexKey)}
           page={currentPage}
+          searchIndex={searchIndexState.data}
+          searchIndexError={searchIndexState.error}
           taskType={taskType}
         />
       )}
@@ -132,7 +152,7 @@ async function loadLogicalPracticeCatalog(
       }
     );
     captureResponse(response);
-    const payload = (await response.json()) as LogicalPracticeCatalogWithStudentState & {
+    const payload = (await response.json()) as LogicalPracticeCatalogLightweight & {
       error?: string;
     };
     if (!response.ok || payload.error) {
@@ -148,31 +168,44 @@ function CatalogContent({
   debouncedQuery,
   onControlsChange,
   onPageChange,
+  onRetrySearchIndex,
   page,
+  searchIndex,
+  searchIndexError,
   taskType
 }: {
-  catalog: LogicalPracticeCatalogWithStudentState;
+  catalog: LogicalPracticeCatalogLightweight;
   controls: CatalogDiscoveryControlValue;
   debouncedQuery: string;
   onControlsChange: (value: CatalogDiscoveryControlValue) => void;
   onPageChange: (page: number) => void;
+  onRetrySearchIndex: () => void;
   page: number;
+  searchIndex: LogicalPracticeCatalogSearchIndexPayload | null;
+  searchIndexError: string;
   taskType: PracticeTaskType;
 }) {
+  const searchTextByItemId = logicalPracticeCatalogSearchTextMap(searchIndex);
   const discoveryItems = catalog.items.map((item, defaultIndex) => ({
     ...item,
     id: item.item_id,
     title: logicalPracticeItemTitle(item),
-    searchText: item.search_text ?? (item as LogicalPracticeCatalogItemWithStudentState & { searchText?: string }).searchText ?? "",
+    searchText: searchTextByItemId.get(item.item_id)
+      ?? (item as LogicalPracticeCatalogItemLightweight & { search_text?: string }).search_text
+      ?? (item as LogicalPracticeCatalogItemLightweight & { searchText?: string }).searchText
+      ?? "",
     status: item.student_state.status,
     occurrenceDates: item.occurrence_dates ?? [],
     occurrenceCount: item.occurrence_count ?? 0,
     firstSeenDate: item.first_seen_date,
     latestSeenDate: item.latest_seen_date ?? item.occurrence_dates?.[0] ?? item.first_seen_date,
-    category: item.catalog_category ?? (item as LogicalPracticeCatalogItemWithStudentState & { category?: string | null }).category ?? null,
+    category: item.catalog_category ?? (item as LogicalPracticeCatalogItemLightweight & { category?: string | null }).category ?? null,
     defaultIndex
   }));
-  const filteredItems = filterAndSortCatalogItems(discoveryItems, {
+  const normalizedQuery = normalizeCatalogSearchText(debouncedQuery);
+  const searchIndexRequired = normalizedQuery.length > 0;
+  const searchIndexBlocked = searchIndexRequired && !searchIndex;
+  const filteredItems = searchIndexBlocked ? [] : filterAndSortCatalogItems(discoveryItems, {
     ...controls,
     query: debouncedQuery
   });
@@ -195,38 +228,57 @@ function CatalogContent({
         onClear={clearControls}
         value={controls}
       />
-      <PracticeSetCatalogList
-        emptyState={catalog.items.length
-          ? <CatalogFilteredEmptyState onClear={clearControls} />
-          : <StudentEmptyState text={emptyStateText(taskType)} />}
-        renderActions={(catalogSet) => {
-          const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
-          return <LogicalItemActions item={item} taskType={taskType} />;
-        }}
-        renderStatus={(catalogSet) => {
-          const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
-          return <LogicalItemStatus status={item.student_state.status} />;
-        }}
-        sets={items.map((item) => ({
-          icon: STUDENT_PRACTICE_ICONS[item.task_type],
-          metadata: formatOccurrenceDates(
-            item.occurrence_date_counts
-              ?? (item as LogicalPracticeCatalogItemWithStudentState & { occurrenceDateCounts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrenceDateCounts
-              ?? item.occurrence_dates
-          ),
-          questionCount: item.question_count,
-          setId: item.item_id,
-          setTitle: logicalPracticeItemTitle(item),
-          titlePrefix: item.task_type === "build_sentence" ? `套题${item.display_number}` : `题目${item.display_number}`,
-          titleSuffix: item.task_type === "build_sentence" ? null : item.display_title
-        }))}
-      />
-      <CatalogPagination
-        onPageChange={onPageChange}
-        page={visiblePage}
-        totalItems={filteredItems.length}
-        totalPages={totalPages}
-      />
+      {searchIndexBlocked && !searchIndexError ? (
+        <StudentLoadingState text="搜索数据加载中，请稍候…" />
+      ) : null}
+      {searchIndexBlocked && searchIndexError ? (
+        <div className="grid justify-items-center gap-3">
+          <StudentErrorState text="搜索数据加载失败，请重试。" />
+          <button
+            className="student-button-secondary min-h-9 px-3 py-1.5"
+            onClick={onRetrySearchIndex}
+            type="button"
+          >
+            重新加载搜索数据
+          </button>
+        </div>
+      ) : null}
+      {searchIndexBlocked ? null : (
+        <>
+          <PracticeSetCatalogList
+            emptyState={catalog.items.length
+              ? <CatalogFilteredEmptyState onClear={clearControls} />
+              : <StudentEmptyState text={emptyStateText(taskType)} />}
+            renderActions={(catalogSet) => {
+              const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
+              return <LogicalItemActions item={item} taskType={taskType} />;
+            }}
+            renderStatus={(catalogSet) => {
+              const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
+              return <LogicalItemStatus status={item.student_state.status} />;
+            }}
+            sets={items.map((item) => ({
+              icon: STUDENT_PRACTICE_ICONS[item.task_type],
+              metadata: formatOccurrenceDates(
+                item.occurrence_date_counts
+                  ?? (item as LogicalPracticeCatalogItemLightweight & { occurrenceDateCounts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrenceDateCounts
+                  ?? item.occurrence_dates
+              ),
+              questionCount: item.question_count,
+              setId: item.item_id,
+              setTitle: logicalPracticeItemTitle(item),
+              titlePrefix: item.task_type === "build_sentence" ? `套题${item.display_number}` : `题目${item.display_number}`,
+              titleSuffix: item.task_type === "build_sentence" ? null : item.display_title
+            }))}
+          />
+          <CatalogPagination
+            onPageChange={onPageChange}
+            page={visiblePage}
+            totalItems={filteredItems.length}
+            totalPages={totalPages}
+          />
+        </>
+      )}
     </>
   );
 }
@@ -246,7 +298,7 @@ function LogicalItemActions({
   item,
   taskType
 }: {
-  item: LogicalPracticeCatalogItemWithStudentState;
+  item: LogicalPracticeCatalogItemLightweight;
   taskType: PracticeTaskType;
 }) {
   const viewLabel = taskType === "build_sentence" ? "查看结果" : "查看提交";
@@ -269,7 +321,7 @@ function LogicalItemActions({
 }
 
 function action(
-  item: LogicalPracticeCatalogItemWithStudentState,
+  item: LogicalPracticeCatalogItemLightweight,
   taskType: PracticeTaskType,
   actionName: LogicalPracticeActionName,
   icon: typeof Play,
@@ -337,7 +389,7 @@ function CatalogPageButton({
 function LogicalItemStatus({
   status
 }: {
-  status: LogicalPracticeCatalogItemWithStudentState["student_state"]["status"];
+  status: LogicalPracticeCatalogItemLightweight["student_state"]["status"];
 }) {
   if (status === "in_progress") {
     return (

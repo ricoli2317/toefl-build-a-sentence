@@ -1,7 +1,8 @@
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import {
   getLogicalPracticeItems,
-  isLogicalPracticeTaskType
+  isLogicalPracticeTaskType,
+  toLightweightLogicalPracticeCatalog
 } from "@/lib/practiceLogicalCatalog";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -34,7 +35,9 @@ export async function GET(request: Request) {
       timing,
       loadPublicCatalog: () => loadCachedPublicPracticeCatalog(taskType)
     });
-    return respond(catalog);
+    // Strip search_text before it reaches the client; the search index is
+    // served by /api/practice-catalog/search-index from the same cached catalog.
+    return respond(toLightweightLogicalPracticeCatalog(catalog));
   } catch (error) {
     console.error("[practice-catalog] logical_list_failed", error);
     return respond({ error: "Could not load the logical practice catalog." }, { status: 500 });

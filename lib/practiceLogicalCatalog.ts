@@ -62,6 +62,50 @@ export type LogicalPracticeCatalogWithStudentState = {
   pagination: LogicalPracticePagination;
 };
 
+// The first-screen payload never carries search_text; the search index is a
+// separate request that is merged back on the client by item_id.
+export type LogicalPracticeCatalogItemLightweight = Omit<
+  LogicalPracticeCatalogItemWithStudentState,
+  "search_text"
+>;
+
+export type LogicalPracticeCatalogLightweight = {
+  items: LogicalPracticeCatalogItemLightweight[];
+  pagination: LogicalPracticePagination;
+};
+
+export type LogicalPracticeCatalogSearchIndexEntry = {
+  item_id: string;
+  search_text: string;
+};
+
+export type LogicalPracticeCatalogSearchIndex = {
+  taskType: PracticeTaskType;
+  items: LogicalPracticeCatalogSearchIndexEntry[];
+};
+
+export function toLightweightLogicalPracticeCatalog(
+  catalog: LogicalPracticeCatalogWithStudentState
+): LogicalPracticeCatalogLightweight {
+  return {
+    pagination: catalog.pagination,
+    items: catalog.items.map((item) => {
+      const lightweightItem = { ...item };
+      delete (lightweightItem as { search_text?: string }).search_text;
+      return lightweightItem;
+    })
+  };
+}
+
+export function buildLogicalPracticeCatalogSearchIndex(
+  catalog: Pick<LogicalPracticeCatalog, "items">
+): LogicalPracticeCatalogSearchIndexEntry[] {
+  return catalog.items.map((item) => ({
+    item_id: item.item_id,
+    search_text: item.search_text
+  }));
+}
+
 export type PublicLogicalPracticeCatalogData = {
   catalog: LogicalPracticeCatalog;
   sources: FormalPracticeItemSource[];

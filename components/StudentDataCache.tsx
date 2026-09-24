@@ -25,6 +25,8 @@ import {
 export const STUDENT_SETS_CACHE_PREFIX = "sets";
 export const STUDENT_SETS_CACHE_KEY = "sets:all";
 export const STUDENT_LOGICAL_CATALOG_CACHE_PREFIX = "logical-practice-catalog";
+export const STUDENT_LOGICAL_CATALOG_SEARCH_INDEX_CACHE_PREFIX =
+  "logical-practice-search-index";
 export const STUDENT_QUESTIONS_CACHE_PREFIX = "questions";
 export const STUDENT_WRONG_QUESTIONS_CACHE_PREFIX = "wrong-questions";
 export const STUDENT_PRACTICE_HISTORY_CACHE_PREFIX = "practice-history";
@@ -32,6 +34,7 @@ export const STUDENT_ATTEMPT_CACHE_PREFIX = "attempt";
 export const STUDENT_READING_HISTORY_CACHE_PREFIX = "reading:history";
 export const STUDENT_READING_RESULT_CACHE_PREFIX = "reading:result";
 export const STUDENT_READING_CATALOG_CACHE_PREFIX = "reading:catalog";
+export const STUDENT_READING_CATALOG_SEARCH_INDEX_CACHE_PREFIX = "reading-search-index";
 export const STUDENT_READING_FULL_SET_CACHE_PREFIX = "reading:full-sets";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
@@ -59,6 +62,12 @@ export function studentLogicalCatalogCacheKey(
   taskType: "build_sentence" | "email" | "academic_discussion"
 ) {
   return `${STUDENT_LOGICAL_CATALOG_CACHE_PREFIX}:v3:${taskType}`;
+}
+
+export function studentLogicalCatalogSearchIndexCacheKey(
+  taskType: "build_sentence" | "email" | "academic_discussion"
+) {
+  return `${STUDENT_LOGICAL_CATALOG_SEARCH_INDEX_CACHE_PREFIX}:v1:${taskType}`;
 }
 
 export function studentQuestionsCacheKey(setId: string) {
@@ -90,6 +99,10 @@ export function studentReadingFullSetOccurrenceCacheKey(
 
 export function studentReadingCatalogCacheKey(taskType: "ctw" | "rdl" | "rap") {
   return `${STUDENT_READING_CATALOG_CACHE_PREFIX}:v2:${taskType}`;
+}
+
+export function studentReadingCatalogSearchIndexCacheKey(taskType: "ctw" | "rdl" | "rap") {
+  return `${STUDENT_READING_CATALOG_SEARCH_INDEX_CACHE_PREFIX}:v1:${taskType}`;
 }
 
 export function studentWritingAttemptCacheKey(attemptId: string) {
@@ -550,6 +563,10 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
           switch (domain) {
             case "studentPracticeCatalog":
               invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+              // A content-catalog change can add/remove items, so the static
+              // search index must refresh with it. Attempt state changes
+              // (submit/retake) never reach this branch and keep the index cached.
+              invalidate(STUDENT_LOGICAL_CATALOG_SEARCH_INDEX_CACHE_PREFIX);
               invalidate(STUDENT_SETS_CACHE_PREFIX);
               invalidate(STUDENT_QUESTIONS_CACHE_PREFIX);
               invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);

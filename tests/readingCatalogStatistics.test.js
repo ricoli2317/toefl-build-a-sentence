@@ -180,7 +180,8 @@ test("Catalog payload and query omit Reading content, answers, assets, and N+1 l
   const payload = buildReadingCatalogPayload({ taskType: "rdl", items: catalogItems, attempts: [] });
   assert.doesNotMatch(JSON.stringify(payload), /passage|question.*content|studentAnswer|correctAnswer|selectionMap|imageUrl/i);
   assert.doesNotMatch(catalogRoute, /reading_questions|reading_passages|reading_materials|reading_ctw_slots|reading_question_options/);
-  assert.equal((catalogRoute.match(/\.from\("reading_logical_items"\)/g) || []).length, 2);
+  assert.equal((catalogRoute.match(/\.from\("reading_logical_items"\)/g) || []).length, 1);
+  assert.doesNotMatch(catalogRoute, /catalog_search_text,/);
   assert.equal((catalogRoute.match(/\.from\("reading_attempts"\)/g) || []).length, 1);
   assert.match(catalogRoute, /Promise\.all/);
 });
@@ -193,6 +194,22 @@ test("Reading local discovery searches the same numbered title shown on each car
 test("Reading catalog remains available while the search-text migration is rolling out", () => {
   assert.match(catalogRoute, /message\.includes\("catalog_search_text"\)/);
   assert.match(catalogRoute, /message\.includes\("does not exist"\)/);
+});
+
+test("Reading search index is a separate student-authenticated read merged back by logical_item_id", () => {
+  const searchIndexRoute = fs.readFileSync(path.join(root, "app/api/reading/catalog/search-index/route.ts"), "utf8");
+  const searchIndexLib = fs.readFileSync(path.join(root, "lib/reading/catalogSearchIndex.ts"), "utf8");
+  assert.match(searchIndexRoute, /requireUserWithRole\(token, "student"\)/);
+  assert.match(searchIndexRoute, /\.select\("logical_item_id,catalog_search_text"\)/);
+  assert.match(searchIndexRoute, /"Cache-Control", "no-store"/);
+  assert.doesNotMatch(searchIndexRoute, /title|question_count|scored_item_count|reading_source_occurrences|reading_attempts/);
+  assert.match(searchIndexLib, /\/api\/reading\/catalog\/search-index\?taskType=/);
+  assert.doesNotMatch(searchIndexLib, /localStorage|indexedDB|sessionStorage/);
+  assert.match(catalogUi, /studentReadingCatalogSearchIndexCacheKey\(taskType\)/);
+  assert.match(catalogUi, /enabled: Boolean\(state\.data\)/);
+  assert.match(catalogUi, /searchIndexBlocked = searchIndexRequired && !searchIndexState\.data/);
+  assert.match(catalogUi, /重新加载搜索数据/);
+  assert.match(studentDataCache, /reading-search-index/);
 });
 
 test("Submit and draft/retake invalidate only the exact Reading catalog plus Reading History", () => {

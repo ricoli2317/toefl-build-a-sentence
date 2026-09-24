@@ -26,13 +26,15 @@ export async function GET(request: Request) {
   // catalog read the finalized inventory without mutating its legacy release flag.
   // Attempt state remains explicitly scoped to the authenticated student.
   const db = createServiceSupabase();
+  // All Reading products serve the lightweight first-screen catalog; the full
+  // search index is fetched separately and merged by logical_item_id on the client.
+  const readCatalogPageWithoutSearchText = (from: number, to: number) =>
+    db.from("reading_logical_items")
+      .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,reading_source_occurrences(occurrence_id,occurrence_date)")
+      .eq("module", taskType)
+      .range(from, to);
   let [itemResult, attemptResult] = await Promise.all([
-    readAllSupabaseRows<ReadingCatalogItemRow>((from, to) =>
-      db.from("reading_logical_items")
-        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,catalog_search_text,reading_source_occurrences(occurrence_id,occurrence_date)")
-        .eq("module", taskType)
-        .range(from, to)
-    ),
+    readAllSupabaseRows<ReadingCatalogItemRow>(readCatalogPageWithoutSearchText),
     readAllSupabaseRows<ReadingCatalogAttemptRow>((from, to) =>
       db.from("reading_attempts")
         .select("attempt_id,logical_item_id,task_type,status,elapsed_seconds,correct_points,total_points,submitted_at,created_at,updated_at")
@@ -42,11 +44,8 @@ export async function GET(request: Request) {
     )
   ]);
   if (itemResult.error?.message.includes("catalog_search_text") && itemResult.error.message.includes("does not exist")) {
-    itemResult = await readAllSupabaseRows<ReadingCatalogItemRow>((from, to) =>
-      db.from("reading_logical_items")
-        .select("logical_item_id,module,title,first_seen_date,first_seen_source_label,first_seen_source_order,question_count,scored_item_count,catalog_category,reading_source_occurrences(occurrence_id,occurrence_date)")
-        .eq("module", taskType)
-        .range(from, to)
+    itemResult = await readAllSupabaseRows<ReadingCatalogItemRow>(
+      readCatalogPageWithoutSearchText
     );
   }
   if (itemResult.error || attemptResult.error) {

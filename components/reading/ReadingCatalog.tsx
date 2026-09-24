@@ -8,6 +8,7 @@ import {
 } from "@/components/shared/PracticeCatalog";
 import {
   studentReadingCatalogCacheKey,
+  studentReadingCatalogSearchIndexCacheKey,
   useStudentCachedData,
   useStudentDataCache,
   type StudentCacheSession
@@ -23,6 +24,11 @@ import {
   type ReadingCatalogItem,
   type ReadingCatalogPayload
 } from "@/lib/reading/catalog";
+import {
+  loadReadingCatalogSearchIndex,
+  readingCatalogSearchTextMap,
+  type ReadingCatalogSearchIndexPayload
+} from "@/lib/reading/catalogSearchIndex";
 import type { ReadingModule } from "@/lib/reading/types";
 import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -34,7 +40,11 @@ import {
   type CatalogDiscoveryControlValue
 } from "@/components/shared/CatalogDiscoveryControls";
 import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
-import { catalogMonths, filterAndSortCatalogItems } from "@/lib/catalogDiscovery";
+import {
+  catalogMonths,
+  filterAndSortCatalogItems,
+  normalizeCatalogSearchText
+} from "@/lib/catalogDiscovery";
 import {
   filterReadingCatalogByLength,
   type ReadingLengthFilter
@@ -45,6 +55,7 @@ const PAGE_SIZE = 10;
 export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   const cache = useStudentDataCache();
   const cacheKey = studentReadingCatalogCacheKey(taskType);
+  const searchIndexKey = studentReadingCatalogSearchIndexCacheKey(taskType);
   const [page, setPage] = useState(1);
   const [controls, setControls] = useState<CatalogDiscoveryControlValue>(defaultControls);
   const [lengthFilter, setLengthFilter] = useState<ReadingLengthFilter>("all");
@@ -52,6 +63,13 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   const state = useStudentCachedData<ReadingCatalogPayload>(
     cacheKey,
     (session) => loadReadingCatalog(taskType, session)
+  );
+  // Every Reading product renders the lightweight catalog first, then pulls the
+  // search index in the background and merges it back by logical_item_id.
+  const searchIndexState = useStudentCachedData<ReadingCatalogSearchIndexPayload>(
+    searchIndexKey,
+    (session) => loadReadingCatalogSearchIndex(taskType, session),
+    { enabled: Boolean(state.data) }
   );
   useEffect(() => {
     setPage(1);
@@ -85,13 +103,17 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     );
   }
 
+  const searchTextByItemId = readingCatalogSearchTextMap(searchIndexState.data);
   const discoveryItems = state.data.items.map((item, defaultIndex) => {
     const title = readingCatalogTitleParts(item);
     return {
       ...item,
       id: item.itemId,
       title: `${title.prefix} ${title.suffix}`,
-      searchText: item.searchText ?? (item as ReadingCatalogItem & { search_text?: string }).search_text ?? "",
+      searchText: searchTextByItemId.get(item.itemId)
+        ?? item.searchText
+        ?? (item as ReadingCatalogItem & { search_text?: string }).search_text
+        ?? "",
       occurrenceDates: item.occurrenceDates ?? [],
       occurrenceCount: item.occurrenceCount ?? 0,
       firstSeenDate: item.firstSeenDate,
@@ -100,7 +122,10 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
       defaultIndex
     };
   });
-  const filteredItems = filterAndSortCatalogItems(filterReadingCatalogByLength(
+  const normalizedQuery = normalizeCatalogSearchText(debouncedQuery);
+  const searchIndexRequired = normalizedQuery.length > 0;
+  const searchIndexBlocked = searchIndexRequired && !searchIndexState.data;
+  const filteredItems = searchIndexBlocked ? [] : filterAndSortCatalogItems(filterReadingCatalogByLength(
     discoveryItems,
     taskType === "rdl" ? lengthFilter : "all"
   ), {
@@ -135,31 +160,50 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
         rdlLengthFilter={taskType === "rdl" ? { onChange: setLengthFilter, value: lengthFilter } : undefined}
         value={controls}
       />
-      <PracticeSetCatalogList
-        emptyState={state.data.items.length
-          ? <CatalogFilteredEmptyState onClear={clearControls} />
-          : <StudentEmptyState text={`暂无可练习的 ${READING_PRODUCT_NAMES[taskType]} 题目。`} />}
-        renderActions={(set) => <ReadingCatalogActions item={items.find((item) => item.itemId === set.setId)!} />}
-        renderStatus={(set) => <ReadingCatalogStatusBadge status={items.find((item) => item.itemId === set.setId)!.status} />}
-        sets={items.map((item) => {
-          const title = readingCatalogTitleParts(item);
-          return {
-            icon: STUDENT_PRACTICE_ICONS[item.taskType],
-            setId: item.itemId,
-            setTitle: item.title,
-            titlePrefix: title.prefix,
-            titleSuffix: title.suffix,
-            questionCount: item.taskType === "ctw" ? item.scoringPointCount : item.questionCount,
-            metadata: <ReadingCatalogMetadata item={item} />
-          };
-        })}
-      />
-      <ReadingCatalogPagination
-        onChange={setPage}
-        page={visiblePage}
-        totalItems={filteredItems.length}
-        totalPages={totalPages}
-      />
+      {searchIndexBlocked && !searchIndexState.error ? (
+        <StudentLoadingState text="搜索数据加载中，请稍候…" />
+      ) : null}
+      {searchIndexBlocked && searchIndexState.error ? (
+        <div className="grid justify-items-center gap-3">
+          <StudentErrorState text="搜索数据加载失败，请重试。" />
+          <button
+            className="student-button-secondary min-h-9 px-3 py-1.5"
+            onClick={() => cache.invalidate(searchIndexKey)}
+            type="button"
+          >
+            重新加载搜索数据
+          </button>
+        </div>
+      ) : null}
+      {searchIndexBlocked ? null : (
+        <>
+          <PracticeSetCatalogList
+            emptyState={state.data.items.length
+              ? <CatalogFilteredEmptyState onClear={clearControls} />
+              : <StudentEmptyState text={`暂无可练习的 ${READING_PRODUCT_NAMES[taskType]} 题目。`} />}
+            renderActions={(set) => <ReadingCatalogActions item={items.find((item) => item.itemId === set.setId)!} />}
+            renderStatus={(set) => <ReadingCatalogStatusBadge status={items.find((item) => item.itemId === set.setId)!.status} />}
+            sets={items.map((item) => {
+              const title = readingCatalogTitleParts(item);
+              return {
+                icon: STUDENT_PRACTICE_ICONS[item.taskType],
+                setId: item.itemId,
+                setTitle: item.title,
+                titlePrefix: title.prefix,
+                titleSuffix: title.suffix,
+                questionCount: item.taskType === "ctw" ? item.scoringPointCount : item.questionCount,
+                metadata: <ReadingCatalogMetadata item={item} />
+              };
+            })}
+          />
+          <ReadingCatalogPagination
+            onChange={setPage}
+            page={visiblePage}
+            totalItems={filteredItems.length}
+            totalPages={totalPages}
+          />
+        </>
+      )}
     </div>
   );
 }
