@@ -35,14 +35,18 @@ Every ID/order/reference, rendered passage, `prefix + missingText = answer`, and
 
 Fixed header:
 
-`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,source_question_number,material_id,title,question_order,question_stem,raw_display_text,options_json,correct_option_id`
+`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,source_question_number,material_id,material_type,instruction,title,question_order,question_stem,raw_display_text,options_json,correct_option_id`
 
 One row is one question; equal common/group fields form one full material + question group. Question count is not hard-coded.
 
 - `material_id`: canonical `RDL-NNN` only. URLs, object keys, buckets, hostnames, and local paths are not accepted columns.
+- `material_type`: stable material classification (for example `advertisement`, `email`, `notice`). It never generates the display instruction.
+- `instruction`: the complete authoritative instruction text from the original question, for example `Read an advertisement.` or `Read some instructions.`. TPS stores it exactly as received (only surrounding whitespace is trimmed) and never rewrites articles or wording. Every row in one source group must repeat the same value.
 - `title`: real canonical material title, never `题目037` or another display label.
 - `options_json`: ordered array of `{optionId,optionOrder,text}`.
 - `correct_option_id`: references an `optionId` in that row.
+
+`instruction` is required when the import establishes the first question set for a material that has no canonical instruction yet; the dry-run reports it as a validation error otherwise. For an already established material the canonical instruction is reused as-is and a legacy CSV without the column stays importable; the stored canonical value is never overwritten by a later occurrence.
 
 The database material must already exist, be `bound`, and have both frozen production keys:
 `reading/rdl/<MATERIAL_ID>/material_final.png` and `reading/rdl/<MATERIAL_ID>/selection_map.json`.

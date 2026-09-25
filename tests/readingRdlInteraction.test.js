@@ -87,7 +87,7 @@ test("RDL workspace uses the shared fixed 52:48 shell and separator-free custom 
   assert.match(rdlSource, /items-start justify-center/);
   assert.match(rdlSource, /style=\{\{ objectPosition: "center top" \}\}/);
   assert.match(rdlSource, /top: imageBounds\.top - stageBounds\.top/);
-  assert.match(rdlSource, /title=\{material\.materialType[\s\S]*?rdlMaterialInstruction\(material\.materialType\)/);
+  assert.match(rdlSource, /title=\{rdlDisplayInstruction\(material\)\}/);
   assert.doesNotMatch(rdlSource, />Read in Daily Life</);
   assert.doesNotMatch(source, /object-cover/);
   assert.doesNotMatch(rdlSource, /Click a word or drag across characters|<figcaption/);

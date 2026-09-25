@@ -52,6 +52,12 @@ export function adaptReadingCsv(input: {
   sourceFile: string;
   materials?: Map<string, ReadingMaterial>;
   allowRegisteredMaterialStorageKeys?: boolean;
+  /**
+   * Material IDs that have no canonical instruction and no stored RDL
+   * question set yet. Their first import must supply the full source
+   * instruction; legacy reuse of established materials stays optional.
+   */
+  requireInstructionForMaterialIds?: ReadonlySet<string>;
 }): ReadingCsvAdapterResult {
   const grouped = groupRows(input.rows);
   const candidates: ReadingSourceOccurrenceCandidate[] = [];
@@ -65,7 +71,8 @@ export function adaptReadingCsv(input: {
         group.rows,
         input.sourceFile,
         input.materials,
-        input.allowRegisteredMaterialStorageKeys
+        input.allowRegisteredMaterialStorageKeys,
+        input.requireInstructionForMaterialIds
       );
       const identity = [
         candidate.source.sourceKind,
@@ -124,7 +131,8 @@ function buildCandidate(
   rows: RowGroup["rows"],
   sourceFile: string,
   materials?: Map<string, ReadingMaterial>,
-  allowRegisteredMaterialStorageKeys = false
+  allowRegisteredMaterialStorageKeys = false,
+  requireInstructionForMaterialIds?: ReadonlySet<string>
 ): ReadingSourceOccurrenceCandidate {
   if (rows.length === 0) throw new Error("group contains no rows");
   const first = rows[0];
@@ -198,6 +206,19 @@ function buildCandidate(
     if (!isRdlMaterialType(materialType)) {
       throw new Error(`unsupported material_type ${materialType}`);
     }
+    // instruction is canonical material data. It is never generated from
+    // material_type and never rewritten beyond a trim; the stored canonical
+    // instruction wins for an already-established material.
+    const csvInstruction = optional(first, "instruction");
+    const storedInstruction = typeof material.instruction === "string" && material.instruction.trim()
+      ? material.instruction.trim()
+      : null;
+    const instruction = storedInstruction ?? csvInstruction ?? null;
+    if (!instruction && requireInstructionForMaterialIds?.has(materialId)) {
+      throw new Error(
+        `Missing instruction: new canonical RDL material ${materialId} requires the full original instruction text`
+      );
+    }
     const title = reconcileIncomingRdlTitle(
       optional(first, "title"),
       material.title,
@@ -206,8 +227,9 @@ function buildCandidate(
     const questions: ReadingSourceQuestion[] = orderedRows.map((row, index) => {
       if (required(row, "material_id") !== materialId
         || required(row, "material_type") !== materialType
+        || optional(row, "instruction") !== csvInstruction
         || reconcileIncomingRdlTitle(optional(row, "title"), material.title, `RDL title for ${materialId}`) !== title) {
-        throw new Error(`material_id/material_type/title conflicts within source group ${sourceGroupId}`);
+        throw new Error(`material_id/material_type/instruction/title conflicts within source group ${sourceGroupId}`);
       }
       const sourceNumber = positiveInteger(required(row, "source_question_number"), "source_question_number");
       return {
@@ -231,7 +253,7 @@ function buildCandidate(
     return baseCandidate(
       "rdl",
       title,
-      [{ ...material, title, materialType }],
+      [{ ...material, title, materialType, instruction }],
       [],
       questions,
       sourceStart,

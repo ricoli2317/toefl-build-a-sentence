@@ -103,6 +103,7 @@ export type StudentReadingPracticePayload = {
     materialId: string;
     title: string;
     materialType: RdlMaterialType | null;
+    instruction: string | null;
     imageUrl: string;
     selectionMapUrl: string;
     imageSha256: string | null;
@@ -187,6 +188,7 @@ export function toStudentReadingPracticePayload(
           materialId: material.materialId,
           title: canonicalRdlTitle!,
           materialType: material.materialType,
+          instruction: material.instruction ?? null,
           imageUrl: resolveReadingAssetUrl(material.imageAssetPath, assetBaseUrl),
           selectionMapUrl: resolveReadingAssetUrl(material.hitboxDataPath, assetBaseUrl),
           imageSha256: null,
@@ -420,7 +422,7 @@ export async function loadStudentReadingPractice(
       { query: "practice_asset_metadata", dependsOn: ["practice_question_options"] },
       () => db
         .from("reading_materials")
-        .select("material_id,title,material_type,binding_status,image_asset_path,hitbox_data_path,updated_at")
+        .select("material_id,title,material_type,instruction,binding_status,image_asset_path,hitbox_data_path,updated_at")
         .eq("material_id", materialId)
         .maybeSingle()
     );
@@ -476,6 +478,9 @@ export async function loadStudentReadingPractice(
         materialId,
         title: canonicalRdlTitle,
         materialType,
+        instruction: material.instruction === null || material.instruction === undefined
+          ? null
+          : String(material.instruction),
         imageUrl,
         selectionMapUrl,
         imageSha256: verifiedSelection?.imageSha256 ?? null,

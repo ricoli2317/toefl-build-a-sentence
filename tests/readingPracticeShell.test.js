@@ -266,7 +266,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
     shellSource.indexOf("export function ReadingQuestionViewport")
   );
   assert.doesNotMatch(choiceListSource, /justify-between|justify-around|space-evenly/);
-  assert.match(shellSource, /rdlMaterialInstruction\(material\.materialType\)/);
+  assert.match(shellSource, /rdlDisplayInstruction\(material\)/);
   assert.doesNotMatch(shellSource, /title=\{material\.title\}/);
 });
 

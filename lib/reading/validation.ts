@@ -307,6 +307,16 @@ function validateMaterial(value: unknown, path: string, context: ValidationConte
     fail("must be a supported RDL material type or null", `${path}.materialType`, context);
   }
   material.materialType = materialType;
+  const instruction = material.instruction;
+  if (instruction === undefined || instruction === null) {
+    material.instruction = null;
+  } else if (typeof instruction !== "string") {
+    fail("must be a string or null", `${path}.instruction`, context);
+  } else {
+    // Canonical instruction text is preserved exactly; only surrounding
+    // whitespace is normalized. It is never derived from materialType.
+    material.instruction = instruction.trim() ? instruction.trim() : null;
+  }
   nonEmptyString(material.source, `${path}.source`, context);
   nullableDate(material.sourceDate, `${path}.sourceDate`, context);
   yearMonth(material.yearMonth, `${path}.yearMonth`, context);

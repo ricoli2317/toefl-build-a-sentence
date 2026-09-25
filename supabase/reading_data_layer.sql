@@ -47,6 +47,7 @@ create table if not exists public.reading_materials (
   material_type text not null check (
     material_type ~ '^[a-z][a-z0-9]*(_[a-z0-9]+)*$'
   ),
+  instruction text,
   source text not null,
   source_date date,
   year_month text not null check (year_month ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'),

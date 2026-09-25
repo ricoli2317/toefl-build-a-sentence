@@ -796,7 +796,7 @@ test("atomic migration is idempotent and preserves the earlier first-seen tuple"
   assert.match(sql, /numeric source-label/);
   assert.match(sql, /on conflict \(occurrence_id\) do update/);
   assert.match(sql, /on conflict \(occurrence_id, question_id\) do update/);
-  assert.match(sql, /material_id, title, material_type, source/);
+  assert.match(sql, /material_id, title, material_type, instruction, source/);
 });
 
 function businessKeys(rows) {

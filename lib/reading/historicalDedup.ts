@@ -52,7 +52,7 @@ export async function loadHistoricalReadingPackages(
     selectIn(supabase, "reading_rap_insertion_anchors", "question_id,passage_id,anchor_id,anchor_order,paragraph_id,boundary_index,after_sentence_id", "question_id", questionIds),
     selectIn(supabase, "reading_passage_paragraphs", "passage_id,paragraph_id,paragraph_order,paragraph_text,raw_text", "passage_id", passageIds),
     selectIn(supabase, "reading_passage_sentences", "passage_id,paragraph_id,sentence_id,sentence_order,sentence_text", "passage_id", passageIds),
-    selectIn(supabase, "reading_materials", "material_id,title,material_type,source,source_date,year_month,binding_status,image_asset_path,hitbox_data_path,catalog_search_text", "material_id", materialIds)
+    selectIn(supabase, "reading_materials", "material_id,title,material_type,instruction,source,source_date,year_month,binding_status,image_asset_path,hitbox_data_path,catalog_search_text", "material_id", materialIds)
   ]);
 
   const optionsByQuestion = grouped(optionRows, "question_id");
@@ -422,6 +422,7 @@ function material(row: Row): ReadingMaterial {
     materialId: text(row.material_id),
     title: nullableText(row.title),
     materialType: nullableText(row.material_type) as ReadingMaterial["materialType"],
+    instruction: nullableText(row.instruction),
     source: text(row.source),
     sourceDate: nullableText(row.source_date),
     yearMonth: text(row.year_month),

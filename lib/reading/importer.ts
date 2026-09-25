@@ -1164,6 +1164,7 @@ function buildReadingImportRowsUnchecked(
       material_id: material.materialId,
       title: material.title,
       material_type: material.materialType,
+      instruction: material.instruction ?? null,
       source: material.source,
       source_date: material.sourceDate,
       year_month: material.yearMonth,

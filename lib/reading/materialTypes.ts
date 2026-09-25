@@ -59,6 +59,21 @@ export function rdlMaterialInstruction(materialType: RdlMaterialType): string | 
     : null;
 }
 
+/**
+ * Runtime RDL instruction precedence: the canonical material instruction is
+ * authoritative. The legacy material_type mapping is only a compatibility
+ * fallback for historical rows whose instruction has not been backfilled yet.
+ */
+export function rdlDisplayInstruction(input: {
+  instruction?: string | null;
+  materialType: RdlMaterialType | null;
+}): string {
+  const canonical = input.instruction?.trim();
+  if (canonical) return canonical;
+  if (input.materialType) return rdlMaterialInstruction(input.materialType) ?? "Read the material.";
+  return "Reading material instruction unavailable.";
+}
+
 export function rdlMaterialTypeFromInstruction(instruction: string): KnownRdlMaterialType | null {
   return RDL_MATERIAL_TYPE_BY_INSTRUCTION.get(normalizeInstruction(instruction)) ?? null;
 }

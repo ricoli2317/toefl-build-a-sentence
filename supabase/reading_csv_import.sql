@@ -1,7 +1,10 @@
 -- One transaction boundary for one normalized ReadingImportPackage.
--- No new tables/columns are required. Existing canonical content changes only
+-- Requires supabase/reading_material_instruction.sql (reading_materials.instruction)
+-- to have been applied. Existing canonical content changes only
 -- when the caller sends an explicitly confirmed replace_canonical_content flag;
--- RDL display-title normalization remains safe on ordinary reuse.
+-- RDL display-title normalization remains safe on ordinary reuse. The canonical
+-- RDL instruction is frozen when a material's first question set is created and
+-- is never overwritten by later occurrences.
 
 create or replace function public.import_reading_package_atomic(
   p_rows jsonb,
@@ -25,6 +28,7 @@ declare
   v_existing_question_count integer := 0;
   v_question_count integer := 0;
   v_replace_canonical_content boolean := false;
+  v_missing_instruction_material_ids text;
 begin
   if jsonb_array_length(coalesce(p_rows->'reading_logical_items', '[]'::jsonb)) <> 1 then
     raise exception 'Reading atomic import requires exactly one logical item';
@@ -125,14 +129,48 @@ begin
     from jsonb_to_recordset(coalesce(p_rows->'reading_questions', '[]'::jsonb)) as x(question_id text)
   );
 
+  -- A new canonical RDL material must be created with its full source
+  -- instruction. Materials that already have a canonical instruction, or that
+  -- already have stored RDL questions, are established: their historical rows
+  -- keep instruction = NULL until the separate manual backfill, and legacy
+  -- reuse never requires a regenerated material CSV.
+  select string_agg(x.material_id, ', ' order by x.material_id)
+  into v_missing_instruction_material_ids
+  from jsonb_to_recordset(coalesce(p_rows->'reading_materials', '[]'::jsonb)) as x(
+    material_id text, instruction text
+  )
+  where nullif(btrim(x.instruction), '') is null
+    and not exists (
+      select 1
+      from public.reading_materials existing
+      where existing.material_id = x.material_id
+        and nullif(btrim(existing.instruction), '') is not null
+    )
+    and not exists (
+      select 1
+      from public.reading_questions question
+      where question.material_id = x.material_id
+    );
+
+  if v_missing_instruction_material_ids is not null then
+    raise exception using
+      errcode = 'P0001',
+      message = format(
+        'READING_RDL_MATERIAL_INSTRUCTION_REQUIRED material_ids=%s',
+        v_missing_instruction_material_ids
+      ),
+      hint = 'Provide the full canonical source instruction for a new RDL material before creating its first question set.';
+  end if;
+
   insert into public.reading_materials (
-    material_id, title, material_type, source, source_date, year_month, binding_status,
+    material_id, title, material_type, instruction, source, source_date, year_month, binding_status,
     image_asset_path, hitbox_data_path, catalog_search_text
   )
-  select material_id, title, material_type, source, source_date, year_month, binding_status,
+  select material_id, title, material_type, instruction, source, source_date, year_month, binding_status,
     image_asset_path, hitbox_data_path, catalog_search_text
   from jsonb_to_recordset(coalesce(p_rows->'reading_materials', '[]'::jsonb)) as x(
-    material_id text, title text, material_type text, source text, source_date date, year_month text,
+    material_id text, title text, material_type text, instruction text, source text,
+    source_date date, year_month text,
     binding_status text, image_asset_path text, hitbox_data_path text, catalog_search_text text
   )
   on conflict (material_id) do update set
@@ -143,6 +181,20 @@ begin
     material_type = case
       when v_replace_canonical_content then excluded.material_type
       else reading_materials.material_type
+    end,
+    -- The canonical instruction is frozen when the material's first question
+    -- set is created. Ordinary reuse never overwrites it, even when a later
+    -- source occurrence carries different instruction text.
+    instruction = case
+      when reading_materials.instruction is not null then reading_materials.instruction
+      when nullif(btrim(excluded.instruction), '') is not null
+        and not exists (
+          select 1
+          from public.reading_questions question
+          where question.material_id = reading_materials.material_id
+        )
+        then excluded.instruction
+      else reading_materials.instruction
     end,
     catalog_search_text = case
       when nullif(btrim(excluded.catalog_search_text), '') is not null then excluded.catalog_search_text

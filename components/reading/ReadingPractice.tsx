@@ -86,7 +86,7 @@ import {
   validateRapInsertionAnchors,
   validateRapSentenceTarget
 } from "@/lib/reading/rapInteraction";
-import { rdlMaterialInstruction } from "@/lib/reading/materialTypes";
+import { rdlDisplayInstruction } from "@/lib/reading/materialTypes";
 import {
   readingLookupEnabled,
   type ReadingPracticeMode
@@ -2050,9 +2050,7 @@ function RdlPracticeWorkspace({
       </ReadingQuestionColumn>
       )}
       testId="rdl-workspace"
-      title={material.materialType
-        ? rdlMaterialInstruction(material.materialType) ?? "Read the material."
-        : "Reading material instruction unavailable."}
+      title={rdlDisplayInstruction(material)}
       titleId="rdl-material-title"
     />
   );

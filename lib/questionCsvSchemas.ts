@@ -1,6 +1,7 @@
 import {
   COMPLETE_THE_WORDS_HEADERS,
   LEGACY_READ_AN_ACADEMIC_PASSAGE_HEADERS,
+  LEGACY_READ_IN_DAILY_LIFE_HEADERS,
   READ_AN_ACADEMIC_PASSAGE_HEADERS,
   READ_IN_DAILY_LIFE_HEADERS
 } from "./reading/csvSchemas.ts";
@@ -108,6 +109,9 @@ export function detectQuestionType(headers: readonly string[]): QuestionType {
   );
   if (headersExactlyMatch(normalizedHeaders, LEGACY_READ_AN_ACADEMIC_PASSAGE_HEADERS)) {
     return "read_an_academic_passage";
+  }
+  if (headersExactlyMatch(normalizedHeaders, LEGACY_READ_IN_DAILY_LIFE_HEADERS)) {
+    return "read_in_daily_life";
   }
   const match = (Object.entries(QUESTION_TYPE_SCHEMAS) as Array<
     [KnownQuestionType, readonly string[]]

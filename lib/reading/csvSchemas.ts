@@ -24,6 +24,7 @@ export const READ_IN_DAILY_LIFE_HEADERS = [
   "source_question_number",
   "material_id",
   "material_type",
+  "instruction",
   "title",
   "question_order",
   "question_stem",
@@ -31,6 +32,10 @@ export const READ_IN_DAILY_LIFE_HEADERS = [
   "options_json",
   "correct_option_id"
 ] as const;
+
+/** RDL CSVs produced before the canonical instruction column was added. */
+export const LEGACY_READ_IN_DAILY_LIFE_HEADERS = READ_IN_DAILY_LIFE_HEADERS
+  .filter((header) => header !== "instruction");
 
 export const READ_AN_ACADEMIC_PASSAGE_HEADERS = [
   ...READING_SOURCE_HEADERS,

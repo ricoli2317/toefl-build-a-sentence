@@ -69,12 +69,16 @@ async function importReadingCsv(
   const materialCatalog = type === "read_in_daily_life"
     ? await loadMaterials(supabase, rows)
     : undefined;
+  const requireInstructionForMaterialIds = type === "read_in_daily_life" && materialCatalog
+    ? await loadNewCanonicalMaterialIds(supabase, materialCatalog, rows)
+    : undefined;
   const adapted = adaptReadingCsv({
     type,
     rows,
     sourceFile: fileName ?? "reading.csv",
     materials: materialCatalog,
-    allowRegisteredMaterialStorageKeys: type === "read_in_daily_life"
+    allowRegisteredMaterialStorageKeys: type === "read_in_daily_life",
+    requireInstructionForMaterialIds
   });
   const grouped = groupReadingSourceOccurrences(adapted.candidates);
   const preparedPackages = await prepareReadingPackagesForImport(supabase, grouped.packages, {
@@ -522,7 +526,7 @@ async function loadMaterials(
   if (ids.length === 0) return new Map<string, ReadingMaterial>();
   const { data, error } = await supabase
     .from("reading_materials")
-    .select("material_id,title,material_type,source,source_date,year_month,binding_status,image_asset_path,hitbox_data_path,catalog_search_text");
+    .select("material_id,title,material_type,instruction,source,source_date,year_month,binding_status,image_asset_path,hitbox_data_path,catalog_search_text");
   if (error) throw new Error(`read Reading materials: ${error.message}`);
   const materials = await Promise.all((data ?? []).map(async (row) => {
     const materialType = row.material_type === null ? null : String(row.material_type);
@@ -545,6 +549,9 @@ async function loadMaterials(
       materialId: String(row.material_id),
       title: row.title === null ? null : String(row.title),
       materialType,
+      instruction: row.instruction === null || row.instruction === undefined
+        ? null
+        : String(row.instruction),
       source: String(row.source),
       sourceDate: row.source_date === null ? null : String(row.source_date),
       yearMonth: String(row.year_month),
@@ -555,6 +562,33 @@ async function loadMaterials(
     } satisfies ReadingMaterial] as const;
   }));
   return new Map(materials);
+}
+
+/**
+ * Materials whose canonical instruction is still missing and that have no
+ * stored RDL question set yet: their first import establishes canonical
+ * content, so the CSV must carry the full source instruction. Established
+ * (historical) materials keep their current mapping fallback and never
+ * require a regenerated material CSV.
+ */
+async function loadNewCanonicalMaterialIds(
+  supabase: ImporterContext["supabase"],
+  catalog: Map<string, ReadingMaterial>,
+  rows: Array<Record<string, string>>
+) {
+  const ids = Array.from(new Set(rows.map((row) => row.material_id?.trim()).filter(Boolean))) as string[];
+  const missingInstruction = ids.filter((id) => {
+    const instruction = catalog.get(id)?.instruction;
+    return !(typeof instruction === "string" && instruction.trim());
+  });
+  if (missingInstruction.length === 0) return new Set<string>();
+  const { data, error } = await supabase
+    .from("reading_questions")
+    .select("material_id")
+    .in("material_id", missingInstruction);
+  if (error) throw new Error(`read Reading material usage: ${error.message}`);
+  const used = new Set((data ?? []).map((row) => String(row.material_id)));
+  return new Set(missingInstruction.filter((id) => !used.has(id)));
 }
 
 const sourceLabelCollator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });

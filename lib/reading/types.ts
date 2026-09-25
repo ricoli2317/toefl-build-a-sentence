@@ -58,6 +58,12 @@ export type ReadingMaterial = {
   materialId: string;
   title: string | null;
   materialType: RdlMaterialType | null;
+  /**
+   * Canonical RDL display instruction from the original question, for example
+   * "Read an event program.". Independent from materialType; null for
+   * historical rows that have not been backfilled yet.
+   */
+  instruction?: string | null;
   source: string;
   sourceDate: string | null;
   yearMonth: string;
