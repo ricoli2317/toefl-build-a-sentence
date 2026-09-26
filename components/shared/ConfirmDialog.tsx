@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 /**
  * Shared modal shell + yes/no confirm dialog. The project keeps its existing
  * purple card visual language: no new design system, just the same border,
  * radius, shadow, and button classes used elsewhere.
+ *
+ * The dialog is portaled to document.body. Some shells (for example the
+ * Student header, which uses backdrop-filter) become the containing block for
+ * fixed-position descendants, which would otherwise anchor the "fixed" overlay
+ * to a 72px header instead of the viewport and clip the dialog's top.
+ * The panel is also capped to the viewport height and scrolls internally so
+ * top content and the action buttons stay reachable on short viewports.
  */
 export function ModalShell({
   open,
@@ -28,22 +36,27 @@ export function ModalShell({
   }, [open, dismissible, onClose]);
 
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center px-5 py-8">
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain">
       <button
         aria-label="关闭对话框"
-        className="absolute inset-0 cursor-default bg-student-text/25"
+        className="fixed inset-0 cursor-default bg-student-text/25"
         onClick={dismissible ? onClose : undefined}
         type="button"
       />
-      <div
-        aria-modal="true"
-        className="relative w-full max-w-[420px] rounded-2xl border border-student-border bg-white p-6 shadow-[0_22px_70px_rgba(44,35,99,0.18)]"
-        role="dialog"
-      >
-        {children}
+      <div className="relative flex min-h-full items-center justify-center px-5 py-6">
+        <div
+          aria-modal="true"
+          className="relative max-h-[calc(100dvh-3rem)] w-full max-w-[420px] overflow-y-auto rounded-2xl border border-student-border bg-white p-6 shadow-[0_22px_70px_rgba(44,35,99,0.18)]"
+          role="dialog"
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

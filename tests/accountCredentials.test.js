@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   describeLoginErrorMessage,
   describePasswordChangeError,
+  passwordResetWaitingMessage,
   validatePasswordChangeInput
 } from "../lib/accountCredentials.ts";
 
@@ -53,4 +54,11 @@ test("Auth error messages map to short user-facing text", () => {
 test("login error messages surface banned accounts", () => {
   assert.equal(describeLoginErrorMessage("User is banned"), "账号已停用，请联系管理员。");
   assert.equal(describeLoginErrorMessage("Invalid login credentials"), "Invalid login credentials");
+});
+
+test("forgot-password wait message follows the server-resolved account role", () => {
+  assert.equal(passwordResetWaitingMessage("student"), "请等待教师许可");
+  assert.equal(passwordResetWaitingMessage("teacher"), "请等待管理员许可");
+  assert.equal(passwordResetWaitingMessage(null), "请等待教师许可");
+  assert.equal(passwordResetWaitingMessage(undefined), "请等待教师许可");
 });

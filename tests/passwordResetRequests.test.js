@@ -50,7 +50,7 @@ function baseTables() {
 test("create request: student account creates one pending row with the profile role", async () => {
   const { db, tables } = createDb(baseTables());
   const result = await createPasswordResetRequestByAccount(db, "student1");
-  assert.deepEqual(result, { ok: true });
+  assert.deepEqual(result, { ok: true, role: "student" });
 
   assert.equal(tables.password_reset_requests.length, 1);
   const row = tables.password_reset_requests[0];
@@ -104,7 +104,7 @@ test("create request: three repeated requests keep a single refreshed pending ro
 test("create request: teacher account creates a teacher-role request", async () => {
   const { db, tables } = createDb(baseTables());
   const result = await createPasswordResetRequestByAccount(db, "teacher1");
-  assert.deepEqual(result, { ok: true });
+  assert.deepEqual(result, { ok: true, role: "teacher" });
   assert.equal(tables.password_reset_requests[0].account_role, "teacher");
 });
 
@@ -416,4 +416,10 @@ test("routes: teacher/admin/status endpoints keep their server-side permission g
   assert.match(teachersRoute, /readPendingPasswordResetRequestIds/);
   assert.match(teachersRoute, /readPendingPasswordResetRequestIds[\s\S]{0,120}role: "teacher"/);
   assert.doesNotMatch(teachersRoute, /account_role", "student"/);
+
+  const createRoute = await readFile(
+    new URL("../app/api/auth/password-reset-requests/route.ts", import.meta.url),
+    "utf8"
+  );
+  assert.match(createRoute, /role: result\.role/);
 });

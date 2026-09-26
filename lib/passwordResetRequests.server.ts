@@ -20,7 +20,7 @@ export type PasswordResetRequestRow = {
 };
 
 export type CreatePasswordResetOutcome =
-  | { ok: true }
+  | { ok: true; role: PasswordResetTargetRole }
   | { ok: false; status: number; message: string };
 
 export type ResolvePasswordResetOutcome =
@@ -74,7 +74,7 @@ export async function createPasswordResetRequestByAccount(
   if (!saved.ok) {
     return { ok: false, status: 500, message: "请求提交失败，请稍后重试。" };
   }
-  return { ok: true };
+  return { ok: true, role: profile.role };
 }
 
 /**

@@ -66,3 +66,12 @@ export function describeForgotPasswordError(rawMessage: string | null | undefine
   if (/[\u3400-\u9fff]/.test(message)) return message;
   return "请求提交失败，请稍后重试。";
 }
+
+/**
+ * Success message for a submitted forgot-password request, keyed by the
+ * account role the server actually resolved (never guessed from the account
+ * string on the client).
+ */
+export function passwordResetWaitingMessage(role: string | null | undefined) {
+  return role === "teacher" ? "请等待管理员许可" : "请等待教师许可";
+}

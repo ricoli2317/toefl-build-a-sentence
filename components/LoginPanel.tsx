@@ -7,7 +7,8 @@ import { ArrowRight, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
 import { ConfirmDialog, ModalShell } from "@/components/shared/ConfirmDialog";
 import {
   describeForgotPasswordError,
-  describeLoginErrorMessage
+  describeLoginErrorMessage,
+  passwordResetWaitingMessage
 } from "@/lib/accountCredentials";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { resolveLoginAuthEmail } from "@/lib/accountIdentifier";
@@ -24,6 +25,9 @@ export function LoginPanel() {
   const [forgotStage, setForgotStage] = useState<ForgotPasswordStage>("closed");
   const [forgotBusy, setForgotBusy] = useState(false);
   const [forgotError, setForgotError] = useState("");
+  const [forgotSuccessMessage, setForgotSuccessMessage] = useState(
+    passwordResetWaitingMessage("student")
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -69,10 +73,16 @@ export function LoginPanel() {
         body: JSON.stringify({ account: trimmed }),
         cache: "no-store"
       });
-      const payload = (await response.json().catch(() => ({}))) as { message?: string };
+      const payload = (await response.json().catch(() => ({}))) as {
+        message?: string;
+        role?: unknown;
+      };
       if (!response.ok) {
         throw new Error(payload.message ?? "请求提交失败，请稍后重试。");
       }
+      setForgotSuccessMessage(passwordResetWaitingMessage(
+        typeof payload.role === "string" ? payload.role : null
+      ));
       setForgotStage("success");
     } catch (submitError) {
       setForgotError(
@@ -177,7 +187,7 @@ export function LoginPanel() {
               }}
               type="button"
             >
-              忘记密码
+              忘记密码？
             </button>
           </div>
           <div className="relative mt-1.5">
@@ -226,7 +236,7 @@ export function LoginPanel() {
         onConfirm={() => void submitForgotRequest()}
       />
       <ModalShell open={forgotStage === "success"} onClose={closeForgotDialog}>
-        <p className="text-base font-bold text-student-text">请等待教师许可</p>
+        <p className="text-base font-bold text-student-text">{forgotSuccessMessage}</p>
         <div className="mt-6 flex justify-end">
           <button className="teacher-button-primary" onClick={closeForgotDialog} type="button">
             确定
