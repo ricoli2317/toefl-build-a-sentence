@@ -3,6 +3,7 @@ import { bearerToken, requireAdmin } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { prepareNewAccount } from "@/lib/accountIdentifier";
+import { readPendingPasswordResetRequestIds } from "@/lib/passwordResetRequests.server";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ type TeacherRow = {
   email: string | null;
   full_name: string | null;
   student_account_limit: number;
+  is_active: boolean | null;
 };
 type StudentOwnerRow = { owner_id: string | null };
 
@@ -28,10 +30,12 @@ export async function GET(request: Request) {
   if (auth.error) return json({ message: "仅管理员可以查看教师账号。" }, { status: 403 });
   try {
     const db = createServiceSupabase();
+    // Inactive teachers stay listed so Admin can re-enable them; the status
+    // control is the only enable/disable entry point.
     const [teachers, owners] = await Promise.all([
       readAllSupabaseRows<TeacherRow>((from, to) => db.from("profiles")
-        .select("id,email,full_name,student_account_limit")
-        .eq("role", "teacher").eq("is_active", true)
+        .select("id,email,full_name,student_account_limit,is_active")
+        .eq("role", "teacher")
         .order("full_name", { ascending: true, nullsFirst: false }).range(from, to)),
       readAllSupabaseRows<StudentOwnerRow>((from, to) => db.from("profiles")
         .select("owner_id").eq("role", "student").eq("is_active", true)
@@ -42,12 +46,21 @@ export async function GET(request: Request) {
     for (const row of owners.data ?? []) {
       if (row.owner_id) counts.set(row.owner_id, (counts.get(row.owner_id) ?? 0) + 1);
     }
+
+    const teacherIds = (teachers.data ?? []).map((teacher) => String(teacher.id));
+    const pendingByTeacher = await readPendingPasswordResetRequestIds(db, {
+      userIds: teacherIds,
+      role: "teacher"
+    });
+
     return json({ teachers: (teachers.data ?? []).map((teacher) => ({
       id: teacher.id,
       email: teacher.email ?? "",
       displayName: getPreferredUserDisplayName({ email: teacher.email, profileFullName: teacher.full_name }),
       studentCount: counts.get(teacher.id) ?? 0,
-      studentAccountLimit: teacher.student_account_limit
+      studentAccountLimit: teacher.student_account_limit,
+      isActive: teacher.is_active !== false,
+      passwordResetRequestId: pendingByTeacher.get(String(teacher.id)) ?? null
     })) });
   } catch (error) {
     return json({ message: error instanceof Error ? error.message : "教师列表加载失败。" }, { status: 500 });

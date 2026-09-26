@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { UserRound } from "lucide-react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { useCurrentAccount } from "@/components/RoleGate";
@@ -8,6 +8,7 @@ import { TeacherCard, TeacherEmptyState, TeacherSectionTitle } from "@/component
 import { AccountTabs } from "@/components/teacher/TeacherAccounts";
 import { TeacherStudentOverviewList } from "@/components/teacher/TeacherStudentOverview";
 import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
+import { AccountStatusControl } from "@/components/shared/AccountStatusControl";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
@@ -44,16 +45,27 @@ export function AdminStudentsList() {
   const [students, setStudents] = useState<StudentAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const loadSequence = useRef(0);
   const load = useCallback(async () => {
+    const sequence = ++loadSequence.current;
     setLoading(true);
     const res = await authorizedFetch("/api/admin/students");
     const payload = await res.json().catch(() => ({})) as { students?: StudentAccount[]; error?: string };
+    // A stale response may never overwrite a newer list or a status change
+    // that already completed.
+    if (sequence !== loadSequence.current) return;
     setLoading(false);
     if (!res.ok) return setError(payload.error ?? "学生列表加载失败。");
     setError("");
     setStudents(payload.students ?? []);
   }, []);
   useEffect(() => { void load(); }, [load]);
+
+  const updateStudentStatus = useCallback((studentId: string, isActive: boolean) => {
+    setStudents((current) =>
+      current.map((student) => (student.id === studentId ? { ...student, isActive } : student))
+    );
+  }, []);
 
   async function renameStudent(studentId: string, fullName: string) {
     const res = await authorizedFetch(`/api/admin/students/${encodeURIComponent(studentId)}`, {
@@ -108,10 +120,12 @@ export function AdminStudentsList() {
                     </div>
                   </td>
                   <td className="px-3 py-4 text-student-muted">账号：{formatAccountForDisplay(student.email)}</td>
-                  <td className="px-3 py-4 font-semibold">
-                    <span className={student.isActive ? "text-student-primary" : "text-student-muted"}>
-                      {student.isActive ? "启用" : "已停用"}
-                    </span>
+                  <td className="px-3 py-4">
+                    <AccountStatusControl
+                      accountId={student.id}
+                      isActive={student.isActive}
+                      onChanged={(isActive) => updateStudentStatus(student.id, isActive)}
+                    />
                   </td>
                 </tr>
               ))}

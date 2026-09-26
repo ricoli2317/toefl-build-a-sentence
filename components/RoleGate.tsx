@@ -98,6 +98,7 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
         return;
       }
       const payload = await response.json().catch(() => ({})) as {
+        code?: string;
         defaultRoute?: string;
         displayName?: string;
         role?: UserRole;
@@ -106,6 +107,12 @@ export function RoleGate({ area, children }: { area: AppArea; children: React.Re
       if (cancelled) return;
       if (!response.ok || !payload.role || !payload.userId) {
         clearCachedAccount(area);
+        // A deactivated account cannot keep using its existing session: send it
+        // back to the login page, where the disabled state is explained.
+        if (payload.code === "ACCOUNT_DISABLED") {
+          router.replace("/login");
+          return;
+        }
         if (response.status === 403) {
           setConfigurationError(true);
           return;

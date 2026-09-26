@@ -18,6 +18,7 @@ import {
   TeacherTextLink
 } from "@/components/teacher/TeacherUI";
 import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
+import { PasswordResetApprovalPrompt } from "@/components/shared/PasswordResetApprovalPrompt";
 import { TeacherStudentHeaderActions } from "@/components/teacher/TeacherStudentHeaderActions";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
@@ -80,6 +81,29 @@ export function TeacherStudentOverviewList({
     cache.invalidate(TEACHER_STUDENT_OVERVIEW_CACHE_KEY);
     publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED" });
     return result.student?.displayName ?? fullName;
+  }
+
+  /**
+   * Approve/reject only changes one request id on one row, so the cached list
+   * is patched in place. Reading the latest cache entry at click time plus the
+   * cache generation guard means an in-flight stale response can never
+   * resurrect the resolved request or overwrite the new state.
+   */
+  function handleResetRequestResolved(studentId: string) {
+    const entry = cache.getEntry(TEACHER_STUDENT_OVERVIEW_CACHE_KEY);
+    const latest =
+      entry?.status === "success" || entry?.status === "refreshing"
+        ? (entry.data as StudentOverviewResponse)
+        : null;
+    if (!latest) return;
+    cache.set<StudentOverviewResponse>(TEACHER_STUDENT_OVERVIEW_CACHE_KEY, {
+      ...latest,
+      students: latest.students.map((student) =>
+        student.studentId === studentId
+          ? { ...student, passwordResetRequestId: null }
+          : student
+      )
+    });
   }
 
   return (
@@ -161,7 +185,7 @@ export function TeacherStudentOverviewList({
                         key={entry.student.studentId}
                       >
                         <td className="px-3 py-3">
-                          <div className="flex items-center gap-3">
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                             <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
                               <UserRound aria-hidden="true" size={20} strokeWidth={1.9} />
                             </span>
@@ -178,6 +202,13 @@ export function TeacherStudentOverviewList({
                                 </TeacherTextLink>
                               )}
                             />
+                            {entry.student.passwordResetRequestId ? (
+                              <PasswordResetApprovalPrompt
+                                endpoint={`/api/teacher/password-reset-requests/${encodeURIComponent(entry.student.passwordResetRequestId)}/resolve`}
+                                onResolved={() => handleResetRequestResolved(entry.student.studentId)}
+                                prompt="是否允许学生重置密码？"
+                              />
+                            ) : null}
                           </div>
                         </td>
                         <td className="px-3 py-3">

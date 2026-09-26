@@ -175,9 +175,12 @@ export async function canManageStudent(
     .eq("teacher_id", actor.userId)
     .eq("student_id", studentId);
   if (domain) query = query.eq("domain", domain);
-  const { data, error } = await query.maybeSingle();
+  // A teacher may hold BOTH reading and writing bindings for the same student,
+  // so existence is checked with a limited list query. A single-row request
+  // (maybeSingle) errors on the legitimate two-row result.
+  const { data, error } = await query.limit(1);
   if (error) throw error;
-  return Boolean(data);
+  return (data?.length ?? 0) > 0;
 }
 
 /**

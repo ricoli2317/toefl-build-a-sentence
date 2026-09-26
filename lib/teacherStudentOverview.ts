@@ -13,6 +13,12 @@ export type TeacherStudentOverviewEntry = {
   domains: StudentBindingDomain[];
   totalPracticeSeconds: number;
   latestPracticeAt: string | null;
+  /**
+   * The student's single pending forgot-password request, when one exists and
+   * the viewing teacher is bound to the student. Null/undefined hides the
+   * approval prompt entirely.
+   */
+  passwordResetRequestId?: string | null;
 };
 
 export type TeacherStudentOverviewCandidate = {

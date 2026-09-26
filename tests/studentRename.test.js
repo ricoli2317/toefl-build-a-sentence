@@ -249,7 +249,7 @@ test("Student, Teacher, and Admin headers show the profile name instead of the l
   assert.doesNotMatch(teacherShell, /formatAccountForDisplay|loadTeacherEmail|teacher:current-user-email|supabase\.auth\.getUser/);
 
   const studentShell = read("components/student/StudentShell.tsx");
-  assert.match(studentShell, /const \{ displayName \} = useCurrentAccount\(\)/);
+  assert.match(studentShell, /const \{ displayName, role \} = useCurrentAccount\(\)/);
   assert.match(studentShell, /\{displayName\}/);
   assert.doesNotMatch(studentShell, /formatAccountForDisplay/);
 

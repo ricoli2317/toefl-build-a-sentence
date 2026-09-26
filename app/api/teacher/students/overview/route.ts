@@ -9,6 +9,7 @@ import {
   type SupabaseQueryMetric
 } from "@/lib/supabase/debugMetrics.server";
 import { loadTeacherScope } from "@/lib/teacherScope.server";
+import { readPendingPasswordResetRequestIds } from "@/lib/passwordResetRequests.server";
 import {
   buildTeacherStudentOverviewFromSummaries,
   type TeacherStudentOverviewCandidate,
@@ -95,6 +96,14 @@ export async function GET(request: Request) {
         .range(from, to)
     );
 
+    // Pending forgot-password requests are attached only for students this
+    // teacher is currently bound to (the scope is binding-derived), so a
+    // request is globally one row but visible to every bound teacher.
+    const requestIdByStudentId = await readPendingPasswordResetRequestIds(db, {
+      userIds: scope.visibleStudentIds,
+      role: "student"
+    });
+
     const students: TeacherStudentOverviewCandidate[] = scope.visibleStudentIds.map((studentId) => {
       const profile = scope.studentProfiles.get(studentId);
       return {
@@ -110,7 +119,14 @@ export async function GET(request: Request) {
       latestPracticeAt: row.latest_practice_at
     }));
 
-    const response = json({ students: buildTeacherStudentOverviewFromSummaries({ students, summaries: summaryRows }) });
+    const response = json({
+      students: buildTeacherStudentOverviewFromSummaries({ students, summaries: summaryRows }).map(
+        (entry) => ({
+          ...entry,
+          passwordResetRequestId: requestIdByStudentId.get(entry.studentId) ?? null
+        })
+      )
+    });
     return debugEnabled ? appendSupabaseDebugMetrics(response, debugMetrics) : response;
   } catch (error) {
     console.error("Teacher student overview load failed", {

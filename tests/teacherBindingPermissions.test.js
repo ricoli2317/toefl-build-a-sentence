@@ -79,6 +79,33 @@ test("case3 both-domain teacher sees reading and writing self-practice", async (
   assert.equal(await canManageStudent(db, teacher3, "student-2"), false);
 });
 
+test("case3b both-domain binding existence never uses a single-row maybeSingle request", async () => {
+  const db = createMockSupabase(tables());
+  let bindingMaybeSingleCalls = 0;
+  const originalFrom = db.from.bind(db);
+  db.from = (tableName) => {
+    const builder = originalFrom(tableName);
+    if (tableName === "teacher_student_bindings") {
+      // Emulate PostgREST PGRST116: a single-row request fails when the teacher
+      // legitimately holds both reading and writing bindings for the student.
+      builder.maybeSingle = () => {
+        bindingMaybeSingleCalls += 1;
+        return Promise.resolve({
+          data: null,
+          error: {
+            code: "PGRST116",
+            message: "JSON object requested, multiple (or no) rows returned"
+          }
+        });
+      };
+    }
+    return builder;
+  };
+  assert.equal(await canManageStudent(db, teacher3, "student-1"), true);
+  assert.equal(bindingMaybeSingleCalls, 0, "existence must use a limited list query, not maybeSingle");
+  assert.equal(await canManageStudent(db, teacher3, "student-2"), false);
+});
+
 test("case4 both writing teachers review the same self-practice attempt", async () => {
   const db = createMockSupabase(tables());
   assert.deepEqual(await listVisibleWritingAttemptIds(db, teacher2), ["att-1"]);

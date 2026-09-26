@@ -20,6 +20,7 @@ import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { beginStudentNavigationTrace } from "@/lib/studentPerformance.client";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import { AreaSwitch, useCurrentAccount } from "@/components/RoleGate";
+import { ChangePasswordLink } from "@/components/shared/ChangePassword";
 
 type NavigationItem = {
   href: string;
@@ -140,7 +141,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
 export function StudentShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { displayName } = useCurrentAccount();
+  const { displayName, role } = useCurrentAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const immersive =
     pathname.startsWith("/student/write-email/practice/") ||
@@ -226,6 +227,9 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
               <span className="hidden max-w-[160px] truncate text-sm font-medium text-student-muted sm:inline">
                 {displayName}
               </span>
+            ) : null}
+            {role !== "admin" ? (
+              <ChangePasswordLink className="ml-1.5 hidden text-sm font-medium text-student-primary hover:underline sm:inline" />
             ) : null}
             <SignOutButton locale="zh-CN" variant="student" />
           </div>

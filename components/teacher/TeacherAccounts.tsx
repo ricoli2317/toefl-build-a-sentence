@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { UserRound } from "lucide-react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { useCurrentAccount } from "@/components/RoleGate";
 import { TeacherCard, TeacherEmptyState, TeacherSectionTitle } from "@/components/teacher/TeacherUI";
+import { AccountStatusControl } from "@/components/shared/AccountStatusControl";
+import { PasswordResetApprovalPrompt } from "@/components/shared/PasswordResetApprovalPrompt";
 import {
   formatAccountForDisplay,
   formatManagedAccountName,
@@ -19,6 +21,8 @@ type TeacherSummary = {
   displayName: string;
   studentCount: number;
   studentAccountLimit: number;
+  isActive: boolean;
+  passwordResetRequestId: string | null;
 };
 
 async function authorizedFetch(input: string, init?: RequestInit) {
@@ -48,16 +52,30 @@ export function AdminTeachersList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [bulkLimit, setBulkLimit] = useState("20");
+  const loadSequence = useRef(0);
   const load = useCallback(async () => {
+    const sequence = ++loadSequence.current;
     setLoading(true);
     const res = await authorizedFetch("/api/admin/teachers");
     const payload = await res.json().catch(() => ({})) as { teachers?: TeacherSummary[]; message?: string };
+    // A stale response may never overwrite a newer list or a status/request
+    // change that already completed.
+    if (sequence !== loadSequence.current) return;
     setLoading(false);
     if (!res.ok) return setError(payload.message ?? "教师列表加载失败。");
     setError("");
     setTeachers(payload.teachers ?? []);
   }, []);
   useEffect(() => { void load(); }, [load]);
+
+  const updateTeacher = useCallback(
+    (teacherId: string, patch: Partial<Pick<TeacherSummary, "isActive" | "passwordResetRequestId">>) => {
+      setTeachers((current) =>
+        current.map((teacher) => (teacher.id === teacherId ? { ...teacher, ...patch } : teacher))
+      );
+    },
+    []
+  );
 
   async function updateAll(event: FormEvent) {
     event.preventDefault();
@@ -85,8 +103,34 @@ export function AdminTeachersList() {
       <TeacherCard className="overflow-hidden p-0">
         <div className="px-6 pt-6"><TeacherSectionTitle>教师列表</TeacherSectionTitle></div>
         {loading ? <p className="p-6 text-sm text-student-muted">正在加载...</p> : teachers.length === 0 ? <div className="p-6"><TeacherEmptyState text="暂无教师账号。" /></div> : (
-          <div className="overflow-x-auto px-6 pb-6 pt-4"><table className="w-full min-w-[720px] text-left text-sm"><thead><tr className="border-b border-student-border text-student-muted"><th className="px-3 py-3">教师</th><th className="px-3 py-3">当前学生</th><th className="px-3 py-3">账号额度</th><th className="px-3 py-3">额度状态</th></tr></thead><tbody>
-            {teachers.map((teacher) => <tr className="border-b border-student-border last:border-0" key={teacher.id}><td className="px-3 py-4"><Link className="flex items-center gap-3 font-semibold text-student-primary hover:underline" href={`/teacher/accounts/teachers/${teacher.id}`}><UserRound size={20} />{formatManagedAccountName(teacher.displayName, teacher.email)}</Link><span className="ml-8 text-xs text-student-muted">账号：{formatAccountForDisplay(teacher.email)}</span></td><td className="px-3 py-4">{teacher.studentCount}</td><td className="px-3 py-4">{teacher.studentAccountLimit}</td><td className="px-3 py-4 font-semibold">{quotaStatus(teacher.studentCount, teacher.studentAccountLimit)}</td></tr>)}
+          <div className="overflow-x-auto px-6 pb-6 pt-4"><table className="w-full min-w-[860px] text-left text-sm"><thead><tr className="border-b border-student-border text-student-muted"><th className="px-3 py-3">教师</th><th className="px-3 py-3">当前学生</th><th className="px-3 py-3">账号额度</th><th className="px-3 py-3">额度状态</th><th className="px-3 py-3">状态</th></tr></thead><tbody>
+            {teachers.map((teacher) => (
+              <tr className="border-b border-student-border last:border-0" key={teacher.id}>
+                <td className="px-3 py-4">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <Link className="flex items-center gap-3 font-semibold text-student-primary hover:underline" href={`/teacher/accounts/teachers/${teacher.id}`}><UserRound size={20} />{formatManagedAccountName(teacher.displayName, teacher.email)}</Link>
+                    {teacher.passwordResetRequestId ? (
+                      <PasswordResetApprovalPrompt
+                        endpoint={`/api/admin/password-reset-requests/${encodeURIComponent(teacher.passwordResetRequestId)}/resolve`}
+                        onResolved={() => updateTeacher(teacher.id, { passwordResetRequestId: null })}
+                        prompt="是否允许教师重置密码？"
+                      />
+                    ) : null}
+                  </div>
+                  <span className="ml-8 text-xs text-student-muted">账号：{formatAccountForDisplay(teacher.email)}</span>
+                </td>
+                <td className="px-3 py-4">{teacher.studentCount}</td>
+                <td className="px-3 py-4">{teacher.studentAccountLimit}</td>
+                <td className="px-3 py-4 font-semibold">{quotaStatus(teacher.studentCount, teacher.studentAccountLimit)}</td>
+                <td className="px-3 py-4">
+                  <AccountStatusControl
+                    accountId={teacher.id}
+                    isActive={teacher.isActive}
+                    onChanged={(isActive) => updateTeacher(teacher.id, { isActive })}
+                  />
+                </td>
+              </tr>
+            ))}
           </tbody></table></div>
         )}
       </TeacherCard>

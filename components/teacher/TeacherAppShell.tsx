@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { SignOutButton } from "@/components/SignOutButton";
+import { ChangePasswordLink } from "@/components/shared/ChangePassword";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { AreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 
@@ -202,6 +203,9 @@ export function TeacherAppShell({
               <span className="hidden max-w-[180px] truncate text-sm font-medium text-student-text md:inline">
                 {displayName}
               </span>
+            ) : null}
+            {role !== "admin" ? (
+              <ChangePasswordLink className="ml-0.5 hidden text-sm font-medium text-student-primary hover:underline md:inline" />
             ) : null}
             <SignOutButton locale="zh-CN" variant="student" />
             {role === "admin" ? (

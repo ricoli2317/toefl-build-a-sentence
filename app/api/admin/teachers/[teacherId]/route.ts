@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: { teacherId: s
   const db = createServiceSupabase();
   const [teacher, students] = await Promise.all([
     db.from("profiles").select("id,email,full_name,student_account_limit")
-      .eq("id", params.teacherId).eq("role", "teacher").eq("is_active", true).maybeSingle(),
+      .eq("id", params.teacherId).eq("role", "teacher").maybeSingle(),
     readAllSupabaseRows<{ id: string; email: string | null; full_name: string | null }>((from, to) => db.from("profiles")
       .select("id,email,full_name").eq("role", "student").eq("is_active", true)
       .eq("owner_id", params.teacherId).order("full_name", { ascending: true, nullsFirst: false }).range(from, to))

@@ -16,8 +16,11 @@ export {
   roleCanAccess
 } from "@/lib/accountPermissions";
 
+export type AuthenticatedAccountErrorCode = "ACCOUNT_DISABLED" | null;
+
 export type AuthenticatedAccount = {
   error: string | null;
+  errorCode: AuthenticatedAccountErrorCode;
   userId: string | null;
   role: UserRole | null;
   displayName: string | null;
@@ -28,7 +31,9 @@ export async function requireAuthenticatedAccount(
   timing?: StudentPerformanceTrace,
   performanceNames?: { auth?: string; profile?: string }
 ): Promise<AuthenticatedAccount> {
-  if (!token) return { error: "Missing access token", userId: null, role: null, displayName: null };
+  if (!token) {
+    return { error: "Missing access token", errorCode: null, userId: null, role: null, displayName: null };
+  }
 
   const anon = createAnonSupabase(token);
   const jwks = await getCachedSupabaseJwks();
@@ -42,7 +47,7 @@ export async function requireAuthenticatedAccount(
     ? claimsData.claims.sub
     : null;
   if (claimsError || !userId) {
-    return { error: "Invalid session", userId: null, role: null, displayName: null };
+    return { error: "Invalid session", errorCode: null, userId: null, role: null, displayName: null };
   }
 
   const { data: profile, error: profileError } = await measure(
@@ -51,11 +56,18 @@ export async function requireAuthenticatedAccount(
     performanceNames?.profile ?? "profiles_role",
     () => anon.from("profiles").select("role,is_active,full_name,email").eq("id", userId).single()
   );
-  if (profileError || !profile || profile.is_active === false || !isUserRole(profile.role)) {
-    return { error: "Account configuration error", userId: null, role: null, displayName: null };
+  if (profileError || !profile || !isUserRole(profile.role)) {
+    return { error: "Account configuration error", errorCode: null, userId: null, role: null, displayName: null };
+  }
+  if (profile.is_active === false) {
+    // The account still has valid Auth credentials in some cases (for example
+    // after an Admin disable that could not sync the Auth ban); the app-level
+    // gate rejects it here on every request.
+    return { error: "Account disabled", errorCode: "ACCOUNT_DISABLED", userId: null, role: null, displayName: null };
   }
   return {
     error: null,
+    errorCode: null,
     userId,
     role: profile.role,
     displayName: getPreferredUserDisplayName({

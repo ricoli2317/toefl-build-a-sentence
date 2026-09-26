@@ -4,8 +4,15 @@ import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
+import { ConfirmDialog, ModalShell } from "@/components/shared/ConfirmDialog";
+import {
+  describeForgotPasswordError,
+  describeLoginErrorMessage
+} from "@/lib/accountCredentials";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { resolveLoginAuthEmail } from "@/lib/accountIdentifier";
+
+type ForgotPasswordStage = "closed" | "confirm" | "success";
 
 export function LoginPanel() {
   const router = useRouter();
@@ -14,6 +21,9 @@ export function LoginPanel() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotStage, setForgotStage] = useState<ForgotPasswordStage>("closed");
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotError, setForgotError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -21,13 +31,59 @@ export function LoginPanel() {
       const supabase = createBrowserSupabase();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || cancelled) return;
-      const route = await resolveAuthenticatedRoute(session.access_token);
-      if (!cancelled && route) router.replace(route);
-      if (!cancelled && !route) setError("账号配置异常，请联系管理员。");
+      const result = await resolveAuthenticatedRoute(session.access_token);
+      if (cancelled || !result) return;
+      if (result.defaultRoute) {
+        router.replace(result.defaultRoute);
+        return;
+      }
+      setError(
+        result.code === "ACCOUNT_DISABLED"
+          ? "账号已停用，请联系管理员。"
+          : "账号配置异常，请联系管理员。"
+      );
     }
     void redirectExistingSession();
     return () => { cancelled = true; };
   }, [router]);
+
+  function closeForgotDialog() {
+    if (forgotBusy) return;
+    setForgotStage("closed");
+    setForgotError("");
+  }
+
+  async function submitForgotRequest() {
+    if (forgotBusy) return;
+    const trimmed = account.trim();
+    if (!trimmed) {
+      setForgotError("请先输入账号。");
+      return;
+    }
+    setForgotBusy(true);
+    setForgotError("");
+    try {
+      const response = await fetch("/api/auth/password-reset-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ account: trimmed }),
+        cache: "no-store"
+      });
+      const payload = (await response.json().catch(() => ({}))) as { message?: string };
+      if (!response.ok) {
+        throw new Error(payload.message ?? "请求提交失败，请稍后重试。");
+      }
+      setForgotStage("success");
+    } catch (submitError) {
+      setForgotError(
+        describeForgotPasswordError(
+          submitError instanceof Error ? submitError.message : null
+        )
+      );
+    } finally {
+      setForgotBusy(false);
+    }
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,21 +97,25 @@ export function LoginPanel() {
     });
 
     if (signInError || !data.user) {
-      setError(signInError?.message ?? "Login failed.");
+      setError(describeLoginErrorMessage(signInError?.message));
       setLoading(false);
       return;
     }
 
-    const route = data.session
+    const result = data.session
       ? await resolveAuthenticatedRoute(data.session.access_token)
       : null;
-    if (!route) {
+    if (!result?.defaultRoute) {
       await supabase.auth.signOut();
-      setError("账号配置异常，请联系管理员。");
+      setError(
+        result?.code === "ACCOUNT_DISABLED"
+          ? "账号已停用，请联系管理员。"
+          : "账号配置异常，请联系管理员。"
+      );
       setLoading(false);
       return;
     }
-    router.push(route);
+    router.push(result.defaultRoute);
     router.refresh();
   }
 
@@ -107,7 +167,19 @@ export function LoginPanel() {
             />
           </div>
 
-          <label className="mt-4 block text-sm font-semibold text-student-text" htmlFor="password">密码</label>
+          <div className="mt-4 flex items-center gap-3.5">
+            <label className="block text-sm font-semibold text-student-text" htmlFor="password">密码</label>
+            <button
+              className="text-sm font-semibold text-student-primary hover:underline"
+              onClick={() => {
+                setForgotError("");
+                setForgotStage("confirm");
+              }}
+              type="button"
+            >
+              忘记密码
+            </button>
+          </div>
           <div className="relative mt-1.5">
             <LockKeyhole aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7f879f]" size={19} />
             <input
@@ -143,6 +215,24 @@ export function LoginPanel() {
       </div>
 
       <p className="relative z-10 text-center text-sm font-medium text-student-muted">Created by Rico</p>
+
+      <ConfirmDialog
+        open={forgotStage === "confirm"}
+        title="是否重置为初始密码？"
+        message={account.trim() ? `账号：${account.trim()}` : undefined}
+        confirming={forgotBusy}
+        error={forgotError}
+        onCancel={closeForgotDialog}
+        onConfirm={() => void submitForgotRequest()}
+      />
+      <ModalShell open={forgotStage === "success"} onClose={closeForgotDialog}>
+        <p className="text-base font-bold text-student-text">请等待教师许可</p>
+        <div className="mt-6 flex justify-end">
+          <button className="teacher-button-primary" onClick={closeForgotDialog} type="button">
+            确定
+          </button>
+        </div>
+      </ModalShell>
     </main>
   );
 }
@@ -152,7 +242,18 @@ async function resolveAuthenticatedRoute(accessToken: string) {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store"
   });
-  if (!response.ok) return null;
-  const payload = await response.json() as { defaultRoute?: unknown };
-  return typeof payload.defaultRoute === "string" ? payload.defaultRoute : null;
+  const payload = await response.json().catch(() => ({})) as {
+    code?: unknown;
+    defaultRoute?: unknown;
+  };
+  if (!response.ok) {
+    return {
+      defaultRoute: null,
+      code: typeof payload.code === "string" ? payload.code : null
+    };
+  }
+  return {
+    defaultRoute: typeof payload.defaultRoute === "string" ? payload.defaultRoute : null,
+    code: null
+  };
 }
