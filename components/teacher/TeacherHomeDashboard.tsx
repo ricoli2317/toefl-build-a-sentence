@@ -30,7 +30,7 @@ type InactiveStudentsPayload = {
  * badges); the list is the same component and cache the standalone
  * /teacher/students route uses, so nothing is duplicated or refetched.
  */
-export function TeacherWorkHome() {
+export function TeacherWorkHome({ initialTab = "students" }: { initialTab?: "students" | "classes" } = {}) {
   return (
     <div className="grid gap-6">
       <div className="grid gap-5 md:grid-cols-3">
@@ -53,7 +53,7 @@ export function TeacherWorkHome() {
           title="查看题目"
         />
       </div>
-      <TeacherStudentOverviewList showClassTabs showManageActions />
+      <TeacherStudentOverviewList initialTab={initialTab} showClassTabs showManageActions />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEd
 import { AccountStatusControl } from "@/components/shared/AccountStatusControl";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
+import { TEACHER_STUDENTS_HREF } from "@/lib/teacherNavigation";
 
 type StudentAccount = {
   id: string;
@@ -32,7 +33,9 @@ async function authorizedFetch(input: string, init?: RequestInit) {
 
 export function StudentsAccountHome() {
   const { role } = useCurrentAccount();
-  if (role === "teacher") return <TeacherStudentOverviewList />;
+  if (role === "teacher") {
+    return <TeacherStudentOverviewList studentReturnTo={TEACHER_STUDENTS_HREF} />;
+  }
   return (
     <div className="grid gap-6">
       <AccountTabs active="students" />

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Search, UserRound } from "lucide-react";
 import {
   TEACHER_STUDENT_OVERVIEW_CACHE_KEY,
@@ -23,6 +24,11 @@ import { TeacherStudentHeaderActions } from "@/components/teacher/TeacherStudent
 import { TeacherClassList } from "@/components/teacher/TeacherClassList";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import {
+  teacherQueryUrl,
+  teacherReturnToHref,
+  TEACHER_HOME_HREF
+} from "@/lib/teacherNavigation";
 import {
   compareStudentSearchGroups,
   compareStudentSearchMetadata,
@@ -58,16 +64,39 @@ const DOMAIN_LABELS: Record<StudentBindingDomain, string> = {
  * by the teacher home; the student tab keeps its existing behavior unchanged.
  */
 export function TeacherStudentOverviewList({
+  initialTab = "students",
   showManageActions = false,
-  showClassTabs = false
+  showClassTabs = false,
+  studentReturnTo = TEACHER_HOME_HREF
 }: {
+  initialTab?: "students" | "classes";
   showManageActions?: boolean;
   showClassTabs?: boolean;
+  studentReturnTo?: string;
 } = {}) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [classQuery, setClassQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<"students" | "classes">("students");
+  const [activeTab, setActiveTab] = useState<"students" | "classes">(
+    initialTab === "classes" ? "classes" : "students"
+  );
   const classMode = showClassTabs && activeTab === "classes";
+
+  useEffect(() => {
+    setActiveTab(initialTab === "classes" ? "classes" : "students");
+  }, [initialTab]);
+
+  function selectTab(nextTab: "students" | "classes") {
+    setActiveTab(nextTab);
+    if (!showClassTabs) return;
+    // Keep 首页?tab=classes in the URL so the breadcrumb and the browser Back
+    // button both restore the class list tab.
+    router.replace(
+      teacherQueryUrl({ tab: nextTab === "classes" ? "classes" : null }),
+      { scroll: false }
+    );
+  }
+
   const sectionRefs = useRef(new Map<string, HTMLTableRowElement>());
   const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<StudentOverviewResponse>(
@@ -124,14 +153,14 @@ export function TeacherStudentOverviewList({
             <nav aria-label="列表类型" className="flex gap-2 border-b border-student-border">
               <button
                 className={`border-b-2 px-5 py-3 text-sm font-bold ${activeTab === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-                onClick={() => setActiveTab("students")}
+                onClick={() => selectTab("students")}
                 type="button"
               >
                 学生列表
               </button>
               <button
                 className={`border-b-2 px-5 py-3 text-sm font-bold ${activeTab === "classes" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-                onClick={() => setActiveTab("classes")}
+                onClick={() => selectTab("classes")}
                 type="button"
               >
                 班级列表
@@ -248,7 +277,10 @@ export function TeacherStudentOverviewList({
                               }
                               renderName={(name) => (
                                 <TeacherTextLink
-                                  href={`/teacher/students/${encodeURIComponent(entry.student.studentId)}`}
+                                  href={teacherReturnToHref(
+                                    `/teacher/students/${encodeURIComponent(entry.student.studentId)}`,
+                                    studentReturnTo
+                                  )}
                                 >
                                   {name}
                                 </TeacherTextLink>
@@ -290,7 +322,10 @@ export function TeacherStudentOverviewList({
                             </Link>
                             <Link
                               className="teacher-button-secondary"
-                              href={`/teacher/students/${encodeURIComponent(entry.student.studentId)}`}
+                              href={teacherReturnToHref(
+                                `/teacher/students/${encodeURIComponent(entry.student.studentId)}`,
+                                studentReturnTo
+                              )}
                             >
                               查看详情
                             </Link>

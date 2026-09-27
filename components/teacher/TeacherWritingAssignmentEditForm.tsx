@@ -9,7 +9,13 @@ import { TeacherWritingAssignmentForm } from "@/components/teacher/TeacherWritin
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import type { WritingAssignmentDetail } from "@/lib/writingAssignments";
 
-export function TeacherWritingAssignmentEditForm({ assignmentId }: { assignmentId: string }) {
+export function TeacherWritingAssignmentEditForm({
+  assignmentId,
+  returnTo
+}: {
+  assignmentId: string;
+  returnTo?: string;
+}) {
   const cacheKey = `${TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX}:detail:${assignmentId}`;
   const { data, error, loading } = useTeacherCachedData<{ assignment: WritingAssignmentDetail }>(
     cacheKey,
@@ -23,5 +29,5 @@ export function TeacherWritingAssignmentEditForm({ assignmentId }: { assignmentI
   if (data.assignment.status !== "withdrawn") {
     return <TeacherDataError text="只有已撤回的作业可以编辑。" />;
   }
-  return <TeacherWritingAssignmentForm initialAssignment={data.assignment} />;
+  return <TeacherWritingAssignmentForm initialAssignment={data.assignment} returnTo={returnTo} />;
 }

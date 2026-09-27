@@ -36,6 +36,10 @@ import {
 } from "@/lib/studentSearch";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
+import {
+  teacherAssignmentBatchDetailHref,
+  teacherReturnToHref
+} from "@/lib/teacherNavigation";
 import { WRITING_TASK_CONFIG, type WritingQuestion, type WritingTaskType } from "@/lib/writing";
 import {
   buildCustomWritingQuestionSnapshot,
@@ -73,7 +77,13 @@ const AVATAR_FIELDS = Object.values(AVATAR_FIELD_BY_NAME);
  * recipients are re-applied to every item in the saved order. Legacy single
  * assignments keep using the single edit form.
  */
-export function TeacherWritingAssignmentGroupEditForm({ batchId }: { batchId: string }) {
+export function TeacherWritingAssignmentGroupEditForm({
+  batchId,
+  returnTo
+}: {
+  batchId: string;
+  returnTo?: string;
+}) {
   const router = useRouter();
   const cache = useTeacherDataCache();
   const cacheKey = `${TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX}:collection:${batchId}`;
@@ -315,7 +325,13 @@ export function TeacherWritingAssignmentGroupEditForm({ batchId }: { batchId: st
         assignmentId: items[0].assignmentId,
         assignmentQuestionSource: items[0].source
       });
-      router.push(`/teacher/writing/assignments/batches/${batchId}`);
+      // The saved group detail page keeps the exact 作业管理 context the editor
+      // was opened from, so its 作业管理 breadcrumb returns there after a
+      // refresh as well. A direct visit without a returnTo keeps the canonical
+      // detail URL.
+      router.push(
+        teacherReturnToHref(teacherAssignmentBatchDetailHref(batchId), returnTo)
+      );
       router.refresh();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "作业更新失败。");

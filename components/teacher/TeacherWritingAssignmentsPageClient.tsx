@@ -1,18 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { Check, ChevronDown, Plus, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   TEACHER_CLASSES_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
-import { TeacherPopover } from "@/components/teacher/TeacherPopover";
+import {
+  TeacherClassFilterPopover,
+  TeacherStudentFilterPopover
+} from "@/components/teacher/TeacherListFilters";
 import { TeacherWritingAssignmentList } from "@/components/teacher/TeacherWritingAssignmentList";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
-import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import {
+  teacherAssignmentsListHref,
+  teacherQueryUrl
+} from "@/lib/teacherNavigation";
 import {
   collectWritingAssignmentRecipients,
   filterWritingAssignmentsByStudent,
@@ -41,11 +48,48 @@ export function TeacherWritingAssignmentsPageClient({
   initialStudentId?: string;
   initialView?: "students" | "class";
 }) {
+  const router = useRouter();
   const [view, setView] = useState<"students" | "class">(
     initialView === "class" ? "class" : "students"
   );
   const [filterStudentId, setFilterStudentId] = useState(initialStudentId?.trim() ?? "");
   const [filterClassId, setFilterClassId] = useState(initialClassId?.trim() ?? "");
+  const listReturnTo = teacherAssignmentsListHref({
+    view,
+    studentId: filterStudentId,
+    classId: filterClassId
+  });
+
+  /**
+   * The 学生作业 / 班级作业 tab and both filters stay in the URL, so opening a
+   * detail page can pass the exact list state as `returnTo` and the browser
+   * Back button restores the same tab and filter.
+   */
+  function syncListUrl(next: { view: "students" | "class"; studentId: string; classId: string }) {
+    router.replace(
+      teacherQueryUrl({
+        view: next.view === "class" ? "class" : null,
+        classId: next.view === "class" && next.classId ? next.classId : null,
+        studentId: next.view === "students" && next.studentId ? next.studentId : null
+      }),
+      { scroll: false }
+    );
+  }
+
+  function selectView(nextView: "students" | "class") {
+    setView(nextView);
+    syncListUrl({ view: nextView, studentId: filterStudentId, classId: filterClassId });
+  }
+
+  function selectStudentFilter(studentId: string) {
+    setFilterStudentId(studentId);
+    syncListUrl({ view, studentId, classId: filterClassId });
+  }
+
+  function selectClassFilter(classId: string) {
+    setFilterClassId(classId);
+    syncListUrl({ view, studentId: filterStudentId, classId });
+  }
   const { data, error, loading } = useTeacherCachedData<{
     assignments: WritingAssignmentSummary[];
   }>(
@@ -121,14 +165,14 @@ export function TeacherWritingAssignmentsPageClient({
       action={
         <div className="flex flex-wrap items-center gap-3">
           {view === "class" ? (
-            <TeacherAssignmentClassFilter
-              onSelect={(entry) => setFilterClassId(entry?.class_id ?? "")}
+            <TeacherClassFilterPopover
+              onSelect={(entry) => selectClassFilter(entry?.class_id ?? "")}
               options={classOptions}
               selected={selectedClass}
             />
           ) : (
-            <TeacherAssignmentStudentFilter
-              onSelect={(recipient) => setFilterStudentId(recipient?.student_id ?? "")}
+            <TeacherStudentFilterPopover
+              onSelect={(recipient) => selectStudentFilter(recipient?.student_id ?? "")}
               options={studentOptions}
               selected={filterStudent}
             />
@@ -147,14 +191,14 @@ export function TeacherWritingAssignmentsPageClient({
         <nav aria-label="作业类型" className="flex gap-2 border-b border-student-border">
           <button
             className={`border-b-2 px-5 py-3 text-sm font-bold ${view === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-            onClick={() => setView("students")}
+            onClick={() => selectView("students")}
             type="button"
           >
             学生作业
           </button>
           <button
             className={`border-b-2 px-5 py-3 text-sm font-bold ${view === "class" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-            onClick={() => setView("class")}
+            onClick={() => selectView("class")}
             type="button"
           >
             班级作业
@@ -165,136 +209,13 @@ export function TeacherWritingAssignmentsPageClient({
           error={error}
           filterClass={view === "class" ? selectedClass : null}
           filterStudent={view === "students" ? filterStudent : null}
+          listReturnTo={listReturnTo}
           loading={loading}
           mode={view}
-          onClearClassFilter={() => setFilterClassId("")}
-          onClearFilter={() => setFilterStudentId("")}
+          onClearClassFilter={() => selectClassFilter("")}
+          onClearFilter={() => selectStudentFilter("")}
         />
       </div>
     </TeacherAppShell>
-  );
-}
-
-function TeacherAssignmentStudentFilter({
-  onSelect,
-  options,
-  selected
-}: {
-  onSelect: (recipient: WritingAssignmentRecipient | null) => void;
-  options: WritingAssignmentRecipient[];
-  selected: WritingAssignmentRecipient | null;
-}) {
-  const label = selected
-    ? selected.student_name || "所选学生"
-    : "全部学生";
-  return (
-    <TeacherPopover
-      buttonClassName="teacher-button-secondary"
-      buttonContent={
-        <>
-          <Users aria-hidden="true" size={17} />
-          <span className="max-w-[11rem] truncate">{label}</span>
-          <ChevronDown aria-hidden="true" size={15} />
-        </>
-      }
-      menuAlign="left"
-      menuClassName="min-w-[15rem]"
-    >
-      {(close) => (
-        <div className="grid max-h-80 gap-0.5 overflow-y-auto" role="none">
-          <FilterOption
-            active={!selected}
-            label="全部学生"
-            onClick={() => {
-              onSelect(null);
-              close();
-            }}
-          />
-          {options.map((option) => (
-            <FilterOption
-              active={selected?.student_id === option.student_id}
-              key={option.student_id}
-              label={option.student_name || "未命名学生"}
-              onClick={() => {
-                onSelect(option);
-                close();
-              }}
-            />
-          ))}
-        </div>
-      )}
-    </TeacherPopover>
-  );
-}
-
-function TeacherAssignmentClassFilter({
-  onSelect,
-  options,
-  selected
-}: {
-  onSelect: (entry: TeacherClassSummary | null) => void;
-  options: TeacherClassSummary[];
-  selected: TeacherClassSummary | null;
-}) {
-  const label = selected ? selected.name || "所选班级" : "全部班级";
-  return (
-    <TeacherPopover
-      buttonClassName="teacher-button-secondary"
-      buttonContent={
-        <>
-          <TeacherClassIcon aria-hidden="true" size={17} strokeWidth={2} />
-          <span className="max-w-[11rem] truncate">{label}</span>
-          <ChevronDown aria-hidden="true" size={15} />
-        </>
-      }
-      menuAlign="left"
-      menuClassName="min-w-[15rem]"
-    >
-      {(close) => (
-        <div className="grid max-h-80 gap-0.5 overflow-y-auto" role="none">
-          <FilterOption
-            active={!selected}
-            label="全部班级"
-            onClick={() => {
-              onSelect(null);
-              close();
-            }}
-          />
-          {options.map((entry) => (
-            <FilterOption
-              active={selected?.class_id === entry.class_id}
-              key={entry.class_id}
-              label={entry.name || "未命名班级"}
-              onClick={() => {
-                onSelect(entry);
-                close();
-              }}
-            />
-          ))}
-        </div>
-      )}
-    </TeacherPopover>
-  );
-}
-
-function FilterOption({
-  active,
-  label,
-  onClick
-}: {
-  active: boolean;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium transition ${active ? "bg-student-primary-soft text-student-primary" : "text-student-text hover:bg-student-bg"}`}
-      onClick={onClick}
-      role="menuitem"
-      type="button"
-    >
-      <span className="truncate">{label}</span>
-      {active ? <Check aria-hidden="true" size={15} /> : null}
-    </button>
   );
 }

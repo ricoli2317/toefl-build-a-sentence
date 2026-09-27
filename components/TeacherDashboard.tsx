@@ -31,7 +31,17 @@ import { AttemptHistoryList } from "@/components/AttemptHistoryList";
 import { PracticeResultView, type ResultPayload } from "@/components/PracticeResult";
 import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
 import { TeacherStudentPracticeWorkspace } from "@/components/teacher/TeacherStudentPracticeSection";
+import { useTeacherClassDisplayName } from "@/components/teacher/TeacherNavigationContext";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
+import {
+  parseTeacherStudentChildReturnTo,
+  teacherReturnToHref,
+  teacherSetDetailsReturnHref,
+  teacherStudentChildCrumbs,
+  teacherStudentSetDetailsHref,
+  type TeacherNavCrumb,
+  type TeacherStudentReturnToContext
+} from "@/lib/teacherNavigation";
 import {
   TeacherAccuracyBar,
   TeacherCard,
@@ -182,9 +192,9 @@ type QuestionSummary = {
 
 const LOW_ACCURACY_THRESHOLD = 0.5;
 
-export function TeacherHome() {
+export function TeacherHome({ initialTab = "students" }: { initialTab?: "students" | "classes" } = {}) {
   const { role } = useCurrentAccount();
-  return role === "admin" ? <AdminPlatformHome /> : <TeacherWorkHome />;
+  return role === "admin" ? <AdminPlatformHome /> : <TeacherWorkHome initialTab={initialTab} />;
 }
 
 export function AdminPlatformHome() {
@@ -245,8 +255,14 @@ export function AdminPlatformHome() {
   );
 }
 
-export function TeacherStudentSummary({ studentId }: { studentId: string }) {
-  return <TeacherStudentPracticeWorkspace studentId={studentId} />;
+export function TeacherStudentSummary({
+  returnTo,
+  studentId
+}: {
+  returnTo?: string;
+  studentId: string;
+}) {
+  return <TeacherStudentPracticeWorkspace returnTo={returnTo} studentId={studentId} />;
 }
 
 type TeacherStudentSetDetailsPayload = {
@@ -277,13 +293,18 @@ type TeacherStudentSetDetailsPayload = {
 };
 
 export function TeacherStudentSetDetails({
+  returnTo,
   setId,
   studentId
 }: {
+  returnTo?: string;
   setId: string;
   studentId: string;
 }) {
   const groupId = normalizeAttemptGroupId(setId);
+  const studentContext = parseTeacherStudentChildReturnTo(returnTo);
+  const className = useTeacherClassDisplayName(studentContext?.classId ?? "");
+  const selfHref = teacherReturnToHref(teacherStudentSetDetailsHref(studentId, groupId), returnTo);
   const state = useTeacherCachedData<TeacherStudentSetDetailsPayload>(
     `teacher:student-bas-set:v1:${studentId}:${groupId}`,
     () => loadTeacherStudentSetDetails(studentId, groupId)
@@ -293,13 +314,15 @@ export function TeacherStudentSetDetails({
   return (
     <div className="grid gap-5">
       {state.loading ? <TeacherLoadingRegion label="正在加载套题练习记录" /> : null}
-      <TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: detail?.student.displayName ?? "学生详情", href: `/teacher/students/${studentId}` },
-        { label: "练习记录", href: `/teacher/students/${studentId}` },
-        { label: state.loading ? "套题练习记录" : detail?.setTitle ?? groupId }
-      ]} />
+      <TeacherBreadcrumbs
+        crumbs={teacherStudentChildCrumbs({
+          className,
+          studentContext,
+          studentId,
+          studentName: detail?.student.displayName ?? "学生详情",
+          tail: [{ label: state.loading ? "套题练习记录" : detail?.setTitle ?? groupId }]
+        })}
+      />
       {state.error ? <TeacherDataError text={toTeacherErrorMessage(state.error)} /> : null}
       {!state.loading && !state.error && detail ? (
         <>
@@ -311,7 +334,10 @@ export function TeacherStudentSetDetails({
             answers={detail.answers}
             attempts={detail.attempts}
             getAnswerHref={(answer) =>
-              `/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`
+              teacherReturnToHref(
+                `/teacher/students/${studentId}/answers/${answer.attemptAnswerId}`,
+                selfHref
+              )
             }
             locale="zh-CN"
             missingAnswerAttemptIds={detail.missingAnswerAttemptIds}
@@ -358,33 +384,55 @@ type TeacherStudentAnswerDetailPayload = {
 
 export function TeacherStudentQuestionDetail({
   attemptAnswerId,
+  returnTo,
   studentId
 }: {
   attemptAnswerId: string;
+  returnTo?: string;
   studentId: string;
 }) {
+  const studentContext = parseTeacherStudentChildReturnTo(returnTo);
+  const className = useTeacherClassDisplayName(studentContext?.classId ?? "");
   const state = useTeacherCachedData<TeacherStudentAnswerDetailPayload>(
     `teacher:student-bas-answer:v1:${studentId}:${attemptAnswerId}`,
     () => loadTeacherStudentAnswerDetail(studentId, attemptAnswerId)
   );
   const detail = state.data;
+  const fallbackCrumbs = teacherStudentChildCrumbs({
+    className,
+    studentContext,
+    studentId,
+    studentName: "学生详情",
+    tail: [{ label: "答题详情" }]
+  });
 
   return (
     <div className="grid gap-5">
       {state.loading ? <TeacherLoadingRegion label="正在加载答题详情" /> : null}
-      {state.loading ? <QuestionDetailSkeleton /> : state.error ? (
-        <QuestionDetailError text={toTeacherErrorMessage(state.error)} />
+      {state.loading ? <QuestionDetailSkeleton crumbs={fallbackCrumbs} /> : state.error ? (
+        <QuestionDetailError crumbs={fallbackCrumbs} text={toTeacherErrorMessage(state.error)} />
       ) : detail ? (
-        <TeacherStudentQuestionDetailContent detail={detail} />
+        <TeacherStudentQuestionDetailContent
+          className={className}
+          detail={detail}
+          returnTo={returnTo}
+          studentContext={studentContext}
+        />
       ) : <TeacherEmptyState text="暂无答题数据。" />}
     </div>
   );
 }
 
 function TeacherStudentQuestionDetailContent({
-  detail
+  className,
+  detail,
+  returnTo,
+  studentContext
 }: {
+  className: string;
   detail: TeacherStudentAnswerDetailPayload;
+  returnTo?: string;
+  studentContext: TeacherStudentReturnToContext | null;
 }) {
   const payload: ResultPayload = {
     attempt: {
@@ -418,20 +466,30 @@ function TeacherStudentQuestionDetailContent({
   const initialAnswer = detail.answers.find(
     (answer) => answer.questionId === detail.initialQuestionId
   ) ?? detail.answers[0];
+  const crumbs = teacherStudentChildCrumbs({
+    className,
+    studentContext,
+    studentId: detail.student.studentId,
+    studentName: detail.student.displayName,
+    tail: [
+      {
+        label: detail.attempt.setTitle,
+        href: teacherSetDetailsReturnHref(
+          returnTo,
+          detail.student.studentId,
+          detail.attempt.setId
+        )
+      },
+      { label: `第 ${initialAnswer?.questionOrder ?? 1} 题` }
+    ]
+  });
 
   return (
     <PracticeResultView
       answerLabel="学生答案"
       correctAnswerVisibility="always"
       initialQuestionId={initialAnswer?.questionId}
-      navigation={<TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: detail.student.displayName, href: `/teacher/students/${detail.student.studentId}` },
-        { label: "练习记录", href: `/teacher/students/${detail.student.studentId}` },
-        { label: detail.attempt.setTitle, href: `/teacher/students/${detail.student.studentId}/details/${encodeURIComponent(detail.attempt.setId)}` },
-        { label: `第 ${initialAnswer?.questionOrder ?? 1} 题` }
-      ]} />}
+      navigation={<TeacherBreadcrumbs crumbs={crumbs} />}
       payload={payload}
       showQuestionTime
     />
@@ -854,28 +912,20 @@ function AttemptHistorySkeleton() {
   );
 }
 
-function QuestionDetailSkeleton() {
+function QuestionDetailSkeleton({ crumbs }: { crumbs: TeacherNavCrumb[] }) {
   return (
     <>
-      <TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: "答题详情" }
-      ]} />
+      <TeacherBreadcrumbs crumbs={crumbs} />
       <TeacherCard className="p-5"><TeacherSkeleton className="h-6 w-48" /><TeacherSkeleton className="mt-5 h-32 w-full" /></TeacherCard>
       <TeacherCard className="p-5"><TeacherSectionTitle>答题情况</TeacherSectionTitle><TeacherSkeleton className="mt-4 h-44 w-full" /></TeacherCard>
     </>
   );
 }
 
-function QuestionDetailError({ text }: { text: string }) {
+function QuestionDetailError({ crumbs, text }: { crumbs: TeacherNavCrumb[]; text: string }) {
   return (
     <>
-      <TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: "答题详情" }
-      ]} />
+      <TeacherBreadcrumbs crumbs={crumbs} />
       <TeacherCard className="p-5"><TeacherSectionTitle>练习概览</TeacherSectionTitle><div className="mt-4"><TeacherDataError text={text} /></div></TeacherCard>
       <TeacherCard className="p-5"><TeacherSectionTitle>答题情况</TeacherSectionTitle><p className="mt-4 text-sm text-student-muted">答题数据暂时无法显示。</p></TeacherCard>
     </>

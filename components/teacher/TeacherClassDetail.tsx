@@ -35,6 +35,11 @@ import {
 import { SubjectChip } from "@/components/teacher/TeacherStudentOverview";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import {
+  teacherClassDetailHref,
+  teacherReturnToHref,
+  teacherStudentDetailHref
+} from "@/lib/teacherNavigation";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
 import {
   classCompletionPercent,
@@ -384,7 +389,10 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
                         <div className="flex flex-nowrap items-center justify-end gap-2">
                           <Link
                             className="teacher-button-secondary"
-                            href={`/teacher/students/${encodeURIComponent(member.student_id)}`}
+                            href={teacherReturnToHref(
+                              teacherStudentDetailHref(member.student_id),
+                              teacherClassDetailHref(classId)
+                            )}
                           >
                             查看详情
                           </Link>

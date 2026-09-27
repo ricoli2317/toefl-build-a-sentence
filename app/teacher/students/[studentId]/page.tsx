@@ -1,15 +1,25 @@
 import { TeacherStudentSummary } from "@/components/TeacherDashboard";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 import { TeacherOnly } from "@/components/RoleGate";
+import { firstSearchParamValue } from "@/lib/teacherNavigation";
 
-export default function TeacherStudentPage({ params }: { params: { studentId: string } }) {
+export default function TeacherStudentPage({
+  params,
+  searchParams
+}: {
+  params: { studentId: string };
+  searchParams?: { returnTo?: string | string[] };
+}) {
   return (
     <TeacherOnly>
     <TeacherAppShell
       subtitle="查看学生的练习概览"
       title="学生概览"
     >
-      <TeacherStudentSummary studentId={params.studentId} />
+      <TeacherStudentSummary
+        returnTo={firstSearchParamValue(searchParams?.returnTo)}
+        studentId={params.studentId}
+      />
     </TeacherAppShell>
     </TeacherOnly>
   );

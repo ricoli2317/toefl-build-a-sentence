@@ -28,6 +28,7 @@ import {
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import { teacherReturnToHref } from "@/lib/teacherNavigation";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 
 const WITHDRAW_CONFIRM = "确认撤回这项作业？\n\n撤回后，学生将不能再通过该作业开始或继续未提交的练习。\n已经提交的作业和批改记录不会受到影响。";
@@ -44,6 +45,7 @@ export function TeacherWritingAssignmentList({
   error,
   filterClass = null,
   filterStudent,
+  listReturnTo,
   loading,
   mode = "students",
   onClearClassFilter,
@@ -53,6 +55,7 @@ export function TeacherWritingAssignmentList({
   error: string;
   filterClass?: { class_id: string; name: string } | null;
   filterStudent: WritingAssignmentRecipient | null;
+  listReturnTo?: string;
   loading: boolean;
   mode?: "students" | "class";
   onClearClassFilter?: () => void;
@@ -143,6 +146,7 @@ export function TeacherWritingAssignmentList({
             <TeacherWritingAssignmentCollectionCard
               entry={entry}
               key={entry.collection_id}
+              listReturnTo={listReturnTo}
               onReactivate={(assignmentId) => void mutate(assignmentId, "reactivate")}
               onSoftDelete={(assignmentId) => void mutate(assignmentId, "soft_delete")}
               onWithdraw={(assignmentId) => void mutate(assignmentId, "withdraw")}
@@ -167,7 +171,7 @@ export function TeacherWritingAssignmentList({
         return (
           <article className="teacher-card flex flex-wrap items-center gap-5 p-5" key={assignment.assignment_id}>
             <div className="min-w-0 flex-1">
-              <Link className="group block" href={detailHref}>
+              <Link className="group block" href={teacherReturnToHref(detailHref, listReturnTo)}>
                 <div className="flex flex-wrap items-center gap-2">
                   {assignment.class_name ? (
                     <span className="rounded-full border border-student-primary-border bg-student-primary-soft/60 px-3 py-1 text-xs font-semibold text-student-primary">
@@ -195,7 +199,7 @@ export function TeacherWritingAssignmentList({
                   className="teacher-button-secondary"
                   href={teacherWritingReviewWorkspaceHref(
                     reviewAction.attemptId,
-                    "/teacher/writing/assignments"
+                    listReturnTo ?? "/teacher/writing/assignments"
                   )}
                 >
                   {reviewAction.label}
@@ -210,7 +214,7 @@ export function TeacherWritingAssignmentList({
                 ><Undo2 aria-hidden="true" size={16} />撤回</button>
               ) : null}
               {actions.canEdit ? (
-                <Link className="teacher-button-secondary" href={`${detailHref}/edit`}><Pencil aria-hidden="true" size={16} />编辑作业</Link>
+                <Link className="teacher-button-secondary" href={teacherReturnToHref(`${detailHref}/edit`, listReturnTo)}><Pencil aria-hidden="true" size={16} />编辑作业</Link>
               ) : null}
               {actions.canReactivate ? (
                 <button className="teacher-button-primary" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "reactivate")} type="button"><RotateCcw aria-hidden="true" size={16} />重新布置</button>
@@ -218,7 +222,7 @@ export function TeacherWritingAssignmentList({
               {actions.canSoftDelete ? (
                 <button className="teacher-button-secondary text-student-error" disabled={pending} onClick={() => void mutate(assignment.assignment_id, "soft_delete")} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button>
               ) : null}
-              <Link aria-label="查看作业详情" className="teacher-button-secondary px-3" href={detailHref}><ArrowRight aria-hidden="true" size={18} /></Link>
+              <Link aria-label="查看作业详情" className="teacher-button-secondary px-3" href={teacherReturnToHref(detailHref, listReturnTo)}><ArrowRight aria-hidden="true" size={18} /></Link>
             </div>
           </article>
         );
@@ -261,19 +265,22 @@ export function AssignmentRecipientNames({
 
 function TeacherWritingAssignmentCollectionCard({
   entry,
+  listReturnTo,
   onReactivate,
   onSoftDelete,
   onWithdraw,
   pending
 }: {
   entry: Extract<TeacherWritingAssignmentListEntry, { kind: "collection" }>;
+  listReturnTo?: string;
   onReactivate: (assignmentId: string) => void;
   onSoftDelete: (assignmentId: string) => void;
   onWithdraw: (assignmentId: string) => void;
   pending: boolean;
 }) {
   const detailHref = `/teacher/writing/assignments/batches/${entry.collection_id}`;
-  const editHref = `${detailHref}/edit`;
+  const detailLinkHref = teacherReturnToHref(detailHref, listReturnTo);
+  const editHref = teacherReturnToHref(`${detailHref}/edit`, listReturnTo);
   // Same action rule as a legacy single card, aggregated over the group: the
   // whole group is one business object.
   const allWithdrawn = entry.assignments.every(
@@ -307,7 +314,7 @@ function TeacherWritingAssignmentCollectionCard({
   return (
     <article className="teacher-card flex flex-wrap items-center gap-5 p-5">
       <div className="min-w-0 flex-1">
-        <Link className="group block" href={detailHref}>
+        <Link className="group block" href={detailLinkHref}>
           <div className="flex flex-wrap items-center gap-2">
             {entry.assignments[0].class_name ? (
               <span className="rounded-full border border-student-primary-border bg-student-primary-soft/60 px-3 py-1 text-xs font-semibold text-student-primary">
@@ -368,9 +375,9 @@ function TeacherWritingAssignmentCollectionCard({
           <button className="teacher-button-secondary text-student-error" disabled={pending} onClick={() => onSoftDelete(actionAssignmentId)} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button>
         ) : null}
         {actions.canEdit ? (
-          <Link aria-label="查看作业详情" className="teacher-button-secondary px-3" href={detailHref}><ArrowRight aria-hidden="true" size={18} /></Link>
+          <Link aria-label="查看作业详情" className="teacher-button-secondary px-3" href={detailLinkHref}><ArrowRight aria-hidden="true" size={18} /></Link>
         ) : (
-          <Link className="teacher-button-secondary" href={detailHref}>
+          <Link className="teacher-button-secondary" href={detailLinkHref}>
             查看进度<ArrowRight aria-hidden="true" size={18} />
           </Link>
         )}

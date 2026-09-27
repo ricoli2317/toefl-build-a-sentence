@@ -113,7 +113,7 @@ test("Teacher home is three static work entries plus the shared student list", (
 test("Teacher dashboard route keeps its title and drops its aggregation", () => {
   const page = read("app/teacher/dashboard/page.tsx");
   assert.match(page, /title="教师端首页"/);
-  assert.match(page, /<TeacherHome \/>/);
+  assert.match(page, /<TeacherHome(?: [^>]*)?\/>/);
   assert.doesNotMatch(page, /wide|loadTeacherDashboardPayload|总学生数/);
 });
 

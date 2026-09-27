@@ -1,11 +1,14 @@
 import { TeacherStudentQuestionDetail } from "@/components/TeacherDashboard";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 import { TeacherOnly } from "@/components/RoleGate";
+import { firstSearchParamValue } from "@/lib/teacherNavigation";
 
 export default function TeacherStudentQuestionDetailPage({
-  params
+  params,
+  searchParams
 }: {
   params: { attemptAnswerId: string; studentId: string };
+  searchParams?: { returnTo?: string | string[] };
 }) {
   return (
     <TeacherOnly>
@@ -15,6 +18,7 @@ export default function TeacherStudentQuestionDetailPage({
     >
       <TeacherStudentQuestionDetail
         attemptAnswerId={params.attemptAnswerId}
+        returnTo={firstSearchParamValue(searchParams?.returnTo)}
         studentId={params.studentId}
       />
     </TeacherAppShell>

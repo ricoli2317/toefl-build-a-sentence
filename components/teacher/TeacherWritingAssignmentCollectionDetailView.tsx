@@ -25,12 +25,18 @@ import {
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import {
+  teacherAssignmentBatchDetailHref,
+  teacherReturnToHref
+} from "@/lib/teacherNavigation";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 export function TeacherWritingAssignmentCollectionDetailView({
-  collectionId
+  collectionId,
+  returnTo
 }: {
   collectionId: string;
+  returnTo?: string;
 }) {
   const cache = useTeacherDataCache();
   const cacheKey = `${TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX}:collection:${collectionId}`;
@@ -55,7 +61,10 @@ export function TeacherWritingAssignmentCollectionDetailView({
   if (error || !data) return <TeacherDataError text={error || "无法加载作业详情。"} />;
   const collection = data.collection;
   const students = collectStudents(collection.assignments);
-  const detailHref = `/teacher/writing/assignments/batches/${collectionId}`;
+  const detailHref = teacherReturnToHref(
+    teacherAssignmentBatchDetailHref(collectionId),
+    returnTo
+  );
   const overallLabel = collection.published_count >= collection.total_count
     ? "已完成"
     : collection.completed_count >= collection.total_count

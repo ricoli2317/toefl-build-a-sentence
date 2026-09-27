@@ -29,10 +29,21 @@ import {
   type WritingAssignmentStudentStatus
 } from "@/lib/writingAssignments";
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import {
+  teacherAssignmentDetailHref,
+  teacherReturnToHref,
+  TEACHER_ASSIGNMENTS_HREF
+} from "@/lib/teacherNavigation";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
-export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmentId: string }) {
+export function TeacherWritingAssignmentDetailView({
+  assignmentId,
+  returnTo
+}: {
+  assignmentId: string;
+  returnTo?: string;
+}) {
   const router = useRouter();
   const cache = useTeacherDataCache();
   const [mutating, setMutating] = useState(false);
@@ -48,7 +59,10 @@ export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmen
   }
   if (error || !data) return <TeacherDataError text={error || "无法加载作业详情。"} />;
   const assignment = data.assignment;
-  const assignmentDetailHref = `/teacher/writing/assignments/${assignmentId}`;
+  const assignmentDetailHref = teacherReturnToHref(
+    teacherAssignmentDetailHref(assignmentId),
+    returnTo
+  );
   const assignmentProgress = getWritingAssignmentProgress({
     assignedCount: assignment.assigned_count,
     lifecycleStatus: assignment.status,
@@ -73,7 +87,7 @@ export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmen
         assignmentQuestionSource: assignment.question_source
       });
       if (action === "soft_delete") {
-        router.push("/teacher/writing/assignments");
+        router.push(returnTo || TEACHER_ASSIGNMENTS_HREF);
         router.refresh();
       }
     } catch (mutation) {
@@ -97,7 +111,7 @@ export function TeacherWritingAssignmentDetailView({ assignmentId }: { assignmen
             <p className="mt-2 text-sm text-student-muted">布置：{formatDate(assignment.created_at)} · 截止：{assignment.due_at ? formatDate(assignment.due_at) : "无"} · {assignment.completed_count}/{assignment.assigned_count} 已提交 · {assignment.published_count}/{assignment.assigned_count} 已发布</p>
           </div>
           <div className="flex flex-wrap justify-end gap-2">
-            {assignment.status === "active" ? (!assignment.has_attempts ? <button className="teacher-button-secondary" disabled={mutating} onClick={() => void mutate("withdraw")} type="button"><Undo2 aria-hidden="true" size={16} />撤回</button> : null) : <><Link className="teacher-button-secondary" href={`/teacher/writing/assignments/${assignmentId}/edit`}><Pencil aria-hidden="true" size={16} />编辑作业</Link><button className="teacher-button-primary" disabled={mutating} onClick={() => void mutate("reactivate")} type="button"><RotateCcw aria-hidden="true" size={16} />重新布置</button><button className="teacher-button-secondary text-student-error" disabled={mutating} onClick={() => void mutate("soft_delete")} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button></>}
+            {assignment.status === "active" ? (!assignment.has_attempts ? <button className="teacher-button-secondary" disabled={mutating} onClick={() => void mutate("withdraw")} type="button"><Undo2 aria-hidden="true" size={16} />撤回</button> : null) : <><Link className="teacher-button-secondary" href={teacherReturnToHref(`${teacherAssignmentDetailHref(assignmentId)}/edit`, returnTo)}><Pencil aria-hidden="true" size={16} />编辑作业</Link><button className="teacher-button-primary" disabled={mutating} onClick={() => void mutate("reactivate")} type="button"><RotateCcw aria-hidden="true" size={16} />重新布置</button><button className="teacher-button-secondary text-student-error" disabled={mutating} onClick={() => void mutate("soft_delete")} type="button"><Trash2 aria-hidden="true" size={16} />删除作业</button></>}
             <button className="teacher-button-secondary" disabled={mutating} onClick={() => cache.invalidate(cacheKey)} type="button"><RefreshCw aria-hidden="true" size={16} />刷新状态</button>
           </div>
         </div>

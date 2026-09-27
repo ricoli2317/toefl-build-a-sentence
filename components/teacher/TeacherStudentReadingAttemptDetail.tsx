@@ -11,6 +11,7 @@ import {
   ReadingReadonlyReviewShell
 } from "@/components/reading/ReadingPractice";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { safeTeacherReturnTo, teacherStudentDetailHref } from "@/lib/teacherNavigation";
 import type { ReadingFullSetReviewPayload } from "@/lib/reading/fullSetReview";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import type { TeacherReadingAttemptReviewPayload } from "@/lib/teacherStudentPractice";
@@ -30,14 +31,16 @@ type ReadingAttemptDetailPayload =
 export function TeacherStudentReadingAttemptDetail({
   attemptId,
   kind,
+  returnTo,
   studentId
 }: {
   attemptId: string;
   kind: TeacherReadingAttemptDetailKind;
+  returnTo?: string;
   studentId: string;
 }) {
   const router = useRouter();
-  const backHref = `/teacher/students/${encodeURIComponent(studentId)}`;
+  const backHref = safeTeacherReturnTo(returnTo, teacherStudentDetailHref(studentId));
   const state = useTeacherCachedData<ReadingAttemptDetailPayload>(
     `${TEACHER_STUDENT_READING_CACHE_PREFIX}:${kind}:${studentId}:${attemptId}`,
     () => loadReadingAttemptDetail(kind, studentId, attemptId)

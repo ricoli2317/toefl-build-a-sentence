@@ -2,19 +2,23 @@ import Link from "next/link";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
 import { TeacherOnly } from "@/components/RoleGate";
 import { TeacherWritingReviewList } from "@/components/teacher/TeacherWritingReviewList";
-
-function firstSearchParam(value: string | string[] | undefined) {
-  if (Array.isArray(value)) return value[0]?.trim() ?? "";
-  return value?.trim() ?? "";
-}
+import { parseTeacherWritingReviewListSearchParams } from "@/lib/teacherWritingReviewNavigation";
 
 export default function TeacherWritingReviewsPage({
   searchParams
 }: {
-  searchParams?: { tab?: string | string[]; classId?: string | string[] };
+  searchParams?: {
+    tab?: string | string[];
+    classId?: string | string[];
+    studentId?: string | string[];
+    status?: string | string[];
+    taskType?: string | string[];
+  };
 }) {
-  const tab = firstSearchParam(searchParams?.tab) === "class" ? "class" : "students";
-  const classId = firstSearchParam(searchParams?.classId);
+  // The tab and every filter live in the URL, so a refresh, the class
+  // drill-down and the browser Back/Forward all restore the exact list
+  // context; invalid values fall back safely (see the parser).
+  const initial = parseTeacherWritingReviewListSearchParams(searchParams);
 
   return (
     <TeacherOnly>
@@ -31,7 +35,13 @@ export default function TeacherWritingReviewsPage({
       subtitle="查看写作提交并进行 AI 或手动批改"
       title="写作批改"
     >
-      <TeacherWritingReviewList initialClassId={tab === "class" ? classId : ""} initialTab={tab} />
+      <TeacherWritingReviewList
+        initialClassId={initial.classId}
+        initialStudentId={initial.studentId}
+        initialStatus={initial.status}
+        initialTab={initial.tab}
+        initialTaskType={initial.taskType}
+      />
     </TeacherAppShell>
     </TeacherOnly>
   );

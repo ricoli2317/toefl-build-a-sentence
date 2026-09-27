@@ -185,6 +185,32 @@ export function isWritingTaskType(value: unknown): value is WritingTaskType {
   return value === "email" || value === "academic_discussion";
 }
 
+/**
+ * Authoritative order of every teacher-facing writing submission list (the
+ * 学生 / 班级 review tabs and every class drill-down): the newest student
+ * submission first. `submitted_at` can be null on historical rows, which sort
+ * last; the unique `attempt_id` is the stable tiebreaker so refreshes and
+ * pagination always keep the same order.
+ */
+export function compareWritingSubmissionsBySubmittedAtDesc<
+  T extends { attempt_id: string; submitted_at: string | null }
+>(left: T, right: T): number {
+  const leftTime = writingSubmissionTime(left.submitted_at);
+  const rightTime = writingSubmissionTime(right.submitted_at);
+  if (leftTime !== rightTime) {
+    if (leftTime === null) return 1;
+    if (rightTime === null) return -1;
+    return rightTime - leftTime;
+  }
+  return left.attempt_id > right.attempt_id ? -1 : left.attempt_id < right.attempt_id ? 1 : 0;
+}
+
+function writingSubmissionTime(value: string | null | undefined) {
+  if (!value) return null;
+  const time = Date.parse(value);
+  return Number.isFinite(time) ? time : null;
+}
+
 export function buildWritingAttemptUpdate({
   action,
   now,

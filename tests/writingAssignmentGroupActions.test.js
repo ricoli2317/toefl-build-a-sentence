@@ -139,7 +139,10 @@ test("group edit form loads all items and restores recipients for mixed groups",
   // The page and the group card link exist.
   const page = source("app/teacher/writing/assignments/batches/[batchId]/edit/page.tsx");
   assert.match(page, /TeacherWritingAssignmentGroupEditForm/);
-  assert.match(source(LIST), /const editHref = `\$\{detailHref\}\/edit`/);
+  assert.match(
+    source(LIST),
+    /const editHref = teacherReturnToHref\(`\$\{detailHref\}\/edit`, listReturnTo\)/
+  );
 });
 
 test("legacy single withdrawn edit and reassign keep their original APIs", () => {

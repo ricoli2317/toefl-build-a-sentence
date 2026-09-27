@@ -56,6 +56,7 @@ import type {
   WritingReviewWorkingDraft
 } from "@/lib/writingReviewWorkspace";
 import { recoverWritingReviewAfterUnknownOutcome } from "@/lib/writingReviewRequestRecovery";
+import { teacherReturnToHref } from "@/lib/teacherNavigation";
 import {
   TEACHER_REVIEW_CONTENT_REQUIRED_MESSAGE,
   hasTeacherContentFeedbackContent,
@@ -938,7 +939,10 @@ function WorkspaceToolbar({
       <div className="flex flex-wrap items-center justify-end gap-2">
         <Link
           className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"
-          href={`/teacher/writing/reviews/logs?attempt_id=${encodeURIComponent(data.attempt.attempt_id)}`}
+          href={teacherReturnToHref(
+            `/teacher/writing/reviews/logs?attempt_id=${encodeURIComponent(data.attempt.attempt_id)}`,
+            returnTo
+          )}
         >
           查看 AI 日志
         </Link>

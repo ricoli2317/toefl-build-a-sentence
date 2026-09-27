@@ -15,6 +15,8 @@ import {
   writingReviewCostSourceLabel,
   writingReviewEstimateKindLabel
 } from "@/lib/writingReviewCostPresentation";
+import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import { TEACHER_REVIEW_LOGS_HREF } from "@/lib/teacherNavigation";
 
 type AiLog = Record<string, unknown> & {
   id: string;
@@ -296,7 +298,7 @@ function LogDetail({ log, onClose }: { log: AiLog; onClose(): void }) {
         </section>
         {overlap ? <OverlapDiagnostic groups={groups} summary={overlap} /> : null}
         {Object.keys(unknownDiagnostics).length ? <details className="rounded-lg border border-student-border p-4"><summary className="cursor-pointer font-semibold">查看原始诊断 JSON</summary><pre className="mt-3 overflow-auto whitespace-pre-wrap text-xs">{JSON.stringify(unknownDiagnostics, null, 2)}</pre></details> : null}
-        <Link className="teacher-button-secondary mt-6 inline-flex" href={`/teacher/writing/reviews/${encodeURIComponent(log.attempt_id)}`}>打开当前批改</Link>
+        <Link className="teacher-button-secondary mt-6 inline-flex" href={teacherWritingReviewWorkspaceHref(log.attempt_id, TEACHER_REVIEW_LOGS_HREF)}>打开当前批改</Link>
       </section>
     </div>
   );

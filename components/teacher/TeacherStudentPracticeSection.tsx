@@ -9,6 +9,15 @@ import {
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
+import { useTeacherClassDisplayName } from "@/components/teacher/TeacherNavigationContext";
+import {
+  safeTeacherReturnTo,
+  teacherClassIdFromReturnTo,
+  teacherReturnToHref,
+  teacherStudentDetailCrumbs,
+  teacherStudentDetailHref,
+  TEACHER_HOME_HREF
+} from "@/lib/teacherNavigation";
 import {
   TeacherAccuracyBar,
   TeacherCard,
@@ -42,10 +51,19 @@ const ALL_TASKS_SELECTED: Record<TeacherPracticeTaskType, boolean> = {
   academic_discussion: true
 };
 
-export function TeacherStudentPracticeWorkspace({ studentId }: { studentId: string }) {
+export function TeacherStudentPracticeWorkspace({
+  returnTo,
+  studentId
+}: {
+  returnTo?: string;
+  studentId: string;
+}) {
   const [selectedDay, setSelectedDay] = useState(() => startOfLocalDay());
   const [selectedTasks, setSelectedTasks] = useState(ALL_TASKS_SELECTED);
   const range = useMemo(() => localDayRange(selectedDay), [selectedDay]);
+  const parentReturnTo = safeTeacherReturnTo(returnTo, TEACHER_HOME_HREF);
+  const className = useTeacherClassDisplayName(teacherClassIdFromReturnTo(parentReturnTo));
+  const selfHref = teacherReturnToHref(teacherStudentDetailHref(studentId), parentReturnTo);
   const state = useTeacherCachedData<TeacherStudentPracticePayload>(
     `${TEACHER_STUDENT_PRACTICE_CACHE_PREFIX}:${studentId}:${range.startAt}:${range.endAt}`,
     () => loadTeacherStudentPractice(studentId, range.startAt, range.endAt)
@@ -56,11 +74,13 @@ export function TeacherStudentPracticeWorkspace({ studentId }: { studentId: stri
 
   return (
     <div className="grid gap-5">
-      <TeacherBreadcrumbs crumbs={[
-        { label: "首页", href: "/teacher/dashboard" },
-        { label: "学生", href: "/teacher/students" },
-        { label: payload?.student.displayName ?? "学生详情" }
-      ]} />
+      <TeacherBreadcrumbs
+        crumbs={teacherStudentDetailCrumbs({
+          className,
+          returnTo: parentReturnTo,
+          studentName: payload?.student.displayName ?? "学生详情"
+        })}
+      />
       {state.loading ? (
         <>
           <TeacherLoadingRegion label="正在加载学生练习记录" />
@@ -185,6 +205,7 @@ export function TeacherStudentPracticeWorkspace({ studentId }: { studentId: stri
               <TeacherPracticeRecordList
                 emptyText="该日期暂无 Reading 练习记录。"
                 records={readingRecords}
+                returnTo={selfHref}
               />
             </section>
           ) : null}
@@ -226,6 +247,7 @@ export function TeacherStudentPracticeWorkspace({ studentId }: { studentId: stri
               <TeacherPracticeRecordList
                 emptyText="该日期暂无 Writing 练习记录。"
                 records={writingRecords}
+                returnTo={selfHref}
               />
             </section>
           ) : null}
@@ -237,10 +259,12 @@ export function TeacherStudentPracticeWorkspace({ studentId }: { studentId: stri
 
 export function TeacherPracticeRecordList({
   emptyText,
-  records
+  records,
+  returnTo
 }: {
   emptyText: string;
   records: TeacherPracticeRecord[];
+  returnTo?: string;
 }) {
   if (records.length === 0) {
     return (
@@ -253,16 +277,23 @@ export function TeacherPracticeRecordList({
     <TeacherCard className="overflow-hidden p-0">
       <div className="divide-y divide-student-border px-5">
         {records.map((record) => (
-          <TeacherPracticeRecordRow key={record.recordId} record={record} />
+          <TeacherPracticeRecordRow key={record.recordId} record={record} returnTo={returnTo} />
         ))}
       </div>
     </TeacherCard>
   );
 }
 
-function TeacherPracticeRecordRow({ record }: { record: TeacherPracticeRecord }) {
-  const title = record.href ? (
-    <Link className="truncate font-semibold text-student-text hover:underline" href={record.href}>
+function TeacherPracticeRecordRow({
+  record,
+  returnTo
+}: {
+  record: TeacherPracticeRecord;
+  returnTo?: string;
+}) {
+  const href = record.href ? teacherReturnToHref(record.href, returnTo) : null;
+  const title = href ? (
+    <Link className="truncate font-semibold text-student-text hover:underline" href={href}>
       {record.title}
     </Link>
   ) : (

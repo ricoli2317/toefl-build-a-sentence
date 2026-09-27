@@ -25,6 +25,10 @@ import {
   studentSearchRank
 } from "@/lib/studentSearch";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import {
+  teacherAssignmentDetailHref,
+  teacherReturnToHref
+} from "@/lib/teacherNavigation";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { WRITING_TASK_CONFIG, type WritingQuestion, type WritingTaskType } from "@/lib/writing";
 import {
@@ -98,14 +102,21 @@ export const AVATAR_FIELD_BY_NAME = {
 export function TeacherWritingAssignmentForm({
   initialAssignment,
   initialClassId,
-  initialStudentId
+  initialStudentId,
+  returnTo
 }: {
   initialAssignment?: WritingAssignmentDetail;
   initialClassId?: string;
   initialStudentId?: string;
+  returnTo?: string;
 }) {
   return initialAssignment
-    ? <TeacherWritingAssignmentEditForm initialAssignment={initialAssignment} />
+    ? (
+      <TeacherWritingAssignmentEditForm
+        initialAssignment={initialAssignment}
+        returnTo={returnTo}
+      />
+    )
     : (
       <TeacherWritingAssignmentCreateForm
         initialClassId={initialClassId}
@@ -614,9 +625,11 @@ function TeacherWritingAssignmentCreateForm({
 }
 
 function TeacherWritingAssignmentEditForm({
-  initialAssignment
+  initialAssignment,
+  returnTo
 }: {
   initialAssignment: WritingAssignmentDetail;
+  returnTo?: string;
 }) {
   const router = useRouter();
   const cache = useTeacherDataCache();
@@ -815,7 +828,16 @@ function TeacherWritingAssignmentEditForm({
         assignmentId: payload.assignmentId,
         assignmentQuestionSource: source
       });
-      router.push(`/teacher/writing/assignments/${payload.assignmentId}`);
+      // The saved detail page keeps the exact 作业管理 context the editor was
+      // opened from (班级作业 tab + class filter, or a student filter), so its
+      // 作业管理 breadcrumb returns there after a refresh as well. A direct
+      // visit without a returnTo keeps the canonical detail URL.
+      router.push(
+        teacherReturnToHref(
+          teacherAssignmentDetailHref(payload.assignmentId),
+          returnTo
+        )
+      );
       router.refresh();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "作业创建失败。");

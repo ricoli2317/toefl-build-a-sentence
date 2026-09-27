@@ -3,7 +3,11 @@ import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
-import { isWritingTaskType, type WritingTaskType } from "@/lib/writing";
+import {
+  compareWritingSubmissionsBySubmittedAtDesc,
+  isWritingTaskType,
+  type WritingTaskType
+} from "@/lib/writing";
 import {
   loadWritingHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings,
@@ -108,13 +112,16 @@ export async function GET(request: Request) {
       );
     }
 
+    // The self-practice and assignment sources load separately; this is the
+    // single authoritative order for every review list: newest student
+    // submission first, unique attempt id as the stable tiebreaker.
     const attempts = Array.from(
       new Map(
         (attemptsResult.data ?? [])
           .filter((attempt) => isWritingTaskType(attempt.task_type))
           .map((attempt) => [String(attempt.attempt_id), attempt])
       ).values()
-    );
+    ).sort(compareWritingSubmissionsBySubmittedAtDesc);
     if (attempts.length === 0) return json({ attempts: [] });
 
     const attemptIds = unique(attempts.map((attempt) => String(attempt.attempt_id)));

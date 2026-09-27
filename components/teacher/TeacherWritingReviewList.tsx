@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { ArrowLeft } from "lucide-react";
 import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
@@ -12,6 +13,11 @@ import {
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
 import {
+  TeacherClassFilterPopover,
+  TeacherReviewFilterBar,
+  TeacherStudentFilterPopover
+} from "@/components/teacher/TeacherListFilters";
+import {
   TeacherCard,
   TeacherDataError,
   TeacherEmptyState,
@@ -19,13 +25,21 @@ import {
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import {
+  TEACHER_WRITING_REVIEWS_HREF,
+  teacherWritingReviewWorkspaceHref,
+  teacherWritingReviewsListHref
+} from "@/lib/teacherWritingReviewNavigation";
+import {
+  collectWritingReviewStudentOptions,
+  filterWritingReviewListEntries,
+  type WritingReviewListStatus,
+  type WritingReviewStatusFilter,
+  type WritingReviewTaskTypeFilter
+} from "@/lib/teacherWritingReviewList";
 import { classSubjectsLabel, type TeacherClassReviewSummary } from "@/lib/teacherClasses";
+import type { WritingAssignmentRecipient } from "@/lib/writingAssignments";
 import type { WritingTaskType } from "@/lib/writing";
-
-type ReviewStatus = "pending" | "reviewing" | "published";
-type StatusFilter = "all" | ReviewStatus;
-type TaskFilter = "all" | WritingTaskType;
 
 type WritingReviewListItem = {
   attemptId: string;
@@ -46,81 +60,320 @@ type WritingReviewListItem = {
   } | null;
   wordCount: number;
   submittedAt: string | null;
-  reviewStatus: ReviewStatus;
+  reviewStatus: WritingReviewListStatus;
 };
 
 type WritingReviewListPayload = { attempts: WritingReviewListItem[] };
 type ErrorPayload = { code?: string; message?: string; error?: string };
 
-const STATUS_FILTERS: Array<{ value: StatusFilter; label: string }> = [
-  { value: "all", label: "全部" },
-  { value: "pending", label: "待批改" },
-  { value: "reviewing", label: "批改中" },
-  { value: "published", label: "已发布" }
-];
-
 /**
- * 写作批改 list with the 学生 | 班级 tabs. The 学生 tab is the previous page
- * unchanged; the 班级 tab organizes the same submissions by class and always
- * opens the existing Writing Review workspace, one essay at a time.
+ * 写作批改 list with the 学生 | 班级 tabs.
+ *
+ * Both tabs read the same URL state (tab / studentId / classId / status /
+ * taskType), so a refresh, the workspace returnTo chain and the browser
+ * Back/Forward always restore the exact list context. The server owns the
+ * order (submitted_at DESC, attempt id tiebreaker); this component only
+ * applies the shared 学生/班级 ∩ 状态 ∩ 题型 filter view. The 班级 tab keeps
+ * its 班级列表 → 班级 submission 列表 drill-down: 全部班级 shows the class
+ * cards, and selecting a class (card or class filter) opens that class's
+ * submissions only.
  */
 export function TeacherWritingReviewList({
   initialClassId,
-  initialTab
+  initialStudentId,
+  initialStatus = "all",
+  initialTab = "students",
+  initialTaskType = "all"
 }: {
   initialClassId?: string;
+  initialStudentId?: string;
+  initialStatus?: WritingReviewStatusFilter;
   initialTab?: "students" | "class";
+  initialTaskType?: WritingReviewTaskTypeFilter;
 } = {}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [tab, setTab] = useState<"students" | "class">(
     initialTab === "class" ? "class" : "students"
   );
+  const [studentId, setStudentId] = useState(initialStudentId?.trim() ?? "");
   const [classId, setClassId] = useState(initialClassId?.trim() ?? "");
+  const [statusFilter, setStatusFilter] = useState<WritingReviewStatusFilter>(initialStatus);
+  const [taskFilter, setTaskFilter] = useState<WritingReviewTaskTypeFilter>(initialTaskType);
+
+  // The URL props stay the source of truth; these effects realign the local
+  // state when the browser Back/Forward restores an older URL. Filter clicks
+  // update the URL through router.push below, so the two never diverge.
+  useEffect(() => {
+    setTab(initialTab === "class" ? "class" : "students");
+  }, [initialTab]);
+  useEffect(() => {
+    setStudentId(initialStudentId?.trim() ?? "");
+  }, [initialStudentId]);
+  useEffect(() => {
+    setClassId(initialClassId?.trim() ?? "");
+  }, [initialClassId]);
+  useEffect(() => {
+    setStatusFilter(initialStatus);
+  }, [initialStatus]);
+  useEffect(() => {
+    setTaskFilter(initialTaskType);
+  }, [initialTaskType]);
+
+  // 学生 tab: one cached full-list request backs both the table and the
+  // student filter options, so the picker costs no extra request.
+  const reviewsState = useTeacherCachedData<WritingReviewListPayload>(
+    TEACHER_WRITING_REVIEWS_CACHE_KEY,
+    () => loadWritingReviews(),
+    { enabled: tab === "students" }
+  );
+  const attempts = useMemo(() => reviewsState.data?.attempts ?? [], [reviewsState.data]);
+  const studentOptions = useMemo(() => collectWritingReviewStudentOptions(attempts), [attempts]);
+
+  // 班级 tab: the same cached class summaries that back the overview cards.
+  // Only the teacher's own Writing / Reading+Writing classes can appear.
+  const classReviewsState = useTeacherCachedData<{ classes: TeacherClassReviewSummary[] }>(
+    TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
+    () => loadClassReviewSummaries(),
+    { enabled: tab === "class" }
+  );
+  const classOptions = useMemo(
+    () => classReviewsState.data?.classes ?? [],
+    [classReviewsState.data]
+  );
+
+  // A deep-linked student/class that is no longer visible falls back to
+  // 全部学生 / 全部班级 without an error; the URL follows the fallback.
+  const studentsReady = reviewsState.data !== null;
+  const studentIdIsVisible = studentOptions.some((option) => option.student_id === studentId);
+  const activeStudentId =
+    studentsReady && studentId !== "" && !studentIdIsVisible ? "" : studentId;
+  const classesReady = classReviewsState.data !== null;
+  const classIdIsVisible = classOptions.some((entry) => entry.class_id === classId);
+  const activeClassId = classesReady && classId !== "" && !classIdIsVisible ? "" : classId;
+
+  useEffect(() => {
+    if (!studentsReady || studentId === "" || studentIdIsVisible) return;
+    setStudentId("");
+    router.replace(
+      teacherWritingReviewsListHref({
+        tab: "students",
+        classId,
+        status: statusFilter,
+        taskType: taskFilter
+      }),
+      { scroll: false }
+    );
+  }, [
+    classId,
+    router,
+    statusFilter,
+    studentId,
+    studentIdIsVisible,
+    studentsReady,
+    taskFilter
+  ]);
+
+  useEffect(() => {
+    if (!classesReady || classId === "" || classIdIsVisible) return;
+    setClassId("");
+    router.replace(
+      teacherWritingReviewsListHref({
+        tab: "class",
+        status: statusFilter,
+        taskType: taskFilter
+      }),
+      { scroll: false }
+    );
+  }, [classId, classIdIsVisible, classesReady, router, statusFilter, taskFilter]);
+
+  // A hand-written or stale URL may carry unknown values (for example
+  // ?status=banana) or the inactive tab's filter; normalize once on mount so
+  // the URL always equals the visible list state. Later clicks keep the URL
+  // in sync through the handlers below.
+  useEffect(() => {
+    if (pathname !== TEACHER_WRITING_REVIEWS_HREF) return;
+    const canonical = teacherWritingReviewsListHref({
+      tab: initialTab === "class" ? "class" : "students",
+      studentId: initialStudentId,
+      classId: initialClassId,
+      status: initialStatus,
+      taskType: initialTaskType
+    });
+    const current = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    if (current !== canonical) router.replace(canonical, { scroll: false });
+    // Mount only: every later change goes through push/filter handlers.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * All filters live in one URL state. Each handler changes only its own value
+   * and passes the others through, so switching one filter never resets the
+   * rest; router.push keeps Back/Forward able to restore every step.
+   */
+  function navigateListHref(next: {
+    tab?: "students" | "class";
+    studentId?: string;
+    classId?: string;
+    status?: WritingReviewStatusFilter;
+    taskType?: WritingReviewTaskTypeFilter;
+  }) {
+    const href = teacherWritingReviewsListHref({
+      tab: next.tab ?? tab,
+      studentId: next.studentId ?? activeStudentId,
+      classId: next.classId ?? activeClassId,
+      status: next.status ?? statusFilter,
+      taskType: next.taskType ?? taskFilter
+    });
+    const current = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    if (href !== current) router.push(href, { scroll: false });
+  }
+
+  function selectTab(nextTab: "students" | "class") {
+    setTab(nextTab);
+    navigateListHref({ tab: nextTab });
+  }
+
+  function selectStudentFilter(studentIdValue: string) {
+    setStudentId(studentIdValue);
+    navigateListHref({ studentId: studentIdValue });
+  }
+
+  function selectClassFilter(classIdValue: string) {
+    setClassId(classIdValue);
+    navigateListHref({ classId: classIdValue });
+  }
+
+  function selectStatusFilter(status: WritingReviewStatusFilter) {
+    setStatusFilter(status);
+    navigateListHref({ status });
+  }
+
+  function selectTaskFilter(taskType: WritingReviewTaskTypeFilter) {
+    setTaskFilter(taskType);
+    navigateListHref({ taskType });
+  }
+
+  const listHref = teacherWritingReviewsListHref({
+    tab,
+    studentId: activeStudentId,
+    classId: activeClassId,
+    status: statusFilter,
+    taskType: taskFilter
+  });
+  const filtered = useMemo(
+    () =>
+      filterWritingReviewListEntries(attempts, {
+        studentId: activeStudentId,
+        status: statusFilter,
+        taskType: taskFilter
+      }),
+    [activeStudentId, attempts, statusFilter, taskFilter]
+  );
+  const selectedClassName = classOptions.find((entry) => entry.class_id === activeClassId)?.name ?? "";
 
   return (
     <div className="grid gap-5">
       <nav aria-label="批改视图" className="flex gap-2 border-b border-student-border">
         <button
           className={`border-b-2 px-5 py-3 text-sm font-bold ${tab === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-          onClick={() => setTab("students")}
+          onClick={() => selectTab("students")}
           type="button"
         >
           学生
         </button>
         <button
           className={`border-b-2 px-5 py-3 text-sm font-bold ${tab === "class" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-          onClick={() => setTab("class")}
+          onClick={() => selectTab("class")}
           type="button"
         >
           班级
         </button>
       </nav>
       {tab === "students" ? (
-        <StudentReviewSection />
-      ) : classId ? (
-        <ClassReviewList classId={classId} onBack={() => setClassId("")} />
+        <StudentReviewSection
+          attempts={attempts}
+          error={reviewsState.error}
+          filtered={filtered}
+          loading={reviewsState.loading}
+          onStatusFilter={selectStatusFilter}
+          onStudentFilter={selectStudentFilter}
+          onTaskFilter={selectTaskFilter}
+          returnTo={listHref}
+          selectedStudentId={activeStudentId}
+          statusFilter={statusFilter}
+          studentOptions={studentOptions}
+          taskFilter={taskFilter}
+        />
       ) : (
-        <ClassReviewOverview onOpen={setClassId} />
+        <ClassReviewSection
+          classId={activeClassId}
+          classOptions={classOptions}
+          className={selectedClassName}
+          classesError={classReviewsState.error}
+          classesLoading={!classesReady && !classReviewsState.error}
+          onBack={() => selectClassFilter("")}
+          onOpenClass={selectClassFilter}
+          onStatusFilter={selectStatusFilter}
+          onTaskFilter={selectTaskFilter}
+          returnTo={listHref}
+          statusFilter={statusFilter}
+          taskFilter={taskFilter}
+        />
       )}
     </div>
   );
 }
 
-function StudentReviewSection() {
-  const { data, error, loading } = useTeacherCachedData<WritingReviewListPayload>(
-    TEACHER_WRITING_REVIEWS_CACHE_KEY,
-    () => loadWritingReviews()
-  );
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [taskFilter, setTaskFilter] = useState<TaskFilter>("all");
-  const attempts = useMemo(() => data?.attempts ?? [], [data]);
-  const filtered = filterReviewAttempts(attempts, statusFilter, taskFilter);
+function StudentReviewSection({
+  attempts,
+  error,
+  filtered,
+  loading,
+  onStatusFilter,
+  onStudentFilter,
+  onTaskFilter,
+  returnTo,
+  selectedStudentId,
+  statusFilter,
+  studentOptions,
+  taskFilter
+}: {
+  attempts: WritingReviewListItem[];
+  error: string;
+  filtered: WritingReviewListItem[];
+  loading: boolean;
+  onStatusFilter: (value: WritingReviewStatusFilter) => void;
+  onStudentFilter: (studentId: string) => void;
+  onTaskFilter: (value: WritingReviewTaskTypeFilter) => void;
+  returnTo: string;
+  selectedStudentId: string;
+  statusFilter: WritingReviewStatusFilter;
+  studentOptions: WritingAssignmentRecipient[];
+  taskFilter: WritingReviewTaskTypeFilter;
+}) {
+  const selectedStudent = selectedStudentId
+    ? studentOptions.find((option) => option.student_id === selectedStudentId) ?? {
+        student_id: selectedStudentId,
+        student_name: ""
+      }
+    : null;
 
   return (
     <div className="grid gap-5">
       {loading ? <TeacherLoadingRegion label="正在加载写作批改列表" /> : null}
-      <ReviewFilters
-        onStatusFilter={setStatusFilter}
-        onTaskFilter={setTaskFilter}
+      <TeacherReviewFilterBar
+        onStatusFilter={onStatusFilter}
+        onTaskFilter={onTaskFilter}
+        primary={
+          <TeacherStudentFilterPopover
+            onSelect={(recipient) => onStudentFilter(recipient?.student_id ?? "")}
+            options={studentOptions}
+            selected={selectedStudent}
+          />
+        }
+        primaryLabel="学生"
         statusFilter={statusFilter}
         taskFilter={taskFilter}
       />
@@ -129,6 +382,7 @@ function StudentReviewSection() {
         error={error}
         filtered={filtered}
         loading={loading}
+        returnTo={returnTo}
         emptyTexts={{
           noAttempts: "暂无已提交的写作练习。",
           noMatch: "当前筛选条件下暂无提交。"
@@ -138,35 +392,109 @@ function StudentReviewSection() {
   );
 }
 
-function ClassReviewOverview({ onOpen }: { onOpen: (classId: string) => void }) {
-  const { data, error, loading } = useTeacherCachedData<{ classes: TeacherClassReviewSummary[] }>(
-    TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
-    () => loadClassReviewSummaries()
+function ClassReviewSection({
+  classId,
+  classOptions,
+  className,
+  classesError,
+  classesLoading,
+  onBack,
+  onOpenClass,
+  onStatusFilter,
+  onTaskFilter,
+  returnTo,
+  statusFilter,
+  taskFilter
+}: {
+  classId: string;
+  classOptions: TeacherClassReviewSummary[];
+  className: string;
+  classesError: string;
+  classesLoading: boolean;
+  onBack: () => void;
+  onOpenClass: (classId: string) => void;
+  onStatusFilter: (value: WritingReviewStatusFilter) => void;
+  onTaskFilter: (value: WritingReviewTaskTypeFilter) => void;
+  returnTo: string;
+  statusFilter: WritingReviewStatusFilter;
+  taskFilter: WritingReviewTaskTypeFilter;
+}) {
+  const filterBar = (
+    <TeacherReviewFilterBar
+      onStatusFilter={onStatusFilter}
+      onTaskFilter={onTaskFilter}
+      primary={
+        <TeacherClassFilterPopover
+          onSelect={(entry) => onOpenClass(entry?.class_id ?? "")}
+          options={classOptions}
+          selected={classId ? { class_id: classId, name: className } : null}
+        />
+      }
+      primaryLabel="班级"
+      statusFilter={statusFilter}
+      taskFilter={taskFilter}
+    />
   );
-  const classes = data?.classes ?? [];
 
-  if (loading) {
+  if (classId) {
+    // The class id is confirmed against the teacher's own Writing classes
+    // before the per-class request is made, so a stale id never fires a
+    // doomed request and the empty/loading handling stays identical.
+    if (classesLoading) {
+      return (
+        <div className="grid gap-5">
+          {filterBar}
+          <div aria-busy="true" className="grid gap-3">
+            <TeacherSkeleton className="h-16 w-full rounded-2xl" />
+            <TeacherSkeleton className="h-72 w-full rounded-2xl" />
+          </div>
+        </div>
+      );
+    }
     return (
-      <div className="grid gap-3" aria-busy="true">
-        {[1, 2, 3].map((item) => <TeacherSkeleton className="h-28 w-full rounded-2xl" key={item} />)}
+      <div className="grid gap-5">
+        {filterBar}
+        <ClassReviewList
+          classId={classId}
+          className={className}
+          onBack={onBack}
+          returnTo={returnTo}
+          statusFilter={statusFilter}
+          taskFilter={taskFilter}
+        />
       </div>
     );
   }
-  if (error) {
-    return (
-      <TeacherCard className="p-5">
-        <TeacherDataError text={toChineseLoadError(error)} />
-      </TeacherCard>
-    );
-  }
-  if (classes.length === 0) {
-    return (
-      <TeacherCard className="p-5">
-        <TeacherEmptyState text="还没有包含写作的班级。请先在首页“班级列表”中创建班级。" />
-      </TeacherCard>
-    );
-  }
 
+  return (
+    <div className="grid gap-5">
+      {filterBar}
+      {classesLoading ? (
+        <div className="grid gap-3" aria-busy="true">
+          {[1, 2, 3].map((item) => <TeacherSkeleton className="h-28 w-full rounded-2xl" key={item} />)}
+        </div>
+      ) : classesError ? (
+        <TeacherCard className="p-5">
+          <TeacherDataError text={toChineseLoadError(classesError)} />
+        </TeacherCard>
+      ) : classOptions.length === 0 ? (
+        <TeacherCard className="p-5">
+          <TeacherEmptyState text="还没有包含写作的班级。请先在首页“班级列表”中创建班级。" />
+        </TeacherCard>
+      ) : (
+        <ClassReviewOverview classes={classOptions} onOpen={onOpenClass} />
+      )}
+    </div>
+  );
+}
+
+function ClassReviewOverview({
+  classes,
+  onOpen
+}: {
+  classes: TeacherClassReviewSummary[];
+  onOpen: (classId: string) => void;
+}) {
   return (
     <div className="grid gap-3">
       {classes.map((entry) => (
@@ -207,24 +535,38 @@ function ClassReviewOverview({ onOpen }: { onOpen: (classId: string) => void }) 
   );
 }
 
-function ClassReviewList({ classId, onBack }: { classId: string; onBack: () => void }) {
-  const summaries = useTeacherCachedData<{ classes: TeacherClassReviewSummary[] }>(
-    TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
-    () => loadClassReviewSummaries()
-  );
+function ClassReviewList({
+  classId,
+  className,
+  onBack,
+  returnTo,
+  statusFilter,
+  taskFilter
+}: {
+  classId: string;
+  className: string;
+  onBack: () => void;
+  returnTo: string;
+  statusFilter: WritingReviewStatusFilter;
+  taskFilter: WritingReviewTaskTypeFilter;
+}) {
   const { data, error, loading } = useTeacherCachedData<WritingReviewListPayload>(
     `${TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX}:${classId}`,
     () => loadWritingReviews(`?classId=${encodeURIComponent(classId)}`)
   );
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [taskFilter, setTaskFilter] = useState<TaskFilter>("all");
   const attempts = useMemo(() => data?.attempts ?? [], [data]);
-  const filtered = filterReviewAttempts(attempts, statusFilter, taskFilter);
-  const className =
-    summaries.data?.classes.find((entry) => entry.class_id === classId)?.name ?? "";
+  const filtered = useMemo(
+    () =>
+      filterWritingReviewListEntries(attempts, {
+        status: statusFilter,
+        taskType: taskFilter
+      }),
+    [attempts, statusFilter, taskFilter]
+  );
 
   return (
     <div className="grid gap-5">
+      {loading ? <TeacherLoadingRegion label="正在加载班级写作提交" /> : null}
       <TeacherCard className="flex flex-wrap items-center justify-between gap-3 p-4">
         <div className="flex flex-wrap items-center gap-3">
           <button className="teacher-button-secondary" onClick={onBack} type="button">
@@ -236,17 +578,12 @@ function ClassReviewList({ classId, onBack }: { classId: string; onBack: () => v
           </p>
         </div>
       </TeacherCard>
-      <ReviewFilters
-        onStatusFilter={setStatusFilter}
-        onTaskFilter={setTaskFilter}
-        statusFilter={statusFilter}
-        taskFilter={taskFilter}
-      />
       <ReviewTable
         attempts={attempts}
         error={error}
         filtered={filtered}
         loading={loading}
+        returnTo={returnTo}
         emptyTexts={{
           noAttempts: "该班级暂无已提交的写作练习。",
           noMatch: "当前筛选条件下暂无提交。"
@@ -256,83 +593,20 @@ function ClassReviewList({ classId, onBack }: { classId: string; onBack: () => v
   );
 }
 
-function filterReviewAttempts(
-  attempts: WritingReviewListItem[],
-  statusFilter: StatusFilter,
-  taskFilter: TaskFilter
-) {
-  return attempts.filter(
-    (attempt) =>
-      (statusFilter === "all" || attempt.reviewStatus === statusFilter) &&
-      (taskFilter === "all" || attempt.taskType === taskFilter)
-  );
-}
-
-function ReviewFilters({
-  onStatusFilter,
-  onTaskFilter,
-  statusFilter,
-  taskFilter
-}: {
-  onStatusFilter: (value: StatusFilter) => void;
-  onTaskFilter: (value: TaskFilter) => void;
-  statusFilter: StatusFilter;
-  taskFilter: TaskFilter;
-}) {
-  return (
-    <TeacherCard className="p-5 sm:p-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <fieldset>
-          <legend className="mb-2 text-sm font-semibold text-student-text">批改状态</legend>
-          <div className="flex flex-wrap gap-2">
-            {STATUS_FILTERS.map((filter) => (
-              <button
-                aria-pressed={statusFilter === filter.value}
-                className={clsx(
-                  "min-h-10 rounded-[10px] border px-4 text-sm font-semibold transition",
-                  statusFilter === filter.value
-                    ? "border-student-primary bg-student-primary text-white"
-                    : "border-student-border bg-white text-student-text hover:border-student-primary-border hover:bg-student-primary-soft"
-                )}
-                key={filter.value}
-                onClick={() => onStatusFilter(filter.value)}
-                type="button"
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
-        <label className="block w-full max-w-[260px]">
-          <span className="mb-2 block text-sm font-semibold text-student-text">题型</span>
-          <select
-            className="h-11 w-full rounded-[10px] border border-student-border bg-white px-3 text-sm font-medium text-student-text"
-            onChange={(event) => onTaskFilter(event.target.value as TaskFilter)}
-            value={taskFilter}
-          >
-            <option value="all">全部题型</option>
-            <option value="email">Write an Email</option>
-            <option value="academic_discussion">Academic Discussion</option>
-          </select>
-        </label>
-      </div>
-    </TeacherCard>
-  );
-}
-
 function ReviewTable({
   attempts,
   emptyTexts,
   error,
   filtered,
-  loading
+  loading,
+  returnTo
 }: {
   attempts: WritingReviewListItem[];
   emptyTexts: { noAttempts: string; noMatch: string };
   error: string;
   filtered: WritingReviewListItem[];
   loading: boolean;
+  returnTo: string;
 }) {
   return (
     <TeacherCard className="overflow-hidden p-0">
@@ -389,7 +663,7 @@ function ReviewTable({
                         className="teacher-button-secondary min-w-[104px]"
                         href={teacherWritingReviewWorkspaceHref(
                           attempt.attemptId,
-                          "/teacher/writing/reviews"
+                          returnTo || "/teacher/writing/reviews"
                         )}
                       >
                         查看
@@ -437,7 +711,7 @@ function WritingReviewTableSkeleton() {
   );
 }
 
-function ReviewStatusBadge({ status }: { status: ReviewStatus }) {
+function ReviewStatusBadge({ status }: { status: WritingReviewListStatus }) {
   return (
     <span
       className={clsx(

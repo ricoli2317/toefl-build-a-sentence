@@ -280,7 +280,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
 export function useTeacherCachedData<T>(
   key: string,
   loader: () => Promise<T>,
-  options?: { refreshOnMount?: boolean }
+  options?: { enabled?: boolean; refreshOnMount?: boolean }
 ) {
   const cache = useContext(TeacherDataCacheContext);
   if (!cache) {
@@ -293,6 +293,7 @@ export function useTeacherCachedData<T>(
   const entry = cache.getEntry(key);
 
   useEffect(() => {
+    if (options?.enabled === false) return;
     const entry = cache.getEntry(key);
     if (!entry || (entry.status === "error" && mountedRequestRef.current !== key)) {
       mountedRequestRef.current = key;
@@ -303,7 +304,7 @@ export function useTeacherCachedData<T>(
       mountedRequestRef.current = key;
       void cache.refresh(key, () => loaderRef.current());
     }
-  }, [cache, key, options?.refreshOnMount]);
+  }, [cache, key, options?.enabled, options?.refreshOnMount]);
 
   return {
     data:

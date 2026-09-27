@@ -12,33 +12,37 @@ const root = path.resolve(__dirname, "..");
 const source = (relativePath) =>
   fs.readFileSync(path.join(root, relativePath), "utf8");
 
-test("writing review returnTo accepts only approved teacher writing routes", () => {
+test("writing review returnTo accepts every known teacher drill-down source", () => {
   const assignmentId = "123e4567-e89b-12d3-a456-426614174000";
-  assert.equal(
-    safeWritingReviewReturnTo("/teacher/writing/reviews"),
-    "/teacher/writing/reviews"
-  );
-  assert.equal(
-    safeWritingReviewReturnTo("/teacher/writing/assignments"),
-    "/teacher/writing/assignments"
-  );
-  assert.equal(
-    safeWritingReviewReturnTo(`/teacher/writing/assignments/${assignmentId}`),
-    `/teacher/writing/assignments/${assignmentId}`
-  );
-  assert.equal(
-    safeWritingReviewReturnTo(`/teacher/writing/assignments/batches/${assignmentId}`),
-    `/teacher/writing/assignments/batches/${assignmentId}`
-  );
+  const studentId = "11111111-2222-3333-4444-555555555555";
+  const classId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+  for (const safe of [
+    "/teacher/writing/reviews",
+    "/teacher/writing/reviews?tab=class&classId=" + classId,
+    "/teacher/writing/reviews/logs",
+    "/teacher/writing/assignments",
+    "/teacher/writing/assignments?view=class&classId=" + classId,
+    `/teacher/writing/assignments/${assignmentId}`,
+    `/teacher/writing/assignments/batches/${assignmentId}`,
+    "/teacher/dashboard",
+    "/teacher/dashboard?tab=classes",
+    "/teacher/students",
+    `/teacher/students/${studentId}?returnTo=%2Fteacher%2Fclasses%2F${classId}`,
+    `/teacher/classes/${classId}`
+  ]) {
+    assert.equal(safeWritingReviewReturnTo(safe), safe, `${safe} must stay usable`);
+  }
   for (const unsafe of [
     "https://example.com",
     "//example.com",
     "javascript:alert(1)",
-    "/teacher/dashboard",
     "/student/assignments",
-    "/teacher/writing/assignments/not-a-uuid",
-    "/teacher/writing/reviews?unexpected=1",
-    null
+    "/admin/student-bindings",
+    "/teacher/unknown-page",
+    "/teacher/../student/assignments",
+    null,
+    undefined,
+    42
   ]) {
     assert.equal(
       safeWritingReviewReturnTo(unsafe),
