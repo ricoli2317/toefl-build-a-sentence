@@ -1,6 +1,7 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import {
   buildCustomWritingQuestionSnapshot,
   calculateWritingAssignmentStudentStatus,
@@ -47,7 +48,7 @@ export async function GET(
     if (!assignment) return notFound();
 
     const snapshotTitle = writingAssignmentTitle(assignment.question_snapshot);
-    const [membersResult, displayNames] = await Promise.all([
+    const [membersResult, displayNames, groupTitles] = await Promise.all([
       readAllSupabaseRows<MemberRow>((from, to) =>
         auth.supabase!
           .from("writing_assignment_students")
@@ -63,7 +64,11 @@ export async function GET(
         questionId: assignment.question_id,
         questionSource: assignment.question_source,
         taskType: assignment.task_type
-      }])
+      }]),
+      // The detail heading is the Assignment title, never the question title,
+      // so a single-item Assignment Group resolves its persisted group title
+      // exactly like the list card does.
+      loadWritingAssignmentGroupTitles(auth.supabase, [assignment.group_id])
     ]);
     if (membersResult.error) throw membersResult.error;
     const members = membersResult.data ?? [];
@@ -157,6 +162,7 @@ export async function GET(
       assignment_id: String(assignment.assignment_id),
       group_id: assignment.group_id,
       group_position: assignment.group_position,
+      group_title: groupTitles.get(String(assignment.group_id)) ?? null,
       task_type: assignment.task_type,
       question_source: assignment.question_source,
       question_id: assignment.question_id,

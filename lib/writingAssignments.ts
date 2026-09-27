@@ -704,6 +704,46 @@ export function getWritingAssignmentProgress(input: {
   return { label: "进行中", progress: "ongoing" };
 }
 
+/**
+ * The one shared Assignment status tone for the teacher cards, the class cards
+ * and both Assignment Detail headers. The palette is the historical
+ * assignment-progress mapping: ongoing = primary, submitted / partially
+ * submitted = amber, completed = emerald, withdrawn = slate.
+ */
+export function writingAssignmentProgressBadgeClass(
+  progress: WritingAssignmentProgress
+) {
+  if (progress === "completed") return "bg-emerald-50 text-emerald-700";
+  if (progress === "withdrawn") return "bg-slate-100 text-slate-600";
+  if (progress === "ongoing") return "bg-student-primary-soft text-student-primary";
+  return "bg-amber-50 text-amber-700";
+}
+
+/**
+ * Assignment Group progress keeps its exact historical labels (已完成 /
+ * 全部已提交 / 部分已提交 / 进行中 / 已撤回) so the collection card and the
+ * collection detail header can never drift apart; only the tone comes from the
+ * shared badge mapping above.
+ */
+export function getWritingAssignmentCollectionProgress(input: {
+  completedCount: number;
+  publishedCount: number;
+  totalCount: number;
+  withdrawn: boolean;
+}): { label: string; progress: WritingAssignmentProgress } {
+  if (input.withdrawn) return { label: "已撤回", progress: "withdrawn" };
+  if (input.publishedCount >= input.totalCount) {
+    return { label: "已完成", progress: "completed" };
+  }
+  if (input.completedCount >= input.totalCount) {
+    return { label: "全部已提交", progress: "all_submitted" };
+  }
+  if (input.completedCount > 0) {
+    return { label: "部分已提交", progress: "partial_submitted" };
+  }
+  return { label: "进行中", progress: "ongoing" };
+}
+
 export function writingAssignmentWithdrawBlockedMessage(input: {
   hasAttempts: boolean;
   submittedCount: number;
@@ -863,6 +903,68 @@ export function groupTeacherWritingAssignments(
     });
   }
   return entries;
+}
+
+export type WritingAssignmentStudentProgressGroup = {
+  student_id: string;
+  student_name: string;
+  student_email: string;
+  assignments: Array<{
+    assignment: WritingAssignmentDetail;
+    progress: WritingAssignmentStudentDetail;
+  }>;
+};
+
+/**
+ * The one shared student completion model for every teacher Assignment Detail:
+ * each recipient is one completion card and every assignment is one table row,
+ * regardless of how many questions or students the assignment carries. A
+ * single-assignment detail passes one assignment and still yields the same
+ * one-card-per-student / one-row-per-question structure.
+ */
+export function collectWritingAssignmentStudentProgress(
+  assignments: WritingAssignmentDetail[]
+): WritingAssignmentStudentProgressGroup[] {
+  const students = new Map<string, {
+    student_id: string;
+    student_name: string;
+    student_email: string;
+  }>();
+  for (const assignment of assignments) {
+    for (const student of assignment.students) {
+      if (students.has(student.student_id)) continue;
+      students.set(student.student_id, {
+        student_id: student.student_id,
+        student_name: student.student_name,
+        student_email: student.student_email
+      });
+    }
+  }
+  return Array.from(students.values()).map((student) => ({
+    ...student,
+    assignments: assignments.map((assignment) => ({
+      assignment,
+      progress: assignment.students.find(
+        (candidate) => candidate.student_id === student.student_id
+      ) ?? missingWritingAssignmentStudentProgress(student)
+    }))
+  }));
+}
+
+function missingWritingAssignmentStudentProgress(student: {
+  student_id: string;
+  student_name: string;
+  student_email: string;
+}): WritingAssignmentStudentDetail {
+  return {
+    ...student,
+    assigned_at: "",
+    first_submitted_at: null,
+    has_attempt: false,
+    latest_submitted_attempt_id: null,
+    latest_review_status: null,
+    status: "pending"
+  };
 }
 
 function groupAssignmentsByCollection<T extends {

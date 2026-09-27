@@ -19,8 +19,10 @@ import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
   getWritingAssignmentReviewAction,
   getWritingAssignmentProgress,
+  getWritingAssignmentCollectionProgress,
   groupTeacherWritingAssignments,
   teacherWritingAssignmentCardActions,
+  writingAssignmentProgressBadgeClass,
   writingAssignmentTaskTypeBadges,
   writingAssignmentTitle,
   type TeacherWritingAssignmentListEntry,
@@ -179,7 +181,6 @@ export function TeacherWritingAssignmentList({
                     </span>
                   ) : null}
                   {writingAssignmentTaskTypeBadges([assignment.task_type]).map((label) => <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>{label}</span>)}
-                  <span className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-muted">{assignment.question_source === "custom" ? "自定义" : "题库"}</span>
                   <AssignmentProgressBadge assignment={assignment} />
                   {assignment.has_overdue_students ? <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error"><AlertTriangle aria-hidden="true" size={13} />存在逾期未完成</span> : null}
                 </div>
@@ -291,18 +292,12 @@ function TeacherWritingAssignmentCollectionCard({
     hasAttempts: entry.assignments.some((assignment) => assignment.has_attempts)
   });
   const actionAssignmentId = entry.assignments[0].assignment_id;
-  const progress = allWithdrawn
-    ? "已撤回"
-    : entry.published_count >= entry.total_count
-      ? "已完成"
-      : entry.completed_count >= entry.total_count
-        ? "全部已提交"
-        : entry.completed_count > 0
-          ? "部分已提交"
-          : "进行中";
-  const progressClassName = allWithdrawn
-    ? "bg-slate-100 text-slate-600"
-    : "bg-amber-50 text-amber-700";
+  const progress = getWritingAssignmentCollectionProgress({
+    completedCount: entry.completed_count,
+    publishedCount: entry.published_count,
+    totalCount: entry.total_count,
+    withdrawn: allWithdrawn
+  });
   const dueDates = entry.assignments
     .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
     .sort((left, right) => Date.parse(left) - Date.parse(right));
@@ -326,8 +321,8 @@ function TeacherWritingAssignmentCollectionCard({
                 {index === 0 ? <Files aria-hidden="true" size={13} /> : null}{label}
               </span>
             ))}
-            <span className={`rounded-full px-3 py-1 text-xs font-bold ${progressClassName}`}>
-              {progress}
+            <span className={`rounded-full px-3 py-1 text-xs font-bold ${writingAssignmentProgressBadgeClass(progress.progress)}`}>
+              {progress.label}
             </span>
             {entry.has_overdue_students ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-student-error-soft px-3 py-1 text-xs font-semibold text-student-error">
@@ -393,14 +388,7 @@ function AssignmentProgressBadge({ assignment }: { assignment: WritingAssignment
     publishedCount: assignment.published_count,
     submittedCount: assignment.completed_count
   });
-  const className = progress.progress === "completed"
-    ? "bg-emerald-50 text-emerald-700"
-    : progress.progress === "withdrawn"
-      ? "bg-slate-100 text-slate-600"
-      : progress.progress === "ongoing"
-        ? "bg-student-primary-soft text-student-primary"
-        : "bg-amber-50 text-amber-700";
-  return <span className={`rounded-full px-3 py-1 text-xs font-bold ${className}`}>{progress.label}</span>;
+  return <span className={`rounded-full px-3 py-1 text-xs font-bold ${writingAssignmentProgressBadgeClass(progress.progress)}`}>{progress.label}</span>;
 }
 
 function formatDateTime(value: string | null, fallback: string) {

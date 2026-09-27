@@ -266,6 +266,10 @@ test("teacher assignment pages resolve bank titles through the shared logical di
     path.join(projectRoot, "components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx"),
     "utf8"
   );
+  const bodyUi = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailBody.tsx"),
+    "utf8"
+  );
   assert.match(listRoute, /display_name: displayNames\.get\(assignment\.assignment_id\) \?\? snapshotTitle/);
   assert.match(listRoute, /loadWritingAssignmentDisplayNames/);
   assert.doesNotMatch(listRoute, /loadHistoricalPracticeDisplayResolver/);
@@ -273,10 +277,15 @@ test("teacher assignment pages resolve bank titles through the shared logical di
   assert.match(detailRoute, /display_name:[\s\S]{0,80}displayNames\.get\(String\(assignment\.assignment_id\)\)/);
   assert.match(batchRoute, /loadWritingAssignmentDisplayNames/);
   assert.match(batchRoute, /display_name:[\s\S]{0,120}displayNames\.get\(assignment\.assignment_id\)/);
+  // The shared detail body carries the per-question row title exactly once;
+  // the collection wrapper only uses the question title for its fallback
+  // heading, and 题目进度 no longer exists.
   assert.equal(
-    (batchUi.match(/assignment\.display_name \|\| writingAssignmentTitle\(assignment\.question_snapshot\)/g) ?? []).length,
-    2
+    (bodyUi.match(/assignment\.display_name \|\| writingAssignmentTitle\(assignment\.question_snapshot\)/g) ?? []).length,
+    1
   );
+  assert.match(batchUi, /collection\.assignments\[0\]\.display_name \|\| writingAssignmentTitle\(collection\.assignments\[0\]\.question_snapshot\)/);
+  assert.doesNotMatch(batchUi, /题目进度/);
   assert.match(detailUi, /assignment\.display_name \|\| writingAssignmentTitle\(assignment\.question_snapshot\)/);
 });
 
@@ -487,8 +496,8 @@ test("assignment student rows link latest submissions to the existing review wor
     path.join(projectRoot, "app/api/teacher/writing/assignments/[assignmentId]/route.ts"),
     "utf8"
   );
-  const detail = fs.readFileSync(
-    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailView.tsx"),
+  const body = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailBody.tsx"),
     "utf8"
   );
   const workspace = fs.readFileSync(
@@ -500,11 +509,12 @@ test("assignment student rows link latest submissions to the existing review wor
   assert.match(route, /\.select\("attempt_id,status,published_at"\)/);
   assert.match(route, /latest_submitted_attempt_id:/);
   assert.match(route, /latest_review_status:/);
-  assert.match(detail, /getWritingAssignmentReviewAction/);
-  assert.match(detail, /teacherWritingReviewWorkspaceHref\(action\.attemptId, returnTo\)/);
-  assert.match(detail, /text-sm font-semibold leading-6 text-student-primary/);
-  const reviewAction = detail.match(
-    /function StudentReviewAction[\s\S]*?(?=\nfunction StatusBadge)/
+  // Every detail page renders its review entry through the one shared body.
+  assert.match(body, /getWritingAssignmentReviewAction/);
+  assert.match(body, /teacherWritingReviewWorkspaceHref\(action\.attemptId, returnTo\)/);
+  assert.match(body, /text-sm font-semibold text-student-primary/);
+  const reviewAction = body.match(
+    /function StudentWritingReviewAction[\s\S]*?(?=\nfunction formatDate)/
   )?.[0] ?? "";
   assert.doesNotMatch(reviewAction, /teacher-button-primary|teacher-button-secondary/);
   assert.match(workspace, /cache\.invalidate\(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
@@ -535,8 +545,8 @@ test("assignment question preview is content-height while detail review actions 
     "utf8"
   );
   const globals = fs.readFileSync(path.join(projectRoot, "app/globals.css"), "utf8");
-  const detail = fs.readFileSync(
-    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailView.tsx"),
+  const body = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailBody.tsx"),
     "utf8"
   );
   assert.match(preview, /writing-assignment-question-preview/);
@@ -548,10 +558,10 @@ test("assignment question preview is content-height while detail review actions 
     globals,
     /\.writing-assignment-question-preview \.writing-prompt-panel > \.flex-1 \{\s*flex: none;\s*overflow: visible;/
   );
-  const reviewAction = detail.match(
-    /function StudentReviewAction[\s\S]*?(?=\nfunction StatusBadge)/
+  const reviewAction = body.match(
+    /function StudentWritingReviewAction[\s\S]*?(?=\nfunction formatDate)/
   )?.[0] ?? "";
-  assert.match(reviewAction, /text-sm font-semibold leading-6 text-student-primary/);
+  assert.match(reviewAction, /text-sm font-semibold text-student-primary/);
   assert.doesNotMatch(reviewAction, /teacher-button-secondary/);
 });
 

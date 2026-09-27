@@ -294,7 +294,7 @@ test("student day details are database-bounded before attempt and review hydrati
 
 test("student and teacher multi-question pages reuse existing writing and review entry points", () => {
   const studentUi = source("components/student/StudentWritingAssignments.tsx");
-  const teacherUi = source("components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx");
+  const teacherUi = source("components/teacher/TeacherWritingAssignmentDetailBody.tsx");
   const teacherRoute = source("app/api/teacher/writing/assignments/batches/[batchId]/route.ts");
   assert.match(studentUi, /loadStudentWritingAssignmentBatch/);
   assert.match(studentUi, /<StudentWritingAssignmentCard/);

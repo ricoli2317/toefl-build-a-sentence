@@ -3,6 +3,10 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
+const {
+  getWritingAssignmentCollectionProgress
+} = require("../lib/writingAssignments.ts");
+
 const projectRoot = path.resolve(__dirname, "..");
 const source = (relativePath) =>
   fs.readFileSync(path.join(projectRoot, relativePath), "utf8");
@@ -83,7 +87,18 @@ test("collection card renders 撤回 left of 查看进度 under the shared actio
   const withdrawIndex = card.indexOf("撤回</button>");
   const progressIndex = card.indexOf("查看进度");
   assert.ok(withdrawIndex > -1 && progressIndex > -1 && withdrawIndex < progressIndex);
-  assert.match(card, /allWithdrawn[\s\S]{0,120}已撤回/);
+  // The withdrawn label and its slate tone come from the shared collection
+  // progress helper (same mapping as the detail header).
+  assert.match(card, /withdrawn: allWithdrawn/);
+  assert.equal(
+    getWritingAssignmentCollectionProgress({
+      completedCount: 0,
+      publishedCount: 0,
+      totalCount: 0,
+      withdrawn: true
+    }).label,
+    "已撤回"
+  );
   assert.match(list, /cache\.invalidate\(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
   assert.doesNotMatch(list, /window\.location\.reload/);
 });

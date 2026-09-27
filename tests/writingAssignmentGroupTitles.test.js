@@ -59,7 +59,7 @@ test("task type badges never invent mixed or umbrella labels", () => {
 test("teacher and student cards share the task type badge helper", () => {
   for (const relativePath of [
     "components/teacher/TeacherWritingAssignmentList.tsx",
-    "components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx",
+    "components/teacher/TeacherWritingAssignmentDetailBody.tsx",
     "components/student/StudentWritingAssignments.tsx"
   ]) {
     assert.match(source(relativePath), /writingAssignmentTaskTypeBadges/);
@@ -70,7 +70,7 @@ test("teacher and student cards share the task type badge helper", () => {
 test("mixed groups render one badge per task type instead of one joined badge", () => {
   for (const relativePath of [
     "components/teacher/TeacherWritingAssignmentList.tsx",
-    "components/teacher/TeacherWritingAssignmentCollectionDetailView.tsx",
+    "components/teacher/TeacherWritingAssignmentDetailBody.tsx",
     "components/student/StudentWritingAssignments.tsx"
   ]) {
     const ui = source(relativePath);
