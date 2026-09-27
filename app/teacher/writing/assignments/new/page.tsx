@@ -10,9 +10,10 @@ function firstSearchParam(value: string | string[] | undefined) {
 export default function NewTeacherWritingAssignmentPage({
   searchParams
 }: {
-  searchParams?: { studentId?: string | string[] };
+  searchParams?: { studentId?: string | string[]; classId?: string | string[] };
 }) {
   const studentId = firstSearchParam(searchParams?.studentId);
+  const classId = firstSearchParam(searchParams?.classId);
 
   return (
     <TeacherOnly>
@@ -21,7 +22,7 @@ export default function NewTeacherWritingAssignmentPage({
       subtitle="选择题目和学生，创建一项新的写作作业。"
       title="布置作业"
     >
-      <TeacherWritingAssignmentForm initialStudentId={studentId} />
+      <TeacherWritingAssignmentForm initialClassId={classId} initialStudentId={studentId} />
     </TeacherAppShell>
     </TeacherOnly>
   );

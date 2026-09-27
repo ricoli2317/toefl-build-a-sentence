@@ -286,7 +286,7 @@ test("Phase 6: teacher home hosts the three work entries and the shared student 
   assert.match(home, /href="\/teacher\/question-bank"/);
   assert.doesNotMatch(home, /href="\/teacher\/sets"/);
   assert.doesNotMatch(home, /href="\/teacher\/reading\/statistics"/);
-  assert.match(home, /<TeacherStudentOverviewList showManageActions \/>/);
+  assert.match(home, /<TeacherStudentOverviewList [^>]*showManageActions[^>]*\/>/);
 
   const dashboard = read("components/TeacherDashboard.tsx");
   assert.doesNotMatch(dashboard, /TeacherFeatureCard[\s\S]{0,600}学生[\s\S]{0,200}套题统计/);

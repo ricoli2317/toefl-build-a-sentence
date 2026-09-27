@@ -12,12 +12,8 @@ import {
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import { normalizeNewAccountInput, prepareNewAccount, formatAccountForDisplay } from "@/lib/accountIdentifier";
-import {
-  STUDENT_BINDING_DOMAINS,
-  STUDENT_BINDING_DOMAIN_LABELS,
-  formatBindingDomainList,
-  type StudentBindingDomain
-} from "@/lib/studentBindings";
+import { formatBindingDomainList, type StudentBindingDomain } from "@/lib/studentBindings";
+import { TeacherSubjectFieldset } from "@/components/teacher/TeacherSubjectFieldset";
 import type { StudentBindingCandidate } from "@/lib/teacherStudentBindings";
 
 type CreateStudentResponse = {
@@ -209,32 +205,7 @@ export function TeacherCreateStudent() {
         </label>
 
         {isTeacher ? (
-          <fieldset className="grid gap-3">
-            <legend className="text-sm font-semibold text-student-text">授课科目</legend>
-            <div className="flex flex-wrap gap-3">
-              {STUDENT_BINDING_DOMAINS.map((domain) => (
-                <label
-                  className="flex items-center gap-2.5 rounded-xl border border-student-border bg-white px-4 py-3 text-sm font-semibold text-student-text"
-                  key={domain}
-                >
-                  <input
-                    checked={domains.includes(domain)}
-                    onChange={(event) => {
-                      setDomains((current) => {
-                        const next = new Set(current);
-                        if (event.target.checked) next.add(domain);
-                        else next.delete(domain);
-                        return STUDENT_BINDING_DOMAINS.filter((item) => next.has(item));
-                      });
-                    }}
-                    type="checkbox"
-                  />
-                  {STUDENT_BINDING_DOMAIN_LABELS[domain]}
-                </label>
-              ))}
-            </div>
-            <p className="text-sm text-student-muted">至少选择一个授课科目，可同时选择阅读和写作。</p>
-          </fieldset>
+          <TeacherSubjectFieldset onChange={setDomains} value={domains} />
         ) : null}
       </div>
 

@@ -35,20 +35,27 @@ const DELETE_CONFIRM = "确认删除这项作业？\n\n删除后，该作业将�
 
 /**
  * Purely presentational list: the page loads the full assignment set once and
- * performs the student filtering locally, so switching the filter never asks
- * the server for anything.
+ * performs the student/class filtering locally, so switching the filter never
+ * asks the server for anything. Class cards only add the class name and the
+ * student count; the card structure and actions stay identical.
  */
 export function TeacherWritingAssignmentList({
   assignments,
   error,
+  filterClass = null,
   filterStudent,
   loading,
+  mode = "students",
+  onClearClassFilter,
   onClearFilter
 }: {
   assignments: WritingAssignmentSummary[];
   error: string;
+  filterClass?: { class_id: string; name: string } | null;
   filterStudent: WritingAssignmentRecipient | null;
   loading: boolean;
+  mode?: "students" | "class";
+  onClearClassFilter?: () => void;
   onClearFilter: () => void;
 }) {
   const cache = useTeacherDataCache();
@@ -74,6 +81,19 @@ export function TeacherWritingAssignmentList({
     }
   }
 
+  const classFilterBanner = filterClass ? (
+    <TeacherCard className="flex flex-wrap items-center justify-between gap-3 p-4">
+      <p className="text-sm text-student-muted">
+        当前仅显示「{filterClass.name || "所选班级"}」的班级作业。
+      </p>
+      {onClearClassFilter ? (
+        <button className="teacher-button-secondary" onClick={onClearClassFilter} type="button">
+          查看全部班级作业
+        </button>
+      ) : null}
+    </TeacherCard>
+  ) : null;
+
   const studentFilterBanner = filterStudent ? (
     <TeacherCard className="flex flex-wrap items-center justify-between gap-3 p-4">
       <p className="text-sm text-student-muted">
@@ -86,15 +106,26 @@ export function TeacherWritingAssignmentList({
   ) : null;
 
   if (loading) {
-    return <div className="grid gap-3" aria-busy="true">{studentFilterBanner}<TeacherLoadingRegion label="正在加载作业列表" />{[1, 2, 3].map((item) => <TeacherSkeleton className="h-32 w-full rounded-2xl" key={item} />)}</div>;
+    return <div className="grid gap-3" aria-busy="true">{classFilterBanner}{studentFilterBanner}<TeacherLoadingRegion label="正在加载作业列表" />{[1, 2, 3].map((item) => <TeacherSkeleton className="h-32 w-full rounded-2xl" key={item} />)}</div>;
   }
-  if (error) return <div className="grid gap-3">{studentFilterBanner}<TeacherDataError text={error} /></div>;
+  if (error) return <div className="grid gap-3">{classFilterBanner}{studentFilterBanner}<TeacherDataError text={error} /></div>;
   if (!assignments.length) {
     return (
       <div className="grid gap-3">
+        {classFilterBanner}
         {studentFilterBanner}
         <TeacherCard className="p-5">
-          <TeacherEmptyState text={filterStudent ? "该学生还没有写作作业。" : "还没有写作作业。点击右上角“布置作业”开始。"} />
+          <TeacherEmptyState
+            text={
+              mode === "class"
+                ? filterClass
+                  ? "该班级还没有布置作业。"
+                  : "还没有班级作业。"
+                : filterStudent
+                  ? "该学生还没有写作作业。"
+                  : "还没有写作作业。点击右上角“布置作业”开始。"
+            }
+          />
         </TeacherCard>
       </div>
     );
@@ -103,6 +134,7 @@ export function TeacherWritingAssignmentList({
 
   return (
     <div className="grid gap-3">
+      {classFilterBanner}
       {studentFilterBanner}
       {mutationError ? <TeacherDataError text={mutationError} /> : null}
       {entries.map((entry) => {
@@ -137,6 +169,11 @@ export function TeacherWritingAssignmentList({
             <div className="min-w-0 flex-1">
               <Link className="group block" href={detailHref}>
                 <div className="flex flex-wrap items-center gap-2">
+                  {assignment.class_name ? (
+                    <span className="rounded-full border border-student-primary-border bg-student-primary-soft/60 px-3 py-1 text-xs font-semibold text-student-primary">
+                      班级：{assignment.class_name}
+                    </span>
+                  ) : null}
                   {writingAssignmentTaskTypeBadges([assignment.task_type]).map((label) => <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>{label}</span>)}
                   <span className="rounded-full border border-student-border px-3 py-1 text-xs font-semibold text-student-muted">{assignment.question_source === "custom" ? "自定义" : "题库"}</span>
                   <AssignmentProgressBadge assignment={assignment} />
@@ -146,6 +183,7 @@ export function TeacherWritingAssignmentList({
               </Link>
               <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-student-muted">
                 <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} /><AssignmentRecipientNames recipients={assignment.recipients ?? []} /></span>
+                {assignment.class_id ? <span>{assignment.assigned_count} 名学生</span> : null}
                 <span>{assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
                 <span className="inline-flex items-center gap-2"><CalendarClock aria-hidden="true" size={16} />截止：{formatDateTime(assignment.due_at, "无")}</span>
                 <span>布置：{formatDateTime(assignment.created_at, "—")}</span>
@@ -271,6 +309,11 @@ function TeacherWritingAssignmentCollectionCard({
       <div className="min-w-0 flex-1">
         <Link className="group block" href={detailHref}>
           <div className="flex flex-wrap items-center gap-2">
+            {entry.assignments[0].class_name ? (
+              <span className="rounded-full border border-student-primary-border bg-student-primary-soft/60 px-3 py-1 text-xs font-semibold text-student-primary">
+                班级：{entry.assignments[0].class_name}
+              </span>
+            ) : null}
             {taskTypeBadges.map((label, index) => (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>
                 {index === 0 ? <Files aria-hidden="true" size={13} /> : null}{label}
@@ -293,6 +336,7 @@ function TeacherWritingAssignmentCollectionCard({
           <span className="inline-flex items-center gap-2">
             <Users aria-hidden="true" size={16} /><AssignmentRecipientNames recipients={entry.recipients} />
           </span>
+          {entry.assignments[0].class_id ? <span>{entry.recipients.length} 名学生</span> : null}
           <span className="font-semibold text-student-text">
             {entry.completed_count} / {entry.total_count} 已提交
           </span>

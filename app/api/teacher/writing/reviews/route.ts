@@ -11,6 +11,7 @@ import {
   type HistoricalPracticeDisplayResolver
 } from "@/lib/historicalPracticeDisplay";
 import { loadTeacherScope } from "@/lib/teacherScope.server";
+import { listClassAssignmentIds } from "@/lib/teacherClasses.server";
 
 export const dynamic = "force-dynamic";
 
@@ -70,19 +71,31 @@ export async function GET(request: Request) {
       );
     }
 
-    const requestedAttemptId = new URL(request.url).searchParams.get("attemptId")?.trim();
+    const params = new URL(request.url).searchParams;
+    const requestedAttemptId = params.get("attemptId")?.trim();
+    const requestedClassId = params.get("classId")?.trim() ?? "";
     const supabase = createServiceSupabase();
     // The teaching scope and the teacher's own assignment ids are independent,
     // so both resolve in one round trip instead of two.
-    const [scope, ownAssignmentIds] = await Promise.all([
+    const [scope, ownAssignmentIds, classAssignmentIds] = await Promise.all([
       loadTeacherScope(supabase, { userId: auth.userId, role: auth.role! }),
-      auth.role === "admin"
+      auth.role === "admin" || requestedClassId
         ? Promise.resolve(null as string[] | null)
-        : listOwnAssignmentIds(supabase, auth.userId)
+        : listOwnAssignmentIds(supabase, auth.userId),
+      requestedClassId && auth.role !== "admin"
+        ? listClassAssignmentIds(supabase, auth.userId, requestedClassId)
+        : Promise.resolve(null)
     ]);
+    if (requestedClassId && auth.role !== "admin" && classAssignmentIds === null) {
+      return json(
+        { code: "CLASS_NOT_FOUND", message: "班级不存在或无权查看。" },
+        { status: 404 }
+      );
+    }
     const writingStudentIds = scope.writingStudentIds;
     const attemptsResult = await loadReviewableAttempts(supabase, {
       admin: auth.role === "admin",
+      classAssignmentIds,
       ownAssignmentIds,
       requestedAttemptId,
       writingStudentIds
@@ -332,18 +345,26 @@ async function loadReviewableAttempts(
   supabase: ReturnType<typeof createServiceSupabase>,
   options: {
     admin: boolean;
+    classAssignmentIds: string[] | null;
     ownAssignmentIds: string[] | null;
     requestedAttemptId: string | undefined;
     writingStudentIds: string[];
   }
 ): Promise<{ data: AttemptRow[] | null; error: PageError | null }> {
-  const { admin, ownAssignmentIds, requestedAttemptId, writingStudentIds } = options;
+  const { admin, classAssignmentIds, ownAssignmentIds, requestedAttemptId, writingStudentIds } =
+    options;
+
+  // A class-scoped list only contains submissions of that class's assignments;
+  // self-practice and other assignments can never leak in.
+  const assignmentIds = classAssignmentIds ?? ownAssignmentIds;
+  const scopeIsEmpty = classAssignmentIds !== null && classAssignmentIds.length === 0;
 
   // Self-practice and assignment attempts are disjoint sources and load in
   // parallel; each source is already batched by student/assignment id.
   const [selfResult, assignmentResult] = await Promise.all([
-    writingStudentIds.length > 0
-      ? readAllSupabaseRows<AttemptRow>((from, to) => {
+    classAssignmentIds !== null || writingStudentIds.length === 0
+      ? Promise.resolve({ data: [] as AttemptRow[], error: null })
+      : readAllSupabaseRows<AttemptRow>((from, to) => {
           let query = supabase
             .from("writing_attempts")
             .select(
@@ -357,25 +378,26 @@ async function loadReviewableAttempts(
             .order("submitted_at", { ascending: false, nullsFirst: false })
             .order("attempt_id", { ascending: false })
             .range(from, to);
-        })
-      : Promise.resolve({ data: [] as AttemptRow[], error: null }),
-    admin || (ownAssignmentIds !== null && ownAssignmentIds.length > 0)
-      ? readAllSupabaseRows<AttemptRow>((from, to) => {
-          let query = supabase
-            .from("writing_attempts")
-            .select(
-              "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
-            )
-            .eq("status", "submitted");
-          if (admin) query = query.not("assignment_id", "is", null);
-          else query = query.in("assignment_id", ownAssignmentIds!);
-          if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
-          return query
-            .order("submitted_at", { ascending: false, nullsFirst: false })
-            .order("attempt_id", { ascending: false })
-            .range(from, to);
-        })
-      : Promise.resolve({ data: [] as AttemptRow[], error: null })
+        }),
+    scopeIsEmpty
+      ? Promise.resolve({ data: [] as AttemptRow[], error: null })
+      : admin || (assignmentIds !== null && assignmentIds.length > 0)
+        ? readAllSupabaseRows<AttemptRow>((from, to) => {
+            let query = supabase
+              .from("writing_attempts")
+              .select(
+                "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
+              )
+              .eq("status", "submitted");
+            if (admin) query = query.not("assignment_id", "is", null);
+            else query = query.in("assignment_id", assignmentIds!);
+            if (requestedAttemptId) query = query.eq("attempt_id", requestedAttemptId);
+            return query
+              .order("submitted_at", { ascending: false, nullsFirst: false })
+              .order("attempt_id", { ascending: false })
+              .range(from, to);
+          })
+        : Promise.resolve({ data: [] as AttemptRow[], error: null })
   ]);
 
   if (selfResult.error) return selfResult;

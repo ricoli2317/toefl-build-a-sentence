@@ -9,6 +9,7 @@ import {
 import type { WritingQuestion } from "@/lib/writing";
 import {
   chunkValues,
+  prepareClassWritingAssignmentGroupMutation,
   prepareWritingAssignmentGroupMutation,
   requireWritingAssignmentTeacher,
   writingAssignmentJson
@@ -18,6 +19,11 @@ import {
   loadWritingAssignmentGroupTitles,
   loadWritingAssignmentRecipientOrders
 } from "@/lib/writingAssignmentsGroupTitles.server";
+import { classAssignmentTitleBase } from "@/lib/teacherClasses";
+import {
+  loadWritingAssignmentClassRefs,
+  loadWritingClassForAssignment
+} from "@/lib/teacherClasses.server";
 
 export const dynamic = "force-dynamic";
 
@@ -64,11 +70,11 @@ export async function GET(request: Request) {
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
     // Members, attempts, review statuses, display names, the persisted group
-    // titles and the creation-time recipient order are all keyed by the
-    // assignment ids, so the whole detail set loads in one parallel wave.
-    // Recipient names let the list filter and label cards without any further
-    // request.
-    const [members, attempts, reviewStatuses, displayNames, groupTitles, recipientOrders] = await Promise.all([
+    // titles, the creation-time recipient order and the class association are
+    // all keyed by the assignment/group ids, so the whole detail set loads in
+    // one parallel wave. Recipient names let the list filter and label cards
+    // without any further request.
+    const [members, attempts, reviewStatuses, displayNames, groupTitles, recipientOrders, classRefs] = await Promise.all([
       readAssignmentRows<AssignmentStudentRow>(auth.supabase, "writing_assignment_students", "assignment_id,student_id,assigned_at", assignmentIds),
       readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds),
       readAssignmentReviewStatuses(auth.supabase, assignmentIds),
@@ -86,7 +92,13 @@ export async function GET(request: Request) {
         auth.supabase,
         assignments.map((assignment) => assignment.group_id)
       ),
-      loadWritingAssignmentRecipientOrders(auth.supabase, assignmentIds)
+      loadWritingAssignmentRecipientOrders(auth.supabase, assignmentIds),
+      loadWritingAssignmentClassRefs(
+        auth.supabase,
+        assignments
+          .map((assignment) => assignment.group_id ?? "")
+          .filter(Boolean)
+      )
     ]);
     const profiles = await readProfiles(
       auth.supabase,
@@ -160,11 +172,16 @@ export async function GET(request: Request) {
           ? latestSubmission.get(`${assignment.assignment_id}:${singleStudentId}`)
           : undefined;
         const snapshotTitle = assignmentSnapshotTitle(assignment);
+        const classRef = assignment.group_id
+          ? classRefs.get(String(assignment.group_id)) ?? null
+          : null;
         return {
           assignment_id: assignment.assignment_id,
           group_id: assignment.group_id,
           group_position: assignment.group_position,
           group_title: groupTitles.get(assignment.group_id ?? "") ?? null,
+          class_id: classRef?.class_id ?? null,
+          class_name: classRef?.class_name ?? null,
           task_type: assignment.task_type,
           question_source: assignment.question_source,
           question_id: assignment.question_id,
@@ -235,36 +252,86 @@ export async function POST(request: Request) {
     const groupBody = Array.isArray(body.assignments)
       ? body
       : { assignments: [body], studentIds: body.studentIds };
-    const prepared = await prepareWritingAssignmentGroupMutation(auth.supabase, groupBody, {
-      canonicalizeQuestionBank: true,
-      actor: auth.actor ?? undefined
-    });
-    // The final Assignment title is part of the same atomic RPC as the group,
-    // the items and the recipients. Automatic titles are numbered by the RPC
-    // itself (same teacher + same base title), so concurrent creates cannot
-    // both receive the same sequence. A missing title is a client error; there
-    // is no post-create patch step that could leave an untitled card behind.
+    const classId = typeof body.classId === "string" ? body.classId.trim() : "";
     const groupTitle = normalizeAssignmentGroupTitle(body.title);
-    if (!groupTitle) return invalid("请填写作业标题。");
     const titleIsAutomatic = body.titleIsAutomatic === true;
-    const { data, error } = await auth.supabase.rpc("create_writing_assignment_group", {
-      p_teacher_id: auth.teacherId,
-      p_assignments: prepared.assignments.map((assignment) => ({
-        due_at: assignment.dueAt,
-        question_id: assignment.questionId,
-        question_snapshot: assignment.questionSnapshot,
-        question_source: assignment.questionSource,
-        task_type: assignment.taskType
-      })),
-      p_student_ids: prepared.studentIds,
-      p_title: groupTitle,
-      p_title_is_automatic: titleIsAutomatic
-    });
+
+    // Student mode and class mode are mutually exclusive. Class mode resolves
+    // its recipients from the class members inside the RPC, so the client
+    // never supplies student ids there, and the class must belong to the
+    // current teacher and include Writing.
+    let rpcArgs: Record<string, unknown>;
+    let assignmentCount: number;
+    let recipientCount: number;
+    let resolvedTitle = groupTitle;
+
+    if (classId) {
+      const writingClass = await loadWritingClassForAssignment(
+        auth.supabase,
+        auth.teacherId,
+        classId
+      );
+      if (!writingClass) return invalid("所选班级不存在或不包含写作科目。");
+      const prepared = await prepareClassWritingAssignmentGroupMutation(auth.supabase, groupBody, {
+        canonicalizeQuestionBank: true,
+        actor: auth.actor ?? undefined
+      });
+      // Automatic class titles always use the class's current name + today;
+      // the RPC appends the same-day (2), (3) sequence on top of the base.
+      resolvedTitle = titleIsAutomatic
+        ? classAssignmentTitleBase(writingClass.name, new Date())
+        : groupTitle;
+      if (!resolvedTitle) return invalid("请填写作业标题。");
+      rpcArgs = {
+        p_teacher_id: auth.teacherId,
+        p_assignments: prepared.assignments.map((assignment) => ({
+          due_at: assignment.dueAt,
+          question_id: assignment.questionId,
+          question_snapshot: assignment.questionSnapshot,
+          question_source: assignment.questionSource,
+          task_type: assignment.taskType
+        })),
+        p_student_ids: [],
+        p_title: resolvedTitle,
+        p_title_is_automatic: titleIsAutomatic,
+        p_class_id: classId
+      };
+      assignmentCount = prepared.assignments.length;
+      recipientCount = 0;
+    } else {
+      const prepared = await prepareWritingAssignmentGroupMutation(auth.supabase, groupBody, {
+        canonicalizeQuestionBank: true,
+        actor: auth.actor ?? undefined
+      });
+      // The final Assignment title is part of the same atomic RPC as the group,
+      // the items and the recipients. Automatic titles are numbered by the RPC
+      // itself (same teacher + same base title), so concurrent creates cannot
+      // both receive the same sequence. A missing title is a client error; there
+      // is no post-create patch step that could leave an untitled card behind.
+      if (!groupTitle) return invalid("请填写作业标题。");
+      rpcArgs = {
+        p_teacher_id: auth.teacherId,
+        p_assignments: prepared.assignments.map((assignment) => ({
+          due_at: assignment.dueAt,
+          question_id: assignment.questionId,
+          question_snapshot: assignment.questionSnapshot,
+          question_source: assignment.questionSource,
+          task_type: assignment.taskType
+        })),
+        p_student_ids: prepared.studentIds,
+        p_title: groupTitle,
+        p_title_is_automatic: titleIsAutomatic
+      };
+      assignmentCount = prepared.assignments.length;
+      recipientCount = prepared.studentIds.length;
+    }
+
+    const { data, error } = await auth.supabase.rpc("create_writing_assignment_group", rpcArgs);
     if (error) {
       logWritingAssignmentCreateFailure(error, {
         teacherId: auth.teacherId,
-        studentCount: prepared.studentIds.length,
-        assignmentCount: prepared.assignments.length
+        studentCount: recipientCount,
+        assignmentCount
       });
       const inputMessage = writingAssignmentRpcInputErrorMessage(error.message);
       if (inputMessage) return invalid(inputMessage);
@@ -273,18 +340,19 @@ export async function POST(request: Request) {
     const assignmentIds = isRecord(data) && Array.isArray(data.assignment_ids)
       ? data.assignment_ids.map(String)
       : [];
-    if (assignmentIds.length !== prepared.assignments.length) {
+    if (assignmentIds.length !== assignmentCount) {
       throw new Error("Assignment group RPC returned an incomplete result");
     }
     const finalizedTitle = isRecord(data)
       && typeof data.title === "string"
       && data.title.trim()
       ? data.title.trim()
-      : groupTitle;
+      : resolvedTitle;
     return writingAssignmentJson({
       assignmentId: assignmentIds[0],
       assignmentIds,
-      title: finalizedTitle
+      title: finalizedTitle,
+      ...(classId ? { classId } : {})
     }, { status: 201 });
   } catch (error) {
     if (error instanceof Error && isAssignmentInputError(error.message)) return invalid(error.message);
@@ -373,7 +441,10 @@ const WRITING_ASSIGNMENT_RPC_INPUT_ERROR_MESSAGES: Record<string, string> = {
   "Question snapshot must be an object": "请完整填写每道题目。",
   "Question bank assignment requires question_id": "请选择一道题库题目。",
   "Custom assignment cannot include question_id": "请完整填写每道题目。",
-  "Assignment title is too long": "作业标题不能超过 120 个字。"
+  "Assignment title is too long": "作业标题不能超过 120 个字。",
+  "CLASS_NOT_FOUND": "所选班级不存在或无权布置作业。",
+  "CLASS_NOT_WRITING_CLASS": "该班级不包含写作科目。",
+  "CLASS_HAS_NO_MEMBERS": "该班级还没有学生，请先添加学生。"
 };
 
 function writingAssignmentRpcInputErrorMessage(message: string) {

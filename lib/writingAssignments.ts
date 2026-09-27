@@ -54,6 +54,10 @@ export type WritingAssignmentSummary = {
   has_overdue_students: boolean;
   /** Recipients in assigned_at/student_id order; first item is the card name. */
   recipients?: WritingAssignmentRecipient[];
+  /** Class association of the Assignment Group; null for direct assignments. */
+  class_id?: string | null;
+  /** Current class name (display only; historical titles never rewrite). */
+  class_name?: string | null;
 };
 
 export type WritingAssignmentStudentDetail = {

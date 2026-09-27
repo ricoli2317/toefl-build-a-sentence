@@ -96,7 +96,7 @@ test("Teacher home is three static work entries plus the shared student list", (
       )?.[0] ?? "";
     assert.ok(block.length > 0, `${href} must render a static ${title} entry card`);
   }
-  assert.match(home, /<TeacherStudentOverviewList showManageActions \/>/);
+  assert.match(home, /<TeacherStudentOverviewList [^>]*showManageActions[^>]*\/>/);
 
   // The retired dashboard aggregation must never return to the home: no
   // counts, reminders, inactivity list, activity feed, or extra API calls.

@@ -275,9 +275,11 @@ test("legacy accounts without a valid full_name still get a non-empty header nam
 
 test("Phase 7 binding, quota, and account ownership flows are not regressed", () => {
   const createRoute = read("app/api/teacher/students/route.ts");
-  assert.match(createRoute, /owner_id: auth\.userId/);
-  assert.match(createRoute, /STUDENT_ACCOUNT_LIMIT_REACHED/);
-  assert.match(createRoute, /createTeacherStudentBindings/);
+  const createHelper = read("lib/teacherStudentAccount.server.ts");
+  assert.match(createRoute, /createTeacherStudentAccount\(supabase, \{/);
+  assert.match(createHelper, /owner_id: input\.actorId/);
+  assert.match(createHelper, /STUDENT_ACCOUNT_LIMIT_REACHED/);
+  assert.match(createHelper, /createTeacherStudentBindings/);
 
   const bindRoute = read("app/api/teacher/student-bindings/route.ts");
   assert.match(bindRoute, /teacherId: auth\.userId/);

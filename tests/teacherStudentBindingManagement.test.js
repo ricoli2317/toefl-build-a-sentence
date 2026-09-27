@@ -282,33 +282,42 @@ test("a failed binding cleans up the new student profile and auth account", asyn
 
 test("teacher creation route enforces subjects, duplicate-name flow, and cleanup", async () => {
   const route = await read("app/api/teacher/students/route.ts");
+  const helper = await read("lib/teacherStudentAccount.server.ts");
 
-  assert.match(route, /const isTeacher = auth\.role === "teacher"/);
-  assert.match(route, /validateBindingDomains\(body\.domains\)/);
-  assert.match(route, /if \(isTeacher && !body\.confirmDuplicateName\)/);
-  assert.match(route, /findActiveStudentsByName\(supabase, studentName\)/);
-  assert.match(route, /code: "DUPLICATE_NAME"/);
-  assert.match(route, /candidates/);
-  assert.match(route, /code: sameName \? "ACCOUNT_EXISTS_SAME_NAME" : "ACCOUNT_EXISTS"/);
-  assert.match(route, /该学生账号已存在，请使用“绑定学生”。/);
-  assert.match(route, /if \(isTeacher\) \{\s*const bindings = await createTeacherStudentBindings/);
-  assert.match(route, /teacherId: auth\.userId/);
-  assert.match(route, /rollbackCreatedStudentAccount\(supabase, \{/);
-  assert.doesNotMatch(route, /body\.teacherId/);
-  // Account ownership and quota behavior stay on profiles.owner_id.
-  assert.match(route, /owner_id: auth\.userId/);
-  assert.match(route, /STUDENT_ACCOUNT_LIMIT_REACHED/);
+  // The route keeps the authenticated-actor contract and delegates the account
+  // creation to the shared helper used by the class flow.
   assert.match(route, /requireUserWithRole\(bearerToken\(request\), "teacher"\)/);
+  assert.match(route, /createTeacherStudentAccount\(supabase, \{/);
+  assert.match(route, /actorRole: auth\.role === "admin" \? "admin" : "teacher"/);
+  assert.doesNotMatch(route, /body\.teacherId/);
+
+  assert.match(helper, /const isTeacher = input\.actorRole === "teacher"/);
+  assert.match(helper, /validateBindingDomains\(input\.domains\)/);
+  assert.match(helper, /if \(isTeacher && !input\.confirmDuplicateName\)/);
+  assert.match(helper, /findActiveStudentsByName\(supabase, studentName\)/);
+  assert.match(helper, /code: "DUPLICATE_NAME"/);
+  assert.match(helper, /candidates/);
+  assert.match(helper, /code: sameName \? "ACCOUNT_EXISTS_SAME_NAME" : "ACCOUNT_EXISTS"/);
+  assert.match(helper, /该学生账号已存在，请使用“绑定学生”。/);
+  assert.match(helper, /if \(isTeacher\) \{\s*const bindings = await createTeacherStudentBindings/);
+  assert.match(helper, /teacherId: input\.actorId/);
+  assert.match(helper, /rollbackCreatedStudentAccount\(supabase, \{/);
+  assert.doesNotMatch(helper, /body\.teacherId/);
+  // Account ownership and quota behavior stay on profiles.owner_id.
+  assert.match(helper, /owner_id: input\.actorId/);
+  assert.match(helper, /STUDENT_ACCOUNT_LIMIT_REACHED/);
 });
 
 test("Admin creation flow stays unchanged and never creates a teaching binding", async () => {
   const route = await read("app/api/teacher/students/route.ts");
+  const helper = await read("lib/teacherStudentAccount.server.ts");
   assert.match(route, /if \(auth\.role === "admin"\)/);
-  assert.match(route, /student_account_limit/);
+  assert.match(route, /actorRole: auth\.role === "admin" \? "admin" : "teacher"/);
+  assert.match(helper, /student_account_limit/);
   // The only binding creation call sits inside the isTeacher branch.
-  const bindingCalls = route.match(/createTeacherStudentBindings\(/g) ?? [];
+  const bindingCalls = helper.match(/createTeacherStudentBindings\(/g) ?? [];
   assert.equal(bindingCalls.length, 1);
-  const teacherGuardIndex = route.indexOf("if (isTeacher) {\n      const bindings = await createTeacherStudentBindings");
+  const teacherGuardIndex = helper.indexOf("if (isTeacher) {\n    const bindings = await createTeacherStudentBindings");
   assert.ok(teacherGuardIndex > 0, "binding creation must be inside the teacher-only branch");
 });
 
@@ -349,9 +358,13 @@ test("bind page and component implement bound-domain display and cache invalidat
 
 test("create-student UI offers bind-existing / continue-new and publishes binding cache invalidation", async () => {
   const component = await read("components/TeacherCreateStudent.tsx");
-  assert.match(component, /授课科目/);
-  assert.match(component, /至少选择一个授课科目/);
-  assert.match(component, /STUDENT_BINDING_DOMAINS/);
+  const subjectFieldset = await read("components/teacher/TeacherSubjectFieldset.tsx");
+  // The subject selector is the shared fieldset (also used by 新增班级); it
+  // keeps the canonical reading/writing order and the same copy.
+  assert.match(component, /TeacherSubjectFieldset/);
+  assert.match(subjectFieldset, /授课科目/);
+  assert.match(subjectFieldset, /至少选择一个授课科目/);
+  assert.match(subjectFieldset, /STUDENT_BINDING_DOMAINS/);
   assert.match(component, /code === "DUPLICATE_NAME"/);
   assert.match(component, /绑定已有学生/);
   assert.match(component, /继续新增/);
@@ -393,7 +406,9 @@ test("Phase 5/6 teaching permissions stay binding-based and untouched", async ()
   assert.doesNotMatch(bindRoute, /profiles"\)[\s\S]{0,80}\.update\(/);
 
   const route = await read("app/api/teacher/students/route.ts");
-  assert.match(route, /owner_id: auth\.userId/);
+  const helper = await read("lib/teacherStudentAccount.server.ts");
+  assert.match(helper, /owner_id: input\.actorId/);
+  assert.match(route, /createTeacherStudentAccount\(supabase, \{/);
   assert.doesNotMatch(route, /from\("teacher_student_bindings"\)[\s\S]{0,120}\.eq\("owner_id"/);
 });
 

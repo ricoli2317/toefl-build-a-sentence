@@ -20,6 +20,7 @@ import {
 import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
 import { PasswordResetApprovalPrompt } from "@/components/shared/PasswordResetApprovalPrompt";
 import { TeacherStudentHeaderActions } from "@/components/teacher/TeacherStudentHeaderActions";
+import { TeacherClassList } from "@/components/teacher/TeacherClassList";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
@@ -52,13 +53,21 @@ const DOMAIN_LABELS: Record<StudentBindingDomain, string> = {
  * Lightweight student overview. It only renders the shared practice summary
  * (总时间 / 最近练习) and never loads accuracy, writing scores, or question
  * details; those stay on the domain-scoped student detail pages.
+ *
+ * With `showClassTabs` the same card gains the 学生列表 | 班级列表 tabs used
+ * by the teacher home; the student tab keeps its existing behavior unchanged.
  */
 export function TeacherStudentOverviewList({
-  showManageActions = false
+  showManageActions = false,
+  showClassTabs = false
 }: {
   showManageActions?: boolean;
+  showClassTabs?: boolean;
 } = {}) {
   const [query, setQuery] = useState("");
+  const [classQuery, setClassQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"students" | "classes">("students");
+  const classMode = showClassTabs && activeTab === "classes";
   const sectionRefs = useRef(new Map<string, HTMLTableRowElement>());
   const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<StudentOverviewResponse>(
@@ -108,35 +117,76 @@ export function TeacherStudentOverviewList({
 
   return (
     <div className="grid gap-6">
-      {loading ? <TeacherLoadingRegion label="正在加载学生列表" /> : null}
+      {!classMode && loading ? <TeacherLoadingRegion label="正在加载学生列表" /> : null}
       <TeacherCard className="p-0">
         <div className="px-6 pt-6">
-          <TeacherSectionTitle>学生列表</TeacherSectionTitle>
+          {showClassTabs ? (
+            <nav aria-label="列表类型" className="flex gap-2 border-b border-student-border">
+              <button
+                className={`border-b-2 px-5 py-3 text-sm font-bold ${activeTab === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+                onClick={() => setActiveTab("students")}
+                type="button"
+              >
+                学生列表
+              </button>
+              <button
+                className={`border-b-2 px-5 py-3 text-sm font-bold ${activeTab === "classes" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+                onClick={() => setActiveTab("classes")}
+                type="button"
+              >
+                班级列表
+              </button>
+            </nav>
+          ) : (
+            <TeacherSectionTitle>学生列表</TeacherSectionTitle>
+          )}
         </div>
         <div className="px-6 pt-4">
           <div className="flex flex-wrap items-end justify-between gap-x-5 gap-y-4">
             <div className="w-full max-w-[560px]">
-              <label className="relative block">
-                <Search
-                  aria-hidden="true"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
-                  size={20}
-                  strokeWidth={1.9}
-                />
-                <input
-                  className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="搜索学生姓名 / 拼音"
-                  type="search"
-                  value={query}
-                />
-              </label>
+              {classMode ? (
+                <label className="relative block">
+                  <Search
+                    aria-hidden="true"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
+                    size={20}
+                    strokeWidth={1.9}
+                  />
+                  <input
+                    className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
+                    onChange={(event) => setClassQuery(event.target.value)}
+                    placeholder="搜索班级名称"
+                    type="search"
+                    value={classQuery}
+                  />
+                </label>
+              ) : (
+                <label className="relative block">
+                  <Search
+                    aria-hidden="true"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-student-muted"
+                    size={20}
+                    strokeWidth={1.9}
+                  />
+                  <input
+                    className="h-12 w-full rounded-xl border border-student-border bg-white pl-12 pr-4 text-sm text-student-text placeholder:text-student-muted focus:border-student-primary"
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="搜索学生姓名 / 拼音"
+                    type="search"
+                    value={query}
+                  />
+                </label>
+              )}
               <p className="mt-3 text-sm text-student-muted">
-                支持中文精确搜索，例如：张三；支持拼音模糊搜索，例如：zhang / san
+                {classMode
+                  ? "输入班级名称即可筛选。"
+                  : "支持中文精确搜索，例如：张三；支持拼音模糊搜索，例如：zhang / san"}
               </p>
             </div>
             <div className="flex flex-col items-end gap-3">
-              {showManageActions ? <TeacherStudentHeaderActions /> : null}
+              {showManageActions ? (
+                <TeacherStudentHeaderActions showClassAction={showClassTabs} />
+              ) : null}
               <p className="text-sm font-medium text-student-text">按姓氏首字母排序</p>
             </div>
           </div>
@@ -144,7 +194,9 @@ export function TeacherStudentOverviewList({
 
         <div className="flex">
           <div className="min-w-0 flex-1">
-          {loading ? (
+          {classMode ? (
+            <TeacherClassList query={classQuery} />
+          ) : loading ? (
             <StudentTableSkeleton />
           ) : error ? (
             <StudentTableError text={toStudentOverviewErrorMessage(error)} />
@@ -255,7 +307,9 @@ export function TeacherStudentOverviewList({
 
           <nav aria-label="学生姓氏首字母索引" className="sticky top-[96px] hidden w-7 shrink-0 flex-col items-center gap-0.5 self-start pr-6 pt-4 xl:flex">
           {ALPHABET.map((letter) => {
-            const available = availableLetters.has(letter);
+            // In 班级列表 the index stays in place but is fully disabled, so the
+            // card layout never shifts between tabs.
+            const available = !classMode && availableLetters.has(letter);
             return (
               <button
                 aria-label={`跳转到 ${letter} 组`}

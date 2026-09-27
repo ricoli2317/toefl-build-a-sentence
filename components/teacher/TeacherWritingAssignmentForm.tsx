@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Plus, Search, Trash2, UserRound } from "lucide-react";
 import {
+  TEACHER_CLASSES_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX,
   TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY,
@@ -47,6 +48,13 @@ import {
 } from "@/lib/writingAssignments";
 import type { LogicalWritingQuestionSearchResult } from "@/lib/writingAssignmentLogicalSearch";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
+import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
+import {
+  classAssignmentTitleBase,
+  classSubjectsLabel,
+  writingClassesOnly,
+  type TeacherClassSummary
+} from "@/lib/teacherClasses";
 
 type StudentOption = { id: string; displayName: string; email: string };
 export type QuestionSearchPayload = { questions: LogicalWritingQuestionSearchResult[]; page: number; pageSize: number; total: number };
@@ -89,17 +97,30 @@ export const AVATAR_FIELD_BY_NAME = {
 
 export function TeacherWritingAssignmentForm({
   initialAssignment,
+  initialClassId,
   initialStudentId
 }: {
   initialAssignment?: WritingAssignmentDetail;
+  initialClassId?: string;
   initialStudentId?: string;
 }) {
   return initialAssignment
     ? <TeacherWritingAssignmentEditForm initialAssignment={initialAssignment} />
-    : <TeacherWritingAssignmentCreateForm initialStudentId={initialStudentId} />;
+    : (
+      <TeacherWritingAssignmentCreateForm
+        initialClassId={initialClassId}
+        initialStudentId={initialStudentId}
+      />
+    );
 }
 
-function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStudentId?: string }) {
+function TeacherWritingAssignmentCreateForm({
+  initialClassId,
+  initialStudentId
+}: {
+  initialClassId?: string;
+  initialStudentId?: string;
+}) {
   const router = useRouter();
   const cache = useTeacherDataCache();
   const [taskType, setTaskType] = useState<WritingTaskType | null>(null);
@@ -130,6 +151,39 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
     TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY,
     () => teacherApiFetch("/api/teacher/writing/assignments/students")
   );
+  // Step 4 works in one of two mutually exclusive modes; the 班级 tab only
+  // appears when the teacher actually has at least one Writing class.
+  const [selectionMode, setSelectionMode] = useState<"students" | "class">(
+    initialClassId ? "class" : "students"
+  );
+  const [selectedClassId, setSelectedClassId] = useState(initialClassId ?? "");
+  const [classQuery, setClassQuery] = useState("");
+  const classesState = useTeacherCachedData<{ classes: TeacherClassSummary[] }>(
+    TEACHER_CLASSES_CACHE_KEY,
+    () => teacherApiFetch("/api/teacher/classes")
+  );
+  const writingClasses = useMemo(
+    () => writingClassesOnly(classesState.data?.classes ?? []),
+    [classesState.data]
+  );
+  const selectedClass = useMemo(
+    () => writingClasses.find((entry) => entry.class_id === selectedClassId) ?? null,
+    [writingClasses, selectedClassId]
+  );
+  const filteredClasses = useMemo(() => {
+    const needle = classQuery.trim().toLocaleLowerCase();
+    if (!needle) return writingClasses;
+    return writingClasses.filter((entry) => entry.name.toLocaleLowerCase().includes(needle));
+  }, [writingClasses, classQuery]);
+  // Deep-linked or stale class ids are dropped as soon as the real class list
+  // is known; a class that is missing (or no longer Writing) can never be
+  // submitted.
+  useEffect(() => {
+    if (!classesState.data) return;
+    const available = writingClasses.some((entry) => entry.class_id === selectedClassId);
+    if (selectedClassId && !available) setSelectedClassId("");
+    if (selectionMode === "class" && writingClasses.length === 0) setSelectionMode("students");
+  }, [classesState.data, selectedClassId, selectionMode, writingClasses]);
 
   const studentEntries = useMemo(() => (studentsState.data?.students ?? []).map((student) => ({
     ...createStudentSearchMetadata(student.displayName),
@@ -159,6 +213,9 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
     .sort((left, right) => left.rank - right.rank || compareStudentSearchMetadata(left.entry, right.entry))
     .map(({ entry }) => entry.student), [studentEntries, studentQuery]);
   const generatedAssignmentTitle = useMemo(() => {
+    if (selectionMode === "class") {
+      return selectedClass ? classAssignmentTitleBase(selectedClass.name, new Date()) : "";
+    }
     const firstStudent = (studentsState.data?.students ?? []).find(
       (student) => student.id === selectedStudents[0]
     );
@@ -168,7 +225,7 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
       firstStudentName: firstStudent.displayName,
       studentCount: selectedStudents.length
     });
-  }, [selectedStudents, studentsState.data]);
+  }, [selectionMode, selectedClass, selectedStudents, studentsState.data]);
   useEffect(() => {
     if (assignmentTitleManuallyEdited) return;
     setAssignmentTitle(generatedAssignmentTitle);
@@ -356,6 +413,26 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
       : { ...draft, fields: { ...draft.fields, title: nextTitle } }));
   }
 
+  function chooseSelectionMode(next: "students" | "class") {
+    if (selectionMode === next) return;
+    setSelectionMode(next);
+    // The two modes are mutually exclusive: switching never leaves a hidden
+    // selection from the other mode behind.
+    if (next === "class") setSelectedStudents([]);
+    else setSelectedClassId("");
+    setSubmitError("");
+  }
+
+  function toggleClass(classId: string) {
+    const next = selectedClassId === classId ? "" : classId;
+    setSelectedClassId(next);
+    const classEntry = writingClasses.find((entry) => entry.class_id === next);
+    const nextTitle = classEntry ? classAssignmentTitleBase(classEntry.name, new Date()) : "";
+    setCustomQuestions((current) => current.map((draft) => draft.titleManuallyEdited
+      ? draft
+      : { ...draft, fields: { ...draft.fields, title: nextTitle } }));
+  }
+
   function dueAtFor(key: string) {
     const value = deadlineMode === "uniform" ? uniformDueAt : individualDueAt[key] ?? "";
     if (!value) return null;
@@ -369,7 +446,11 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
     if (!taskType) return setSubmitError("请先选择题型。");
     if (!source) return setSubmitError("请选择题目来源。");
     if (assignmentCount < 1) return setSubmitError("请至少选择或添加一道题目。");
-    if (!selectedStudents.length) return setSubmitError("请至少选择一名学生。");
+    if (selectionMode === "class") {
+      if (!selectedClassId) return setSubmitError("请选择班级。");
+    } else if (!selectedStudents.length) {
+      return setSubmitError("请至少选择一名学生。");
+    }
 
     let assignments: Array<Record<string, unknown>>;
     try {
@@ -411,7 +492,24 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
     try {
       const payload = await teacherApiFetch<{ assignmentId: string; assignmentIds: string[]; title?: string }>(
         "/api/teacher/writing/assignments",
-        { method: "POST", body: JSON.stringify({ assignments, studentIds: selectedStudents, title, titleIsAutomatic: !assignmentTitleManuallyEdited }) }
+        {
+          method: "POST",
+          body: JSON.stringify(
+            selectionMode === "class"
+              ? {
+                  assignments,
+                  classId: selectedClassId,
+                  title,
+                  titleIsAutomatic: !assignmentTitleManuallyEdited
+                }
+              : {
+                  assignments,
+                  studentIds: selectedStudents,
+                  title,
+                  titleIsAutomatic: !assignmentTitleManuallyEdited
+                }
+          )
+        }
       );
       cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
       for (const assignmentId of payload.assignmentIds) {
@@ -421,7 +519,11 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
           assignmentQuestionSource: source
         });
       }
-      router.push("/teacher/writing/assignments");
+      router.push(
+        selectionMode === "class"
+          ? `/teacher/writing/assignments?view=class&classId=${encodeURIComponent(selectedClassId)}`
+          : "/teacher/writing/assignments"
+      );
       router.refresh();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "作业创建失败。");
@@ -458,9 +560,38 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
       </StepCard>
 
       <StepCard number="4" title="选择学生">
+        {writingClasses.length > 0 ? (
+          <nav aria-label="选择方式" className="mb-4 flex gap-2 border-b border-student-border">
+            <button
+              className={`border-b-2 px-5 py-3 text-sm font-bold ${selectionMode === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+              onClick={() => chooseSelectionMode("students")}
+              type="button"
+            >
+              学生
+            </button>
+            <button
+              className={`border-b-2 px-5 py-3 text-sm font-bold ${selectionMode === "class" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+              onClick={() => chooseSelectionMode("class")}
+              type="button"
+            >
+              班级
+            </button>
+          </nav>
+        ) : null}
+        {selectionMode === "class" ? (
+          <div className="grid gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setClassQuery(event.target.value)} placeholder="搜索班级名称" value={classQuery} /></div>
+              <span className="text-sm font-bold text-student-primary">一次只能选择一个班级</span>
+            </div>
+            {classesState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : classesState.error ? <TeacherDataError text={classesState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredClasses.map((entry) => { const active = selectedClassId === entry.class_id; return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={entry.class_id} onClick={() => toggleClass(entry.class_id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><TeacherClassIcon aria-hidden="true" size={18} strokeWidth={1.9} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{entry.name}</span><span className="block truncate text-xs text-student-muted">{classSubjectsLabel(entry.subjects)} · {entry.member_count} 名学生</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredClasses.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的班级。</p> : null}</div></div>}
+            <p className="text-xs text-student-muted">班级作业按布置时的班级成员生成，之后加入的学生不会补收这次作业。</p>
+          </div>
+        ) : (
         <div className="grid gap-3"><div className="flex flex-wrap items-center justify-between gap-3"><div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setStudentQuery(event.target.value)} placeholder="搜索中文姓名、拼音或账号" value={studentQuery} /></div><span className="text-sm font-bold text-student-primary">已选择 {selectedStudents.length} 人</span></div>
           {studentsState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : studentsState.error ? <TeacherDataError text={studentsState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredStudents.map((student) => { const active = selectedStudents.includes(student.id); return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={student.id} onClick={() => toggleStudent(student.id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><UserRound aria-hidden="true" size={18} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{formatManagedAccountName(student.displayName, student.email)}</span><span className="block truncate text-xs text-student-muted">账号：{formatAccountForDisplay(student.email)}</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredStudents.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的学生。</p> : null}</div></div>}
         </div>
+        )}
       </StepCard>
 
       <StepCard number="5" title="作业标题">
@@ -477,7 +608,7 @@ function TeacherWritingAssignmentCreateForm({ initialStudentId }: { initialStude
         {previewItems.length ? <div className="grid gap-5">{previewItems.map((item, index) => <div className="grid gap-2" key={item.key}><p className="text-sm font-bold text-student-text">第 {index + 1} 篇 · {WRITING_TASK_CONFIG[item.taskType].label}</p><WritingAssignmentQuestionPreview question={item.question} questionSource={item.questionSource} taskType={item.taskType} /></div>)}</div> : <p className="text-sm text-student-muted">完成题目选择或填写后，这里会显示学生看到的完整题目。</p>}
       </StepCard>
 
-      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">确认布置</p><p className="mt-1 text-sm text-student-muted">将 {assignmentCount} 篇题目布置给已选择的 {selectedStudents.length} 名学生，并保存同一个作业组。</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit()} type="button">{submitting ? "正在布置…" : "布置"}</button></div></TeacherCard>
+      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">确认布置</p><p className="mt-1 text-sm text-student-muted">{selectionMode === "class" && selectedClass ? `将 ${assignmentCount} 篇题目布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生，并保存同一个作业组。` : `将 ${assignmentCount} 篇题目布置给已选择的 ${selectedStudents.length} 名学生，并保存同一个作业组。`}</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit()} type="button">{submitting ? "正在布置…" : "布置"}</button></div></TeacherCard>
     </div>
   );
 }

@@ -135,6 +135,28 @@ export async function prepareWritingAssignmentGroupMutation(
 }
 
 /**
+ * Class mode for assignment creation: recipients are resolved by the RPC from
+ * the class members at creation time, so the client only supplies the prepared
+ * questions and the class id.
+ */
+export async function prepareClassWritingAssignmentGroupMutation(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  body: Record<string, unknown>,
+  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
+) {
+  if (!Array.isArray(body.assignments) || body.assignments.length === 0) {
+    throw new Error("请至少添加一道题目。");
+  }
+  if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const assignments = [];
+  for (const value of body.assignments) {
+    if (!isRecord(value)) throw new Error("请完整填写每道题目。");
+    assignments.push(await prepareWritingAssignmentQuestion(supabase, value, options));
+  }
+  return { assignments };
+}
+
+/**
  * Group edit never adds or removes items: every prepared item carries the
  * assignment_id it replaces, so the RPC can require an exact one-to-one match
  * with the withdrawn group.

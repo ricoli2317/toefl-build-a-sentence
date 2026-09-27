@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import clsx from "clsx";
 import { createPortal } from "react-dom";
 
 /**
@@ -19,11 +20,14 @@ export function ModalShell({
   open,
   onClose,
   dismissible = true,
+  size = "default",
   children
 }: {
   open: boolean;
   onClose: () => void;
   dismissible?: boolean;
+  /** "wide" keeps the same panel styling for forms that need two columns. */
+  size?: "default" | "wide";
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -49,7 +53,10 @@ export function ModalShell({
       <div className="relative flex min-h-full items-center justify-center px-5 py-6">
         <div
           aria-modal="true"
-          className="relative max-h-[calc(100dvh-3rem)] w-full max-w-[420px] overflow-y-auto rounded-2xl border border-student-border bg-white p-6 shadow-[0_22px_70px_rgba(44,35,99,0.18)]"
+          className={clsx(
+            "relative max-h-[calc(100dvh-3rem)] w-full overflow-y-auto rounded-2xl border border-student-border bg-white p-6 shadow-[0_22px_70px_rgba(44,35,99,0.18)]",
+            size === "wide" ? "max-w-[560px]" : "max-w-[420px]"
+          )}
           role="dialog"
         >
           {children}

@@ -209,7 +209,8 @@ test("creation form keeps per-task-type selections and sends one titled group pa
   assert.match(createForm, /作业标题/);
   assert.match(createForm, /setAssignmentTitleManuallyEdited\(true\)/);
   assert.match(createForm, /assignmentTitleManuallyEdited/);
-  assert.match(createForm, /studentIds: selectedStudents, title/);
+  assert.match(createForm, /studentIds: selectedStudents/);
+  assert.match(createForm, /classId: selectedClassId/);
   assert.match(createForm, /taskType: entryTaskType/);
   assert.match(createForm, /draft\.taskType/);
   const chooseTaskType = createForm.match(

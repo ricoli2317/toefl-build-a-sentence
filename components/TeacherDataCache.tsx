@@ -38,6 +38,12 @@ export const TEACHER_WRITING_ASSIGNMENT_AVATARS_CACHE_KEY =
   "teacher:writing-assignments:academic-discussion-avatars";
 export const TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX =
   "teacher:writing-review-workspace:historical-display-v2";
+export const TEACHER_CLASSES_CACHE_KEY = "teacher:classes:v1";
+export const TEACHER_CLASS_DETAIL_CACHE_PREFIX = "teacher:class-detail:v1";
+export const TEACHER_CLASS_STUDENTS_CACHE_KEY = "teacher:class-students:v1";
+export const TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY = "teacher:writing-class-reviews:v1";
+export const TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX =
+  "teacher:writing-class-review-list:v1";
 
 type CacheEntry =
   | { status: "loading"; promise: Promise<unknown>; generation: number }
@@ -243,6 +249,15 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "teacherAssignments":
               invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+              break;
+            case "teacherClasses":
+              invalidate(TEACHER_CLASSES_CACHE_KEY);
+              invalidate(TEACHER_CLASS_DETAIL_CACHE_PREFIX);
+              invalidate(TEACHER_CLASS_STUDENTS_CACHE_KEY);
+              break;
+            case "teacherClassReviews":
+              invalidate(TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY);
+              invalidate(TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX);
               break;
           }
         }

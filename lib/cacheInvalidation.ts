@@ -13,7 +13,8 @@ export type CacheInvalidationMutation =
   | "WRITING_REVIEW_PUBLISHED"
   | "ASSIGNMENT_UPDATED"
   | "TEACHER_STATS_UPDATED"
-  | "TEACHER_BINDING_UPDATED";
+  | "TEACHER_BINDING_UPDATED"
+  | "CLASS_UPDATED";
 
 export type CacheInvalidationDomain =
   | "studentPracticeCatalog"
@@ -33,7 +34,9 @@ export type CacheInvalidationDomain =
   | "teacherWritingReviews"
   | "teacherWritingReviewWorkspace"
   | "teacherAssignments"
-  | "teacherReadingStatistics";
+  | "teacherReadingStatistics"
+  | "teacherClasses"
+  | "teacherClassReviews";
 
 export type CacheInvalidationEvent = {
   eventId?: string;
@@ -78,13 +81,16 @@ const BASE_INVALIDATION_MATRIX: Record<
     "studentWritingHistory",
     "studentPracticeHistory",
     "teacherWritingReviews",
-    "teacherDashboard"
+    "teacherDashboard",
+    "teacherClasses",
+    "teacherClassReviews"
   ],
   // Saving or regenerating a review does not change publish state or
   // assignment progress, so only the review caches are affected.
   WRITING_REVIEW_UPDATED: [
     "teacherWritingReviews",
-    "teacherWritingReviewWorkspace"
+    "teacherWritingReviewWorkspace",
+    "teacherClassReviews"
   ],
   WRITING_REVIEW_PUBLISHED: [
     "teacherWritingReviews",
@@ -93,13 +99,16 @@ const BASE_INVALIDATION_MATRIX: Record<
     "teacherDashboard",
     "studentWritingOverview",
     "studentPracticeHistory",
-    "studentPublishedReviews"
+    "studentPublishedReviews",
+    "teacherClassReviews"
   ],
   ASSIGNMENT_UPDATED: [
     "studentAssignments",
     "studentWritingOverview",
     "teacherAssignments",
-    "teacherDashboard"
+    "teacherDashboard",
+    "teacherClasses",
+    "teacherClassReviews"
   ],
   TEACHER_STATS_UPDATED: ["teacherStats"],
   TEACHER_BINDING_UPDATED: [
@@ -109,8 +118,12 @@ const BASE_INVALIDATION_MATRIX: Record<
     "teacherReadingStatistics",
     "teacherWritingReviews",
     "teacherWritingReviewWorkspace",
-    "teacherAssignments"
-  ]
+    "teacherAssignments",
+    "teacherClasses"
+  ],
+  // Class create / rename / subject change / membership change: only the class
+  // surfaces and the assignment cards that show a class name are affected.
+  CLASS_UPDATED: ["teacherClasses", "teacherClassReviews", "teacherAssignments"]
 };
 
 export function cacheDomainsForEvent(

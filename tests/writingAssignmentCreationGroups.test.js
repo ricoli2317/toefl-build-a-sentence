@@ -220,7 +220,8 @@ test("creation form supports multi-select, custom multi-question editing, deadli
   assert.match(createForm, /分别设置/);
   assert.match(createForm, /individualDueAt/);
   assert.match(createForm, /WritingAssignmentQuestionPreview/);
-  assert.match(createForm, /assignments, studentIds: selectedStudents/);
+  assert.match(createForm, /assignments,\s*studentIds: selectedStudents/);
+  assert.match(createForm, /classId: selectedClassId/);
   assert.match(createForm, /customEmailRequirementCount\(draft\) !== 3/);
   assert.match(createForm, /defaultWritingAssignmentTitle/);
   assert.match(createForm, /draft\.titleManuallyEdited[\s\S]*?fields: \{ \.\.\.draft\.fields, title: nextTitle \}/);
@@ -276,7 +277,7 @@ test("single and multi-question POST requests use the same group RPC and reject 
   assert.match(route, /assignments: \[body\]/);
   assert.match(route, /prepareWritingAssignmentGroupMutation/);
   assert.match(route, /\.rpc\("create_writing_assignment_group"/);
-  assert.match(route, /assignmentIds\.length !== prepared\.assignments\.length/);
+  assert.match(route, /assignmentIds\.length !== assignmentCount/);
   assert.doesNotMatch(route, /\.from\("writing_attempts"\)/);
 });
 

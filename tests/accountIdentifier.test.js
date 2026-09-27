@@ -75,23 +75,28 @@ test("product account display hides the internal bas.com implementation", () => 
 });
 
 test("creation APIs and account UI use account only while preserving authorization", async () => {
-  const [teacherApi, studentApi, login, accountApi, teacherForm, studentForm] = await Promise.all([
+  const [teacherApi, studentApi, login, accountApi, teacherForm, studentForm, studentAccountHelper] = await Promise.all([
     readFile(new URL("../app/api/admin/teachers/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/teacher/students/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/LoginPanel.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/api/account/me/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/teacher/TeacherAccounts.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../components/TeacherCreateStudent.tsx", import.meta.url), "utf8")
+    readFile(new URL("../components/TeacherCreateStudent.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../lib/teacherStudentAccount.server.ts", import.meta.url), "utf8")
   ]);
 
   assert.match(teacherApi, /prepareNewAccount\(typeof body\.account/);
   assert.doesNotMatch(teacherApi, /typeof body\.email/);
   assert.match(teacherApi, /\.ilike\("email", authEmail\)/);
-  assert.match(studentApi, /prepareNewAccount\(body\.account/);
+  // The student route delegates to the shared account helper, which keeps the
+  // account-only input contract and the authorization checks.
+  assert.match(studentApi, /createTeacherStudentAccount\(supabase, \{/);
   assert.doesNotMatch(studentApi, /body\.email/);
-  assert.match(studentApi, /\.ilike\("email", authEmail\)/);
-  assert.match(studentApi, /STUDENT_ACCOUNT_LIMIT_REACHED/);
-  assert.match(studentApi, /owner_id: auth\.userId/);
+  assert.match(studentAccountHelper, /prepareNewAccount\(input\.account/);
+  assert.doesNotMatch(studentAccountHelper, /input\.email/);
+  assert.match(studentAccountHelper, /\.ilike\("email", authEmail\)/);
+  assert.match(studentAccountHelper, /STUDENT_ACCOUNT_LIMIT_REACHED/);
+  assert.match(studentAccountHelper, /owner_id: input\.actorId/);
   assert.match(login, /resolveLoginAuthEmail\(account\)/);
   assert.match(login, /autoComplete="username"/);
   assert.doesNotMatch(login, /type="email"|请输入邮箱账号/);

@@ -53,7 +53,7 @@ export function TeacherWorkHome() {
           title="查看题目"
         />
       </div>
-      <TeacherStudentOverviewList showManageActions />
+      <TeacherStudentOverviewList showClassTabs showManageActions />
     </div>
   );
 }
